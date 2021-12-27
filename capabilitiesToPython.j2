@@ -1,0 +1,69 @@
+{#
+
+Nesting is formatted like this:
+    className > methods > properties > parameters/information > definitions
+
+Sample context:
+    "shape": => className
+        "information": => a method
+            "Capabilities related to adding, multiplying, and/or modifying a shape.",
+        "constructor": { => a method
+            "parameters": => a property
+                {"name": => a parameter
+                    {"type": "string"} => a definition
+                },
+        },
+        "fromFile": { => a method
+            "information": => a property
+                "Create a shape from a file.",
+            "parameters": => a property
+                {"fileName": => a parameter
+                    {"type": "string"}, => a definition
+                "fileType": => a parameter
+                    {"type": "string", "required": false} => a definition
+                }
+        }
+
+#}
+{%- for className, methods in capabilities.items() -%}
+
+class {{className}}: {# e.g. shape #}
+
+    {%-for method, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if method == "information" %}
+    # {{ information }}
+
+    {%- elif method == "constructor" and parameters|length>0%}
+
+    {{ parameters.keys()| join('= None\n    ') }} {{-"= None" if parameters.keys()|length>0}}
+
+    def __init__(self,
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {{ parameter }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
+    {%-endfor%}
+    ):
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        self.{{ parameter }} = {{parameter}}
+    {%-endfor%}
+
+    {%- else %}
+
+    def {{method}}(self
+    {%- if parameters.keys()|length > 0 -%}
+    ,
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {{ parameter }} {{- "=None" if definition and definition.required == false -}} {{-", " if not loop.last}} \
+    {%-endfor%}
+    {%-endif%}
+    ):
+        print("{{method}} is not implemented") # implement 
+        return self
+    
+    {%-endif-%}
+
+    {%-endfor%}
+
+{% endfor -%}

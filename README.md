@@ -1,75 +1,43 @@
-# Model to Model
+# Text Model to 3D Model Automation
 
-As a model-maker, I would like a text-based model to define all the components of my 3D model, independent of a 3D modeling software or GUI. This text-based model should allow for both solid and surface modeling, and offer the same capabilties of the 3D modeling software.
+## About
 
-A text-based model should have the capabilities of adding meshes to a Source, modify meshes, reference vertecies, edges and faces as landmarks, and define joints between Features.
+Most GUI-based modeling software have an API to interact with the context of the modeling scene. These API's are usually very capable of doing almost everything the user can with the mouse. But what if you didn't have to learn the software's specific API to use it?
 
-## Example
+What if the multi-line complexity of some common operations are abstracted into one call?
 
-### Chess Rook
+What if you wanted a text-based model that can call the API commands to automatically build your 3D model?
 
-```
-# Features
-Feature(name: "Battlement").
- define("height", "1.5cm", "outerDiameter", "1cm", "innerDiameter", "0.5cm", "bottomThickness", "0.3cm").
- source(type: SourceTypes.primitive, source: "cylinder", dimensions: (outerDiameter, height, outerDiameter) ).
- subtract ( 
+This is what this automation project aims to do!
 
-    source(type: SourceTypes.primitive, source: "cylinder", dimensions: (innerDiameter, height - bottomThickness, innerDiameter) ).
-    translate(0,bottomThickness,0)
+But it doesn't stop there. By defining joints, materials, properties and landmarks, your model becomes defined beyond the needs of the common modeling software! You can now have one file that is the source of truth for your model, which you can use in simulation or analytics.
 
- ).
- subtract (
+It's like OpenSCAD and URDF/SDF rolled into one generic HUMAN-FRIENDLY format! (no seriously, human-readable model formats that are not confusing are a major design point for this project.)
 
-    source(type: SourceTypes.primitive, source: "cylinder", dimensions: (innerDiameter, height - 0.5cm, innerDiameter) ).
-    pattern(type: circular, radius: innerDiameter, instances: 6, separation: 0d, theta: 0d)
+## Purpose
 
- ).
- landmark(name: "bottom_center", (Landmarks.center, Landmarks.min, Landmarks.center) )
+As a model-maker, I would like a text-based model to define all the components of my 3D model, independent of a 3D modeling software or GUI. This text-based model should have the same capabilties of the 3D modeling software's API.
 
+A text-based model should have the capabilities of creating and modifying shapes, reference vertices, edges and faces (aka landmarks), define joints, materials and other properties.
 
-Joint(source1: "Battlement", source2: "Tower", source1Landmark: "bottom_center", source2Landmark: "top_center", initialRotation: (0,0,0), limitRotation: (0,0,0), limitTranslation: (0,0,0))
+The most important thing in this project is UX. If a high school cannot look at a model file and figure out what it does, then this project is not performing as it should be, design and architecture wise.
 
+This project taks inspiration from the [SDF spec](http://sdformat.org/spec), [Blender's Generate modifiers](https://docs.blender.org/manual/en/dev/modeling/modifiers/introduction.html) and [OpenScad's language reference](https://openscad.org/documentation.html#language-reference)
 
-# Sources
-Name, Source, Initial Dimensions (x,y,z), *Description
+## Capabilities
 
-Battlement, cylinder, (1cm, 1.5cm, 1cm)
-Tower, cylinder, (1cm, 5cm, 1cm)
-Base, cylinder, (1cm, 5mm, 1cm)
+All capabilities are recorded in [capabilities.json](./capabilities.json). The lists below may be outdated.
 
-# Support Sources
+Basic capabilities are separated into:
 
-# Joints
-Source 1 Name, Source 2 Name, Landmark 1, Landmark 2, Joint Type, initial rotation (x,y,z), *limit rotation (default=0,0,0)
+- Shapes
+- Landmarks
+- Joints
+- Materials
+- Scene
+- Analytics
 
-Base, Tower, top_center, bottom_center, fixed, (0d,0d,0d)
-Tower, Battlement, top_center, bottom_center, fixed, (0d,0d,0d)
-
-
-# Landmarks
-Source Name, Landmark Name, Location (x,y,z), *Type (default=vertex), *Options
-
-Battlement, bottom_center, (center,min,center)
-Tower, top_center, (center,max,center)
-Tower, bottom_center, (center,min,center)
-Base, top_center, (center,max,center)
-
-# Modification
-
-Source Name, Modification type, Parameters...
-
-```
-
-## Features
-
-A Feature is an entity that has a name and at least 1 mesh
-
-## Adding meshes to a Feature
-
-A mesh should have a name, initial dimensions and a source
-
-### Source
+### Shapes
 
 A source can be:
 - a primitive shape (e.g. cube, sphere, cone, cylinder)
