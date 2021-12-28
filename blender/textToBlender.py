@@ -1,3 +1,5 @@
+import bpy
+
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
 
@@ -28,7 +30,11 @@ class shape:
     primitiveName,  \
     initialDimensions \
     ):
-        print("primitive is not implemented") # implement 
+        switch = {
+            "cube": lambda : bpy.ops.mesh.primitive_cube_add(location=(0,0.0,2.0), size=1),
+            "cylinder": lambda : bpy.ops.mesh.primitive_cone_add(location=(0,0.0,2.0), radius1=1, radius2=1)
+        }
+        switch[primitiveName]()
         return self
 
     def verticies(self,
