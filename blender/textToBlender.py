@@ -1,4 +1,5 @@
 import bpy
+from utilities import *
 
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
@@ -30,11 +31,39 @@ class shape:
     primitiveName,  \
     initialDimensions \
     ):
+        import bmesh
+
         switch = {
-            "cube": lambda : bpy.ops.mesh.primitive_cube_add(location=(0,0.0,2.0), size=1),
-            "cylinder": lambda : bpy.ops.mesh.primitive_cone_add(location=(0,0.0,2.0), radius1=1, radius2=1)
+            "cube": bmesh.ops.create_cube,
+            "cone": bmesh.ops.create_cone,
+            "cylinder": bmesh.ops.create_cone,
+            "sphere": bmesh.ops.create_uvsphere,
+            "uvsphere": bmesh.ops.create_uvsphere,
+            "icosphere": bmesh.ops.create_icosphere,
+            "circle": bmesh.ops.create_circle,
+            "grid": bmesh.ops.create_grid,
+            "vertex": bmesh.ops.create_vert,
+            "monkey": bmesh.ops.create_monkey,
         }
-        switch[primitiveName]()
+
+        objectMesh = bpy.data.meshes.new(primitiveName)
+        
+        createMeshFunction = switch[primitiveName]
+
+        bmeshMesh = bmesh.new()
+        createMeshFunction(bmeshMesh)
+        bmeshMesh.to_mesh(objectMesh)
+        bmeshMesh.free()
+
+        object = bpy.data.objects.new(self.name, objectMesh)
+
+        print('dimemnsions:', getDimensionsFromString(initialDimensions))
+        
+        object.scale = tuple(getDimensionsFromString(initialDimensions))
+
+        collection = bpy.data.collections.get("Collection")
+        collection.objects.link(object)
+
         return self
 
     def verticies(self,

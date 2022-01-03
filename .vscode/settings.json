@@ -1,0 +1,9 @@
+{
+    "python.autoComplete.extraPaths": [
+        "{workspaceFolder}/blender/blender_autocomplete/3.0"
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('{workspaceFolder}/blender/blender_autocomplete/3.0')"
+    ],
+}
