@@ -28,21 +28,35 @@ class Units(Enum):
 
 class Dimension():
 
-  def __init__(self, fromString:str):
+  # fromString: takes a string with a math operation and an optional unit of measurement
+  # Default unit is mm if unit not passed
+  # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
+  def __init__(self, fromString:str, defaultUnit:Units = None):
       
       # python is frustrating and auto-converts a "100" to 100(int) when passed as a parameter.
       fromString = ""+fromString
 
       fromString = fromString.replace(" ", "")
 
-      value = re.search('\d+', fromString)
+      unit = re.search('[A-Za-z]+$', fromString)
 
-      unit = re.search('\D+', fromString)
+      if unit:
+          value = fromString[0:-1*len(unit[0])]
 
-      self.unit = Units.fromString(unit[0]) if unit else Units.millimeter
+          self.unit = Units.fromString(unit[0])
+      else:
+          value = fromString
+
+          self.unit =  defaultUnit or Units.millimeter
+      
+      # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
+      if re.match("[+\-*\/%\d]+", value):
+          value = eval(value)
+      else:
+          value = None
       
       if value:
-          self.value = Dimension.convertToMillimeters(int(value[0]), self.unit)
+          self.value = Dimension.convertToMillimeters(value, self.unit)
     
   def convertToMillimeters(value, unit:Units):
       return value * unit.value
@@ -51,6 +65,14 @@ class Dimension():
 def getDimensionsFromString(dimensions):
     parsedDimensions = None
     if "," in dimensions:
-        parsedDimensions = [Dimension(dimension).value for dimension in dimensions.split(',') ]
+        dimensionsArray = dimensions.split(',')
+
+        # we accept a 4th input as a the default value
+        # e.g. 1,1,1,m => default value meter
+        defaultUnit = dimensionsArray.pop().strip() if len(dimensionsArray) == 4 else None
+        
+        defaultUnit = Units.fromString(defaultUnit) if defaultUnit else None
+        
+        parsedDimensions = [Dimension(dimension, defaultUnit).value for dimension in dimensionsArray ]
 
     return parsedDimensions

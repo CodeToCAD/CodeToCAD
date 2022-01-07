@@ -37,6 +37,7 @@ class shape:
             "cube": bmesh.ops.create_cube,
             "cone": bmesh.ops.create_cone,
             "cylinder": bmesh.ops.create_cone,
+            "torus": bmesh.ops.create_torus,
             "sphere": bmesh.ops.create_uvsphere,
             "uvsphere": bmesh.ops.create_uvsphere,
             "icosphere": bmesh.ops.create_icosphere,
