@@ -6,14 +6,26 @@ if scriptDir not in sys.path:
 
 
 import bpy
-from utilities import Dimension, Units, getDimensionsFromString
+from textToBlender import shape, scene
 
-collectionName = "Bracelet"
-if collectionName in bpy.data.collections:
-    bpy.data.collections.remove(bpy.data.collections[collectionName])
-collection = bpy.data.collections.new(collectionName)
-bpy.context.scene.collection.children.link(collection)
-bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[collectionName]
 
-bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0), major_segments=48, minor_segments=12, mode='MAJOR_MINOR', major_radius=1.0, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75, generate_uvs=True)
-bpy.data.objects[-1].name = "bracelet"
+scene().deleteGroup("Bracelet", True)
+scene().createGroup("Bracelet")
+
+
+# in mm
+bracelet = {
+    "outerDiameter": 161,
+    "innerDiameter": 81,
+    "thickness": 83
+}
+button = {
+    "diameter": 60,
+    "depth": 13.6
+}
+buttonInner = {
+    "diameter": 40,
+    "depth": 5
+}
+
+shape("bracelet").primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])).scale("1,1,{},m".format((2*bracelet["thickness"]/bracelet["innerDiameter"])))

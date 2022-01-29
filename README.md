@@ -1,5 +1,16 @@
 # Text Model to 3D Model Automation
 
+## Capabilities.json and Jinja2 templates
+
+[Capabilities.json](./capabilities.json) defines all the possible functions that can be used to create a model.
+
+Jinja2 files are used to turn the json file into actual code:
+- [Python template](./capabilitiesToPython.j2) - Creates the classes and methods templates in python
+
+### Generating Jinja2 templates:
+
+Currently using (https://j2live.ttl255.com/)[https://j2live.ttl255.com/] to generate the template. If merging it into an existing file, KDiff3 is used to resolve the merge process.
+
 ## About
 
 Most GUI-based modeling software have an API to interact with the context of the modeling scene. These API's are usually very capable of doing almost everything the user can with the mouse. But what if you didn't have to learn the software's specific API to use it?

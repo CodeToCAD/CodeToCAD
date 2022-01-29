@@ -25,6 +25,10 @@ Sample context:
         }
 
 #}
+{%- set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
+{% macro typeMapping(typeName) -%}
+    {{types[typeName] if typeName in types else typeName}}
+{%- endmacro %}
 {%- for className, methods in capabilities.items() -%}
 
 class {{className}}: {# e.g. shape #}
@@ -38,11 +42,11 @@ class {{className}}: {# e.g. shape #}
 
     {%- elif method == "constructor" and parameters|length>0%}
 
-    {{ parameters.keys()| join('= None\n    ') }} {{-"= None" if parameters.keys()|length>0}}
+    {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
 
     def __init__(self,
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {{ parameter }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
+    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
     {%-endfor%}
     ):
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
@@ -55,7 +59,7 @@ class {{className}}: {# e.g. shape #}
     {%- if parameters.keys()|length > 0 -%}
     ,
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {{ parameter }} {{- "=None" if definition and definition.required == false -}} {{-", " if not loop.last}} \
+    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-", " if not loop.last}} \
     {%-endfor%}
     {%-endif%}
     ):

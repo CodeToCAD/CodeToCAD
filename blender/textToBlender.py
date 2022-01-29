@@ -4,169 +4,168 @@ from utilities import *
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
 
-    name= None
-    description= None
+    name = None
+    description = None
 
     def __init__(self,
-    name, \
-    description=None \
+    name:str, \
+    description:str=None \
     ):
         self.name = name
         self.description = description
 
     def fromFile(self,
-    fileName,  \
-    fileType=None \
+    fileName:str,  \
+    fileType:str=None \
     ):
         print("fromFile is not implemented") # implement 
         return self
 
     def cloneShape(self,
-    shapeName \
+    shapeName:str \
     ):
         print("cloneShape is not implemented") # implement 
         return self
 
     def primitive(self,
-    primitiveName,  \
-    initialDimensions \
+    primitiveName:str,  \
+    dimensions:str,  \
+    keywordArguments:dict=None \
     ):
-        import bmesh
+        
+        dimensions = getDimensionsFromString(dimensions) or []
 
+        while len(dimensions) < 3:
+            dimensions.append(1)
+
+        keywordArguments = keywordArguments or {}
+        
         switch = {
-            "cube": bmesh.ops.create_cube,
-            "cone": bmesh.ops.create_cone,
-            "cylinder": bmesh.ops.create_cone,
-            "torus": bmesh.ops.create_torus,
-            "sphere": bmesh.ops.create_uvsphere,
-            "uvsphere": bmesh.ops.create_uvsphere,
-            "icosphere": bmesh.ops.create_icosphere,
-            "circle": bmesh.ops.create_circle,
-            "grid": bmesh.ops.create_grid,
-            "vertex": bmesh.ops.create_vert,
-            "monkey": bmesh.ops.create_monkey,
+            "cube": lambda:bpy.ops.mesh.primitive_cube_add(size=1, scale=tuple(dimensions), **keywordArguments),
+            "cone": lambda:bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0], radius2=dimensions[1], depth=dimensions[2], **keywordArguments),
+            "cylinder": lambda:bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0], depth=dimensions[1], **keywordArguments),
+            "torus": lambda:bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0], abso_major_rad=dimensions[1], **keywordArguments),
+            "sphere": lambda:bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0], **keywordArguments),
+            "uvsphere": lambda:bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0], **keywordArguments),
+            "circle": lambda:bpy.ops.mesh.primitive_circle_add(radius=dimensions[0], **keywordArguments),
+            "grid": lambda:bpy.ops.mesh.primitive_grid_add(size=dimensions[0], **keywordArguments),
+            "monkey": lambda:bpy.ops.mesh.primitive_monkey_add(size=dimensions[0], **keywordArguments),
         }
 
-        objectMesh = bpy.data.meshes.new(primitiveName)
+        switch[primitiveName]()
         
-        createMeshFunction = switch[primitiveName]
+        object = bpy.data.objects[-1]
 
-        bmeshMesh = bmesh.new()
-        createMeshFunction(bmeshMesh)
-        bmeshMesh.to_mesh(objectMesh)
-        bmeshMesh.free()
-
-        object = bpy.data.objects.new(self.name, objectMesh)
-
-        print('dimemnsions:', getDimensionsFromString(initialDimensions))
-        
-        object.scale = tuple(getDimensionsFromString(initialDimensions))
-
-        collection = bpy.data.collections.get("Collection")
-        collection.objects.link(object)
+        object.name = self.name
 
         return self
 
     def verticies(self,
-    landmarkName \
+    landmarkName:str \
     ):
         print("verticies is not implemented") # implement 
         return self
 
     def loft(self,
-    shape1Name,  \
-    shape2Name \
+    shape1Name:str,  \
+    shape2Name:str \
     ):
         print("loft is not implemented") # implement 
         return self
 
     def mirror(self,
-    shapeName,  \
-    landmarkName \
+    shapeName:str,  \
+    landmarkName:str \
     ):
         print("mirror is not implemented") # implement 
         return self
 
     def pattern(self,
-    shapeName,  \
-    landmarkName \
+    shapeName:str,  \
+    landmarkName:str \
     ):
         print("pattern is not implemented") # implement 
         return self
 
     def mask(self,
-    shapeName,  \
-    landmarkName \
+    shapeName:str,  \
+    landmarkName:str \
     ):
         print("mask is not implemented") # implement 
         return self
 
     def scale(self,
-    dimensions \
+    dimensions:str \
     ):
-        print("scale is not implemented") # implement 
+    
+        dimensions = getDimensionsFromString(dimensions)
+
+        print('dimemnsions:', dimensions)
+        
+        bpy.data.objects[self.name].scale = tuple(dimensions)
+        
         return self
 
     def rotate(self,
-    rotation \
+    rotation:str \
     ):
         print("rotate is not implemented") # implement 
         return self
 
     def rename(self,
-    name \
+    name:str \
     ):
         print("rename is not implemented") # implement 
         return self
 
     def union(self,
-    withShapeName \
+    withShapeName:str \
     ):
         print("union is not implemented") # implement 
         return self
 
     def subtract(self,
-    withShapeName \
+    withShapeName:str \
     ):
         print("subtract is not implemented") # implement 
         return self
 
     def intersect(self,
-    withShapeName \
+    withShapeName:str \
     ):
         print("intersect is not implemented") # implement 
         return self
 
     def bevel(self,
-    landmarkName,  \
-    angle,  \
-    roundedness \
+    landmarkName:str,  \
+    angle:float,  \
+    roundedness:int \
     ):
         print("bevel is not implemented") # implement 
         return self
 
     def extrude(self,
-    landmarkName,  \
-    dimensions \
+    landmarkName:str,  \
+    dimensions:str \
     ):
         print("extrude is not implemented") # implement 
         return self
 
     def remesh(self,
-    strategy,  \
-    amount \
+    strategy:str,  \
+    amount:float \
     ):
         print("remesh is not implemented") # implement 
         return self
 
     def hollow(self,
-    wallThickness \
+    wallThickness:float \
     ):
         print("hollow is not implemented") # implement 
         return self
 
     def visibility(self,
-    isVisible \
+    isVisible:bool \
     ):
         print("visibility is not implemented") # implement 
         return self
@@ -179,21 +178,21 @@ class shape:
 class landmark: 
     # Text to 3D Modeling Automation Capabilities.
 
-    localToShapeWithName= None
+    localToShapeWithName = None
 
     def __init__(self,
-    localToShapeWithName=None \
+    localToShapeWithName:str=None \
     ):
         self.localToShapeWithName = localToShapeWithName
 
     def vertices(self,
-    locations \
+    locations:str \
     ):
         print("vertices is not implemented") # implement 
         return self
 
     def rectangle(self,
-    dimensions \
+    dimensions:str \
     ):
         print("rectangle is not implemented") # implement 
         return self
@@ -216,24 +215,24 @@ class landmark:
 class joint: 
     # Text to 3D Modeling Automation Capabilities.
 
-    shape1Name= None
-    shape2Name= None
-    shape1LandmarkName= None
-    shape2LandmarkName= None
-    jointType= None
-    initialRotation= None
-    limitRotation= None
-    limitTranslation= None
+    shape1Name = None
+    shape2Name = None
+    shape1LandmarkName = None
+    shape2LandmarkName = None
+    jointType = None
+    initialRotation = None
+    limitRotation = None
+    limitTranslation = None
 
     def __init__(self,
-    shape1Name, \
-    shape2Name, \
-    shape1LandmarkName, \
-    shape2LandmarkName, \
-    jointType, \
-    initialRotation, \
-    limitRotation, \
-    limitTranslation \
+    shape1Name:str, \
+    shape2Name:str, \
+    shape1LandmarkName:str, \
+    shape2LandmarkName:str, \
+    jointType:str, \
+    initialRotation:str, \
+    limitRotation:str, \
+    limitTranslation:str \
     ):
         self.shape1Name = shape1Name
         self.shape2Name = shape2Name
@@ -265,6 +264,31 @@ class scene:
         print("export is not implemented") # implement 
         return self
 
+    def defaultUnit(self,
+    unit:str \
+    ):
+        print("defaultUnit is not implemented") # implement 
+        return self
+
+    def createGroup(self,
+    name:str \
+    ):
+        collection = bpy.data.collections.new(name)
+        bpy.context.scene.collection.children.link(collection)
+        bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
+        return self
+
+    def deleteGroup(self,
+    name:str,  \
+    removeNestedShapes:bool \
+    ):
+        if name in bpy.data.collections:
+            if removeNestedShapes:
+                for obj in bpy.data.collections[name].objects:
+                    bpy.data.objects.remove(obj)
+            bpy.data.collections.remove(bpy.data.collections[name])
+        return self
+
 class analytics: 
     # Text to 3D Modeling Automation Capabilities.
 
@@ -274,20 +298,20 @@ class analytics:
         return self
 
     def measure(self,
-    landmark1Name,  \
-    landmark2Name=None \
+    landmark1Name:str,  \
+    landmark2Name:str=None \
     ):
         print("measure is not implemented") # implement 
         return self
 
     def worldPose(self,
-    shapeName \
+    shapeName:str \
     ):
         print("worldPose is not implemented") # implement 
         return self
 
     def boundingBox(self,
-    shapeName \
+    shapeName:str \
     ):
         print("boundingBox is not implemented") # implement 
         return self

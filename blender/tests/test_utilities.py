@@ -7,6 +7,8 @@ def test_dimensions():
     assert Dimension("1", Units.meter).value == 1000
     assert Dimension("1/4mm").value == 0.25
     assert Dimension("1-(3/4)").value == 0.25 
+    assert getDimensionsFromString("10,1") == [10,1]
+    assert getDimensionsFromString("1,1,m") == [1000,1000]
     assert getDimensionsFromString("1,1,1,m") == [1000,1000,1000]
     assert getDimensionsFromString("1m,1m,1m") == [1000,1000,1000]
     assert getDimensionsFromString("1,1,1mm,m") == [1000,1000,1]

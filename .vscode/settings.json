@@ -6,4 +6,7 @@
         "--init-hook",
         "import sys; sys.path.append('{workspaceFolder}/blender/blender_autocomplete/3.0')"
     ],
+    "python.analysis.extraPaths": [
+        "{workspaceFolder}/blender/blender_autocomplete/3.0"
+    ],
 }

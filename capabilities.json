@@ -44,8 +44,13 @@
                     "primitiveName": {
                         "type": "string"
                     },
-                    "initialDimensions": {
+                    "dimensions": {
                         "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
                     }
                 }
             },
@@ -295,6 +300,36 @@
             "constructor": {},
             "export": {
                 "information": "The ability to export the whole scene or specific shapes and/or shape groups as a 3D model, a video or image."
+            },
+            "defaultUnit": {
+                "action": "update",
+                "information": "Set the document's default measurements system.",
+                "parameters": {
+                    "unit": {
+                        "type": "string"
+                    }
+                }
+            },
+            "createGroup": {
+                "action": "create",
+                "information": "Create a new group",
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "deleteGroup": {
+                "action": "delete",
+                "information": "Delete a new group",
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "removeNestedShapes": {
+                        "type": "boolean"
+                    }
+                }
             }
         },
         "analytics": {

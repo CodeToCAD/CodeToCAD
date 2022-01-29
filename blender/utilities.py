@@ -2,7 +2,7 @@ from enum import Enum
 import re
 
 class Units(Enum):
-  millimeter = 1
+  millimeter = 1/1000 # units are meters by default
   centimeter = 10
   meter = 1000
   inches = 25.4
@@ -59,20 +59,30 @@ class Dimension():
           self.value = Dimension.convertToMillimeters(value, self.unit)
     
   def convertToMillimeters(value, unit:Units):
-      return value * unit.value
+      return value * unit.value * Units.millimeter.value
 
 
 def getDimensionsFromString(dimensions):
     parsedDimensions = None
-    if "," in dimensions:
+    if dimensions and "," in dimensions:
         dimensionsArray = dimensions.split(',')
 
-        # we accept a 4th input as a the default value
+        # besides accepting a unit in the dimension, e.g. 1m,1cm,1,m. we also
+        # accept the last input as a default unit
         # e.g. 1,1,1,m => default value meter
-        defaultUnit = dimensionsArray.pop().strip() if len(dimensionsArray) == 4 else None
-        
+        defaultUnit = re.search('[A-Za-z]+$', dimensionsArray[-1].strip())
+        # check if the last value contains only a unit:
+        if defaultUnit and len(defaultUnit[0]) == len(dimensionsArray[-1].strip()):
+            defaultUnit = dimensionsArray.pop().strip()
+        else:
+            defaultUnit = None
+
         defaultUnit = Units.fromString(defaultUnit) if defaultUnit else None
         
         parsedDimensions = [Dimension(dimension, defaultUnit).value for dimension in dimensionsArray ]
+    elif dimensions and type(dimensions) == str:
+        parsedDimensions = [Dimension(dimensions)]
+    else:
+        print("getDimensionsFromString: ", dimensions, " is not a valid input. Cannot parse dimensions.")
 
     return parsedDimensions

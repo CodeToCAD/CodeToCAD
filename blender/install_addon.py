@@ -1,3 +1,4 @@
+# use this if you're not using the VSCode Blender Development extension (jacqueslucke.blender-development)
 import bpy
 from pathlib import Path
 import zipfile
