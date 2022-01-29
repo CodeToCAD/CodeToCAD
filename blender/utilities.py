@@ -2,7 +2,7 @@ from enum import Enum
 import re
 
 class Units(Enum):
-  millimeter = 1/1000 # units are meters by default
+  millimeter = 1
   centimeter = 10
   meter = 1000
   inches = 25.4
@@ -47,19 +47,21 @@ class Dimension():
       else:
           value = fromString
 
-          self.unit =  defaultUnit or Units.millimeter
+          self.unit =  defaultUnit or None
       
       # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
       if re.match("[+\-*\/%\d]+", value):
-          value = eval(value)
+          self.value = eval(value)
       else:
-          value = None
+          self.value = None
       
-      if value:
-          self.value = Dimension.convertToMillimeters(value, self.unit)
+      if self.unit:
+          self.value = Dimension.convertToMillimeters(self.value, self.unit)
+        
+      self.value = self.value or 1
     
   def convertToMillimeters(value, unit:Units):
-      return value * unit.value * Units.millimeter.value
+      return value * unit.value / 1000 # units are meters by default
 
 
 def getDimensionsFromString(dimensions):
