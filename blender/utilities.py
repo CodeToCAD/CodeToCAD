@@ -81,7 +81,7 @@ def getDimensionsFromString(dimensions):
 
         defaultUnit = Units.fromString(defaultUnit) if defaultUnit else None
         
-        parsedDimensions = [Dimension(dimension, defaultUnit).value for dimension in dimensionsArray ]
+        parsedDimensions = [Dimension(dimension, defaultUnit) for dimension in dimensionsArray ]
     elif dimensions and type(dimensions) == str:
         parsedDimensions = [Dimension(dimensions)]
     else:

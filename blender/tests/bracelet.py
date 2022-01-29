@@ -28,4 +28,4 @@ buttonInner = {
     "depth": 5
 }
 
-shape("bracelet").primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])).scale("1,1,{}".format((2*bracelet["thickness"]/bracelet["innerDiameter"])))
+shape("bracelet").primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])).scale("1,1,{}cm".format(bracelet["thickness"]))

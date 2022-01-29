@@ -33,23 +33,23 @@ class shape:
     keywordArguments:dict=None \
     ):
         
-        dimensions = getDimensionsFromString(dimensions) or []
+        dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
 
         while len(dimensions) < 3:
-            dimensions.append(1)
+            dimensions.append(Dimension("1"))
 
         keywordArguments = keywordArguments or {}
         
         switch = {
             "cube": lambda:bpy.ops.mesh.primitive_cube_add(size=1, scale=tuple(dimensions), **keywordArguments),
-            "cone": lambda:bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0], radius2=dimensions[1], depth=dimensions[2], **keywordArguments),
-            "cylinder": lambda:bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0], depth=dimensions[1], **keywordArguments),
-            "torus": lambda:bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0], abso_major_rad=dimensions[1], **keywordArguments),
-            "sphere": lambda:bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0], **keywordArguments),
-            "uvsphere": lambda:bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0], **keywordArguments),
-            "circle": lambda:bpy.ops.mesh.primitive_circle_add(radius=dimensions[0], **keywordArguments),
-            "grid": lambda:bpy.ops.mesh.primitive_grid_add(size=dimensions[0], **keywordArguments),
-            "monkey": lambda:bpy.ops.mesh.primitive_monkey_add(size=dimensions[0], **keywordArguments),
+            "cone": lambda:bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **keywordArguments),
+            "cylinder": lambda:bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **keywordArguments),
+            "torus": lambda:bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **keywordArguments),
+            "sphere": lambda:bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **keywordArguments),
+            "uvsphere": lambda:bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **keywordArguments),
+            "circle": lambda:bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **keywordArguments),
+            "grid": lambda:bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **keywordArguments),
+            "monkey": lambda:bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **keywordArguments),
         }
 
         switch[primitiveName]()
@@ -98,11 +98,22 @@ class shape:
     dimensions:str \
     ):
     
-        dimensions = getDimensionsFromString(dimensions)
+        dimensions:list[Dimension] = getDimensionsFromString(dimensions)
 
-        print('dimemnsions:', dimensions)
+        while len(dimensions) < 3:
+            dimensions.append(Dimension("1"))
+
+        [x,y,z] = dimensions
+
+        currentDimensions = bpy.data.objects[self.name].dimensions
+
+        #calculate scale factors if a unit is passed into the dimension
+        if currentDimensions:
+            x.value = x.value/currentDimensions.x if x.unit != None else x.value
+            y.value = y.value/currentDimensions.y if y.unit != None else y.value
+            z.value = z.value/currentDimensions.z if z.unit != None else z.value
         
-        bpy.data.objects[self.name].scale = tuple(dimensions)
+        bpy.data.objects[self.name].scale = (x.value,y.value,z.value)
         
         return self
 
