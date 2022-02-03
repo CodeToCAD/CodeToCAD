@@ -2,33 +2,54 @@ from enum import Enum
 import re
 
 class Units(Enum):
-    pass
+    # define the == operator, otherwise we can't compare enums, thanks python
+    def __eq__(self, other):
+        lhs = self.name if self else None
+        rhs = other.name if other else None
+        return lhs == rhs
 
 class Length(Units):
-        micrometer = 1/1000
-        millimeter = 1
-        centimeter = 10
-        meter = 1000
-        kilometer = 1000000
-        inches = 25.4
-        feet = 304.8
+    #metric
+    micrometer = 1 / 1000
+    millimeter = 1
+    centimeter = 10
+    meter = 1000
+    kilometer = 1000000
 
-        def fromString(fromString:str):
-            aliases = {
-                "millimeter": Length.millimeter,
-                "centimeter": Length.centimeter,
-                "meter": Length.meter,
-                "inch": Length.inches,
-                "inches": Length.inches,
-                "foot": Length.feet,
-                "feet": Length.feet,
-                "mm": Length.millimeter,
-                "cm": Length.centimeter,
-                "m": Length.meter,
-                "in": Length.inches,
-                "ft": Length.feet,
-            }
-            return aliases[fromString]
+    #imperial
+    thousandthInch = 25.4 / 1000
+    inch = 25.4
+    foot = 25.4 * 12
+    mile = 25.4 * 63360
+
+    def fromString(fromString:str):
+        aliases = {
+            #metric
+            "millimeter": Length.millimeter,
+            "millimeters": Length.millimeter,
+            "centimeter": Length.centimeter,
+            "centimeters": Length.centimeter,
+            "meter": Length.meter,
+            "meters": Length.meter,
+            "mm": Length.millimeter,
+            "cm": Length.centimeter,
+            "m": Length.meter,
+            "km": Length.kilometer,
+            #imperial
+            "thousandthInch": Length.thousandthInch,
+            "thousandth": Length.thousandthInch,
+            "inch": Length.inch,
+            "inches": Length.inch,
+            "foot": Length.foot,
+            "feet": Length.foot,
+            "mile": Length.mile,
+            "miles": Length.mile,
+            "thou": Length.thousandthInch,
+            "in": Length.inch,
+            "ft": Length.foot,
+            "mi": Length.mile
+        }
+        return aliases[fromString]
 
     
     
@@ -39,38 +60,41 @@ class Dimension():
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is mm if unit not passed
   # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
-  def __init__(self, fromString:str, defaultUnit:Length = None):
+  def __init__(self, value:float, unit:Length = None):
+      self.value = value
+      self.unit = unit
+
+  def __init__(self, fromString:str, unit:Length = None):
       
       # python is frustrating and auto-converts a "100" to 100(int) when passed as a parameter.
-      fromString = ""+fromString
+      fromString = str(fromString)
 
       fromString = fromString.replace(" ", "")
 
-      unit = re.search('[A-Za-z]+$', fromString)
+      unitInString = re.search('[A-Za-z]+$', fromString)
 
-      if unit:
-          value = fromString[0:-1*len(unit[0])]
+      if unitInString:
+          value = fromString[0:-1*len(unitInString[0])]
 
-          self.unit = Length.fromString(unit[0])
+          self.unit = Length.fromString(unitInString[0])
       else:
           value = fromString
 
-          self.unit =  defaultUnit or None
+          self.unit = unit or None
       
       # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
       if re.match("[+\-*\/%\d]+", value):
           self.value = eval(value)
       else:
           self.value = None
-      
-      if self.unit:
-          self.value = Dimension.convertToMillimeters(self.value, self.unit)
-        
-      self.value = self.value or 1
     
-  def convertToMillimeters(value, unit:Length):
-      return value * unit.value / 1000 # units are meters by default
+def convertToMillimeters(value, unit:Length) -> float:
+    # Length enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
+    return value * unit.value
 
+def convertToUnit(targetUnit:Length, value, unit:Length) -> float:
+    # Length enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
+    return value * (unit.value/targetUnit.value)
 
 def getDimensionsFromString(dimensions):
     parsedDimensions = None

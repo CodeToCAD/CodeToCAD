@@ -1,12 +1,46 @@
 import bpy
 from utilities import *
 
-class BlenderLength(Enum):
+class BlenderLength(Units):
+    #metric
     KILOMETERS = Length.kilometer
     METERS = Length.meter
     CENTIMETERS = Length.centimeter
     MILLIMETERS = Length.millimeter
     MICROMETERS = Length.micrometer
+    #imperial
+    MILES = Length.mile
+    FEET = Length.foot
+    INCHES = Length.inch
+    THOU = Length.thousandthInch
+
+    def getSystem(self):
+        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
+            return'METRIC'
+        else:
+            return'IMPERIAL'
+
+# Use this value to scale any number operations done throughout this implementation
+defaultBlenderUnit = BlenderLength.METERS
+
+def convertDimensionsToBlenderUnit(dimensions:list[Dimension]):
+    return [
+        Dimension(
+            float(
+                convertToUnit(
+                    defaultBlenderUnit.value, dimension.value,
+                    dimension.unit or defaultBlenderUnit.value
+                )
+            ),
+            defaultBlenderUnit.value
+        )
+        
+            if (dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
+
+            else dimension
+
+                for dimension in dimensions 
+    ]
 
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
@@ -42,8 +76,11 @@ class shape:
         
         dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
 
+        dimensions = convertDimensionsToBlenderUnit(dimensions)
+
         while len(dimensions) < 3:
             dimensions.append(Dimension("1"))
+
 
         keywordArguments = keywordArguments or {}
         
@@ -104,21 +141,23 @@ class shape:
     def scale(self,
     dimensions:str \
     ):
-    
-        dimensions:list[Dimension] = getDimensionsFromString(dimensions)
+
+        dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
+        
+        dimensions = convertDimensionsToBlenderUnit(dimensions)
 
         while len(dimensions) < 3:
             dimensions.append(Dimension("1"))
 
         [x,y,z] = dimensions
 
-        currentDimensions = bpy.data.objects[self.name].dimensions
+        sceneDimensions = bpy.data.objects[self.name].dimensions
 
         #calculate scale factors if a unit is passed into the dimension
-        if currentDimensions:
-            x.value = x.value/currentDimensions.x if x.unit != None else x.value
-            y.value = y.value/currentDimensions.y if y.unit != None else y.value
-            z.value = z.value/currentDimensions.z if z.unit != None else z.value
+        if sceneDimensions:
+            x.value = x.value/sceneDimensions.x if x.unit != None else x.value
+            y.value = y.value/sceneDimensions.y if y.unit != None else y.value
+            z.value = z.value/sceneDimensions.z if z.unit != None else z.value
         
         bpy.data.objects[self.name].scale = (x.value,y.value,z.value)
         
@@ -264,18 +303,18 @@ class joint:
 class material: 
     # Text to 3D Modeling Automation Capabilities.
 
-    def constructor(self
+
+    def __init__(self
     ):
-        print("constructor is not implemented") # implement 
-        return self
+        pass
+
 
 class scene: 
     # Text to 3D Modeling Automation Capabilities.
 
-    def constructor(self
+    def __init__(self
     ):
-        print("constructor is not implemented") # implement 
-        return self
+        pass
 
     def export(self
     ):
@@ -285,6 +324,7 @@ class scene:
     def setDefaultUnit(self,
     unit:BlenderLength \
     ):
+        bpy.context.scene.unit_settings.system = unit.getSystem()
         bpy.context.scene.unit_settings.length_unit = unit.name
         return self
 
@@ -315,21 +355,32 @@ class analytics:
         print("constructor is not implemented") # implement 
         return self
 
-    def measure(self,
+    def measureLandmarks(self,
     landmark1Name:str,  \
     landmark2Name:str=None \
     ):
         print("measure is not implemented") # implement 
         return self
 
-    def worldPose(self,
+    def getWorldPose(self,
     shapeName:str \
     ):
         print("worldPose is not implemented") # implement 
         return self
 
-    def boundingBox(self,
+    def getBoundingBox(self,
     shapeName:str \
     ):
-        print("boundingBox is not implemented") # implement 
-        return self
+        dimensions = bpy.data.objects[shapeName].dimensions
+        return [
+            Dimension(
+                dimension,
+                defaultBlenderUnit.value
+            ) 
+            for dimension in dimensions
+            ]
+
+    def getDimensions(self,
+    shapeName:str \
+    ):
+        return self.boundingBox(shapeName)

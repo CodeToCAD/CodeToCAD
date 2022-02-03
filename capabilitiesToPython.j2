@@ -40,17 +40,22 @@ class {{className}}: {# e.g. shape #}
     {%- if method == "information" %}
     # {{ information }}
 
-    {%- elif method == "constructor" and parameters|length>0%}
+    {%- elif method == "constructor"-%}
 
     {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
 
-    def __init__(self,
+    def __init__(self
+    {%- if parameters.keys()|length > 0 -%}
+    ,
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
     {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
     {%-endfor%}
+    {%-endif%}
     ):
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
         self.{{ parameter }} = {{parameter}}
+    {%- else %}
+        pass
     {%-endfor%}
 
     {%- else %}
@@ -64,7 +69,7 @@ class {{className}}: {# e.g. shape #}
     {%-endif%}
     ):
         print("{{method}} is not implemented") # implement 
-        return self
+        return {{ "self" if "action" in properties and properties["action"] != "get" else "\"return value here\"" }}
     
     {%-endif-%}
 
