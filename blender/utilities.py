@@ -2,28 +2,36 @@ from enum import Enum
 import re
 
 class Units(Enum):
-  millimeter = 1
-  centimeter = 10
-  meter = 1000
-  inches = 25.4
-  feet = 304.8
+    pass
 
-  def fromString(fromString:str):
-      aliases = {
-          "millimeter": Units.millimeter,
-          "centimeter": Units.centimeter,
-          "meter": Units.meter,
-          "inch": Units.inches,
-          "inches": Units.inches,
-          "foot": Units.feet,
-          "feet": Units.feet,
-          "mm": Units.millimeter,
-          "cm": Units.centimeter,
-          "m": Units.meter,
-          "in": Units.inches,
-          "ft": Units.feet,
-      }
-      return aliases[fromString]
+class Length(Units):
+        micrometer = 1/1000
+        millimeter = 1
+        centimeter = 10
+        meter = 1000
+        kilometer = 1000000
+        inches = 25.4
+        feet = 304.8
+
+        def fromString(fromString:str):
+            aliases = {
+                "millimeter": Length.millimeter,
+                "centimeter": Length.centimeter,
+                "meter": Length.meter,
+                "inch": Length.inches,
+                "inches": Length.inches,
+                "foot": Length.feet,
+                "feet": Length.feet,
+                "mm": Length.millimeter,
+                "cm": Length.centimeter,
+                "m": Length.meter,
+                "in": Length.inches,
+                "ft": Length.feet,
+            }
+            return aliases[fromString]
+
+    
+    
 
 
 class Dimension():
@@ -31,7 +39,7 @@ class Dimension():
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is mm if unit not passed
   # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
-  def __init__(self, fromString:str, defaultUnit:Units = None):
+  def __init__(self, fromString:str, defaultUnit:Length = None):
       
       # python is frustrating and auto-converts a "100" to 100(int) when passed as a parameter.
       fromString = ""+fromString
@@ -43,7 +51,7 @@ class Dimension():
       if unit:
           value = fromString[0:-1*len(unit[0])]
 
-          self.unit = Units.fromString(unit[0])
+          self.unit = Length.fromString(unit[0])
       else:
           value = fromString
 
@@ -60,7 +68,7 @@ class Dimension():
         
       self.value = self.value or 1
     
-  def convertToMillimeters(value, unit:Units):
+  def convertToMillimeters(value, unit:Length):
       return value * unit.value / 1000 # units are meters by default
 
 
@@ -79,7 +87,7 @@ def getDimensionsFromString(dimensions):
         else:
             defaultUnit = None
 
-        defaultUnit = Units.fromString(defaultUnit) if defaultUnit else None
+        defaultUnit = Length.fromString(defaultUnit) if defaultUnit else None
         
         parsedDimensions = [Dimension(dimension, defaultUnit) for dimension in dimensionsArray ]
     elif dimensions and type(dimensions) == str:

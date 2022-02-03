@@ -301,7 +301,7 @@
             "export": {
                 "information": "The ability to export the whole scene or specific shapes and/or shape groups as a 3D model, a video or image."
             },
-            "defaultUnit": {
+            "setDefaultUnit": {
                 "action": "update",
                 "information": "Set the document's default measurements system.",
                 "parameters": {

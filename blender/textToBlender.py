@@ -1,6 +1,13 @@
 import bpy
 from utilities import *
 
+class BlenderLength(Enum):
+    KILOMETERS = Length.kilometer
+    METERS = Length.meter
+    CENTIMETERS = Length.centimeter
+    MILLIMETERS = Length.millimeter
+    MICROMETERS = Length.micrometer
+
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
 
@@ -275,10 +282,10 @@ class scene:
         print("export is not implemented") # implement 
         return self
 
-    def defaultUnit(self,
-    unit:str \
+    def setDefaultUnit(self,
+    unit:BlenderLength \
     ):
-        print("defaultUnit is not implemented") # implement 
+        bpy.context.scene.unit_settings.length_unit = unit.name
         return self
 
     def createGroup(self,

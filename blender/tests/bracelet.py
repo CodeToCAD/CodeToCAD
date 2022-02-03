@@ -6,11 +6,11 @@ if scriptDir not in sys.path:
 
 
 import bpy
-from textToBlender import shape, scene
+from textToBlender import shape, scene, BlenderLength
 
-
-scene().deleteGroup("Bracelet", True)
-scene().createGroup("Bracelet")
+scene().setDefaultUnit(BlenderLength.CENTIMETERS) \
+    .deleteGroup("Bracelet", True) \
+    .createGroup("Bracelet")
 
 
 # in mm
