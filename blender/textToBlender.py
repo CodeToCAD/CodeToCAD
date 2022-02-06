@@ -1,5 +1,66 @@
+from threading import Event, Thread
+from time import sleep
 import bpy
 from utilities import *
+
+blenderOperationsComplete = Event()
+blenderOperations = []
+
+def addBlenderOperation(description, operation, assertion):
+    global blenderOperations,blenderOperationsComplete
+
+    blenderOperationsComplete.clear()
+
+    blenderOperations.append(
+        {
+            "started": False,
+            "description": description,
+            "operation": operation,
+            "assertion": assertion
+        }
+    )
+
+    if len(blenderOperations) == 1:
+        operation()
+
+updateEventQueue = []
+
+def updateEventHandler():
+    global blenderOperations,blenderOperationsComplete, updateEventQueue
+    while 1:
+        sleep(0.5)
+        if len(updateEventQueue) == 0:
+            return
+        
+        update = updateEventQueue.pop(0)
+
+        if len(blenderOperations) == 0:
+            return
+        
+        operation = blenderOperations[0]
+
+        print("update:", update.id.name, type(update.id), "transformOperation:", update.is_updated_transform,"geometryOperation:", update.is_updated_geometry, "currentOperation:", operation["description"], "Operations left:", len(blenderOperations))
+        
+        if operation["assertion"](update):
+            print("assertion complete:", operation["description"])
+            blenderOperations.pop(0)
+            if len(blenderOperations) == 0:
+                print("All operations complete")
+                blenderOperationsComplete.set()
+            else:    
+                operation = blenderOperations[0]
+                operation["operation"]()
+                
+Thread(target=updateEventHandler).start()
+
+def on_depsgraph_update(scene, depsgraph):
+
+    global updateEventQueue
+    
+    for update in depsgraph.updates:
+        updateEventQueue.append(update)
+  
+bpy.app.handlers.depsgraph_update_post.append(on_depsgraph_update)
 
 class BlenderLength(Units):
     #metric
@@ -68,12 +129,13 @@ class shape:
         print("cloneShape is not implemented") # implement 
         return self
 
-    def primitive(self,
-    primitiveName:str,  \
-    dimensions:str,  \
-    keywordArguments:dict=None \
-    ):
-        
+    def blenderAddPrimitive(
+        self,
+        primitiveName:str,  \
+        dimensions:str,  \
+        keywordArguments:dict=None
+        ):
+
         dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
 
         dimensions = convertDimensionsToBlenderUnit(dimensions)
@@ -97,10 +159,39 @@ class shape:
         }
 
         switch[primitiveName]()
-        
-        object = bpy.data.objects[-1]
+    
+    def blenderUpdateObjectName(self, object, newName):
+        object.name = newName
+    def blenderUpdateMeshName(self, mesh, newName):
+        mesh.name = newName
 
-        object.name = self.name
+    def primitive(self,
+    primitiveName:str,  \
+    dimensions:str,  \
+    keywordArguments:dict=None \
+    ):
+        addBlenderOperation(
+            "Object of type {} created".format(primitiveName),
+            lambda: self.blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == primitiveName
+        )
+        addBlenderOperation(
+            "Mesh of type {} created".format(primitiveName),
+            lambda:None,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == primitiveName
+        )
+        addBlenderOperation(
+            "Object of type {} renamed to {}".format(primitiveName, self.name),
+            lambda: self.blenderUpdateObjectName(bpy.data.objects[-1], self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
+        addBlenderOperation(
+            "Mesh of type {} renamed to {}".format(primitiveName, self.name),
+            lambda: self.blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == self.name
+        )
 
         return self
 
@@ -138,10 +229,9 @@ class shape:
         print("mask is not implemented") # implement 
         return self
 
-    def scale(self,
+    def scaleBlenderObject(self,
     dimensions:str \
     ):
-
         dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
         
         dimensions = convertDimensionsToBlenderUnit(dimensions)
@@ -160,6 +250,16 @@ class shape:
             z.value = z.value/sceneDimensions.z if z.unit != None else z.value
         
         bpy.data.objects[self.name].scale = (x.value,y.value,z.value)
+
+    def scale(self,
+    dimensions:str \
+    ):
+    
+        addBlenderOperation(
+            "Object with name {} scale transformed".format(self.name),
+            lambda: self.scaleBlenderObject(dimensions),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
         
         return self
 

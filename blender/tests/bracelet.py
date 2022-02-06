@@ -6,8 +6,12 @@ if scriptDir not in sys.path:
 
 import math
 
+from time import sleep
+
+from threading import Thread
+
 import bpy
-from textToBlender import shape, scene, BlenderLength, analytics
+from textToBlender import shape, scene, BlenderLength, analytics, blenderOperationsComplete, blenderOperations
 
 scene().setDefaultUnit(BlenderLength.CENTIMETERS) \
     .deleteGroup("Bracelet", True) \
@@ -31,9 +35,18 @@ buttonInner = {
 
 shape("bracelet").primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])).scale("1,1,{}cm".format(bracelet["thickness"]))
 
-braceletDimensions = analytics().getBoundingBox("bracelet")
-[x,y,z] = braceletDimensions
-print("braceletDimensions",x.value,y.value,z.value)
-assert( math.isclose(x.value, bracelet["outerDiameter"]/100, abs_tol= 0.1) )
-assert( math.isclose(y.value, bracelet["outerDiameter"]/100, abs_tol= 0.1) )
-assert( math.isclose(z.value, bracelet["thickness"]/100, abs_tol= 0.1) )
+
+def assertions():
+    while len(blenderOperations) != 0:
+        print("waitingggg")
+        blenderOperationsComplete.wait(timeout=2)
+        # sleep(10)
+
+    braceletDimensions = analytics().getBoundingBox("bracelet")
+    [x,y,z] = braceletDimensions
+    print("braceletDimensions",x.value,y.value,z.value)
+    assert( math.isclose(x.value, bracelet["outerDiameter"]/100, abs_tol= 0.1) )
+    assert( math.isclose(y.value, bracelet["outerDiameter"]/100, abs_tol= 0.1) )
+    assert( math.isclose(z.value, bracelet["thickness"]/100, abs_tol= 0.1) )
+
+Thread(target=assertions).start()
