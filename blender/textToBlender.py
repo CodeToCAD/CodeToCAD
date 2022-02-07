@@ -1,107 +1,6 @@
-from threading import Event, Thread
-from time import sleep
-import bpy
 from utilities import *
-
-blenderOperationsComplete = Event()
-blenderOperations = []
-
-def addBlenderOperation(description, operation, assertion):
-    global blenderOperations,blenderOperationsComplete
-
-    blenderOperationsComplete.clear()
-
-    blenderOperations.append(
-        {
-            "started": False,
-            "description": description,
-            "operation": operation,
-            "assertion": assertion
-        }
-    )
-
-    if len(blenderOperations) == 1:
-        operation()
-
-updateEventQueue = []
-
-def updateEventHandler():
-    global blenderOperations,blenderOperationsComplete, updateEventQueue
-    while 1:
-        sleep(0.5)
-        if len(updateEventQueue) == 0:
-            return
-        
-        update = updateEventQueue.pop(0)
-
-        if len(blenderOperations) == 0:
-            return
-        
-        operation = blenderOperations[0]
-
-        print("update:", update.id.name, type(update.id), "transformOperation:", update.is_updated_transform,"geometryOperation:", update.is_updated_geometry, "currentOperation:", operation["description"], "Operations left:", len(blenderOperations))
-        
-        if operation["assertion"](update):
-            print("assertion complete:", operation["description"])
-            blenderOperations.pop(0)
-            if len(blenderOperations) == 0:
-                print("All operations complete")
-                blenderOperationsComplete.set()
-            else:    
-                operation = blenderOperations[0]
-                operation["operation"]()
-                
-Thread(target=updateEventHandler).start()
-
-def on_depsgraph_update(scene, depsgraph):
-
-    global updateEventQueue
-    
-    for update in depsgraph.updates:
-        updateEventQueue.append(update)
-  
-bpy.app.handlers.depsgraph_update_post.append(on_depsgraph_update)
-
-class BlenderLength(Units):
-    #metric
-    KILOMETERS = Length.kilometer
-    METERS = Length.meter
-    CENTIMETERS = Length.centimeter
-    MILLIMETERS = Length.millimeter
-    MICROMETERS = Length.micrometer
-    #imperial
-    MILES = Length.mile
-    FEET = Length.foot
-    INCHES = Length.inch
-    THOU = Length.thousandthInch
-
-    def getSystem(self):
-        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
-            return'METRIC'
-        else:
-            return'IMPERIAL'
-
-# Use this value to scale any number operations done throughout this implementation
-defaultBlenderUnit = BlenderLength.METERS
-
-def convertDimensionsToBlenderUnit(dimensions:list[Dimension]):
-    return [
-        Dimension(
-            float(
-                convertToUnit(
-                    defaultBlenderUnit.value, dimension.value,
-                    dimension.unit or defaultBlenderUnit.value
-                )
-            ),
-            defaultBlenderUnit.value
-        )
-        
-            if (dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
-
-            else dimension
-
-                for dimension in dimensions 
-    ]
+from blenderExecute import *
+from blenderEvents import *
 
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
@@ -129,41 +28,6 @@ class shape:
         print("cloneShape is not implemented") # implement 
         return self
 
-    def blenderAddPrimitive(
-        self,
-        primitiveName:str,  \
-        dimensions:str,  \
-        keywordArguments:dict=None
-        ):
-
-        dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
-
-        dimensions = convertDimensionsToBlenderUnit(dimensions)
-
-        while len(dimensions) < 3:
-            dimensions.append(Dimension("1"))
-
-
-        keywordArguments = keywordArguments or {}
-        
-        switch = {
-            "cube": lambda:bpy.ops.mesh.primitive_cube_add(size=1, scale=tuple(dimensions), **keywordArguments),
-            "cone": lambda:bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **keywordArguments),
-            "cylinder": lambda:bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **keywordArguments),
-            "torus": lambda:bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **keywordArguments),
-            "sphere": lambda:bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **keywordArguments),
-            "uvsphere": lambda:bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **keywordArguments),
-            "circle": lambda:bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **keywordArguments),
-            "grid": lambda:bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **keywordArguments),
-            "monkey": lambda:bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **keywordArguments),
-        }
-
-        switch[primitiveName]()
-    
-    def blenderUpdateObjectName(self, object, newName):
-        object.name = newName
-    def blenderUpdateMeshName(self, mesh, newName):
-        mesh.name = newName
 
     def primitive(self,
     primitiveName:str,  \
@@ -172,7 +36,7 @@ class shape:
     ):
         addBlenderOperation(
             "Object of type {} created".format(primitiveName),
-            lambda: self.blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
+            lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == primitiveName
         )
         addBlenderOperation(
@@ -182,13 +46,13 @@ class shape:
         )
         addBlenderOperation(
             "Object of type {} renamed to {}".format(primitiveName, self.name),
-            lambda: self.blenderUpdateObjectName(bpy.data.objects[-1], self.name)
+            lambda: blenderUpdateObjectName(bpy.data.objects[-1], self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
         addBlenderOperation(
             "Mesh of type {} renamed to {}".format(primitiveName, self.name),
-            lambda: self.blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
+            lambda: blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
             ,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == self.name
         )
@@ -229,27 +93,6 @@ class shape:
         print("mask is not implemented") # implement 
         return self
 
-    def scaleBlenderObject(self,
-    dimensions:str \
-    ):
-        dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
-        
-        dimensions = convertDimensionsToBlenderUnit(dimensions)
-
-        while len(dimensions) < 3:
-            dimensions.append(Dimension("1"))
-
-        [x,y,z] = dimensions
-
-        sceneDimensions = bpy.data.objects[self.name].dimensions
-
-        #calculate scale factors if a unit is passed into the dimension
-        if sceneDimensions:
-            x.value = x.value/sceneDimensions.x if x.unit != None else x.value
-            y.value = y.value/sceneDimensions.y if y.unit != None else y.value
-            z.value = z.value/sceneDimensions.z if z.unit != None else z.value
-        
-        bpy.data.objects[self.name].scale = (x.value,y.value,z.value)
 
     def scale(self,
     dimensions:str \
@@ -257,7 +100,7 @@ class shape:
     
         addBlenderOperation(
             "Object with name {} scale transformed".format(self.name),
-            lambda: self.scaleBlenderObject(dimensions),
+            lambda: scaleBlenderObject(self.name, dimensions),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
         

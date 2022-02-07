@@ -120,3 +120,44 @@ def getDimensionsFromString(dimensions):
         print("getDimensionsFromString: ", dimensions, " is not a valid input. Cannot parse dimensions.")
 
     return parsedDimensions
+
+class BlenderLength(Units):
+    #metric
+    KILOMETERS = Length.kilometer
+    METERS = Length.meter
+    CENTIMETERS = Length.centimeter
+    MILLIMETERS = Length.millimeter
+    MICROMETERS = Length.micrometer
+    #imperial
+    MILES = Length.mile
+    FEET = Length.foot
+    INCHES = Length.inch
+    THOU = Length.thousandthInch
+
+    def getSystem(self):
+        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
+            return'METRIC'
+        else:
+            return'IMPERIAL'
+
+# Use this value to scale any number operations done throughout this implementation
+defaultBlenderUnit = BlenderLength.METERS
+
+def convertDimensionsToBlenderUnit(dimensions:list[Dimension]):
+    return [
+        Dimension(
+            float(
+                convertToUnit(
+                    defaultBlenderUnit.value, dimension.value,
+                    dimension.unit or defaultBlenderUnit.value
+                )
+            ),
+            defaultBlenderUnit.value
+        )
+        
+            if (dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
+
+            else dimension
+
+                for dimension in dimensions 
+    ]
