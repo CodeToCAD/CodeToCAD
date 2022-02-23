@@ -1,6 +1,19 @@
+import math
 from utilities import *
 from blenderExecute import *
-from blenderEvents import *
+from BlenderEvents import BlenderEvents
+
+def setup(blenderEvents):
+
+    # start the updateEventThread
+    blenderEvents.startUpdateEventThread()
+
+    # tell Blender to notify onReceiveBlenderDependencyGraphUpdate when its dependency graph is updated. https://docs.blender.org/api/current/bpy.app.handlers.html 
+    bpy.app.handlers.depsgraph_update_post.append(blenderEvents.onReceiveBlenderDependencyGraphUpdate)
+
+# TODO: move this to a main function
+blenderEvents = BlenderEvents()
+setup(blenderEvents)
 
 class shape: 
     # Text to 3D Modeling Automation Capabilities.
@@ -34,23 +47,23 @@ class shape:
     dimensions:str,  \
     keywordArguments:dict=None \
     ):
-        addBlenderOperation(
+        blenderEvents.addBlenderOperation(
             "Object of type {} created".format(primitiveName),
             lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == primitiveName
         )
-        addBlenderOperation(
+        blenderEvents.addBlenderOperation(
             "Mesh of type {} created".format(primitiveName),
             lambda:None,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == primitiveName
         )
-        addBlenderOperation(
+        blenderEvents.addBlenderOperation(
             "Object of type {} renamed to {}".format(primitiveName, self.name),
             lambda: blenderUpdateObjectName(bpy.data.objects[-1], self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
-        addBlenderOperation(
+        blenderEvents.addBlenderOperation(
             "Mesh of type {} renamed to {}".format(primitiveName, self.name),
             lambda: blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
             ,
@@ -98,7 +111,7 @@ class shape:
     dimensions:str \
     ):
     
-        addBlenderOperation(
+        blenderEvents.addBlenderOperation(
             "Object with name {} scale transformed".format(self.name),
             lambda: scaleBlenderObject(self.name, dimensions),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
@@ -155,7 +168,18 @@ class shape:
     strategy:str,  \
     amount:float \
     ):
-        print("remesh is not implemented") # implement 
+    
+        blenderEvents.addBlenderOperation(
+            "Object with name {} applying EDGE_SPLIT modifier".format(self.name),
+            lambda: BlenderModifiers.EDGE_SPLIT.applyBlenderModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(60)}),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
+        blenderEvents.addBlenderOperation(
+            "Object with name {} applying SUBSURF modifier".format(self.name),
+            lambda: BlenderModifiers.SUBSURF.applyBlenderModifier(self.name, {"name": "Subdivision", "levels": 3}),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
+
         return self
 
     def hollow(self,
