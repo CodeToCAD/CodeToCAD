@@ -47,23 +47,23 @@ class shape:
     dimensions:str,  \
     keywordArguments:dict=None \
     ):
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Object of type {} created".format(primitiveName),
             lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == primitiveName
         )
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Mesh of type {} created".format(primitiveName),
             lambda:None,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == primitiveName
         )
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Object of type {} renamed to {}".format(primitiveName, self.name),
             lambda: blenderUpdateObjectName(bpy.data.objects[-1], self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Mesh of type {} renamed to {}".format(primitiveName, self.name),
             lambda: blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
             ,
@@ -111,7 +111,7 @@ class shape:
     dimensions:str \
     ):
     
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Object with name {} scale transformed".format(self.name),
             lambda: scaleBlenderObject(self.name, dimensions),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
@@ -169,12 +169,12 @@ class shape:
     amount:float \
     ):
     
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Object with name {} applying EDGE_SPLIT modifier".format(self.name),
             lambda: BlenderModifiers.EDGE_SPLIT.applyBlenderModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(60)}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
-        blenderEvents.addBlenderOperation(
+        blenderEvents.addToBlenderOperationsQueue(
             "Object with name {} applying SUBSURF modifier".format(self.name),
             lambda: BlenderModifiers.SUBSURF.applyBlenderModifier(self.name, {"name": "Subdivision", "levels": 3}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
