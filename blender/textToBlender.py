@@ -70,7 +70,7 @@ class shape:
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Mesh of type {} renamed to {}".format(primitiveName, self.name),
-            lambda: blenderUpdateObjectMeshName(expectedNameOfObjectInBlender, self.name)
+            lambda: blenderUpdateObjectMeshName(self.name, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
         )
