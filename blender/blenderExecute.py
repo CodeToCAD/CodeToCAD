@@ -7,13 +7,31 @@ from utilities import *
 class BlenderModifiers(Enum):
     EDGE_SPLIT = 0
     SUBSURF = 1
+    BOOLEAN = 2
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
+        if not (shapeName in bpy.data.objects):
+            print("blenderAddModifier: error: {} is not an object".format(shapeName))
+            return False
+
         modifier = bpy.data.objects[shapeName].modifiers.new(type=self.name)
         for key,value in keywordArguments.items():
             setattr(modifier, key, value)
 
         return True
+
+class BlenderBooleanTypes(Enum):
+    UNION = 0
+    DIFFERENCE = 1
+    INTERSECT = 2
+
+def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeName):
+
+    if not (withShapeName in bpy.data.objects):
+        print("blenderApplyBooleanModifier: error: {} is not an object".format(withShapeName))
+        return False
+
+    return BlenderModifiers.BOOLEAN.applyBlenderModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
 
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
@@ -83,11 +101,13 @@ def blenderUpdateObjectMeshName(parentObjectName, newName):
     return True
 
 # updates the name of the active object in Blender.
+# NOTE: Use with caution
 def blenderUpdateActiveObjectName(newName):
     bpy.context.view_layer.objects.active.name = newName
     return True
 
 # updates the name of the active object in Blender.
+# NOTE: Use with caution
 def blenderUpdateActiveMeshName(newName):
     meshName = bpy.context.view_layer.objects.active.data.name
 
@@ -123,16 +143,40 @@ def blenderSetDefaultUnit(system, name):
     bpy.context.scene.unit_settings.length_unit = name
     return True
 
-def scaleBlenderObject(
-    name:str,
-    dimensions:str \
-):
-    dimensions:list[Dimension] = getDimensionsFromString(dimensions) or []
-    
-    dimensions = convertDimensionsToBlenderUnit(dimensions)
 
-    while len(dimensions) < 3:
-        dimensions.append(Dimension("1"))
+class BlenderRotationTypes(Enum):
+    EULER = "rotation_euler"
+    DELTA_EULER = "delta_rotation_euler"
+    QUATERNION = "rotation_quaternion"
+    DELTA_QUATERNION = "delta_rotation_quaternion"
+
+def blenderRotateObject(shapeName, rotationTuple, rotationType:BlenderRotationTypes):
+    if not (shapeName in bpy.data.objects):
+        return False
+
+    setattr(bpy.data.objects[shapeName], rotationType.value, rotationTuple)
+
+    return True
+
+class BlenderTranslationTypes(Enum):
+    ABSOLUTE = "location"
+    RELATIVE = "delta_location"
+
+def blenderTranslationObject(shapeName, translationTuple, translationType:BlenderTranslationTypes):
+    
+    if not (shapeName in bpy.data.objects):
+        return False
+
+    setattr(bpy.data.objects[shapeName], translationType.value, translationTuple)
+
+    return True
+
+def blenderScaleObject(
+    name:str,
+    dimensions:list[Dimension] \
+):
+    if not (name in bpy.data.objects):
+        return False
 
     [x,y,z] = dimensions
 

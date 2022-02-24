@@ -1,5 +1,6 @@
 from enum import Enum
 import re
+import math
 
 class Units(Enum):
     # define the == operator, otherwise we can't compare enums, thanks python
@@ -8,7 +9,95 @@ class Units(Enum):
         rhs = other.name if other else None
         return lhs == rhs
 
-class Length(Units):
+class AngleUnit(Units):
+    RADIANS = 0
+    DEGREES = 1
+
+    def toDegrees(va):
+        return math.degrees()
+
+    def fromString(fromString:str):
+        aliases = {
+            "radians": AngleUnit.RADIANS,
+            "rad": AngleUnit.RADIANS,
+            "rads": AngleUnit.RADIANS,
+            "degrees": AngleUnit.DEGREES,
+            "degree": AngleUnit.DEGREES,
+            "degs": AngleUnit.DEGREES,
+            "deg": AngleUnit.DEGREES
+        }
+        return aliases[fromString.lower()]
+
+class Angle():
+
+  def toRadians(self):
+      if self.unit == AngleUnit.DEGREES:
+          self.value = math.radians(self.value)
+          
+      return self
+
+  def toDegrees(self):
+      if self.unit == AngleUnit.RADIANS:
+          self.value = math.degrees(self.value)
+          
+      return self
+
+  # Default unit is radians if unit not passed
+  def __init__(self, value:float, unit:AngleUnit = AngleUnit.RADIANS):
+      self.value = value
+      self.unit = unit
+
+  # fromString: takes a string with a math operation and an optional unit of measurement
+  # Default unit is radians if unit not passed
+  def __init__(self, fromString:str, unit:AngleUnit = AngleUnit.RADIANS):
+
+      fromString = str(fromString) # safe-guard if a non-string is passed in
+
+      fromString = fromString.replace(" ", "")
+
+      unitInString = re.search('[A-Za-z]+$', fromString)
+
+      if unitInString:
+          value = fromString[0:-1*len(unitInString[0])]
+
+          self.unit = AngleUnit.fromString(unitInString[0])
+      else:
+          value = fromString
+
+          self.unit = unit or AngleUnit.RADIANS
+      
+      # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
+      if re.match("[+\-*\/%\d]+", value):
+          self.value = eval(value)
+      else:
+          self.value = None
+
+def getAnglesFromString(anglesString):
+    parsedAngles = None
+    if anglesString and "," in anglesString:
+        anglesArray = anglesString.split(',')
+
+        # besides accepting a unit in the angle, e.g. 1deg,1rad,1,rad. we also
+        # accept the last input as a default unit
+        # e.g. 1,1,1,rad => default value radians
+        defaultUnit = re.search('[A-Za-z]+$', anglesArray[-1].strip())
+        # check if the last value contains only a unit:
+        if defaultUnit and len(defaultUnit[0]) == len(anglesArray[-1].strip()):
+            defaultUnit = anglesArray.pop().strip()
+        else:
+            defaultUnit = None
+
+        defaultUnit = AngleUnit.fromString(defaultUnit) if defaultUnit else None
+        
+        parsedAngles = [Angle(angle, defaultUnit) for angle in anglesArray ]
+    elif anglesString and type(anglesString) == str:
+        parsedAngles = [Angle(anglesString)]
+    else:
+        print("getAnglesFromString: ", anglesString, " is not a valid input. Cannot parse angles.")
+
+    return parsedAngles
+
+class LengthUnit(Units):
     #metric
     micrometer = 1 / 1000
     millimeter = 1
@@ -25,31 +114,31 @@ class Length(Units):
     def fromString(fromString:str):
         aliases = {
             #metric
-            "millimeter": Length.millimeter,
-            "millimeters": Length.millimeter,
-            "centimeter": Length.centimeter,
-            "centimeters": Length.centimeter,
-            "meter": Length.meter,
-            "meters": Length.meter,
-            "mm": Length.millimeter,
-            "cm": Length.centimeter,
-            "m": Length.meter,
-            "km": Length.kilometer,
+            "millimeter": LengthUnit.millimeter,
+            "millimeters": LengthUnit.millimeter,
+            "centimeter": LengthUnit.centimeter,
+            "centimeters": LengthUnit.centimeter,
+            "meter": LengthUnit.meter,
+            "meters": LengthUnit.meter,
+            "mm": LengthUnit.millimeter,
+            "cm": LengthUnit.centimeter,
+            "m": LengthUnit.meter,
+            "km": LengthUnit.kilometer,
             #imperial
-            "thousandthInch": Length.thousandthInch,
-            "thousandth": Length.thousandthInch,
-            "inch": Length.inch,
-            "inches": Length.inch,
-            "foot": Length.foot,
-            "feet": Length.foot,
-            "mile": Length.mile,
-            "miles": Length.mile,
-            "thou": Length.thousandthInch,
-            "in": Length.inch,
-            "ft": Length.foot,
-            "mi": Length.mile
+            "thousandthInch": LengthUnit.thousandthInch,
+            "thousandth": LengthUnit.thousandthInch,
+            "inch": LengthUnit.inch,
+            "inches": LengthUnit.inch,
+            "foot": LengthUnit.foot,
+            "feet": LengthUnit.foot,
+            "mile": LengthUnit.mile,
+            "miles": LengthUnit.mile,
+            "thou": LengthUnit.thousandthInch,
+            "in": LengthUnit.inch,
+            "ft": LengthUnit.foot,
+            "mi": LengthUnit.mile
         }
-        return aliases[fromString]
+        return aliases[fromString.lower()]
 
     
     
@@ -57,17 +146,17 @@ class Length(Units):
 
 class Dimension():
 
-  # fromString: takes a string with a math operation and an optional unit of measurement
-  # Default unit is mm if unit not passed
-  # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
-  def __init__(self, value:float, unit:Length = None):
+  # Default unit is None (scale factor) if it's not passed in
+  def __init__(self, value:float, unit:LengthUnit = None):
       self.value = value
       self.unit = unit
 
-  def __init__(self, fromString:str, unit:Length = None):
-      
-      # python is frustrating and auto-converts a "100" to 100(int) when passed as a parameter.
-      fromString = str(fromString)
+  # fromString: takes a string with a math operation and an optional unit of measurement
+  # Default unit is None (scale factor) if it's not passed in
+  # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
+  def __init__(self, fromString:str, unit:LengthUnit = None):
+
+      fromString = str(fromString) # safe-guard if a non-string is passed in
 
       fromString = fromString.replace(" ", "")
 
@@ -76,7 +165,7 @@ class Dimension():
       if unitInString:
           value = fromString[0:-1*len(unitInString[0])]
 
-          self.unit = Length.fromString(unitInString[0])
+          self.unit = LengthUnit.fromString(unitInString[0])
       else:
           value = fromString
 
@@ -87,13 +176,9 @@ class Dimension():
           self.value = eval(value)
       else:
           self.value = None
-    
-def convertToMillimeters(value, unit:Length) -> float:
-    # Length enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
-    return value * unit.value
 
-def convertToUnit(targetUnit:Length, value, unit:Length) -> float:
-    # Length enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
+def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
+    # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
     return value * (unit.value/targetUnit.value)
 
 def getDimensionsFromString(dimensions):
@@ -111,7 +196,7 @@ def getDimensionsFromString(dimensions):
         else:
             defaultUnit = None
 
-        defaultUnit = Length.fromString(defaultUnit) if defaultUnit else None
+        defaultUnit = LengthUnit.fromString(defaultUnit) if defaultUnit else None
         
         parsedDimensions = [Dimension(dimension, defaultUnit) for dimension in dimensionsArray ]
     elif dimensions and type(dimensions) == str:
@@ -123,16 +208,16 @@ def getDimensionsFromString(dimensions):
 
 class BlenderLength(Units):
     #metric
-    KILOMETERS = Length.kilometer
-    METERS = Length.meter
-    CENTIMETERS = Length.centimeter
-    MILLIMETERS = Length.millimeter
-    MICROMETERS = Length.micrometer
+    KILOMETERS = LengthUnit.kilometer
+    METERS = LengthUnit.meter
+    CENTIMETERS = LengthUnit.centimeter
+    MILLIMETERS = LengthUnit.millimeter
+    MICROMETERS = LengthUnit.micrometer
     #imperial
-    MILES = Length.mile
-    FEET = Length.foot
-    INCHES = Length.inch
-    THOU = Length.thousandthInch
+    MILES = LengthUnit.mile
+    FEET = LengthUnit.foot
+    INCHES = LengthUnit.inch
+    THOU = LengthUnit.thousandthInch
 
     def getSystem(self):
         if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
@@ -143,11 +228,12 @@ class BlenderLength(Units):
 # Use this value to scale any number operations done throughout this implementation
 defaultBlenderUnit = BlenderLength.METERS
 
-def convertDimensionsToBlenderUnit(dimensions:list[Dimension]):
+# Takes in a list of Dimension
+def convertDimensionsToBlenderUnit(dimensions:list):
     return [
         Dimension(
             float(
-                convertToUnit(
+                convertToLengthUnit(
                     defaultBlenderUnit.value, dimension.value,
                     dimension.unit or defaultBlenderUnit.value
                 )

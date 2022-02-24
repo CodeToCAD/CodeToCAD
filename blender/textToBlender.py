@@ -111,14 +111,55 @@ class shape:
         print("mask is not implemented") # implement 
         return self
 
+    def translate(self,
+    dimensions:str\
+    ):
+        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Dimension("1"))
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} scale transformed".format(self.name),
+            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.RELATIVE),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
+
+        return self
+
+    def setPosition(self,
+    dimensions:str\
+    ):
+        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Dimension("1"))
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} scale transformed".format(self.name),
+            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
+
+        return self
 
     def scale(self,
     dimensions:str \
     ):
+        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
             "Object with name {} scale transformed".format(self.name),
-            lambda: scaleBlenderObject(self.name, dimensions),
+            lambda: blenderScaleObject(self.name, dimensionsList),
             lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
         )
         
@@ -127,31 +168,71 @@ class shape:
     def rotate(self,
     rotation:str \
     ):
-        print("rotate is not implemented") # implement 
+        angleList:list[Angle] = getAnglesFromString(rotation) or []
+
+        while len(angleList) < 3:
+            angleList.append(Angle("1"))
+
+        # convert all the values to radians
+        angleListRadians = [angle.toRadians() for angle in angleList]
+
+        # make a tuple of values
+        rotation = tuple([angle.value for angle in angleListRadians])
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} scale transformed".format(self.name),
+            lambda: blenderRotateObject(self.name, rotation, BlenderRotationTypes.EULER),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
         return self
 
     def rename(self,
     name:str \
     ):
-        print("rename is not implemented") # implement 
+        expectedNameOfObjectInBlender = self.name
+        self.name = name
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} renamed to {}".format(expectedNameOfObjectInBlender, self.name),
+            lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Mesh with name {} renamed to {}".format(expectedNameOfObjectInBlender, self.name),
+            lambda: blenderUpdateObjectMeshName(self.name, self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
+        )
         return self
 
     def union(self,
     withShapeName:str \
     ):
-        print("union is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} applying BOOLEAN UNION modifier".format(self.name),
+            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.UNION, withShapeName),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
         return self
 
     def subtract(self,
     withShapeName:str \
     ):
-        print("subtract is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} applying BOOLEAN DIFFERENCE modifier".format(self.name),
+            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.DIFFERENCE, withShapeName),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
         return self
 
     def intersect(self,
     withShapeName:str \
     ):
-        print("intersect is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object with name {} applying BOOLEAN INTERSECT modifier".format(self.name),
+            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.INTERSECT, withShapeName),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+        )
         return self
 
     def bevel(self,
