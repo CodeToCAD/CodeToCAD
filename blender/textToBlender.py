@@ -11,6 +11,8 @@ def setup(blenderEvents):
     # tell Blender to notify onReceiveBlenderDependencyGraphUpdate when its dependency graph is updated. https://docs.blender.org/api/current/bpy.app.handlers.html 
     bpy.app.handlers.depsgraph_update_post.append(blenderEvents.onReceiveBlenderDependencyGraphUpdate)
 
+    # blenderSceneLockInterface(True)
+
 # TODO: move this to a main function
 blenderEvents = BlenderEvents()
 setup(blenderEvents)
@@ -47,27 +49,30 @@ class shape:
     dimensions:str,  \
     keywordArguments:dict=None \
     ):
+        # TODO: account for blender auto-renaming with sequential numbers
+        expectedNameOfObjectInBlender = primitiveName[0].upper() + primitiveName[1:]
+        
         blenderEvents.addToBlenderOperationsQueue(
             "Object of type {} created".format(primitiveName),
             lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == primitiveName
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == expectedNameOfObjectInBlender
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Mesh of type {} created".format(primitiveName),
-            lambda:None,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == primitiveName
+            lambda: True,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == expectedNameOfObjectInBlender
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Object of type {} renamed to {}".format(primitiveName, self.name),
-            lambda: blenderUpdateObjectName(bpy.data.objects[-1], self.name)
+            lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
             ,
-            lambda update: type(update.id) == bpy.types.Object and update.id.name.lower() == self.name
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Mesh of type {} renamed to {}".format(primitiveName, self.name),
-            lambda: blenderUpdateMeshName(bpy.data.meshes[-1], self.name)
+            lambda: blenderUpdateObjectMeshName(expectedNameOfObjectInBlender, self.name)
             ,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name.lower() == self.name
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
         )
 
         return self
@@ -291,27 +296,25 @@ class scene:
     def setDefaultUnit(self,
     unit:BlenderLength \
     ):
-        bpy.context.scene.unit_settings.system = unit.getSystem()
-        bpy.context.scene.unit_settings.length_unit = unit.name
+        system =  unit.getSystem()
+        name =  unit.name
+        blenderEvents.addToBlenderOperationsQueue("Set document units to {} {}".format(system, name), lambda: blenderSetDefaultUnit(system, name), 
+        lambda update: update.id.name == "Scene")
         return self
 
     def createGroup(self,
     name:str \
     ):
-        collection = bpy.data.collections.new(name)
-        bpy.context.scene.collection.children.link(collection)
-        bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
+        blenderEvents.addToBlenderOperationsQueue("Create a {} collection".format(name), lambda: blenderCreateCollection(name), 
+        lambda update: update.id.name == name)
         return self
 
     def deleteGroup(self,
     name:str,  \
     removeNestedShapes:bool \
     ):
-        if name in bpy.data.collections:
-            if removeNestedShapes:
-                for obj in bpy.data.collections[name].objects:
-                    bpy.data.objects.remove(obj)
-            bpy.data.collections.remove(bpy.data.collections[name])
+        blenderEvents.addToBlenderOperationsQueue("Remove the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
+        lambda update: update.id.name == name)
         return self
 
 class analytics: 

@@ -16,6 +16,7 @@ class BlenderEvents:
     # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
     def addToBlenderOperationsQueue(self, description, operation, assertion):
 
+        # reset threading Event
         self.blenderOperationsComplete.clear()
 
         self.blenderOperationsQueueLock.acquire()
@@ -100,15 +101,24 @@ class BlenderEvents:
             if operation["assertion"](update):
                 print("assertion complete:", operation["description"])
                 
-                self.removeFirstFromBlenderOperationsQueue()
+                runNextOperation = True
+                while runNextOperation:
+                    self.removeFirstFromBlenderOperationsQueue()
 
-                if blenderOperationQueueCount == 0:
-                    print("All operations complete")
-                    self.blenderOperationsComplete.set()
-                else:    
                     operation = self.getFirstFromBlenderOperationsQueue()
 
-                    operation["operation"]()
+                    if operation == None:
+                        print("All operations complete")
+                        self.blenderOperationsComplete.set()
+                    else:    
+
+                        print("Starting operation", operation["description"])
+
+                        if operation["operation"]():
+                            runNextOperation = False
+                        else:
+                            print("Skipping operation", operation["description"])
+
 
 
 

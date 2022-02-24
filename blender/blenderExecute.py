@@ -3,6 +3,7 @@ from enum import Enum
 import bpy
 from utilities import *
 
+# an enum of Blender modifiers and an instance method to add that modifier to an object in Blender.
 class BlenderModifiers(Enum):
     EDGE_SPLIT = 0
     SUBSURF = 1
@@ -12,7 +13,10 @@ class BlenderModifiers(Enum):
         for key,value in keywordArguments.items():
             setattr(modifier, key, value)
 
-class Primitives(Enum):
+        return True
+
+# An enum of Blender Primitives, and an instance method to add the primitive to Blender.
+class BlenderPrimitives(Enum):
     cube = 0
     cone = 1
     cylinder = 2
@@ -37,6 +41,7 @@ class Primitives(Enum):
         }
         return switch[self.name]()
 
+# Extracts dimensions from a string, then passes them as arguments to the BlenderPrimitives class
 def blenderAddPrimitive(
     primitiveName:str,  \
     dimensions:str,  \
@@ -50,16 +55,73 @@ def blenderAddPrimitive(
     while len(dimensions) < 3:
         dimensions.append(Dimension(1))
     
-    Primitives[primitiveName].blenderAddFunction(dimensions, keywordArguments or {})
+    BlenderPrimitives[primitiveName].blenderAddFunction(dimensions, keywordArguments or {})
 
-def blenderUpdateObjectName(object, newName):
-    object.name = newName
-def blenderUpdateMeshName(mesh, newName):
-    mesh.name = newName
+    return True
 
+def blenderUpdateObjectName(oldName, newName):
+
+    if not (oldName in bpy.data.objects):
+        return False
+
+    bpy.data.objects[oldName].name = newName
+
+    return True
+
+def blenderUpdateObjectMeshName(parentObjectName, newName):
+    
+    if not (parentObjectName in bpy.data.objects):
+        return False
+
+    meshName = bpy.data.objects[parentObjectName].data.name
+
+    if not (meshName in bpy.data.meshes):
+        return False
+
+    bpy.data.meshes[meshName].name = newName
+
+    return True
+
+# updates the name of the active object in Blender.
 def blenderUpdateActiveObjectName(newName):
-    blenderUpdateObjectName(bpy.context.view_layer.objects.active, newName)
+    bpy.context.view_layer.objects.active.name = newName
+    return True
 
+# updates the name of the active object in Blender.
+def blenderUpdateActiveMeshName(newName):
+    meshName = bpy.context.view_layer.objects.active.data.name
+
+    if not (meshName in bpy.data.meshes):
+        return False
+
+    bpy.data.meshes[meshName].name = newName
+    return True
+
+# locks the scene interface
+def blenderSceneLockInterface(isLocked):
+    bpy.context.scene.render.use_lock_interface = isLocked
+    return True
+
+def blenderCreateCollection(name):
+    collection = bpy.data.collections.new(name)
+    bpy.context.scene.collection.children.link(collection)
+    bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
+    return True
+
+def blenderRemoveCollection(name, removeNestedObjects):
+    if name in bpy.data.collections:
+        if removeNestedObjects:
+            for obj in bpy.data.collections[name].objects:
+                bpy.data.objects.remove(obj)
+        bpy.data.collections.remove(bpy.data.collections[name])
+
+        return True
+    return False
+
+def blenderSetDefaultUnit(system, name):
+    bpy.context.scene.unit_settings.system = system
+    bpy.context.scene.unit_settings.length_unit = name
+    return True
 
 def scaleBlenderObject(
     name:str,
@@ -83,3 +145,5 @@ def scaleBlenderObject(
         z.value = z.value/sceneDimensions.z if z.unit != None else z.value
     
     bpy.data.objects[name].scale = (x.value,y.value,z.value)
+
+    return True
