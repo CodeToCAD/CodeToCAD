@@ -33,7 +33,7 @@ class Angle():
   def toRadians(self):
       if self.unit == AngleUnit.DEGREES:
           self.value = math.radians(self.value)
-          
+
       return self
 
   def toDegrees(self):
@@ -228,7 +228,7 @@ class BlenderLength(Units):
 # Use this value to scale any number operations done throughout this implementation
 defaultBlenderUnit = BlenderLength.METERS
 
-# Takes in a list of Dimension
+# Takes in a list of Dimension and converts them to the `defaultBlenderUnit`, which is the unit blender deals with, no matter what we set the document unit to. 
 def convertDimensionsToBlenderUnit(dimensions:list):
     return [
         Dimension(

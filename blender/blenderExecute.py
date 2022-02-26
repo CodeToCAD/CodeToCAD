@@ -14,7 +14,7 @@ class BlenderModifiers(Enum):
             print("blenderAddModifier: error: {} is not an object".format(shapeName))
             return False
 
-        modifier = bpy.data.objects[shapeName].modifiers.new(type=self.name)
+        modifier = bpy.data.objects[shapeName].modifiers.new(type=self.name, name=self.name)
         for key,value in keywordArguments.items():
             setattr(modifier, key, value)
 
@@ -31,7 +31,7 @@ def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeNa
         print("blenderApplyBooleanModifier: error: {} is not an object".format(withShapeName))
         return False
 
-    return BlenderModifiers.BOOLEAN.applyBlenderModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
+    return BlenderModifiers.BOOLEAN.blenderAddModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
 
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
@@ -45,7 +45,7 @@ class BlenderPrimitives(Enum):
     grid = 7
     monkey = 8
 
-    def blenderAddFunction(self, dimensions, keywordArguments):
+    def blenderAddPrimitive(self, dimensions, keywordArguments):
         switch = {
             "cube": lambda:bpy.ops.mesh.primitive_cube_add(size=1, scale=tuple(dimensions), **keywordArguments),
             "cone": lambda:bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **keywordArguments),
@@ -73,7 +73,7 @@ def blenderAddPrimitive(
     while len(dimensions) < 3:
         dimensions.append(Dimension(1))
     
-    BlenderPrimitives[primitiveName].blenderAddFunction(dimensions, keywordArguments or {})
+    BlenderPrimitives[primitiveName].blenderAddPrimitive(dimensions, keywordArguments or {})
 
     return True
 
@@ -150,9 +150,18 @@ class BlenderRotationTypes(Enum):
     QUATERNION = "rotation_quaternion"
     DELTA_QUATERNION = "delta_rotation_quaternion"
 
-def blenderRotateObject(shapeName, rotationTuple, rotationType:BlenderRotationTypes):
+def blenderRotateObject(shapeName, 
+rotationAngles:list[Angle],
+rotationType:BlenderRotationTypes):
     if not (shapeName in bpy.data.objects):
         return False
+        
+    
+    if len(rotationAngles) != 3:
+        print("rotationAngles must be length 3")
+        return False
+
+    rotationTuple = (rotationAngles[0].value, rotationAngles[1].value, rotationAngles[2].value)
 
     setattr(bpy.data.objects[shapeName], rotationType.value, rotationTuple)
 
@@ -162,10 +171,16 @@ class BlenderTranslationTypes(Enum):
     ABSOLUTE = "location"
     RELATIVE = "delta_location"
 
-def blenderTranslationObject(shapeName, translationTuple, translationType:BlenderTranslationTypes):
+def blenderTranslationObject(shapeName, translationDimensions:list[Dimension], translationType:BlenderTranslationTypes):
     
     if not (shapeName in bpy.data.objects):
         return False
+    
+    if len(translationDimensions) != 3:
+        print("translationDimensions must be length 3")
+        return False
+
+    translationTuple = (translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
 
     setattr(bpy.data.objects[shapeName], translationType.value, translationTuple)
 
@@ -173,12 +188,16 @@ def blenderTranslationObject(shapeName, translationTuple, translationType:Blende
 
 def blenderScaleObject(
     name:str,
-    dimensions:list[Dimension] \
+    scalingDimensions:list[Dimension] \
 ):
     if not (name in bpy.data.objects):
         return False
+    
+    if len(scalingDimensions) != 3:
+        print("translationDimensions must be length 3")
+        return False
 
-    [x,y,z] = dimensions
+    [x,y,z] = scalingDimensions
 
     sceneDimensions = bpy.data.objects[name].dimensions
 
