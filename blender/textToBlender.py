@@ -393,7 +393,7 @@ class scene:
     removeNestedShapes:bool \
     ):
         blenderEvents.addToBlenderOperationsQueue("Remove the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
-        lambda update: update.id.name == name)
+        lambda update: update.id.name == "Scene")
         return self
 
 class analytics: 

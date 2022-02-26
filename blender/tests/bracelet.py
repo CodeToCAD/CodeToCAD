@@ -36,23 +36,29 @@ shape("bracelet") \
 .primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])) \
 .scale("1,1,{}cm".format(bracelet["thickness"]))
 
-buttonTranslation = (bracelet["outerDiameter"]/2 - buttonInner["depth"]/2)
+
+buttonTranslation = (bracelet["outerDiameter"]/2) - (button["depth"]/2)
 
 shape("button")\
 .primitive("cylinder", "{}/2,{}/2,cm".format(button["diameter"],button["depth"])) \
 .rotate("90deg,0,0") \
-.translate("0,{},0".format(buttonTranslation)) \
-# .subtract("buttonInner") \
-# .intersect("bracelet")
+.translate("0,{}cm,0".format(buttonTranslation))
 
+shape("bracelet") \
+.subtract("button")
 
-buttonInnerYTranslation = (bracelet["outerDiameter"]/2) - (button["depth"]/2)
+shape("button")\
+.intersect("bracelet")
+
+buttonInnerYTranslation = (bracelet["outerDiameter"]/2 - buttonInner["depth"]/2)
 
 shape("buttonInner") \
 .primitive("cylinder", "{}/2,{}/2,cm".format(buttonInner["diameter"],buttonInner["depth"])) \
 .rotate("90deg,0,0") \
-.translate("0,{},0".format(buttonInnerYTranslation))
+.translate("0,{}cm,0".format(buttonInnerYTranslation))
 
+shape("button") \
+.subtract("buttonInner")
 
 # def assertions():
 #     while len(blenderOperations) != 0:
