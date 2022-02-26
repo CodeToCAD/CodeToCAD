@@ -13,6 +13,10 @@ class BlenderEvents:
     def startBlenderEventThread(self):
         Thread(target=self.blenderEventThread).start()
 
+    def startBlenderEventTimer(self, bpy):
+        blenderEventsHandler = self.BlenderEventsHandler(self)
+        bpy.app.timers.register(blenderEventsHandler.processEventsAndOperations)
+
     # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
     def addToBlenderOperationsQueue(self, description, operation, assertion):
 
@@ -86,39 +90,63 @@ class BlenderEvents:
     # blenderEventThread is a thread that runs forever and is used to handle actions when we receive an event from Blender (which are stored in blenderEventQueue)
     def blenderEventThread(self):
 
+        blenderEventsHandler = self.BlenderEventsHandler(self)
+
+        while 1:
+            sleep(blenderEventsHandler.processEventsAndOperations())
+        
+
+    # onReceiveBlenderDependencyGraphUpdateEvent is called when we receive an event from blender.
+    def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
+        
+        for update in depsgraph.updates:
+            self.blenderEventQueueLock.acquire()
+            self.blenderEventQueue.append(update)
+            self.blenderEventQueueLock.release()
+    
+    class BlenderEventsHandler:
         currentBlenderEvent = None
         remainingEventsCount = 0
         currentOperation = None
         remainingOperationsCount = 0
 
-        while 1:
-            sleep(0.1) #100ms thread sleep for this thread so other threads can do things
-            if currentBlenderEvent == None:
-                (currentBlenderEvent, remainingEventsCount) = self.popFirstFromBlenderEventQueue()
+        defaultShortDelay = 0.1 #100ms thread sleep for this thread so other threads can do things
+        defaultLongDelay = 1.0
+
+        # Requires a BlenderEvents instance to be passed to this
+        def __init__(self, blenderEvents):
+            self.blenderEvents = blenderEvents
+
+        # Processes the BlenderEvents's blenderEventsQueue and blenderOperationsQueue
+        # Returns a float equal to the amount of time a thread should sleep before processing the next event and operation.
+        def processEventsAndOperations(self):
+            if self.currentBlenderEvent == None:
+                (self.currentBlenderEvent, self.remainingEventsCount) = self.blenderEvents.popFirstFromBlenderEventQueue()
 
             currentOperationStartFunction = None
 
-            if currentOperation == None:
+            if self.currentOperation == None:
 
-                (currentOperation, remainingOperationsCount) = self.popFirstFromBlenderOperationsQueue()
+                (self.currentOperation, self.remainingOperationsCount) = self.blenderEvents.popFirstFromBlenderOperationsQueue()
 
-                if (currentOperation != None and "operation" in currentOperation):
+                if (self.currentOperation != None and "operation" in self.currentOperation):
 
-                    currentOperationStartFunction = currentOperation["operation"]
+                    currentOperationStartFunction = self.currentOperation["operation"]
 
-                elif currentOperation != None:
+                elif self.currentOperation != None:
 
                     print(
-"""
+    """
 
-Operation is missing its start function: {}
+    Operation is missing its start function: {}
 
-"""
-                        .format( currentOperation["description"])
+    """
+                        .format( self.currentOperation["description"])
                     )
 
-                    currentOperation = None
-                    continue
+                    self.currentOperation = None
+
+                    return self.defaultShortDelay
 
 
 
@@ -128,75 +156,68 @@ Operation is missing its start function: {}
                 # If we fail to dispatch the start function, dismiss the operation
                 if currentOperationStartFunction() == False:
                     print(
-"""
+    """
 
-Failed to start operation {}
+    Failed to start operation {}
 
-"""
-                        .format( currentOperation["description"])
+    """
+                        .format( self.currentOperation["description"])
                     )
 
-                    currentOperation = None
-                    continue
+                    self.currentOperation = None
+                    return self.defaultShortDelay
 
                 else:
                     print(
-"""
+    """
 
-Starting operation: {}
+    Starting operation: {}
 
-"""
-                        .format( currentOperation["description"])
+    """
+                        .format( self.currentOperation["description"])
                     )
 
             # If there are no operations, dismiss the event
-            if currentOperation == None:
+            if self.currentOperation == None:
 
-                currentBlenderEvent = None
+                self.currentBlenderEvent = None
 
             # If there are no events, put the thread to sleep
-            if currentBlenderEvent == None:
-                sleep(1)
-                continue
+            if self.currentBlenderEvent == None:
+
+                return self.defaultLongDelay
 
             print(
                 """ 
-Received Update Event From Blender: {} Type: {}
-CurrentOperationsCount: {}
-Remaininperation: {}
-RemainingEventsCount: {}
+    Received Update Event From Blender: {} Type: {}
+    CurrentOperationsCount: {}
+    RemainingOperation: {}
+    RemainingEventsCount: {}
                 """.format(
-                    currentBlenderEvent.id.name, type(currentBlenderEvent.id),
-                    currentOperation["description"],
-                    remainingOperationsCount,
-                    remainingEventsCount
+                    self.currentBlenderEvent.id.name, type(self.currentBlenderEvent.id),
+                    self.currentOperation["description"],
+                    self.remainingOperationsCount,
+                    self.remainingEventsCount
                     )
             )
             
-            currentOperationAssertionFunction = currentOperation["assertion"]
+            currentOperationAssertionFunction = self.currentOperation["assertion"]
 
             # If we receive an update that an operation was complete, dimiss the event and the operation. Otherwise, dimiss the event and keep waiting for the operation to be
-            if currentOperationAssertionFunction(currentBlenderEvent) == True:
+            if currentOperationAssertionFunction(self.currentBlenderEvent) == True:
                 print(
-"""
+    """
 
-Assertion complete for operation {}
+    Assertion complete for operation {}
 
-"""
-                    .format( currentOperation["description"])
+    """
+                    .format( self.currentOperation["description"])
                 )
-                currentBlenderEvent = None
-                currentOperation = None
+                self.currentBlenderEvent = None
+                self.currentOperation = None
 
             else:
                 
-                currentBlenderEvent = None
-
-
-    # onReceiveBlenderDependencyGraphUpdateEvent is called when we receive an event from blender.
-    def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
-        
-        for update in depsgraph.updates:
-            self.blenderEventQueueLock.acquire()
-            self.blenderEventQueue.append(update)
-            self.blenderEventQueueLock.release()
+                self.currentBlenderEvent = None
+            
+            return self.defaultShortDelay

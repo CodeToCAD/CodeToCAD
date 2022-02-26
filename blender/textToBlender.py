@@ -6,7 +6,8 @@ from BlenderEvents import BlenderEvents
 def setup(blenderEvents):
 
     # start the updateEventThread
-    blenderEvents.startBlenderEventThread()
+    # blenderEvents.startBlenderEventThread()
+    blenderEvents.startBlenderEventTimer(bpy)
 
     # tell Blender to notify onReceiveBlenderDependencyGraphUpdateEvent when its dependency graph is updated. https://docs.blender.org/api/current/bpy.app.handlers.html 
     bpy.app.handlers.depsgraph_update_post.append(blenderEvents.onReceiveBlenderDependencyGraphUpdateEvent)
