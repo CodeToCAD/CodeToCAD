@@ -123,7 +123,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} scale transformed".format(self.name),
+            "Object \"{}\" scale transformed".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.RELATIVE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -141,7 +141,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} scale transformed".format(self.name),
+            "Object \"{}\" scale transformed".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -159,7 +159,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} scale transformed".format(self.name),
+            "Object \"{}\" scale transformed".format(self.name),
             lambda: blenderScaleObject(self.name, dimensionsList),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -178,7 +178,7 @@ class shape:
         angleListRadians = [angle.toRadians() for angle in angleList]
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} scale transformed".format(self.name),
+            "Object \"{}\" scale transformed".format(self.name),
             lambda: blenderRotateObject(self.name, angleListRadians, BlenderRotationTypes.EULER),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -190,7 +190,7 @@ class shape:
         expectedNameOfObjectInBlender = self.name
         self.name = name
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} renamed to {}".format(expectedNameOfObjectInBlender, self.name),
+            "Object \"{}\" renamed to {}".format(expectedNameOfObjectInBlender, self.name),
             lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
@@ -207,7 +207,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} applying BOOLEAN UNION modifier".format(self.name),
+            "Object \"{}\" applying BOOLEAN UNION modifier".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.UNION, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -217,7 +217,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} applying BOOLEAN DIFFERENCE modifier".format(self.name),
+            "Object \"{}\" applying BOOLEAN DIFFERENCE modifier".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.DIFFERENCE, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -227,7 +227,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} applying BOOLEAN INTERSECT modifier".format(self.name),
+            "Object \"{}\" applying BOOLEAN INTERSECT modifier".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.INTERSECT, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -254,12 +254,12 @@ class shape:
     ):
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} applying EDGE_SPLIT modifier".format(self.name),
+            "Object \"{}\" applying EDGE_SPLIT modifier".format(self.name),
             lambda: BlenderModifiers.EDGE_SPLIT.applyBlenderModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(60)}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Object with name {} applying SUBSURF modifier".format(self.name),
+            "Object \"{}\" applying SUBSURF modifier".format(self.name),
             lambda: BlenderModifiers.SUBSURF.applyBlenderModifier(self.name, {"name": "Subdivision", "levels": 3}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )

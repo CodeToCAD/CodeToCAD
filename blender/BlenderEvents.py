@@ -208,7 +208,7 @@ class BlenderEvents:
                 print(
     """
 
-    Assertion complete for operation {}
+    Assertion complete for operation: {}
 
     """
                     .format( self.currentOperation["description"])
