@@ -415,13 +415,26 @@ class scene:
         lambda update: update.id.name == "Scene")
         return self
         
-    def moveShapeToGroup(self,
+    def removeShapeFromGroup(self,
     shapeName:str, \
     groupName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Move object {} to {} collection".format(shapeName, groupName),
-            lambda: blenderAssignObjectToCollection(shapeName, groupName), 
+            "Assign object {} to {} collection".format(shapeName, groupName),
+            lambda: blenderRemoveObjectFromCollection(shapeName, groupName), 
+            lambda update: update.id.name == groupName
+            )
+        return self
+
+        
+    def assignShapeToGroup(self,
+    shapeName:str, \
+    groupName:str, \
+    removeFromOtherGroups:bool = True \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Assign object {} to {} collection".format(shapeName, groupName),
+            lambda: blenderAssignObjectToCollection(shapeName, groupName, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
             )
         return self

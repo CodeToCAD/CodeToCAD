@@ -137,8 +137,6 @@ def blenderCreateCollection(name, sceneName = "Scene"):
 
     bpy.data.scenes[sceneName].collection.children.link(collection)
     
-    bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
-    
     return True
 
 def blenderRemoveCollection(name, removeNestedObjects):
@@ -236,35 +234,67 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
     blenderObject = bpy.data.objects.get(existingObjectName)
     
     if not blenderObject:
-        print("blenderAssignObjectToCollection: object {} does not exist".format(existingObjectName))
-        return False
-    
-    [parentCollection] = blenderObject.users_collection
-    
-    if not parentCollection:
-        print("blenderAssignObjectToCollection: object {} does not belong to a collection".format(existingObjectName))
+        print("blenderDuplicateObject: object {} does not exist".format(existingObjectName))
         return False
     
     clonedObject = blenderObject.copy()
     clonedObject.name = newObjectName
     
-    parentCollection.objects.link(clonedObject)
-    
     return True
 
-def blenderAssignObjectToCollection(existingObjectName, collectionName):
+def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
+    
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    if not blenderObject:
+        print("blenderRemoveObjectFromCollection: object {} does not exist".format(existingObjectName))
+        return False
+
+    collection = bpy.data.collections.get(collectionName)
+    
+    if not collection:
+        print("blenderRemoveObjectFromCollection: collection {} does not exist".format(collectionName))
+        return False
+    
+    if not blenderObject in collection.objects:
+        print("blenderRemoveObjectFromCollection: object {} does not exist in collection {}".format(existingObjectName, collectionName))
+        return False
+        
+    collection.objects.unlink(blenderObject)
+
+    return True
+
+
+def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFromOtherGroups = True):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
     if not blenderObject:
         print("blenderAssignObjectToCollection: object {} does not exist".format(existingObjectName))
         return False
+        
+    currentCollections = blenderObject.users_collection
+
+        
+    if len(currentCollections) == 0:
+        print("blenderAssignObjectToCollection: object {} does not belong to a collection".format(existingObjectName))
+        return False
+
+    if collectionName in currentCollections:
+        print("blenderAssignObjectToCollection: object {} is already in collection {}.".format(existingObjectName, collectionName))
+        return False
+
     
     collection = bpy.data.collections.get(collectionName)
     
     if not collection:
         print("blenderAssignObjectToCollection: collection {} does not exist".format(collectionName))
         return False
+
+    if removeFromOtherGroups:
+        for currentCollection in currentCollections:
+            currentCollection.objects.unlink(blenderObject)
+    
     
     collection.objects.link(blenderObject)
     

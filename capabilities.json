@@ -353,15 +353,33 @@
                     }
                 }
             },
-            "moveShapeToGroup": {
-                "action": "update",
-                "information": "Moves an existing shape to a new group",
+
+            "removeShapeFromGroup": {
+                "action": "delete",
+                "information": "Removes an existing shape from a group",
                 "parameters": {
                     "shapeName": {
                         "type": "string"
                     },
                     "groupName": {
                         "type": "string"
+                    }
+                }
+            },
+            "assignShapeToGroup": {
+                "action": "update",
+                "information": "Assigns an existing shape to a new group",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
+                    },
+                    "removeFromOtherGroups": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": true
                     }
                 }
             }
