@@ -98,7 +98,7 @@ class BlenderEvents:
 
     # onReceiveBlenderDependencyGraphUpdateEvent is called when we receive an event from blender.
     def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
-        
+
         for update in depsgraph.updates:
             self.blenderEventQueueLock.acquire()
             self.blenderEventQueue.append(update)

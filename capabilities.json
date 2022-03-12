@@ -17,7 +17,7 @@
             },
             "fromFile": {
                 "action": "create",
-                "information": "Create a shape from a file.",
+                "information": "Adds geometry to a shape from a file. If the shape does not exist, this will create it.",
                 "parameters": {
                     "fileName": {
                         "type": "string"
@@ -30,7 +30,7 @@
             },
             "cloneShape": {
                 "action": "create",
-                "information": "Clone an existing shape.",
+                "information": "Clone an existing shape with its geometry and properties. If the shape already exists, shapes will be merged.",
                 "parameters": {
                     "shapeName": {
                         "type": "string"
@@ -39,7 +39,7 @@
             },
             "primitive": {
                 "action": "create",
-                "information": "Create a shape from a known primitive shape.",
+                "information": "Adds geometry to a shape from a primitive named shape. If the shape does not exist, this will create it.",
                 "parameters": {
                     "primitiveName": {
                         "type": "string"
@@ -56,10 +56,10 @@
             },
             "verticies": {
                 "action": "create",
-                "information": "Create vertices from a landmark.",
+                "information": "Adds geometry to a shape from a list of verticies. If the shape does not exist, this will create it",
                 "parameters": {
-                    "landmarkName": {
-                        "type": "string"
+                    "verticies": {
+                        "type": "list"
                     }
                 }
             },
@@ -70,7 +70,13 @@
                     "shape1Name": {
                         "type": "string"
                     },
+                    "shape1LandmarkName": {
+                        "type": "string"
+                    },
                     "shape2Name": {
+                        "type": "string"
+                    },
+                    "shape2LandmarkName": {
                         "type": "string"
                     }
                 }
@@ -297,7 +303,23 @@
         },
         "scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
-            "constructor": {},
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "create": {
+                "information": "Creates a new scene"
+            },
+            "delete": {
+                "information": "Deletes a new scene"
+            },
             "export": {
                 "information": "The ability to export the whole scene or specific shapes and/or shape groups as a 3D model, a video or image."
             },
@@ -328,6 +350,18 @@
                     },
                     "removeNestedShapes": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "moveShapeToGroup": {
+                "action": "update",
+                "information": "Moves an existing shape to a new group",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
                     }
                 }
             }

@@ -60,6 +60,7 @@ class BlenderPrimitives(Enum):
         return switch[self.name]()
 
 # Extracts dimensions from a string, then passes them as arguments to the BlenderPrimitives class
+# TODO: if object already exists, merge objects
 def blenderAddPrimitive(
     primitiveName:str,  \
     dimensions:str,  \
@@ -122,10 +123,22 @@ def blenderSceneLockInterface(isLocked):
     bpy.context.scene.render.use_lock_interface = isLocked
     return True
 
-def blenderCreateCollection(name):
+def blenderCreateCollection(name, sceneName = "Scene"):
+
+    if name in bpy.data.collections:
+        print("Collection {} already exists".format(name))
+        return False
+
+    if sceneName not in bpy.data.scenes:
+        print("Scene {} does not exist".format(sceneName))
+        return False
+
     collection = bpy.data.collections.new(name)
-    bpy.context.scene.collection.children.link(collection)
+
+    bpy.data.scenes[sceneName].collection.children.link(collection)
+    
     bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
+    
     return True
 
 def blenderRemoveCollection(name, removeNestedObjects):
@@ -138,9 +151,15 @@ def blenderRemoveCollection(name, removeNestedObjects):
         return True
     return False
 
-def blenderSetDefaultUnit(system, name):
-    bpy.context.scene.unit_settings.system = system
-    bpy.context.scene.unit_settings.length_unit = name
+def blenderSetDefaultUnit(unitSystem, unitName, sceneName = "Scene"):
+    
+    if sceneName not in bpy.data.scenes:
+        print("Scene {} does not exist".format(sceneName))
+        return False
+
+    bpy.data.scenes[sceneName].unit_settings.system = unitSystem
+    bpy.data.scenes[sceneName].unit_settings.length_unit = unitName
+    
     return True
 
 
@@ -211,21 +230,42 @@ def blenderScaleObject(
 
     return True
 
+# TODO: if object already exists, merge objects
 def blenderDuplicateObject(existingObjectName, newObjectName):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
     if not blenderObject:
+        print("blenderAssignObjectToCollection: object {} does not exist".format(existingObjectName))
         return False
     
     [parentCollection] = blenderObject.users_collection
     
     if not parentCollection:
+        print("blenderAssignObjectToCollection: object {} does not belong to a collection".format(existingObjectName))
         return False
     
     clonedObject = blenderObject.copy()
     clonedObject.name = newObjectName
     
     parentCollection.objects.link(clonedObject)
+    
+    return True
+
+def blenderAssignObjectToCollection(existingObjectName, collectionName):
+
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    if not blenderObject:
+        print("blenderAssignObjectToCollection: object {} does not exist".format(existingObjectName))
+        return False
+    
+    collection = bpy.data.collections.get(collectionName)
+    
+    if not collection:
+        print("blenderAssignObjectToCollection: collection {} does not exist".format(collectionName))
+        return False
+    
+    collection.objects.link(blenderObject)
     
     return True

@@ -367,9 +367,24 @@ class material:
 class scene: 
     # Text to 3D Modeling Automation Capabilities.
 
-    def __init__(self
+    name = None
+    description = None
+
+    # Names a scene
+    def __init__(self,
+    name:str = "Scene", # Uses Blender's default Scene
+    description:str=None \
     ):
-        pass
+        self.name = name
+        self.description = description
+
+    def create(self):
+        print("create is not implemented") # implement 
+        return self
+
+    def delete(self):
+        print("delete is not implemented") # implement 
+        return self
 
     def export(self
     ):
@@ -379,16 +394,16 @@ class scene:
     def setDefaultUnit(self,
     unit:BlenderLength \
     ):
-        system =  unit.getSystem()
-        name =  unit.name
-        blenderEvents.addToBlenderOperationsQueue("Set document units to {} {}".format(system, name), lambda: blenderSetDefaultUnit(system, name), 
+        unitSystem =  unit.getSystem()
+        unitName =  unit.name
+        blenderEvents.addToBlenderOperationsQueue("Set document units to {} {}".format(unitSystem, unitName), lambda: blenderSetDefaultUnit(unitSystem, unitName, self.name), 
         lambda update: update.id.name == "Scene")
         return self
 
     def createGroup(self,
     name:str \
     ):
-        blenderEvents.addToBlenderOperationsQueue("Create a {} collection".format(name), lambda: blenderCreateCollection(name), 
+        blenderEvents.addToBlenderOperationsQueue("Create a {} collection".format(name), lambda: blenderCreateCollection(name, self.name), 
         lambda update: update.id.name == name)
         return self
 
@@ -398,6 +413,17 @@ class scene:
     ):
         blenderEvents.addToBlenderOperationsQueue("Remove the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
         lambda update: update.id.name == "Scene")
+        return self
+        
+    def moveShapeToGroup(self,
+    shapeName:str, \
+    groupName:str \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Move object {} to {} collection".format(shapeName, groupName),
+            lambda: blenderAssignObjectToCollection(shapeName, groupName), 
+            lambda update: update.id.name == groupName
+            )
         return self
 
 class analytics: 

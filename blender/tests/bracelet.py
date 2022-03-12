@@ -7,8 +7,8 @@ if scriptDir not in sys.path:
 
 from textToBlender import shape, scene, BlenderLength, analytics
 
-scene().setDefaultUnit(BlenderLength.CENTIMETERS) \
-    .deleteGroup("Bracelet", True) \
+scene().setDefaultUnit(BlenderLength.CENTIMETERS)
+scene().deleteGroup("Bracelet", True) \
     .createGroup("Bracelet")
 
 
@@ -46,8 +46,12 @@ shape("buttonInner") \
 .rotate("90deg,0,0") \
 .translate("0,{}cm,0".format(buttonInnerYTranslation))
 
+scene().createGroup("BraceletBooleanShapes")
+
+shape("buttonCylinderForBoolean").cloneShape("button")
+
 shape("bracelet") \
-.subtract("button")
+.subtract("buttonCylinderForBoolean")
 
 shape("button")\
 .intersect("bracelet")
