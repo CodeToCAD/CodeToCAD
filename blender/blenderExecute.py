@@ -210,3 +210,22 @@ def blenderScaleObject(
     bpy.data.objects[name].scale = (x.value,y.value,z.value)
 
     return True
+
+def blenderDuplicateObject(existingObjectName, newObjectName):
+
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    if not blenderObject:
+        return False
+    
+    [parentCollection] = blenderObject.users_collection
+    
+    if not parentCollection:
+        return False
+    
+    clonedObject = blenderObject.copy()
+    clonedObject.name = newObjectName
+    
+    parentCollection.objects.link(clonedObject)
+    
+    return True

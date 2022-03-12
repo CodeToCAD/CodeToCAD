@@ -41,7 +41,11 @@ class shape:
     def cloneShape(self,
     shapeName:str \
     ):
-        print("cloneShape is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            "Cloning object {} to create {}".format(shapeName, self.name),
+            lambda: blenderDuplicateObject(shapeName, self.name),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
         return self
 
 
