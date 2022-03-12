@@ -154,20 +154,8 @@ class BlenderEvents:
             if currentOperationStartFunction != None:
 
                 # If we fail to dispatch the start function, dismiss the operation
-                if currentOperationStartFunction() == False:
-                    print(
-    """
-
-    Failed to start operation {}
-
-    """
-                        .format( self.currentOperation["description"])
-                    )
-
-                    self.currentOperation = None
-                    return self.defaultShortDelay
-
-                else:
+                try:
+                    currentOperationStartFunction()
                     print(
     """
 
@@ -176,6 +164,20 @@ class BlenderEvents:
     """
                         .format( self.currentOperation["description"])
                     )
+               
+                except Exception as e:
+
+                    print(
+    """
+
+    Failed to start operation {}, message: {}
+
+    """
+                        .format( self.currentOperation["description"], e)
+                    )
+
+                    self.currentOperation = None
+                    return self.defaultShortDelay
 
             # If there are no operations, dismiss the event
             if self.currentOperation == None:

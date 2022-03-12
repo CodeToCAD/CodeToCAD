@@ -1,4 +1,3 @@
-from threading import Event, Thread
 from enum import Enum
 import bpy
 from utilities import *
@@ -10,15 +9,17 @@ class BlenderModifiers(Enum):
     BOOLEAN = 2
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
-        if not (shapeName in bpy.data.objects):
-            print("blenderAddModifier: error: {} is not an object".format(shapeName))
-            return False
 
-        modifier = bpy.data.objects[shapeName].modifiers.new(type=self.name, name=self.name)
+        blenderObject = bpy.data.objects.get(shapeName)
+        
+        assert \
+            blenderObject != None, \
+            "Object {} does not exist".format(shapeName)
+
+        modifier = blenderObject.modifiers.new(type=self.name, name=self.name)
+
         for key,value in keywordArguments.items():
             setattr(modifier, key, value)
-
-        return True
 
 class BlenderBooleanTypes(Enum):
     UNION = 0
@@ -27,11 +28,13 @@ class BlenderBooleanTypes(Enum):
 
 def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeName):
 
-    if not (withShapeName in bpy.data.objects):
-        print("blenderApplyBooleanModifier: error: {} is not an object".format(withShapeName))
-        return False
+    blenderObject = bpy.data.objects.get(shapeName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
 
-    return BlenderModifiers.BOOLEAN.blenderAddModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
+    BlenderModifiers.BOOLEAN.blenderAddModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
 
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
@@ -76,89 +79,78 @@ def blenderAddPrimitive(
     
     BlenderPrimitives[primitiveName].blenderAddPrimitive(dimensions, keywordArguments or {})
 
-    return True
-
 def blenderUpdateObjectName(oldName, newName):
 
-    if not (oldName in bpy.data.objects):
-        return False
+    blenderObject = bpy.data.objects.get(oldName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(oldName)
+    
+    
+    blenderObject.name = newName
 
-    bpy.data.objects[oldName].name = newName
-
-    return True
 
 def blenderUpdateObjectMeshName(parentObjectName, newName):
     
-    if not (parentObjectName in bpy.data.objects):
-        return False
+    blenderObject = bpy.data.objects.get(parentObjectName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(parentObjectName)
 
-    meshName = bpy.data.objects[parentObjectName].data.name
+    meshName = blenderObject.data.name
 
-    if not (meshName in bpy.data.meshes):
-        return False
+    blenderMesh = bpy.data.meshes.get(meshName)
 
-    bpy.data.meshes[meshName].name = newName
+    assert \
+        blenderMesh != None, \
+        "Mesh {} does not exist".format(meshName)
 
-    return True
+    blenderMesh.name = newName
 
-# updates the name of the active object in Blender.
-# NOTE: Use with caution
-def blenderUpdateActiveObjectName(newName):
-    bpy.context.view_layer.objects.active.name = newName
-    return True
-
-# updates the name of the active object in Blender.
-# NOTE: Use with caution
-def blenderUpdateActiveMeshName(newName):
-    meshName = bpy.context.view_layer.objects.active.data.name
-
-    if not (meshName in bpy.data.meshes):
-        return False
-
-    bpy.data.meshes[meshName].name = newName
-    return True
 
 # locks the scene interface
 def blenderSceneLockInterface(isLocked):
     bpy.context.scene.render.use_lock_interface = isLocked
-    return True
 
 def blenderCreateCollection(name, sceneName = "Scene"):
 
-    if name in bpy.data.collections:
-        print("Collection {} already exists".format(name))
-        return False
+    assert \
+        name not in bpy.data.collections, \
+        "Collection {} already exists".format(name)
 
-    if sceneName not in bpy.data.scenes:
-        print("Scene {} does not exist".format(sceneName))
-        return False
+    assert \
+        sceneName in bpy.data.scenes, \
+        "Scene {} does not exist".format(sceneName)
 
     collection = bpy.data.collections.new(name)
 
     bpy.data.scenes[sceneName].collection.children.link(collection)
-    
-    return True
 
 def blenderRemoveCollection(name, removeNestedObjects):
-    if name in bpy.data.collections:
-        if removeNestedObjects:
-            for obj in bpy.data.collections[name].objects:
-                bpy.data.objects.remove(obj)
-        bpy.data.collections.remove(bpy.data.collections[name])
+    
+    assert \
+        name in bpy.data.collections, \
+        "Collection {} does not exist".format({name})
 
-        return True
-    return False
+    if removeNestedObjects:
+        for obj in bpy.data.collections[name].objects:
+            bpy.data.objects.remove(obj)
+
+    bpy.data.collections.remove(bpy.data.collections[name])
 
 def blenderSetDefaultUnit(unitSystem, unitName, sceneName = "Scene"):
-    
-    if sceneName not in bpy.data.scenes:
-        print("Scene {} does not exist".format(sceneName))
-        return False
 
-    bpy.data.scenes[sceneName].unit_settings.system = unitSystem
-    bpy.data.scenes[sceneName].unit_settings.length_unit = unitName
     
-    return True
+    blenderScene = bpy.data.scenes.get(sceneName)
+    
+    assert \
+        blenderScene != None, \
+        "Scene {} does not exist".format(sceneName)
+
+    blenderScene.unit_settings.system = unitSystem
+    blenderScene.unit_settings.length_unit = unitName
 
 
 class BlenderRotationTypes(Enum):
@@ -170,19 +162,22 @@ class BlenderRotationTypes(Enum):
 def blenderRotateObject(shapeName, 
 rotationAngles:list[Angle],
 rotationType:BlenderRotationTypes):
-    if not (shapeName in bpy.data.objects):
-        return False
+
+    blenderObject = bpy.data.objects.get(shapeName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
         
     
-    if len(rotationAngles) != 3:
-        print("rotationAngles must be length 3")
-        return False
+    assert \
+        len(rotationAngles) == 3, \
+        "rotationAngles must be length 3"
 
     rotationTuple = (rotationAngles[0].value, rotationAngles[1].value, rotationAngles[2].value)
 
-    setattr(bpy.data.objects[shapeName], rotationType.value, rotationTuple)
+    setattr(blenderObject, rotationType.value, rotationTuple)
 
-    return True
 
 class BlenderTranslationTypes(Enum):
     ABSOLUTE = "location"
@@ -190,33 +185,38 @@ class BlenderTranslationTypes(Enum):
 
 def blenderTranslationObject(shapeName, translationDimensions:list[Dimension], translationType:BlenderTranslationTypes):
     
-    if not (shapeName in bpy.data.objects):
-        return False
+    blenderObject = bpy.data.objects.get(shapeName)
     
-    if len(translationDimensions) != 3:
-        print("translationDimensions must be length 3")
-        return False
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
+    
+    assert \
+        len(translationDimensions) == 3, \
+        "translationDimensions must be length 3"
 
     translationTuple = (translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
 
-    setattr(bpy.data.objects[shapeName], translationType.value, translationTuple)
+    setattr(blenderObject, translationType.value, translationTuple)
 
-    return True
 
 def blenderScaleObject(
-    name:str,
+    shapeName:str,
     scalingDimensions:list[Dimension] \
 ):
-    if not (name in bpy.data.objects):
-        return False
+    blenderObject = bpy.data.objects.get(shapeName)
     
-    if len(scalingDimensions) != 3:
-        print("translationDimensions must be length 3")
-        return False
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
+    
+    assert \
+        len(scalingDimensions) == 3, \
+        "scalingDimensions must be length 3"
 
     [x,y,z] = scalingDimensions
 
-    sceneDimensions = bpy.data.objects[name].dimensions
+    sceneDimensions = blenderObject.dimensions
 
     #calculate scale factors if a unit is passed into the dimension
     if sceneDimensions:
@@ -224,72 +224,70 @@ def blenderScaleObject(
         y.value = y.value/sceneDimensions.y if y.unit != None else y.value
         z.value = z.value/sceneDimensions.z if z.unit != None else z.value
     
-    bpy.data.objects[name].scale = (x.value,y.value,z.value)
+    blenderObject.scale = (x.value,y.value,z.value)
 
-    return True
 
 # TODO: if object already exists, merge objects
 def blenderDuplicateObject(existingObjectName, newObjectName):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
-    if not blenderObject:
-        print("blenderDuplicateObject: object {} does not exist".format(existingObjectName))
-        return False
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
     
     clonedObject = blenderObject.copy()
     clonedObject.name = newObjectName
-    
-    return True
+
 
 def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
     
     blenderObject = bpy.data.objects.get(existingObjectName)
     
-    if not blenderObject:
-        print("blenderRemoveObjectFromCollection: object {} does not exist".format(existingObjectName))
-        return False
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
 
     collection = bpy.data.collections.get(collectionName)
     
-    if not collection:
-        print("blenderRemoveObjectFromCollection: collection {} does not exist".format(collectionName))
-        return False
     
-    if not blenderObject in collection.objects:
-        print("blenderRemoveObjectFromCollection: object {} does not exist in collection {}".format(existingObjectName, collectionName))
-        return False
+    assert \
+        collection != None, \
+        "Collection {} does not exist".format(collectionName)
+    
+    assert \
+        existingObjectName in collection.objects, \
+        "Object {} does not exist in collection {}".format(existingObjectName, collectionName)
         
     collection.objects.unlink(blenderObject)
 
-    return True
 
 
 def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFromOtherGroups = True):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
-    if not blenderObject:
-        print("blenderAssignObjectToCollection: object {} does not exist".format(existingObjectName))
-        return False
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
         
     currentCollections = blenderObject.users_collection
 
         
-    if len(currentCollections) == 0:
-        print("blenderAssignObjectToCollection: object {} does not belong to a collection".format(existingObjectName))
-        return False
+    assert \
+        len(currentCollections) > 0, \
+        "Object {} does not belong to a collection".format(existingObjectName)
 
-    if collectionName in currentCollections:
-        print("blenderAssignObjectToCollection: object {} is already in collection {}.".format(existingObjectName, collectionName))
-        return False
+    assert \
+        collectionName not in currentCollections, \
+        "Object {} is already in collection {}.".format(existingObjectName, collectionName)
 
     
     collection = bpy.data.collections.get(collectionName)
     
-    if not collection:
-        print("blenderAssignObjectToCollection: collection {} does not exist".format(collectionName))
-        return False
+    assert \
+        collection != None, \
+        "Collection {} does not exist".format(collectionName)
 
     if removeFromOtherGroups:
         for currentCollection in currentCollections:
@@ -297,5 +295,3 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFr
     
     
     collection.objects.link(blenderObject)
-    
-    return True
