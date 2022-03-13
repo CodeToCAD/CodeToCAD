@@ -146,23 +146,63 @@ class BlenderEvents:
         def __init__(self, blenderEvents):
             self.blenderEvents = blenderEvents
 
-        @useTimeOutLock
-        def triggerTimeout(self):
-
+        def operationStarted(self):
             print(
 """
 
-Timeout Triggered for Operation: {}
+Starting operation: {}
 
 """
                 .format( self.currentOperation["description"])
             )
 
+            self.timeoutTimer = Timer(
+                self.currentOperation["timeout"],
+                self.triggerTimeout
+                )
+            self.timeoutTimer.start()
+
+        def operationCompleted(self):
+            print(
+"""
+
+Completed Operation: {}
+
+"""
+                .format( self.currentOperation["description"])
+            )
+            self.currentOperation = None
+            
+            self.timeoutTimer.cancel()
+
+            return self.defaultShortDelay
+
+        def operationFailed(self, errorMessage, clearOperationsQueue):
+            print(
+"""
+
+Failed Operation: {}, Reason: {}
+
+"""
+                .format( self.currentOperation["description"], errorMessage)
+            )
+
             self.currentOperation = None
 
-            self.blenderEvents.clearBlenderOperationsQueue()
+            if clearOperationsQueue:
 
-            self.remainingEventsCount = 0
+                self.blenderEvents.clearBlenderOperationsQueue()
+
+                self.remainingEventsCount = 0
+                
+            return self.defaultShortDelay
+
+
+
+        @useTimeOutLock
+        def triggerTimeout(self):
+
+            self.operationFailed("Timeout Triggered", True)
 
         # Processes the BlenderEvents's blenderEventsQueue and blenderOperationsQueue
         # Returns a float equal to the amount of time a thread should sleep before processing the next event and operation.
@@ -183,21 +223,8 @@ Timeout Triggered for Operation: {}
                     currentOperationStartFunction = self.currentOperation["operation"]
 
                 elif self.currentOperation != None:
-
-                    print(
-    """
-
-    Operation is missing its start function: {}
-
-    """
-                        .format( self.currentOperation["description"])
-                    )
-
-                    self.currentOperation = None
-
-                    return self.defaultShortDelay
-
-
+                    
+                    return self.operationFailed("Operation is missing its start function", False)
 
             # the operation object has an "operation" key that's a callback to start the operation, we should call exactly once to fire off the operation in Blender
             if currentOperationStartFunction != None:
@@ -205,36 +232,27 @@ Timeout Triggered for Operation: {}
                 # If we fail to dispatch the start function, dismiss the operation
                 try:
                     currentOperationStartFunction()
-                    print(
-    """
 
-    Starting operation: {}
-
-    """
-                        .format( self.currentOperation["description"])
-                    )
-
-                    self.timeoutTimer = Timer(self.currentOperation["timeout"], self.triggerTimeout)
-                    self.timeoutTimer.start()
+                    self.operationStarted()
                
                 except Exception as e:
-
-                    print(
-    """
-
-    Failed to start operation {}, message: {}
-
-    """
-                        .format( self.currentOperation["description"], e)
-                    )
-
-                    self.currentOperation = None
-                    return self.defaultShortDelay
+                    
+                    return self.operationFailed(e, False)
 
             # If there are no operations, dismiss the event
             if self.currentOperation == None:
 
                 self.currentBlenderEvent = None
+
+                return self.defaultLongDelay
+
+            currentOperationAssertionFunction = self.currentOperation["assertion"]
+
+            # if the operation doesn't have an assertion, call completion right away
+            if currentOperationAssertionFunction == None:
+                
+                return self.operationCompleted()
+
 
             # If there are no events, put the thread to sleep
             if self.currentBlenderEvent == None:
@@ -243,10 +261,10 @@ Timeout Triggered for Operation: {}
 
             print(
                 """ 
-    Received Update Event From Blender: {} Type: {}
-    CurrentOperationsCount: {}
-    RemainingOperation: {}
-    RemainingEventsCount: {}
+Received Update Event From Blender: {} Type: {}
+CurrentOperationsCount: {}
+RemainingOperation: {}
+RemainingEventsCount: {}
                 """.format(
                     self.currentBlenderEvent.id.name, type(self.currentBlenderEvent.id),
                     self.currentOperation["description"],
@@ -254,23 +272,13 @@ Timeout Triggered for Operation: {}
                     self.remainingEventsCount
                     )
             )
-            
-            currentOperationAssertionFunction = self.currentOperation["assertion"]
 
             # If we receive an update that an operation was complete, dimiss the event and the operation. Otherwise, dimiss the event and keep waiting for the operation to be
+
             if currentOperationAssertionFunction(self.currentBlenderEvent) == True:
-                print(
-    """
-
-    Assertion complete for operation: {}
-
-    """
-                    .format( self.currentOperation["description"])
-                )
                 self.currentBlenderEvent = None
-                self.currentOperation = None
                 
-                self.timeoutTimer.cancel()
+                self.operationCompleted()
 
             else:
                 
