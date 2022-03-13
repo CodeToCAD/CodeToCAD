@@ -29,12 +29,24 @@ class BlenderBooleanTypes(Enum):
 def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeName):
 
     blenderObject = bpy.data.objects.get(shapeName)
+        
+    blenderBooleanObject = bpy.data.objects.get(withShapeName)
     
     assert \
         blenderObject != None, \
         "Object {} does not exist".format(shapeName)
 
-    BlenderModifiers.BOOLEAN.blenderAddModifier(shapeName, {"operation": type.name, "object": bpy.data.objects[withShapeName]})
+    assert \
+        blenderBooleanObject != None, \
+        "Object {} does not exist".format(withShapeName)
+
+    BlenderModifiers.BOOLEAN.blenderAddModifier(
+        shapeName, 
+        {
+            "operation": type.name,
+            "object": blenderBooleanObject
+        }
+    )
 
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
@@ -242,7 +254,7 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
     # Link clonedObject to a collection. Might want to make this optional.
     [currentCollection] = blenderObject.users_collection
 
-    defaultCollection = currentCollection or "Scene"
+    defaultCollection = currentCollection.name
 
     blenderAssignObjectToCollection(newObjectName, defaultCollection)
 
@@ -269,8 +281,17 @@ def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
     collection.objects.unlink(blenderObject)
 
 
+def blenderSetObjectVisibility(existingObjectName, isVisible):
+    
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
+    
+    blenderObject.hide_set(isVisible)
 
-def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFromOtherGroups = True):
+def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene Collection", sceneName = "Scene", removeFromOtherGroups = True):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
@@ -286,6 +307,16 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFr
 
     
     collection = bpy.data.collections.get(collectionName)
+
+    if collection == None and collectionName == "Scene Collection":
+        scene = bpy.data.scenes.get(sceneName)
+
+        assert \
+            scene != None, \
+            "Scene {} does not exist".format(sceneName)
+
+        collection = scene.collection
+
     
     assert \
         collection != None, \

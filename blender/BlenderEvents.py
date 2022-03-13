@@ -201,7 +201,7 @@ Failed Operation: {}, Reason: {}
 
         @useTimeOutLock
         def triggerTimeout(self):
-
+            # Note: when operation times out here, we clear the operations queue because we are assuming a fatal error. However, this flow is inconsistent with the "skip operation" flow when an operation fails to start. Perhaps there could be a "fatalIfFails" flag, but there's currently no way to pass that in.
             self.operationFailed("Timeout Triggered", True)
 
         # Processes the BlenderEvents's blenderEventsQueue and blenderOperationsQueue

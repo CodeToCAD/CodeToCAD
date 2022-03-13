@@ -3,6 +3,10 @@ from utilities import *
 from blenderExecute import *
 from BlenderEvents import BlenderEvents
 
+def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
+    for update in depsgraph.updates:
+        print("Received Event: {} Type: {}".format(update.id.name, type(update.id)))
+
 def setup(blenderEvents):
 
     # start the updateEventThread
@@ -13,6 +17,8 @@ def setup(blenderEvents):
     bpy.app.handlers.depsgraph_update_post.append(blenderEvents.onReceiveBlenderDependencyGraphUpdateEvent)
 
     # blenderSceneLockInterface(True)
+    
+    bpy.app.handlers.depsgraph_update_post.append(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 # TODO: move this to a main function
 blenderEvents = BlenderEvents()
@@ -279,7 +285,11 @@ class shape:
     def visibility(self,
     isVisible:bool \
     ):
-        print("visibility is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
+            lambda: blenderSetObjectVisibility(self.name, isVisible),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        ) 
         return self
 
     def delete(self
@@ -434,7 +444,7 @@ class scene:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Assign object {} to {} collection".format(shapeName, groupName),
-            lambda: blenderAssignObjectToCollection(shapeName, groupName, removeFromOtherGroups), 
+            lambda: blenderAssignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
             )
         return self

@@ -7,13 +7,13 @@ if scriptDir in sys.path:
     sys.path.remove(scriptDir)
 sys.path.insert(0, str(scriptDir))
 
-
 from textToBlender import shape, scene, BlenderLength, analytics
 
 scene().setDefaultUnit(BlenderLength.CENTIMETERS)
 scene().deleteGroup("Bracelet", True) \
     .createGroup("Bracelet")
-scene().createGroup("BraceletBooleanShapes")
+scene().deleteGroup("BraceletBooleanShapes", True) \
+    .createGroup("BraceletBooleanShapes")
 
 # Defining dimensions and calculated properties
 
@@ -41,35 +41,43 @@ buttonInnerYTranslation = (bracelet["outerDiameter"]/2 - buttonInner["depth"]/2)
 
 shape("bracelet") \
 .primitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
-.scale("1,1,{}cm".format(bracelet["thickness"]))
+.scale("1,1,{}cm".format(bracelet["thickness"]))  # Scale x,y by a scale factor of 1, so the number is unitless
 
 shape("button")\
-.primitive("cylinder", "{}/2,{}/2,cm".format(button["diameter"],button["depth"])) \
+.primitive("cylinder", [button["diameter"]/2,button["depth"]/2, "cm"]) \
 .rotate("90deg,0,0") \
-.translate("0,{}cm,0".format(buttonTranslation))
+.translate([0,buttonTranslation,0,"cm"])
 
 shape("buttonInner") \
-.primitive("cylinder", "{}/2,{}/2,cm".format(buttonInner["diameter"],buttonInner["depth"])) \
+.primitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"]/2, "cm"]) \
 .rotate("90deg,0,0") \
-.translate("0,{}cm,0".format(buttonInnerYTranslation))
+.translate([0,buttonInnerYTranslation,0,"cm"])\
+    .visibility(False)
 
-shape("buttonCylinderForBoolean").cloneShape("button")
+shape("booleanButtonAndButtonInner")\
+    .cloneShape("button")\
+        .union("buttonInner")\
+            .visibility(False)
+shape("booleanBracelet")\
+    .cloneShape("bracelet")\
+            .visibility(False)
 
 # Grouping
 
 scene().assignShapeToGroup("bracelet", "Bracelet")
 scene().assignShapeToGroup("button", "Bracelet")
-scene().assignShapeToGroup("buttonInner", "Bracelet")
 
-scene().assignShapeToGroup("buttonCylinderForBoolean", "BraceletBooleanShapes")
+scene().assignShapeToGroup("buttonInner", "BraceletBooleanShapes")
+scene().assignShapeToGroup("booleanBracelet", "BraceletBooleanShapes")
+scene().assignShapeToGroup("buttonAndButtonInner", "BraceletBooleanShapes")
 
 # Modifying the shapes
 
-shape("bracelet") \
-.subtract("buttonCylinderForBoolean")
-
 shape("button")\
-.intersect("bracelet")
+.intersect("booleanBracelet")
 
 shape("button") \
 .subtract("buttonInner")
+
+shape("bracelet") \
+.subtract("buttonAndButtonInner")
