@@ -133,7 +133,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" scale transformed".format(self.name),
+            "Object \"{}\" translated".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.RELATIVE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -151,7 +151,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" scale transformed".format(self.name),
+            "Object \"{}\" position changed".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -188,7 +188,7 @@ class shape:
         angleListRadians = [angle.toRadians() for angle in angleList]
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" scale transformed".format(self.name),
+            "Object \"{}\" rotated".format(self.name),
             lambda: blenderRotateObject(self.name, angleListRadians, BlenderRotationTypes.EULER),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -280,16 +280,6 @@ class shape:
     wallThickness:float \
     ):
         print("hollow is not implemented") # implement 
-        return self
-
-    def visibility(self,
-    isVisible:bool \
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
-            lambda: blenderSetObjectVisibility(self.name, isVisible),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
-        ) 
         return self
 
     def delete(self
@@ -447,6 +437,18 @@ class scene:
             lambda: blenderAssignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
             )
+        return self
+        
+
+    def setShapeVisibility(self,
+    shapeName:str, \
+    isVisible:bool \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object \"{}\" setting isVisible {}".format(shapeName, isVisible),
+            lambda: blenderSetObjectVisibility(shapeName, isVisible),
+            lambda update: update.id.name == self.name
+        ) 
         return self
 
 class analytics: 

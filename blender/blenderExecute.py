@@ -289,7 +289,7 @@ def blenderSetObjectVisibility(existingObjectName, isVisible):
         blenderObject != None, \
         "Object {} does not exist".format(existingObjectName)
     
-    blenderObject.hide_set(isVisible)
+    blenderObject.hide_set(not isVisible)
 
 def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene Collection", sceneName = "Scene", removeFromOtherGroups = True):
 

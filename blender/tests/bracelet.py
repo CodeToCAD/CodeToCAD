@@ -33,9 +33,9 @@ buttonInner = {
 }
 
 # TODO: translation calculations should be obsolete with the introduction of landmarks and joints
-buttonTranslation = (bracelet["outerDiameter"]/2) - (button["depth"]/2)
+buttonTranslation = (bracelet["outerDiameter"] - button["depth"]) / 2
 
-buttonInnerYTranslation = (bracelet["outerDiameter"]/2 - buttonInner["depth"]/2)
+buttonInnerYTranslation = (bracelet["outerDiameter"] - buttonInner["depth"]) / 2
 
 # Creating the shapes we will use
 
@@ -44,32 +44,29 @@ shape("bracelet") \
 .scale("1,1,{}cm".format(bracelet["thickness"]))  # Scale x,y by a scale factor of 1, so the number is unitless
 
 shape("button")\
-.primitive("cylinder", [button["diameter"]/2,button["depth"]/2, "cm"]) \
+.primitive("cylinder", [button["diameter"]/2,button["depth"], "cm"]) \
 .rotate("90deg,0,0") \
 .translate([0,buttonTranslation,0,"cm"])
 
 shape("buttonInner") \
-.primitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"]/2, "cm"]) \
+.primitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
 .rotate("90deg,0,0") \
-.translate([0,buttonInnerYTranslation,0,"cm"])\
-    .visibility(False)
+.translate([0,buttonInnerYTranslation,0,"cm"])
 
 shape("booleanButtonAndButtonInner")\
     .cloneShape("button")\
-        .union("buttonInner")\
-            .visibility(False)
+        .union("buttonInner")
 shape("booleanBracelet")\
-    .cloneShape("bracelet")\
-            .visibility(False)
+    .cloneShape("bracelet")
 
 # Grouping
 
 scene().assignShapeToGroup("bracelet", "Bracelet")
 scene().assignShapeToGroup("button", "Bracelet")
 
-scene().assignShapeToGroup("buttonInner", "BraceletBooleanShapes")
-scene().assignShapeToGroup("booleanBracelet", "BraceletBooleanShapes")
-scene().assignShapeToGroup("buttonAndButtonInner", "BraceletBooleanShapes")
+scene().assignShapeToGroup("buttonInner", "BraceletBooleanShapes").setShapeVisibility("buttonInner", False)
+scene().assignShapeToGroup("booleanBracelet", "BraceletBooleanShapes").setShapeVisibility("booleanBracelet", False)
+scene().assignShapeToGroup("booleanButtonAndButtonInner", "BraceletBooleanShapes").setShapeVisibility("booleanButtonAndButtonInner", False)
 
 # Modifying the shapes
 
@@ -80,4 +77,4 @@ shape("button") \
 .subtract("buttonInner")
 
 shape("bracelet") \
-.subtract("buttonAndButtonInner")
+.subtract("booleanButtonAndButtonInner")

@@ -219,15 +219,6 @@
                     }
                 }
             },
-            "visibility": {
-                "action": "modify",
-                "information": "Change the visibiltiy of the shape.",
-                "parameters": {
-                    "isVisible": {
-                        "type": "boolean"
-                    }
-                }
-            },
             "delete": {
                 "action": "delete",
                 "information": "Delete a shape from the scene. You may need to delete an associated joint or other features.",
@@ -380,6 +371,18 @@
                         "type": "boolean",
                         "required": false,
                         "defaultValue": true
+                    }
+                }
+            },
+            "setShapeVisibility": {
+                "action": "update",
+                "information": "Change the visibiltiy of the shape.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "isVisible": {
+                        "type": "boolean"
                     }
                 }
             }

@@ -109,6 +109,9 @@ class BlenderEvents:
     def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
 
         for update in depsgraph.updates:
+            if update.id == None:
+                print("Received an update without an id: {}", update)
+                continue
             self.blenderEventQueueLock.acquire()
             self.blenderEventQueue.append(update)
             self.blenderEventQueueLock.release()
@@ -139,7 +142,7 @@ class BlenderEvents:
                 
             return wrapper
 
-        defaultShortDelay = 0.1 #100ms thread sleep for this thread so other threads can do things
+        defaultShortDelay = 0.001 #1ms thread sleep for this thread so other threads can do things
         defaultLongDelay = 1.0
 
         # Requires a BlenderEvents instance to be passed to this
