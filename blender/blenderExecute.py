@@ -16,6 +16,7 @@ class BlenderModifiers(Enum):
             blenderObject != None, \
             "Object {} does not exist".format(shapeName)
 
+        # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
         modifier = blenderObject.modifiers.new(type=self.name, name=self.name)
 
         for key,value in keywordArguments.items():
@@ -44,7 +45,11 @@ def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeNa
         shapeName, 
         {
             "operation": type.name,
-            "object": blenderBooleanObject
+            "object": blenderBooleanObject,
+            # "use_self": True,
+            # "use_hole_tolerant": True,
+            # "solver": "EXACT",
+            # "double_threshold": 1e-6
         }
     )
 
@@ -280,17 +285,6 @@ def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
         
     collection.objects.unlink(blenderObject)
 
-
-def blenderSetObjectVisibility(existingObjectName, isVisible):
-    
-    blenderObject = bpy.data.objects.get(existingObjectName)
-    
-    assert \
-        blenderObject != None, \
-        "Object {} does not exist".format(existingObjectName)
-    
-    blenderObject.hide_set(not isVisible)
-
 def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene Collection", sceneName = "Scene", removeFromOtherGroups = True):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
@@ -328,3 +322,28 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene 
     
     
     collection.objects.link(blenderObject)
+
+
+def blenderApplyDependencyGraph(existingObjectName, removeModifiers = True):
+    
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
+
+    blenderObject.data = blenderObject.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.copy()
+
+    if removeModifiers:
+        blenderObject.modifiers.clear()
+
+
+def blenderSetObjectVisibility(existingObjectName, isVisible):
+    
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
+    
+    blenderObject.hide_set(not isVisible)

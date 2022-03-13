@@ -286,6 +286,18 @@ class shape:
     ):
         print("delete is not implemented") # implement 
         return self
+    
+    # This is a blender specific action to apply the dependency graph modifiers onto a mesh
+    def apply(self):
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object \"{}\" applying dependency graph modifiers to mesh".format(self.name),
+            lambda: blenderApplyDependencyGraph(self.name),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
+        
 
 class landmark: 
     # Text to 3D Modeling Automation Capabilities.

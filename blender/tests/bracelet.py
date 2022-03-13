@@ -31,6 +31,11 @@ buttonInner = {
     "diameter": 40,
     "depth": 5
 }
+belt = {
+    "outerDiameter": 162,
+    "innerDiameter": 145,
+    "thickness": 30
+}
 
 # TODO: translation calculations should be obsolete with the introduction of landmarks and joints
 buttonTranslation = (bracelet["outerDiameter"] - button["depth"]) / 2
@@ -53,9 +58,15 @@ shape("buttonInner") \
 .rotate("90deg,0,0") \
 .translate([0,buttonInnerYTranslation,0,"cm"])
 
+shape("belt") \
+.primitive("cylinder", [belt["outerDiameter"]/2,belt["thickness"], "cm"])
+
+shape("beltInner") \
+.primitive("cylinder", [belt["innerDiameter"]/2,belt["thickness"], "cm"])
+
 shape("booleanButtonAndButtonInner")\
-    .cloneShape("button")\
-        .union("buttonInner")
+    .cloneShape("button")
+
 shape("booleanBracelet")\
     .cloneShape("bracelet")
 
@@ -63,7 +74,9 @@ shape("booleanBracelet")\
 
 scene().assignShapeToGroup("bracelet", "Bracelet")
 scene().assignShapeToGroup("button", "Bracelet")
+scene().assignShapeToGroup("belt", "Bracelet")
 
+scene().assignShapeToGroup("beltInner", "BraceletBooleanShapes").setShapeVisibility("beltInner", False)
 scene().assignShapeToGroup("buttonInner", "BraceletBooleanShapes").setShapeVisibility("buttonInner", False)
 scene().assignShapeToGroup("booleanBracelet", "BraceletBooleanShapes").setShapeVisibility("booleanBracelet", False)
 scene().assignShapeToGroup("booleanButtonAndButtonInner", "BraceletBooleanShapes").setShapeVisibility("booleanButtonAndButtonInner", False)
@@ -78,3 +91,11 @@ shape("button") \
 
 shape("bracelet") \
 .subtract("booleanButtonAndButtonInner")
+
+shape("belt") \
+    .subtract("beltInner") \
+        .intersect("bracelet")\
+            .apply()
+
+shape("bracelet") \
+.subtract("belt")
