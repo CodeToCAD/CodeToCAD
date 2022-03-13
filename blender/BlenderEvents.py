@@ -1,4 +1,4 @@
-from threading import Event, Thread, Lock
+from threading import Event, Thread, Lock, Timer
 from time import sleep
 
 class BlenderEvents:
@@ -18,7 +18,7 @@ class BlenderEvents:
         bpy.app.timers.register(blenderEventsHandler.processEventsAndOperations)
 
     # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
-    def addToBlenderOperationsQueue(self, description, operation, assertion):
+    def addToBlenderOperationsQueue(self, description, operation, assertion, timeout = 5):
 
         # reset threading Event
         self.blenderOperationsComplete.clear()
@@ -30,7 +30,8 @@ class BlenderEvents:
                 "started": False,
                 "description": description,
                 "operation": operation,
-                "assertion": assertion
+                "assertion": assertion,
+                "timeout": timeout
             }
         )
 
@@ -55,6 +56,14 @@ class BlenderEvents:
         self.blenderOperationsQueueLock.release()
 
         return (blenderOperation, remainingOperationsCount)
+        
+    def clearBlenderOperationsQueue(self):
+
+        self.blenderOperationsQueueLock.acquire()
+        
+        self.blenderOperationsQueue = []
+        
+        self.blenderOperationsQueueLock.release()
 
     # Returns the length of the BlenderOperationsQueue. Note: Uses a thread Lock.
     def getLengthOfBlenderOperationsQueue(self):
@@ -110,6 +119,26 @@ class BlenderEvents:
         currentOperation = None
         remainingOperationsCount = 0
 
+        timeoutTimer = Timer(5.0, None)
+        timeoutLock = Lock()
+
+        # Make sure any methods that use this lock don't call each other so there is no deadlock
+        def useTimeOutLock(timeoutLockUser):
+            def wrapper(*args):
+                [self] = args
+
+                if self:
+                    self.timeoutLock.acquire()
+
+                output = timeoutLockUser(*args)
+
+                if self:
+                    self.timeoutLock.release()
+                
+                return output
+                
+            return wrapper
+
         defaultShortDelay = 0.1 #100ms thread sleep for this thread so other threads can do things
         defaultLongDelay = 1.0
 
@@ -117,9 +146,29 @@ class BlenderEvents:
         def __init__(self, blenderEvents):
             self.blenderEvents = blenderEvents
 
+        @useTimeOutLock
+        def triggerTimeout(self):
+
+            print(
+"""
+
+Timeout Triggered for Operation: {}
+
+"""
+                .format( self.currentOperation["description"])
+            )
+
+            self.currentOperation = None
+
+            self.blenderEvents.clearBlenderOperationsQueue()
+
+            self.remainingEventsCount = 0
+
         # Processes the BlenderEvents's blenderEventsQueue and blenderOperationsQueue
         # Returns a float equal to the amount of time a thread should sleep before processing the next event and operation.
+        @useTimeOutLock
         def processEventsAndOperations(self):
+
             if self.currentBlenderEvent == None:
                 (self.currentBlenderEvent, self.remainingEventsCount) = self.blenderEvents.popFirstFromBlenderEventQueue()
 
@@ -164,6 +213,9 @@ class BlenderEvents:
     """
                         .format( self.currentOperation["description"])
                     )
+
+                    self.timeoutTimer = Timer(self.currentOperation["timeout"], self.triggerTimeout)
+                    self.timeoutTimer.start()
                
                 except Exception as e:
 
@@ -217,6 +269,8 @@ class BlenderEvents:
                 )
                 self.currentBlenderEvent = None
                 self.currentOperation = None
+                
+                self.timeoutTimer.cancel()
 
             else:
                 

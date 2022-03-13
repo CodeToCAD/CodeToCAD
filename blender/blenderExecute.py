@@ -244,7 +244,7 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
 
     defaultCollection = currentCollection or "Scene"
 
-    blenderAssignObjectToCollection(newObjectName, defaultCollection)
+    # blenderAssignObjectToCollection(newObjectName, defaultCollection)
 
 
 def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
