@@ -238,6 +238,13 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
     
     clonedObject = blenderObject.copy()
     clonedObject.name = newObjectName
+    
+    # Link clonedObject to a collection. Might want to make this optional.
+    [currentCollection] = blenderObject.users_collection
+
+    defaultCollection = currentCollection or "Scene"
+
+    blenderAssignObjectToCollection(newObjectName, defaultCollection)
 
 
 def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
@@ -272,11 +279,6 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName, removeFr
         "Object {} does not exist".format(existingObjectName)
         
     currentCollections = blenderObject.users_collection
-
-        
-    assert \
-        len(currentCollections) > 0, \
-        "Object {} does not belong to a collection".format(existingObjectName)
 
     assert \
         collectionName not in currentCollections, \

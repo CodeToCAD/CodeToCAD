@@ -1,9 +1,12 @@
+print("Starting bracelet.py")
+
 import sys
 from pathlib import Path
 scriptDir = Path(__file__).parent.parent.absolute()
+if scriptDir in sys.path:
+    sys.path.remove(scriptDir)
+sys.path.insert(0, str(scriptDir))
 
-if scriptDir not in sys.path:
-    sys.path.insert(0, str(scriptDir))
 
 from textToBlender import shape, scene, BlenderLength, analytics
 
@@ -12,6 +15,7 @@ scene().deleteGroup("Bracelet", True) \
     .createGroup("Bracelet")
 scene().createGroup("BraceletBooleanShapes")
 
+# Defining dimensions and calculated properties
 
 # in mm
 bracelet = {
@@ -33,8 +37,10 @@ buttonTranslation = (bracelet["outerDiameter"]/2) - (button["depth"]/2)
 
 buttonInnerYTranslation = (bracelet["outerDiameter"]/2 - buttonInner["depth"]/2)
 
+# Creating the shapes we will use
+
 shape("bracelet") \
-.primitive("torus", "{}/2,{}/2,cm".format(bracelet["innerDiameter"],bracelet["outerDiameter"])) \
+.primitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
 .scale("1,1,{}cm".format(bracelet["thickness"]))
 
 shape("button")\
@@ -49,11 +55,15 @@ shape("buttonInner") \
 
 shape("buttonCylinderForBoolean").cloneShape("button")
 
+# Grouping
+
 scene().assignShapeToGroup("bracelet", "Bracelet")
 scene().assignShapeToGroup("button", "Bracelet")
 scene().assignShapeToGroup("buttonInner", "Bracelet")
 
 scene().assignShapeToGroup("buttonCylinderForBoolean", "BraceletBooleanShapes")
+
+# Modifying the shapes
 
 shape("bracelet") \
 .subtract("buttonCylinderForBoolean")

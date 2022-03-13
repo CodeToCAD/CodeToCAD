@@ -73,6 +73,15 @@ class Angle():
           self.value = None
 
 def getAnglesFromString(anglesString):
+    
+    if type(anglesString) == list:
+        anglesString = ",".join(
+            map(
+                lambda angle:str(angle),
+                anglesString
+            )
+        )
+
     parsedAngles = None
     if anglesString and "," in anglesString:
         anglesArray = anglesString.split(',')
@@ -182,6 +191,15 @@ def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
     return value * (unit.value/targetUnit.value)
 
 def getDimensionsFromString(dimensions):
+
+    if type(dimensions) == list:
+        dimensions = ",".join(
+            map(
+                lambda dimension:str(dimension),
+                dimensions
+            )
+        )
+
     parsedDimensions = None
     if dimensions and "," in dimensions:
         dimensionsArray = dimensions.split(',')
