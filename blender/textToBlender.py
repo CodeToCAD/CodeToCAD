@@ -265,12 +265,12 @@ class shape:
     
         blenderEvents.addToBlenderOperationsQueue(
             "Object \"{}\" applying EDGE_SPLIT modifier".format(self.name),
-            lambda: BlenderModifiers.EDGE_SPLIT.applyBlenderModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(60)}),
+            lambda: BlenderModifiers.EDGE_SPLIT.blenderAddModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Object \"{}\" applying SUBSURF modifier".format(self.name),
-            lambda: BlenderModifiers.SUBSURF.applyBlenderModifier(self.name, {"name": "Subdivision", "levels": 3}),
+            lambda: BlenderModifiers.SUBSURF.blenderAddModifier(self.name, {"name": "Subdivision", "levels": 3}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
 

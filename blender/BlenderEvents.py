@@ -18,7 +18,7 @@ class BlenderEvents:
         bpy.app.timers.register(blenderEventsHandler.processEventsAndOperations)
 
     # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
-    def addToBlenderOperationsQueue(self, description, operation, assertion, timeout = 5):
+    def addToBlenderOperationsQueue(self, description, operation, assertion, timeout = 60):
 
         # reset threading Event
         self.blenderOperationsComplete.clear()
@@ -122,7 +122,7 @@ class BlenderEvents:
         currentOperation = None
         remainingOperationsCount = 0
 
-        timeoutTimer = Timer(5.0, None)
+        timeoutTimer = Timer(60.0, None)
         timeoutLock = Lock()
 
         # Make sure any methods that use this lock don't call each other so there is no deadlock
