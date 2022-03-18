@@ -187,9 +187,9 @@ class shape:
         )
 
         return self
-
+        
     def scale(self,
-    dimensions:str \
+    dimensions:str
     ):
         dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
         

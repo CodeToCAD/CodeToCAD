@@ -259,7 +259,7 @@ def convertDimensionsToBlenderUnit(dimensions:list):
             defaultBlenderUnit.value
         )
         
-            if (dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
+            if (dimension.value != None and dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
 
             else dimension
 

@@ -1,6 +1,9 @@
 from utilities import Dimension, getDimensionsFromString, LengthUnit, convertToLengthUnit, getAnglesFromString, AngleUnit, Angle
 
 def test_dimensions():
+    dimension = Dimension("")
+    assert dimension.value == None
+    assert dimension.unit == None
     dimension = Dimension("50")
     assert dimension.value == 50
     assert dimension.unit == None
@@ -31,7 +34,9 @@ def test_dimensions():
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.foot
 
-
+    dimensions = getDimensionsFromString(",1cm,")
+    assert dimensions[0].value == None and dimensions[1].value == 1
+    assert dimensions[0].unit == None and dimensions[1].unit == LengthUnit.centimeter
     dimensions = getDimensionsFromString("10,1")
     assert dimensions[0].value == 10 and dimensions[1].value == 1
     assert dimensions[0].unit == None and dimensions[1].unit == None

@@ -15,7 +15,7 @@ sprocket = {
 features = {
   "Half Axle rod": {
     "Source": "cylinder",
-    "dimensions": "21,3/8,3/8, in",
+    "dimensions": "3/8,21, in",
     "landmarks": [
         "teethBegin,1,center,center,in",
         "teethEnd,2.5,center,center,in",
@@ -95,9 +95,9 @@ features = {
   }
 }
 
-shape("sprocket").fromFile(sprocket["source"])
+shape("sprocket").fromFile(sprocket["source"]).scale(",3in,")
 
-# shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"])
+shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"])
 # shape("Axle teeth").primitive("cube", features["Axle teeth"]["dimensions"])
 # shape("bearing rod").primitive("cube", features["bearing rod"]["dimensions"])
 # shape("breakdisc rod").primitive("cube", features["breakdisc rod"]["dimensions"])

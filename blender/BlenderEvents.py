@@ -37,9 +37,6 @@ class BlenderEvents:
 
         self.blenderOperationsQueueLock.release()
 
-        if len(self.blenderOperationsQueue) == 1:
-            operation()
-
     # Returns the first item from the BlenderOperationsQueue. Note: Uses a thread Lock.
     def popFirstFromBlenderOperationsQueue(self):
         
