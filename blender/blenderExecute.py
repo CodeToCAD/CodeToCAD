@@ -1,3 +1,4 @@
+from pathlib import Path
 from enum import Enum
 import bpy
 from utilities import *
@@ -95,6 +96,36 @@ def blenderAddPrimitive(
         dimensions.append(Dimension(1))
     
     BlenderPrimitives[primitiveName].blenderAddPrimitive(dimensions, keywordArguments or {})
+
+blenderFileImportTypes = {
+    "stl": lambda filePath: bpy.ops.import_mesh.stl(filepath=filePath),
+    "ply": lambda filePath: bpy.ops.import_mesh.ply(filepath=filePath),
+    "svg": lambda filePath: bpy.ops.import_curve.svg(filepath=filePath),
+    "png": lambda filePath: bpy.ops.image.open(filepath=filePath),
+    "fbx": lambda filePath: bpy.ops.import_scene.fbx(filepath=filePath),
+    "gltf": lambda filePath: bpy.ops.import_scene.gltf(filepath=filePath),
+    "obj": lambda filePath: bpy.ops.import_scene.obj(filepath=filePath),
+    "x3d": lambda filePath: bpy.ops.import_scene.x3d(filepath=filePath)
+}
+
+def blenderImportFile(filePath:str, fileType:str=None):
+    
+    path = Path(filePath)
+
+    assert \
+        path.is_file(),\
+            "File {} does not exist".format(filePath)
+    
+    fileType = fileType or path.suffix.replace(".","")
+
+    assert \
+        fileType in blenderFileImportTypes, \
+            "File type {} is not supported".format(fileType)
+
+    assert blenderFileImportTypes[fileType](filePath) == {'FINISHED'}, \
+            "Could not import {}".format(filePath)
+    
+
 
 def blenderUpdateObjectName(oldName, newName):
 

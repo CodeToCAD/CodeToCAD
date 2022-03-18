@@ -8,6 +8,10 @@ if scriptDir not in sys.path:
 import bpy
 from textToBlender import shape
 
+
+sprocket = {
+  "source": str(Path(__file__).parent.absolute()) + "/testFiles/6280K267_Roller Chain Sprocket.stl"
+}
 features = {
   "Half Axle rod": {
     "Source": "cylinder",
@@ -91,18 +95,20 @@ features = {
   }
 }
 
-shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"])
-shape("Axle teeth").primitive("cube", features["Axle teeth"]["dimensions"])
-shape("bearing rod").primitive("cube", features["bearing rod"]["dimensions"])
-shape("breakdisc rod").primitive("cube", features["breakdisc rod"]["dimensions"])
-shape("Half Axle rod with teeth").primitive("cube", features["Half Axle rod with teeth"]["dimensions"])
-shape("Half Axle rod with teeth and bearing rod").primitive("cube", features["Half Axle rod with teeth and bearing rod"]["dimensions"])
-shape("Half Axle rod with teeth and bearing rod and breakdisc rod").primitive("cube", features["Half Axle rod with teeth and bearing rod and breakdisc rod"]["dimensions"])
-shape("Axle rod")
-shape("breakdisc core").primitive("cube", features["breakdisc core"]["dimensions"])
-shape("breakdisc mount core").primitive("cube", features["breakdisc mount core"]["dimensions"])
-shape("breakdisc mount hole").primitive("cube", features["breakdisc mount hole"]["dimensions"])
-shape("breakdisc mount holes")
-shape("breakdisc mount")
-shape("breakdisc left")
-shape("breakdisc right")
+shape("sprocket").fromFile(sprocket["source"])
+
+# shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"])
+# shape("Axle teeth").primitive("cube", features["Axle teeth"]["dimensions"])
+# shape("bearing rod").primitive("cube", features["bearing rod"]["dimensions"])
+# shape("breakdisc rod").primitive("cube", features["breakdisc rod"]["dimensions"])
+# shape("Half Axle rod with teeth").primitive("cube", features["Half Axle rod with teeth"]["dimensions"])
+# shape("Half Axle rod with teeth and bearing rod").primitive("cube", features["Half Axle rod with teeth and bearing rod"]["dimensions"])
+# shape("Half Axle rod with teeth and bearing rod and breakdisc rod").primitive("cube", features["Half Axle rod with teeth and bearing rod and breakdisc rod"]["dimensions"])
+# shape("Axle rod")
+# shape("breakdisc core").primitive("cube", features["breakdisc core"]["dimensions"])
+# shape("breakdisc mount core").primitive("cube", features["breakdisc mount core"]["dimensions"])
+# shape("breakdisc mount hole").primitive("cube", features["breakdisc mount hole"]["dimensions"])
+# shape("breakdisc mount holes")
+# shape("breakdisc mount")
+# shape("breakdisc left")
+# shape("breakdisc right")

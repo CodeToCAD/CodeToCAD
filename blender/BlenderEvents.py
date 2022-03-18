@@ -265,7 +265,7 @@ Failed Operation: {}, Reason: {}
             print(
                 """ 
 Received Update Event From Blender: {} Type: {}
-CurrentOperationsCount: {}
+CurrentOperation: {}
 RemainingOperation: {}
 RemainingEventsCount: {}
                 """.format(

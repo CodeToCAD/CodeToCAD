@@ -109,3 +109,8 @@ shape("belt") \
 
 shape("bracelet") \
     .subtract("booleanbelt")
+
+# Remesh final shapes
+shape("belt").remesh()
+shape("bracelet").remesh()
+shape("button").remesh()

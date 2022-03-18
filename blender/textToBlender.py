@@ -1,4 +1,5 @@
 import math
+from pathlib import Path
 from utilities import *
 from blenderExecute import *
 from BlenderEvents import BlenderEvents
@@ -38,10 +39,39 @@ class shape:
         self.description = description
 
     def fromFile(self,
-    fileName:str,  \
+    filePath:str,  \
     fileType:str=None \
     ):
-        print("fromFile is not implemented") # implement 
+    
+        path = Path(filePath)
+
+        fileName = path.stem
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Importing {}".format(fileName),
+            lambda: blenderImportFile(filePath, fileType),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == fileName
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Waiting for mesh {} to be created".format(fileName),
+            lambda: True,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == fileName
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Renaming object {} to {}".format(fileName, self.name),
+            lambda: blenderUpdateObjectName(fileName, self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Renaming mesh {} to {}".format(fileName, self.name),
+            lambda: blenderUpdateObjectMeshName(self.name, self.name)
+            ,
+            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
+        )
+        
+        
+
         return self
 
     def cloneShape(self,
@@ -64,23 +94,23 @@ class shape:
         expectedNameOfObjectInBlender = primitiveName[0].upper() + primitiveName[1:]
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Object of type {} created".format(primitiveName),
+            "Creating primitive {}".format(primitiveName),
             lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == expectedNameOfObjectInBlender
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Mesh of type {} created".format(primitiveName),
+            "Waiting for mesh {} to be created".format(primitiveName),
             lambda: True,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == expectedNameOfObjectInBlender
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Object of type {} renamed to {}".format(primitiveName, self.name),
+            "Renaming object {} to {}".format(primitiveName, self.name),
             lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Mesh of type {} renamed to {}".format(primitiveName, self.name),
+            "Renaming mesh {} to {}".format(primitiveName, self.name),
             lambda: blenderUpdateObjectMeshName(self.name, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
@@ -133,7 +163,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" translated".format(self.name),
+            "Translating {}".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.RELATIVE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -151,7 +181,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" position changed".format(self.name),
+            "Setting position of {}".format(self.name),
             lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -169,7 +199,7 @@ class shape:
             dimensionsList.append(Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" scale transformed".format(self.name),
+            "Scaling {}".format(self.name),
             lambda: blenderScaleObject(self.name, dimensionsList),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -188,7 +218,7 @@ class shape:
         angleListRadians = [angle.toRadians() for angle in angleList]
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" rotated".format(self.name),
+            "Rotating {}".format(self.name),
             lambda: blenderRotateObject(self.name, angleListRadians, BlenderRotationTypes.EULER),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -200,13 +230,13 @@ class shape:
         expectedNameOfObjectInBlender = self.name
         self.name = name
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" renamed to {}".format(expectedNameOfObjectInBlender, self.name),
+            "Renaming object {} to {}".format(expectedNameOfObjectInBlender, self.name),
             lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Mesh with name {} renamed to {}".format(expectedNameOfObjectInBlender, self.name),
+            "Renaming mesh {} to {}".format(expectedNameOfObjectInBlender, self.name),
             lambda: blenderUpdateObjectMeshName(self.name, self.name)
             ,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
@@ -217,7 +247,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying BOOLEAN UNION modifier".format(self.name),
+            "Applying Boolean Union modifier to {}".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.UNION, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -227,7 +257,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying BOOLEAN DIFFERENCE modifier".format(self.name),
+            "Applying Boolean Difference modifier to {}".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.DIFFERENCE, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -237,7 +267,7 @@ class shape:
     withShapeName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying BOOLEAN INTERSECT modifier".format(self.name),
+            "Applying Boolean Intersect modifier to {}".format(self.name),
             lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.INTERSECT, withShapeName),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -259,18 +289,18 @@ class shape:
         return self
 
     def remesh(self,
-    strategy:str,  \
-    amount:float \
+    strategy:str = None,  \
+    amount:float = None \
     ):
     
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying EDGE_SPLIT modifier".format(self.name),
+            "Applying EdgeSplit modifier to {}".format(self.name),
             lambda: BlenderModifiers.EDGE_SPLIT.blenderAddModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying SUBSURF modifier".format(self.name),
-            lambda: BlenderModifiers.SUBSURF.blenderAddModifier(self.name, {"name": "Subdivision", "levels": 3}),
+            "Applying Subdivision Surface modifier to {}".format(self.name),
+            lambda: BlenderModifiers.SUBSURF.blenderAddModifier(self.name, {"name": "Subdivision", "levels": 2}),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
 
@@ -291,7 +321,7 @@ class shape:
     def apply(self):
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" applying dependency graph modifiers to mesh".format(self.name),
+            "Applying Dependency Graph changes to {}. This permanently changes the mesh.".format(self.name),
             lambda: blenderApplyDependencyGraph(self.name),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
@@ -408,14 +438,14 @@ class scene:
     ):
         unitSystem =  unit.getSystem()
         unitName =  unit.name
-        blenderEvents.addToBlenderOperationsQueue("Set document units to {} {}".format(unitSystem, unitName), lambda: blenderSetDefaultUnit(unitSystem, unitName, self.name), 
+        blenderEvents.addToBlenderOperationsQueue("Setting document units to {} {}".format(unitSystem, unitName), lambda: blenderSetDefaultUnit(unitSystem, unitName, self.name), 
         lambda update: update.id.name == "Scene")
         return self
 
     def createGroup(self,
     name:str \
     ):
-        blenderEvents.addToBlenderOperationsQueue("Create a {} collection".format(name), lambda: blenderCreateCollection(name, self.name), 
+        blenderEvents.addToBlenderOperationsQueue("Creating a {} collection".format(name), lambda: blenderCreateCollection(name, self.name), 
         lambda update: update.id.name == name)
         return self
 
@@ -423,7 +453,7 @@ class scene:
     name:str,  \
     removeNestedShapes:bool \
     ):
-        blenderEvents.addToBlenderOperationsQueue("Remove the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
+        blenderEvents.addToBlenderOperationsQueue("Removing the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
         lambda update: update.id.name == "Scene")
         return self
         
@@ -432,7 +462,7 @@ class scene:
     groupName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Assign object {} to {} collection".format(shapeName, groupName),
+            "Removing {} from collection {}".format(shapeName, groupName),
             lambda: blenderRemoveObjectFromCollection(shapeName, groupName), 
             lambda update: update.id.name == groupName
             )
@@ -445,7 +475,7 @@ class scene:
     removeFromOtherGroups:bool = True \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Assign object {} to {} collection".format(shapeName, groupName),
+            "Assigning object {} to collection {}".format(shapeName, groupName),
             lambda: blenderAssignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
             )

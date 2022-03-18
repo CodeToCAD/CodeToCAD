@@ -19,7 +19,7 @@
                 "action": "create",
                 "information": "Adds geometry to a shape from a file. If the shape does not exist, this will create it.",
                 "parameters": {
-                    "fileName": {
+                    "filePath": {
                         "type": "string"
                     },
                     "fileType": {
