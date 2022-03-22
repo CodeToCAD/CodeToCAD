@@ -1,4 +1,5 @@
 from pathlib import Path
+from mathutils import Vector
 from enum import Enum
 import bpy
 from utilities import *
@@ -425,3 +426,99 @@ def blenderSetObjectVisibility(existingObjectName, isVisible):
         "Object {} does not exist".format(existingObjectName)
     
     blenderObject.hide_set(not isVisible)
+
+def blenderAddConstraint(shapeName, constraintType, keywordArguments):
+    
+    blenderObject = bpy.data.objects.get(shapeName)
+
+    assert \
+        blenderObject != None, \
+            "Object {} does not exists".format(shapeName)
+
+    # TODO
+
+def blenderAddJoint(shape1Name, shape2Name, shape1Landmark, shape2Landmark):
+    pass
+
+def blenderMakeParent(name, parentName):
+    blenderObject = bpy.data.objects.get(name)
+    blenderParentObject = bpy.data.objects.get(parentName)
+
+    assert \
+        blenderObject != None, \
+            "Object {} does not exists".format(name)
+    assert \
+        blenderParentObject != None, \
+            "Object {} does not exists".format(name)
+
+    blenderObject.parent = blenderParentObject
+
+def blenderAddObject(name):
+    blenderObject = bpy.data.objects.get(name)
+
+    assert \
+        blenderObject == None, \
+            "Object {} already exists".format(name)
+
+    return bpy.data.objects.new( name , None )
+
+def blenderAddLandmark(objectName, landmarkName, localPosition):
+    
+    blenderObject = bpy.data.objects.get(objectName)
+
+    assert \
+        blenderObject != None, \
+            "Object {} does not exists".format(objectName)
+
+    landmarkObject = blenderAddObject(landmarkName)
+
+    blenderAssignObjectToCollection(landmarkName)
+
+    blenderMakeParent(landmarkName, objectName)
+    
+    relativeObjectBoundaries = bounds(blenderObject, False)
+
+    localPosition:list[Dimension] = getDimensionsFromString(localPosition, relativeObjectBoundaries) or []
+
+    localPosition = convertDimensionsToBlenderUnit(localPosition)
+
+    while len(localPosition) < 3:
+        localPosition.append(Dimension(1))
+
+    landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
+
+
+
+# From https://blender.stackexchange.com/a/32288/138679
+# obj = bpy.context.object
+# object_details = bounds(obj)
+# a = object_details.z.max
+# b = object_details.z.min
+# c = object_details.z.distance
+def bounds(obj, local=False):
+
+    local_coords = obj.bound_box[:]
+    om = obj.matrix_world
+
+    if not local:    
+        worldify = lambda p: om @ Vector(p[:]) 
+        coords = [worldify(p).to_tuple() for p in local_coords]
+    else:
+        coords = [p[:] for p in local_coords]
+
+    rotated = zip(*coords[::-1])
+
+    push_axis = []
+    for (axis, _list) in zip('xyz', rotated):
+        info = lambda: None
+        info.max = max(_list)
+        info.min = min(_list)
+        info.distance = info.max - info.min
+        push_axis.append(info)
+
+    import collections
+
+    originals = dict(zip(['x', 'y', 'z'], push_axis))
+
+    o_details = collections.namedtuple('object_details', 'x y z')
+    return o_details(**originals)

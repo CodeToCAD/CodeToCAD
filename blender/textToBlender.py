@@ -327,16 +327,30 @@ class shape:
         )
 
         return self
+
+    def landmark(self, landmarkName, localPosition):
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating landmark {} on {}.".format(landmarkName, self.name),
+            lambda: blenderAddLandmark(self.name, landmarkName, localPosition),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
+
         
 
 class landmark: 
     # Text to 3D Modeling Automation Capabilities.
 
     localToShapeWithName = None
+    landmarkName = None
 
     def __init__(self,
+    landmarkName:str,
     localToShapeWithName:str=None \
     ):
+        self.landmarkName = landmarkName
         self.localToShapeWithName = localToShapeWithName
 
     def vertices(self,
@@ -353,7 +367,7 @@ class landmark:
 
     def linearPattern(self
     ):
-        print("linearPattern is not implemented") # implement 
+        print("linearPattern is not implemented") #      implement 
         return self
 
     def circularPattern(self
@@ -371,8 +385,8 @@ class joint:
 
     shape1Name = None
     shape2Name = None
-    shape1LandmarkName = None
-    shape2LandmarkName = None
+    shape1Landmark = None
+    shape2Landmark = None
     jointType = None
     initialRotation = None
     limitRotation = None
@@ -381,8 +395,8 @@ class joint:
     def __init__(self,
     shape1Name:str, \
     shape2Name:str, \
-    shape1LandmarkName:str, \
-    shape2LandmarkName:str, \
+    shape1Landmark:str, \
+    shape2Landmark:str, \
     jointType:str, \
     initialRotation:str, \
     limitRotation:str, \
@@ -390,8 +404,8 @@ class joint:
     ):
         self.shape1Name = shape1Name
         self.shape2Name = shape2Name
-        self.shape1LandmarkName = shape1LandmarkName
-        self.shape2LandmarkName = shape2LandmarkName
+        self.shape1Landmark = shape1Landmark
+        self.shape2Landmark = shape2Landmark
         self.jointType = jointType
         self.initialRotation = initialRotation
         self.limitRotation = limitRotation

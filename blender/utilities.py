@@ -1,6 +1,7 @@
 from enum import Enum
 import re
 import math
+from xml.etree.ElementTree import fromstring
 
 class Units(Enum):
     # define the == operator, otherwise we can't compare enums, thanks python
@@ -147,7 +148,10 @@ class LengthUnit(Units):
             "ft": LengthUnit.foot,
             "mi": LengthUnit.mile
         }
-        return aliases[fromString.lower()]
+
+        fromString = fromString.lower()
+
+        return aliases[fromString] if fromString in aliases else None
 
     
     
@@ -181,7 +185,7 @@ class Dimension():
           self.unit = unit or None
       
       # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
-      if re.match("[+\-*\/%\d]+", value):
+      if re.match("[+\-*\/%\d\(\)]+", value):
           self.value = eval(value)
       else:
           self.value = None
@@ -190,8 +194,9 @@ def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
     # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
     return value * (unit.value/targetUnit.value)
 
-def getDimensionsFromString(dimensions):
+def getDimensionsFromString(dimensions, relativeObjectBoundaries=None):
 
+    # This is a tech debt, we need to separate the logic for figuring out default units from being dependent on the input being a string.
     if type(dimensions) == list:
         dimensions = ",".join(
             map(
@@ -207,16 +212,34 @@ def getDimensionsFromString(dimensions):
         # besides accepting a unit in the dimension, e.g. 1m,1cm,1,m. we also
         # accept the last input as a default unit
         # e.g. 1,1,1,m => default value meter
-        defaultUnit = re.search('[A-Za-z]+$', dimensionsArray[-1].strip())
-        # check if the last value contains only a unit:
-        if defaultUnit and len(defaultUnit[0]) == len(dimensionsArray[-1].strip()):
-            defaultUnit = dimensionsArray.pop().strip()
-        else:
-            defaultUnit = None
+        lastDimension = dimensionsArray[-1].strip()
+        defaultUnit = None
+        if lastDimension not in ["min", "max", "center"]:
+            defaultUnit = re.search('[A-Za-z]+$', lastDimension)
+            # check if the last value contains only a unit:
+            if defaultUnit and len(defaultUnit[0]) == len(lastDimension):
+                defaultUnit = dimensionsArray.pop().strip()
+            else:
+                defaultUnit = None
 
         defaultUnit = LengthUnit.fromString(defaultUnit) if defaultUnit else None
-        
-        parsedDimensions = [Dimension(dimension, defaultUnit) for dimension in dimensionsArray ]
+
+        parsedDimensions = []
+
+        for index, dimension in enumerate(dimensionsArray):
+            dimension = dimension.lower()
+            if relativeObjectBoundaries != None and index < 3:
+                boundary = getattr(relativeObjectBoundaries, "xyz"[index])
+                if "min" in dimension:
+                    dimension = dimension.replace("min","({})".format(boundary.min))
+                if "max" in dimension:
+                    dimension = dimension.replace("max","({})".format(boundary.max))
+                if "center" in dimension:
+                    average = (boundary.max+boundary.min)/2
+                    dimension = dimension.replace("center","({})".format(average))
+
+            parsedDimensions.append(Dimension(dimension, defaultUnit))
+
     elif dimensions and type(dimensions) == str:
         parsedDimensions = [Dimension(dimensions)]
     else:
