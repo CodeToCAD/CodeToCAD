@@ -476,7 +476,7 @@ def blenderAddLandmark(objectName, landmarkName, localPosition):
 
     blenderMakeParent(landmarkName, objectName)
     
-    boundingBox = getBlenderBoundingBox(blenderObject)
+    boundingBox = blenderGetBoundingBox(blenderObject)
 
     localPosition:list[Dimension] = getDimensionsFromString(localPosition, boundingBox) or []
 
@@ -488,9 +488,38 @@ def blenderAddLandmark(objectName, landmarkName, localPosition):
     landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
 
 
+# uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
+def blenderGetClosestPointsToVertex(objectName, vertex):
+    
+    blenderObject = bpy.data.objects.get(objectName)
+
+    assert \
+        blenderObject != None, \
+            "Object {} does not exists".format(objectName)
+
+            
+    assert \
+        len(vertex) == 3, \
+            "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
+
+    # polygonIndex references an index at blenderObject.data.polygons[polygonIndex], in other words, the face or edge data
+    [isFound, closestPoint, normal, polygonIndex] = blenderObject.closest_point_on_mesh(vertex)
+
+    assert \
+        isFound, \
+            "Could not find a point close to {} on {}".format(vertex, objectName)
+
+    blenderPolygon, blenderVertices = None
+
+    if polygonIndex and polygonIndex != -1:
+        blenderPolygon = blenderObject.data.polygons[polygonIndex]
+        blenderVertices = [blenderObject.data.vertices[vertexIndex] for vertexIndex in blenderObject.data.polygons[polygonIndex].vertices]
+
+    return [closestPoint, normal, blenderPolygon, blenderVertices]
+
 
 # References https://blender.stackexchange.com/a/32288/138679
-def getBlenderBoundingBox(obj):
+def blenderGetBoundingBox(obj):
 
     local_coords = obj.bound_box[:]
     om = obj.matrix_world
