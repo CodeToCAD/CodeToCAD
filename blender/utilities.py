@@ -1,7 +1,28 @@
 from enum import Enum
 import re
 import math
-from xml.etree.ElementTree import fromstring
+
+class BoundaryAxis:
+    min = None
+    max = None
+    center = None
+    range = None
+    def __init__(self, min=None, max=None, center=None, range=None):
+        self.min = min
+        self.max = max
+        self.center = center
+        self.range = range
+
+
+class BoundaryBox:
+    x = BoundaryAxis()
+    y = BoundaryAxis()
+    z = BoundaryAxis()
+    def __init__(self, x:BoundaryAxis=BoundaryAxis(), y:BoundaryAxis=BoundaryAxis(), z:BoundaryAxis=BoundaryAxis()):
+        self.x = x
+        self.y = y
+        self.z = z
+
 
 class Units(Enum):
     # define the == operator, otherwise we can't compare enums, thanks python
@@ -9,6 +30,7 @@ class Units(Enum):
         lhs = self.name if self else None
         rhs = other.name if other else None
         return lhs == rhs
+
 
 class AngleUnit(Units):
     RADIANS = 0
@@ -28,6 +50,7 @@ class AngleUnit(Units):
             "deg": AngleUnit.DEGREES
         }
         return aliases[fromString.lower()]
+
 
 class Angle():
 
@@ -194,7 +217,7 @@ def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
     # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
     return value * (unit.value/targetUnit.value)
 
-def getDimensionsFromString(dimensions, relativeObjectBoundaries=None):
+def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
 
     # This is a tech debt, we need to separate the logic for figuring out default units from being dependent on the input being a string.
     if type(dimensions) == list:
@@ -228,15 +251,14 @@ def getDimensionsFromString(dimensions, relativeObjectBoundaries=None):
 
         for index, dimension in enumerate(dimensionsArray):
             dimension = dimension.lower()
-            if relativeObjectBoundaries != None and index < 3:
-                boundary = getattr(relativeObjectBoundaries, "xyz"[index])
+            if boundingBox != None and index < 3:
+                boundary = getattr(boundingBox, "xyz"[index])
                 if "min" in dimension:
                     dimension = dimension.replace("min","({})".format(boundary.min))
                 if "max" in dimension:
                     dimension = dimension.replace("max","({})".format(boundary.max))
                 if "center" in dimension:
-                    average = (boundary.max+boundary.min)/2
-                    dimension = dimension.replace("center","({})".format(average))
+                    dimension = dimension.replace("center","({})".format(boundary.center))
 
             parsedDimensions.append(Dimension(dimension, defaultUnit))
 
