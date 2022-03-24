@@ -476,9 +476,9 @@ def blenderAddLandmark(objectName, landmarkName, localPosition):
 
     blenderMakeParent(landmarkName, objectName)
     
-    relativeObjectBoundaries = bounds(blenderObject, False)
+    boundingBox = getBlenderBoundingBox(blenderObject)
 
-    localPosition:list[Dimension] = getDimensionsFromString(localPosition, relativeObjectBoundaries) or []
+    localPosition:list[Dimension] = getDimensionsFromString(localPosition, boundingBox) or []
 
     localPosition = convertDimensionsToBlenderUnit(localPosition)
 
@@ -489,36 +489,39 @@ def blenderAddLandmark(objectName, landmarkName, localPosition):
 
 
 
-# From https://blender.stackexchange.com/a/32288/138679
-# obj = bpy.context.object
-# object_details = bounds(obj)
-# a = object_details.z.max
-# b = object_details.z.min
-# c = object_details.z.distance
-def bounds(obj, local=False):
+# References https://blender.stackexchange.com/a/32288/138679
+def getBlenderBoundingBox(obj):
 
     local_coords = obj.bound_box[:]
     om = obj.matrix_world
+    # matrix multiple world transform by all the vertices in the boundary
+    coords = [(om @ Vector(p[:])).to_tuple() for p in local_coords]
+    coords = coords[::-1]
+    # Coords should be a 1x8 array containing 1x3 vertices, example:
+    # [(1.0, 1.0, -1.0), (1.0, 1.0, 1.0), (1.0, -1.0, 1.0), (1.0, -1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, 1.0, 1.0), (-1.0, -1.0, 1.0), (-1.0, -1.0, -1.0)]
+    
+    # After zipping we should get
+    # x (1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0)
+    # y (1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0)
+    # z (-1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0)
+    zipped = zip('xyz', zip(*coords))
 
-    if not local:    
-        worldify = lambda p: om @ Vector(p[:]) 
-        coords = [worldify(p).to_tuple() for p in local_coords]
-    else:
-        coords = [p[:] for p in local_coords]
+    boundingBox = BoundaryBox()
 
-    rotated = zip(*coords[::-1])
-
-    push_axis = []
-    for (axis, _list) in zip('xyz', rotated):
-        info = lambda: None
-        info.max = max(_list)
-        info.min = min(_list)
-        info.distance = info.max - info.min
-        push_axis.append(info)
-
-    import collections
-
-    originals = dict(zip(['x', 'y', 'z'], push_axis))
-
-    o_details = collections.namedtuple('object_details', 'x y z')
-    return o_details(**originals)
+    for (axis, _list) in zipped:
+    
+        minVal = min(_list)
+        maxVal = max(_list)
+    
+        setattr(
+            boundingBox,
+            axis,
+            BoundaryAxis(
+                minVal,
+                maxVal,
+                (maxVal+minVal)/2,
+                maxVal - minVal
+            )
+        )
+    
+    return boundingBox
