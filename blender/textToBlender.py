@@ -333,7 +333,7 @@ class shape:
         blenderEvents.addToBlenderOperationsQueue(
             "Creating landmark {} on {}.".format(landmarkName, self.name),
             lambda: blenderAddLandmark(self.name, landmarkName, localPosition),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == landmarkName
         )
 
         return self
@@ -397,10 +397,10 @@ class joint:
     shape2Name:str, \
     shape1Landmark:str, \
     shape2Landmark:str, \
-    jointType:str, \
-    initialRotation:str, \
-    limitRotation:str, \
-    limitTranslation:str \
+    jointType:str = None, \
+    initialRotation:str = None, \
+    limitRotation:str = None, \
+    limitTranslation:str = None \
     ):
         self.shape1Name = shape1Name
         self.shape2Name = shape2Name
@@ -410,6 +410,18 @@ class joint:
         self.initialRotation = initialRotation
         self.limitRotation = limitRotation
         self.limitTranslation = limitTranslation
+
+        
+    def transformLandmarkOntoAnother(self):
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Transforming {} landmark {} onto {} landmark {}".format(self.shape1Name, self.shape2Name, self.shape1Landmark, self.shape2Landmark),
+            lambda: blenderTransformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark, self.shape2Landmark),
+            # lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name,
+            None
+        )
+
+        return self
 
 class material: 
     # Text to 3D Modeling Automation Capabilities.
