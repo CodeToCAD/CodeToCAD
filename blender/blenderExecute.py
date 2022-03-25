@@ -402,6 +402,11 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene 
     
     collection.objects.link(blenderObject)
 
+def blenderCreateArmatures(name):
+    armature = bpy.data.armatures.new(name)
+    object = bpy.data.objects.new(name, armature)
+    
+
 
 def blenderApplyDependencyGraph(existingObjectName, removeModifiers = True):
     
@@ -439,6 +444,22 @@ def blenderAddConstraint(shapeName, constraintType, keywordArguments):
 
 def blenderAddJoint(shape1Name, shape2Name, shape1Landmark, shape2Landmark):
     pass
+
+def blenderTransformLandmarkOntoAnother(shape1Name, shape2Name, shape1Landmark, shape2Landmark):
+
+    blenderObject1 = bpy.data.objects.get(shape1Name)
+    [blenderObject1Landmark] = filter(lambda child: child.name == shape1Landmark, blenderObject1.children)
+    blenderObject2 = bpy.data.objects.get(shape2Name)
+    [blenderObject2Landmark] = filter(lambda child: child.name == shape2Landmark, blenderObject2.children)
+
+    # transform landmark1 onto landmark2
+    t1 = blenderObject1Landmark.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
+    # transform object onto landmark1
+    t2 = blenderObject1.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
+
+    # transform the object onto landmark1, the result onto landmark2, then restore the transform of the object onto the landmark to maintain their position 
+    blenderObject1.matrix_world = blenderObject1.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
+
 
 def blenderMakeParent(name, parentName):
     blenderObject = bpy.data.objects.get(name)
