@@ -44,10 +44,12 @@ class AngleUnit(Units):
             "radians": AngleUnit.RADIANS,
             "rad": AngleUnit.RADIANS,
             "rads": AngleUnit.RADIANS,
+            "r": AngleUnit.RADIANS,
             "degrees": AngleUnit.DEGREES,
             "degree": AngleUnit.DEGREES,
             "degs": AngleUnit.DEGREES,
-            "deg": AngleUnit.DEGREES
+            "deg": AngleUnit.DEGREES,
+            "d": AngleUnit.DEGREES
         }
         return aliases[fromString.lower()]
 

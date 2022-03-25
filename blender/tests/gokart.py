@@ -6,9 +6,9 @@ if scriptDir not in sys.path:
 
 
 import bpy
-from textToBlender import shape, scene, BlenderLength
+from textToBlender import shape, scene, BlenderLength, joint
 
-scene().setDefaultUnit(BlenderLength.INCHES)
+# scene().setDefaultUnit(BlenderLength.INCHES)
 
 sprocket = {
   "source": str(Path(__file__).parent.absolute()) + "/testFiles/6280K267_Roller Chain Sprocket.stl"
@@ -98,7 +98,10 @@ features = {
 
 # shape("sprocket").fromFile(sprocket["source"]).scale(",3in,")
 
-shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("top", "center,center,max")
+shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("top", "center,center,max").rotate(["10d","20d",0])
+shape("Half Axle rod2").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("bottom", "center,center,min").translate([0,0,30])
+
+joint("Half Axle rod2", "Half Axle rod", "bottom", "top").transformLandmarkOntoAnother()
 # shape("Axle teeth").primitive("cube", features["Axle teeth"]["dimensions"])
 # shape("bearing rod").primitive("cube", features["bearing rod"]["dimensions"])
 # shape("breakdisc rod").primitive("cube", features["breakdisc rod"]["dimensions"])
