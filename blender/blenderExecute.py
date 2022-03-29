@@ -9,6 +9,7 @@ class BlenderModifiers(Enum):
     EDGE_SPLIT = 0
     SUBSURF = 1
     BOOLEAN = 2
+    MIRROR = 3 # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
 
@@ -506,7 +507,7 @@ def blenderAddObject(name):
 
     return bpy.data.objects.new( name , None )
 
-def blenderAddLandmark(objectName, landmarkName, localPosition):
+def blenderCreateLandmark(objectName, landmarkName, localPosition):
     blenderObject = bpy.data.objects.get(objectName)
 
     assert \
