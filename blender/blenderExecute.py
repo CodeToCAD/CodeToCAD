@@ -476,12 +476,12 @@ def blenderTransformLandmarkOntoAnother(shape1Name, shape2Name, shape1Landmark, 
     [blenderObject2Landmark] = filter(lambda child: child.name == shape2Landmark, blenderObject2.children)
 
     # transform landmark1 onto landmark2
-    t1 = blenderObject1Landmark.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
+    t1 = blenderObject2Landmark.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
     # transform object onto landmark1
-    t2 = blenderObject1.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
+    t2 = blenderObject2.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
 
     # transform the object onto landmark1, the result onto landmark2, then restore the transform of the object onto the landmark to maintain their position 
-    blenderObject1.matrix_world = blenderObject1.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
+    blenderObject2.matrix_world = blenderObject2.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
 
 
 def blenderMakeParent(name, parentName):
