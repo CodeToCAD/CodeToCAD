@@ -329,13 +329,13 @@ class shape:
         return self
 
     def landmark(self, landmarkName, localPosition):
-            
-        landmarkName = "{}_{}".format(self.name, landmarkName)
+
+        landmarkObject = landmark(landmarkName, self.name)
         
         blenderEvents.addToBlenderOperationsQueue(
             "Creating landmark {} on {}.".format(landmarkName, self.name),
-            lambda: blenderAddLandmark(self.name, landmarkName, localPosition),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == landmarkName
+            lambda: blenderAddLandmark(self.name, landmarkObject.landmarkName, localPosition),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == landmarkObject.landmarkName
         )
 
         return self
@@ -352,8 +352,12 @@ class landmark:
     landmarkName:str,
     localToShapeWithName:str=None \
     ):
-        self.landmarkName = landmarkName
         self.localToShapeWithName = localToShapeWithName
+        
+        if localToShapeWithName:
+            self.landmarkName = "{}_{}".format(localToShapeWithName, landmarkName)
+        else:
+            self.landmarkName = landmarkName
 
     def vertices(self,
     locations:str \
@@ -387,8 +391,8 @@ class joint:
 
     shape1Name = None
     shape2Name = None
-    shape1Landmark = None
-    shape2Landmark = None
+    shape1Landmark:landmark = None
+    shape2Landmark:landmark = None
     jointType = None
     initialRotation = None
     limitRotation = None
@@ -397,8 +401,8 @@ class joint:
     def __init__(self,
     shape1Name:str, \
     shape2Name:str, \
-    shape1Landmark:str, \
-    shape2Landmark:str, \
+    shape1LandmarkName:str, \
+    shape2LandmarkName:str, \
     jointType:str = None, \
     initialRotation:str = None, \
     limitRotation:str = None, \
@@ -406,8 +410,8 @@ class joint:
     ):
         self.shape1Name = shape1Name
         self.shape2Name = shape2Name
-        self.shape1Landmark = shape1Landmark
-        self.shape2Landmark = shape2Landmark
+        self.shape1Landmark = landmark(shape1LandmarkName, shape1Name)
+        self.shape2Landmark = landmark(shape2LandmarkName, shape2Name)
         self.jointType = jointType
         self.initialRotation = initialRotation
         self.limitRotation = limitRotation
@@ -417,10 +421,9 @@ class joint:
     def transformLandmarkOntoAnother(self):
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Transforming {} landmark {} onto {} landmark {}".format(self.shape1Name, self.shape2Name, self.shape1Landmark, self.shape2Landmark),
-            lambda: blenderTransformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark, self.shape2Landmark),
-            # lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name,
-            None
+            "Transforming {} landmark {} onto {} landmark {}".format(self.shape1Name, self.shape1Landmark.landmarkName, self.shape2Name, self.shape2Landmark.landmarkName),
+            lambda: blenderTransformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark.landmarkName, self.shape2Landmark.landmarkName),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.shape2Landmark.landmarkName,
         )
 
         return self
