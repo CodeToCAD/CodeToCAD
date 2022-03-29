@@ -8,48 +8,99 @@ if scriptDir not in sys.path:
 import bpy
 from textToBlender import shape, scene, BlenderLength, joint
 
+def createFeature(name, feature):
+  source = feature["source"]  
+  dimensions = feature["dimensions"]
+
+  shape(name).primitive(source, dimensions) \
+    .rotate("0,90d,0")
+
+  landmarks = feature["landmarks"]
+  landmarks_split = [landmark.split(",") for landmark in landmarks]
+
+  for landmark in landmarks_split:
+    shape(name).landmark(landmark[0], landmark[1:])
 # scene().setDefaultUnit(BlenderLength.INCHES)
 
-sprocket = {
-  "source": str(Path(__file__).parent.absolute()) + "/testFiles/6280K267_Roller Chain Sprocket.stl"
-  }
+# sprocket = {
+#   "source": str(Path(__file__).parent.absolute()) + "/testFiles/6280K267_Roller Chain Sprocket.stl"
+#   }
 features = {
   "Half Axle rod": {
-    "Source": "cylinder",
+    "source": "cylinder",
     "dimensions": "3/8,21, in",
     "landmarks": [
-        "teethBegin,1,center,center,in",
-        "teethEnd,2.5,center,center,in",
-        "bearingEnd, 7,center,center,in",
-        "breakDiscStart,11,center,center,in",
-        "breakDiscEnd,15,center,center,in"
+        "teethBegin,min+1,center,center,in",
+        "teethEnd,min+2.5,center,center,in",
+        "bearingEnd, min+7,center,center,in",
+        "breakDiscStart,min+11,center,center,in",
+        "breakDiscEnd,min+15,center,center,in"
     ]
   },
-  "Axle teeth": {
-    "Source": "teeth",
-    "dimensions": "1.5,1,1,in",
-    "landmarks": ["left,min,center,center,in"],
-  },
-  "bearing rod": {
-    "Source": "cylinder",
-    "dimensions": "4.5,1.15,1.15,in",
-    "landmarks": ["left,min,center,center,in"]
-  },
-  "breakdisc rod": {
-    "Source": "cylinder",
-    "dimensions": "14,1.35,1.35,in",
-    "landmarks": ["left,min,center,center,in"],
-  },
+  # "Axle teeth": {
+  #   # "source": "teeth",
+  #   "source": "cylinder",
+  #   "dimensions": "1,1.5,in",
+  #   "landmarks": ["left,min,center,center,in"],
+  # },
+  # "bearing rod": {
+  #   "source": "cylinder",
+  #   "dimensions": "1.15,4.5,in",
+  #   "landmarks": ["left,min,center,center,in"]
+  # },
+  # "breakdisc rod": {
+  #   "source": "cylinder",
+  #   "dimensions": "1.35,14,in",
+  #   "landmarks": ["left,min,center,center,in"],
+  # },
+  # "breakdisc core": {
+  #   "source": "cylinder",
+  #   "dimensions": "29/32,1,in",
+  #   "landmarks": ["breakHolesBegin, 0.5in,center,center"],
+  # },
+  # "breakdisc mount core": {
+  #   "source": "cylinder",
+  #   "dimensions": "2.9/32,0.5,in",
+  #   "landmarks": ["top,center,max,center"],
+  # },
+  # "breakdisc mount hole": {
+  #   "source": "cube",
+  #   "dimensions": "0.9,0.5,0.5,in",
+  #   "landmarks": ["bottomcenter,min,center,center",
+  #   "screwHole,center,11mm,center"],
+  # },
+
+
+
+  # "breakdisc mount holes": {
+  #   "source": "circle pattern (breakdisc mount hole, radius: 2.9/32, instances:4)",
+  # },
+  # "breakdisc mount": {
+  #   "source": "union(breakdisc mount holes, breakdisc mount core)",
+  # },
+  # "breakdisc left": {
+  #   "source": "union(breakdisc core, breakdisc mount)"
+  # },
+  # "breakdisc right": {
+  #   "source": "mirror (breakdisc left)",
+  # }
+}
+
+for feature in features:
+  createFeature(feature, features[feature])
+
+joints = {
+  
   "Half Axle rod with teeth": {
-    "Source": "union (half axle rod, axle teeth)",
+    "source": "union (half axle rod, axle teeth)",
     "dimensions": "21,3/8,3/8, in",
   },
   "Half Axle rod with teeth and bearing rod": {
-    "Source": "union (Half Axle rod with teeth, bearing rod)",
+    "source": "union (Half Axle rod with teeth, bearing rod)",
     "dimensions": "21,3/8,3/8, in",
   },
   "Half Axle rod with teeth and bearing rod and breakdisc rod": {
-    "Source": "union (Half Axle rod with teeth and bearing rod, breakdisc rod)",
+    "source": "union (Half Axle rod with teeth and bearing rod, breakdisc rod)",
     "dimensions": "21,3/8,3/8, in",
     "landmarks": ["teethBegin,1,center,center,in",
     "teethEnd,2.5,center,center,in",
@@ -59,49 +110,22 @@ features = {
     ]
   },
   "Axle rod": {
-    "Source": "mirror (Half Axle rod with teeth and bearing rod and breakdisc rod)",
+    "source": "mirror (Half Axle rod with teeth and bearing rod and breakdisc rod)",
     "landmarks": ["mirrored",
     "mirrored",
     "mirrored",
     "mirrored",
     "mirrored"]
   },
-  "breakdisc core": {
-    "Source": "cylinder",
-    "dimensions": "1,29/32,29/32, in",
-    "landmarks": ["breakHolesBegin, 0.5,center,center"],
-  },
-  "breakdisc mount core": {
-    "Source": "cylinder",
-    "dimensions": "0.5,2.9/32,2.9/32,",
-    "landmarks": ["top,center,max,center"],
-  },
-  "breakdisc mount hole": {
-    "Source": "cube",
-    "dimensions": "0.5,0.9,0.9",
-    "landmarks": ["bottomcenter,min,center",
-    "screwHole,center,11mm,center"],
-  },
-  "breakdisc mount holes": {
-    "Source": "circle pattern (breakdisc mount hole, radius: 2.9/32, instances:4)",
-  },
-  "breakdisc mount": {
-    "Source": "union(breakdisc mount holes, breakdisc mount core)",
-  },
-  "breakdisc left": {
-    "Source": "union(breakdisc core, breakdisc mount)"
-  },
-  "breakdisc right": {
-    "Source": "mirror (breakdisc left)",
-  }
+
 }
 
 # shape("sprocket").fromFile(sprocket["source"]).scale(",3in,")
 
-shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("top", "center,center,max").rotate(["10d","20d",0])
-shape("Half Axle rod2").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("bottom", "center,center,min").translate([0,0,30])
+# shape("Half Axle rod").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("top", "center,center,max").rotate(["10d","20d",0])
+# shape("Half Axle rod2").primitive("cylinder", features["Half Axle rod"]["dimensions"]).landmark("bottom", "center,center,min").translate([0,0,30])
 
-joint("Half Axle rod2", "Half Axle rod", "bottom", "top").transformLandmarkOntoAnother()
+# joint("Half Axle rod2", "Half Axle rod", "bottom", "top").transformLandmarkOntoAnother()
 # shape("Axle teeth").primitive("cube", features["Axle teeth"]["dimensions"])
 # shape("bearing rod").primitive("cube", features["bearing rod"]["dimensions"])
 # shape("breakdisc rod").primitive("cube", features["breakdisc rod"]["dimensions"])
