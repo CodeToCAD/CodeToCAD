@@ -329,6 +329,8 @@ class shape:
         return self
 
     def landmark(self, landmarkName, localPosition):
+            
+        landmarkName = "{}_{}".format(self.name, landmarkName)
         
         blenderEvents.addToBlenderOperationsQueue(
             "Creating landmark {} on {}.".format(landmarkName, self.name),

@@ -201,6 +201,23 @@ def blenderSetDefaultUnit(unitSystem, unitName, sceneName = "Scene"):
     blenderScene.unit_settings.system = unitSystem
     blenderScene.unit_settings.length_unit = unitName
 
+# references https://blender.stackexchange.com/a/159540/138679
+def blenderApplyObjectTransformations(shapeName):
+
+    blenderObject = bpy.data.objects.get(shapeName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
+
+    mb = blenderObject.matrix_basis
+    if hasattr(blenderObject.data, "transform"):
+        blenderObject.data.transform(mb)
+    for c in blenderObject.children:
+        c.matrix_local = mb @ c.matrix_local
+        
+    blenderObject.matrix_basis.identity()
+
 
 class BlenderRotationTypes(Enum):
     EULER = "rotation_euler"
@@ -226,6 +243,8 @@ rotationType:BlenderRotationTypes):
     rotationTuple = (rotationAngles[0].value, rotationAngles[1].value, rotationAngles[2].value)
 
     setattr(blenderObject, rotationType.value, rotationTuple)
+    
+    blenderApplyObjectTransformations(shapeName)
 
 
 class BlenderTranslationTypes(Enum):
@@ -247,6 +266,8 @@ def blenderTranslationObject(shapeName, translationDimensions:list[Dimension], t
     translationTuple = (translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
 
     setattr(blenderObject, translationType.value, translationTuple)
+
+    blenderApplyObjectTransformations(shapeName)
 
 
 class ScalingMethods(Enum):
@@ -321,6 +342,8 @@ def blenderScaleObject(
             z.value = z.value/sceneDimensions.z if z.unit != None else z.value
     
     blenderObject.scale = (x.value,y.value,z.value)
+
+    blenderApplyObjectTransformations(shapeName)
 
 
 # TODO: if object already exists, merge objects
@@ -484,7 +507,6 @@ def blenderAddObject(name):
     return bpy.data.objects.new( name , None )
 
 def blenderAddLandmark(objectName, landmarkName, localPosition):
-    
     blenderObject = bpy.data.objects.get(objectName)
 
     assert \

@@ -256,11 +256,11 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
             if boundingBox != None and index < 3:
                 boundary = getattr(boundingBox, "xyz"[index])
                 if "min" in dimension:
-                    dimension = dimension.replace("min","({})".format(boundary.min))
+                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.min, defaultBlenderUnit.value) ))
                 if "max" in dimension:
-                    dimension = dimension.replace("max","({})".format(boundary.max))
+                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.max, defaultBlenderUnit.value) ))
                 if "center" in dimension:
-                    dimension = dimension.replace("center","({})".format(boundary.center))
+                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.center, defaultBlenderUnit.value) ))
 
             parsedDimensions.append(Dimension(dimension, defaultUnit))
 
