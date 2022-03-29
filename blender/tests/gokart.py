@@ -54,14 +54,22 @@ axleRodParts = {
   }
 }
 
+scene().deleteGroup("Axle Parts", removeNestedShapes=True)
+scene().createGroup("Axle Parts")
+
 previousPart = None
 for axleRodPart in axleRodParts:
-  print("on axle rod", axleRodPart)
+  
   createFeature(axleRodPart, axleRodParts[axleRodPart])
+
+  scene().assignShapeToGroup(axleRodPart, "Axle Parts")
+  
   if previousPart != None:
-    print("on axle rod joint", previousPart , " right to ", axleRodPart, " left")
     joint(previousPart, axleRodPart, "right", "left").transformLandmarkOntoAnother()
+  
   previousPart = axleRodPart
+
+shape("axleRod").cloneShape("")
 
 
   # "breakdisc core": {

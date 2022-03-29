@@ -132,10 +132,21 @@ class shape:
         return self
 
     def mirror(self,
-    shapeName:str,  \
-    landmarkName:str \
+    mirrorAcrossShapeName:str, \
+    axis = (True, True, True)
     ):
-        print("mirror is not implemented") # implement 
+
+        properties = {
+            "modifiers": mirrorAcrossShapeName,
+            "use_axis": axis,
+            "use_mirror_merge": False
+        }
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying Mirror modifier to {}".format(self.name),
+            lambda: BlenderModifiers.MIRROR.blenderAddModifier(self.name, properties),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
         return self
 
     def pattern(self,
@@ -334,7 +345,7 @@ class shape:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Creating landmark {} on {}.".format(landmarkName, self.name),
-            lambda: blenderAddLandmark(self.name, landmarkObject.landmarkName, localPosition),
+            lambda: blenderCreateLandmark(self.name, landmarkObject.landmarkName, localPosition),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == landmarkObject.landmarkName
         )
 
