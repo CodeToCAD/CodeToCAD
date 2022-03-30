@@ -69,7 +69,7 @@ for axleRodPart in axleRodParts:
   
   previousPart = axleRodPart
 
-shape("axleRod").cloneShape("")
+# shape("axleRod").cloneShape("")
 
 
   # "breakdisc core": {
