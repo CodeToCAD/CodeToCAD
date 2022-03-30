@@ -54,23 +54,29 @@ axleRodParts = {
   }
 }
 
-scene().deleteGroup("Axle Parts", removeNestedShapes=True)
-scene().createGroup("Axle Parts")
+def createAxleParts():
+  scene().deleteGroup("Axle Parts", removeNestedShapes=True)
+  scene().createGroup("Axle Parts")
 
-previousPart = None
-for axleRodPart in axleRodParts:
-  
-  createFeature(axleRodPart, axleRodParts[axleRodPart])
+  previousPart = None
+  for axleRodPart in axleRodParts:
+    
+    createFeature(axleRodPart, axleRodParts[axleRodPart])
 
-  scene().assignShapeToGroup(axleRodPart, "Axle Parts")
-  
-  if previousPart != None:
-    joint(previousPart, axleRodPart, "right", "left").transformLandmarkOntoAnother()
-  
-  previousPart = axleRodPart
+    scene().assignShapeToGroup(axleRodPart, "Axle Parts")
+    
+    if previousPart != None:
+      joint(previousPart, axleRodPart, "right", "left").transformLandmarkOntoAnother()
+      shape("axleRod").union(axleRodPart)
 
-# shape("axleRod").cloneShape("")
+    if previousPart == None:
+      shape("axleRod").cloneShape(axleRodPart)
+    
+    previousPart = axleRodPart
 
+createAxleParts()
+shape("axleRod").landmark("left", "min,center,center").landmark("right", "max,center,center")
+shape("axleRod").mirror("axleRod_right", (True, False, False))
 
   # "breakdisc core": {
   #   "source": "cylinder",

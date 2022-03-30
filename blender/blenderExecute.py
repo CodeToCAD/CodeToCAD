@@ -56,6 +56,22 @@ def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeNa
         }
     )
 
+def blenderApplyMirrorModifier(shapeName, mirrorAcrossShapeName, axis):
+    
+    blenderMirrorAcrossObject = bpy.data.objects.get(mirrorAcrossShapeName)
+    
+    assert \
+        blenderMirrorAcrossObject != None, \
+        "Object {} does not exist".format(mirrorAcrossShapeName)
+
+    properties = {
+        "mirror_object": blenderMirrorAcrossObject,
+        "use_axis": axis,
+        "use_mirror_merge": False
+    }
+
+    BlenderModifiers.MIRROR.blenderAddModifier(shapeName, properties)
+
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
     cube = 0
@@ -380,6 +396,8 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
     
     clonedObject = blenderObject.copy()
     clonedObject.name = newObjectName
+    clonedObject.data = blenderObject.data.copy()
+    clonedObject.data.name = newObjectName
     
     # Link clonedObject to a collection. Might want to make this optional.
     [currentCollection] = blenderObject.users_collection
@@ -525,7 +543,7 @@ def blenderMakeParent(name, parentName):
 
     blenderObject.parent = blenderParentObject
 
-def blenderAddObject(name):
+def blenderCreateObject(name):
     blenderObject = bpy.data.objects.get(name)
 
     assert \
@@ -541,7 +559,7 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
         blenderObject != None, \
             "Object {} does not exists".format(objectName)
 
-    landmarkObject = blenderAddObject(landmarkName)
+    landmarkObject = blenderCreateObject(landmarkName)
 
     blenderAssignObjectToCollection(landmarkName)
 
