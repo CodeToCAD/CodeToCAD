@@ -135,18 +135,13 @@ class shape:
     mirrorAcrossShapeName:str, \
     axis = (True, True, True)
     ):
-
-        properties = {
-            "modifiers": mirrorAcrossShapeName,
-            "use_axis": axis,
-            "use_mirror_merge": False
-        }
     
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Mirror modifier to {}".format(self.name),
-            lambda: BlenderModifiers.MIRROR.blenderAddModifier(self.name, properties),
+            lambda: blenderApplyMirrorModifier(self.name, mirrorAcrossShapeName, axis),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
+        
         return self
 
     def pattern(self,
