@@ -164,6 +164,25 @@ def blenderUpdateObjectMeshName(parentObjectName, newName):
 def blenderSceneLockInterface(isLocked):
     bpy.context.scene.render.use_lock_interface = isLocked
 
+def blenderRemoveObject(existingObjectName, removeChildren = False):
+    
+    blenderObject = bpy.data.objects.get(existingObjectName)
+    
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(existingObjectName)
+
+    if removeChildren:
+        for child in blenderObject.children:
+            try:
+                blenderRemoveObject(child.name, True)
+            except:
+                pass
+    
+    data = blenderObject.data
+    bpy.data.objects.remove(blenderObject)
+    bpy.data.meshes.remove(data)
+
 def blenderCreateCollection(name, sceneName = "Scene"):
 
     assert \
@@ -186,7 +205,10 @@ def blenderRemoveCollection(name, removeNestedObjects):
 
     if removeNestedObjects:
         for obj in bpy.data.collections[name].objects:
-            bpy.data.objects.remove(obj)
+            try:
+                blenderRemoveObject(obj.name, True)
+            except Exception as e:
+                pass
 
     bpy.data.collections.remove(bpy.data.collections[name])
 
@@ -388,7 +410,7 @@ def blenderRemoveObjectFromCollection(existingObjectName, collectionName):
         
     collection.objects.unlink(blenderObject)
 
-def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene Collection", sceneName = "Scene", removeFromOtherGroups = True):
+def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene Collection", sceneName = "Scene", removeFromOtherGroups = True, moveChildren = True):
 
     blenderObject = bpy.data.objects.get(existingObjectName)
     
@@ -425,6 +447,11 @@ def blenderAssignObjectToCollection(existingObjectName, collectionName = "Scene 
     
     
     collection.objects.link(blenderObject)
+
+    if moveChildren:
+        for child in blenderObject.children:
+            blenderAssignObjectToCollection(child.name, collectionName, sceneName, True, True)
+
 
 def blenderCreateArmatures(name):
     armature = bpy.data.armatures.new(name)
