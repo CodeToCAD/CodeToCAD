@@ -402,7 +402,9 @@ def blenderDuplicateObject(existingObjectName, newObjectName):
     # Link clonedObject to a collection. Might want to make this optional.
     [currentCollection] = blenderObject.users_collection
 
-    defaultCollection = currentCollection.name
+    defaultCollection = None
+    if currentCollection:
+        defaultCollection = currentCollection.name
 
     blenderAssignObjectToCollection(newObjectName, defaultCollection)
 
@@ -543,14 +545,14 @@ def blenderMakeParent(name, parentName):
 
     blenderObject.parent = blenderParentObject
 
-def blenderCreateObject(name):
+def blenderCreateObject(name, data = None):
     blenderObject = bpy.data.objects.get(name)
 
     assert \
         blenderObject == None, \
             "Object {} already exists".format(name)
 
-    return bpy.data.objects.new( name , None )
+    return bpy.data.objects.new( name , data )
 
 def blenderCreateLandmark(objectName, landmarkName, localPosition):
     blenderObject = bpy.data.objects.get(objectName)
@@ -559,12 +561,26 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
         blenderObject != None, \
             "Object {} does not exists".format(objectName)
 
+    # Create an Empty object
     landmarkObject = blenderCreateObject(landmarkName)
 
-    blenderAssignObjectToCollection(landmarkName)
 
+    # Assign landmark Empty object to the same collection as the object it's attaching to.
+    # Assumes the first collection is the main collection
+    [currentCollection] = blenderObject.users_collection
+
+    defaultCollection = None
+    if currentCollection:
+        defaultCollection = currentCollection.name
+
+    blenderAssignObjectToCollection(landmarkName, defaultCollection)
+
+
+    # Parent the landmark to the object
     blenderMakeParent(landmarkName, objectName)
     
+
+    # Figure out how far we want to translate 
     boundingBox = blenderGetBoundingBox(blenderObject)
 
     localPosition:list[Dimension] = getDimensionsFromString(localPosition, boundingBox) or []
