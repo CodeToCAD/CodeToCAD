@@ -29,26 +29,26 @@ scene().setDefaultUnit(BlenderLength.INCHES)
 axleRodParts = {
   "cap": {
     "source": "cylinder",
-    "dimensions": "3/8,1,in",
+    "dimensions": "3/8/2,1,in",
     "initialRotation": "0,90d,0",
     "landmarks": ["left,min,center,center", "right,max,center,center"]
   },
   "hubTeeth": {
     # "source": "teeth",
     "source": "cylinder",
-    "dimensions": "1,1.5,in",
+    "dimensions": "1/2,1.5,in",
     "initialRotation": "0,90d,0",
     "landmarks": ["left,min,center,center", "right,max,center,center"]
   },
   "bearing": {
     "source": "cylinder",
-    "dimensions": "1.15,4.5,in",
+    "dimensions": "1.15/2,4.5,in",
     "initialRotation": "0,90d,0",
     "landmarks": ["left,min,center,center", "right,max,center,center"]
   },
   "breakdisc": {
     "source": "cylinder",
-    "dimensions": "1.35,14,in",
+    "dimensions": "1.35/2,12,in",
     "initialRotation": "0,90d,0",
     "landmarks": ["left,min,center,center", "right,max,center,center"]
   }
@@ -74,9 +74,69 @@ def createAxleParts():
     
     previousPart = axleRodPart
 
-createAxleParts()
-shape("axleRod").landmark("left", "min,center,center").landmark("right", "max,center,center")
-shape("axleRod").mirror("axleRod_right", (True, False, False))
+# createAxleParts()
+# shape("axleRod").landmark("left", "min,center,center")
+# shape("axleRod").landmark("right", "max,center,center")
+# shape("axleRod").mirror("axleRod_right", (True, False, False))
+
+
+engineFrameParts = {
+  "horizontalPole": {
+    "source": "cylinder",
+    "dimensions": "1.25/2,21.5,in",
+    "initialRotation": "0d,90d,0",
+    "landmarks": ["left,min,center,center", "right,max,center,center", "minirod_left,min+12.5,center,center,in",  "minirod_right,min-2.5,center,center,in"]
+  },
+  "verticalPole": {
+    "source": "cube",
+    "dimensions": "1.5,22.5,1.25,in",
+    "initialRotation": "0,90d,0",
+    "landmarks": ["hook,min,min+1,max,in", "horizontalPole,max,min + 19,center, in"]
+  },
+  # "miniPoleLeft": {
+  #   "source": "cylinder",
+  #   "dimensions": "3/16,12,in",
+  #   "initialRotation": "90d,0,0",
+  #   "landmarks": ["top,center,max,center", "bottom,center,min,center"]
+  # },
+  # "miniPoleRight": {
+  #   "source": "cylinder",
+  #   "dimensions": "3/16,12,in",
+  #   "initialRotation": "90d,0,0",
+  #   "landmarks": ["top,center,max,center", "bottom,center,min,center"]
+  # },
+  # "miniPoleHorizontal": {
+  #   "source": "cylinder",
+  #   "dimensions": "3/16,12,in",
+  #   "initialRotation": "0,90d,0",
+  #   "landmarks": ["left,min,center,center", "right,max,center,center"]
+  # },
+  "verticalPoleHook": {
+    "source": "cube",
+    "dimensions": "1/4,4.35,5,in",
+    "initialRotation": "0,0d,0",
+    "landmarks": ["bearing,max,min+2.2,max-3.1,in", "top, max, min, max"]
+  }
+}
+def createEngineFrameParts():
+  scene().deleteGroup("Engine Frame Parts", removeNestedShapes=True)
+  scene().createGroup("Engine Frame Parts")
+
+  for engineFramePart in engineFrameParts:
+    
+    createFeature(engineFramePart, engineFrameParts[engineFramePart])
+
+    scene().assignShapeToGroup(engineFramePart, "Engine Frame Parts")
+
+createEngineFrameParts()
+
+joint("bearing", "verticalPoleHook", "right", "bearing").transformLandmarkOntoAnother()
+joint("verticalPoleHook", "verticalPole", "top", "hook").transformLandmarkOntoAnother()
+joint("verticalPole", "horizontalPole", "horizontalPole", "left").transformLandmarkOntoAnother()
+
+shape("verticalPoleHook").mirror("axleRod_right", (True, False, False))
+shape("verticalPole").mirror("axleRod_right", (True, False, False))
+
 
   # "breakdisc core": {
   #   "source": "cylinder",
