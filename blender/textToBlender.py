@@ -346,7 +346,119 @@ class shape:
 
         return self
 
-        
+class curve:
+    
+    name = None
+    curveType = None
+    description = None
+
+    def __init__(self,
+    name:str, \
+    curveType:CurveTypes=None, \
+    description:str=None \
+    ):
+        self.name = name
+        self.curveType = curveType
+        self.description = description
+
+    def fromVerticies(self,
+        coordinates, \
+        interpolation = 64 \
+        ):
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating curve {} from vertices.".format(self.name),
+            lambda: blenderCreateCurve(self.name, BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderCurveTypes.BEZIER, coordinates, interpolation),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
+
+    def rename(self,
+        name:str, \
+        overrideName:str = None
+        ):
+            expectedNameOfObjectInBlender = overrideName or self.name
+            self.name = name
+            blenderEvents.addToBlenderOperationsQueue(
+                "Renaming curve object {} to {}".format(expectedNameOfObjectInBlender, self.name),
+                lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
+                ,
+                lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            )
+            return self
+
+
+    def createPrimitive(curvePrimitiveType:CurvePrimitiveTypes):
+        def decorator(primitiveFunction):
+            def wrapper(*args, **kwargs):
+
+                self = args[0]
+
+                blenderCurvePrimitiveType = BlenderCurvePrimitiveTypes.fromCurvePrimitiveTypes(curvePrimitiveType)
+
+                blenderPrimitiveFunction = blenderCurvePrimitiveType.getBlenderCurvePrimitiveFunction()
+
+                blenderEvents.addToBlenderOperationsQueue(
+                    "Creating curve primitive {}".format(self.name),
+                    lambda: blenderPrimitiveFunction(
+                        *args[1:],
+                        dict(
+                                {"curveType": BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None}
+                                , **kwargs
+                            )
+                        ),
+                    lambda update: type(update.id) == bpy.types.Object and update.id.name == blenderCurvePrimitiveType.name
+                )
+                
+                self.rename(self.name, blenderCurvePrimitiveType.name)
+
+                return primitiveFunction(*args, **kwargs)
+            return wrapper
+        return decorator
+
+    @createPrimitive(CurvePrimitiveTypes.Point)
+    def createPoint(self, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.LineTo)
+    def createLineTo(self, endLocation, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Line)
+    def createLine(self, length, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Angle)
+    def createAngle(self, length, angle, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Circle)
+    def createCircle(self, radius, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Ellipse)
+    def createEllipse(self, radius_x, radius_y, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Arc)
+    def createArc(self, radius, angle, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Sector)
+    def createSector(self, radius, angle, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Segment)
+    def createSegment(self, outter_radius, inner_radius, angle, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Rectangle)        
+    def createRectangle(self, length, width, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Rhomb)
+    def createRhomb(self, length, width, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Polygon)
+    def createPolygon(self, numberOfSides, radius, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Polygon_ab)
+    def createPolygon_ab(self, numberOfSides, radius_x, radius_y, keywordArguments = {}):
+        return self
+    @createPrimitive(CurvePrimitiveTypes.Trapezoid)
+    def createTrapezoid(self, length_upper, length_lower, height, keywordArguments = {}):
+        return self
 
 class landmark: 
     # Text to 3D Modeling Automation Capabilities.
@@ -554,6 +666,11 @@ class analytics:
     def getBoundingBox(self,
     shapeName:str \
     ):
+        return blenderGetBoundingBox(shapeName)
+
+    def getDimensions(self,
+    shapeName:str \
+    ):
         dimensions = bpy.data.objects[shapeName].dimensions
         return [
             Dimension(
@@ -562,8 +679,3 @@ class analytics:
             ) 
             for dimension in dimensions
             ]
-
-    def getDimensions(self,
-    shapeName:str \
-    ):
-        return self.boundingBox(shapeName)
