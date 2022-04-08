@@ -124,13 +124,13 @@ class BlenderEvents:
 
         # Make sure any methods that use this lock don't call each other so there is no deadlock
         def useTimeOutLock(timeoutLockUser):
-            def wrapper(*args):
+            def wrapper(*args, **kwargs):
                 [self] = args
 
                 if self:
                     self.timeoutLock.acquire()
 
-                output = timeoutLockUser(*args)
+                output = timeoutLockUser(*args, **kwargs)
 
                 if self:
                     self.timeoutLock.release()
