@@ -23,13 +23,14 @@ class BoundaryBox:
         self.y = y
         self.z = z
 
-
-class Units(Enum):
+# An enum that uses the enum type and value for comparison
+class EquittableEnum(Enum):
     # define the == operator, otherwise we can't compare enums, thanks python
     def __eq__(self, other):
-        lhs = self.name if self else None
-        rhs = other.name if other else None
-        return lhs == rhs
+        return type(self) == type(other) and self.value == other.value
+
+class Units(EquittableEnum):
+    pass
 
 
 class AngleUnit(Units):
@@ -271,45 +272,24 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
 
     return parsedDimensions
 
-class BlenderLength(Units):
-    #metric
-    KILOMETERS = LengthUnit.kilometer
-    METERS = LengthUnit.meter
-    CENTIMETERS = LengthUnit.centimeter
-    MILLIMETERS = LengthUnit.millimeter
-    MICROMETERS = LengthUnit.micrometer
-    #imperial
-    MILES = LengthUnit.mile
-    FEET = LengthUnit.foot
-    INCHES = LengthUnit.inch
-    THOU = LengthUnit.thousandthInch
 
-    def getSystem(self):
-        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
-            return'METRIC'
-        else:
-            return'IMPERIAL'
+class CurvePrimitiveTypes(EquittableEnum):
+    Point = 0
+    LineTo = 1
+    Line = 2
+    Angle = 3
+    Circle = 4
+    Ellipse = 5
+    Sector = 6
+    Segment = 7
+    Rectangle = 8
+    Rhomb = 9
+    Trapezoid = 10
+    Polygon = 11
+    Polygon_ab = 12
+    Arc = 13
 
-# Use this value to scale any number operations done throughout this implementation
-defaultBlenderUnit = BlenderLength.METERS
-
-# Takes in a list of Dimension and converts them to the `defaultBlenderUnit`, which is the unit blender deals with, no matter what we set the document unit to. 
-def convertDimensionsToBlenderUnit(dimensions:list):
-    return [
-        Dimension(
-            float(
-                convertToLengthUnit(
-                    defaultBlenderUnit.value, dimension.value,
-                    dimension.unit or defaultBlenderUnit.value
-                )
-            ),
-            defaultBlenderUnit.value
-        )
-        
-            if (dimension.value != None and dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
-
-            else dimension
-
-                for dimension in dimensions 
-    ]
-
+class CurveTypes(EquittableEnum):
+    POLY = 0
+    NURBS = 1
+    BEZIER = 2

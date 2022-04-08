@@ -4,6 +4,50 @@ from enum import Enum
 import bpy
 from utilities import *
 
+class BlenderLength(Units):
+    #metric
+    KILOMETERS = LengthUnit.kilometer
+    METERS = LengthUnit.meter
+    CENTIMETERS = LengthUnit.centimeter
+    MILLIMETERS = LengthUnit.millimeter
+    MICROMETERS = LengthUnit.micrometer
+    #imperial
+    MILES = LengthUnit.mile
+    FEET = LengthUnit.foot
+    INCHES = LengthUnit.inch
+    THOU = LengthUnit.thousandthInch
+
+    def getSystem(self):
+        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
+            return'METRIC'
+        else:
+            return'IMPERIAL'
+
+# Use this value to scale any number operations done throughout this implementation
+defaultBlenderUnit = BlenderLength.METERS
+
+# Takes in a list of Dimension and converts them to the `defaultBlenderUnit`, which is the unit blender deals with, no matter what we set the document unit to. 
+def convertDimensionsToBlenderUnit(dimensions:list):
+    return [
+        Dimension(
+            float(
+                convertToLengthUnit(
+                    defaultBlenderUnit.value, dimension.value,
+                    dimension.unit or defaultBlenderUnit.value
+                )
+            ),
+            defaultBlenderUnit.value
+        )
+        
+            if (dimension.value != None and dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
+
+            else dimension
+
+                for dimension in dimensions 
+    ]
+
+
+
 # an enum of Blender modifiers and an instance method to add that modifier to an object in Blender.
 class BlenderModifiers(Enum):
     EDGE_SPLIT = 0
@@ -624,10 +668,16 @@ def blenderGetClosestPointsToVertex(objectName, vertex):
 
 
 # References https://blender.stackexchange.com/a/32288/138679
-def blenderGetBoundingBox(obj):
+def blenderGetBoundingBox(objectName):
+    
+    blenderObject = bpy.data.objects.get(objectName)
 
-    local_coords = obj.bound_box[:]
-    om = obj.matrix_world
+    assert \
+        blenderObject != None, \
+            "Object {} does not exists".format(objectName)
+
+    local_coords = blenderObject.bound_box[:]
+    om = blenderObject.matrix_world
     # matrix multiple world transform by all the vertices in the boundary
     coords = [(om @ Vector(p[:])).to_tuple() for p in local_coords]
     coords = coords[::-1]
@@ -659,3 +709,379 @@ def blenderGetBoundingBox(obj):
         )
     
     return boundingBox
+## ADDONS ##
+
+def blenderAddonSetEnabled(addonName, isEnabled):
+    preferences = bpy.ops.preferences
+
+    command = preferences.addon_enable if isEnabled else preferences.addon_disable
+
+    command(module=addonName)
+
+## CURVES ##
+
+class BlenderCurveTypes(EquittableEnum):
+    POLY = CurveTypes.POLY
+    NURBS = CurveTypes.NURBS
+    BEZIER = CurveTypes.BEZIER
+    
+    # Convert a utilities CurveTypes to BlenderCurveTypes
+    @staticmethod
+    def fromCurveTypes(curveType:CurveTypes):
+
+        [result] = list(filter(lambda b: b.value == curveType, [b for b in BlenderCurveTypes]))
+
+        return result
+
+def blenderCreateCurve(curveName, curveType:BlenderCurveTypes, coordinates, interpolation = 64):
+    
+    curveData = bpy.data.curves.new(curveName, type='CURVE')
+    curveData.dimensions = '3D'
+    curveData.resolution_u = interpolation
+    
+    blenderCreateSpline(curveData, curveType, coordinates)
+
+    blenderCreateObject(curveName, curveData)
+    
+    blenderAssignObjectToCollection(curveName)
+
+# references https://blender.stackexchange.com/a/6751/138679
+def blenderCreateSpline(blenderCurve, curveType:BlenderCurveTypes, coordinates):
+    
+    spline = blenderCurve.splines.new(curveType.name)
+    spline.order_u = 2
+
+    numberOfPoints = len(coordinates)-1 # subtract 1 so the end and origin points are not connected
+    
+    if curveType == BlenderCurveTypes.BEZIER:
+
+        spline.bezier_points.add(numberOfPoints) # subtract 1 so the end and origin points are not connected
+        for i, coord in enumerate(coordinates):
+            x,y,z = coord
+            spline.bezier_points[i].co = (x, y, z)
+            spline.bezier_points[i].handle_left = (x, y, z)
+            spline.bezier_points[i].handle_right = (x, y, z)
+
+    else:
+
+        spline.points.add(numberOfPoints) # subtract 1 so the end and origin points are not connected
+        for i, coord in enumerate(coordinates):
+            x,y,z = coord
+            spline.points[i].co = (x, y, z, 1)
+
+def blenderAddBevelObjectToCurve(pathCurveObjectName, profileCurveObjectName, fillCap = False):
+    
+    pathCurveObject = bpy.data.objects.get(pathCurveObjectName)
+    
+    assert \
+        pathCurveObject != None, \
+        "Curve Object {} does not exist".format(pathCurveObjectName)
+    
+
+    profileCurveObject = bpy.data.objects.get(profileCurveObjectName)
+
+    assert \
+        profileCurveObject != None, \
+        "Curve Object {} does not exist".format(profileCurveObjectName)
+
+
+    pathCurveObject.bevel_mode = "OBJECT"
+    pathCurveObject.bevel_object = profileCurveObject
+    pathCurveObject.use_fill_caps = fillCap
+
+def blenderCreateMeshFromCurve(newObjectName, blenderCurveObject):
+    dependencyGraph = bpy.context.evaluated_depsgraph_get()
+    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
+    
+    blenderObject = blenderCreateObject(newObjectName, mesh)
+
+    blenderObject.matrix_world = blenderCurveObject.matrix_world
+    
+    blenderAssignObjectToCollection(newObjectName)
+
+
+# assumes add_curve_extra_objects is enabled
+# https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
+class BlenderCurvePrimitiveTypes(EquittableEnum):
+    # These names should match the names in Blender
+    Point = CurvePrimitiveTypes.Point
+    LineTo = CurvePrimitiveTypes.LineTo
+    Distance = CurvePrimitiveTypes.Line
+    Angle = CurvePrimitiveTypes.Angle
+    Circle = CurvePrimitiveTypes.Circle
+    Ellipse = CurvePrimitiveTypes.Ellipse
+    Sector = CurvePrimitiveTypes.Sector
+    Segment = CurvePrimitiveTypes.Segment
+    Rectangle = CurvePrimitiveTypes.Rectangle
+    Rhomb = CurvePrimitiveTypes.Rhomb
+    Trapezoid = CurvePrimitiveTypes.Trapezoid
+    Polygon = CurvePrimitiveTypes.Polygon
+    Polygon_ab = CurvePrimitiveTypes.Polygon_ab
+    Arc = CurvePrimitiveTypes.Arc
+
+    # Convert a utilities CurvePrimitiveTypes to BlenderCurvePrimitiveTypes
+    @staticmethod
+    def fromCurvePrimitiveTypes(curvePrimitiveType:CurvePrimitiveTypes):
+
+        [result] = list(filter(lambda b: b.value == curvePrimitiveType, [b for b in BlenderCurvePrimitiveTypes]))
+
+        return result
+
+    def getBlenderCurvePrimitiveFunction(self):
+        if self == BlenderCurvePrimitiveTypes.Point:
+            return BlenderCurvePrimitives.createPoint
+        elif self == BlenderCurvePrimitiveTypes.LineTo:
+            return BlenderCurvePrimitives.createLineTo
+        elif self == BlenderCurvePrimitiveTypes.Distance:
+            return BlenderCurvePrimitives.createLine
+        elif self == BlenderCurvePrimitiveTypes.Angle:
+            return BlenderCurvePrimitives.createAngle
+        elif self == BlenderCurvePrimitiveTypes.Circle:
+            return BlenderCurvePrimitives.createCircle
+        elif self == BlenderCurvePrimitiveTypes.Ellipse:
+            return BlenderCurvePrimitives.createEllipse
+        elif self == BlenderCurvePrimitiveTypes.Sector:
+            return BlenderCurvePrimitives.createSector
+        elif self == BlenderCurvePrimitiveTypes.Segment:
+            return BlenderCurvePrimitives.createSegment
+        elif self == BlenderCurvePrimitiveTypes.Rectangle:
+            return BlenderCurvePrimitives.createRectangle
+        elif self == BlenderCurvePrimitiveTypes.Rhomb:
+            return BlenderCurvePrimitives.createRhomb
+        elif self == BlenderCurvePrimitiveTypes.Trapezoid:
+            return BlenderCurvePrimitives.createTrapezoid
+        elif self == BlenderCurvePrimitiveTypes.Polygon:
+            return BlenderCurvePrimitives.createPolygon
+        elif self == BlenderCurvePrimitiveTypes.Polygon_ab:
+            return BlenderCurvePrimitives.createPolygon_ab
+        elif self == BlenderCurvePrimitiveTypes.Arc:
+            return BlenderCurvePrimitives.createArc
+        else:
+            raise "Unknown primitive"
+
+            
+    def getDefaultCurveType(self):
+        if self == BlenderCurvePrimitiveTypes.Point:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.LineTo:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Distance:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Angle:
+            return BlenderCurveTypes.BEZIER
+        elif self == BlenderCurvePrimitiveTypes.Circle:
+            return BlenderCurveTypes.BEZIER
+        elif self == BlenderCurvePrimitiveTypes.Ellipse:
+            return BlenderCurveTypes.BEZIER
+        elif self == BlenderCurvePrimitiveTypes.Sector:
+            return BlenderCurveTypes.BEZIER
+        elif self == BlenderCurvePrimitiveTypes.Segment:
+            return BlenderCurveTypes.BEZIER
+        elif self == BlenderCurvePrimitiveTypes.Rectangle:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Rhomb:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Trapezoid:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Polygon:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Polygon_ab:
+            return BlenderCurveTypes.NURBS
+        elif self == BlenderCurvePrimitiveTypes.Arc:
+            return BlenderCurveTypes.NURBS
+        else:
+            raise "Unknown primitive"
+
+
+class BlenderCurvePrimitives():
+    def createPoint(curveType=BlenderCurveTypes.NURBS, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Point,
+            keywordArguments
+        )
+    def createLineTo(endLocation, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Line,
+            dict(
+                {
+                    "Simple_endlocation": endLocation
+                },
+                **keywordArguments
+            )
+        )
+    def createLine(length, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Distance,
+            dict(
+                {
+                    "Simple_length": length,
+                    "Simple_center": True
+                },
+                **keywordArguments
+            )
+        )
+    def createAngle(length, angle, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Angle,
+            dict(
+                {
+                    "Simple_length": length,
+                    "Simple_angle": angle
+                },
+                **keywordArguments
+            )
+        )
+    def createCircle(radius, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Circle,
+            dict(
+                {
+                    "Simple_radius": radius,
+                    "Simple_sides": 64,
+                    "use_cyclic_u": True
+                },
+                **keywordArguments
+            )
+        )
+    def createEllipse(radius_x, radius_y, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Ellipse,
+            dict(
+                {
+                    "Simple_a": radius_x,
+                    "Simple_b": radius_y
+                },
+                **keywordArguments
+            )
+        )
+    def createArc(radius, angle, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Arc,
+            dict(
+                {
+                    "Simple_sides": 64,
+                    "Simple_radius": radius,
+                    "Simple_startangle": 0,
+                    "Simple_endangle": angle
+                },
+                **keywordArguments
+            )
+        )
+    def createSector(radius, angle, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Sector,
+            dict(
+                {
+                    "Simple_sides": 64,
+                    "Simple_radius": radius,
+                    "Simple_startangle": 0,
+                    "Simple_endangle": angle
+                },
+                **keywordArguments
+            )
+        )
+    def createSegment(outter_radius, inner_radius, angle, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Segment,
+            dict(
+                {
+                    "Simple_sides": 64,
+                    "Simple_a": outter_radius,
+                    "Simple_b": inner_radius,
+                    "Simple_startangle": 0,
+                    "Simple_endangle": angle
+                },
+                **keywordArguments
+            )
+        )
+        
+    def createRectangle(length, width, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Rectangle,
+            dict(
+                {
+                    "Simple_length": length,
+                    "Simple_width": width,
+                    "Simple_rounded": 0
+                },
+                **keywordArguments
+            )
+        )
+    def createRhomb(length, width, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Rhomb,
+            dict(
+                {
+                    "Simple_length": length,
+                    "Simple_width": width,
+                    "Simple_center": True
+                },
+                **keywordArguments
+            )
+        )
+    def createPolygon(numberOfSides, radius, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Polygon,
+            dict(
+                {
+                    "Simple_sides": numberOfSides,
+                    "Simple_radius": radius
+                },
+                **keywordArguments
+            )
+        )
+    def createPolygon_ab(numberOfSides, radius_x, radius_y, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Polygon_ab,
+            dict(
+                {
+                    "Simple_sides": numberOfSides,
+                    "Simple_a": radius_x,
+                    "Simple_b": radius_y
+                },
+                **keywordArguments
+            )
+        )
+    def createTrapezoid(length_upper, length_lower, height, keywordArguments = {}):
+        blenderCreateSimpleCurve(
+            BlenderCurvePrimitiveTypes.Trapezoid,
+            dict(
+                {
+                    "Simple_a": length_upper,
+                    "Simple_b": length_lower,
+                    "Simple_h": height
+                },
+                **keywordArguments
+            )
+        )
+
+def blenderCreateSimpleCurve(curvePrimitiveType:BlenderCurvePrimitiveTypes, keywordArguments = {}):
+
+    curveType:BlenderCurveTypes = keywordArguments["curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else curvePrimitiveType.getDefaultCurveType()
+
+    keywordArguments.pop("curveType", None) #remove curveType from kwargs
+
+    
+    addonName = "add_curve_extra_objects"
+
+    # check if the addon is enabled, enable it if it is not.
+    addon = bpy.context.preferences.addons.get(addonName)
+    if addon == None:
+        blenderAddonSetEnabled(addonName, True)
+        addon = bpy.context.preferences.addons.get(addonName)
+
+    assert \
+        addon != None, \
+            "Could not enable the {} addon to create simple curves".format(addonName)
+    
+    assert \
+        type(curvePrimitiveType) == BlenderCurvePrimitiveTypes, \
+            "{} is not a known curve primitive. Options: {}".format(curvePrimitiveType, [b.name for b in BlenderCurvePrimitiveTypes])
+            
+    assert \
+        type(curveType) == BlenderCurveTypes, \
+            "{} is not a known simple curve type. Options: {}".format(curveType, [b.name for b in BlenderCurveTypes])
+    
+    # Default values:
+    # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
+    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, edit_mode=False, **keywordArguments)
