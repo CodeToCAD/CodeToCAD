@@ -272,6 +272,10 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
 
     return parsedDimensions
 
+class Axis(EquittableEnum):
+    X = 0
+    Y = 1
+    Z = 2
 
 class CurvePrimitiveTypes(EquittableEnum):
     Point = 0
