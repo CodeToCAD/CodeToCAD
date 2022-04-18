@@ -382,7 +382,7 @@ def blenderTranslationObject(shapeName, translationDimensions:list[Dimension], t
 
     setattr(blenderObject, translationType.value, translationTuple)
 
-    blenderApplyObjectTransformations(shapeName)
+    #blenderApplyObjectTransformations(shapeName)
 
 
 class ScalingMethods(Enum):
@@ -458,7 +458,7 @@ def blenderScaleObject(
     
     blenderObject.scale = (x.value,y.value,z.value)
 
-    blenderApplyObjectTransformations(shapeName)
+    #blenderApplyObjectTransformations(shapeName)
 
 
 # TODO: if object already exists, merge objects
@@ -657,7 +657,7 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
     
 
     # Figure out how far we want to translate 
-    boundingBox = blenderGetBoundingBox(blenderObject)
+    boundingBox = blenderGetBoundingBox(objectName)
 
     localPosition:list[Dimension] = getDimensionsFromString(localPosition, boundingBox) or []
 
@@ -764,6 +764,37 @@ class BlenderCurveTypes(EquittableEnum):
         [result] = list(filter(lambda b: b.value == curveType, [b for b in BlenderCurveTypes]))
 
         return result
+
+def blenderCreateText(curveName, text,
+        size = Dimension(1),
+        bold = False,
+        italic = False,
+        underlined = False,
+        characterSpacing = 1,
+        wordSpacing = 1,
+        lineSpacing = 1,
+        fontFilePath = None):
+    
+    curveData = bpy.data.curves.new(type="FONT", name=curveName)
+    curveData.body = text
+    curveData.size = convertDimensionToBlenderUnit(size).value
+    curveData.space_character = characterSpacing
+    curveData.space_word = wordSpacing
+    curveData.space_line = lineSpacing
+
+    if fontFilePath:
+        fontData = bpy.data.fonts.load(fontFilePath.replace("\\","/"))
+        curveData.font = fontData
+
+    if bold or italic or underlined:
+        for index in range(len(text)):
+            curveData.body_format[index].use_underline = underlined
+            curveData.body_format[index].use_bold = bold
+            curveData.body_format[index].use_bold = italic
+
+    blenderCreateObject(curveName, curveData)
+    
+    blenderAssignObjectToCollection(curveName)
 
 def blenderCreateCurve(curveName, curveType:BlenderCurveTypes, coordinates, interpolation = 64):
     
