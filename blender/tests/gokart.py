@@ -71,10 +71,10 @@ def createAxleParts():
     
     previousPart = axleRodPart
 
-# createAxleParts()
-# shape("axleRod").landmark("left", "min,center,center")
-# shape("axleRod").landmark("right", "max,center,center")
-# shape("axleRod").mirror("axleRod_right", (True, False, False))
+createAxleParts()
+shape("axleRod").landmark("left", "min,center,center")
+shape("axleRod").landmark("right", "max,center,center")
+shape("axleRod").mirror("axleRod_right", (True, False, False))
 
 
 engineFrameParts = {
