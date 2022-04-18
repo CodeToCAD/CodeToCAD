@@ -47,7 +47,9 @@ def convertDimensionToBlenderUnit(dimension:Dimension):
                     )
                 ),
                 defaultBlenderUnit.value
-            )
+            ) \
+            if (dimension.value != None and dimension.unit != None and dimension.unit != defaultBlenderUnit.value) \
+            else dimension
 
 
 
@@ -57,6 +59,7 @@ class BlenderModifiers(Enum):
     SUBSURF = 1
     BOOLEAN = 2
     MIRROR = 3 # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
+    SCREW = 4
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
 
@@ -118,6 +121,32 @@ def blenderApplyMirrorModifier(shapeName, mirrorAcrossShapeName, axis):
     }
 
     BlenderModifiers.MIRROR.blenderAddModifier(shapeName, properties)
+
+    
+def blenderApplyScrewModifier(shapeName, angle:Angle, axis:Axis, screwPitch:Dimension = Dimension(0), iterations = 1, shapeNameToDetermineAxis = None):
+    
+    # https://docs.blender.org/api/current/bpy.types.ScrewModifier.html
+    properties = {
+        "axis": axis.name,
+        "angle": angle.value,
+        "screw_offset": convertDimensionToBlenderUnit(screwPitch).value,
+        "steps":64,
+        "render_steps":64,
+        "use_merge_vertices": True,
+        "iterations": iterations
+    }
+    if shapeNameToDetermineAxis:
+
+        blenderMirrorAcrossObject = bpy.data.objects.get(shapeNameToDetermineAxis)
+        
+        assert \
+            blenderMirrorAcrossObject != None, \
+            "Object {} does not exist".format(shapeNameToDetermineAxis)
+        
+        properties["object"] = blenderMirrorAcrossObject
+
+
+    BlenderModifiers.SCREW.blenderAddModifier(shapeName, properties)
 
 # An enum of Blender Primitives, and an instance method to add the primitive to Blender.
 class BlenderPrimitives(Enum):
@@ -326,7 +355,7 @@ rotationType:BlenderRotationTypes):
         len(rotationAngles) == 3, \
         "rotationAngles must be length 3"
 
-    rotationTuple = (rotationAngles[0].value, rotationAngles[1].value, rotationAngles[2].value)
+    rotationTuple = (rotationAngles[0].toRadians().value, rotationAngles[1].toRadians().value, rotationAngles[2].toRadians().value)
 
     setattr(blenderObject, rotationType.value, rotationTuple)
     
@@ -932,7 +961,7 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
-                    "Simple_angle": Angle(angle).value
+                    "Simple_angle": Angle(angle).toDegrees().value
                 },
                 **keywordArguments
             )
@@ -968,7 +997,7 @@ class BlenderCurvePrimitives():
                     "Simple_sides": 64,
                     "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Angle(angle).value,
+                    "Simple_endangle": Angle(angle).toDegrees().value,
                     "use_cyclic_u": False
                 },
                 **keywordArguments
@@ -982,7 +1011,7 @@ class BlenderCurvePrimitives():
                     "Simple_sides": 64,
                     "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Angle(angle).value
+                    "Simple_endangle": Angle(angle).toDegrees().value
                 },
                 **keywordArguments
             )
@@ -996,7 +1025,7 @@ class BlenderCurvePrimitives():
                     "Simple_a": convertDimensionToBlenderUnit(Dimension(outter_radius)).value,
                     "Simple_b": convertDimensionToBlenderUnit(Dimension(inner_radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Angle(angle).value
+                    "Simple_endangle": Angle(angle).toDegrees().value
                 },
                 **keywordArguments
             )
