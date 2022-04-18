@@ -294,6 +294,32 @@ class shape:
     ):
         print("extrude is not implemented") # implement 
         return self
+        
+    def revolve(self,
+    angle:str,
+    axis:Axis,
+    shapeNameToDetermineAxis = None
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying revolve (screw) modifier to {}".format(self.name),
+            lambda: blenderApplyScrewModifier(self.name, Angle(angle).toRadians(), axis, shapeNameToDetermineAxis=shapeNameToDetermineAxis),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+        return self
+
+        
+    def screw(self,
+    angle:str,
+    axis:Axis,
+    screwPitch:str = 0,
+    iterations:int = 1
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying screw modifier to {}".format(self.name),
+            lambda: blenderApplyScrewModifier(self.name, Angle(angle).toRadians(), axis, screwPitch=Dimension(screwPitch), iterations=iterations),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+        return self
 
     def remesh(self,
     strategy:str = None,  \
@@ -347,7 +373,7 @@ class shape:
 
         return self
 
-class curve:
+class curve(shape):
     
     name = None
     curveType = None
@@ -361,7 +387,8 @@ class curve:
         self.name = name
         self.curveType = curveType
         self.description = description
-        
+
+
     def sweep(self,
         profileCurveName,
         fillCap = False
