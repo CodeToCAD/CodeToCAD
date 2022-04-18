@@ -223,7 +223,7 @@ def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
 def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
 
     # This is a tech debt, we need to separate the logic for figuring out default units from being dependent on the input being a string.
-    if type(dimensions) == list:
+    if type(dimensions) == list or type(dimensions) == tuple:
         dimensions = ",".join(
             map(
                 lambda dimension:str(dimension),
@@ -257,11 +257,11 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
             if boundingBox != None and index < 3:
                 boundary = getattr(boundingBox, "xyz"[index])
                 if "min" in dimension:
-                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.min, defaultBlenderUnit.value) ))
+                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.min, LengthUnit.meter) ))
                 if "max" in dimension:
-                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.max, defaultBlenderUnit.value) ))
+                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.max, LengthUnit.meter) ))
                 if "center" in dimension:
-                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit or defaultBlenderUnit.value, boundary.center, defaultBlenderUnit.value) ))
+                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.center, LengthUnit.meter) ))
 
             parsedDimensions.append(Dimension(dimension, defaultUnit))
 
