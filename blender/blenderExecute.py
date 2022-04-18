@@ -29,15 +29,7 @@ defaultBlenderUnit = BlenderLength.METERS
 # Takes in a list of Dimension and converts them to the `defaultBlenderUnit`, which is the unit blender deals with, no matter what we set the document unit to. 
 def convertDimensionsToBlenderUnit(dimensions:list):
     return [
-        Dimension(
-            float(
-                convertToLengthUnit(
-                    defaultBlenderUnit.value, dimension.value,
-                    dimension.unit or defaultBlenderUnit.value
-                )
-            ),
-            defaultBlenderUnit.value
-        )
+        convertDimensionToBlenderUnit(dimension)
         
             if (dimension.value != None and dimension.unit != None and dimension.unit != defaultBlenderUnit.value)
 
@@ -45,6 +37,17 @@ def convertDimensionsToBlenderUnit(dimensions:list):
 
                 for dimension in dimensions 
     ]
+
+def convertDimensionToBlenderUnit(dimension:Dimension):
+    return  Dimension(
+                float(
+                    convertToLengthUnit(
+                        defaultBlenderUnit.value, dimension.value,
+                        dimension.unit or defaultBlenderUnit.value
+                    )
+                ),
+                defaultBlenderUnit.value
+            )
 
 
 
@@ -747,6 +750,9 @@ def blenderCreateCurve(curveName, curveType:BlenderCurveTypes, coordinates, inte
 
 # references https://blender.stackexchange.com/a/6751/138679
 def blenderCreateSpline(blenderCurve, curveType:BlenderCurveTypes, coordinates):
+
+    coordinates = [convertDimensionsToBlenderUnit(getDimensionsFromString(coordinate) or []) for coordinate in coordinates]
+    coordinates = [[dimension.value for dimension in coordinate] for coordinate in coordinates]
     
     spline = blenderCurve.splines.new(curveType.name)
     spline.order_u = 2
@@ -785,9 +791,9 @@ def blenderAddBevelObjectToCurve(pathCurveObjectName, profileCurveObjectName, fi
         "Curve Object {} does not exist".format(profileCurveObjectName)
 
 
-    pathCurveObject.bevel_mode = "OBJECT"
-    pathCurveObject.bevel_object = profileCurveObject
-    pathCurveObject.use_fill_caps = fillCap
+    pathCurveObject.data.bevel_mode = "OBJECT"
+    pathCurveObject.data.bevel_object = profileCurveObject
+    pathCurveObject.data.use_fill_caps = fillCap
 
 def blenderCreateMeshFromCurve(newObjectName, blenderCurveObject):
     dependencyGraph = bpy.context.evaluated_depsgraph_get()
@@ -904,7 +910,7 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Line,
             dict(
                 {
-                    "Simple_endlocation": endLocation
+                    "Simple_endlocation": convertDimensionToBlenderUnit(Dimension(endLocation)).value
                 },
                 **keywordArguments
             )
@@ -914,7 +920,7 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Distance,
             dict(
                 {
-                    "Simple_length": length,
+                    "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
                     "Simple_center": True
                 },
                 **keywordArguments
@@ -925,8 +931,8 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Angle,
             dict(
                 {
-                    "Simple_length": length,
-                    "Simple_angle": angle
+                    "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
+                    "Simple_angle": Angle(angle).value
                 },
                 **keywordArguments
             )
@@ -936,7 +942,7 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Circle,
             dict(
                 {
-                    "Simple_radius": radius,
+                    "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
                     "Simple_sides": 64,
                     "use_cyclic_u": True
                 },
@@ -948,8 +954,8 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Ellipse,
             dict(
                 {
-                    "Simple_a": radius_x,
-                    "Simple_b": radius_y
+                    "Simple_a": convertDimensionToBlenderUnit(Dimension(radius_x)).value,
+                    "Simple_b": convertDimensionToBlenderUnit(Dimension(radius_y)).value
                 },
                 **keywordArguments
             )
@@ -960,9 +966,10 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_radius": radius,
+                    "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": angle
+                    "Simple_endangle": Angle(angle).value,
+                    "use_cyclic_u": False
                 },
                 **keywordArguments
             )
@@ -973,9 +980,9 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_radius": radius,
+                    "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": angle
+                    "Simple_endangle": Angle(angle).value
                 },
                 **keywordArguments
             )
@@ -986,10 +993,10 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_a": outter_radius,
-                    "Simple_b": inner_radius,
+                    "Simple_a": convertDimensionToBlenderUnit(Dimension(outter_radius)).value,
+                    "Simple_b": convertDimensionToBlenderUnit(Dimension(inner_radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": angle
+                    "Simple_endangle": Angle(angle).value
                 },
                 **keywordArguments
             )
@@ -1000,8 +1007,8 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Rectangle,
             dict(
                 {
-                    "Simple_length": length,
-                    "Simple_width": width,
+                    "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
+                    "Simple_width": convertDimensionToBlenderUnit(Dimension(width)).value,
                     "Simple_rounded": 0
                 },
                 **keywordArguments
@@ -1012,8 +1019,8 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Rhomb,
             dict(
                 {
-                    "Simple_length": length,
-                    "Simple_width": width,
+                    "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
+                    "Simple_width": convertDimensionToBlenderUnit(Dimension(width)).value,
                     "Simple_center": True
                 },
                 **keywordArguments
@@ -1025,7 +1032,7 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": numberOfSides,
-                    "Simple_radius": radius
+                    "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value
                 },
                 **keywordArguments
             )
@@ -1036,8 +1043,8 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": numberOfSides,
-                    "Simple_a": radius_x,
-                    "Simple_b": radius_y
+                    "Simple_a": convertDimensionToBlenderUnit(Dimension(radius_x)).value,
+                    "Simple_b": convertDimensionToBlenderUnit(Dimension(radius_y)).value
                 },
                 **keywordArguments
             )
@@ -1047,9 +1054,9 @@ class BlenderCurvePrimitives():
             BlenderCurvePrimitiveTypes.Trapezoid,
             dict(
                 {
-                    "Simple_a": length_upper,
-                    "Simple_b": length_lower,
-                    "Simple_h": height
+                    "Simple_a": convertDimensionToBlenderUnit(Dimension(length_upper)).value,
+                    "Simple_b": convertDimensionToBlenderUnit(Dimension(length_lower)).value,
+                    "Simple_h": convertDimensionToBlenderUnit(Dimension(height)).value
                 },
                 **keywordArguments
             )
