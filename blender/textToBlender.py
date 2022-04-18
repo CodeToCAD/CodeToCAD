@@ -220,13 +220,10 @@ class shape:
 
         while len(angleList) < 3:
             angleList.append(Angle("1"))
-
-        # convert all the values to radians
-        angleListRadians = [angle.toRadians() for angle in angleList]
     
         blenderEvents.addToBlenderOperationsQueue(
             "Rotating {}".format(self.name),
-            lambda: blenderRotateObject(self.name, angleListRadians, BlenderRotationTypes.EULER),
+            lambda: blenderRotateObject(self.name, angleList, BlenderRotationTypes.EULER),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
         return self
@@ -402,7 +399,29 @@ class curve(shape):
 
         return self
 
-    def fromVerticies(self,
+    def createText(self,
+        text,
+        size = "1m",
+        bold = False,
+        italic = False,
+        underlined = False,
+        characterSpacing = 1,
+        wordSpacing = 1,
+        lineSpacing = 1,
+        fontFilePath = None
+        ):
+
+        size = Dimension(size)
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating curve {} from vertices.".format(self.name),
+            lambda: blenderCreateText(self.name, text, size, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
+
+    def createFromVerticies(self,
         coordinates, \
         interpolation = 64 \
         ):
