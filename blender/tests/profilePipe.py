@@ -26,10 +26,6 @@ profile = [
 
 circleRadius = "(1/4)/2 in"
 
+curve("circle").createCircle(circleRadius)
 
-# sample data
-coords = [(0,0,0), (1,0,0), (1,1,0), (2,1,0)]
-
-curve("verticies").fromVerticies(coords)
-
-curve("arc").createArc(2,45)
+curve("profile").fromVerticies(profile).sweep("circle")

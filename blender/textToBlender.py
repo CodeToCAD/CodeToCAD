@@ -1,5 +1,6 @@
 import math
 from pathlib import Path
+from textwrap import fill
 from utilities import *
 from blenderExecute import *
 from BlenderEvents import BlenderEvents
@@ -360,6 +361,19 @@ class curve:
         self.name = name
         self.curveType = curveType
         self.description = description
+        
+    def sweep(self,
+        profileCurveName,
+        fillCap = False
+        ):
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating curve {} from vertices.".format(self.name),
+            lambda: blenderAddBevelObjectToCurve(self.name, profileCurveName, fillCap),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
 
     def fromVerticies(self,
         coordinates, \
