@@ -304,6 +304,15 @@ class shape:
         )
         return self
 
+    def thicken(self,
+    thickness:int
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying solidify modifier to {}".format(self.name),
+            lambda: blenderApplySolidifyModifier(self.name, Dimension(thickness)),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+        return self
         
     def screw(self,
     angle:str,

@@ -60,6 +60,7 @@ class BlenderModifiers(Enum):
     BOOLEAN = 2
     MIRROR = 3 # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
     SCREW = 4
+    SOLIDIFY = 5
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
 
@@ -74,6 +75,22 @@ class BlenderModifiers(Enum):
 
         for key,value in keywordArguments.items():
             setattr(modifier, key, value)
+
+def blenderApplySolidifyModifier(shapeName, thickness:Dimension):
+    
+    blenderObject = bpy.data.objects.get(shapeName)
+
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
+
+        
+    BlenderModifiers.SOLIDIFY.blenderAddModifier(
+        shapeName, 
+        {
+            "thickness": convertDimensionToBlenderUnit(thickness).value
+        }
+    )
 
 class BlenderBooleanTypes(Enum):
     UNION = 0
@@ -963,14 +980,20 @@ class BlenderCurvePrimitives():
     def createPoint(curveType=BlenderCurveTypes.NURBS, keywordArguments = {}):
         blenderCreateSimpleCurve(
             BlenderCurvePrimitiveTypes.Point,
-            keywordArguments
+            dict(
+                {
+                    "use_cyclic_u": False
+                },
+                **keywordArguments
+            )
         )
     def createLineTo(endLocation, keywordArguments = {}):
         blenderCreateSimpleCurve(
             BlenderCurvePrimitiveTypes.Line,
             dict(
                 {
-                    "Simple_endlocation": convertDimensionToBlenderUnit(Dimension(endLocation)).value
+                    "Simple_endlocation": convertDimensionToBlenderUnit(Dimension(endLocation)).value,
+                    "use_cyclic_u": False
                 },
                 **keywordArguments
             )
@@ -981,7 +1004,8 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
-                    "Simple_center": True
+                    "Simple_center": True,
+                    "use_cyclic_u": False
                 },
                 **keywordArguments
             )
@@ -992,7 +1016,8 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_length": convertDimensionToBlenderUnit(Dimension(length)).value,
-                    "Simple_angle": Angle(angle).toDegrees().value
+                    "Simple_angle": Angle(angle).toDegrees().value,
+                    "use_cyclic_u": False
                 },
                 **keywordArguments
             )
@@ -1003,8 +1028,7 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_radius": convertDimensionToBlenderUnit(Dimension(radius)).value,
-                    "Simple_sides": 64,
-                    "use_cyclic_u": True
+                    "Simple_sides": 64
                 },
                 **keywordArguments
             )
@@ -1151,4 +1175,4 @@ def blenderCreateSimpleCurve(curvePrimitiveType:BlenderCurvePrimitiveTypes, keyw
     
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
-    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, edit_mode=False, **keywordArguments)
+    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, shape='3D', edit_mode=False, **keywordArguments)
