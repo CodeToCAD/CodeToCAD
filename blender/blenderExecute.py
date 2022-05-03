@@ -61,6 +61,7 @@ class BlenderModifiers(Enum):
     MIRROR = 3 # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
     SCREW = 4
     SOLIDIFY = 5
+    CURVE = 6
 
     def blenderAddModifier(self, shapeName:str, keywordArguments:dict):
 
@@ -89,6 +90,27 @@ def blenderApplySolidifyModifier(shapeName, thickness:Dimension):
         shapeName, 
         {
             "thickness": convertDimensionToBlenderUnit(thickness).value
+        }
+    )
+    
+def blenderApplyCurveModifier(shapeName, curveObjectName):
+    
+    blenderObject = bpy.data.objects.get(shapeName)
+    curveObject = bpy.data.objects.get(curveObjectName)
+
+    assert \
+        blenderObject != None, \
+        "Object {} does not exist".format(shapeName)
+        
+    assert \
+        curveObject != None, \
+        "Object {} does not exist".format(curveObjectName)
+
+        
+    BlenderModifiers.CURVE.blenderAddModifier(
+        shapeName, 
+        {
+            "object": curveObject
         }
     )
 
