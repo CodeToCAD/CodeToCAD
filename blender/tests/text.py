@@ -21,3 +21,7 @@ curve("multiline").createText(
             Awesome!
 """
 ).translate("0,-5,0")
+
+
+curve("curvedTextPath").createCircle("1m").translate("-5,-5,0")
+curve("curvedText").createText("curvedText").curve("curvedTextPath").translate("-5,-5,0")

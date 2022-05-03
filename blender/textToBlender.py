@@ -386,6 +386,18 @@ class curve(shape):
         )
 
         return self
+        
+    def curve(self,
+        profileCurveName
+        ):
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating curve {} from vertices.".format(self.name),
+            lambda: blenderApplyCurveModifier(self.name, profileCurveName),
+            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+        )
+
+        return self
 
     def createText(self,
         text,
