@@ -97,7 +97,7 @@ class BlenderBooleanTypes(Enum):
     DIFFERENCE = 1
     INTERSECT = 2
 
-def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeName):
+def blenderApplyBooleanModifier(shapeName, blenderBooleanType:BlenderBooleanTypes, withShapeName):
 
     blenderObject = bpy.data.objects.get(shapeName)
         
@@ -111,10 +111,13 @@ def blenderApplyBooleanModifier(shapeName, type:BlenderBooleanTypes, withShapeNa
         blenderBooleanObject != None, \
         "Object {} does not exist".format(withShapeName)
 
+    if (type(blenderObject.data) == bpy.types.Curve):
+        blenderCreateMeshFromCurve()
+
     BlenderModifiers.BOOLEAN.blenderAddModifier(
         shapeName, 
         {
-            "operation": type.name,
+            "operation": blenderBooleanType.name,
             "object": blenderBooleanObject,
             # "use_self": True,
             # "use_hole_tolerant": True,
@@ -250,7 +253,7 @@ def blenderUpdateObjectName(oldName, newName):
     blenderObject.name = newName
 
 
-def blenderUpdateObjectMeshName(parentObjectName, newName):
+def blenderUpdateObjectDataName(parentObjectName, newName):
     
     blenderObject = bpy.data.objects.get(parentObjectName)
     
@@ -258,15 +261,7 @@ def blenderUpdateObjectMeshName(parentObjectName, newName):
         blenderObject != None, \
         "Object {} does not exist".format(parentObjectName)
 
-    meshName = blenderObject.data.name
-
-    blenderMesh = bpy.data.meshes.get(meshName)
-
-    assert \
-        blenderMesh != None, \
-        "Mesh {} does not exist".format(meshName)
-
-    blenderMesh.name = newName
+    blenderObject.data.name = newName
 
 
 # locks the scene interface
@@ -475,7 +470,7 @@ def blenderScaleObject(
     
     blenderObject.scale = (x.value,y.value,z.value)
 
-    #blenderApplyObjectTransformations(shapeName)
+    blenderApplyObjectTransformations(shapeName)
 
 
 # TODO: if object already exists, merge objects
@@ -584,6 +579,17 @@ def blenderApplyDependencyGraph(existingObjectName, removeModifiers = True):
 
     if removeModifiers:
         blenderObject.modifiers.clear()
+
+
+def blenderCreateMeshFromCurve(newObjectName, blenderCurveObject):
+    dependencyGraph = bpy.context.evaluated_depsgraph_get()
+    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
+    
+    blenderObject = blenderCreateObject(newObjectName, mesh)
+
+    blenderObject.matrix_world = blenderCurveObject.matrix_world
+    
+    blenderAssignObjectToCollection(newObjectName)
 
 
 def blenderSetObjectVisibility(existingObjectName, isVisible):
@@ -871,16 +877,6 @@ def blenderAddBevelObjectToCurve(pathCurveObjectName, profileCurveObjectName, fi
     pathCurveObject.data.bevel_mode = "OBJECT"
     pathCurveObject.data.bevel_object = profileCurveObject
     pathCurveObject.data.use_fill_caps = fillCap
-
-def blenderCreateMeshFromCurve(newObjectName, blenderCurveObject):
-    dependencyGraph = bpy.context.evaluated_depsgraph_get()
-    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
-    
-    blenderObject = blenderCreateObject(newObjectName, mesh)
-
-    blenderObject.matrix_world = blenderCurveObject.matrix_world
-    
-    blenderAssignObjectToCollection(newObjectName)
 
 
 # assumes add_curve_extra_objects is enabled
