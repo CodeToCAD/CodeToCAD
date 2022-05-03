@@ -58,21 +58,9 @@ class shape:
             lambda: True,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == fileName
         )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming object {} to {}".format(fileName, self.name),
-            lambda: blenderUpdateObjectName(fileName, self.name)
-            ,
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
-        )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming mesh {} to {}".format(fileName, self.name),
-            lambda: blenderUpdateObjectMeshName(self.name, self.name)
-            ,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
-        )
         
+        self.rename(self.name, fileName)
         
-
         return self
 
     def cloneShape(self,
@@ -104,18 +92,8 @@ class shape:
             lambda: True,
             lambda update: type(update.id) == bpy.types.Mesh and update.id.name == expectedNameOfObjectInBlender
         )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming object {} to {}".format(primitiveName, self.name),
-            lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
-            ,
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
-        )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming mesh {} to {}".format(primitiveName, self.name),
-            lambda: blenderUpdateObjectMeshName(self.name, self.name)
-            ,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
-        )
+
+        self.rename(self.name, expectedNameOfObjectInBlender)
 
         return self
 
@@ -229,10 +207,11 @@ class shape:
         return self
 
     def rename(self,
-    name:str \
+    newName:str, \
+    expectedNameOfObjectInBlender:str = None
     ):
-        expectedNameOfObjectInBlender = self.name
-        self.name = name
+        expectedNameOfObjectInBlender = expectedNameOfObjectInBlender or self.name
+        self.name = newName if expectedNameOfObjectInBlender else self.name
         blenderEvents.addToBlenderOperationsQueue(
             "Renaming object {} to {}".format(expectedNameOfObjectInBlender, self.name),
             lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
@@ -241,9 +220,9 @@ class shape:
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Renaming mesh {} to {}".format(expectedNameOfObjectInBlender, self.name),
-            lambda: blenderUpdateObjectMeshName(self.name, self.name)
+            lambda: blenderUpdateObjectDataName(self.name, self.name)
             ,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == self.name
+            lambda update: update.id.name == self.name
         )
         return self
 
@@ -442,20 +421,6 @@ class curve(shape):
         )
 
         return self
-
-    def rename(self,
-        name:str, \
-        overrideName:str = None
-        ):
-            expectedNameOfObjectInBlender = overrideName or self.name
-            self.name = name
-            blenderEvents.addToBlenderOperationsQueue(
-                "Renaming curve object {} to {}".format(expectedNameOfObjectInBlender, self.name),
-                lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
-                ,
-                lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
-            )
-            return self
 
 
     def createPrimitive(curvePrimitiveType:CurvePrimitiveTypes):
