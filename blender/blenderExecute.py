@@ -134,7 +134,18 @@ def blenderApplyBooleanModifier(shapeName, blenderBooleanType:BlenderBooleanType
         "Object {} does not exist".format(withShapeName)
 
     if (type(blenderObject.data) == bpy.types.Curve):
-        blenderCreateMeshFromCurve()
+        curveName = shapeName + "_curve"
+        blenderUpdateObjectName(shapeName, curveName)
+        blenderUpdateObjectDataName(curveName, curveName)
+        blenderCreateMeshFromCurve(shapeName, blenderObject)
+
+    if (type(blenderBooleanObject.data) == bpy.types.Curve):
+        curveName = withShapeName + "_curve"
+        blenderUpdateObjectName(withShapeName, curveName)
+        blenderUpdateObjectDataName(curveName, curveName)
+        blenderCreateMeshFromCurve(withShapeName, blenderBooleanObject)
+        
+        blenderBooleanObject = bpy.data.objects.get(withShapeName)
 
     BlenderModifiers.BOOLEAN.blenderAddModifier(
         shapeName, 
