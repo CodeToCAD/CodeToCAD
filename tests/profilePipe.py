@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
-from textToBlender import *
+from CodeToCADBlenderProvider import *
 
 # We are trying to draw a bull-horn shapes pipe:
 """

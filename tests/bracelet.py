@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
-from textToBlender import shape, scene, BlenderLength, analytics
+from CodeToCADBlenderProvider import shape, scene, BlenderLength, analytics
 
 scene().setDefaultUnit(BlenderLength.CENTIMETERS)
 scene().deleteGroup("Bracelet", True) \
