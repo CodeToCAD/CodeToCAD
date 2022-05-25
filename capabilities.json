@@ -1,0 +1,426 @@
+{
+    "version": "0.0.1",
+    "information": "Text to 3D Modeling Automation Capabilities.",
+    "capabilities": {
+        "shape": {
+            "information": "Capabilities related to adding, multiplying, and/or modifying a shape.",
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "fromFile": {
+                "action": "create",
+                "information": "Adds geometry to a shape from a file. If the shape does not exist, this will create it.",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "cloneShape": {
+                "action": "create",
+                "information": "Clone an existing shape with its geometry and properties. If the shape already exists, shapes will be merged.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "primitive": {
+                "action": "create",
+                "information": "Adds geometry to a shape from a primitive named shape. If the shape does not exist, this will create it.",
+                "parameters": {
+                    "primitiveName": {
+                        "type": "string"
+                    },
+                    "dimensions": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "verticies": {
+                "action": "create",
+                "information": "Adds geometry to a shape from a list of verticies. If the shape does not exist, this will create it",
+                "parameters": {
+                    "verticies": {
+                        "type": "list"
+                    }
+                }
+            },
+            "loft": {
+                "action": "create",
+                "information": "Interpolate between two existing shapes.",
+                "parameters": {
+                    "shape1Name": {
+                        "type": "string"
+                    },
+                    "shape1LandmarkName": {
+                        "type": "string"
+                    },
+                    "shape2Name": {
+                        "type": "string"
+                    },
+                    "shape2LandmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "mirror": {
+                "action": "create",
+                "information": "Mirror an existing shape with respect to a landmark.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "landmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "pattern": {
+                "action": "create",
+                "information": "Clone an existing shape to follow a pattern.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "landmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "mask": {
+                "action": "create",
+                "information": "Clone a part of an existing shape, as bounded by a landmark.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "landmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "scale": {
+                "action": "modify",
+                "information": "Scale operation.",
+                "parameters": {
+                    "dimensions": {
+                        "type": "string"
+                    }
+                }
+            },
+            "rotate": {
+                "action": "modify",
+                "information": "Rotate operation.",
+                "parameters": {
+                    "rotation": {
+                        "type": "string"
+                    }
+                }
+            },
+            "rename": {
+                "action": "modify",
+                "information": "Rename the shape.",
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "union": {
+                "action": "modify",
+                "information": "Boolean union",
+                "parameters": {
+                    "withShapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "subtract": {
+                "action": "modify",
+                "information": "Boolean subtraction",
+                "parameters": {
+                    "withShapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "intersect": {
+                "action": "modify",
+                "information": "Boolean intersection",
+                "parameters": {
+                    "withShapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "bevel": {
+                "action": "modify",
+                "information": "A bevel is capable of creating both a fillet and a chamfer",
+                "parameters": {
+                    "landmarkName": {
+                        "type": "string"
+                    },
+                    "angle": {
+                        "type": "float"
+                    },
+                    "roundedness": {
+                        "type": "number"
+                    }
+                }
+            },
+            "extrude": {
+                "action": "modify",
+                "information": "Extrude a landmark by a specified dimension.",
+                "parameters": {
+                    "landmarkName": {
+                        "type": "string"
+                    },
+                    "dimensions": {
+                        "type": "string"
+                    }
+                }
+            },
+            "remesh": {
+                "action": "modify",
+                "information": "Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).",
+                "parameters": {
+                    "strategy": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            },
+            "hollow": {
+                "action": "modify",
+                "information": "Remove vertices, if necessary, until the shape has a specified wall thickness.",
+                "parameters": {
+                    "wallThickness": {
+                        "type": "float"
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete a shape from the scene. You may need to delete an associated joint or other features.",
+                "parameters": {}
+            }
+        },
+        "landmark": {
+            "information": "Landmarks are named positions on a shape.",
+            "constructor": {
+                "parameters": {
+                    "localToShapeWithName": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "vertices": {
+                "action": "create",
+                "information": "A collection of point(s) in 3D space",
+                "parameters": {
+                    "locations": {
+                        "type": "string"
+                    }
+                }
+            },
+            "rectangle": {
+                "action": "create",
+                "information": "Create a rectanguar shape of point(s) in 3D space",
+                "parameters": {
+                    "dimensions": {
+                        "type": "string"
+                    }
+                }
+            },
+            "linearPattern": {},
+            "circularPattern": {},
+            "contourPattern": {}
+        },
+        "joint": {
+            "information": "Joints define the relationships and constraints between shapes.",
+            "constructor": {
+                "parameters": {
+                    "shape1Name": {
+                        "type": "string"
+                    },
+                    "shape2Name": {
+                        "type": "string"
+                    },
+                    "shape1LandmarkName": {
+                        "type": "string"
+                    },
+                    "shape2LandmarkName": {
+                        "type": "string"
+                    },
+                    "jointType": {
+                        "type": "string"
+                    },
+                    "initialRotation": {
+                        "type": "string"
+                    },
+                    "limitRotation": {
+                        "type": "string"
+                    },
+                    "limitTranslation": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "material": {
+            "information": "Materials affect the appearance and simulation properties of the shapes.",
+            "constructor": {}
+        },
+        "scene": {
+            "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "create": {
+                "information": "Creates a new scene"
+            },
+            "delete": {
+                "information": "Deletes a new scene"
+            },
+            "export": {
+                "information": "The ability to export the whole scene or specific shapes and/or shape groups as a 3D model, a video or image."
+            },
+            "setDefaultUnit": {
+                "action": "update",
+                "information": "Set the document's default measurements system.",
+                "parameters": {
+                    "unit": {
+                        "type": "string"
+                    }
+                }
+            },
+            "createGroup": {
+                "action": "create",
+                "information": "Create a new group",
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "deleteGroup": {
+                "action": "delete",
+                "information": "Delete a new group",
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "removeNestedShapes": {
+                        "type": "boolean"
+                    }
+                }
+            },
+
+            "removeShapeFromGroup": {
+                "action": "delete",
+                "information": "Removes an existing shape from a group",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "assignShapeToGroup": {
+                "action": "update",
+                "information": "Assigns an existing shape to a new group",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
+                    },
+                    "removeFromOtherGroups": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": true
+                    }
+                }
+            },
+            "setShapeVisibility": {
+                "action": "update",
+                "information": "Change the visibiltiy of the shape.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    },
+                    "isVisible": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "analytics": {
+            "information": "Tools for collecting data about the shapes and scene.",
+            "constructor": {},
+            "measureLandmarks": {
+                "action": "get",
+                "information": "The ubiquitous ruler and angle measurement tool.",
+                "parameters": {
+                    "landmark1Name": {
+                        "type": "string"
+                    },
+                    "landmark2Name": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "getWorldPose": {
+                "action": "get",
+                "information": "Returns the world pose of a shape.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "getBoundingBox": {
+                "action": "get",
+                "information": "Returns the bounding box of a shape.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
