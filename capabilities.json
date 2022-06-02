@@ -1,6 +1,6 @@
 {
     "version": "0.0.1",
-    "information": "Text to 3D Modeling Automation Capabilities.",
+    "information": "Capabilities for CodeToCAD.",
     "capabilities": {
         "shape": {
             "information": "Capabilities related to adding, multiplying, and/or modifying a shape.",
@@ -37,7 +37,7 @@
                     }
                 }
             },
-            "primitive": {
+            "createPrimitive": {
                 "action": "create",
                 "information": "Adds geometry to a shape from a primitive named shape. If the shape does not exist, this will create it.",
                 "parameters": {
@@ -46,6 +46,95 @@
                     },
                     "dimensions": {
                         "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCube": {
+                "action": "create",
+                "information": "Adds cuboid geometry to a shape.",
+                "parameters": {
+                    "width": {
+                        "type": "Dimension"
+                    },
+                    "length": {
+                        "type": "Dimension"
+                    },
+                    "height": {
+                        "type": "Dimension"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCone": {
+                "action": "create",
+                "information": "Adds cone geometry to a shape.",
+                "parameters": {
+                    "radius": {
+                        "type": "Dimension"
+                    },
+                    "height": {
+                        "type": "Dimension"
+                    },
+                    "draftRadius": {
+                        "type": "Dimension",
+                        "defaultValue": 0
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCylinder": {
+                "action": "create",
+                "information": "Adds cylinder geometry to a shape.",
+                "parameters": {
+                    "radius": {
+                        "type": "Dimension"
+                    },
+                    "height": {
+                        "type": "Dimension"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createTorus": {
+                "action": "create",
+                "information": "Adds torus geometry to a shape.",
+                "parameters": {
+                    "innerRadius": {
+                        "type": "Dimension"
+                    },
+                    "outerRadius": {
+                        "type": "Dimension"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createSphere": {
+                "action": "create",
+                "information": "Adds sphere geometry to a shape.",
+                "parameters": {
+                    "radius": {
+                        "type": "Dimension"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -225,6 +314,226 @@
                 "parameters": {}
             }
         },
+        "curve": {
+            "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "curveType": {
+                        "type": "CurveTypes"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "sweep": {
+                "action": "modify",
+                "information": "Extrude this  curve along the path of another",
+                "parameters": {
+                    "profileCurveName": {
+                        "type": "string"
+                    },
+                    "fillCap": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "createText": {
+                "action": "create",
+                "information": "Adds text to a shape.",
+                "parameters": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "fontSize": {
+                        "type": "Dimension"
+                    },
+                    "bold": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "italic": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "underlined": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "characterSpacing": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "wordSpacing": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "lineSpacing": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "fontFilePath": {
+                        "type": "string",
+                        "defaultValue": null
+                    }
+                }
+            },
+            "createFromVertices": {
+                "action": "create",
+                "information": "Create a curve from 2D/3D points.",
+                "parameters": {
+                    "verticesArray": {
+                        "type": "list[Point]"
+                    },
+                    "interpolation": {
+                        "type": "int",
+                        "defaultValue": 64
+                    }
+                }
+            },
+            "createPoint": {
+                "action": "create",
+                "information": "Create a point",
+                "parameters": {}
+            },
+            "createLine": {
+                "action": "create",
+                "information": "Create a line",
+                "parameters": {
+                    "length": {
+                        "type": "Dimension"
+                    },
+                    "symmetric": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "createLineBetweenPoints": {
+                "action": "create",
+                "information": "Create a line between two points",
+                "parameters": {
+                    "pointA": {
+                        "type": "Point"
+                    },
+                    "pointB": {
+                        "type": "Point"
+                    }
+                }
+            },
+            "createCircle": {
+                "action": "create",
+                "information": "Create a circle",
+                "parameters": {
+                    "radius": {
+                        "type": "Dimension"
+                    }
+                }
+            },
+            "createEllipse": {
+                "action": "create",
+                "information": "Create an ellipse",
+                "parameters": {
+                    "radiusA": {
+                        "type": "Dimension"
+                    },
+                    "radiusB": {
+                        "type": "Dimension"
+                    }
+                }
+            },
+            "createArc": {
+                "action": "create",
+                "information": "Create an arc",
+                "parameters": {
+                    "radius": {
+                        "type": "Dimension"
+                    },
+                    "angle": {
+                        "type": "Angle",
+                        "defaultValue": "180d"
+                    }
+                }
+            },
+            "createArcBetweenThreePoints": {
+                "action": "create",
+                "information": "Create a 3-point arc",
+                "parameters": {
+                    "pointA": {
+                        "type": "Point"
+                    },
+                    "pointB": {
+                        "type": "Point"
+                    },
+                    "centerPoint": {
+                        "type": "Point"
+                    }
+                }
+            },
+            "createSegment": {
+                "action": "create",
+                "information": "Create a segment (intersection of two circles)",
+                "parameters": {
+                    "innerRadius": {
+                        "type": "Dimension"
+                    },
+                    "outerRadius": {
+                        "type": "Dimension"
+                    },
+                    "angle": {
+                        "type": "Angle",
+                        "defaultValue": "180d"
+                    }
+                }
+            },
+            "createRectangle": {
+                "action": "create",
+                "information": "Create a rectangle",
+                "parameters": {
+                    "length": {
+                        "type": "Dimension"
+                    },
+                    "width": {
+                        "type": "Dimension"
+                    }
+                }
+            },
+            "createPolygon": {
+                "action": "create",
+                "information": "Create an n-gon",
+                "parameters": {
+                    "numberOfSides": {
+                        "type": "int"
+                    },
+                    "length": {
+                        "type": "Dimension"
+                    },
+                    "width": {
+                        "type": "Dimension"
+                    }
+                }
+            },
+            "createTrapezoid": {
+                "action": "create",
+                "information": "Create a trapezoid",
+                "parameters": {
+                    "lengthUpper": {
+                        "type": "Dimension"
+                    },
+                    "lengthLower": {
+                        "type": "Dimension"
+                    },
+                    "height": {
+                        "type": "Dimension"
+                    }
+                }
+            }
+        },
         "landmark": {
             "information": "Landmarks are named positions on a shape.",
             "constructor": {
@@ -287,6 +596,216 @@
                     }
                 }
             }
+            "curve": {
+                "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
+                "constructor": {
+                    "parameters": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "curveType": {
+                            "type": "CurveTypes"
+                        },
+                        "description": {
+                            "type": "string",
+                            "required": false
+                        }
+                    }
+                },
+                "sweep": {
+                    "action": "modify",
+                    "information": "Extrude this  curve along the path of another",
+                    "parameters": {
+                        "profileCurveName": {
+                            "type": "string"
+                        },
+                        "fillCap": {
+                            "type": "boolean",
+                            "defaultValue": false
+                        }
+                    }
+                },
+                "createText": {
+                    "action": "create",
+                    "information": "Adds text to a shape.",
+                    "parameters": {
+                        "text": {
+                            "type": "string"
+                        },
+                        "fontSize": {
+                            "type": "Dimension"
+                        },
+                        "bold": {
+                            "type": "boolean",
+                            "defaultValue": false
+                        },
+                        "italic": {
+                            "type": "boolean",
+                            "defaultValue": false
+                        },
+                        "underlined": {
+                            "type": "boolean",
+                            "defaultValue": false
+                        },
+                        "characterSpacing": {
+                            "type": "int",
+                            "defaultValue": 1
+                        },
+                        "wordSpacing": {
+                            "type": "int",
+                            "defaultValue": 1
+                        },
+                        "lineSpacing": {
+                            "type": "int",
+                            "defaultValue": 1
+                        },
+                        "fontFilePath": {
+                            "type": "string",
+                            "defaultValue": null
+                        }
+                    }
+                },
+                "createFromVertices": {
+                    "action": "create",
+                    "information": "Create a curve from 2D/3D points.",
+                    "parameters": {
+                        "verticesArray": {
+                            "type": "list[Point]"
+                        },
+                        "interpolation": {
+                            "type": "int",
+                            "defaultValue": 64
+                        }
+                    }
+                },
+                "createPoint": {
+                    "action": "create",
+                    "information": "Create a point",
+                    "parameters": {}
+                },
+                "createLine": {
+                    "action": "create",
+                    "information": "Create a line",
+                    "parameters": {
+                        "length": {
+                            "type": "Dimension"
+                        },
+                        "symmetric": {
+                            "type": "boolean",
+                            "defaultValue": false
+                        }
+                    }
+                },
+                "createLineBetweenPoints": {
+                    "action": "create",
+                    "information": "Create a line between two points",
+                    "parameters": {
+                        "pointA": {
+                            "type": "Point"
+                        },
+                        "pointB": {
+                            "type": "Point"
+                        }
+                    }
+                },
+                "createCircle": {
+                    "action": "create",
+                    "information": "Create a circle",
+                    "parameters": {
+                        "radius": {
+                            "type": "Dimension"
+                        }
+                    }
+                },
+                "createEllipse": {
+                    "action": "create",
+                    "information": "Create an ellipse",
+                    "parameters": {
+                        "radiusA": {
+                            "type": "Dimension"
+                        },
+                        "radiusB": {
+                            "type": "Dimension"
+                        }
+                    }
+                },
+                "createArc": {
+                    "action": "create",
+                    "information": "Create an arc",
+                    "parameters": {
+                        "radius": {
+                            "type": "Dimension"
+                        },
+                        "angle": {
+                            "type": "Angle",
+                            "defaultValue": "180d"
+                        }
+                    }
+                },
+                "createArcBetweenThreePoints": {
+                    "action": "create",
+                    "information": "Create a 3-point arc",
+                    "parameters": {
+                        "pointA": {
+                            "type": "Point"
+                        },
+                        "pointB": {
+                            "type": "Point"
+                        },
+                        "centerPoint": {
+                            "type": "Point"
+                        }
+                    }
+                },
+                "createSegment": {
+                    "action": "create",
+                    "information": "Create a segment (intersection of two circles)",
+                    "parameters": {
+                        "innerRadius": {
+                            "type": "Dimension"
+                        },
+                        "outerRadius": {
+                            "type": "Dimension"
+                        },
+                        "angle": {
+                            "type": "Angle",
+                            "defaultValue": "180d"
+                        }
+                    }
+                },
+                "createRectangle": {
+                    "action": "create",
+                    "information": "Create a rectangle",
+                    "parameters": {
+                        "length": {
+                            "type": "Dimension"
+                        },
+                        "width": {
+                            "type": "Dimension"
+                        }
+                    }
+                },
+                "createPolygon": {
+                    "action": "create",
+                    "information": "Create an n-gon",
+                    "parameters": {
+                        "numberOfSides": {
+                            "type": "int"
+                        },
+                        "length": {
+                            "type": "Dimension"
+                        },
+                        "width": {
+                            "type": "Dimension"
+                        }
+                    }
+                },
+                "transformLandmarkOntoAnother": {
+                    "action": "modify",
+                    "information": "Transforms one landmark onto another",
+                    "parameters": {}
+                }
+            }
         },
         "material": {
             "information": "Materials affect the appearance and simulation properties of the shapes.",
@@ -344,7 +863,6 @@
                     }
                 }
             },
-
             "removeShapeFromGroup": {
                 "action": "delete",
                 "information": "Removes an existing shape from a group",
@@ -415,6 +933,15 @@
             "getBoundingBox": {
                 "action": "get",
                 "information": "Returns the bounding box of a shape.",
+                "parameters": {
+                    "shapeName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "getDimensions": {
+                "action": "get",
+                "information": "Returns the dimensions of a shape.",
                 "parameters": {
                     "shapeName": {
                         "type": "string"
