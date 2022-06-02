@@ -1,10 +1,5 @@
 print("Starting bracelet.py")
 
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
-
 from CodeToCADBlenderProvider import shape, scene, BlenderLength, analytics
 
 scene().setDefaultUnit(BlenderLength.CENTIMETERS)
