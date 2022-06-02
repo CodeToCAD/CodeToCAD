@@ -13,3 +13,12 @@ The easiest way to use this BlenderProvider is to enable the addon in Blender:
 3. Enable the addon in blender by clicking on the checkmark.
 4. Expand the arrow next to the CodeToCAD addon, this will open up the preferences.
 5. Select the BlenderProvider folder, which is the root of this repo.
+6. Click the "Refresh BlenderProvider" button
+
+## Running CodeToCAD
+
+There are two options:
+
+1. Use the File > Import > CodeToCAD menu to import a python file uses the CodeToCAD commands. For example, you could import one of the [test scripts](./tests/text.py).
+
+2. In the console, type `from CodeToCADBlenderProvider import shape, curve, landmark, scene, analytics, joint`. Now you can use CodeToCAD commands in the console.
