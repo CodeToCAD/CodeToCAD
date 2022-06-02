@@ -435,7 +435,7 @@ class curve(shape):
         return self
 
 
-    def createPrimitive(curvePrimitiveType:CurvePrimitiveTypes):
+    def createPrimitiveDecorator(curvePrimitiveType:CurvePrimitiveTypes):
         def decorator(primitiveFunction):
             def wrapper(*args, **kwargs):
 
@@ -463,46 +463,46 @@ class curve(shape):
             return wrapper
         return decorator
 
-    @createPrimitive(CurvePrimitiveTypes.Point)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Point)
     def createPoint(self, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.LineTo)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.LineTo)
     def createLineTo(self, endLocation, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Line)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Line)
     def createLine(self, length, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Angle)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Angle)
     def createAngle(self, length, angle, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Circle)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Circle)
     def createCircle(self, radius, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Ellipse)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Ellipse)
     def createEllipse(self, radius_x, radius_y, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Arc)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Arc)
     def createArc(self, radius, angle, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Sector)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Sector)
     def createSector(self, radius, angle, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Segment)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Segment)
     def createSegment(self, outter_radius, inner_radius, angle, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Rectangle)        
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Rectangle)        
     def createRectangle(self, length, width, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Rhomb)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Rhomb)
     def createRhomb(self, length, width, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Polygon)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Polygon)
     def createPolygon(self, numberOfSides, radius, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Polygon_ab)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Polygon_ab)
     def createPolygon_ab(self, numberOfSides, radius_x, radius_y, keywordArguments = {}):
         return self
-    @createPrimitive(CurvePrimitiveTypes.Trapezoid)
+    @createPrimitiveDecorator(CurvePrimitiveTypes.Trapezoid)
     def createTrapezoid(self, length_upper, length_lower, height, keywordArguments = {}):
         return self
 
