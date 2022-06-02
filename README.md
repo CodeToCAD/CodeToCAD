@@ -43,7 +43,7 @@ languages and libraries like OpenSCAD and QueryCAD or the API's for
 Blender, Fusion360 etc.. that are not very user friendly.
 
 In either case, the models they create can only be used on the software they
-used to create it on, and they have to do most of the building from scratch.
+used to create them on, and they have to do most of the model building from scratch.
 
 Moreover, keeping a linear version history of their work is nigh impossible, and
 making updates to their models is an absolute nightmare.
