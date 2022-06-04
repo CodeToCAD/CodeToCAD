@@ -10,6 +10,7 @@ from bpy.props import StringProperty, IntProperty, BoolProperty, CollectionPrope
 
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 
+
 bl_info = {
     "name": "CodeToCAD",
     "author": "CodeToCAD",
@@ -82,17 +83,8 @@ class CodeToCADAddonPreferences(AddonPreferences):
         bl_options = {'REGISTER'}
 
         def execute(self, context):
-            blenderProviderPath = CodeToCADAddonPreferences.getBlenderProviderFilePathFromPreferences(context=context)
 
-            if not blenderProviderPath or not os.path.exists(blenderProviderPath) or not Path(blenderProviderPath+"/CodeToCADBlenderProvider.py").is_file():
-                print("AddBlenderProviderToPath error: Invalid path. Please make sure the addon is configured correctly.")
-                return {'CANCELLED'}
-
-            print("Adding {} to path".format(blenderProviderPath))
-
-            sys.path.append(blenderProviderPath)
-
-            return {'FINISHED'}
+            return addBlenderProviderToPath(context=context, returnBlenderOperationStatus=True)
 
     def draw(self, context):
         layout = self.layout
@@ -109,17 +101,51 @@ class CodeToCADAddonPreferences(AddonPreferences):
         return preferences[preferenceKey] if preferenceKey in preferences else None
 
 
+def addBlenderProviderToPath(context=bpy.context, returnBlenderOperationStatus=False):
+    print("addBlenderProviderToPath called")
+    
+    blenderProviderPath = CodeToCADAddonPreferences.getBlenderProviderFilePathFromPreferences(context)
+
+    if not blenderProviderPath or not os.path.exists(blenderProviderPath) or not Path(blenderProviderPath+"/CodeToCADBlenderProvider.py").is_file():
+        print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
+        return {'CANCELLED'} if returnBlenderOperationStatus else None
+
+    print("Adding {} to path".format(blenderProviderPath))
+
+    sys.path.append(blenderProviderPath)
+
+    return {'FINISHED'} if returnBlenderOperationStatus else None
+
+# references https://blender.stackexchange.com/a/2751
+from functools import wraps
+from console_python import replace_help
+import console_python
+
+@wraps(replace_help)
+def addCodeToCADConvenienceWordsToConsole(namspace):
+
+    replace_help(namspace)
+    
+    from CodeToCADBlenderProvider import shape, curve, landmark, scene, analytics, joint
+
+    namspace["shape"] = shape
+    namspace["curve"] = curve
+    namspace["landmark"] = landmark
+    namspace["scene"] = scene
+    namspace["analytics"] = analytics
+    namspace["joint"] = joint
+
 def register():
     print ("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
     bpy.utils.register_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
     bpy.utils.register_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.append(menu_import)
+    
+    bpy.app.timers.register(addBlenderProviderToPath)
 
-    # Add BlenderProvider to path if the addon is already configured.
-    if CodeToCADAddonPreferences.getBlenderProviderFilePathFromPreferences(bpy.context):
-        bpy.ops.code_to_cad.add_blender_provider_to_path()
-        bpy.ops.console.insert(text="from CodeToCADBlenderProvider import shape, curve, landmark, scene, analytics, joint")
+    console_python.replace_help = addCodeToCADConvenienceWordsToConsole
+
 
 def unregister():
     print ("Unregistering ", __name__)
@@ -127,6 +153,9 @@ def unregister():
     bpy.utils.unregister_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
     bpy.utils.unregister_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.remove(menu_import)
+
+    console_python.replace_help = replace_help
+
 
 if __name__ == "__main__":
     register()
