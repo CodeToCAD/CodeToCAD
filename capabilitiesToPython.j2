@@ -24,8 +24,10 @@ Sample context:
                 }
         }
 
-#}
-{%- set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
+-#}
+from utilities import Dimension, CurveTypes, Point, Angle
+
+{% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
 {% macro typeMapping(typeName) -%}
     {{types[typeName] if typeName in types else typeName}}
 {%- endmacro %}

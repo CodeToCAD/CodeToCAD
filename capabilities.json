@@ -595,7 +595,7 @@
                         "type": "string"
                     }
                 }
-            }
+            },
             "curve": {
                 "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
                 "constructor": {

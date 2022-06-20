@@ -14,8 +14,6 @@ Future planned integrations:
 
 ## Why does CodeToCAD matter?
 
-> It Does.
-
 ### Purpose tl;dr
 
 - Allow the user to define shapes and curves to build 3D models using a common programming language.
