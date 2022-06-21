@@ -1,7 +1,7 @@
 import math
 from pathlib import Path
-from textwrap import fill
-from utilities import *
+from types import LambdaType
+from CodeToCAD.utilities import *
 from BlenderExecute import *
 from BlenderEvents import BlenderEvents
 
@@ -96,6 +96,44 @@ class shape:
         self.rename(self.name, expectedNameOfObjectInBlender)
 
         return self
+
+
+    def createCube(self,
+    width:str,  \
+    length:str,  \
+    height:str,  \
+    keywordArguments:dict=None \
+    ):
+        return self.primitive("cube", "{},{},{}".format(width,length,height), keywordArguments)
+
+    def createCone(self,
+    radius:str,  \
+    height:str,  \
+    draftRadius:str,  \
+    keywordArguments:dict=None \
+    ):
+        return self.primitive("cone", "{},{},{}".format(radius,height,draftRadius), keywordArguments)
+
+    def createCylinder(self,
+    radius:str,  \
+    height:str,  \
+    keywordArguments:dict=None \
+    ):
+        return self.primitive("cylinder", "{},{}".format(radius,height), keywordArguments)
+
+    def createTorus(self,
+    innerRadius:str,  \
+    outerRadius:str,  \
+    keywordArguments:dict=None \
+    ):
+        return self.primitive("torus", "{},{}".format(innerRadius,outerRadius), keywordArguments)
+
+    def createSphere(self,
+    radius:str,  \
+    keywordArguments:dict=None \
+    ):
+        return self.primitive("sphere", "{}".format(radius), keywordArguments)
+
 
     def verticies(self,
     landmarkName:str \
@@ -696,18 +734,26 @@ class analytics:
         print("constructor is not implemented") # implement 
         return self
 
+    def execute(self, callback: LambdaType, description = ""):
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Running analytics execute. {}".format(description),
+            callback,
+            None
+        )
+
     def measureLandmarks(self,
     landmark1Name:str,  \
     landmark2Name:str=None \
     ):
         print("measure is not implemented") # implement 
-        return self
+        return None
 
     def getWorldPose(self,
     shapeName:str \
     ):
         print("worldPose is not implemented") # implement 
-        return self
+        return None
 
     def getBoundingBox(self,
     shapeName:str \

@@ -1,0 +1,3 @@
+[submodule "CodeToCAD"]
+	path = CodeToCAD
+	url = git@github.com:CodeToCad/CodeToCAD.git

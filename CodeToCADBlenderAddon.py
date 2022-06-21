@@ -49,9 +49,13 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
         if bpy.ops.object.mode_set.poll():
             bpy.ops.object.mode_set(mode='OBJECT')
+        else:
+            return {'CANCELLED'}
 
         if bpy.ops.object.select_all.poll():
             bpy.ops.object.select_all(action='DESELECT')
+        else:
+            return {'CANCELLED'}
 
         for path in paths:
             print("Running script", path)
@@ -113,6 +117,14 @@ def addBlenderProviderToPath(context=bpy.context, returnBlenderOperationStatus=F
     print("Adding {} to path".format(blenderProviderPath))
 
     sys.path.append(blenderProviderPath)
+
+
+    codeToCADPath = blenderProviderPath+"/CodeToCAD/"
+    
+    print("Adding {} to path".format(codeToCADPath))
+
+    sys.path.append(codeToCADPath)
+
 
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
