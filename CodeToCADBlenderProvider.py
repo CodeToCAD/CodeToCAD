@@ -13,6 +13,7 @@ def setup(blenderEvents):
 
     # start the updateEventThread
     # blenderEvents.startBlenderEventThread()
+    blenderEvents.isWaitForAssertionsEnabled = False
     blenderEvents.startBlenderEventTimer(bpy)
 
     # tell Blender to notify onReceiveBlenderDependencyGraphUpdateEvent when its dependency graph is updated. https://docs.blender.org/api/current/bpy.app.handlers.html 
