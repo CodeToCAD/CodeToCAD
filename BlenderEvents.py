@@ -10,6 +10,8 @@ class BlenderEvents:
     blenderOperationsQueueLock = Lock()
     blenderOperationsQueue = []
 
+    isWaitForAssertionsEnabled = True
+
     def startBlenderEventThread(self):
         Thread(target=self.blenderEventThread).start()
 
@@ -249,7 +251,7 @@ Failed Operation: {}, Reason: {}
             currentOperationAssertionFunction = self.currentOperation["assertion"]
 
             # if the operation doesn't have an assertion, call completion right away
-            if currentOperationAssertionFunction == None:
+            if currentOperationAssertionFunction == None or not self.blenderEvents.isWaitForAssertionsEnabled:
                 
                 return self.operationCompleted()
 
