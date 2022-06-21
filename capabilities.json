@@ -59,13 +59,13 @@
                 "information": "Adds cuboid geometry to a shape.",
                 "parameters": {
                     "width": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "length": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "height": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -79,13 +79,13 @@
                 "information": "Adds cone geometry to a shape.",
                 "parameters": {
                     "radius": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "height": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "draftRadius": {
-                        "type": "Dimension",
+                        "type": "string",
                         "defaultValue": 0
                     },
                     "keywordArguments": {
@@ -100,10 +100,10 @@
                 "information": "Adds cylinder geometry to a shape.",
                 "parameters": {
                     "radius": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "height": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -117,10 +117,10 @@
                 "information": "Adds torus geometry to a shape.",
                 "parameters": {
                     "innerRadius": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "outerRadius": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -134,7 +134,7 @@
                 "information": "Adds sphere geometry to a shape.",
                 "parameters": {
                     "radius": {
-                        "type": "Dimension"
+                        "type": "string"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -312,6 +312,15 @@
                 "action": "delete",
                 "information": "Delete a shape from the scene. You may need to delete an associated joint or other features.",
                 "parameters": {}
+            },
+            "isVisible": {
+                "action": "modify",
+                "information": "Toggles visibility of a shape in the scene.",
+                "parameters": {
+                    "isVisible": {
+                        "type": "boolean"
+                    }
+                }
             }
         },
         "curve": {
