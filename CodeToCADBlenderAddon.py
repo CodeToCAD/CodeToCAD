@@ -6,7 +6,7 @@ from pathlib import Path
 import runpy
 
 from bpy.types import Operator, AddonPreferences, OperatorFileListElement
-from bpy.props import StringProperty, IntProperty, BoolProperty, CollectionProperty
+from bpy.props import StringProperty, CollectionProperty
 
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 
@@ -18,7 +18,7 @@ bl_info = {
     "blender": (3, 0, 0),
     "description": "",
     "doc_url": "https://github.com/CodeToCad/CodeToCad-Blender",
-    "category": "Testing",
+    "category": "Scripting",
 }
 
 @orientation_helper(axis_forward='Y', axis_up='Z')
@@ -46,16 +46,6 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
         if not paths:
             paths.append(self.filepath)
-
-        if bpy.ops.object.mode_set.poll():
-            bpy.ops.object.mode_set(mode='OBJECT')
-        else:
-            return {'CANCELLED'}
-
-        if bpy.ops.object.select_all.poll():
-            bpy.ops.object.select_all(action='DESELECT')
-        else:
-            return {'CANCELLED'}
 
         for path in paths:
             print("Running script", path)

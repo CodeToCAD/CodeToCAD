@@ -395,6 +395,17 @@ class shape:
         )
 
         return self
+        
+
+    def isVisible(self,
+    isVisible:bool \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
+            lambda: blenderSetObjectVisibility(self.name, isVisible),
+            None
+        ) 
+        return self
 
 class curve(shape):
     
