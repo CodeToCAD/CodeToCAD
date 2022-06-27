@@ -11,11 +11,11 @@ class shape:
         self.name = name
         self.description = description
 
-    def fromFile(self,
+    def createFromFile(self,
     filePath:str,  \
     fileType:str=None \
     ):
-        print("fromFile is not implemented") # implement 
+        print("createFromFile is not implemented") # implement 
         return self
 
     def cloneShape(self,
@@ -33,41 +33,41 @@ class shape:
         return self
 
     def createCube(self,
-    width:Dimension,  \
-    length:Dimension,  \
-    height:Dimension,  \
+    width:str,  \
+    length:str,  \
+    height:str,  \
     keywordArguments:dict=None \
     ):
         print("createCube is not implemented") # implement 
         return self
 
     def createCone(self,
-    radius:Dimension,  \
-    height:Dimension,  \
-    draftRadius:Dimension,  \
+    radius:str,  \
+    height:str,  \
+    draftRadius:str,  \
     keywordArguments:dict=None \
     ):
         print("createCone is not implemented") # implement 
         return self
 
     def createCylinder(self,
-    radius:Dimension,  \
-    height:Dimension,  \
+    radius:str,  \
+    height:str,  \
     keywordArguments:dict=None \
     ):
         print("createCylinder is not implemented") # implement 
         return self
 
     def createTorus(self,
-    innerRadius:Dimension,  \
-    outerRadius:Dimension,  \
+    innerRadius:str,  \
+    outerRadius:str,  \
     keywordArguments:dict=None \
     ):
         print("createTorus is not implemented") # implement 
         return self
 
     def createSphere(self,
-    radius:Dimension,  \
+    radius:str,  \
     keywordArguments:dict=None \
     ):
         print("createSphere is not implemented") # implement 
@@ -176,6 +176,29 @@ class shape:
     def delete(self
     ):
         print("delete is not implemented") # implement 
+        return self
+
+    def isVisible(self,
+    isVisible:bool \
+    ):
+        print("isVisible is not implemented") # implement 
+        return self
+
+    def apply(self
+    ):
+        print("apply is not implemented") # implement 
+        return self
+
+    def getNativeInstance(self
+    ):
+        print("getNativeInstance is not implemented") # implement 
+        return "return value here"
+
+    def select(self,
+    landmarkName:str,  \
+    selectionType:str \
+    ):
+        print("select is not implemented") # implement 
         return self
 
 class curve: 

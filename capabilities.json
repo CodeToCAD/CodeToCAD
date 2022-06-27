@@ -15,7 +15,7 @@
                     }
                 }
             },
-            "fromFile": {
+            "createFromFile": {
                 "action": "create",
                 "information": "Adds geometry to a shape from a file. If the shape does not exist, this will create it.",
                 "parameters": {
@@ -319,6 +319,29 @@
                 "parameters": {
                     "isVisible": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "apply": {
+                "action": "modify",
+                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to a shape.",
+                "parameters": {}
+            },
+            "getNativeInstance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the closest vertex or edge or face to a landmark.",
+                "parameters": {
+                    "landmarkName": {
+                        "type": "string"
+                    },
+                    "selectionType": {
+                        "type": "string",
+                        "defaultValue": "vertex"
                     }
                 }
             }
