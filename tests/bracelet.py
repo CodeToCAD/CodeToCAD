@@ -38,24 +38,24 @@ buttonInnerYTranslation = (bracelet["outerDiameter"] - buttonInner["depth"]) / 2
 # Creating the shapes we will use
 
 shape("bracelet") \
-.primitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
+.createPrimitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
 .scale("1,1,{}cm".format(bracelet["thickness"])) # Scale x,y by a scale factor of 1, so the number is unitless
 
 shape("button") \
-.primitive("cylinder", [button["diameter"]/2,button["depth"], "cm"]) \
+.createPrimitive("cylinder", [button["diameter"]/2,button["depth"], "cm"]) \
 .rotate("90deg,0,0") \
 .translate([0,buttonTranslation,0,"cm"])
 
 shape("buttonInner") \
-.primitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
+.createPrimitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
 .rotate("90deg,0,0") \
 .translate([0,buttonInnerYTranslation,0,"cm"])
 
 shape("belt") \
-.primitive("cylinder", [belt["outerDiameter"]/2,belt["thickness"], "cm"])
+.createPrimitive("cylinder", [belt["outerDiameter"]/2,belt["thickness"], "cm"])
 
 shape("beltInner") \
-.primitive("cylinder", [belt["innerDiameter"]/2,belt["thickness"], "cm"])
+.createPrimitive("cylinder", [belt["innerDiameter"]/2,belt["thickness"], "cm"])
 
 shape("booleanButton")\
     .cloneShape("button")

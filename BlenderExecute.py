@@ -2,7 +2,7 @@ from pathlib import Path
 from mathutils import Vector
 from enum import Enum
 import bpy
-from utilities import *
+from CodeToCAD.utilities import *
 
 class BlenderLength(Units):
     #metric
@@ -633,6 +633,8 @@ def blenderSetObjectVisibility(existingObjectName, isVisible):
         blenderObject != None, \
         "Object {} does not exist".format(existingObjectName)
     
+    # blenderObject.hide_viewport = not isVisible
+    # blenderObject.hide_render = not isVisible
     blenderObject.hide_set(not isVisible)
 
 def blenderAddConstraint(shapeName, constraintType, keywordArguments):
@@ -656,12 +658,20 @@ def blenderTransformLandmarkOntoAnother(shape1Name, shape2Name, shape1Landmark, 
     [blenderObject2Landmark] = filter(lambda child: child.name == shape2Landmark, blenderObject2.children)
 
     # transform landmark1 onto landmark2
-    t1 = blenderObject2Landmark.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
+    # t1 = blenderObject2Landmark.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
     # transform object onto landmark1
-    t2 = blenderObject2.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
+    # t2 = blenderObject2.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
 
     # transform the object onto landmark1, the result onto landmark2, then restore the transform of the object onto the landmark to maintain their position 
-    blenderObject2.matrix_world = blenderObject2.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
+    # transformation = blenderObject2.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
+    
+    # rotation = transformation.to_euler()
+    
+    # blenderRotateObject(shape2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
+    
+    translation = blenderObject1Landmark.matrix_world.to_translation()-blenderObject2Landmark.matrix_world.to_translation()
+
+    blenderTranslationObject(shape2Name, [Dimension(translation.x, defaultBlenderUnit.value),Dimension(translation.y, defaultBlenderUnit.value),Dimension(translation.z, defaultBlenderUnit.value)], BlenderTranslationTypes.ABSOLUTE)
 
 
 def blenderMakeParent(name, parentName):
@@ -695,7 +705,7 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
 
     # Create an Empty object
     landmarkObject = blenderCreateObject(landmarkName)
-
+    landmarkObject.empty_display_size = 0.01
 
     # Assign landmark Empty object to the same collection as the object it's attaching to.
     # Assumes the first collection is the main collection
@@ -725,16 +735,36 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
     landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
 
 
-# uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
-def blenderGetClosestPointsToVertex(objectName, vertex):
+def blenderGetObjectWorldLocation(objectName):
     
+    blenderObject = blenderGetObject(objectName)
+
+    return blenderObject.matrix_world.translation.to_tuple()
+
+    
+def blenderGetObjectWorldPose(objectName):
+    
+    blenderObject = blenderGetObject(objectName)
+
+    return blenderObject.matrix_world
+
+
+def blenderGetObject(objectName):
+
     blenderObject = bpy.data.objects.get(objectName)
 
     assert \
         blenderObject != None, \
             "Object {} does not exists".format(objectName)
 
-            
+    return blenderObject
+
+# uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
+def blenderGetClosestPointsToVertex(objectName, vertex):
+    
+    blenderObject = blenderGetObject(objectName)
+    
+
     assert \
         len(vertex) == 3, \
             "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
@@ -746,7 +776,8 @@ def blenderGetClosestPointsToVertex(objectName, vertex):
         isFound, \
             "Could not find a point close to {} on {}".format(vertex, objectName)
 
-    blenderPolygon, blenderVertices = None
+    blenderPolygon = None
+    blenderVertices = None
 
     if polygonIndex and polygonIndex != -1:
         blenderPolygon = blenderObject.data.polygons[polygonIndex]
@@ -1204,4 +1235,4 @@ def blenderCreateSimpleCurve(curvePrimitiveType:BlenderCurvePrimitiveTypes, keyw
     
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
-    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, shape='3D', edit_mode=False, **keywordArguments)
+    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
