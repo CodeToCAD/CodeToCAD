@@ -44,6 +44,12 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
         paths = [os.path.join(self.directory, name.name) for name in self.files]
 
+        # Add the directory to python execute path, so that imports work.
+        # if there are submodules for the script being imported, the user will have to use:
+        # from pathlib import Path
+        # sys.path.append( Path(__file__).parent.absolute() )
+        sys.path.append(self.directory)
+
         if not paths:
             paths.append(self.filepath)
 
