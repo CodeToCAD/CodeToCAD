@@ -370,12 +370,15 @@ def blenderApplyObjectTransformations(shapeName):
         blenderObject != None, \
         "Object {} does not exist".format(shapeName)
 
-    mb = blenderObject.matrix_basis
-    if hasattr(blenderObject.data, "transform"):
-        blenderObject.data.transform(mb)
-    for c in blenderObject.children:
-        c.matrix_local = mb @ c.matrix_local
-        
+    final_pose = blenderObject.matrix_basis
+    # final_pose = blenderObject.matrix_world
+
+    blenderObject.data.transform(final_pose)
+    
+    for child in blenderObject.children:
+        child.matrix_local = final_pose @ child.matrix_local
+    
+    # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis.identity()
 
 
@@ -427,7 +430,7 @@ def blenderTranslationObject(shapeName, translationDimensions:list[Dimension], t
 
     setattr(blenderObject, translationType.value, translationTuple)
 
-    #blenderApplyObjectTransformations(shapeName)
+    blenderApplyObjectTransformations(shapeName)
 
 
 class ScalingMethods(Enum):
@@ -668,8 +671,14 @@ def blenderTransformLandmarkOntoAnother(shape1Name, shape2Name, shape1Landmark, 
     # rotation = transformation.to_euler()
     
     # blenderRotateObject(shape2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
-    
-    translation = blenderObject1Landmark.matrix_world.to_translation()-blenderObject2Landmark.matrix_world.to_translation()
+
+    # Use matrix_basis if transformations are applied.
+    blenderObject1Translation = blenderObject1Landmark.matrix_basis.to_translation()
+    blenderObject2Translation = blenderObject2Landmark.matrix_basis.to_translation()
+    # blenderObject1Translation = blenderObject1Landmark.matrix_world.to_translation()
+    # blenderObject2Translation = blenderObject2Landmark.matrix_world.to_translation()
+    translation = (blenderObject1Translation)-(blenderObject2Translation)
+    print("blenderObject1Translation: ",blenderObject1Translation, " blenderObject2Translation: ", blenderObject2Translation, " translation: ", translation)
 
     blenderTranslationObject(shape2Name, [Dimension(translation.x, defaultBlenderUnit.value),Dimension(translation.y, defaultBlenderUnit.value),Dimension(translation.z, defaultBlenderUnit.value)], BlenderTranslationTypes.ABSOLUTE)
 
@@ -705,7 +714,7 @@ def blenderCreateLandmark(objectName, landmarkName, localPosition):
 
     # Create an Empty object
     landmarkObject = blenderCreateObject(landmarkName)
-    landmarkObject.empty_display_size = 0.01
+    landmarkObject.empty_display_size = 0
 
     # Assign landmark Empty object to the same collection as the object it's attaching to.
     # Assumes the first collection is the main collection
@@ -739,14 +748,16 @@ def blenderGetObjectWorldLocation(objectName):
     
     blenderObject = blenderGetObject(objectName)
 
-    return blenderObject.matrix_world.translation.to_tuple()
+    # return blenderObject.matrix_world.translation.to_tuple()
+    return blenderObject.matrix_basis.translation.to_tuple()
 
     
 def blenderGetObjectWorldPose(objectName):
     
     blenderObject = blenderGetObject(objectName)
 
-    return blenderObject.matrix_world
+    # return blenderObject.matrix_world
+    return blenderObject.matrix_basis
 
 
 def blenderGetObject(objectName):
@@ -796,7 +807,10 @@ def blenderGetBoundingBox(objectName):
             "Object {} does not exists".format(objectName)
 
     local_coords = blenderObject.bound_box[:]
-    om = blenderObject.matrix_world
+    
+    # om = blenderObject.matrix_world
+    om = blenderObject.matrix_basis
+    
     # matrix multiple world transform by all the vertices in the boundary
     coords = [(om @ Vector(p[:])).to_tuple() for p in local_coords]
     coords = coords[::-1]

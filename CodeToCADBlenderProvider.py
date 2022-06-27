@@ -188,7 +188,7 @@ class shape:
     
         blenderEvents.addToBlenderOperationsQueue(
             "Translating {}".format(self.name),
-            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.RELATIVE),
+            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
             lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
         )
 
