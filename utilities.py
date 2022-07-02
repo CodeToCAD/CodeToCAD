@@ -304,3 +304,9 @@ class CurveTypes(EquittableEnum):
     POLY = 0
     NURBS = 1
     BEZIER = 2
+    
+
+class ScalingMethods(Enum):
+    toSpecificLength=0
+    scaleFactor=1
+    lockAspectRatio=2 # scale one dimension, the others scale with it

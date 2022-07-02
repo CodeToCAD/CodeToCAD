@@ -4,9 +4,9 @@ Nesting is formatted like this:
     className > methods > properties > parameters/information > definitions
 
 Sample context:
-    "shape": => className
+    "Part": => className
         "information": => a method
-            "Capabilities related to adding, multiplying, and/or modifying a shape.",
+            "Capabilities related to...",
         "constructor": { => a method
             "parameters": => a property
                 {"name": => a parameter
@@ -33,7 +33,7 @@ from utilities import Dimension, CurveTypes, Point, Angle
 {%- endmacro %}
 {%- for className, methods in capabilities.items() -%}
 
-class {{className}}: {# e.g. shape #}
+class {{className}}: {# e.g. Part #}
 
     {%-for method, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 
@@ -42,6 +42,10 @@ class {{className}}: {# e.g. shape #}
     {%- if method == "information" %}
     # {{ information }}
 
+    {%- elif method == "alias"-%}
+    
+    {%- set alias = properties -%}
+    
     {%- elif method == "constructor"-%}
 
     {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
