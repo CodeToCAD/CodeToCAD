@@ -755,11 +755,11 @@ class Scene:
 
     def deleteGroup(self,
     name:str,  \
-    removeNestedEntities:bool \
+    removeChildren:bool \
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Removing the {} collection".format(name),
-            lambda: BlenderActions.removeCollection(name, removeNestedEntities), 
+            lambda: BlenderActions.removeCollection(name, removeChildren), 
             lambda update: update.id.name == "Scene"
         )
 

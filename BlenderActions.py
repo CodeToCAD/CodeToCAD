@@ -261,13 +261,13 @@ def applyObjectTransformations(objectName):
 
     blenderObject = getObject(objectName)
     
-    final_pose = blenderObject.matrix_basis
-    # final_pose = blenderObject.matrix_world
+    finalPose = blenderObject.matrix_basis
+    # finalPose = blenderObject.matrix_world
 
-    blenderObject.data.transform(final_pose)
+    blenderObject.data.transform(finalPose)
     
     for child in blenderObject.children:
-        child.matrix_local = final_pose @ child.matrix_local
+        child.matrix_local = finalPose @ child.matrix_local
     
     # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis.identity()
@@ -414,14 +414,14 @@ def createCollection(
 
 def removeCollection(
         name,
-        removeNestedObjects
+        removeChildren
     ):
     
     assert \
         name in bpy.data.collections, \
         f"Collection {name} does not exist"
 
-    if removeNestedObjects:
+    if removeChildren:
         for obj in bpy.data.collections[name].objects:
             try:
                 removeObject(obj.name, True)
