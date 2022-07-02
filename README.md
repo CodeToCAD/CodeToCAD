@@ -92,14 +92,15 @@ All capabilities are recorded in [capabilities.json](./capabilities.json). The l
 
 Basic capabilities are separated into:
 
-- Shapes
+- Parts or Shapes
+- Sketches or Curves
 - Landmarks
 - Joints
 - Materials
 - Scene
 - Analytics
 
-### Shapes
+### Parts or Shapes
 
 A source can be:
 - a primitive shape (e.g. cube, sphere, cone, cylinder)

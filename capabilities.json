@@ -2,179 +2,22 @@
     "version": "0.0.1",
     "information": "Capabilities for CodeToCAD.",
     "capabilities": {
-        "shape": {
-            "information": "Capabilities related to adding, multiplying, and/or modifying a shape.",
-            "constructor": {
-                "parameters": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
-            "createFromFile": {
+        "Entity": {
+            "information": "Capabilities shared between Parts and Sketches.",
+            "clone": {
                 "action": "create",
-                "information": "Adds geometry to a shape from a file. If the shape does not exist, this will create it.",
+                "information": "Clone an existing entity with its geometry and properties.",
                 "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
-                    "fileType": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
-            "cloneShape": {
-                "action": "create",
-                "information": "Clone an existing shape with its geometry and properties. If the shape already exists, shapes will be merged.",
-                "parameters": {
-                    "shapeName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "createPrimitive": {
-                "action": "create",
-                "information": "Adds geometry to a shape from a primitive named shape. If the shape does not exist, this will create it.",
-                "parameters": {
-                    "primitiveName": {
-                        "type": "string"
-                    },
-                    "dimensions": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createCube": {
-                "action": "create",
-                "information": "Adds cuboid geometry to a shape.",
-                "parameters": {
-                    "width": {
-                        "type": "string"
-                    },
-                    "length": {
-                        "type": "string"
-                    },
-                    "height": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createCone": {
-                "action": "create",
-                "information": "Adds cone geometry to a shape.",
-                "parameters": {
-                    "radius": {
-                        "type": "string"
-                    },
-                    "height": {
-                        "type": "string"
-                    },
-                    "draftRadius": {
-                        "type": "string",
-                        "defaultValue": 0
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createCylinder": {
-                "action": "create",
-                "information": "Adds cylinder geometry to a shape.",
-                "parameters": {
-                    "radius": {
-                        "type": "string"
-                    },
-                    "height": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createTorus": {
-                "action": "create",
-                "information": "Adds torus geometry to a shape.",
-                "parameters": {
-                    "innerRadius": {
-                        "type": "string"
-                    },
-                    "outerRadius": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createSphere": {
-                "action": "create",
-                "information": "Adds sphere geometry to a shape.",
-                "parameters": {
-                    "radius": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "verticies": {
-                "action": "create",
-                "information": "Adds geometry to a shape from a list of verticies. If the shape does not exist, this will create it",
-                "parameters": {
-                    "verticies": {
-                        "type": "list"
-                    }
-                }
-            },
-            "loft": {
-                "action": "create",
-                "information": "Interpolate between two existing shapes.",
-                "parameters": {
-                    "shape1Name": {
-                        "type": "string"
-                    },
-                    "shape1LandmarkName": {
-                        "type": "string"
-                    },
-                    "shape2Name": {
-                        "type": "string"
-                    },
-                    "shape2LandmarkName": {
+                    "entityName": {
                         "type": "string"
                     }
                 }
             },
             "mirror": {
                 "action": "create",
-                "information": "Mirror an existing shape with respect to a landmark.",
+                "information": "Mirror an existing entity with respect to a landmark.",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     },
                     "landmarkName": {
@@ -184,21 +27,9 @@
             },
             "pattern": {
                 "action": "create",
-                "information": "Clone an existing shape to follow a pattern.",
+                "information": "Clone an existing entity to follow a pattern.",
                 "parameters": {
-                    "shapeName": {
-                        "type": "string"
-                    },
-                    "landmarkName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "mask": {
-                "action": "create",
-                "information": "Clone a part of an existing shape, as bounded by a landmark.",
-                "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     },
                     "landmarkName": {
@@ -226,52 +57,10 @@
             },
             "rename": {
                 "action": "modify",
-                "information": "Rename the shape.",
+                "information": "Rename the entity.",
                 "parameters": {
                     "name": {
                         "type": "string"
-                    }
-                }
-            },
-            "union": {
-                "action": "modify",
-                "information": "Boolean union",
-                "parameters": {
-                    "withShapeName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "subtract": {
-                "action": "modify",
-                "information": "Boolean subtraction",
-                "parameters": {
-                    "withShapeName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "intersect": {
-                "action": "modify",
-                "information": "Boolean intersection",
-                "parameters": {
-                    "withShapeName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "bevel": {
-                "action": "modify",
-                "information": "A bevel is capable of creating both a fillet and a chamfer",
-                "parameters": {
-                    "landmarkName": {
-                        "type": "string"
-                    },
-                    "angle": {
-                        "type": "float"
-                    },
-                    "roundedness": {
-                        "type": "number"
                     }
                 }
             },
@@ -299,23 +88,14 @@
                     }
                 }
             },
-            "hollow": {
-                "action": "modify",
-                "information": "Remove vertices, if necessary, until the shape has a specified wall thickness.",
-                "parameters": {
-                    "wallThickness": {
-                        "type": "float"
-                    }
-                }
-            },
             "delete": {
                 "action": "delete",
-                "information": "Delete a shape from the scene. You may need to delete an associated joint or other features.",
+                "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
                 "parameters": {}
             },
             "isVisible": {
                 "action": "modify",
-                "information": "Toggles visibility of a shape in the scene.",
+                "information": "Toggles visibility of an entity in the scene.",
                 "parameters": {
                     "isVisible": {
                         "type": "boolean"
@@ -324,7 +104,7 @@
             },
             "apply": {
                 "action": "modify",
-                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to a shape.",
+                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
                 "parameters": {}
             },
             "getNativeInstance": {
@@ -346,8 +126,233 @@
                 }
             }
         },
-        "curve": {
+        "Part": {
+            "information": "Capabilities Part CRUD.",
+            "alias": ["Shape"],
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "createFromFile": {
+                "action": "create",
+                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "createPrimitive": {
+                "action": "create",
+                "information": "Adds geometry to a part from a primitive named primitive shape.",
+                "parameters": {
+                    "primitiveName": {
+                        "type": "string"
+                    },
+                    "dimensions": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCube": {
+                "action": "create",
+                "information": "Adds cuboid geometry to a part.",
+                "parameters": {
+                    "width": {
+                        "type": "string"
+                    },
+                    "length": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCone": {
+                "action": "create",
+                "information": "Adds cone geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "string"
+                    },
+                    "draftRadius": {
+                        "type": "string",
+                        "defaultValue": 0
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createCylinder": {
+                "action": "create",
+                "information": "Adds cylinder geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createTorus": {
+                "action": "create",
+                "information": "Adds torus geometry to a part.",
+                "parameters": {
+                    "innerRadius": {
+                        "type": "string"
+                    },
+                    "outerRadius": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "createSphere": {
+                "action": "create",
+                "information": "Adds sphere geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string"
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "verticies": {
+                "action": "create",
+                "information": "Adds geometry to a part from a list of verticies.",
+                "parameters": {
+                    "verticies": {
+                        "type": "list"
+                    }
+                }
+            },
+            "loft": {
+                "action": "create",
+                "information": "Interpolate between two existing parts.",
+                "parameters": {
+                    "part1Name": {
+                        "type": "string"
+                    },
+                    "part1LandmarkName": {
+                        "type": "string"
+                    },
+                    "part2Name": {
+                        "type": "string"
+                    },
+                    "part2LandmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "mask": {
+                "action": "create",
+                "information": "Clone a part of an existing part, as bounded by a landmark.",
+                "parameters": {
+                    "partName": {
+                        "type": "string"
+                    },
+                    "landmarkName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "union": {
+                "action": "modify",
+                "information": "Boolean union",
+                "parameters": {
+                    "withPartName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "subtract": {
+                "action": "modify",
+                "information": "Boolean subtraction",
+                "parameters": {
+                    "withPartName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "intersect": {
+                "action": "modify",
+                "information": "Boolean intersection",
+                "parameters": {
+                    "withPartName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "bevel": {
+                "action": "modify",
+                "information": "A bevel is capable of creating both a fillet and a chamfer",
+                "parameters": {
+                    "landmarkName": {
+                        "type": "string"
+                    },
+                    "angle": {
+                        "type": "float"
+                    },
+                    "roundedness": {
+                        "type": "number"
+                    }
+                }
+            },
+            "hollow": {
+                "action": "modify",
+                "information": "Remove vertices, if necessary, until the part has a specified wall thickness.",
+                "parameters": {
+                    "wallThickness": {
+                        "type": "float"
+                    }
+                }
+            }
+        },
+        "Sketch": {
             "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
+            "alias": ["Curve"],
             "constructor": {
                 "parameters": {
                     "name": {
@@ -377,7 +382,7 @@
             },
             "createText": {
                 "action": "create",
-                "information": "Adds text to a shape.",
+                "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {
                         "type": "string"
@@ -566,11 +571,11 @@
                 }
             }
         },
-        "landmark": {
-            "information": "Landmarks are named positions on a shape.",
+        "Landmark": {
+            "information": "Landmarks are named positions on an entity.",
             "constructor": {
                 "parameters": {
-                    "localToShapeWithName": {
+                    "localToEntityWithName": {
                         "type": "string",
                         "required": false
                     }
@@ -598,20 +603,20 @@
             "circularPattern": {},
             "contourPattern": {}
         },
-        "joint": {
-            "information": "Joints define the relationships and constraints between shapes.",
+        "Joint": {
+            "information": "Joints define the relationships and constraints between entities.",
             "constructor": {
                 "parameters": {
-                    "shape1Name": {
+                    "entity1Name": {
                         "type": "string"
                     },
-                    "shape2Name": {
+                    "entity2Name": {
                         "type": "string"
                     },
-                    "shape1LandmarkName": {
+                    "entity1LandmarkName": {
                         "type": "string"
                     },
-                    "shape2LandmarkName": {
+                    "entity2LandmarkName": {
                         "type": "string"
                     },
                     "jointType": {
@@ -628,222 +633,17 @@
                     }
                 }
             },
-            "curve": {
-                "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
-                "constructor": {
-                    "parameters": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "curveType": {
-                            "type": "CurveTypes"
-                        },
-                        "description": {
-                            "type": "string",
-                            "required": false
-                        }
-                    }
-                },
-                "sweep": {
-                    "action": "modify",
-                    "information": "Extrude this  curve along the path of another",
-                    "parameters": {
-                        "profileCurveName": {
-                            "type": "string"
-                        },
-                        "fillCap": {
-                            "type": "boolean",
-                            "defaultValue": false
-                        }
-                    }
-                },
-                "createText": {
-                    "action": "create",
-                    "information": "Adds text to a shape.",
-                    "parameters": {
-                        "text": {
-                            "type": "string"
-                        },
-                        "fontSize": {
-                            "type": "Dimension"
-                        },
-                        "bold": {
-                            "type": "boolean",
-                            "defaultValue": false
-                        },
-                        "italic": {
-                            "type": "boolean",
-                            "defaultValue": false
-                        },
-                        "underlined": {
-                            "type": "boolean",
-                            "defaultValue": false
-                        },
-                        "characterSpacing": {
-                            "type": "int",
-                            "defaultValue": 1
-                        },
-                        "wordSpacing": {
-                            "type": "int",
-                            "defaultValue": 1
-                        },
-                        "lineSpacing": {
-                            "type": "int",
-                            "defaultValue": 1
-                        },
-                        "fontFilePath": {
-                            "type": "string",
-                            "defaultValue": null
-                        }
-                    }
-                },
-                "createFromVertices": {
-                    "action": "create",
-                    "information": "Create a curve from 2D/3D points.",
-                    "parameters": {
-                        "verticesArray": {
-                            "type": "list[Point]"
-                        },
-                        "interpolation": {
-                            "type": "int",
-                            "defaultValue": 64
-                        }
-                    }
-                },
-                "createPoint": {
-                    "action": "create",
-                    "information": "Create a point",
-                    "parameters": {}
-                },
-                "createLine": {
-                    "action": "create",
-                    "information": "Create a line",
-                    "parameters": {
-                        "length": {
-                            "type": "Dimension"
-                        },
-                        "symmetric": {
-                            "type": "boolean",
-                            "defaultValue": false
-                        }
-                    }
-                },
-                "createLineBetweenPoints": {
-                    "action": "create",
-                    "information": "Create a line between two points",
-                    "parameters": {
-                        "pointA": {
-                            "type": "Point"
-                        },
-                        "pointB": {
-                            "type": "Point"
-                        }
-                    }
-                },
-                "createCircle": {
-                    "action": "create",
-                    "information": "Create a circle",
-                    "parameters": {
-                        "radius": {
-                            "type": "Dimension"
-                        }
-                    }
-                },
-                "createEllipse": {
-                    "action": "create",
-                    "information": "Create an ellipse",
-                    "parameters": {
-                        "radiusA": {
-                            "type": "Dimension"
-                        },
-                        "radiusB": {
-                            "type": "Dimension"
-                        }
-                    }
-                },
-                "createArc": {
-                    "action": "create",
-                    "information": "Create an arc",
-                    "parameters": {
-                        "radius": {
-                            "type": "Dimension"
-                        },
-                        "angle": {
-                            "type": "Angle",
-                            "defaultValue": "180d"
-                        }
-                    }
-                },
-                "createArcBetweenThreePoints": {
-                    "action": "create",
-                    "information": "Create a 3-point arc",
-                    "parameters": {
-                        "pointA": {
-                            "type": "Point"
-                        },
-                        "pointB": {
-                            "type": "Point"
-                        },
-                        "centerPoint": {
-                            "type": "Point"
-                        }
-                    }
-                },
-                "createSegment": {
-                    "action": "create",
-                    "information": "Create a segment (intersection of two circles)",
-                    "parameters": {
-                        "innerRadius": {
-                            "type": "Dimension"
-                        },
-                        "outerRadius": {
-                            "type": "Dimension"
-                        },
-                        "angle": {
-                            "type": "Angle",
-                            "defaultValue": "180d"
-                        }
-                    }
-                },
-                "createRectangle": {
-                    "action": "create",
-                    "information": "Create a rectangle",
-                    "parameters": {
-                        "length": {
-                            "type": "Dimension"
-                        },
-                        "width": {
-                            "type": "Dimension"
-                        }
-                    }
-                },
-                "createPolygon": {
-                    "action": "create",
-                    "information": "Create an n-gon",
-                    "parameters": {
-                        "numberOfSides": {
-                            "type": "int"
-                        },
-                        "length": {
-                            "type": "Dimension"
-                        },
-                        "width": {
-                            "type": "Dimension"
-                        }
-                    }
-                },
-                "transformLandmarkOntoAnother": {
-                    "action": "modify",
-                    "information": "Transforms one landmark onto another",
-                    "parameters": {}
-                }
+            "transformLandmarkOntoAnother": {
+                "action": "modify",
+                "information": "Transforms one landmark onto another",
+                "parameters": {}
             }
         },
-        "material": {
-            "information": "Materials affect the appearance and simulation properties of the shapes.",
+        "Material": {
+            "information": "Materials affect the appearance and simulation properties of the parts.",
             "constructor": {}
         },
-        "scene": {
+        "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
             "constructor": {
                 "parameters": {
@@ -863,7 +663,7 @@
                 "information": "Deletes a new scene"
             },
             "export": {
-                "information": "The ability to export the whole scene or specific shapes and/or shape groups as a 3D model, a video or image."
+                "information": "The ability to export the whole scene or specific parts and/or part groups as a 3D model, a video or image."
             },
             "setDefaultUnit": {
                 "action": "update",
@@ -890,16 +690,16 @@
                     "name": {
                         "type": "string"
                     },
-                    "removeNestedShapes": {
+                    "removeNestedEntities": {
                         "type": "boolean"
                     }
                 }
             },
-            "removeShapeFromGroup": {
+            "removeFromGroup": {
                 "action": "delete",
-                "information": "Removes an existing shape from a group",
+                "information": "Removes an existing entity from a group",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     },
                     "groupName": {
@@ -907,11 +707,11 @@
                     }
                 }
             },
-            "assignShapeToGroup": {
+            "assignToGroup": {
                 "action": "update",
-                "information": "Assigns an existing shape to a new group",
+                "information": "Assigns an existing entity to a new group",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     },
                     "groupName": {
@@ -924,11 +724,11 @@
                     }
                 }
             },
-            "setShapeVisibility": {
+            "setVisibility": {
                 "action": "update",
-                "information": "Change the visibiltiy of the shape.",
+                "information": "Change the visibiltiy of the entity.",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     },
                     "isVisible": {
@@ -937,8 +737,8 @@
                 }
             }
         },
-        "analytics": {
-            "information": "Tools for collecting data about the shapes and scene.",
+        "Analytics": {
+            "information": "Tools for collecting data about the entities and scene.",
             "constructor": {},
             "measureLandmarks": {
                 "action": "get",
@@ -955,27 +755,27 @@
             },
             "getWorldPose": {
                 "action": "get",
-                "information": "Returns the world pose of a shape.",
+                "information": "Returns the world pose of an entity.",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     }
                 }
             },
             "getBoundingBox": {
                 "action": "get",
-                "information": "Returns the bounding box of a shape.",
+                "information": "Returns the bounding box of an entity.",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     }
                 }
             },
             "getDimensions": {
                 "action": "get",
-                "information": "Returns the dimensions of a shape.",
+                "information": "Returns the dimensions of an entity.",
                 "parameters": {
-                    "shapeName": {
+                    "entityName": {
                         "type": "string"
                     }
                 }

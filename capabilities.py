@@ -1,6 +1,89 @@
 from utilities import Dimension, CurveTypes, Point, Angle
 
-class shape: 
+class Entity: 
+    # Capabilities for CodeToCAD.
+
+    def clone(self,
+    entityName:str \
+    ):
+        print("clone is not implemented") # implement 
+        return self
+
+    def mirror(self,
+    entityName:str,  \
+    landmarkName:str \
+    ):
+        print("mirror is not implemented") # implement 
+        return self
+
+    def pattern(self,
+    entityName:str,  \
+    landmarkName:str \
+    ):
+        print("pattern is not implemented") # implement 
+        return self
+
+    def scale(self,
+    dimensions:str \
+    ):
+        print("scale is not implemented") # implement 
+        return self
+
+    def rotate(self,
+    rotation:str \
+    ):
+        print("rotate is not implemented") # implement 
+        return self
+
+    def rename(self,
+    name:str \
+    ):
+        print("rename is not implemented") # implement 
+        return self
+
+    def extrude(self,
+    landmarkName:str,  \
+    dimensions:str \
+    ):
+        print("extrude is not implemented") # implement 
+        return self
+
+    def remesh(self,
+    strategy:str,  \
+    amount:float \
+    ):
+        print("remesh is not implemented") # implement 
+        return self
+
+    def delete(self
+    ):
+        print("delete is not implemented") # implement 
+        return self
+
+    def isVisible(self,
+    isVisible:bool \
+    ):
+        print("isVisible is not implemented") # implement 
+        return self
+
+    def apply(self
+    ):
+        print("apply is not implemented") # implement 
+        return self
+
+    def getNativeInstance(self
+    ):
+        print("getNativeInstance is not implemented") # implement 
+        return "return value here"
+
+    def select(self,
+    landmarkName:str,  \
+    selectionType:str \
+    ):
+        print("select is not implemented") # implement 
+        return self
+
+class Part: 
     # Capabilities for CodeToCAD.name = None
     description = None
 
@@ -16,12 +99,6 @@ class shape:
     fileType:str=None \
     ):
         print("createFromFile is not implemented") # implement 
-        return self
-
-    def cloneShape(self,
-    shapeName:str \
-    ):
-        print("cloneShape is not implemented") # implement 
         return self
 
     def createPrimitive(self,
@@ -80,67 +157,35 @@ class shape:
         return self
 
     def loft(self,
-    shape1Name:str,  \
-    shape1LandmarkName:str,  \
-    shape2Name:str,  \
-    shape2LandmarkName:str \
+    part1Name:str,  \
+    part1LandmarkName:str,  \
+    part2Name:str,  \
+    part2LandmarkName:str \
     ):
         print("loft is not implemented") # implement 
         return self
 
-    def mirror(self,
-    shapeName:str,  \
-    landmarkName:str \
-    ):
-        print("mirror is not implemented") # implement 
-        return self
-
-    def pattern(self,
-    shapeName:str,  \
-    landmarkName:str \
-    ):
-        print("pattern is not implemented") # implement 
-        return self
-
     def mask(self,
-    shapeName:str,  \
+    partName:str,  \
     landmarkName:str \
     ):
         print("mask is not implemented") # implement 
         return self
 
-    def scale(self,
-    dimensions:str \
-    ):
-        print("scale is not implemented") # implement 
-        return self
-
-    def rotate(self,
-    rotation:str \
-    ):
-        print("rotate is not implemented") # implement 
-        return self
-
-    def rename(self,
-    name:str \
-    ):
-        print("rename is not implemented") # implement 
-        return self
-
     def union(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         print("union is not implemented") # implement 
         return self
 
     def subtract(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         print("subtract is not implemented") # implement 
         return self
 
     def intersect(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         print("intersect is not implemented") # implement 
         return self
@@ -153,55 +198,13 @@ class shape:
         print("bevel is not implemented") # implement 
         return self
 
-    def extrude(self,
-    landmarkName:str,  \
-    dimensions:str \
-    ):
-        print("extrude is not implemented") # implement 
-        return self
-
-    def remesh(self,
-    strategy:str,  \
-    amount:float \
-    ):
-        print("remesh is not implemented") # implement 
-        return self
-
     def hollow(self,
     wallThickness:float \
     ):
         print("hollow is not implemented") # implement 
         return self
 
-    def delete(self
-    ):
-        print("delete is not implemented") # implement 
-        return self
-
-    def isVisible(self,
-    isVisible:bool \
-    ):
-        print("isVisible is not implemented") # implement 
-        return self
-
-    def apply(self
-    ):
-        print("apply is not implemented") # implement 
-        return self
-
-    def getNativeInstance(self
-    ):
-        print("getNativeInstance is not implemented") # implement 
-        return "return value here"
-
-    def select(self,
-    landmarkName:str,  \
-    selectionType:str \
-    ):
-        print("select is not implemented") # implement 
-        return self
-
-class curve: 
+class Sketch: 
     # Capabilities for CodeToCAD.name = None
     curveType = None
     description = None
@@ -321,13 +324,13 @@ class curve:
         print("createTrapezoid is not implemented") # implement 
         return self
 
-class landmark: 
-    # Capabilities for CodeToCAD.localToShapeWithName = None
+class Landmark: 
+    # Capabilities for CodeToCAD.localToEntityWithName = None
 
     def __init__(self,
-    localToShapeWithName:str=None \
+    localToEntityWithName:str=None \
     ):
-        self.localToShapeWithName = localToShapeWithName
+        self.localToEntityWithName = localToEntityWithName
 
     def vertices(self,
     locations:str \
@@ -356,48 +359,48 @@ class landmark:
         print("contourPattern is not implemented") # implement 
         return "return value here"
 
-class joint: 
-    # Capabilities for CodeToCAD.shape1Name = None
-    shape2Name = None
-    shape1LandmarkName = None
-    shape2LandmarkName = None
+class Joint: 
+    # Capabilities for CodeToCAD.entity1Name = None
+    entity2Name = None
+    entity1LandmarkName = None
+    entity2LandmarkName = None
     jointType = None
     initialRotation = None
     limitRotation = None
     limitTranslation = None
 
     def __init__(self,
-    shape1Name:str, \
-    shape2Name:str, \
-    shape1LandmarkName:str, \
-    shape2LandmarkName:str, \
+    entity1Name:str, \
+    entity2Name:str, \
+    entity1LandmarkName:str, \
+    entity2LandmarkName:str, \
     jointType:str, \
     initialRotation:str, \
     limitRotation:str, \
     limitTranslation:str \
     ):
-        self.shape1Name = shape1Name
-        self.shape2Name = shape2Name
-        self.shape1LandmarkName = shape1LandmarkName
-        self.shape2LandmarkName = shape2LandmarkName
+        self.entity1Name = entity1Name
+        self.entity2Name = entity2Name
+        self.entity1LandmarkName = entity1LandmarkName
+        self.entity2LandmarkName = entity2LandmarkName
         self.jointType = jointType
         self.initialRotation = initialRotation
         self.limitRotation = limitRotation
         self.limitTranslation = limitTranslation
 
-    def curve(self
+    def transformLandmarkOntoAnother(self
     ):
-        print("curve is not implemented") # implement 
-        return "return value here"
+        print("transformLandmarkOntoAnother is not implemented") # implement 
+        return self
 
-class material: 
+class Material: 
     # Capabilities for CodeToCAD.
 
     def __init__(self
     ):
         pass
 
-class scene: 
+class Scene: 
     # Capabilities for CodeToCAD.name = None
     description = None
 
@@ -437,34 +440,34 @@ class scene:
 
     def deleteGroup(self,
     name:str,  \
-    removeNestedShapes:bool \
+    removeNestedEntities:bool \
     ):
         print("deleteGroup is not implemented") # implement 
         return self
 
-    def removeShapeFromGroup(self,
-    shapeName:str,  \
+    def removeFromGroup(self,
+    entityName:str,  \
     groupName:str \
     ):
-        print("removeShapeFromGroup is not implemented") # implement 
+        print("removeFromGroup is not implemented") # implement 
         return self
 
-    def assignShapeToGroup(self,
-    shapeName:str,  \
+    def assignToGroup(self,
+    entityName:str,  \
     groupName:str,  \
     removeFromOtherGroups:bool=None \
     ):
-        print("assignShapeToGroup is not implemented") # implement 
+        print("assignToGroup is not implemented") # implement 
         return self
 
-    def setShapeVisibility(self,
-    shapeName:str,  \
+    def setVisibility(self,
+    entityName:str,  \
     isVisible:bool \
     ):
-        print("setShapeVisibility is not implemented") # implement 
+        print("setVisibility is not implemented") # implement 
         return self
 
-class analytics: 
+class Analytics: 
     # Capabilities for CodeToCAD.
 
     def __init__(self
@@ -479,19 +482,19 @@ class analytics:
         return "return value here"
 
     def getWorldPose(self,
-    shapeName:str \
+    entityName:str \
     ):
         print("getWorldPose is not implemented") # implement 
         return "return value here"
 
     def getBoundingBox(self,
-    shapeName:str \
+    entityName:str \
     ):
         print("getBoundingBox is not implemented") # implement 
         return "return value here"
 
     def getDimensions(self,
-    shapeName:str \
+    entityName:str \
     ):
         print("getDimensions is not implemented") # implement 
         return "return value here"
