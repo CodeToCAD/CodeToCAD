@@ -21,6 +21,24 @@ bl_info = {
     "category": "Scripting",
 }
 
+class DisplayMessage(Operator):
+    bl_idname = "code_to_cad.display_message"
+    bl_label = "Display CodeToCAD Message"
+    bl_options = {'REGISTER'}
+
+    message:StringProperty()
+    log_type:StringProperty() # e.g. INFO, WARNING, ERROR
+
+    def execute(self, context):
+        
+        # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
+        self.report(
+            {self.log_type},
+            self.message
+        )
+
+        return {'FINISHED'}
+
 @orientation_helper(axis_forward='Y', axis_up='Z')
 class ImportCodeToCAD(Operator, ImportHelper):
     bl_idname = "code_to_cad.import_codetocad"
@@ -147,6 +165,7 @@ def register():
     print ("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
     bpy.utils.register_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
+    bpy.utils.register_class(DisplayMessage)
     bpy.utils.register_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.append(menu_import)
     
@@ -159,6 +178,7 @@ def unregister():
     print ("Unregistering ", __name__)
     bpy.utils.unregister_class(CodeToCADAddonPreferences)
     bpy.utils.unregister_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
+    bpy.utils.unregister_class(DisplayMessage)
     bpy.utils.unregister_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.remove(menu_import)
 

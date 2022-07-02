@@ -1,121 +1,7 @@
-from threading import Event, Thread, Lock, Timer
+from threading import Event, Lock, Timer
 from time import sleep
 
-class BlenderEvents:
-    # blenderEventQueue is updated when we receive an event from Blender
-    blenderEventQueueLock = Lock()
-    blenderEventQueue = []
-    #self.blenderOperationsQueue is used to keep track of operations we want to send to Blender.
-    blenderOperationsComplete = Event()
-    blenderOperationsQueueLock = Lock()
-    blenderOperationsQueue = []
-
-    isWaitForAssertionsEnabled = True
-
-    def startBlenderEventThread(self):
-        Thread(target=self.blenderEventThread).start()
-
-    def startBlenderEventTimer(self, bpy):
-        blenderEventsHandler = self.BlenderEventsHandler(self)
-        bpy.app.timers.register(blenderEventsHandler.processEventsAndOperations)
-
-    # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
-    def addToBlenderOperationsQueue(self, description, operation, assertion, timeout = 60):
-
-        # reset threading Event
-        self.blenderOperationsComplete.clear()
-
-        self.blenderOperationsQueueLock.acquire()
-
-        self.blenderOperationsQueue.append(
-            {
-                "started": False,
-                "description": description,
-                "operation": operation,
-                "assertion": assertion,
-                "timeout": timeout
-            }
-        )
-
-        self.blenderOperationsQueueLock.release()
-
-    # Returns the first item from the BlenderOperationsQueue. Note: Uses a thread Lock.
-    def popFirstFromBlenderOperationsQueue(self):
-        
-        blenderOperation = None
-
-        self.blenderOperationsQueueLock.acquire()
-
-        remainingOperationsCount = len(self.blenderOperationsQueue)
-        
-        if remainingOperationsCount > 0:
-            blenderOperation = self.blenderOperationsQueue.pop(0)
-            remainingOperationsCount -= 1
-        
-        self.blenderOperationsQueueLock.release()
-
-        return (blenderOperation, remainingOperationsCount)
-        
-    def clearBlenderOperationsQueue(self):
-
-        self.blenderOperationsQueueLock.acquire()
-        
-        self.blenderOperationsQueue = []
-        
-        self.blenderOperationsQueueLock.release()
-
-    # Returns the length of the BlenderOperationsQueue. Note: Uses a thread Lock.
-    def getLengthOfBlenderOperationsQueue(self):
-        
-        count = 0
-
-        self.blenderOperationsQueueLock.acquire()
-        
-        count = len(self.blenderOperationsQueue)
-        
-        self.blenderOperationsQueueLock.release()
-
-        return count
-
-
-    # Returns the first item from the BlenderEventQueue. Note: Uses a thread Lock.
-    def popFirstFromBlenderEventQueue(self):
-        
-        blenderEvent = None
-
-        self.blenderEventQueueLock.acquire()
-        
-        remainingEventsCount = len(self.blenderEventQueue)
-        
-        if len(self.blenderEventQueue) > 0:
-            blenderEvent = self.blenderEventQueue.pop(0)
-            remainingEventsCount -= 1
-        
-        self.blenderEventQueueLock.release()
-
-        return (blenderEvent, remainingEventsCount)
-
-    # blenderEventThread is a thread that runs forever and is used to handle actions when we receive an event from Blender (which are stored in blenderEventQueue)
-    def blenderEventThread(self):
-
-        blenderEventsHandler = self.BlenderEventsHandler(self)
-
-        while 1:
-            sleep(blenderEventsHandler.processEventsAndOperations())
-        
-
-    # onReceiveBlenderDependencyGraphUpdateEvent is called when we receive an event from blender.
-    def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
-
-        for update in depsgraph.updates:
-            if update.id == None:
-                print("Received an update without an id: {}", update)
-                continue
-            self.blenderEventQueueLock.acquire()
-            self.blenderEventQueue.append(update)
-            self.blenderEventQueueLock.release()
-    
-    class BlenderEventsHandler:
+class BlenderEventsHandler:
         currentBlenderEvent = None
         remainingEventsCount = 0
         currentOperation = None
@@ -287,3 +173,106 @@ RemainingEventsCount: {}
                 self.currentBlenderEvent = None
             
             return self.defaultShortDelay
+
+class BlenderEvents:
+    # blenderEventQueue is updated when we receive an event from Blender
+    blenderEventQueueLock = Lock()
+    blenderEventQueue = []
+    #self.blenderOperationsQueue is used to keep track of operations we want to send to Blender.
+    blenderOperationsComplete = Event()
+    blenderOperationsQueueLock = Lock()
+    blenderOperationsQueue = []
+
+    isWaitForAssertionsEnabled = True
+    
+    def __init__(self):
+        self.blenderEventsHandler = BlenderEventsHandler(self)
+
+    # addToBlenderOperationsQueue adds a callback operation to the self.blenderOperationsQueue queue. Note: Uses a thread Lock.
+    def addToBlenderOperationsQueue(self, description, operation, assertion, timeout = 60):
+
+        # reset threading Event
+        self.blenderOperationsComplete.clear()
+
+        self.blenderOperationsQueueLock.acquire()
+
+        self.blenderOperationsQueue.append(
+            {
+                "started": False,
+                "description": description,
+                "operation": operation,
+                "assertion": assertion,
+                "timeout": timeout
+            }
+        )
+
+        self.blenderOperationsQueueLock.release()
+
+    # Returns the first item from the BlenderOperationsQueue. Note: Uses a thread Lock.
+    def popFirstFromBlenderOperationsQueue(self):
+        
+        blenderOperation = None
+
+        self.blenderOperationsQueueLock.acquire()
+
+        remainingOperationsCount = len(self.blenderOperationsQueue)
+        
+        if remainingOperationsCount > 0:
+            blenderOperation = self.blenderOperationsQueue.pop(0)
+            remainingOperationsCount -= 1
+        
+        self.blenderOperationsQueueLock.release()
+
+        return (blenderOperation, remainingOperationsCount)
+        
+    def clearBlenderOperationsQueue(self):
+
+        self.blenderOperationsQueueLock.acquire()
+        
+        self.blenderOperationsQueue = []
+        
+        self.blenderOperationsQueueLock.release()
+
+    # Returns the length of the BlenderOperationsQueue. Note: Uses a thread Lock.
+    def getLengthOfBlenderOperationsQueue(self):
+        
+        count = 0
+
+        self.blenderOperationsQueueLock.acquire()
+        
+        count = len(self.blenderOperationsQueue)
+        
+        self.blenderOperationsQueueLock.release()
+
+        return count
+
+
+    # Returns the first item from the BlenderEventQueue. Note: Uses a thread Lock.
+    def popFirstFromBlenderEventQueue(self):
+        
+        blenderEvent = None
+
+        self.blenderEventQueueLock.acquire()
+        
+        remainingEventsCount = len(self.blenderEventQueue)
+        
+        if len(self.blenderEventQueue) > 0:
+            blenderEvent = self.blenderEventQueue.pop(0)
+            remainingEventsCount -= 1
+        
+        self.blenderEventQueueLock.release()
+
+        return (blenderEvent, remainingEventsCount)        
+
+    # onReceiveBlenderDependencyGraphUpdateEvent is called when we receive an event from blender.
+    def onReceiveBlenderDependencyGraphUpdateEvent(self, scene, depsgraph):
+
+        for update in depsgraph.updates:
+            if update.id == None:
+                print("Received an update without an id: {}", update)
+                continue
+            self.blenderEventQueueLock.acquire()
+            self.blenderEventQueue.append(update)
+            self.blenderEventQueueLock.release()
+    
+    

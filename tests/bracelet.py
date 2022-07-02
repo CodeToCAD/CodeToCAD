@@ -2,7 +2,7 @@ print("Starting bracelet.py")
 
 from CodeToCADBlenderProvider import shape, scene, BlenderLength, analytics
 
-scene().setDefaultUnit(BlenderLength.CENTIMETERS)
+scene().setDefaultUnit("cm")
 scene().deleteGroup("Bracelet", True) \
     .createGroup("Bracelet")
 scene().deleteGroup("BraceletBooleanShapes", True) \
