@@ -27,8 +27,248 @@ def setup(blenderEvents):
 blenderEvents = BlenderEvents()
 setup(blenderEvents)
 
-class shape: 
-    # Text to 3D Modeling Automation Capabilities.
+class Entity:
+    def translate(self,
+    dimensions:str\
+    ):
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Utilities.Dimension("1"))
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Translating {}".format(self.name),
+            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.RELATIVE),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
+
+    def setPosition(self,
+    dimensions:str\
+    ):
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Utilities.Dimension("1"))
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Setting position of {}".format(self.name),
+            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
+        
+    def scale(self,
+    dimensions:str
+    ):
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
+        
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
+
+        while len(dimensionsList) < 3:
+            dimensionsList.append(Utilities.Dimension("1"))
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Scaling {}".format(self.name),
+            lambda: BlenderActions.scaleObject(self.name, dimensionsList),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        
+        return self
+
+    def rotate(self,
+    rotation:str \
+    ):
+        angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(rotation) or []
+
+        while len(angleList) < 3:
+            angleList.append(Utilities.Angle("1"))
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Rotating {}".format(self.name),
+            lambda: BlenderActions.rotateObject(self.name, angleList, BlenderDefinitions.BlenderRotationTypes.EULER),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        return self
+
+    def rename(self,
+    newName:str, \
+    expectedNameOfObject:str = None
+    ):
+        expectedNameOfObject = expectedNameOfObject or self.name
+        self.name = newName if expectedNameOfObject else self.name
+        blenderEvents.addToBlenderOperationsQueue(
+            "Renaming object {} to {}".format(expectedNameOfObject, self.name),
+            lambda: BlenderActions.updateObjectName(expectedNameOfObject, self.name)
+            ,
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Renaming mesh {} to {}".format(expectedNameOfObject, self.name),
+            lambda: BlenderActions.updateObjectDataName(self.name, self.name)
+            ,
+            lambda update: update.id.name == self.name
+        )
+        return self
+
+
+    def clone(self,
+    partName:str \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Cloning object {} to create {}".format(partName, self.name),
+            lambda: BlenderActions.duplicateObject(partName, self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        return self
+
+
+    def extrude(self,
+    landmarkName:str,  \
+    dimensions:str \
+    ):
+        print("extrude is not implemented") # implement 
+        return self
+        
+    def revolve(self,
+    angle:str,
+    axis:Utilities.Axis,
+    entityNameToDetermineAxis = None
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying revolve (screw) modifier to {}".format(self.name),
+            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, entityNameToDetermineAxis=entityNameToDetermineAxis),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        return self
+
+    def thicken(self,
+    thickness:int
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying solidify modifier to {}".format(self.name),
+            lambda: BlenderActions.applySolidifyModifier(self.name, Utilities.Dimension(thickness)),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        return self
+        
+    def screw(self,
+    angle:str,
+    axis:Utilities.Axis,
+    screwPitch:str = 0,
+    iterations:int = 1
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying screw modifier to {}".format(self.name),
+            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, screwPitch=Utilities.Dimension(screwPitch), iterations=iterations),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        return self
+
+    def remesh(self,
+    strategy:str = None,  \
+    amount:float = None \
+    ):
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying EdgeSplit modifier to {}".format(self.name),
+            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying Subdivision Surface modifier to {}".format(self.name),
+            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2}),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
+
+    def mirror(self,
+    mirrorAcrossEntityName:str, \
+    axis = (True, True, True)
+    ):
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying Mirror modifier to {}".format(self.name),
+            lambda: BlenderActions.applyMirrorModifier(self.name, mirrorAcrossEntityName, axis),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        
+        return self
+
+    def pattern(self,
+    partName:str,  \
+    landmarkName:str \
+    ):
+        print("pattern is not implemented") # implement 
+        return self
+
+
+    def delete(self
+    ):
+        print("delete is not implemented") # implement 
+        return self
+    
+    # This is a blender specific action to apply the dependency graph modifiers onto a mesh
+    def apply(self):
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying Dependency Graph changes to {}. This permanently changes the mesh.".format(self.name),
+            lambda: BlenderActions.applyDependencyGraph(self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
+
+    def landmark(self, landmarkName, localPosition):
+
+        landmarkObject = Landmark(landmarkName, self.name)
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating landmark {} on {}.".format(landmarkName, self.name),
+            lambda: BlenderActions.createLandmark(self.name, landmarkObject.landmarkName, localPosition),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
+        )
+        
+
+        return self
+        
+
+    def isVisible(self,
+    isVisible:bool \
+    ):
+        blenderEvents.addToBlenderOperationsQueue(
+            "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
+            lambda: BlenderActions.setObjectVisibility(self.name, isVisible),
+            None
+        ) 
+        return self
+
+    def getNativeInstance(self
+    ): 
+        return BlenderActions.getObject(self.name)
+        
+    def select(self,
+    landmarkName:str,  \
+    selectionType:str = "face" \
+    ):
+        landmarkObject = Landmark(landmarkName, self.name)
+        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.landmarkName)
+        [closestPoint, normal, blenderPolygon, blenderVertices] = BlenderActions.getClosestPointsToVertex(self.name, landmarkLocation)
+
+        if blenderVertices != None:
+            for vertex in blenderVertices:
+                vertex.select = True
+
+        return self
+
+class Part(Entity):
 
     name = None
     description = None
@@ -63,17 +303,6 @@ class shape:
         self.rename(self.name, fileName)
         
         return self
-
-    def cloneShape(self,
-    shapeName:str \
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Cloning object {} to create {}".format(shapeName, self.name),
-            lambda: BlenderActions.duplicateObject(shapeName, self.name),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        return self
-
 
     def createPrimitive(self,
     primitiveName:str,  \
@@ -143,165 +372,59 @@ class shape:
         return self
 
     def loft(self,
-    shape1Name:str,  \
-    shape2Name:str \
+    part1Name:str,  \
+    part2Name:str \
     ):
         print("loft is not implemented") # implement 
         return self
 
-    def mirror(self,
-    mirrorAcrossShapeName:str, \
-    axis = (True, True, True)
-    ):
     
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying Mirror modifier to {}".format(self.name),
-            lambda: BlenderActions.applyMirrorModifier(self.name, mirrorAcrossShapeName, axis),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        
-        return self
-
-    def pattern(self,
-    shapeName:str,  \
-    landmarkName:str \
-    ):
-        print("pattern is not implemented") # implement 
-        return self
 
     def mask(self,
-    shapeName:str,  \
+    partName:str,  \
     landmarkName:str \
     ):
         print("mask is not implemented") # implement 
         return self
-
-    def translate(self,
-    dimensions:str\
-    ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
-        
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
-
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
     
-        blenderEvents.addToBlenderOperationsQueue(
-            "Translating {}".format(self.name),
-            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-
-        return self
-
-    def setPosition(self,
-    dimensions:str\
-    ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
-        
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
-
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
-
-        blenderEvents.addToBlenderOperationsQueue(
-            "Setting position of {}".format(self.name),
-            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-
-        return self
-        
-    def scale(self,
-    dimensions:str
-    ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
-        
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
-
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
-    
-        blenderEvents.addToBlenderOperationsQueue(
-            "Scaling {}".format(self.name),
-            lambda: BlenderActions.scaleObject(self.name, dimensionsList),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        
-        return self
-
-    def rotate(self,
-    rotation:str \
-    ):
-        angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(rotation) or []
-
-        while len(angleList) < 3:
-            angleList.append(Utilities.Angle("1"))
-    
-        blenderEvents.addToBlenderOperationsQueue(
-            "Rotating {}".format(self.name),
-            lambda: BlenderActions.rotateObject(self.name, angleList, BlenderDefinitions.BlenderRotationTypes.EULER),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        return self
-
-    def rename(self,
-    newName:str, \
-    expectedNameOfObjectInBlender:str = None
-    ):
-        expectedNameOfObjectInBlender = expectedNameOfObjectInBlender or self.name
-        self.name = newName if expectedNameOfObjectInBlender else self.name
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming object {} to {}".format(expectedNameOfObjectInBlender, self.name),
-            lambda: BlenderActions.updateObjectName(expectedNameOfObjectInBlender, self.name)
-            ,
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming mesh {} to {}".format(expectedNameOfObjectInBlender, self.name),
-            lambda: BlenderActions.updateObjectDataName(self.name, self.name)
-            ,
-            lambda update: update.id.name == self.name
-        )
-        return self
 
     def union(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Union modifier to {}".format(self.name),
             lambda: BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.UNION,
-                        withShapeName
+                        withPartName
                     ),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
     def subtract(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Difference modifier to {}".format(self.name),
             lambda: BlenderActions.applyBooleanModifier(
                     self.name,
                     BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
-                    withShapeName
+                    withPartName
                 ),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
     def intersect(self,
-    withShapeName:str \
+    withPartName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Intersect modifier to {}".format(self.name),
             lambda: BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
-                        withShapeName
+                        withPartName
                     ),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
@@ -315,131 +438,16 @@ class shape:
         print("bevel is not implemented") # implement 
         return self
 
-    def extrude(self,
-    landmarkName:str,  \
-    dimensions:str \
-    ):
-        print("extrude is not implemented") # implement 
-        return self
-        
-    def revolve(self,
-    angle:str,
-    axis:Utilities.Axis,
-    shapeNameToDetermineAxis = None
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying revolve (screw) modifier to {}".format(self.name),
-            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, shapeNameToDetermineAxis=shapeNameToDetermineAxis),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        return self
-
-    def thicken(self,
-    thickness:int
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying solidify modifier to {}".format(self.name),
-            lambda: BlenderActions.applySolidifyModifier(self.name, Utilities.Dimension(thickness)),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        return self
-        
-    def screw(self,
-    angle:str,
-    axis:Utilities.Axis,
-    screwPitch:str = 0,
-    iterations:int = 1
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying screw modifier to {}".format(self.name),
-            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, screwPitch=Utilities.Dimension(screwPitch), iterations=iterations),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        return self
-
-    def remesh(self,
-    strategy:str = None,  \
-    amount:float = None \
-    ):
-    
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying EdgeSplit modifier to {}".format(self.name),
-            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying Subdivision Surface modifier to {}".format(self.name),
-            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2}),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
-
-        return self
-
     def hollow(self,
     wallThickness:float \
     ):
         print("hollow is not implemented") # implement 
         return self
 
-    def delete(self
-    ):
-        print("delete is not implemented") # implement 
-        return self
-    
-    # This is a blender specific action to apply the dependency graph modifiers onto a mesh
-    def apply(self):
-        
-        blenderEvents.addToBlenderOperationsQueue(
-            "Applying Dependency Graph changes to {}. This permanently changes the mesh.".format(self.name),
-            lambda: BlenderActions.applyDependencyGraph(self.name),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
-        )
+# alias for Part
+Shape = Part
 
-        return self
-
-    def landmark(self, landmarkName, localPosition):
-
-        landmarkObject = landmark(landmarkName, self.name)
-        
-        blenderEvents.addToBlenderOperationsQueue(
-            "Creating landmark {} on {}.".format(landmarkName, self.name),
-            lambda: BlenderActions.createLandmark(self.name, landmarkObject.landmarkName, localPosition),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
-        )
-        
-
-        return self
-        
-
-    def isVisible(self,
-    isVisible:bool \
-    ):
-        blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
-            lambda: BlenderActions.setObjectVisibility(self.name, isVisible),
-            None
-        ) 
-        return self
-
-    def getNativeInstance(self
-    ): 
-        return BlenderActions.getObject(self.name)
-        
-    def select(self,
-    landmarkName:str,  \
-    selectionType:str = "face" \
-    ):
-        landmarkObject = landmark(landmarkName, self.name)
-        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.landmarkName)
-        [closestPoint, normal, blenderPolygon, blenderVertices] = BlenderActions.getClosestPointsToVertex(self.name, landmarkLocation)
-
-        if blenderVertices != None:
-            for vertex in blenderVertices:
-                vertex.select = True
-
-        return self
-
-class curve(shape):
+class Sketch(Entity):
     
     name = None
     curveType = None
@@ -461,19 +469,19 @@ class curve(shape):
         ):
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating curve {} from vertices.".format(self.name),
+            "Adding sweep to sketch {}.".format(self.name),
             lambda: BlenderActions.addBevelObjectToCurve(self.name, profileCurveName, fillCap),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
         
-    def curve(self,
+    def profile(self,
         profileCurveName
         ):
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating curve {} from vertices.".format(self.name),
+            "Adding profile to sketch {}.".format(self.name),
             lambda: BlenderActions.applyCurveModifier(self.name, profileCurveName),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
@@ -495,7 +503,7 @@ class curve(shape):
         size = Utilities.Dimension(size)
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating curve {} from vertices.".format(self.name),
+            "Creating text {}.".format(self.name),
             lambda: BlenderActions.createText(self.name, text, size, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
@@ -508,7 +516,7 @@ class curve(shape):
         ):
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating curve {} from vertices.".format(self.name),
+            "Creating sketch {} from vertices.".format(self.name),
             lambda: BlenderActions.createCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
@@ -527,7 +535,7 @@ class curve(shape):
                 blenderPrimitiveFunction = BlenderActions.getBlenderCurvePrimitiveFunction(blenderCurvePrimitiveType)
 
                 blenderEvents.addToBlenderOperationsQueue(
-                    "Creating curve primitive {}".format(self.name),
+                    "Creating sketch primitive {}".format(self.name),
                     lambda: blenderPrimitiveFunction(
                         *args[1:],
                         dict(
@@ -587,20 +595,23 @@ class curve(shape):
     def createTrapezoid(self, length_upper, length_lower, height, keywordArguments = {}):
         return self
 
-class landmark: 
+# alias for Sketch
+Curve = Sketch
+
+class Landmark: 
     # Text to 3D Modeling Automation Capabilities.
 
-    localToShapeWithName = None
+    localToEntityWithName = None
     landmarkName = None
 
     def __init__(self,
     landmarkName:str,
-    localToShapeWithName:str=None \
+    localToEntityWithName:str=None \
     ):
-        self.localToShapeWithName = localToShapeWithName
+        self.localToEntityWithName = localToEntityWithName
         
-        if localToShapeWithName:
-            self.landmarkName = "{}_{}".format(localToShapeWithName, landmarkName)
+        if localToEntityWithName:
+            self.landmarkName = "{}_{}".format(localToEntityWithName, landmarkName)
         else:
             self.landmarkName = landmarkName
 
@@ -631,32 +642,32 @@ class landmark:
         print("contourPattern is not implemented") # implement 
         return self
 
-class joint: 
+class Joint: 
     # Text to 3D Modeling Automation Capabilities.
 
-    shape1Name = None
-    shape2Name = None
-    shape1Landmark:landmark = None
-    shape2Landmark:landmark = None
+    part1Name = None
+    part2Name = None
+    part1Landmark:Landmark = None
+    part2Landmark:Landmark = None
     jointType = None
     initialRotation = None
     limitRotation = None
     limitTranslation = None
 
     def __init__(self,
-    shape1Name:str, \
-    shape2Name:str, \
-    shape1LandmarkName:str, \
-    shape2LandmarkName:str, \
+    part1Name:str, \
+    part2Name:str, \
+    part1LandmarkName:str, \
+    part2LandmarkName:str, \
     jointType:str = None, \
     initialRotation:str = None, \
     limitRotation:str = None, \
     limitTranslation:str = None \
     ):
-        self.shape1Name = shape1Name
-        self.shape2Name = shape2Name
-        self.shape1Landmark = landmark(shape1LandmarkName, shape1Name)
-        self.shape2Landmark = landmark(shape2LandmarkName, shape2Name)
+        self.part1Name = part1Name
+        self.part2Name = part2Name
+        self.part1Landmark = Landmark(part1LandmarkName, part1Name)
+        self.part2Landmark = Landmark(part2LandmarkName, part2Name)
         self.jointType = jointType
         self.initialRotation = initialRotation
         self.limitRotation = limitRotation
@@ -666,14 +677,14 @@ class joint:
     def transformLandmarkOntoAnother(self):
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Transforming {} landmark {} onto {} landmark {}".format(self.shape1Name, self.shape1Landmark.landmarkName, self.shape2Name, self.shape2Landmark.landmarkName),
-            lambda: BlenderActions.transformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark.landmarkName, self.shape2Landmark.landmarkName),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.shape2Landmark.landmarkName,
+            "Transforming {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
+            lambda: BlenderActions.transformLandmarkOntoAnother(self.part1Name, self.part2Name, self.part1Landmark.landmarkName, self.part2Landmark.landmarkName),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.part2Landmark.landmarkName,
         )
 
         return self
 
-class material: 
+class Material: 
     # Text to 3D Modeling Automation Capabilities.
 
 
@@ -682,7 +693,7 @@ class material:
         pass
 
 
-class scene: 
+class Scene: 
     # Text to 3D Modeling Automation Capabilities.
 
     name = None
@@ -739,56 +750,56 @@ class scene:
 
     def deleteGroup(self,
     name:str,  \
-    removeNestedShapes:bool \
+    removeNestedEntities:bool \
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Removing the {} collection".format(name),
-            lambda: BlenderActions.removeCollection(name, removeNestedShapes), 
+            lambda: BlenderActions.removeCollection(name, removeNestedEntities), 
             lambda update: update.id.name == "Scene"
         )
 
         return self
         
-    def removeShapeFromGroup(self,
-    shapeName:str, \
+    def removeFromGroup(self,
+    entityName:str, \
     groupName:str \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Removing {} from collection {}".format(shapeName, groupName),
-            lambda: BlenderActions.removeObjectFromCollection(shapeName, groupName), 
+            "Removing {} from collection {}".format(entityName, groupName),
+            lambda: BlenderActions.removeObjectFromCollection(entityName, groupName), 
             lambda update: update.id.name == groupName
             )
 
         return self
 
         
-    def assignShapeToGroup(self,
-    shapeName:str, \
+    def assignToGroup(self,
+    entityName:str, \
     groupName:str, \
     removeFromOtherGroups:bool = True \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Assigning object {} to collection {}".format(shapeName, groupName),
-            lambda: BlenderActions.assignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
+            "Assigning object {} to collection {}".format(entityName, groupName),
+            lambda: BlenderActions.assignObjectToCollection(entityName, groupName, self.name, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
         )
 
         return self
         
 
-    def setShapeVisibility(self,
-    shapeName:str, \
+    def setVisibility(self,
+    entityName:str, \
     isVisible:bool \
     ):
         blenderEvents.addToBlenderOperationsQueue(
-            "Object \"{}\" setting isVisible {}".format(shapeName, isVisible),
-            lambda: BlenderActions.setObjectVisibility(shapeName, isVisible),
+            "Object \"{}\" setting isVisible {}".format(entityName, isVisible),
+            lambda: BlenderActions.setObjectVisibility(entityName, isVisible),
             lambda update: update.id.name == self.name
         ) 
 
         return self
 
-class analytics: 
+class Analytics: 
     # Text to 3D Modeling Automation Capabilities.
 
     def execute(self, callback: LambdaType, description = ""):
@@ -807,20 +818,20 @@ class analytics:
         return None
 
     def getWorldPose(self,
-    shapeName:str \
+    partName:str \
     ):
-        return BlenderActions.getObjectWorldPose(shapeName)
+        return BlenderActions.getObjectWorldPose(partName)
 
     def getBoundingBox(self,
-    shapeName:str \
+    partName:str \
     ):
-        return BlenderActions.getBoundingBox(shapeName)
+        return BlenderActions.getBoundingBox(partName)
 
     def getDimensions(self,
-    shapeName:str \
+    partName:str \
     ):
         
-        dimensions = BlenderActions.getObject(shapeName).dimensions
+        dimensions = BlenderActions.getObject(partName).dimensions
         return [
             Utilities.Dimension(
                 dimension,
