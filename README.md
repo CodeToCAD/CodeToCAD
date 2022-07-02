@@ -26,3 +26,19 @@ There are two options:
 1. Use the File > Import > CodeToCAD menu to import a python file uses the CodeToCAD commands. For example, you could import one of the [test scripts](./tests/text.py).
 
 2. In the console, type `from CodeToCADBlenderProvider import shape, curve, landmark, scene, analytics, joint`. Now you can use CodeToCAD commands in the console.
+
+
+## VSCode Syntax highlighting and auto-complete
+
+To enable syntax highlighting and auto-complete for your project's folder, please add an analysis path setting:
+
+1. Create a `.vscode/` folder in the root of your project.
+2. Create a `settings.json` file inside of this `.vscode/` folder. 
+3. Update the correct path and paste this into `settings.json`:
+```
+{
+    "python.analysis.extraPaths": [
+        "/path/to/CodeToCAD-Blender/"
+    ]
+}
+```

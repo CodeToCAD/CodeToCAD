@@ -210,9 +210,14 @@ class Entity:
         return self
 
 
-    def delete(self
+    def delete(self,
+        removeChildren = True
     ):
-        print("delete is not implemented") # implement 
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Removing entity {self.name}. Removing children: {removeChildren}",
+            lambda: BlenderActions.removeObject(self.name, removeChildren),
+            lambda update: update.id.name == self.name
+        )
         return self
     
     # This is a blender specific action to apply the dependency graph modifiers onto a mesh

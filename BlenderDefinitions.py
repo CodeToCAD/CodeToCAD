@@ -1,4 +1,3 @@
-from unittest import skip
 import bpy
 
 from enum import Enum
@@ -8,6 +7,7 @@ class BlenderTypes(Enum):
     OBJECT = bpy.types.Object
     MESH = bpy.types.Mesh
     CURVE= bpy.types.Curve
+
 
 # These are the units allowed in a Blender document:
 class BlenderLength(Utilities.Units):
@@ -85,8 +85,7 @@ class BlenderTranslationTypes(Enum):
     RELATIVE = "delta_location"
 
 
-# This is a list of Blender Modifiers we have implemented:
-
+# Blender Modifiers we have implemented:
 class BlenderBooleanTypes(Enum):
     UNION = 0
     DIFFERENCE = 1
@@ -128,6 +127,7 @@ class BlenderCurveTypes(Utilities.EquittableEnum):
         [result] = list(filter(lambda b: b.value == curveType, [b for b in BlenderCurveTypes]))
 
         return result
+
 
 # assumes add_curve_extra_objects is enabled
 # https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
