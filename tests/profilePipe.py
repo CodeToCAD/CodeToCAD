@@ -22,6 +22,6 @@ profile = [
 
 circleRadius = "(1/4)/2 in"
 
-curve("circle").createCircle(circleRadius)
+Sketch("circle").createCircle(circleRadius)
 
-curve("profile").createFromVerticies(profile).sweep("circle")
+Sketch("profile").createFromVerticies(profile).sweep("circle")

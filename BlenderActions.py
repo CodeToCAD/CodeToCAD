@@ -13,12 +13,12 @@ from enum import Enum
 # MARK: Modifiers
 
 def addModifier(
-        shapeName:str,
+        entityName:str,
         modifier:BlenderDefinitions.BlenderModifiers,
         keywordArguments:dict = {}
     ):
 
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(entityName)
 
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
     modifier = blenderObject.modifiers.new(type=modifier.name, name=modifier.name)
@@ -28,13 +28,13 @@ def addModifier(
 
 
 def applySolidifyModifier(
-        shapeName,
+        entityName,
         thickness:Utilities.Dimension,
         keywordArguments:dict = {}
     ):
 
     addModifier(
-        shapeName, 
+        entityName, 
         BlenderDefinitions.BlenderModifiers.SOLIDIFY,
         {
             "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value
@@ -43,7 +43,7 @@ def applySolidifyModifier(
     
 
 def applyCurveModifier(
-        shapeName,
+        entityName,
         curveObjectName,
         keywordArguments:dict = {}
     ):
@@ -51,7 +51,7 @@ def applyCurveModifier(
     curveObject = getObject(curveObjectName)
         
     addModifier(
-        shapeName, 
+        entityName, 
         BlenderDefinitions.BlenderModifiers.CURVE,
         {
             "object": curveObject
@@ -60,21 +60,21 @@ def applyCurveModifier(
 
 
 def applyBooleanModifier(
-        shapeName,
+        meshObjectName,
         blenderBooleanType:BlenderDefinitions.BlenderBooleanTypes,
-        withShapeName,
+        withMeshObjectName,
         keywordArguments:dict = {}
     ):
-    blenderObject = getObject(shapeName)
-    blenderBooleanObject = getObject(withShapeName)
+    blenderObject = getObject(meshObjectName)
+    blenderBooleanObject = getObject(withMeshObjectName)
 
-    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.OBJECT.value, \
-        f"Object {shapeName} is not an Object. Cannot use the Boolean modifier with {type(blenderObject.data)} type."
-    assert type(blenderBooleanObject.data) == BlenderDefinitions.BlenderTypes.OBJECT.value, \
-        f"Object {withShapeName} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
+    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.MESH.value, \
+        f"Object {meshObjectName} is not an Object. Cannot use the Boolean modifier with {type(blenderObject.data)} type."
+    assert type(blenderBooleanObject.data) == BlenderDefinitions.BlenderTypes.MESH.value, \
+        f"Object {withMeshObjectName} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
 
     addModifier(
-        shapeName,
+        meshObjectName,
         BlenderDefinitions.BlenderModifiers.BOOLEAN,
         {
             "operation": blenderBooleanType.name,
@@ -88,16 +88,16 @@ def applyBooleanModifier(
 
 
 def applyMirrorModifier(
-        shapeName,
-        mirrorAcrossShapeName,
+        entityName,
+        mirrorAcrossEntityName,
         axis,
         keywordArguments:dict = {}
     ):
     
-    blenderMirrorAcrossObject = getObject(mirrorAcrossShapeName)
+    blenderMirrorAcrossObject = getObject(mirrorAcrossEntityName)
 
     addModifier(
-        shapeName, 
+        entityName, 
         BlenderDefinitions.BlenderModifiers.MIRROR,
         {
             "mirror_object": blenderMirrorAcrossObject,
@@ -108,12 +108,12 @@ def applyMirrorModifier(
 
     
 def applyScrewModifier(
-        shapeName,
+        entityName,
         angle:Utilities.Angle,
         axis:Utilities.Axis,
         screwPitch:Utilities.Dimension = Utilities.Dimension(0),
         iterations = 1,
-        shapeNameToDetermineAxis = None,
+        entityNameToDetermineAxis = None,
         keywordArguments:dict = {}
     ):
     
@@ -128,21 +128,21 @@ def applyScrewModifier(
         "iterations": iterations
     }
 
-    if shapeNameToDetermineAxis:
+    if entityNameToDetermineAxis:
 
-        blenderMirrorAcrossObject = getObject(shapeNameToDetermineAxis)
+        blenderMirrorAcrossObject = getObject(entityNameToDetermineAxis)
         
         properties["object"] = blenderMirrorAcrossObject
 
 
     addModifier(
-        shapeName,
+        entityName,
         BlenderDefinitions.BlenderModifiers.SCREW,
         properties
     )
 
 
-# MARK: CRUD of shapes
+# MARK: CRUD of Objects (aka Parts)
 
 def blenderPrimitiveFunction(
         primitive:BlenderDefinitions.BlenderPrimitives,
@@ -352,9 +352,9 @@ def setDefaultUnit(
 
 
 # references https://blender.stackexchange.com/a/159540/138679
-def applyObjectTransformations(shapeName):
+def applyObjectTransformations(objectName):
 
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(objectName)
     
     final_pose = blenderObject.matrix_basis
     # final_pose = blenderObject.matrix_world
@@ -369,12 +369,12 @@ def applyObjectTransformations(shapeName):
 
 
 def rotateObject(
-        shapeName, 
+        objectName, 
         rotationAngles:list[Utilities.Angle],
         rotationType:BlenderDefinitions.BlenderRotationTypes
     ):
 
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(objectName)
     
     assert \
         len(rotationAngles) == 3, \
@@ -384,16 +384,16 @@ def rotateObject(
 
     setattr(blenderObject, rotationType.value, rotationTuple)
     
-    applyObjectTransformations(shapeName)
+    applyObjectTransformations(objectName)
 
 
 def translateObject(
-        shapeName,
+        objectName,
         translationDimensions:list[Utilities.Dimension],
         translationType:BlenderDefinitions.BlenderTranslationTypes
     ):
     
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(objectName)
     
     assert \
         len(translationDimensions) == 3, \
@@ -403,15 +403,15 @@ def translateObject(
 
     setattr(blenderObject, translationType.value, translationTuple)
 
-    applyObjectTransformations(shapeName)
+    applyObjectTransformations(objectName)
 
 
 def scaleObject(
-        shapeName:str,
+        objectName:str,
         scalingDimensions:list[Utilities.Dimension]
     ):
 
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(objectName)
     
     assert \
         len(scalingDimensions) == 3, \
@@ -471,7 +471,7 @@ def scaleObject(
     
     blenderObject.scale = (x.value,y.value,z.value)
 
-    applyObjectTransformations(shapeName)
+    applyObjectTransformations(objectName)
 
 
 def duplicateObject(
@@ -621,35 +621,35 @@ def setObjectVisibility(
 
 # TODO: addConstraint
 def addConstraint(
-        shapeName,
+        objectName,
         constraintType,
         keywordArguments = {}
     ):
     
-    blenderObject = getObject(shapeName)
+    blenderObject = getObject(objectName)
 
 
 # TODO: addJoint
 def addJoint(
-        shape1Name,
-        shape2Name,
-        shape1Landmark,
-        shape2Landmark
+        object1Name,
+        object2Name,
+        object1Landmark,
+        object2Landmark
     ):
     pass
 
 
 def transformLandmarkOntoAnother(
-        shape1Name,
-        shape2Name,
-        shape1Landmark,
-        shape2Landmark
+        object1Name,
+        object2Name,
+        object1Landmark,
+        object2Landmark
     ):
 
-    blenderObject1 = getObject(shape1Name)
-    [blenderObject1Landmark] = filter(lambda child: child.name == shape1Landmark, blenderObject1.children)
-    blenderObject2 = getObject(shape2Name)
-    [blenderObject2Landmark] = filter(lambda child: child.name == shape2Landmark, blenderObject2.children)
+    blenderObject1 = getObject(object1Name)
+    [blenderObject1Landmark] = filter(lambda child: child.name == object1Landmark, blenderObject1.children)
+    blenderObject2 = getObject(object2Name)
+    [blenderObject2Landmark] = filter(lambda child: child.name == object2Landmark, blenderObject2.children)
 
     # transform landmark1 onto landmark2
     # t1 = blenderObject2Landmark.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
@@ -661,7 +661,7 @@ def transformLandmarkOntoAnother(
     
     # rotation = transformation.to_euler()
     
-    # rotateObject(shape2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
+    # rotateObject(object2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
 
     # Use matrix_basis if transformations are applied.
     blenderObject1Translation = blenderObject1Landmark.matrix_basis.to_translation()
@@ -674,7 +674,7 @@ def transformLandmarkOntoAnother(
     blenderDefaultUnit = BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
     
     translateObject(
-        shape2Name,
+        object2Name,
         [
             Utilities.Dimension(translation.x, blenderDefaultUnit),
             Utilities.Dimension(translation.y, blenderDefaultUnit),
