@@ -180,7 +180,7 @@ def blenderPrimitiveFunction(
     raise Exception(f"Primitive with name {primitive.name} is not implemented.")
 
 
-# Extracts dimensions from a string, then passes them as arguments to the BlenderPrimitives class
+# Extracts dimensions from a string, then passes them as arguments to the blenderPrimitiveFunction
 def addPrimitive(
         primitiveName:str,  \
         dimensions:str,  \
@@ -254,102 +254,7 @@ def importFile(
     assert isSuccess == True, \
             f"Could not import {filePath}"
 
-
-def updateObjectName(
-        oldName,
-        newName
-    ):
-
-    blenderObject = getObject(oldName)    
-    
-    blenderObject.name = newName
-
-
-def updateObjectDataName(
-        parentObjectName,
-        newName
-    ):
-    
-    blenderObject = getObject(parentObjectName)
-
-    blenderObject.data.name = newName
-
-
-# locks the scene interface
-def sceneLockInterface(isLocked):
-    bpy.context.scene.render.use_lock_interface = isLocked
-
-
-def removeObject(
-        existingObjectName,
-        removeChildren = False
-    ):
-    
-    blenderObject = getObject(existingObjectName)
-
-    if removeChildren:
-        for child in blenderObject.children:
-            try:
-                removeObject(child.name, True)
-            except:
-                pass
-    
-    data = blenderObject.data
-    bpy.data.objects.remove(blenderObject)
-    bpy.data.meshes.remove(data)
-
-
-def createCollection(
-        name,
-        sceneName = "Scene"
-    ):
-
-    assert \
-        name not in bpy.data.collections, \
-        f"Collection {name} already exists"
-
-    assert \
-        sceneName in bpy.data.scenes, \
-        f"Scene {sceneName} does not exist"
-
-    collection = bpy.data.collections.new(name)
-
-    bpy.data.scenes[sceneName].collection.children.link(collection)
-
-
-def removeCollection(
-        name,
-        removeNestedObjects
-    ):
-    
-    assert \
-        name in bpy.data.collections, \
-        f"Collection {name} does not exist"
-
-    if removeNestedObjects:
-        for obj in bpy.data.collections[name].objects:
-            try:
-                removeObject(obj.name, True)
-            except Exception as e:
-                pass
-
-    bpy.data.collections.remove(bpy.data.collections[name])
-
-
-def setDefaultUnit(
-        blenderUnit:BlenderDefinitions.BlenderLength,
-        sceneName = "Scene"
-    ):
-    
-    blenderScene = bpy.data.scenes.get(sceneName)
-    
-    assert \
-        blenderScene != None, \
-        f"Scene {sceneName} does not exist"
-
-    blenderScene.unit_settings.system = blenderUnit.getSystem()
-    blenderScene.unit_settings.length_unit = blenderUnit.name
-
+# MARK: Transformations
 
 # references https://blender.stackexchange.com/a/159540/138679
 def applyObjectTransformations(objectName):
@@ -366,6 +271,19 @@ def applyObjectTransformations(objectName):
     
     # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis.identity()
+
+
+def applyDependencyGraph(
+        existingObjectName,
+        removeModifiers = True
+    ):
+    
+    blenderObject = getObject(existingObjectName)
+
+    blenderObject.data = blenderObject.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.copy()
+
+    if removeModifiers:
+        blenderObject.modifiers.clear()
 
 
 def rotateObject(
@@ -474,31 +392,43 @@ def scaleObject(
     applyObjectTransformations(objectName)
 
 
-def duplicateObject(
-        existingObjectName,
-        newObjectName
+# MARK: collections and groups:
+
+def createCollection(
+        name,
+        sceneName = "Scene"
+    ):
+
+    assert \
+        name not in bpy.data.collections, \
+        f"Collection {name} already exists"
+
+    assert \
+        sceneName in bpy.data.scenes, \
+        f"Scene {sceneName} does not exist"
+
+    collection = bpy.data.collections.new(name)
+
+    bpy.data.scenes[sceneName].collection.children.link(collection)
+
+
+def removeCollection(
+        name,
+        removeNestedObjects
     ):
     
-    clonedObject = bpy.data.objects.get(newObjectName)
+    assert \
+        name in bpy.data.collections, \
+        f"Collection {name} does not exist"
 
-    assert clonedObject == None, \
-        f"Object with name {newObjectName} already exists."
+    if removeNestedObjects:
+        for obj in bpy.data.collections[name].objects:
+            try:
+                removeObject(obj.name, True)
+            except Exception as e:
+                pass
 
-    blenderObject = getObject(existingObjectName)
-    
-    clonedObject = blenderObject.copy()
-    clonedObject.name = newObjectName
-    clonedObject.data = blenderObject.data.copy()
-    clonedObject.data.name = newObjectName
-    
-    # Link clonedObject to a collection. Might want to make this optional.
-    [currentCollection] = blenderObject.users_collection
-
-    defaultCollection = None
-    if currentCollection:
-        defaultCollection = currentCollection.name
-
-    assignObjectToCollection(newObjectName, defaultCollection)
+    bpy.data.collections.remove(bpy.data.collections[name])
 
 
 def removeObjectFromCollection(
@@ -565,58 +495,13 @@ def assignObjectToCollection(
         for child in blenderObject.children:
             assignObjectToCollection(child.name, collectionName, sceneName, True, True)
 
+
+# MARK: Joints
+
 # TODO: createArmatures
 def createArmatures(name):
     armature = bpy.data.armatures.new(name)
     object = bpy.data.objects.new(name, armature)
-
-
-def addDependencyGraphUpdateListener(callback):
-    bpy.app.handlers.depsgraph_update_post.append(callback)
-
-
-def addTimer(callback):
-    bpy.app.timers.register(callback)
-
-
-def applyDependencyGraph(
-        existingObjectName,
-        removeModifiers = True
-    ):
-    
-    blenderObject = getObject(existingObjectName)
-
-    blenderObject.data = blenderObject.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.copy()
-
-    if removeModifiers:
-        blenderObject.modifiers.clear()
-
-
-def createMeshFromCurve(
-        newObjectName,
-        blenderCurveObject
-    ):
-
-    dependencyGraph = bpy.context.evaluated_depsgraph_get()
-    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
-    
-    blenderObject = createObject(newObjectName, mesh)
-
-    blenderObject.matrix_world = blenderCurveObject.matrix_world
-    
-    assignObjectToCollection(newObjectName)
-
-
-def setObjectVisibility(
-        existingObjectName,
-        isVisible
-    ):
-    
-    blenderObject = getObject(existingObjectName)
-
-    # blenderObject.hide_viewport = not isVisible
-    # blenderObject.hide_render = not isVisible
-    blenderObject.hide_set(not isVisible)
 
 
 # TODO: addConstraint
@@ -638,6 +523,45 @@ def addJoint(
     ):
     pass
 
+# MARK: Landmarks
+
+def createLandmark(
+        objectName,
+        landmarkName,
+        localPosition
+    ):
+    blenderObject = getObject(objectName)
+
+    # Create an Empty object
+    landmarkObject = createObject(landmarkName)
+    landmarkObject.empty_display_size = 0
+
+    # Assign landmark Empty object to the same collection as the object it's attaching to.
+    # Assumes the first collection is the main collection
+    [currentCollection] = blenderObject.users_collection
+
+    defaultCollection = None
+    if currentCollection:
+        defaultCollection = currentCollection.name
+
+    assignObjectToCollection(landmarkName, defaultCollection)
+
+
+    # Parent the landmark to the object
+    blenderMakeParent(landmarkName, objectName)
+    
+
+    # Figure out how far we want to translate 
+    boundingBox = getBoundingBox(objectName)
+
+    localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
+
+    localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
+
+    while len(localPosition) < 3:
+        localPosition.append(Utilities.Dimension(1))
+
+    landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
 
 def transformLandmarkOntoAnother(
         object1Name,
@@ -683,6 +607,7 @@ def transformLandmarkOntoAnother(
         BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE
     )
 
+# MARK: creating and manipulating objects
 
 def blenderMakeParent(
         name,
@@ -694,6 +619,43 @@ def blenderMakeParent(
 
     blenderObject.parent = blenderParentObject
 
+def updateObjectName(
+        oldName,
+        newName
+    ):
+
+    blenderObject = getObject(oldName)    
+    
+    blenderObject.name = newName
+
+
+def updateObjectDataName(
+        parentObjectName,
+        newName
+    ):
+    
+    blenderObject = getObject(parentObjectName)
+
+    blenderObject.data.name = newName
+
+
+def removeObject(
+        existingObjectName,
+        removeChildren = False
+    ):
+    
+    blenderObject = getObject(existingObjectName)
+
+    if removeChildren:
+        for child in blenderObject.children:
+            try:
+                removeObject(child.name, True)
+            except:
+                pass
+    
+    data = blenderObject.data
+    bpy.data.objects.remove(blenderObject)
+    bpy.data.meshes.remove(data)
 
 def createObject(
         name,
@@ -708,44 +670,57 @@ def createObject(
 
     return bpy.data.objects.new( name , data )
 
-
-def createLandmark(
-        objectName,
-        landmarkName,
-        localPosition
+def createMeshFromCurve(
+        newObjectName,
+        blenderCurveObject
     ):
-    blenderObject = getObject(objectName)
 
-    # Create an Empty object
-    landmarkObject = createObject(landmarkName)
-    landmarkObject.empty_display_size = 0
+    dependencyGraph = bpy.context.evaluated_depsgraph_get()
+    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
+    
+    blenderObject = createObject(newObjectName, mesh)
 
-    # Assign landmark Empty object to the same collection as the object it's attaching to.
-    # Assumes the first collection is the main collection
+    blenderObject.matrix_world = blenderCurveObject.matrix_world
+    
+    assignObjectToCollection(newObjectName)
+
+
+def setObjectVisibility(
+        existingObjectName,
+        isVisible
+    ):
+    
+    blenderObject = getObject(existingObjectName)
+
+    # blenderObject.hide_viewport = not isVisible
+    # blenderObject.hide_render = not isVisible
+    blenderObject.hide_set(not isVisible)
+
+def duplicateObject(
+        existingObjectName,
+        newObjectName
+    ):
+    
+    clonedObject = bpy.data.objects.get(newObjectName)
+
+    assert clonedObject == None, \
+        f"Object with name {newObjectName} already exists."
+
+    blenderObject = getObject(existingObjectName)
+    
+    clonedObject = blenderObject.copy()
+    clonedObject.name = newObjectName
+    clonedObject.data = blenderObject.data.copy()
+    clonedObject.data.name = newObjectName
+    
+    # Link clonedObject to a collection. Might want to make this optional.
     [currentCollection] = blenderObject.users_collection
 
     defaultCollection = None
     if currentCollection:
         defaultCollection = currentCollection.name
 
-    assignObjectToCollection(landmarkName, defaultCollection)
-
-
-    # Parent the landmark to the object
-    blenderMakeParent(landmarkName, objectName)
-    
-
-    # Figure out how far we want to translate 
-    boundingBox = getBoundingBox(objectName)
-
-    localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
-
-    localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
-
-    while len(localPosition) < 3:
-        localPosition.append(Utilities.Dimension(1))
-
-    landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
+    assignObjectToCollection(newObjectName, defaultCollection)
 
 
 def getObjectWorldLocation(objectName):
@@ -852,7 +827,9 @@ def getBoundingBox(objectName):
         )
     
     return boundingBox
-## ADDONS ##
+
+
+# MARK: ADDONS
 
 def addonSetEnabled(addonName, isEnabled):
     preferences = bpy.ops.preferences
@@ -861,7 +838,8 @@ def addonSetEnabled(addonName, isEnabled):
 
     command(module=addonName)
 
-## CURVES ##
+
+# MARK: Curves and Sketches
 
 def createText(curveName, text,
         size = Utilities.Dimension(1),
@@ -1220,3 +1198,33 @@ def createSimpleCurve(curvePrimitiveType:BlenderDefinitions.BlenderCurvePrimitiv
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
     bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name, order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
+
+    
+# MARK: manipulating the Scene
+
+# locks the scene interface
+def sceneLockInterface(isLocked):
+    bpy.context.scene.render.use_lock_interface = isLocked
+
+    
+def setDefaultUnit(
+        blenderUnit:BlenderDefinitions.BlenderLength,
+        sceneName = "Scene"
+    ):
+    
+    blenderScene = bpy.data.scenes.get(sceneName)
+    
+    assert \
+        blenderScene != None, \
+        f"Scene {sceneName} does not exist"
+
+    blenderScene.unit_settings.system = blenderUnit.getSystem()
+    blenderScene.unit_settings.length_unit = blenderUnit.name
+
+
+def addDependencyGraphUpdateListener(callback):
+    bpy.app.handlers.depsgraph_update_post.append(callback)
+
+
+def addTimer(callback):
+    bpy.app.timers.register(callback)
