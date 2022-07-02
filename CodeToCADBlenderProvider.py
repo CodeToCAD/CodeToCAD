@@ -1,8 +1,11 @@
 import math
+import CodeToCAD.utilities as Utilities
+import BlenderDefinitions
+import BlenderActions
+
 from pathlib import Path
 from types import LambdaType
-from CodeToCAD.utilities import *
-from BlenderExecute import *
+
 from BlenderEvents import BlenderEvents
 
 def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
@@ -12,16 +15,13 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 def setup(blenderEvents):
 
     # start the updateEventThread
-    # blenderEvents.startBlenderEventThread()
     blenderEvents.isWaitForAssertionsEnabled = False
-    blenderEvents.startBlenderEventTimer(bpy)
+    BlenderActions.addTimer(blenderEvents.blenderEventsHandler.processEventsAndOperations)
 
     # tell Blender to notify onReceiveBlenderDependencyGraphUpdateEvent when its dependency graph is updated. https://docs.blender.org/api/current/bpy.app.handlers.html 
-    bpy.app.handlers.depsgraph_update_post.append(blenderEvents.onReceiveBlenderDependencyGraphUpdateEvent)
+    BlenderActions.addDependencyGraphUpdateListener(blenderEvents.onReceiveBlenderDependencyGraphUpdateEvent)
 
-    # blenderSceneLockInterface(True)
-    
-    bpy.app.handlers.depsgraph_update_post.append(debugOnReceiveBlenderDependencyGraphUpdateEvent)
+    BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 # TODO: move this to a main function
 blenderEvents = BlenderEvents()
@@ -51,13 +51,13 @@ class shape:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Importing {}".format(fileName),
-            lambda: blenderImportFile(filePath, fileType),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == fileName
+            lambda: BlenderActions.blenderImportFile(filePath, fileType),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == fileName
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Waiting for mesh {} to be created".format(fileName),
             lambda: True,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == fileName
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.MESH.value and update.id.name == fileName
         )
         
         self.rename(self.name, fileName)
@@ -69,8 +69,8 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Cloning object {} to create {}".format(shapeName, self.name),
-            lambda: blenderDuplicateObject(shapeName, self.name),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.duplicateObject(shapeName, self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -85,13 +85,13 @@ class shape:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Creating primitive {}".format(primitiveName),
-            lambda: blenderAddPrimitive(primitiveName, dimensions, keywordArguments),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == expectedNameOfObjectInBlender
+            lambda: BlenderActions.addPrimitive(primitiveName, dimensions, keywordArguments),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == expectedNameOfObjectInBlender
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Waiting for mesh {} to be created".format(primitiveName),
             lambda: True,
-            lambda update: type(update.id) == bpy.types.Mesh and update.id.name == expectedNameOfObjectInBlender
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.MESH.value and update.id.name == expectedNameOfObjectInBlender
         )
 
         self.rename(self.name, expectedNameOfObjectInBlender)
@@ -156,8 +156,8 @@ class shape:
     
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Mirror modifier to {}".format(self.name),
-            lambda: blenderApplyMirrorModifier(self.name, mirrorAcrossShapeName, axis),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyMirrorModifier(self.name, mirrorAcrossShapeName, axis),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         
         return self
@@ -179,17 +179,17 @@ class shape:
     def translate(self,
     dimensions:str\
     ):
-        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
         
-        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
 
         while len(dimensionsList) < 3:
-            dimensionsList.append(Dimension("1"))
+            dimensionsList.append(Utilities.Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
             "Translating {}".format(self.name),
-            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -197,17 +197,17 @@ class shape:
     def setPosition(self,
     dimensions:str\
     ):
-        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
         
-        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
 
         while len(dimensionsList) < 3:
-            dimensionsList.append(Dimension("1"))
+            dimensionsList.append(Utilities.Dimension("1"))
 
         blenderEvents.addToBlenderOperationsQueue(
             "Setting position of {}".format(self.name),
-            lambda: blenderTranslationObject(self.name, dimensionsList, BlenderTranslationTypes.ABSOLUTE),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -215,17 +215,17 @@ class shape:
     def scale(self,
     dimensions:str
     ):
-        dimensionsList:list[Dimension] = getDimensionsFromString(dimensions) or []
+        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
         
-        dimensionsList = convertDimensionsToBlenderUnit(dimensionsList)
+        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
 
         while len(dimensionsList) < 3:
-            dimensionsList.append(Dimension("1"))
+            dimensionsList.append(Utilities.Dimension("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
             "Scaling {}".format(self.name),
-            lambda: blenderScaleObject(self.name, dimensionsList),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.scaleObject(self.name, dimensionsList),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         
         return self
@@ -233,15 +233,15 @@ class shape:
     def rotate(self,
     rotation:str \
     ):
-        angleList:list[Angle] = getAnglesFromString(rotation) or []
+        angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(rotation) or []
 
         while len(angleList) < 3:
-            angleList.append(Angle("1"))
+            angleList.append(Utilities.Angle("1"))
     
         blenderEvents.addToBlenderOperationsQueue(
             "Rotating {}".format(self.name),
-            lambda: blenderRotateObject(self.name, angleList, BlenderRotationTypes.EULER),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.rotateObject(self.name, angleList, BlenderDefinitions.BlenderRotationTypes.EULER),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -253,13 +253,13 @@ class shape:
         self.name = newName if expectedNameOfObjectInBlender else self.name
         blenderEvents.addToBlenderOperationsQueue(
             "Renaming object {} to {}".format(expectedNameOfObjectInBlender, self.name),
-            lambda: blenderUpdateObjectName(expectedNameOfObjectInBlender, self.name)
+            lambda: BlenderActions.updateObjectName(expectedNameOfObjectInBlender, self.name)
             ,
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Renaming mesh {} to {}".format(expectedNameOfObjectInBlender, self.name),
-            lambda: blenderUpdateObjectDataName(self.name, self.name)
+            lambda: BlenderActions.updateObjectDataName(self.name, self.name)
             ,
             lambda update: update.id.name == self.name
         )
@@ -270,8 +270,12 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Union modifier to {}".format(self.name),
-            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.UNION, withShapeName),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyBooleanModifier(
+                        self.name,
+                        BlenderDefinitions.BlenderBooleanTypes.UNION,
+                        withShapeName
+                    ),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -280,8 +284,12 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Difference modifier to {}".format(self.name),
-            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.DIFFERENCE, withShapeName),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyBooleanModifier(
+                    self.name,
+                    BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
+                    withShapeName
+                ),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -290,8 +298,12 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Boolean Intersect modifier to {}".format(self.name),
-            lambda: blenderApplyBooleanModifier(self.name, BlenderBooleanTypes.INTERSECT, withShapeName),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyBooleanModifier(
+                        self.name,
+                        BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
+                        withShapeName
+                    ),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -312,13 +324,13 @@ class shape:
         
     def revolve(self,
     angle:str,
-    axis:Axis,
+    axis:Utilities.Axis,
     shapeNameToDetermineAxis = None
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying revolve (screw) modifier to {}".format(self.name),
-            lambda: blenderApplyScrewModifier(self.name, Angle(angle).toRadians(), axis, shapeNameToDetermineAxis=shapeNameToDetermineAxis),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, shapeNameToDetermineAxis=shapeNameToDetermineAxis),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -327,21 +339,21 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying solidify modifier to {}".format(self.name),
-            lambda: blenderApplySolidifyModifier(self.name, Dimension(thickness)),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applySolidifyModifier(self.name, Utilities.Dimension(thickness)),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
         
     def screw(self,
     angle:str,
-    axis:Axis,
+    axis:Utilities.Axis,
     screwPitch:str = 0,
     iterations:int = 1
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Applying screw modifier to {}".format(self.name),
-            lambda: blenderApplyScrewModifier(self.name, Angle(angle).toRadians(), axis, screwPitch=Dimension(screwPitch), iterations=iterations),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, screwPitch=Utilities.Dimension(screwPitch), iterations=iterations),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
 
@@ -352,13 +364,13 @@ class shape:
     
         blenderEvents.addToBlenderOperationsQueue(
             "Applying EdgeSplit modifier to {}".format(self.name),
-            lambda: BlenderModifiers.EDGE_SPLIT.blenderAddModifier(self.name, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Subdivision Surface modifier to {}".format(self.name),
-            lambda: BlenderModifiers.SUBSURF.blenderAddModifier(self.name, {"name": "Subdivision", "levels": 2}),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2}),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -379,8 +391,8 @@ class shape:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Dependency Graph changes to {}. This permanently changes the mesh.".format(self.name),
-            lambda: blenderApplyDependencyGraph(self.name),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyDependencyGraph(self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -391,8 +403,8 @@ class shape:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Creating landmark {} on {}.".format(landmarkName, self.name),
-            lambda: blenderCreateLandmark(self.name, landmarkObject.landmarkName, localPosition),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == landmarkObject.landmarkName
+            lambda: BlenderActions.createLandmark(self.name, landmarkObject.landmarkName, localPosition),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
         )
         
 
@@ -404,22 +416,22 @@ class shape:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Object \"{}\" setting isVisible {}".format(self.name, isVisible),
-            lambda: blenderSetObjectVisibility(self.name, isVisible),
+            lambda: BlenderActions.setObjectVisibility(self.name, isVisible),
             None
         ) 
         return self
 
     def getNativeInstance(self
     ): 
-        return blenderGetObject(self.name)
+        return BlenderActions.getObject(self.name)
         
     def select(self,
     landmarkName:str,  \
     selectionType:str = "face" \
     ):
         landmarkObject = landmark(landmarkName, self.name)
-        landmarkLocation = blenderGetObjectWorldLocation(landmarkObject.landmarkName)
-        [closestPoint, normal, blenderPolygon, blenderVertices] = blenderGetClosestPointsToVertex(self.name, landmarkLocation)
+        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.landmarkName)
+        [closestPoint, normal, blenderPolygon, blenderVertices] = BlenderActions.getClosestPointsToVertex(self.name, landmarkLocation)
 
         if blenderVertices != None:
             for vertex in blenderVertices:
@@ -435,7 +447,7 @@ class curve(shape):
 
     def __init__(self,
     name:str, \
-    curveType:CurveTypes=None, \
+    curveType:Utilities.CurveTypes=None, \
     description:str=None \
     ):
         self.name = name
@@ -450,8 +462,8 @@ class curve(shape):
 
         blenderEvents.addToBlenderOperationsQueue(
             "Creating curve {} from vertices.".format(self.name),
-            lambda: blenderAddBevelObjectToCurve(self.name, profileCurveName, fillCap),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.addBevelObjectToCurve(self.name, profileCurveName, fillCap),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -462,8 +474,8 @@ class curve(shape):
 
         blenderEvents.addToBlenderOperationsQueue(
             "Creating curve {} from vertices.".format(self.name),
-            lambda: blenderApplyCurveModifier(self.name, profileCurveName),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.applyCurveModifier(self.name, profileCurveName),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -480,12 +492,12 @@ class curve(shape):
         fontFilePath = None
         ):
 
-        size = Dimension(size)
+        size = Utilities.Dimension(size)
 
         blenderEvents.addToBlenderOperationsQueue(
             "Creating curve {} from vertices.".format(self.name),
-            lambda: blenderCreateText(self.name, text, size, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.createText(self.name, text, size, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
@@ -497,33 +509,33 @@ class curve(shape):
 
         blenderEvents.addToBlenderOperationsQueue(
             "Creating curve {} from vertices.".format(self.name),
-            lambda: blenderCreateCurve(self.name, BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderCurveTypes.BEZIER, coordinates, interpolation),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.name
+            lambda: BlenderActions.createCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
         return self
 
 
-    def createPrimitiveDecorator(curvePrimitiveType:CurvePrimitiveTypes):
+    def createPrimitiveDecorator(curvePrimitiveType:Utilities.CurvePrimitiveTypes):
         def decorator(primitiveFunction):
             def wrapper(*args, **kwargs):
 
                 self = args[0]
 
-                blenderCurvePrimitiveType = BlenderCurvePrimitiveTypes.fromCurvePrimitiveTypes(curvePrimitiveType)
+                blenderCurvePrimitiveType = BlenderDefinitions.BlenderCurvePrimitiveTypes.fromCurvePrimitiveTypes(curvePrimitiveType)
 
-                blenderPrimitiveFunction = blenderCurvePrimitiveType.getBlenderCurvePrimitiveFunction()
+                blenderPrimitiveFunction = BlenderActions.getBlenderCurvePrimitiveFunction(blenderCurvePrimitiveType)
 
                 blenderEvents.addToBlenderOperationsQueue(
                     "Creating curve primitive {}".format(self.name),
                     lambda: blenderPrimitiveFunction(
                         *args[1:],
                         dict(
-                                {"curveType": BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None}
+                                {"curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None}
                                 , **kwargs
                             )
                         ),
-                    lambda update: type(update.id) == bpy.types.Object and update.id.name == blenderCurvePrimitiveType.name
+                    lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == blenderCurvePrimitiveType.name
                 )
                 
                 self.rename(self.name, blenderCurvePrimitiveType.name)
@@ -532,46 +544,46 @@ class curve(shape):
             return wrapper
         return decorator
 
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Point)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Point)
     def createPoint(self, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.LineTo)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.LineTo)
     def createLineTo(self, endLocation, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Line)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Line)
     def createLine(self, length, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Angle)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Angle)
     def createAngle(self, length, angle, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Circle)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
     def createCircle(self, radius, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Ellipse)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
     def createEllipse(self, radius_x, radius_y, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Arc)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
     def createArc(self, radius, angle, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Sector)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Sector)
     def createSector(self, radius, angle, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Segment)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
     def createSegment(self, outter_radius, inner_radius, angle, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Rectangle)        
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)        
     def createRectangle(self, length, width, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Rhomb)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rhomb)
     def createRhomb(self, length, width, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Polygon)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon)
     def createPolygon(self, numberOfSides, radius, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Polygon_ab)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon_ab)
     def createPolygon_ab(self, numberOfSides, radius_x, radius_y, keywordArguments = {}):
         return self
-    @createPrimitiveDecorator(CurvePrimitiveTypes.Trapezoid)
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
     def createTrapezoid(self, length_upper, length_lower, height, keywordArguments = {}):
         return self
 
@@ -655,8 +667,8 @@ class joint:
         
         blenderEvents.addToBlenderOperationsQueue(
             "Transforming {} landmark {} onto {} landmark {}".format(self.shape1Name, self.shape1Landmark.landmarkName, self.shape2Name, self.shape2Landmark.landmarkName),
-            lambda: blenderTransformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark.landmarkName, self.shape2Landmark.landmarkName),
-            lambda update: type(update.id) == bpy.types.Object and update.id.name == self.shape2Landmark.landmarkName,
+            lambda: BlenderActions.transformLandmarkOntoAnother(self.shape1Name, self.shape2Name, self.shape1Landmark.landmarkName, self.shape2Landmark.landmarkName),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.shape2Landmark.landmarkName,
         )
 
         return self
@@ -698,27 +710,43 @@ class scene:
         return self
 
     def setDefaultUnit(self,
-    unit:BlenderLength \
+    unit:Utilities.LengthUnit \
     ):
-        unitSystem =  unit.getSystem()
-        unitName =  unit.name
-        blenderEvents.addToBlenderOperationsQueue("Setting document units to {} {}".format(unitSystem, unitName), lambda: blenderSetDefaultUnit(unitSystem, unitName, self.name), 
-        lambda update: update.id.name == "Scene")
+
+        if type(unit) == str:
+            unit = Utilities.LengthUnit.fromString(unit)
+            
+        unit = BlenderDefinitions.BlenderLength.fromLengthUnit(unit)
+
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Setting document units to {unit.name}",
+            lambda: BlenderActions.setDefaultUnit(unit, self.name), 
+            lambda update: update.id.name == "Scene"
+        )
+
         return self
 
     def createGroup(self,
     name:str \
     ):
-        blenderEvents.addToBlenderOperationsQueue("Creating a {} collection".format(name), lambda: blenderCreateCollection(name, self.name), 
-        lambda update: update.id.name == name)
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating a {} collection".format(name),
+            lambda: BlenderActions.createCollection(name, self.name), 
+            lambda update: update.id.name == name
+        )
+
         return self
 
     def deleteGroup(self,
     name:str,  \
     removeNestedShapes:bool \
     ):
-        blenderEvents.addToBlenderOperationsQueue("Removing the {} collection".format(name), lambda: blenderRemoveCollection(name, removeNestedShapes), 
-        lambda update: update.id.name == "Scene")
+        blenderEvents.addToBlenderOperationsQueue(
+            "Removing the {} collection".format(name),
+            lambda: BlenderActions.removeCollection(name, removeNestedShapes), 
+            lambda update: update.id.name == "Scene"
+        )
+
         return self
         
     def removeShapeFromGroup(self,
@@ -727,9 +755,10 @@ class scene:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Removing {} from collection {}".format(shapeName, groupName),
-            lambda: blenderRemoveObjectFromCollection(shapeName, groupName), 
+            lambda: BlenderActions.removeObjectFromCollection(shapeName, groupName), 
             lambda update: update.id.name == groupName
             )
+
         return self
 
         
@@ -740,9 +769,10 @@ class scene:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Assigning object {} to collection {}".format(shapeName, groupName),
-            lambda: blenderAssignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
+            lambda: BlenderActions.assignObjectToCollection(shapeName, groupName, self.name, removeFromOtherGroups), 
             lambda update: update.id.name == groupName
-            )
+        )
+
         return self
         
 
@@ -752,9 +782,10 @@ class scene:
     ):
         blenderEvents.addToBlenderOperationsQueue(
             "Object \"{}\" setting isVisible {}".format(shapeName, isVisible),
-            lambda: blenderSetObjectVisibility(shapeName, isVisible),
+            lambda: BlenderActions.setObjectVisibility(shapeName, isVisible),
             lambda update: update.id.name == self.name
         ) 
+
         return self
 
 class analytics: 
@@ -778,21 +809,22 @@ class analytics:
     def getWorldPose(self,
     shapeName:str \
     ):
-        return blenderGetObjectWorldPose(shapeName)
+        return BlenderActions.getObjectWorldPose(shapeName)
 
     def getBoundingBox(self,
     shapeName:str \
     ):
-        return blenderGetBoundingBox(shapeName)
+        return BlenderActions.getBoundingBox(shapeName)
 
     def getDimensions(self,
     shapeName:str \
     ):
-        dimensions = bpy.data.objects[shapeName].dimensions
+        
+        dimensions = BlenderActions.getObject(shapeName).dimensions
         return [
-            Dimension(
+            Utilities.Dimension(
                 dimension,
-                defaultBlenderUnit.value
+                BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
             ) 
             for dimension in dimensions
             ]

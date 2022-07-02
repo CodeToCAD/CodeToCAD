@@ -1,6 +1,6 @@
 from CodeToCADBlenderProvider import *
 
-scene().setDefaultUnit(BlenderLength.MILLIMETERS)
+scene().setDefaultUnit("mm")
 
 curve("legExtrudePath").createLine("5in").rotate("0,0,90d")
 curve("stackingCutoutExtrudePath").createLine("1in").rotate("0,0,90d")
