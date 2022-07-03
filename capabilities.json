@@ -91,7 +91,11 @@
             "delete": {
                 "action": "delete",
                 "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
-                "parameters": {}
+                "parameters": {
+                    "removeChildren": {
+                        "type": "boolean"
+                    }
+                }
             },
             "isVisible": {
                 "action": "modify",
@@ -660,7 +664,7 @@
                 "information": "Creates a new scene"
             },
             "delete": {
-                "information": "Deletes a new scene"
+                "information": "Deletes a scene"
             },
             "export": {
                 "information": "The ability to export the whole scene or specific parts and/or part groups as a 3D model, a video or image."
@@ -690,7 +694,7 @@
                     "name": {
                         "type": "string"
                     },
-                    "removeNestedEntities": {
+                    "removeChildren": {
                         "type": "boolean"
                     }
                 }

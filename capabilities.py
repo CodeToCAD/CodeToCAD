@@ -440,7 +440,7 @@ class Scene:
 
     def deleteGroup(self,
     name:str,  \
-    removeNestedEntities:bool \
+    removeChildren:bool \
     ):
         print("deleteGroup is not implemented") # implement 
         return self
