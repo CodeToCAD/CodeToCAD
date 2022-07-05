@@ -110,7 +110,7 @@ class Entity:
 
         blenderEvents.addToBlenderOperationsQueue(
             "Renaming mesh {} to {}".format(self.name, newName),
-            lambda: BlenderActions.updateObjectDataName(self.name, self.name)
+            lambda: BlenderActions.updateObjectDataName(newName, newName)
             ,
             lambda update: update.id.name == self.name
         )
@@ -257,42 +257,32 @@ class Entity:
 
     def landmark(self, landmarkName, localPosition):
 
-        landmarkObject = Landmark(landmarkName, self.name)
+        landmarkObjectName = Landmark(landmarkName, self.name).landmarkName
         
         # Create an Empty object to represent the landmark
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        Part(landmarkName).createPrimitive("Empty", "0")
+        Part(landmarkObjectName).createPrimitive("Empty", "0")
 
         # Assign the landmark to the parent's collection
         blenderEvents.addToBlenderOperationsQueue(
             "Assigning landmark {} to the {} object's collection.".format(landmarkName, self.name),
-            lambda: BlenderActions.assignObjectToCollection(landmarkName, BlenderActions.getObjectCollection(self.name)),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
+            lambda: BlenderActions.assignObjectToCollection(landmarkObjectName, BlenderActions.getObjectCollection(self.name)),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
         )
 
         # Parent the landmark to the object
         blenderEvents.addToBlenderOperationsQueue(
             "Make object {} the parent of landmark {}.".format(self.name, landmarkName),
-            lambda: BlenderActions.makeParent(landmarkName, self.name),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
+            lambda: BlenderActions.makeParent(landmarkObjectName, self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
         )
-
-        # Figure out how far we need to translate the landmark inside the object:
-        boundingBox = BlenderActions.getBoundingBox(self.name)
-
-        localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
-
-        localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
-        
-        while len(localPosition) < 3:
-            localPosition.append(Utilities.Dimension("1"))
 
         blenderEvents.addToBlenderOperationsQueue(
             "Setting position of landmark {}".format(landmarkName),
-            lambda: BlenderActions.translateObject(landmarkName, localPosition, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkName
+            lambda: BlenderActions.transformLandmarkInsideParent(self.name, landmarkObjectName, localPosition),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
         )
 
         return self

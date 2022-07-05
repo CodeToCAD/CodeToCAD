@@ -802,6 +802,22 @@ def getObjectCollection(objectName):
 
     return currentCollection.name if currentCollection else None
 
+def transformLandmarkInsideParent(
+        objectName,
+        landmarkObjectName,
+        localPosition
+    ):
+        # Figure out how far we need to translate the landmark inside the object:
+        boundingBox = getBoundingBox(objectName)
+
+        localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
+
+        localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
+        
+        while len(localPosition) < 3:
+            localPosition.append(Utilities.Dimension("1"))
+        
+        translateObject(landmarkObjectName, localPosition, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
 def transformLandmarkOntoAnother(
         object1Name,
