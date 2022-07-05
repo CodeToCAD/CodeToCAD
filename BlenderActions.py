@@ -508,30 +508,288 @@ def assignObjectToCollection(
 
 # MARK: Joints
 
-# TODO: createArmatures
-def createArmatures(name):
-    armature = bpy.data.armatures.new(name)
-    object = bpy.data.objects.new(name, armature)
-
-
-# TODO: addConstraint
-def addConstraint(
+def applyConstraint(
         objectName,
-        constraintType,
+        constraintType:BlenderDefinitions.BlenderConstraintTypes,
         keywordArguments = {}
     ):
     
     blenderObject = getObject(objectName)
 
+    constraint = blenderObject.constraints.get(constraintType.getDefaultBlenderName())
 
-# TODO: addJoint
-def addJoint(
-        object1Name,
-        object2Name,
-        object1Landmark,
-        object2Landmark
+    # If it doesn't exist, create it:
+    if constraint is None:
+        constraint = blenderObject.constraints.new(constraintType.name)
+
+    # Apply every parameter passed in for modifier:
+    for key,value in keywordArguments.items():
+        setattr(constraint, key, value)
+
+
+def applyLimitLocationConstraint(
+        objectName,
+        x:list[Utilities.Dimension],
+        y:list[Utilities.Dimension],
+        z:list[Utilities.Dimension],
+        relativeToObjectName,
+        keywordArguments = {}
     ):
-    pass
+
+    relativeToObject = getObject(relativeToObjectName) if relativeToObjectName else None
+    
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION,
+        dict(
+            {
+                "use_limit_x": x is None,
+                "use_limit_y": y is None,
+                "use_limit_z": z is None,
+                "min_x": x[0].value if x else 0,
+                "min_y": y[0].value if y else 0,
+                "min_z": z[0].value if z else 0,
+                "max_x": x[1].value if x else 0,
+                "max_y": y[1].value if y else 0,
+                "max_z": z[1].value if z else 0,
+                "owner_space": "CUSTOM" if relativeToObject else "WORLD",
+                "space_object": relativeToObject
+            },
+            **keywordArguments
+        )
+    )
+    
+
+def applyLimitRotationConstraint(
+        objectName,
+        x:list[Utilities.Angle],
+        y:list[Utilities.Angle],
+        z:list[Utilities.Angle],
+        relativeToObjectName,
+        keywordArguments = {}
+    ):
+
+    relativeToObject = getObject(relativeToObjectName) if relativeToObjectName else None
+    
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
+        dict(
+            {
+                "use_limit_x": x is None,
+                "use_limit_y": y is None,
+                "use_limit_z": z is None,
+                "min_x": x[0].value if x else 0,
+                "min_y": y[0].value if y else 0,
+                "min_z": z[0].value if z else 0,
+                "max_x": x[1].value if x else 0,
+                "max_y": y[1].value if y else 0,
+                "max_z": z[1].value if z else 0,
+                "owner_space": "CUSTOM" if relativeToObject else "WORLD",
+                "space_object": relativeToObject
+            },
+            **keywordArguments
+        )
+    )
+    
+
+def applyPivotConstraint(
+        objectName,
+        pivotObjectName,
+        keywordArguments = {}
+    ):
+    
+    pivotObject = getObject(pivotObjectName)
+    
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.PIVOT,
+        dict(
+            {
+                "target": pivotObject,
+                "rotation_range": "ALWAYS_ACTIVE"
+            },
+            **keywordArguments
+        )
+    )
+
+
+def applyGearConstraint(
+    objectName,
+    pivotObjectName,
+    keywordArguments = {}
+    ):
+    
+    pivotObject = getObject(pivotObjectName)
+    
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION,
+        dict(
+            {
+                "target": pivotObject
+            },
+            **keywordArguments
+        )
+    )
+
+# MARK: Drivers / Computed variables
+
+def createDriver(
+        objectName,
+        path,
+    ):
+
+    blenderObject = getObject(objectName)
+
+    blenderObject.driver_add(path)
+
+
+def removeDriver(
+        objectName,
+        path,
+    ):
+
+    blenderObject = getObject(objectName)
+
+    blenderObject.driver_remove(path)
+
+
+def getDriver(
+        objectName,
+        path
+    ):
+    blenderObject = getObject(objectName)
+
+    # this returns an FCurve object
+    # https://docs.blender.org/api/current/bpy.types.FCurve.html 
+    fcurve = blenderObject.animation_data.drivers.find(path)
+
+    assert fcurve != None, f"Could not find driver {path} for object {objectName}."
+
+    return fcurve.driver
+
+
+def setDriver(
+        objectName,
+        path,
+        driverType:BlenderDefinitions.BlenderDriverTypes,
+        expression = ""
+    ):
+
+    driver = getDriver(objectName, path)
+
+    driver.type = driverType.name
+
+    driver.expression = expression if expression else ""
+
+
+def setDriverVariableSingleProp(
+        objectName,
+        path,
+        variableName,
+        targetObjectName,
+        targetDataPath
+    ):
+
+    driver = getDriver(objectName, path)
+
+    variable = driver.variables.get(variableName)
+
+    if variable is None:
+        variable = driver.variables.new()
+        driver.variables[-1].name = variableName
+
+    variable.type = "SINGLE_PROP"
+
+    targetObject = getObject(targetObjectName)
+        
+    variable.targets[0].id = targetObject
+
+    variable.targets[0].data_path = targetDataPath
+
+    
+def setDriverVariableTransforms(
+        objectName,
+        path,
+        variableName,
+        targetObjectName,
+        transform_type:BlenderDefinitions.BlenderDriverVariableTransformTypes,
+        transform_space:BlenderDefinitions.BlenderDriverVariableTransformSpaces
+    ):
+
+    driver = getDriver(objectName, path)
+
+    variable = driver.variables.get(variableName)
+
+    if variable is None:
+        variable = driver.variables.new()
+        driver.variables[-1].name = variableName
+
+    variable.type = "‘TRANSFORMS’"
+
+    targetObject = getObject(targetObjectName)
+        
+    variable.targets[0].id = targetObject
+
+    variable.targets[0].transform_type = transform_type
+
+    variable.targets[0].transform_space = transform_space
+
+
+def setDriverVariableLocationDifference(
+        objectName,
+        path,
+        variableName,
+        target1ObjectName,
+        target2ObjectName
+    ):
+
+    driver = getDriver(objectName, path)
+
+    variable = driver.variables.get(variableName)
+
+    if variable is None:
+        variable = driver.variables.new()
+        driver.variables[-1].name = variableName
+
+    variable.type = "‘LOC_DIFF’"
+
+    target1Object = getObject(target1ObjectName)
+        
+    variable.targets[0].id = target1Object
+    
+    target2Object = getObject(target2ObjectName)
+        
+    variable.targets[1].id = target2Object
+
+    
+def setDriverVariableRotationDifference(
+        objectName,
+        path,
+        variableName,
+        target1ObjectName,
+        target2ObjectName
+    ):
+
+    driver = getDriver(objectName, path)
+
+    variable = driver.variables.get(variableName)
+
+    if variable is None:
+        variable = driver.variables.new()
+        driver.variables[-1].name = variableName
+
+    variable.type = "‘ROTATION_DIFF’"
+
+    target1Object = getObject(target1ObjectName)
+        
+    variable.targets[0].id = target1Object
+    
+    target2Object = getObject(target2ObjectName)
+        
+    variable.targets[1].id = target2Object
+
 
 # MARK: Landmarks
 
