@@ -273,19 +273,6 @@ def applyObjectTransformations(objectName):
     blenderObject.matrix_basis.identity()
 
 
-def applyDependencyGraph(
-        existingObjectName,
-        removeModifiers = True
-    ):
-    
-    blenderObject = getObject(existingObjectName)
-
-    blenderObject.data = blenderObject.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.copy()
-
-    if removeModifiers:
-        blenderObject.modifiers.clear()
-
-
 def rotateObject(
         objectName, 
         rotationAngles:list[Utilities.Angle],
@@ -759,6 +746,36 @@ def getMesh(meshName):
             f"Mesh {meshName} does not exists"
 
     return blenderMesh
+
+    
+# Applies the dependency graph to the object and persists its data using .copy()
+def applyDependencyGraph(
+        existingObjectName
+    ):
+    
+    blenderObject = getObject(existingObjectName)
+
+
+    blenderObject.data = blenderObject.evaluated_get(
+            bpy.context.evaluated_depsgraph_get()
+        ).data.copy()
+
+
+def clearModifiers(objectName):
+
+    blenderObject = getObject(objectName)
+
+    blenderObject.modifiers.clear()
+
+
+def removeMesh(mesh):
+
+    # if a (str) name is passed in, fetch the mesh object reference
+    if type(mesh) == str:
+        mesh = getMesh(mesh)
+
+    bpy.data.meshes.remove(mesh)
+
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
 def getClosestPointsToVertex(objectName, vertex):
