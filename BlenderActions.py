@@ -637,9 +637,12 @@ def removeObject(
             except:
                 pass
     
-    data = blenderObject.data
-    bpy.data.objects.remove(blenderObject)
-    bpy.data.meshes.remove(data)
+    # Not all objects have data, but if they do, then deleting the data
+    # deletes the object
+    if blenderObject.data:
+        bpy.data.meshes.remove(blenderObject.data)
+    else:    
+        bpy.data.objects.remove(blenderObject)
 
 def createObject(
         name,
@@ -654,6 +657,9 @@ def createObject(
 
     return bpy.data.objects.new( name , data )
 
+
+# TODO: this is not used anywhere right now, 
+# but the logic is here for when it needs to be moved into the Provider
 def createMeshFromCurve(
         newObjectName,
         blenderCurveObject
@@ -697,12 +703,8 @@ def duplicateObject(
     clonedObject.data = blenderObject.data.copy()
     clonedObject.data.name = newObjectName
     
-    # Link clonedObject to a collection. Might want to make this optional.
-    [currentCollection] = blenderObject.users_collection
-
-    defaultCollection = None
-    if currentCollection:
-        defaultCollection = currentCollection.name
+    # Link clonedObject to the original object's collection.
+    defaultCollection = getObjectCollection(existingObjectName)
 
     assignObjectToCollection(newObjectName, defaultCollection)
 
@@ -907,6 +909,8 @@ def createCurve(
     assignObjectToCollection(curveName)
 
 
+# Creates a new Splines instance in the bpy.types.curves object passed in as blenderCurve
+# then assigns the coordinates to them.
 # references https://blender.stackexchange.com/a/6751/138679
 def createSpline(
         blenderCurve,
