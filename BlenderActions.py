@@ -21,7 +21,10 @@ def applyModifier(
     blenderObject = getObject(entityName)
 
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
-    modifier = blenderObject.modifiers.new(type=modifier.name, name=modifier.name)
+    modifier = blenderObject.modifiers.new(
+        type=modifier.name,
+        name=modifier.name
+    )
 
     # Apply every parameter passed in for modifier:
     for key,value in keywordArguments.items():
@@ -37,9 +40,12 @@ def applySolidifyModifier(
     applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.SOLIDIFY,
-        {
-            "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value
-        }
+        dict(
+            {
+                "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value
+            },
+            **keywordArguments
+        )
     )
     
 
@@ -54,9 +60,12 @@ def applyCurveModifier(
     applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.CURVE,
-        {
-            "object": curveObject
-        }
+        dict(
+            {
+                "object": curveObject
+            },
+            **keywordArguments
+        )
     )
 
 
@@ -77,14 +86,17 @@ def applyBooleanModifier(
     applyModifier(
         meshObjectName,
         BlenderDefinitions.BlenderModifiers.BOOLEAN,
-        {
-            "operation": blenderBooleanType.name,
-            "object": blenderBooleanObject,
-            # "use_self": True,
-            # "use_hole_tolerant": True,
-            # "solver": "EXACT",
-            # "double_threshold": 1e-6
-        }
+        dict(
+            {
+                "operation": blenderBooleanType.name,
+                "object": blenderBooleanObject,
+                # "use_self": True,
+                # "use_hole_tolerant": True,
+                # "solver": "EXACT",
+                # "double_threshold": 1e-6
+            },
+            **keywordArguments
+        )
     )
 
 
@@ -100,11 +112,14 @@ def applyMirrorModifier(
     applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.MIRROR,
-        {
-            "mirror_object": blenderMirrorAcrossObject,
-            "use_axis": axis,
-            "use_mirror_merge": False
-        }
+        dict(
+            {
+                "mirror_object": blenderMirrorAcrossObject,
+                "use_axis": axis,
+                "use_mirror_merge": False
+            },
+            **keywordArguments
+        )
     )
 
     
@@ -139,54 +154,65 @@ def applyScrewModifier(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.SCREW,
-        properties
+        dict(
+            properties,
+            **keywordArguments
+        )
     )
 
 
 # MARK: CRUD of Objects (aka Parts)
 
 def blenderPrimitiveFunction(
-        primitive:BlenderDefinitions.BlenderPrimitives,
+        primitive:BlenderDefinitions.BlenderObjectPrimitiveTypes,
         dimensions,
         keywordArguments = {}
     ):
     
-    if primitive == BlenderDefinitions.BlenderPrimitives.cube:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cube:
         return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.cone:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cone:
         return bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.cylinder:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cylinder:
         return bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.torus:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.torus:
         return bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.sphere:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.sphere:
         return bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.uvsphere:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.uvsphere:
        return bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.circle:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.circle:
         return bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.grid:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.grid:
        return bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **keywordArguments)
         
-    if primitive == BlenderDefinitions.BlenderPrimitives.monkey:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.monkey:
         return bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **keywordArguments)
+
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
+        return bpy.ops.object.empty_add(radius=dimensions[0].value, **keywordArguments)
+        
 
     raise Exception(f"Primitive with name {primitive.name} is not implemented.")
 
 
 # Extracts dimensions from a string, then passes them as arguments to the blenderPrimitiveFunction
 def addPrimitive(
-        primitiveName:str,  \
+        primitiveType:BlenderDefinitions.BlenderObjectPrimitiveTypes,  \
         dimensions:str,  \
         keywordArguments:dict
     ):
+
+    assert primitiveType != None, f"Primitive type is required."
+
+    primitiveName = primitiveType.defaultNameInBlender()
 
     # Make sure an object or mesh with the same name don't already exist:
     blenderObject = bpy.data.objects.get(primitiveName)
@@ -205,7 +231,7 @@ def addPrimitive(
     
     # Add the object:
     blenderPrimitiveFunction(
-        BlenderDefinitions.BlenderPrimitives[primitiveName],
+        primitiveType,
         dimensions,
         keywordArguments or {}
     )
@@ -291,8 +317,6 @@ def rotateObject(
     rotationTuple = (rotationAngles[0].toRadians().value, rotationAngles[1].toRadians().value, rotationAngles[2].toRadians().value)
 
     setattr(blenderObject, rotationType.value, rotationTuple)
-    
-    applyObjectTransformations(objectName)
 
 
 def translateObject(
@@ -310,8 +334,6 @@ def translateObject(
     translationTuple = (translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
 
     setattr(blenderObject, translationType.value, translationTuple)
-
-    applyObjectTransformations(objectName)
 
 
 def scaleObject(
@@ -378,8 +400,6 @@ def scaleObject(
             z.value = z.value/sceneDimensions.z if z.unit != None else z.value
     
     blenderObject.scale = (x.value,y.value,z.value)
-
-    applyObjectTransformations(objectName)
 
 
 # MARK: collections and groups:
@@ -515,43 +535,15 @@ def addJoint(
 
 # MARK: Landmarks
 
-def createLandmark(
-        objectName,
-        landmarkName,
-        localPosition
-    ):
+def getObjectCollection(objectName):
+
     blenderObject = getObject(objectName)
 
-    # Create an Empty object
-    landmarkObject = createObject(landmarkName)
-    landmarkObject.empty_display_size = 0
-
-    # Assign landmark Empty object to the same collection as the object it's attaching to.
     # Assumes the first collection is the main collection
     [currentCollection] = blenderObject.users_collection
 
-    defaultCollection = None
-    if currentCollection:
-        defaultCollection = currentCollection.name
+    return currentCollection.name if currentCollection else None
 
-    assignObjectToCollection(landmarkName, defaultCollection)
-
-
-    # Parent the landmark to the object
-    blenderMakeParent(landmarkName, objectName)
-    
-
-    # Figure out how far we want to translate 
-    boundingBox = getBoundingBox(objectName)
-
-    localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
-
-    localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
-
-    while len(localPosition) < 3:
-        localPosition.append(Utilities.Dimension(1))
-
-    landmarkObject.location = [dimension.value for dimension in localPosition[:3]]
 
 def transformLandmarkOntoAnother(
         object1Name,
@@ -599,7 +591,7 @@ def transformLandmarkOntoAnother(
 
 # MARK: creating and manipulating objects
 
-def blenderMakeParent(
+def makeParent(
         name,
         parentName
     ):
@@ -625,6 +617,8 @@ def updateObjectDataName(
     ):
     
     blenderObject = getObject(parentObjectName)
+
+    assert blenderObject.data != None, f"Object {parentObjectName} does not have data to name."
 
     blenderObject.data.name = newName
 

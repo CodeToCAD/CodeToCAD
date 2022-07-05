@@ -102,7 +102,7 @@ class BlenderModifiers(Enum):
 
 
 # This is a list of Blender primitives that we have implemented:
-class BlenderPrimitives(Enum):
+class BlenderObjectPrimitiveTypes(Enum):
     cube = 0
     cone = 1
     cylinder = 2
@@ -112,6 +112,12 @@ class BlenderPrimitives(Enum):
     circle = 6
     grid = 7
     monkey = 8
+    empty = 9
+
+    def defaultNameInBlender(self):
+        # quick way to figure out the default names when a shape is added.
+        # this is may come to bite later when the primitive name does not follow this rule:
+        return self.name[0].upper() + self.name[1:]
 
 
 # This is a list of Blender Curve types that we have implemented:
