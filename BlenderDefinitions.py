@@ -101,6 +101,51 @@ class BlenderModifiers(Enum):
     CURVE = 6
 
 
+# This is a list of Blender Constraint types that we have implemented:
+class BlenderConstraintTypes(Utilities.EquittableEnum):
+    LIMIT_LOCATION = Utilities.ConstraintTypes.Translation
+    LIMIT_ROTATION = Utilities.ConstraintTypes.Rotation
+    PIVOT = Utilities.ConstraintTypes.Pivot
+    COPY_ROTATION = Utilities.ConstraintTypes.Gear
+
+    def getDefaultBlenderName(self):
+        if self == BlenderConstraintTypes.LIMIT_LOCATION:
+            return "Limit Location"
+        if self == BlenderConstraintTypes.LIMIT_ROTATION:
+            return "Limit Rotation"
+        if self == BlenderConstraintTypes.PIVOT:
+            return "PIVOT"
+        if self == BlenderConstraintTypes.COPY_ROTATION:
+            return "Copy Rotation"
+    
+    # Convert a utilities ConstraintTypes to BlenderConstraintTypes
+    @staticmethod
+    def fromConstraintTypes(constraintType:Utilities.ConstraintTypes):
+
+        [result] = list(filter(lambda b: b.value == constraintType, [b for b in BlenderConstraintTypes]))
+
+        return result
+
+
+# These are a list of Blender Driver-related types that we have implemented:
+
+# https://docs.blender.org/api/current/bpy.types.Driver.html#bpy.types.Driver.type
+# [‘AVERAGE’, ‘SUM’, ‘SCRIPTED’, ‘MIN’, ‘MAX’]
+BlenderDriverTypes = bpy.types.Driver.bl_rna.properties['type'].enum_items
+
+# https://docs.blender.org/api/current/bpy.types.DriverVariable.html#bpy.types.DriverVariable.type
+# [‘SINGLE_PROP’, ‘TRANSFORMS’, ‘ROTATION_DIFF’, ‘LOC_DIFF’]
+BlenderDriverVariableTypes = bpy.types.DriverVariable.bl_rna.properties['type'].enum_items
+
+# https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_type
+# [‘LOC_X’, ‘LOC_Y’, ‘LOC_Z’, ‘ROT_X’, ‘ROT_Y’, ‘ROT_Z’, ‘ROT_W’, ‘SCALE_X’, ‘SCALE_Y’, ‘SCALE_Z’, ‘SCALE_AVG’]
+BlenderDriverVariableTransformTypes = bpy.types.DriverTarget.bl_rna.properties['transform_type'].enum_items
+
+#https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_space
+#[‘WORLD_SPACE’, ‘TRANSFORM_SPACE’, ‘LOCAL_SPACE’]
+BlenderDriverVariableTransformSpaces = bpy.types.DriverTarget.bl_rna.properties['transform_space'].enum_items
+
+
 # This is a list of Blender primitives that we have implemented:
 class BlenderObjectPrimitiveTypes(Enum):
     cube = 0
