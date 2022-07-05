@@ -98,23 +98,23 @@ class Entity:
         return self
 
     def rename(self,
-    newName:str, \
-    expectedNameOfObject:str = None
+    newName:str
     ):
-        expectedNameOfObject = expectedNameOfObject or self.name
-        self.name = newName if expectedNameOfObject else self.name
+
         blenderEvents.addToBlenderOperationsQueue(
-            "Renaming object {} to {}".format(expectedNameOfObject, self.name),
-            lambda: BlenderActions.updateObjectName(expectedNameOfObject, self.name)
+            "Renaming object {} to {}".format(self.name, newName),
+            lambda: BlenderActions.updateObjectName(self.name, newName)
             ,
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
+
         blenderEvents.addToBlenderOperationsQueue(
-            "Renaming mesh {} to {}".format(expectedNameOfObject, self.name),
+            "Renaming mesh {} to {}".format(self.name, newName),
             lambda: BlenderActions.updateObjectDataName(self.name, self.name)
             ,
             lambda update: update.id.name == self.name
         )
+
         return self
 
 
@@ -259,12 +259,41 @@ class Entity:
 
         landmarkObject = Landmark(landmarkName, self.name)
         
+        # Create an Empty object to represent the landmark
+        # Using an Empty object allows us to parent the object to this Empty.
+        # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
+        # This might not work in other CodeToCAD implementations, but it does in Blender
+        Part(landmarkName).createPrimitive("Empty", "0")
+
+        # Assign the landmark to the parent's collection
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating landmark {} on {}.".format(landmarkName, self.name),
-            lambda: BlenderActions.createLandmark(self.name, landmarkObject.landmarkName, localPosition),
+            "Assigning landmark {} to the {} object's collection.".format(landmarkName, self.name),
+            lambda: BlenderActions.assignObjectToCollection(landmarkName, BlenderActions.getObjectCollection(self.name)),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
         )
+
+        # Parent the landmark to the object
+        blenderEvents.addToBlenderOperationsQueue(
+            "Make object {} the parent of landmark {}.".format(self.name, landmarkName),
+            lambda: BlenderActions.makeParent(landmarkName, self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObject.landmarkName
+        )
+
+        # Figure out how far we need to translate the landmark inside the object:
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
+
+        localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
         
+        while len(localPosition) < 3:
+            localPosition.append(Utilities.Dimension("1"))
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Setting position of landmark {}".format(landmarkName),
+            lambda: BlenderActions.translateObject(landmarkName, localPosition, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkName
+        )
 
         return self
         
@@ -320,7 +349,7 @@ class Part(Entity):
         
         blenderEvents.addToBlenderOperationsQueue(
             "Importing {}".format(fileName),
-            lambda: BlenderActions.blenderImportFile(filePath, fileType),
+            lambda: BlenderActions.importFile(filePath, fileType),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == fileName
         )
         blenderEvents.addToBlenderOperationsQueue(
@@ -329,7 +358,10 @@ class Part(Entity):
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.MESH.value and update.id.name == fileName
         )
         
-        self.rename(self.name, fileName)
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        Part(fileName).rename(self.name)
         
         return self
 
@@ -339,20 +371,22 @@ class Part(Entity):
     keywordArguments:dict=None \
     ):
         # TODO: account for blender auto-renaming with sequential numbers
-        expectedNameOfObjectInBlender = primitiveName[0].upper() + primitiveName[1:]
+        primitiveType = getattr(BlenderDefinitions.BlenderObjectPrimitiveTypes, primitiveName.lower(), None)
+        expectedNameOfObjectInBlender = primitiveType.defaultNameInBlender() if primitiveType else None
+
+        assert expectedNameOfObjectInBlender != None, \
+            f"Primitive type with name {primitiveName} is not supported."
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Creating primitive {}".format(primitiveName),
-            lambda: BlenderActions.addPrimitive(primitiveName, dimensions, keywordArguments),
+            "Creating primitive {}".format(expectedNameOfObjectInBlender),
+            lambda: BlenderActions.addPrimitive(primitiveType, dimensions, keywordArguments),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == expectedNameOfObjectInBlender
         )
-        blenderEvents.addToBlenderOperationsQueue(
-            "Waiting for mesh {} to be created".format(primitiveName),
-            lambda: True,
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.MESH.value and update.id.name == expectedNameOfObjectInBlender
-        )
 
-        self.rename(self.name, expectedNameOfObjectInBlender)
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        Part(expectedNameOfObjectInBlender).rename(self.name)
 
         return self
 
@@ -574,8 +608,12 @@ class Sketch(Entity):
                         ),
                     lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == blenderCurvePrimitiveType.name
                 )
+
                 
-                self.rename(self.name, blenderCurvePrimitiveType.name)
+                # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+                # therefore, we'll use the object's "expected" name and rename it to what it should be
+                # note: this will fail if the "expected" name is incorrect
+                Part(blenderCurvePrimitiveType.name).rename(self.name)
 
                 return primitiveFunction(*args, **kwargs)
             return wrapper
