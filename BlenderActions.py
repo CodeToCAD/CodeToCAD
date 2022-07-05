@@ -12,7 +12,7 @@ from enum import Enum
 
 # MARK: Modifiers
 
-def addModifier(
+def applyModifier(
         entityName:str,
         modifier:BlenderDefinitions.BlenderModifiers,
         keywordArguments:dict = {}
@@ -23,6 +23,7 @@ def addModifier(
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
     modifier = blenderObject.modifiers.new(type=modifier.name, name=modifier.name)
 
+    # Apply every parameter passed in for modifier:
     for key,value in keywordArguments.items():
         setattr(modifier, key, value)
 
@@ -33,7 +34,7 @@ def applySolidifyModifier(
         keywordArguments:dict = {}
     ):
 
-    addModifier(
+    applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.SOLIDIFY,
         {
@@ -50,7 +51,7 @@ def applyCurveModifier(
     
     curveObject = getObject(curveObjectName)
         
-    addModifier(
+    applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.CURVE,
         {
@@ -73,7 +74,7 @@ def applyBooleanModifier(
     assert type(blenderBooleanObject.data) == BlenderDefinitions.BlenderTypes.MESH.value, \
         f"Object {withMeshObjectName} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
 
-    addModifier(
+    applyModifier(
         meshObjectName,
         BlenderDefinitions.BlenderModifiers.BOOLEAN,
         {
@@ -96,7 +97,7 @@ def applyMirrorModifier(
     
     blenderMirrorAcrossObject = getObject(mirrorAcrossEntityName)
 
-    addModifier(
+    applyModifier(
         entityName, 
         BlenderDefinitions.BlenderModifiers.MIRROR,
         {
@@ -135,7 +136,7 @@ def applyScrewModifier(
         properties["object"] = blenderMirrorAcrossObject
 
 
-    addModifier(
+    applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.SCREW,
         properties
@@ -256,6 +257,8 @@ def importFile(
 
 # MARK: Transformations
 
+# Apply the object's transformations (under Object Properties tab)
+# This is different from applyDependencyGraph()
 # references https://blender.stackexchange.com/a/159540/138679
 def applyObjectTransformations(objectName):
 
@@ -749,6 +752,8 @@ def getMesh(meshName):
 
     
 # Applies the dependency graph to the object and persists its data using .copy()
+# This allows us to apply modifiers, UV data, etc.. to the mesh.
+# This is different from applyObjectTransformations()
 def applyDependencyGraph(
         existingObjectName
     ):

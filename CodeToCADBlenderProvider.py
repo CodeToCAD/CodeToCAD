@@ -178,12 +178,12 @@ class Entity:
     
         blenderEvents.addToBlenderOperationsQueue(
             "Applying EdgeSplit modifier to {}".format(self.name),
-            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
+            lambda: BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)}),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         blenderEvents.addToBlenderOperationsQueue(
             "Applying Subdivision Surface modifier to {}".format(self.name),
-            lambda: BlenderActions.addModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2}),
+            lambda: BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2}),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
