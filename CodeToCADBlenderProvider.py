@@ -229,6 +229,30 @@ class Entity:
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Removing old mesh with name {self.name}",
+            lambda: BlenderActions.removeMesh(self.name)
+            ,
+            lambda update: update.id.name == self.name
+        )
+
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Renaming new mesh name to {}".format(self.name, self.name),
+            lambda: BlenderActions.updateObjectDataName(self.name, self.name)
+            ,
+            lambda update: update.id.name == self.name
+        )
+        
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Removing modifiers for object {self.name}",
+            lambda: BlenderActions.clearModifiers(self.name)
+            ,
+            lambda update: update.id.name == self.name
+        )
+
         return self
 
     def landmark(self, landmarkName, localPosition):
