@@ -98,7 +98,8 @@ class Entity:
         return self
 
     def rename(self,
-    newName:str
+    newName:str,
+    renameData = True
     ):
 
         blenderEvents.addToBlenderOperationsQueue(
@@ -108,12 +109,13 @@ class Entity:
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
 
-        blenderEvents.addToBlenderOperationsQueue(
-            "Renaming mesh {} to {}".format(self.name, newName),
-            lambda: BlenderActions.updateObjectDataName(newName, newName)
-            ,
-            lambda update: update.id.name == self.name
-        )
+        if renameData:
+            blenderEvents.addToBlenderOperationsQueue(
+                "Renaming mesh {} to {}".format(self.name, newName),
+                lambda: BlenderActions.updateObjectDataName(newName, newName)
+                ,
+                lambda update: update.id.name == self.name
+            )
 
         return self
 
@@ -376,7 +378,7 @@ class Part(Entity):
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
-        Part(expectedNameOfObjectInBlender).rename(self.name)
+        Part(expectedNameOfObjectInBlender).rename(self.name, primitiveType.hasData())
 
         return self
 
@@ -706,29 +708,17 @@ class Joint:
     part2Name = None
     part1Landmark:Landmark = None
     part2Landmark:Landmark = None
-    jointType = None
-    initialRotation = None
-    limitRotation = None
-    limitTranslation = None
 
     def __init__(self,
     part1Name:str, \
     part2Name:str, \
     part1LandmarkName:str, \
-    part2LandmarkName:str, \
-    jointType:str = None, \
-    initialRotation:str = None, \
-    limitRotation:str = None, \
-    limitTranslation:str = None \
+    part2LandmarkName:str
     ):
         self.part1Name = part1Name
         self.part2Name = part2Name
         self.part1Landmark = Landmark(part1LandmarkName, part1Name)
-        self.part2Landmark = Landmark(part2LandmarkName, part2Name)
-        self.jointType = jointType
-        self.initialRotation = initialRotation
-        self.limitRotation = limitRotation
-        self.limitTranslation = limitTranslation
+        self.part2Landmark = Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
 
         
     def transformLandmarkOntoAnother(self):
@@ -737,6 +727,113 @@ class Joint:
             "Transforming {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
             lambda: BlenderActions.transformLandmarkOntoAnother(self.part1Name, self.part2Name, self.part1Landmark.landmarkName, self.part2Landmark.landmarkName),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.part2Landmark.landmarkName,
+        )
+
+        return self
+
+    @staticmethod
+    def _getLimitLocationDimensions(dimension:str):
+        dimensionsArray = None
+
+        if dimension != None:
+            dimensionsArray:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimension) or []
+            
+            dimensionsArray = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsArray)
+
+            assert len(dimensionsArray) > 0,\
+                f"Limit Location joint must contain at least one value"
+            
+            if len(dimensionsArray) == 1:
+                dimensionsArray.append(Utilities.Dimension(dimensionsArray[0].value, dimensionsArray[0].unit))
+
+        return dimensionsArray
+
+    @staticmethod
+    def _limitLocationOffsetFromLandmark(objectName, objectLandmarkName, relativeToLandmarkName, xDimensions, yDimensions, zDimensions, keywordArguments):
+
+        [x,y,z] = BlenderActions.getObjectWorldLocation(objectName) - BlenderActions.getObjectWorldLocation(objectLandmarkName)
+        
+
+        if xDimensions:
+            for index in range(0,len(xDimensions)):
+                xDimensions[index].value = xDimensions[index].value + x
+        if yDimensions:
+            for index in range(0,len(yDimensions)):
+                yDimensions[index].value = yDimensions[index].value + y
+        if zDimensions:
+            for index in range(0,len(zDimensions)):
+                zDimensions[index].value = zDimensions[index].value + z
+
+        BlenderActions.applyLimitLocationConstraint(objectName, xDimensions, yDimensions, zDimensions, relativeToLandmarkName, keywordArguments)
+
+    def limitLocation(
+        self,
+        x:str = None,
+        y:str = None,
+        z:str = None,
+        keywordArguments = {}
+        ):
+        
+        xDimensions = Joint._getLimitLocationDimensions(x)
+        yDimensions = Joint._getLimitLocationDimensions(y)
+        zDimensions = Joint._getLimitLocationDimensions(z)
+
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Adding location constraint on {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
+            lambda: Joint._limitLocationOffsetFromLandmark(self.part2Name, self.part2Landmark.landmarkName, self.part1Landmark.landmarkName, xDimensions, yDimensions, zDimensions, keywordArguments),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
+        )
+
+        return self
+        
+
+    @staticmethod
+    def _getLimitRotationAngles(angles:str):
+        angleList = None
+
+        if angles and len(angles) > 0:
+            
+            angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(angles) or []
+
+            assert len(angleList) > 0,\
+                f"Limit Rotation joint angle must contain at least one value"
+            
+            if len(angleList) == 1:
+
+                angleList.append(Utilities.Angle(angleList[0].value, angleList[0].unit))
+
+        return angleList
+
+    def limitRotation(
+        self,
+        x:str = None,
+        y:str = None,
+        z:str = None,
+        keywordArguments = {}
+        ):
+
+        xAngles = Joint._getLimitRotationAngles(x)
+        yAngles = Joint._getLimitRotationAngles(y)
+        zAngles = Joint._getLimitRotationAngles(z)
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Adding rotation constraint on {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
+            lambda: BlenderActions.applyLimitRotationConstraint(self.part2Name, xAngles, yAngles, zAngles, self.part1Landmark.landmarkName, keywordArguments),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
+        )
+
+        return self
+        
+    def pivot(
+        self,
+        keywordArguments = {}
+        ):
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Adding pivot constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name),
+            lambda: BlenderActions.applyPivotConstraint(self.part2Name, self.part1Landmark.landmarkName, keywordArguments),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
         )
 
         return self
