@@ -417,7 +417,7 @@ class Part(Entity):
     radius:str,  \
     keywordArguments:dict=None \
     ):
-        return self.createPrimitive("sphere", "{}".format(radius), keywordArguments)
+        return self.createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
 
 
     def verticies(self,
@@ -712,12 +712,12 @@ class Joint:
     def __init__(self,
     part1Name:str, \
     part2Name:str, \
-    part1LandmarkName:str, \
-    part2LandmarkName:str
+    part1LandmarkName:str = None, \
+    part2LandmarkName:str = None
     ):
         self.part1Name = part1Name
         self.part2Name = part2Name
-        self.part1Landmark = Landmark(part1LandmarkName, part1Name)
+        self.part1Landmark = Landmark(part1LandmarkName, part1Name) if part1LandmarkName else None
         self.part2Landmark = Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
 
         
@@ -792,7 +792,7 @@ class Joint:
     def _getLimitRotationAngles(angles:str):
         angleList = None
 
-        if angles and len(angles) > 0:
+        if angles != None:
             
             angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(angles) or []
 
@@ -818,7 +818,7 @@ class Joint:
         zAngles = Joint._getLimitRotationAngles(z)
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Adding rotation constraint on {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
+            "Adding rotation constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name),
             lambda: BlenderActions.applyLimitRotationConstraint(self.part2Name, xAngles, yAngles, zAngles, self.part1Landmark.landmarkName, keywordArguments),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
         )
