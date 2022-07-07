@@ -117,7 +117,7 @@ def getAnglesFromString(anglesString):
         )
 
     parsedAngles = None
-    if anglesString and "," in anglesString:
+    if anglesString != None and type(anglesString) == str and "," in anglesString:
         anglesArray = anglesString.split(',')
 
         # besides accepting a unit in the angle, e.g. 1deg,1rad,1,rad. we also
@@ -133,7 +133,7 @@ def getAnglesFromString(anglesString):
         defaultUnit = AngleUnit.fromString(defaultUnit) if defaultUnit else None
         
         parsedAngles = [Angle(angle, defaultUnit) for angle in anglesArray ]
-    elif anglesString and type(anglesString) == str:
+    elif anglesString and (type(anglesString) == str or type(anglesString) == int):
         parsedAngles = [Angle(anglesString)]
     else:
         print("getAnglesFromString: ", anglesString, " is not a valid input. Cannot parse angles.")
@@ -239,7 +239,7 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
         )
 
     parsedDimensions = None
-    if dimensions and "," in dimensions:
+    if dimensions != None and type(dimensions) == str and "," in dimensions:
         dimensionsArray = dimensions.split(',')
 
         # besides accepting a unit in the dimension, e.g. 1m,1cm,1,m. we also
@@ -272,7 +272,7 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
 
             parsedDimensions.append(Dimension(dimension, defaultUnit))
 
-    elif dimensions and type(dimensions) == str:
+    elif dimensions != None and (type(dimensions) == str or type(dimensions) == int):
         parsedDimensions = [Dimension(dimensions)]
     else:
         print("getDimensionsFromString: ", dimensions, " is not a valid input. Cannot parse dimensions.")
@@ -310,3 +310,9 @@ class ScalingMethods(Enum):
     toSpecificLength=0
     scaleFactor=1
     lockAspectRatio=2 # scale one dimension, the others scale with it
+
+class ConstraintTypes(EquittableEnum):
+    Translation = 0 # Translation locked between specified start and end points in all axes.
+    Rotation = 1 # Rotation locked between specified start and end angles in all axes.
+    Pivot = 2 # Rotation locked between specified start and end angles in all axes, but rotation origin is offset.
+    Gear = 3 # Rotation of one object is a percentage of another's in a specified axis.
