@@ -133,7 +133,7 @@ def getAnglesFromString(anglesString):
         defaultUnit = AngleUnit.fromString(defaultUnit) if defaultUnit else None
         
         parsedAngles = [Angle(angle, defaultUnit) for angle in anglesArray ]
-    elif anglesString and (type(anglesString) == str or type(anglesString) == int):
+    elif anglesString != None and (type(anglesString) == str or type(anglesString) == int):
         parsedAngles = [Angle(anglesString)]
     else:
         print("getAnglesFromString: ", anglesString, " is not a valid input. Cannot parse angles.")
