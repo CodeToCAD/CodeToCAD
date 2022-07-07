@@ -6,7 +6,8 @@ import CodeToCAD.utilities as Utilities
 class BlenderTypes(Enum):
     OBJECT = bpy.types.Object
     MESH = bpy.types.Mesh
-    CURVE= bpy.types.Curve
+    CURVE = bpy.types.Curve
+    TEXT = bpy.types.TextCurve
 
 
 # These are the units allowed in a Blender document:
@@ -99,6 +100,7 @@ class BlenderModifiers(Enum):
     SCREW = 4
     SOLIDIFY = 5
     CURVE = 6
+    ARRAY = 7
 
 
 # This is a list of Blender Constraint types that we have implemented:
@@ -158,6 +160,7 @@ class BlenderObjectPrimitiveTypes(Enum):
     grid = 7
     monkey = 8
     empty = 9
+    plane = 10
 
     def defaultNameInBlender(self):
         if self == BlenderObjectPrimitiveTypes.sphere:

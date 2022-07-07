@@ -30,6 +30,30 @@ def applyModifier(
     for key,value in keywordArguments.items():
         setattr(modifier, key, value)
 
+def applyLinearPattern(
+        entityName,
+        instanceCount,
+        direction:Utilities.Axis,
+        offset:int,
+        keywordArguments:dict = {}
+    ):
+
+    offsetArray = [0,0,0]
+
+    offsetArray[direction.value] = offset
+
+    applyModifier(
+        entityName, 
+        BlenderDefinitions.BlenderModifiers.ARRAY,
+        dict(
+            {
+                "count": instanceCount,
+                "relative_offset_displace": offsetArray
+            },
+            **keywordArguments
+        )
+    )
+
 
 def applySolidifyModifier(
         entityName,
@@ -198,8 +222,10 @@ def blenderPrimitiveFunction(
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
         return bpy.ops.object.empty_add(radius=dimensions[0].value, **keywordArguments)
-        
 
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
+        return bpy.ops.mesh.primitive_plane_add( **keywordArguments)
+        
     raise Exception(f"Primitive with name {primitive.name} is not implemented.")
 
 
@@ -1155,8 +1181,8 @@ def extrude(
 
     length = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(length)
 
-    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value,\
-        f"Object {curveObjectName} is not a curve object type."
+    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value or type(blenderObject.data) == BlenderDefinitions.BlenderTypes.TEXT.value,\
+        f"Object {curveObjectName} is not a curve or text object type."
 
     blenderObject.data.extrude = length.value
 

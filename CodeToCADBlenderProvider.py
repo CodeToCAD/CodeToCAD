@@ -196,11 +196,30 @@ class Entity:
         
         return self
 
-    def pattern(self,
-    partName:str,  \
-    landmarkName:str \
+    def linearPattern(self,
+        instanceCount,
+        direction:str,
+        offset:int,
     ):
-        print("pattern is not implemented") # implement 
+
+        axis = Utilities.Axis.fromString(direction)
+    
+        blenderEvents.addToBlenderOperationsQueue(
+            "Creating linear pattern of {}.".format(self.name),
+            lambda: BlenderActions.applyLinearPattern(self.name, instanceCount, axis, offset),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
+
+    def circularPattern(self
+    ):
+        print("circularPattern is not implemented") # implement 
+        return self
+
+    def contourPattern(self
+    ):
+        print("contourPattern is not implemented") # implement 
         return self
 
 
@@ -681,32 +700,6 @@ class Landmark:
         else:
             self.landmarkName = landmarkName
 
-    def vertices(self,
-    locations:str \
-    ):
-        print("vertices is not implemented") # implement 
-        return self
-
-    def rectangle(self,
-    dimensions:str \
-    ):
-        print("rectangle is not implemented") # implement 
-        return self
-
-    def linearPattern(self
-    ):
-        print("linearPattern is not implemented") #      implement 
-        return self
-
-    def circularPattern(self
-    ):
-        print("circularPattern is not implemented") # implement 
-        return self
-
-    def contourPattern(self
-    ):
-        print("contourPattern is not implemented") # implement 
-        return self
 
 class Joint: 
     # Text to 3D Modeling Automation Capabilities.
