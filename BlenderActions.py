@@ -1146,6 +1146,20 @@ def addonSetEnabled(addonName, isEnabled):
 
 # MARK: Curves and Sketches
 
+def extrude(
+    curveObjectName,
+    length:Utilities.Dimension
+    ):
+
+    blenderObject = getObject(curveObjectName)
+
+    length = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(length)
+
+    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value,\
+        f"Object {curveObjectName} is not a curve object type."
+
+    blenderObject.data.extrude = length.value
+
 def createText(curveName, text,
         size = Utilities.Dimension(1),
         bold = False,

@@ -129,14 +129,6 @@ class Entity:
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
-
-
-    def extrude(self,
-    landmarkName:str,  \
-    dimensions:str \
-    ):
-        print("extrude is not implemented") # implement 
-        return self
         
     def revolve(self,
     angle:str,
@@ -517,6 +509,21 @@ class Sketch(Entity):
         self.curveType = curveType
         self.description = description
 
+
+    def extrude(self,
+    length:str \
+    ):
+
+        [length] = Utilities.getDimensionsFromString(length) or [Utilities.Dimension(0)]
+
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Extruding {}.".format(self.name),
+            lambda: BlenderActions.extrude(self.name, length),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+
+        return self
 
     def sweep(self,
         profileCurveName,
