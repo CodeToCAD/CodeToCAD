@@ -584,28 +584,7 @@
                         "required": false
                     }
                 }
-            },
-            "vertices": {
-                "action": "create",
-                "information": "A collection of point(s) in 3D space",
-                "parameters": {
-                    "locations": {
-                        "type": "string"
-                    }
-                }
-            },
-            "rectangle": {
-                "action": "create",
-                "information": "Create a rectanguar shape of point(s) in 3D space",
-                "parameters": {
-                    "dimensions": {
-                        "type": "string"
-                    }
-                }
-            },
-            "linearPattern": {},
-            "circularPattern": {},
-            "contourPattern": {}
+            }
         },
         "Joint": {
             "information": "Joints define the relationships and constraints between entities.",
@@ -622,18 +601,6 @@
                     },
                     "entity2LandmarkName": {
                         "type": "string"
-                    },
-                    "jointType": {
-                        "type": "string"
-                    },
-                    "initialRotation": {
-                        "type": "string"
-                    },
-                    "limitRotation": {
-                        "type": "string"
-                    },
-                    "limitTranslation": {
-                        "type": "string"
                     }
                 }
             },
@@ -641,6 +608,50 @@
                 "action": "modify",
                 "information": "Transforms one landmark onto another",
                 "parameters": {}
+            },
+            "pivot": {
+                "action": "modify",
+                "information": "Constraint the rotation origin of entity B to entity A's landmark.",
+                "parameters": {}
+            },
+            "gear": {
+                "action": "modify",
+                "information": "Constraint the rotation of entity B to be a percentage of entity A's",
+                "parameters": {
+                    "ratio": {
+                        "type": "float"
+                    }
+                }
+            },
+            "limitLocation": {
+                "action": "modify",
+                "information": "Constraint the translation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "x": {
+                        "type":"string"
+                    },
+                    "y": {
+                        "type":"string"
+                    },
+                    "z": {
+                        "type":"string"
+                    }
+                }
+            },
+            "limitRotation": {
+                "action": "modify",
+                "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "x": {
+                        "type":"string"
+                    },
+                    "y": {
+                        "type":"string"
+                    },
+                    "z": {
+                        "type":"string"
+                    }
+                }
             }
         },
         "Material": {
