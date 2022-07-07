@@ -114,7 +114,7 @@ class BlenderConstraintTypes(Utilities.EquittableEnum):
         if self == BlenderConstraintTypes.LIMIT_ROTATION:
             return "Limit Rotation"
         if self == BlenderConstraintTypes.PIVOT:
-            return "PIVOT"
+            return "Pivot"
         if self == BlenderConstraintTypes.COPY_ROTATION:
             return "Copy Rotation"
     
@@ -160,6 +160,10 @@ class BlenderObjectPrimitiveTypes(Enum):
     empty = 9
 
     def defaultNameInBlender(self):
+        if self == BlenderObjectPrimitiveTypes.sphere:
+            return "Icosphere"
+        if self == BlenderObjectPrimitiveTypes.uvsphere:
+            return "Sphere"
         # quick way to figure out the default names when a shape is added.
         # this is may come to bite later when the primitive name does not follow this rule:
         return self.name[0].upper() + self.name[1:]
