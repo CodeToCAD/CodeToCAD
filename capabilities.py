@@ -55,7 +55,8 @@ class Entity:
         print("remesh is not implemented") # implement 
         return self
 
-    def delete(self
+    def delete(self,
+    removeChildren:bool \
     ):
         print("delete is not implemented") # implement 
         return self
@@ -332,65 +333,53 @@ class Landmark:
     ):
         self.localToEntityWithName = localToEntityWithName
 
-    def vertices(self,
-    locations:str \
-    ):
-        print("vertices is not implemented") # implement 
-        return self
-
-    def rectangle(self,
-    dimensions:str \
-    ):
-        print("rectangle is not implemented") # implement 
-        return self
-
-    def linearPattern(self
-    ):
-        print("linearPattern is not implemented") # implement 
-        return "return value here"
-
-    def circularPattern(self
-    ):
-        print("circularPattern is not implemented") # implement 
-        return "return value here"
-
-    def contourPattern(self
-    ):
-        print("contourPattern is not implemented") # implement 
-        return "return value here"
-
 class Joint: 
     # Capabilities for CodeToCAD.entity1Name = None
     entity2Name = None
     entity1LandmarkName = None
     entity2LandmarkName = None
-    jointType = None
-    initialRotation = None
-    limitRotation = None
-    limitTranslation = None
 
     def __init__(self,
     entity1Name:str, \
     entity2Name:str, \
     entity1LandmarkName:str, \
-    entity2LandmarkName:str, \
-    jointType:str, \
-    initialRotation:str, \
-    limitRotation:str, \
-    limitTranslation:str \
+    entity2LandmarkName:str \
     ):
         self.entity1Name = entity1Name
         self.entity2Name = entity2Name
         self.entity1LandmarkName = entity1LandmarkName
         self.entity2LandmarkName = entity2LandmarkName
-        self.jointType = jointType
-        self.initialRotation = initialRotation
-        self.limitRotation = limitRotation
-        self.limitTranslation = limitTranslation
 
     def transformLandmarkOntoAnother(self
     ):
         print("transformLandmarkOntoAnother is not implemented") # implement 
+        return self
+
+    def pivot(self
+    ):
+        print("pivot is not implemented") # implement 
+        return self
+
+    def gear(self,
+    ratio:float \
+    ):
+        print("gear is not implemented") # implement 
+        return self
+
+    def limitLocation(self,
+    x:str,  \
+    y:str,  \
+    z:str \
+    ):
+        print("limitLocation is not implemented") # implement 
+        return self
+
+    def limitRotation(self,
+    x:str,  \
+    y:str,  \
+    z:str \
+    ):
+        print("limitRotation is not implemented") # implement 
         return self
 
 class Material: 
