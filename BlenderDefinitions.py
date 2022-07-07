@@ -164,6 +164,11 @@ class BlenderObjectPrimitiveTypes(Enum):
         # this is may come to bite later when the primitive name does not follow this rule:
         return self.name[0].upper() + self.name[1:]
 
+    # a quick way to keep track of which primitives have meshes/curve data
+    def hasData(self):
+        if self == BlenderObjectPrimitiveTypes.empty:
+            return False
+        return True
 
 # This is a list of Blender Curve types that we have implemented:
 class BlenderCurveTypes(Utilities.EquittableEnum):

@@ -537,21 +537,31 @@ def applyLimitLocationConstraint(
     ):
 
     relativeToObject = getObject(relativeToObjectName) if relativeToObjectName else None
+
+    minX = x[0].value if x and len(x) > 0 else None
+    minY = y[0].value if y and len(y) > 0 else None
+    minZ = z[0].value if z and len(z) > 0 else None
+    maxX = x[1].value if x and len(x) > 1 else None
+    maxY = y[1].value if y and len(y) > 1 else None
+    maxZ = z[1].value if z and len(z) > 1 else None
     
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION,
         dict(
             {
-                "use_limit_x": x is None,
-                "use_limit_y": y is None,
-                "use_limit_z": z is None,
-                "min_x": x[0].value if x else 0,
-                "min_y": y[0].value if y else 0,
-                "min_z": z[0].value if z else 0,
-                "max_x": x[1].value if x else 0,
-                "max_y": y[1].value if y else 0,
-                "max_z": z[1].value if z else 0,
+                "use_min_x": minX != None,
+                "use_min_y": minY != None,
+                "use_min_z": minZ != None,
+                "use_max_x": maxX != None,
+                "use_max_y": maxY != None,
+                "use_max_z": maxZ != None,
+                "min_x": minX or 0,
+                "min_y": minY or 0,
+                "min_z": minZ or 0,
+                "max_x": maxX or 0,
+                "max_y": maxY or 0,
+                "max_z": maxZ or 0,
                 "owner_space": "CUSTOM" if relativeToObject else "WORLD",
                 "space_object": relativeToObject
             },
@@ -616,18 +626,21 @@ def applyPivotConstraint(
 
 def applyGearConstraint(
     objectName,
-    pivotObjectName,
+    gearObjectName,
+    ratio,
     keywordArguments = {}
     ):
     
-    pivotObject = getObject(pivotObjectName)
+    gearObject = getObject(gearObjectName)
+
+    constraintType = BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION
     
     applyConstraint(
         objectName,
-        BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION,
+        constraintType,
         dict(
             {
-                "target": pivotObject
+                "target": gearObject
             },
             **keywordArguments
         )
@@ -793,15 +806,6 @@ def setDriverVariableRotationDifference(
 
 # MARK: Landmarks
 
-def getObjectCollection(objectName):
-
-    blenderObject = getObject(objectName)
-
-    # Assumes the first collection is the main collection
-    [currentCollection] = blenderObject.users_collection
-
-    return currentCollection.name if currentCollection else None
-
 def transformLandmarkInsideParent(
         objectName,
         landmarkObjectName,
@@ -884,6 +888,15 @@ def updateObjectName(
     
     blenderObject.name = newName
 
+
+def getObjectCollection(objectName):
+
+    blenderObject = getObject(objectName)
+
+    # Assumes the first collection is the main collection
+    [currentCollection] = blenderObject.users_collection
+
+    return currentCollection.name if currentCollection else None
 
 def updateObjectDataName(
         parentObjectName,
@@ -987,8 +1000,8 @@ def getObjectWorldLocation(objectName):
     
     blenderObject = getObject(objectName)
 
-    # return blenderObject.matrix_world.translation.to_tuple()
-    return blenderObject.matrix_basis.translation.to_tuple()
+    # return blenderObject.matrix_world.translation
+    return blenderObject.matrix_basis.translation
 
     
 def getObjectWorldPose(objectName):
