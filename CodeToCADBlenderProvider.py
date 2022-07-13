@@ -79,6 +79,11 @@ class Entity:
             lambda: BlenderActions.scaleObject(self.name, dimensionsList),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying rotation for {}".format(self.name),
+            lambda: BlenderActions.applyObjectRotationAndScale(self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
         
         return self
 
@@ -93,6 +98,11 @@ class Entity:
         blenderEvents.addToBlenderOperationsQueue(
             "Rotating {}".format(self.name),
             lambda: BlenderActions.rotateObject(self.name, angleList, BlenderDefinitions.BlenderRotationTypes.EULER),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
+        )
+        blenderEvents.addToBlenderOperationsQueue(
+            "Applying rotation for {}".format(self.name),
+            lambda: BlenderActions.applyObjectRotationAndScale(self.name),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.name
         )
         return self
