@@ -7,7 +7,7 @@ import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
 
 from pathlib import Path
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from enum import Enum
 
 # MARK: Modifiers
@@ -315,17 +315,43 @@ def importFile(
 def applyObjectTransformations(objectName):
 
     blenderObject = getObject(objectName)
+
+    assert blenderObject.data != None, \
+        f"Object {objectName} does not have data to transform."
     
     finalPose = blenderObject.matrix_basis
-    # finalPose = blenderObject.matrix_world
 
     blenderObject.data.transform(finalPose)
     
     for child in blenderObject.children:
         child.matrix_local = finalPose @ child.matrix_local
+        child.matrix_basis.identity()
     
     # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis.identity()
+
+def applyObjectRotationAndScale(objectName):
+    blenderObject = getObject(objectName)
+
+    assert blenderObject.data != None, \
+        f"Object {objectName} does not have data to transform."
+    
+    translation, rotation, scale = blenderObject.matrix_basis.decompose()
+
+    translation = Matrix.Translation(translation)
+    rotation = rotation.to_matrix().to_4x4()
+    scale = Matrix.Diagonal(scale).to_4x4()
+    
+    transformation = rotation @ scale
+
+    blenderObject.data.transform(transformation)
+
+    for child in blenderObject.children:
+        child.matrix_local = transformation @ child.matrix_local
+        child.matrix_basis = Matrix.Translation(child.matrix_basis.translation)
+    
+    # Reset the object's transformations (resets everything in side menu to 0's)
+    blenderObject.matrix_basis = translation
 
 
 def rotateObject(
@@ -874,10 +900,10 @@ def transformLandmarkOntoAnother(
     # rotateObject(object2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
 
     # Use matrix_basis if transformations are applied.
-    blenderObject1Translation = blenderObject1Landmark.matrix_basis.to_translation()
-    blenderObject2Translation = blenderObject2Landmark.matrix_basis.to_translation()
-    # blenderObject1Translation = blenderObject1Landmark.matrix_world.to_translation()
-    # blenderObject2Translation = blenderObject2Landmark.matrix_world.to_translation()
+    # blenderObject1Translation = blenderObject1Landmark.matrix_basis.to_translation()
+    # blenderObject2Translation = blenderObject2Landmark.matrix_basis.to_translation()
+    blenderObject1Translation = blenderObject1Landmark.matrix_world.to_translation()
+    blenderObject2Translation = blenderObject2Landmark.matrix_world.to_translation()
     translation = (blenderObject1Translation)-(blenderObject2Translation)
     print("blenderObject1Translation: ",blenderObject1Translation, " blenderObject2Translation: ", blenderObject2Translation, " translation: ", translation)
     
@@ -1026,16 +1052,16 @@ def getObjectWorldLocation(objectName):
     
     blenderObject = getObject(objectName)
 
-    # return blenderObject.matrix_world.translation
-    return blenderObject.matrix_basis.translation
+    return blenderObject.matrix_world.translation
+    # return blenderObject.matrix_basis.translation
 
     
 def getObjectWorldPose(objectName):
     
     blenderObject = getObject(objectName)
 
-    # return blenderObject.matrix_world
-    return blenderObject.matrix_basis
+    return blenderObject.matrix_world
+    # return blenderObject.matrix_basis
 
 
 def getObject(objectName):
