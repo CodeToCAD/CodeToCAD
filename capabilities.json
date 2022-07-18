@@ -64,18 +64,6 @@
                     }
                 }
             },
-            "extrude": {
-                "action": "modify",
-                "information": "Extrude a landmark by a specified dimension.",
-                "parameters": {
-                    "landmarkName": {
-                        "type": "string"
-                    },
-                    "dimensions": {
-                        "type": "string"
-                    }
-                }
-            },
             "remesh": {
                 "action": "modify",
                 "information": "Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).",
@@ -368,6 +356,15 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    }
+                }
+            },
+            "extrude": {
+                "action": "modify",
+                "information": "Extrude a curve by a specified length.",
+                "parameters": {
+                    "length": {
+                        "type": "string"
                     }
                 }
             },
