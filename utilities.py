@@ -208,14 +208,14 @@ class Dimension():
 
       unitInString = re.search('[A-Za-z]+$', fromString)
 
+      value = fromString
+
+      self.unit = unit or None
+
       if unitInString:
           value = fromString[0:-1*len(unitInString[0])]
 
           self.unit = LengthUnit.fromString(unitInString[0])
-      else:
-          value = fromString
-
-          self.unit = unit or None
       
       # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
       if re.match("[+\-*\/%\d\(\)]+", value):
@@ -263,12 +263,25 @@ def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
             dimension = dimension.lower()
             if boundingBox != None and index < 3:
                 boundary = getattr(boundingBox, "xyz"[index])
+                
+                dimension = dimension.replace(" ", "")
+
+                localUnit = re.search('[A-Za-z]+$', dimension)
+
+                if localUnit:
+                    localUnit = LengthUnit.fromString(localUnit[0])
+                    
+                if localUnit in ["min", "max", "center"]:
+                    localUnit = None
+
+                localUnit = localUnit or defaultUnit or LengthUnit.meter
+
                 if "min" in dimension:
-                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.min, LengthUnit.meter) ))
+                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(localUnit, boundary.min, LengthUnit.meter) ))
                 if "max" in dimension:
-                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.max, LengthUnit.meter) ))
+                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(localUnit, boundary.max, LengthUnit.meter) ))
                 if "center" in dimension:
-                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit or LengthUnit.meter, boundary.center, LengthUnit.meter) ))
+                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(localUnit, boundary.center, LengthUnit.meter) ))
 
             parsedDimensions.append(Dimension(dimension, defaultUnit))
 
@@ -283,6 +296,16 @@ class Axis(EquittableEnum):
     X = 0
     Y = 1
     Z = 2
+
+    @staticmethod
+    def fromString(axis):
+        axis = str(axis).lower()
+        if axis == "x":
+            return Axis.X
+        if axis == "y":
+            return Axis.Y
+        if axis == "z":
+            return Axis.Z
 
 class CurvePrimitiveTypes(EquittableEnum):
     Point = 0
