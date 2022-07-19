@@ -69,10 +69,10 @@ Scene().assignToGroup("bracelet", "Bracelet")
 Scene().assignToGroup("button", "Bracelet")
 Scene().assignToGroup("belt", "Bracelet")
 
-Scene().assignToGroup("beltInner", "BraceletBooleanShapes").setVisibility("beltInner", False)
-Scene().assignToGroup("buttonInner", "BraceletBooleanShapes").setVisibility("buttonInner", False)
-Scene().assignToGroup("booleanBracelet", "BraceletBooleanShapes").setVisibility("booleanBracelet", False)
-Scene().assignToGroup("booleanButton", "BraceletBooleanShapes").setVisibility("booleanButton", False)
+Scene().assignToGroup("beltInner", "BraceletBooleanShapes").setVisible("beltInner", False)
+Scene().assignToGroup("buttonInner", "BraceletBooleanShapes").setVisible("buttonInner", False)
+Scene().assignToGroup("booleanBracelet", "BraceletBooleanShapes").setVisible("booleanBracelet", False)
+Scene().assignToGroup("booleanButton", "BraceletBooleanShapes").setVisible("booleanButton", False)
 
 # Modifying the shapes
 
@@ -95,9 +95,9 @@ Part("booleanbelt")\
 Part("booleanBracelet2")\
     .clone("bracelet")
 
-Scene().assignToGroup("booleanbelt", "BraceletBooleanShapes").setVisibility("booleanbelt", False)
+Scene().assignToGroup("booleanbelt", "BraceletBooleanShapes").setVisible("booleanbelt", False)
     
-Scene().assignToGroup("booleanBracelet2", "BraceletBooleanShapes").setVisibility("booleanBracelet2", False)
+Scene().assignToGroup("booleanBracelet2", "BraceletBooleanShapes").setVisible("booleanBracelet2", False)
     
 Part("belt") \
     .intersect("booleanBracelet2")
