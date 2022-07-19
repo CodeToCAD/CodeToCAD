@@ -73,7 +73,7 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
         for path in paths:
             print("Running script", path)
-            runpy.run_path(path)
+            runpy.run_path(path, run_name="__main__")
 
         return {'FINISHED'}
 
