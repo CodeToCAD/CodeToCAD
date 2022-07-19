@@ -85,7 +85,7 @@
                     }
                 }
             },
-            "isVisible": {
+            "setVisible": {
                 "action": "modify",
                 "information": "Toggles visibility of an entity in the scene.",
                 "parameters": {
@@ -736,7 +736,7 @@
                     }
                 }
             },
-            "setVisibility": {
+            "setVisible": {
                 "action": "update",
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {

@@ -61,7 +61,7 @@ class Entity:
         print("delete is not implemented") # implement 
         return self
 
-    def isVisible(self,
+    def setVisible(self,
     isVisible:bool \
     ):
         print("isVisible is not implemented") # implement 
@@ -449,11 +449,11 @@ class Scene:
         print("assignToGroup is not implemented") # implement 
         return self
 
-    def setVisibility(self,
+    def setVisible(self,
     entityName:str,  \
     isVisible:bool \
     ):
-        print("setVisibility is not implemented") # implement 
+        print("setVisible is not implemented") # implement 
         return self
 
 class Analytics: 
