@@ -960,6 +960,20 @@ def updateObjectDataName(
     assert blenderObject.data != None, f"Object {parentObjectName} does not have data to name."
 
     blenderObject.data.name = newName
+    
+
+# This assumes that landmarks are named with format: `{parentPartName}_{landmarkName}`
+def updateObjectLandmarkNames(
+        parentObjectName,
+        oldNamePrefix,
+        newNamePrefix
+    ):
+    
+    blenderObject = getObject(parentObjectName)
+    
+    for child in blenderObject.children:
+        if f"{oldNamePrefix}_" in child.name and child.type == "EMPTY":
+            updateObjectName(child.name, child.name.replace(f"{oldNamePrefix}_", f"{newNamePrefix}_"))
 
 
 def removeObject(
