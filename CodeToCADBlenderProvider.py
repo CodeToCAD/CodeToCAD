@@ -109,7 +109,8 @@ class Entity:
 
     def rename(self,
     newName:str,
-    renameData = True
+    renameData = True,
+    renameLandmarks = True
     ):
 
         blenderEvents.addToBlenderOperationsQueue(
@@ -125,6 +126,14 @@ class Entity:
                 lambda: BlenderActions.updateObjectDataName(newName, newName)
                 ,
                 lambda update: update.id.name == self.name
+            )
+
+        if renameLandmarks:
+            blenderEvents.addToBlenderOperationsQueue(
+                "Renaming landmarks from {} to {}".format(self.name, newName),
+                lambda: BlenderActions.updateObjectLandmarkNames(newName, self.name, newName)
+                ,
+                None
             )
 
         return self
