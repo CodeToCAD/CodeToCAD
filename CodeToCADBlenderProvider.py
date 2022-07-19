@@ -286,6 +286,41 @@ class Entity:
         )
 
         return self
+        
+    def landmarkRelative(
+            self,
+            landmarkName,
+            otherEntityName,
+            otherLandmarkName,
+            offset
+        ):
+        landmarkObjectName = Landmark(landmarkName, self.name).landmarkName
+        
+        # Create an Empty object to represent the landmark
+        # Using an Empty object allows us to parent the object to this Empty.
+        # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
+        # This might not work in other CodeToCAD implementations, but it does in Blender
+        Part(landmarkObjectName).createPrimitive("Empty", "0")
+        
+        # Assign the landmark to the parent's collection
+        blenderEvents.addToBlenderOperationsQueue(
+            "Assigning landmark {} to the {} object's collection.".format(landmarkName, self.name),
+            lambda: BlenderActions.assignObjectToCollection(landmarkObjectName, BlenderActions.getObjectCollection(self.name)),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
+        )
+
+        # Parent the landmark to the object
+        blenderEvents.addToBlenderOperationsQueue(
+            "Make object {} the parent of landmark {}.".format(self.name, landmarkName),
+            lambda: BlenderActions.makeParent(landmarkObjectName, self.name),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
+        )
+
+        blenderEvents.addToBlenderOperationsQueue(
+            "Setting position of landmark {} relative to {}_{}".format(landmarkName, otherEntityName, otherLandmarkName),
+            lambda: BlenderActions.transformLandmarkRelativeToAnother(self.name, landmarkObjectName, otherEntityName, otherLandmarkName, offset),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == landmarkObjectName
+        )
 
     def landmark(self, landmarkName, localPosition):
 
@@ -715,7 +750,7 @@ class Landmark:
         self.localToEntityWithName = localToEntityWithName
         
         if localToEntityWithName:
-            self.landmarkName = "{}_{}".format(localToEntityWithName, landmarkName)
+            self.landmarkName = f"{localToEntityWithName}_{landmarkName}"
         else:
             self.landmarkName = landmarkName
 
