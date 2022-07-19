@@ -875,6 +875,32 @@ def transformLandmarkInsideParent(
         
         translateObject(landmarkObjectName, localPosition, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
+def transformLandmarkRelativeToAnother(
+        objectName,
+        landmarkObjectName,
+        otherObjectName,
+        otherLandmarkName,
+        offset = None
+    ):
+        _ = getObject(objectName)
+        
+        otherObjectLandmarkObjectName = f"{otherObjectName}_{otherLandmarkName}"
+        _ = getObject(otherObjectLandmarkObjectName)
+
+        localPosition = getObjectWorldLocation(otherObjectLandmarkObjectName) - getObjectWorldLocation(objectName)
+        
+        if offset:
+            dimensions = Utilities.getDimensionsFromString(offset)
+            dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
+            offset = [dimension.value for dimension in dimensions]
+
+            localPosition += Vector(offset)
+
+        localPosition = localPosition.to_tuple()
+
+        transformLandmarkInsideParent(objectName, landmarkObjectName, localPosition)
+
+
 def transformLandmarkOntoAnother(
         object1Name,
         object2Name,
