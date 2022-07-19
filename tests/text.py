@@ -1,7 +1,7 @@
 from pathlib import Path
 from CodeToCADBlenderProvider import *
 
-Curve("path").createFromVerticies([[0,0,0],[0,0,0.25]]).rotate("90d,0,0").isVisible(False)
+Curve("path").createFromVerticies([[0,0,0],[0,0,0.25]]).rotate("90d,0,0").setVisible(False)
 
 Curve("CodeToCAD").createText("Code To CAD", underlined=True).sweep("path")
 
@@ -12,7 +12,7 @@ Curve("كود تو كاد").createText("كود تو كاد", fontFilePath=arialF
 
 
 yuGothicFontPath = str(Path(__file__).parent.absolute()) + "/fonts/yu_gothic.ttc"
-Curve("curvedTextPath").createCircle("1m").translate("-5,-5,0").isVisible(False)
+Curve("curvedTextPath").createCircle("1m").translate("-5,-5,0").setVisible(False)
 Curve("コオデツカアド").createText("コオデツカアド",fontFilePath=yuGothicFontPath).profile("curvedTextPath").translate("-5,-5,0")
 
 Curve("multiline").createText(

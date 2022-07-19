@@ -28,7 +28,7 @@ Joint("ellipseLeg", "ellipseLegOuterCutout", "top", "top").transformLandmarkOnto
 # shape("ellipseLeg").subtract("ellipseLegInner")
 # shape("ellipseLeg").landmark("top", "center,center,max")
 
-# scene().setVisibility("ellipseLegInner", False)
+# scene().setVisible("ellipseLegInner", False)
 # shape("ellipseLegCutout").createPrimitive("cylinder", "1,1,1")
 # shape("ellipseLegCutout").scale("20+5mm,34+5mm,1in")
 # shape("ellipseLegCutoutInner").createPrimitive("cylinder", "1,1,1")
@@ -37,10 +37,10 @@ Joint("ellipseLeg", "ellipseLegOuterCutout", "top", "top").transformLandmarkOnto
 # shape("ellipseLegCutout").subtract("ellipseLegCutoutInner").apply()
 # shape("ellipseLegCutout").landmark("top", "center,center,max")
 
-# scene().setVisibility("ellipseLegCutoutInner", False)
+# scene().setVisible("ellipseLegCutoutInner", False)
 
 # joint("ellipseLeg", "ellipseLegCutout", "top", "top").transformLandmarkOntoAnother()
 
 # shape("ellipseLeg").subtract("ellipseLegCutout")
 
-# scene().setVisibility("ellipseLegCutout", False)
+# scene().setVisible("ellipseLegCutout", False)

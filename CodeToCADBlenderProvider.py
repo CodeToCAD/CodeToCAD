@@ -311,7 +311,7 @@ class Entity:
         return self
         
 
-    def isVisible(self,
+    def setVisible(self,
     isVisible:bool \
     ):
         blenderEvents.addToBlenderOperationsQueue(
@@ -951,7 +951,7 @@ class Scene:
         return self
         
 
-    def setVisibility(self,
+    def setVisible(self,
     entityName:str, \
     isVisible:bool \
     ):
