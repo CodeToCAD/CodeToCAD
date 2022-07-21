@@ -6,7 +6,7 @@ Please refer to the [CodeToCAD repo](https://github.com/CodeToCad/CodeToCAD) for
 
 ## Cloning
 
-This repository contains a submodule. Clone it using `git clone --recurse-submodules -j8 git@github.com:CodeToCad/CodeToCad-Blender.git`
+This repository contains a submodule. Clone it using `git clone --recurse-submodules -j8 https://github.com/CodeToCad/CodeToCad-Blender.git`
 
 ## Setup
 
