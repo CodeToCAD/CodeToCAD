@@ -1112,6 +1112,8 @@ def duplicateObject(
 
     assignObjectToCollection(newObjectName, defaultCollection)
 
+def updateViewLayer():
+    bpy.context.view_layer.update()
 
 def getObjectWorldLocation(objectName):
     
