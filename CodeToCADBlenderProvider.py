@@ -654,6 +654,8 @@ class Joint:
     @staticmethod
     def _limitLocationOffsetFromLandmark(objectName, objectLandmarkName, relativeToLandmarkName, xDimensions, yDimensions, zDimensions, keywordArguments):
 
+        BlenderActions.updateViewLayer()
+
         [x,y,z] = BlenderActions.getObjectWorldLocation(objectName) - BlenderActions.getObjectWorldLocation(objectLandmarkName)
         
 
