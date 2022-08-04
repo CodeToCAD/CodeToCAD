@@ -48,7 +48,32 @@ def applyLinearPattern(
         dict(
             {
                 "count": instanceCount,
-                "relative_offset_displace": offsetArray
+                "use_relative_offset": False,
+                "use_constant_offset": True,
+                "constant_offset_displace": offsetArray
+            },
+            **keywordArguments
+        )
+    )
+
+def applyCircularPattern(
+        entityName,
+        instanceCount,
+        aroundObjectName,
+        keywordArguments:dict = {}
+    ):
+
+    blenderObject = getObject(aroundObjectName)
+
+    applyModifier(
+        entityName, 
+        BlenderDefinitions.BlenderModifiers.ARRAY,
+        dict(
+            {
+                "count": instanceCount,
+                "use_relative_offset": False,
+                "use_object_offset": True,
+                "offset_object": blenderObject
             },
             **keywordArguments
         )
