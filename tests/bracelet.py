@@ -3,11 +3,8 @@ print("Starting bracelet.py")
 from CodeToCADBlenderProvider import Part, Scene, Analytics
 
 Scene().setDefaultUnit("cm")
-Scene().deleteGroup("Bracelet", True) \
-    .createGroup("Bracelet")
-Scene().deleteGroup("BraceletBooleanShapes", True) \
-    .createGroup("BraceletBooleanShapes")
-
+Scene().createGroup("Bracelet")
+Scene().createGroup("BraceletBooleanShapes")
 # Defining dimensions and calculated properties
 
 # in mm
