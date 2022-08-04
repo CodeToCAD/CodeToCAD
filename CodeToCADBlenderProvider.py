@@ -222,6 +222,10 @@ class Entity:
     ):
 
         axis = Utilities.Axis.fromString(direction)
+
+        [offset] = Utilities.getDimensionsFromString(offset)
+        offset = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(offset)
+        offset = offset.value
     
         blenderEvents.addToBlenderOperationsQueue(
             "Creating linear pattern of {}.".format(self.name),
@@ -231,9 +235,47 @@ class Entity:
 
         return self
 
-    def circularPattern(self
+    def circularPattern(self,
+        instanceCount,
+        separationAngle,
+        normalDirection:str,
+        centerPartName,
+        centerLandmarkName = None
     ):
-        print("circularPattern is not implemented") # implement 
+
+        centerObjectName = Landmark(centerPartName, centerLandmarkName).entityName if centerLandmarkName else centerPartName
+
+        pivotLandmark = Landmark("circularPatternPivot", self.name)
+
+        self.landmark(pivotLandmark.landmarkName, [0,0,0])
+
+
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Creating a pivot constaint between the pivotLandmark and centerLandmark {centerObjectName}",
+            lambda: BlenderActions.applyPivotConstraint(pivotLandmark.entityName, centerObjectName),
+            None
+        )
+        
+
+        [separationAngle] = Utilities.getAnglesFromString(separationAngle)
+        axis = Utilities.Axis.fromString(normalDirection)
+        angles = [Utilities.Angle(0) for _ in range(3)]
+        angles[axis.value] = separationAngle
+        
+        blenderEvents.addToBlenderOperationsQueue(
+            "Rotating {}".format(pivotLandmark.entityName),
+            lambda: BlenderActions.rotateObject(pivotLandmark.entityName, angles, BlenderDefinitions.BlenderRotationTypes.EULER),
+            None
+        )
+
+
+        blenderEvents.addToBlenderOperationsQueue(
+            f"Applying circular pattern.",
+            lambda: BlenderActions.applyCircularPattern(self.name, instanceCount, pivotLandmark.entityName),
+            None
+        )
+        
+
         return self
 
     def contourPattern(self
@@ -294,7 +336,7 @@ class Entity:
             otherLandmarkName,
             offset
         ):
-        landmarkObjectName = Landmark(landmarkName, self.name).landmarkName
+        landmarkObjectName = Landmark(landmarkName, self.name).entityName
         
         # Create an Empty object to represent the landmark
         # Using an Empty object allows us to parent the object to this Empty.
@@ -324,7 +366,7 @@ class Entity:
 
     def landmark(self, landmarkName, localPosition):
 
-        landmarkObjectName = Landmark(landmarkName, self.name).landmarkName
+        landmarkObjectName = Landmark(landmarkName, self.name).entityName
         
         # Create an Empty object to represent the landmark
         # Using an Empty object allows us to parent the object to this Empty.
@@ -374,7 +416,7 @@ class Entity:
     selectionType:str = "face" \
     ):
         landmarkObject = Landmark(landmarkName, self.name)
-        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.landmarkName)
+        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.entityName)
         [closestPoint, normal, blenderPolygon, blenderVertices] = BlenderActions.getClosestPointsToVertex(self.name, landmarkLocation)
 
         if blenderVertices != None:
@@ -742,6 +784,7 @@ class Landmark:
 
     localToEntityWithName = None
     landmarkName = None
+    entityName = None
 
     def __init__(self,
     landmarkName:str,
@@ -749,10 +792,12 @@ class Landmark:
     ):
         self.localToEntityWithName = localToEntityWithName
         
+        self.landmarkName = landmarkName
+        
         if localToEntityWithName:
-            self.landmarkName = f"{localToEntityWithName}_{landmarkName}"
+            self.entityName = f"{localToEntityWithName}_{landmarkName}"
         else:
-            self.landmarkName = landmarkName
+            self.entityName = landmarkName
 
 
 class Joint: 
@@ -778,9 +823,9 @@ class Joint:
     def transformLandmarkOntoAnother(self):
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Transforming {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
-            lambda: BlenderActions.transformLandmarkOntoAnother(self.part1Name, self.part2Name, self.part1Landmark.landmarkName, self.part2Landmark.landmarkName),
-            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.part2Landmark.landmarkName,
+            "Transforming {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.entityName, self.part2Name, self.part2Landmark.entityName),
+            lambda: BlenderActions.transformLandmarkOntoAnother(self.part1Name, self.part2Name, self.part1Landmark.entityName, self.part2Landmark.entityName),
+            lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value and update.id.name == self.part2Landmark.entityName,
         )
 
         return self
@@ -834,8 +879,8 @@ class Joint:
 
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Adding location constraint on {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name, self.part2Landmark.landmarkName),
-            lambda: Joint._limitLocationOffsetFromLandmark(self.part2Name, self.part2Landmark.landmarkName, self.part1Landmark.landmarkName, xDimensions, yDimensions, zDimensions, keywordArguments),
+            "Adding location constraint on {} landmark {} onto {} landmark {}".format(self.part1Name, self.part1Landmark.entityName, self.part2Name, self.part2Landmark.entityName),
+            lambda: Joint._limitLocationOffsetFromLandmark(self.part2Name, self.part2Landmark.entityName, self.part1Landmark.entityName, xDimensions, yDimensions, zDimensions, keywordArguments),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
         )
 
@@ -872,8 +917,8 @@ class Joint:
         zAngles = Joint._getLimitRotationAngles(z)
         
         blenderEvents.addToBlenderOperationsQueue(
-            "Adding rotation constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name),
-            lambda: BlenderActions.applyLimitRotationConstraint(self.part2Name, xAngles, yAngles, zAngles, self.part1Landmark.landmarkName, keywordArguments),
+            "Adding rotation constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.entityName, self.part2Name),
+            lambda: BlenderActions.applyLimitRotationConstraint(self.part2Name, xAngles, yAngles, zAngles, self.part1Landmark.entityName, keywordArguments),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
         )
 
@@ -885,8 +930,8 @@ class Joint:
         ):
 
         blenderEvents.addToBlenderOperationsQueue(
-            "Adding pivot constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.landmarkName, self.part2Name),
-            lambda: BlenderActions.applyPivotConstraint(self.part2Name, self.part1Landmark.landmarkName, keywordArguments),
+            "Adding pivot constraint on {} landmark {} onto {}".format(self.part1Name, self.part1Landmark.entityName, self.part2Name),
+            lambda: BlenderActions.applyPivotConstraint(self.part2Name, self.part1Landmark.entityName, keywordArguments),
             lambda update: type(update.id) == BlenderDefinitions.BlenderTypes.OBJECT.value
         )
 
