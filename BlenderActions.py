@@ -370,13 +370,12 @@ def applyObjectRotationAndScale(objectName):
     transformation = rotation @ scale
 
     blenderObject.data.transform(transformation)
-
-    for child in blenderObject.children:
-        child.matrix_local = transformation @ child.matrix_local
-        child.matrix_basis = Matrix.Translation(child.matrix_basis.translation)
     
     # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis = translation
+
+    for child in blenderObject.children:
+        child.matrix_local = transformation @ child.matrix_local
 
 
 def rotateObject(
