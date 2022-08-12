@@ -432,7 +432,7 @@ def applyObjectRotationAndScale(objectName):
     blenderObject.matrix_basis = translation
 
     for child in blenderObject.children:
-        child.matrix_local = transformation @ child.matrix_local
+        child.matrix_basis = transformation @ child.matrix_basis
 
 
 def rotateObject(
@@ -1131,7 +1131,8 @@ def setObjectVisibility(
 
 def duplicateObject(
         existingObjectName,
-        newObjectName
+        newObjectName,
+        copyLandmarks:bool = True
     ):
     
     clonedObject = bpy.data.objects.get(newObjectName)
@@ -1150,6 +1151,17 @@ def duplicateObject(
     defaultCollection = getObjectCollection(existingObjectName)
 
     assignObjectToCollection(newObjectName, defaultCollection)
+
+    if copyLandmarks:
+        for child in blenderObject.children:
+            if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+                newChild = child.copy()
+                newChild.name = child.name.replace(existingObjectName, newObjectName)
+                newChild.parent = clonedObject
+                assignObjectToCollection(newChild.name, defaultCollection)
+
+            
+
 
 def updateViewLayer():
     bpy.context.view_layer.update()
