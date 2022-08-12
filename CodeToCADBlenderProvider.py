@@ -4,7 +4,6 @@ import BlenderDefinitions
 import BlenderActions
 
 from pathlib import Path
-from types import LambdaType
 
 def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
     for update in depsgraph.updates:
@@ -135,17 +134,20 @@ class Entity:
 
 
     def clone(self,
-    partName:str \
+    newPartName:str,
+    copyLandmarks:bool = True
     ):
-        BlenderActions.duplicateObject(partName, self.name)
+        BlenderActions.duplicateObject(self.name, newPartName, copyLandmarks)
 
-        return self
+        return Part(newPartName)
         
     def revolve(self,
     angle:str,
     axis:str,
     entityNameToDetermineAxis = None
     ):
+        if isinstance(entityNameToDetermineAxis, Entity): entityNameToDetermineAxis = entityNameToDetermineAxis.name
+
         axis = Utilities.Axis.fromString(axis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
@@ -191,6 +193,8 @@ class Entity:
     axis:str
     ):
     
+        if isinstance(mirrorAcrossEntityName, Entity): mirrorAcrossEntityName = mirrorAcrossEntityName.name
+    
         axis = Utilities.Axis.fromString(axis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
@@ -202,7 +206,7 @@ class Entity:
     def linearPattern(self,
         instanceCount,
         directionAxis:str,
-        offset:float,
+        offset:str,
     ):
 
         axis = Utilities.Axis.fromString(directionAxis)
@@ -224,6 +228,9 @@ class Entity:
         centerPartName,
         centerLandmarkName = None
     ):
+
+        if isinstance(centerPartName, Entity): centerPartName = centerPartName.name
+        if isinstance(centerLandmarkName, Landmark): centerLandmarkName = centerLandmarkName.landmarkName
 
         centerObjectName = Landmark(centerPartName, centerLandmarkName).entityName if centerLandmarkName else centerPartName
 
@@ -281,6 +288,10 @@ class Entity:
             offsetY,
             offsetZ
         ):
+        
+        if isinstance(otherEntityName, Entity): otherEntityName = otherEntityName.name
+        if isinstance(otherLandmarkName, Landmark): otherLandmarkName = otherLandmarkName.name
+
         landmark = Landmark(landmarkName, self.name)
         landmarkObjectName = landmark.entityName
         
@@ -313,6 +324,8 @@ class Entity:
         localPositions = Utilities.getDimensionsFromStringList(localPositionXYZ, boundingBox)
 
         assert len(localPositions) == 3, "localPositions should contain 3 dimensions for XYZ"
+
+        localPositions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPositions)
         
         landmark = Landmark(landmarkName, self.name)
         landmarkObjectName = landmark.entityName
@@ -342,6 +355,7 @@ class Entity:
     def setVisible(self,
     isVisible:bool \
     ):
+        
         BlenderActions.setObjectVisibility(self.name, isVisible)
 
         return self
@@ -512,6 +526,8 @@ class Part(Entity):
     def union(self,
     withPartName:str \
     ):
+        if isinstance(withPartName, Entity): withPartName = withPartName.name
+
         BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.UNION,
@@ -523,6 +539,8 @@ class Part(Entity):
     def subtract(self,
     withPartName:str \
     ):
+        if isinstance(withPartName, Entity): withPartName = withPartName.name
+
         BlenderActions.applyBooleanModifier(
                     self.name,
                     BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
@@ -534,6 +552,8 @@ class Part(Entity):
     def intersect(self,
     withPartName:str \
     ):
+        if isinstance(withPartName, Entity): withPartName = withPartName.name
+
         BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
@@ -588,6 +608,8 @@ class Sketch(Entity):
         fillCap = False
         ):
         
+        if isinstance(profileCurveName, Entity): profileCurveName = profileCurveName.name
+        
         BlenderActions.addBevelObjectToCurve(self.name, profileCurveName, fillCap)
 
         return self
@@ -595,6 +617,8 @@ class Sketch(Entity):
     def profile(self,
         profileCurveName
         ):
+        
+        if isinstance(profileCurveName, Entity): profileCurveName = profileCurveName.name
 
         BlenderActions.applyCurveModifier(self.name, profileCurveName)
 
@@ -713,6 +737,9 @@ class Landmark:
     landmarkName:str,
     localToEntityWithName:str=None \
     ):
+    
+        if isinstance(localToEntityWithName, Entity): localToEntityWithName = localToEntityWithName.name
+
         self.localToEntityWithName = localToEntityWithName
         
         self.landmarkName = landmarkName
@@ -929,6 +956,8 @@ class Scene:
     entityName:str, \
     groupName:str \
     ):
+        if isinstance(entityName, Entity): entityName = entityName.name
+
         BlenderActions.removeObjectFromCollection(entityName, groupName)
 
         return self
@@ -939,6 +968,8 @@ class Scene:
     groupName:str, \
     removeFromOtherGroups:bool = True \
     ):
+        if isinstance(entityName, Entity): entityName = entityName.name
+
         BlenderActions.assignObjectToCollection(entityName, groupName, self.name, removeFromOtherGroups)
 
         return self
@@ -948,20 +979,14 @@ class Scene:
     entityName:str, \
     isVisible:bool \
     ):
+        if isinstance(entityName, Entity): entityName = entityName.name
+
         BlenderActions.setObjectVisibility(entityName, isVisible)
 
         return self
 
 class Analytics: 
     # Text to 3D Modeling Automation Capabilities.
-
-    def execute(self, callback: LambdaType, description = ""):
-        
-        blenderEvents.addToBlenderOperationsQueue(
-            "Running analytics execute. {}".format(description),
-            callback,
-            None
-        )
 
     def measureLandmarks(self,
     landmark1Name:str,  \
@@ -973,16 +998,20 @@ class Analytics:
     def getWorldPose(self,
     partName:str \
     ):
+        if isinstance(partName, Entity): partName = partName.name
         return BlenderActions.getObjectWorldPose(partName)
 
     def getBoundingBox(self,
     partName:str \
     ):
+        if isinstance(partName, Entity): partName = partName.name
+
         return BlenderActions.getBoundingBox(partName)
 
     def getDimensions(self,
     partName:str \
     ):
+        if isinstance(partName, Entity): partName = partName.name
         
         dimensions = BlenderActions.getObject(partName).dimensions
         return [
