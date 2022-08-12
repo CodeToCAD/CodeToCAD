@@ -2,21 +2,21 @@ from CodeToCADBlenderProvider import *
 
 Scene().setDefaultUnit("mm")
 
-Sketch("legExtrudePath").createLine("5in").rotate("0,0,90d")
-Sketch("stackingCutoutExtrudePath").createLine("1in").rotate("0,0,90d")
+legExtrudePath = Sketch("legExtrudePath").createLine("5in").rotate(0,0,90)
+stackingCutoutExtrudePath = Sketch("stackingCutoutExtrudePath").createLine("1in").rotate(0,0,90)
 
-Sketch("ellipseLeg").createEllipse("14mm", "27mm") \
+ellipseLeg = Sketch("ellipseLeg").createEllipse("14mm", "27mm") \
     .sweep("legExtrudePath", False) \
-    .thicken("5mm") \
-    .landmark("top","center,center,max")\
-    .landmark("bottom","center,center,min")
+    .thicken("5mm")
+ellipseLeg_top = ellipseLeg.createLandmark("top", center, center, max)
+ellipseLeg_bottom = ellipseLeg.createLandmark("bottom", center, center, min)
 
-Sketch("ellipseLegOuterCutout").createEllipse("14+3mm", "27+3mm") \
+ellipseLegOuterCutout = Sketch("ellipseLegOuterCutout").createEllipse("14+3mm", "27+3mm") \
     .sweep("stackingCutoutExtrudePath", False) \
-    .thicken("5mm") \
-    .landmark("top","center,center,max")
+    .thicken("5mm")
+ellipseLegOuterCutout_top = ellipseLegOuterCutout.createLandmark("top", center, center, max)
 
-Joint("ellipseLeg", "ellipseLegOuterCutout", "top", "top").transformLandmarkOntoAnother()
+Joint(ellipseLeg, ellipseLegOuterCutout, ellipseLeg_top, ellipseLegOuterCutout_top).translateLandmarkOntoAnother()
 
 # Sketch("ellipseLeg").subtract("ellipseLegOuterCutout")
 
@@ -26,7 +26,7 @@ Joint("ellipseLeg", "ellipseLegOuterCutout", "top", "top").transformLandmarkOnto
 # shape("ellipseLegInner").scale("20mm,34mm,6in")
 
 # shape("ellipseLeg").subtract("ellipseLegInner")
-# shape("ellipseLeg").landmark("top", "center,center,max")
+# shape("ellipseLeg").createLandmark("top", "center,center,max")
 
 # scene().setVisible("ellipseLegInner", False)
 # shape("ellipseLegCutout").createPrimitive("cylinder", "1,1,1")
@@ -35,11 +35,11 @@ Joint("ellipseLeg", "ellipseLegOuterCutout", "top", "top").transformLandmarkOnto
 # shape("ellipseLegCutoutInner").scale("20+2mm,34+2mm,2in")
 
 # shape("ellipseLegCutout").subtract("ellipseLegCutoutInner").apply()
-# shape("ellipseLegCutout").landmark("top", "center,center,max")
+# shape("ellipseLegCutout").createLandmark("top", "center,center,max")
 
 # scene().setVisible("ellipseLegCutoutInner", False)
 
-# joint("ellipseLeg", "ellipseLegCutout", "top", "top").transformLandmarkOntoAnother()
+# joint("ellipseLeg", "ellipseLegCutout", "top", "top").translateLandmarkOntoAnother()
 
 # shape("ellipseLeg").subtract("ellipseLegCutout")
 

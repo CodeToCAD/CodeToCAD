@@ -12,64 +12,111 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 
 BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
+min = "min"
+max = "max"
+center = "center"
+
 class Entity:
-    def translate(self,
-    dimensions:str\
-    ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
-        
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
 
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
+    def translate_fromstring(self,
+        translateString:str
+    ):
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(translateString)
+
+        dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
+
+        while len(dimensions) < 3:
+            dimensions.append(Utilities.Dimension(1))
     
-        BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.RELATIVE)
+        BlenderActions.translateObject(self.name, dimensions, BlenderDefinitions.BlenderTranslationTypes.RELATIVE)
 
         return self
 
-    def setPosition(self,
+    def translate(self,
+        translateX:str,
+        translateY:str,
+        translateZ:str
+    ):
+        return self.translate_fromstring([translateX, translateY, translateZ])
+        
+
+    def setPosition_fromstring(self,
     dimensions:str\
     ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions) or []
         
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
+        dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
+        while len(dimensions) < 3:
+            dimensions.append(Utilities.Dimension(1))
 
-        BlenderActions.translateObject(self.name, dimensionsList, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+        BlenderActions.setObjectLocation(self.name, dimensions)
 
         return self
         
-    def scale(self,
+    def setPosition(self,
+        postitionX:str,
+        positionY:str,
+        positionZ: str
+    ):
+        return self.setPosition_fromstring([postitionX, positionY, positionZ])
+
+    def scale_fromstring(self,
     dimensions:str
     ):
-        dimensionsList:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
-        
-        dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsList)
+        if type(dimensions) is str:
+            dimensions = dimensions.replace(" ","").lower().split(",")
 
-        while len(dimensionsList) < 3:
-            dimensionsList.append(Utilities.Dimension("1"))
+        # special case for scaling aspect ratio
+        dimensions = [
+            BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(dimension)
+            )
+            if dimension else None for dimension in dimensions
+        ]
     
-        BlenderActions.scaleObject(self.name, dimensionsList)
+        BlenderActions.scaleObject(self.name, dimensions)
         
         BlenderActions.applyObjectRotationAndScale(self.name)
         
         return self
 
-    def rotate(self,
+    def scale(self,
+        scaleX,
+        scaleY,
+        scaleZ
+    ):
+        return self.scale_fromstring([scaleX, scaleY, scaleZ])
+
+    def scale_aspect_ratio(self,
+        scaleValue:str,
+        axisToScale:str
+    ):
+        axis = Utilities.Axis.fromString(axisToScale).value
+        
+        ratio = [None, None, None]
+        ratio[axis] = scaleValue
+
+        return self.scale_fromstring(ratio)
+
+
+    def rotate_fromstring(self,
     rotation:str \
     ):
-        angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(rotation) or []
-
-        while len(angleList) < 3:
-            angleList.append(Utilities.Angle("1"))
+        angleList:list[Utilities.Angle] = Utilities.getAnglesFromStringList(rotation)
     
         BlenderActions.rotateObject(self.name, angleList, BlenderDefinitions.BlenderRotationTypes.EULER)
 
         BlenderActions.applyObjectRotationAndScale(self.name)
 
         return self
+    
+    def rotate(self,
+        rotateX:str,
+        rotateY:str,
+        rotateZ:str
+    ):
+        return self.rotate_fromstring([rotateX, rotateY, rotateZ])
 
     def rename(self,
     newName:str,
@@ -96,27 +143,35 @@ class Entity:
         
     def revolve(self,
     angle:str,
-    axis:Utilities.Axis,
+    axis:str,
     entityNameToDetermineAxis = None
     ):
-        BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, entityNameToDetermineAxis=entityNameToDetermineAxis)
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(angle).toRadians(), axis, entityNameToDetermineAxis=entityNameToDetermineAxis)
 
         return self
 
     def thicken(self,
-    thickness:int
+    thickness:float
     ):
-        BlenderActions.applySolidifyModifier(self.name, Utilities.Dimension(thickness))
+        BlenderActions.applySolidifyModifier(self.name, Utilities.Dimension.fromString(thickness))
 
         return self
         
     def screw(self,
     angle:str,
-    axis:Utilities.Axis,
+    axis:str,
     screwPitch:str = 0,
     iterations:int = 1
     ):
-        BlenderActions.applyScrewModifier(self.name, Utilities.Angle(angle).toRadians(), axis, screwPitch=Utilities.Dimension(screwPitch), iterations=iterations)
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+        
+        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(angle).toRadians(), axis, screwPitch=Utilities.Dimension.fromString(screwPitch), iterations=iterations)
         
         return self
 
@@ -133,22 +188,28 @@ class Entity:
 
     def mirror(self,
     mirrorAcrossEntityName:str, \
-    axis = (True, True, True)
+    axis:str
     ):
     
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
         BlenderActions.applyMirrorModifier(self.name, mirrorAcrossEntityName, axis)
         
         return self
 
     def linearPattern(self,
         instanceCount,
-        direction:str,
-        offset:int,
+        directionAxis:str,
+        offset:float,
     ):
 
-        axis = Utilities.Axis.fromString(direction)
+        axis = Utilities.Axis.fromString(directionAxis)
+        
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        [offset] = Utilities.getDimensionsFromString(offset)
+        offset = Utilities.Dimension.fromString(offset)
         offset = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(offset)
         offset = offset.value
         
@@ -159,7 +220,7 @@ class Entity:
     def circularPattern(self,
         instanceCount,
         separationAngle,
-        normalDirection:str,
+        normalDirectionAxis:str,
         centerPartName,
         centerLandmarkName = None
     ):
@@ -168,15 +229,16 @@ class Entity:
 
         pivotLandmark = Landmark("circularPatternPivot", self.name)
 
-        self.landmark(pivotLandmark.landmarkName, [0,0,0])
+        self.createLandmark(pivotLandmark.landmarkName, 0, 0, 0)
         
         BlenderActions.applyPivotConstraint(pivotLandmark.entityName, centerObjectName)
         
+        axis = Utilities.Axis.fromString(normalDirectionAxis)
 
-        [separationAngle] = Utilities.getAnglesFromString(separationAngle)
-        axis = Utilities.Axis.fromString(normalDirection)
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
         angles = [Utilities.Angle(0) for _ in range(3)]
-        angles[axis.value] = separationAngle
+        angles[axis.value] = Utilities.Angle.fromString(separationAngle)
         
         BlenderActions.rotateObject(pivotLandmark.entityName, angles, BlenderDefinitions.BlenderRotationTypes.EULER)
         
@@ -210,14 +272,17 @@ class Entity:
 
         return self
         
-    def landmarkRelative(
+    def createLandmarkRelative(
             self,
             landmarkName,
             otherEntityName,
             otherLandmarkName,
-            offset
+            offsetX,
+            offsetY,
+            offsetZ
         ):
-        landmarkObjectName = Landmark(landmarkName, self.name).entityName
+        landmark = Landmark(landmarkName, self.name)
+        landmarkObjectName = landmark.entityName
         
         # Create an Empty object to represent the landmark
         # Using an Empty object allows us to parent the object to this Empty.
@@ -231,11 +296,26 @@ class Entity:
         # Parent the landmark to the object
         BlenderActions.makeParent(landmarkObjectName, self.name)
 
-        BlenderActions.transformLandmarkRelativeToAnother(self.name, landmarkObjectName, otherEntityName, otherLandmarkName, offset)
+        BlenderActions.translateLandmarkRelativeToAnother(
+            self.name,
+            landmarkObjectName,
+            otherEntityName,
+            otherLandmarkName,
+            [Utilities.Dimension.fromString(offset) for offset in [offsetX, offsetY, offsetZ]]
+        )
 
-    def landmark(self, landmarkName, localPosition):
+        return landmark
 
-        landmarkObjectName = Landmark(landmarkName, self.name).entityName
+    def createLandmark_fromString(self, landmarkName, localPositionXYZ:str):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+        
+        localPositions = Utilities.getDimensionsFromStringList(localPositionXYZ, boundingBox)
+
+        assert len(localPositions) == 3, "localPositions should contain 3 dimensions for XYZ"
+        
+        landmark = Landmark(landmarkName, self.name)
+        landmarkObjectName = landmark.entityName
         
         # Create an Empty object to represent the landmark
         # Using an Empty object allows us to parent the object to this Empty.
@@ -249,9 +329,14 @@ class Entity:
         # Parent the landmark to the object
         BlenderActions.makeParent(landmarkObjectName, self.name)
 
-        BlenderActions.transformLandmarkInsideParent(self.name, landmarkObjectName, localPosition)
+        BlenderActions.translateObject(landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
-        return self
+        return landmark
+
+
+
+    def createLandmark(self, landmarkName, localXPosition, localYPosition, localZPosition):
+        return self.createLandmark_fromString(landmarkName, [localXPosition, localYPosition, localZPosition])
         
 
     def setVisible(self,
@@ -352,6 +437,40 @@ class Part(Entity):
     keywordArguments:dict=None \
     ):
         return self.createPrimitive("cylinder", "{},{}".format(radius,height), keywordArguments)
+
+    def createGear(
+            self,
+            outerRadius:str,
+            addendum:str,
+            innerRadius:str,
+            dedendum:str, 
+            height:str,
+            pressureAngle:str = "20d",
+            numberOfTeeth:int = 12,
+            skewAngle:str = 0,
+            conicalAngle:str = 0,
+            crownAngle:str = 0
+        ):
+            BlenderActions.createGear(
+                self.name,
+                numberOfTeeth,
+                pressureAngle,
+                addendum,
+                dedendum,
+                outerRadius,
+                innerRadius,
+                height,
+                skewAngle,
+                conicalAngle,
+                crownAngle
+            )
+            
+            # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+            # therefore, we'll use the object's "expected" name and rename it to what it should be
+            # note: this will fail if the "expected" name is incorrect
+            Part("Gear").rename(self.name, True)
+
+            return self
 
     def createTorus(self,
     innerRadius:str,  \
@@ -459,11 +578,8 @@ class Sketch(Entity):
     def extrude(self,
     length:str \
     ):
-
-        [length] = Utilities.getDimensionsFromString(length) or [Utilities.Dimension(0)]
-
         
-        BlenderActions.extrude(self.name, length)
+        BlenderActions.extrude(self.name, Utilities.Dimension.fromString(length))
 
         return self
 
@@ -496,7 +612,7 @@ class Sketch(Entity):
         fontFilePath = None
         ):
 
-        size = Utilities.Dimension(size)
+        size = Utilities.Dimension.fromString(size)
 
         BlenderActions.createText(self.name, text, size, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath)
 
@@ -610,45 +726,44 @@ class Landmark:
 class Joint: 
     # Text to 3D Modeling Automation Capabilities.
 
-    part1Name = None
-    part2Name = None
     part1Landmark:Landmark = None
     part2Landmark:Landmark = None
 
     def __init__(self,
-    part1Name:str, \
-    part2Name:str, \
-    part1LandmarkName:str = None, \
-    part2LandmarkName:str = None
+    part1Name:Part, \
+    part2Name:Part, \
+    part1LandmarkName:Landmark = None, \
+    part2LandmarkName:Landmark = None
     ):
-        self.part1Name = part1Name
-        self.part2Name = part2Name
-        self.part1Landmark = Landmark(part1LandmarkName, part1Name) if part1LandmarkName else None
-        self.part2Landmark = Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
+        self.part1 = part1Name if isinstance(part1Name, Entity) else Part(part1Name)
+        self.part2 = part2Name if isinstance(part2Name, Entity) else Part(part2Name)
+        self.part1Landmark = part1LandmarkName if type(part1LandmarkName) is Landmark else \
+            Landmark(part1LandmarkName, part1Name) if part1LandmarkName else None
+        self.part2Landmark = part2LandmarkName if type(part2LandmarkName) is Landmark else \
+            Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
 
         
-    def transformLandmarkOntoAnother(self):
+    def translateLandmarkOntoAnother(self):
         
-        BlenderActions.transformLandmarkOntoAnother(self.part1Name, self.part2Name, self.part1Landmark.entityName, self.part2Landmark.entityName)
+        BlenderActions.translateLandmarkOntoAnother(self.part1.name, self.part2.name, self.part1Landmark.entityName, self.part2Landmark.entityName)
 
         return self
 
     @staticmethod
-    def _getLimitLocationDimensions(dimension:str):
-        dimensionsArray = None
+    def _getLocationPair(minLocation:str, maxLocation:str):
+        minLocation = Utilities.Dimension.fromString(minLocation) if minLocation != None else None
+        maxLocation = Utilities.Dimension.fromString(maxLocation) if maxLocation != None else None
 
-        if dimension != None:
-            dimensionsArray:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimension) or []
-            
-            dimensionsArray = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensionsArray)
+        if minLocation == None and maxLocation == None:
+            return None
 
-            assert len(dimensionsArray) > 0,\
-                f"Limit Location joint must contain at least one value"
-            
-            if len(dimensionsArray) == 1:
-                dimensionsArray.append(Utilities.Dimension(dimensionsArray[0].value, dimensionsArray[0].unit))
+        if maxLocation and minLocation == None:
+            minLocation = Utilities.Dimension(0)
 
-        return dimensionsArray
+        if minLocation and maxLocation == None:
+            maxLocation = Utilities.Dimension(minLocation.value, minLocation.unit)
+
+        return [minLocation, maxLocation]
 
     @staticmethod
     def _limitLocationOffsetFromLandmark(objectName, objectLandmarkName, relativeToLandmarkName, xDimensions, yDimensions, zDimensions, keywordArguments):
@@ -673,52 +788,57 @@ class Joint:
 
     def limitLocation(
         self,
-        x:str = None,
-        y:str = None,
-        z:str = None,
+        minX:str = None,
+        minY:str = None,
+        minZ:str = None,
+        maxX:str = None,
+        maxY:str = None,
+        maxZ:str = None,
         keywordArguments = {}
         ):
         
-        xDimensions = Joint._getLimitLocationDimensions(x)
-        yDimensions = Joint._getLimitLocationDimensions(y)
-        zDimensions = Joint._getLimitLocationDimensions(z)
+        xDimensions = Joint._getLocationPair(minX, maxX)
+        yDimensions = Joint._getLocationPair(minY, maxY)
+        zDimensions = Joint._getLocationPair(minZ, maxZ)
 
         
-        Joint._limitLocationOffsetFromLandmark(self.part2Name, self.part2Landmark.entityName, self.part1Landmark.entityName, xDimensions, yDimensions, zDimensions, keywordArguments)
+        Joint._limitLocationOffsetFromLandmark(self.part2.name, self.part2Landmark.entityName, self.part1Landmark.entityName, xDimensions, yDimensions, zDimensions, keywordArguments)
 
         return self
         
-
     @staticmethod
-    def _getLimitRotationAngles(angles:str):
-        angleList = None
+    def _getAnglePair(minAngle:str, maxAngle:str):
+        minAngle = Utilities.Angle.fromString(minAngle) if minAngle != None else None
+        maxAngle = Utilities.Angle.fromString(maxAngle) if maxAngle != None else None
 
-        if angles != None:
-            
-            angleList:list[Utilities.Angle] = Utilities.getAnglesFromString(angles) or []
+        if minAngle == None and maxAngle == None:
+            return None
 
-            assert len(angleList) > 0,\
-                f"Limit Rotation joint angle must contain at least one value"
-            
-            if len(angleList) == 1:
+        if maxAngle and minAngle == None:
+            minAngle = Utilities.Angle(0)
 
-                angleList.append(Utilities.Angle(angleList[0].value, angleList[0].unit))
+        if minAngle and maxAngle == None:
+            maxAngle = Utilities.Angle(minAngle.value, minAngle.unit)
 
-        return angleList
+        return [minAngle, maxAngle]
+
 
     def limitRotation(
         self,
-        x:str = None,
-        y:str = None,
-        z:str = None,
+        minX:str = None,
+        minY:str = None,
+        minZ:str = None,
+        maxX:str = None,
+        maxY:str = None,
+        maxZ:str = None,
         keywordArguments = {}
         ):
 
-        xAngles = Joint._getLimitRotationAngles(x)
-        yAngles = Joint._getLimitRotationAngles(y)
-        zAngles = Joint._getLimitRotationAngles(z)
+        xAngles = Joint._getAnglePair(minX, maxX)
+        yAngles = Joint._getAnglePair(minY, maxY)
+        zAngles = Joint._getAnglePair(minZ, maxZ)
         
-        BlenderActions.applyLimitRotationConstraint(self.part2Name, xAngles, yAngles, zAngles, self.part1Landmark.entityName, keywordArguments)
+        BlenderActions.applyLimitRotationConstraint(self.part2.name, xAngles, yAngles, zAngles, self.part1Landmark.entityName, keywordArguments)
 
         return self
         
@@ -727,7 +847,17 @@ class Joint:
         keywordArguments = {}
         ):
 
-        BlenderActions.applyPivotConstraint(self.part2Name, self.part1Landmark.entityName, keywordArguments)
+        BlenderActions.applyPivotConstraint(self.part2.name, self.part1Landmark.entityName, keywordArguments)
+
+        return self
+        
+    def gearRatio(
+        self,
+        ratio:float,
+        keywordArguments = {}
+        ):
+
+        BlenderActions.applyGearConstraint(self.part2.name, self.part1.name, ratio, keywordArguments)
 
         return self
 
@@ -856,7 +986,7 @@ class Analytics:
         
         dimensions = BlenderActions.getObject(partName).dimensions
         return [
-            Utilities.Dimension(
+            Utilities.Dimension.fromString(
                 dimension,
                 BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
             ) 

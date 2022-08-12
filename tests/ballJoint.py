@@ -1,23 +1,22 @@
 from CodeToCADBlenderProvider import *
 
-Part("ball") \
-    .createSphere(1) \
-        .landmark("center","center,center,center") \
-            .landmark("bottom","center,center,min")
+ball = Part("ball").createSphere(1)
+ball_center = ball.createLandmark("center", center, center, center)
+ball_bottom = ball.createLandmark("bottom", center, center, min)
 
-Part("link")\
-    .createCube(1,1,2)\
-        .landmark("top","center,center,max").landmark("bottom","center,center,min")
+link = Part("link").createCube(1,1,2)
+link_top = link.createLandmark("top", center, center, max)
+link_bottom = link.createLandmark("bottom",center, center, min)
 
-Joint("ball", "link", "center","bottom")\
+Joint(ball, link, ball_center, link_bottom)\
     .limitLocation(0,0,0).limitRotation(0,0,0)
 
-Part("socket")\
-    .createSphere(0.9)\
-    .landmark("cutoff","center,center,min+0.2").landmark("center","center,center,center")
+socket = Part("socket").createSphere(0.9)
+socket_cutoff = socket.createLandmark("cutoff",center, center, "min + 0.2")
+socket_center = socket.createLandmark("center", center, center, center)
 
-Joint("socket","ball","cutoff","bottom").transformLandmarkOntoAnother()
+Joint(socket, ball, socket_cutoff, ball_bottom).translateLandmarkOntoAnother()
 
-Part("socket").subtract("ball").apply()
+socket.subtract("ball").apply()
 
-Joint("socket","ball","center").limitRotation("-30d,30d","-30d,30d",0).pivot()
+Joint("socket","ball","center").limitRotation(-30,-30,0,30,30,0).pivot()

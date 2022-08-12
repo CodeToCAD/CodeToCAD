@@ -1,15 +1,21 @@
 from CodeToCADBlenderProvider import *
 
-Part("a").createCube(1,1,1).landmark("top","center,center,max").landmark("bottom","center,center,min")
-Part("b").createCube(1,1,1).landmark("bottom","center,center,min")
-Part("c").createCube(1,1,1).landmark("top","center,center,max")
+a = Part("a").createCube(1,1,1)
+a_top = a.createLandmark("top", center, center, max)
+a_bottom = a.createLandmark("bottom", center, center, min)
 
-# Joint("a","b","top","bottom").transformLandmarkOntoAnother()
+b = Part("b").createCube(1,1,1)
+b_bottom = b.createLandmark("bottom", center, center, min)
+
+c = Part("c").createCube(1,1,1)
+c_top = c.createLandmark("top", center, center, max)
+
+# Joint("a","b","top","bottom").translateLandmarkOntoAnother()
 
 Joint("a","b","top","bottom")\
     .limitLocation(0,0,0)\
     .limitRotation(0,0,0)
     
-Joint("a","c","bottom","top")\
+Joint(a,c,a_bottom,c_top)\
     .limitLocation(0,0,0)\
     .limitRotation(0,0,0)
