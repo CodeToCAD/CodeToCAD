@@ -152,10 +152,13 @@ def applyBooleanModifier(
 def applyMirrorModifier(
         entityName,
         mirrorAcrossEntityName,
-        axis,
+        axis:Utilities.Axis,
         keywordArguments:dict = {}
     ):
     
+    axisList = [False, False, False]
+    axisList[axis.value] = True
+
     blenderMirrorAcrossObject = getObject(mirrorAcrossEntityName)
 
     applyModifier(
@@ -164,7 +167,7 @@ def applyMirrorModifier(
         dict(
             {
                 "mirror_object": blenderMirrorAcrossObject,
-                "use_axis": axis,
+                "use_axis": axisList,
                 "use_mirror_merge": False
             },
             **keywordArguments
@@ -248,7 +251,7 @@ def blenderPrimitiveFunction(
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
         return bpy.ops.object.empty_add(radius=dimensions[0].value, **keywordArguments)
 
-    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
+    if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.plane:
         return bpy.ops.mesh.primitive_plane_add( **keywordArguments)
         
     raise Exception(f"Primitive with name {primitive.name} is not implemented.")
@@ -273,7 +276,7 @@ def addPrimitive(
     assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
-    dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromString(dimensions) or []
+    dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions) or []
 
     dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -285,6 +288,60 @@ def addPrimitive(
         primitiveType,
         dimensions,
         keywordArguments or {}
+    )
+
+def createGear(
+        objectName:str,
+        numberOfTeeth:int,
+        pressureAngle:str,
+        addendum:str,
+        dedendum:str, 
+        outerRadius:str,
+        innerRadius:str,
+        height:str,
+        skewAngle:str,
+        conicalAngle:str,
+        crownAngle:str
+    ):
+    addonName = "add_mesh_extra_objects"
+
+    # check if the addon is enabled, enable it if it is not.
+    addon = bpy.context.preferences.addons.get(addonName)
+    if addon == None:
+        addonSetEnabled(addonName, True)
+        addon = bpy.context.preferences.addons.get(addonName)
+
+    assert \
+        addon != None, \
+            f"Could not enable the {addonName} addon to create extra objects"
+
+    outerRadius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(outerRadius)).value
+    innerRadius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(innerRadius)).value
+    addendum = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(addendum)).value
+    dedendum = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(dedendum)).value
+    height = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(height)).value
+
+    if addendum > outerRadius/2: addendum = outerRadius/2
+    if innerRadius > outerRadius: innerRadius = outerRadius
+    if dedendum + innerRadius > outerRadius: dedendum = outerRadius - innerRadius
+
+    pressureAngle = Utilities.Angle.fromString(pressureAngle).toRadians().value
+    skewAngle = Utilities.Angle.fromString(skewAngle).toRadians().value
+    conicalAngle = Utilities.Angle.fromString(conicalAngle).toRadians().value
+    crownAngle = Utilities.Angle.fromString(crownAngle).toRadians().value
+
+    return bpy.ops.mesh.primitive_gear(
+        name=objectName,
+        number_of_teeth=numberOfTeeth,
+        radius=outerRadius,
+        addendum=addendum,
+        dedendum=dedendum, 
+        angle=pressureAngle,
+        base=innerRadius,
+        width=height,
+        skew=skewAngle,
+        conangle=conicalAngle,
+        crown=crownAngle
     )
 
 fileImportFunctions = {
@@ -410,6 +467,21 @@ def translateObject(
     translationTuple = (translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
 
     setattr(blenderObject, translationType.value, translationTuple)
+
+
+def setObjectLocation(
+        objectName,
+        locationDimensions:list[Utilities.Dimension]
+    ):
+    
+    blenderObject = getObject(objectName)
+
+    assert \
+        len(locationDimensions) == 3, \
+        "locationDimensions must be length 3"
+
+
+    blenderObject.location = (locationDimensions[0].value, locationDimensions[1].value, locationDimensions[2].value)
 
 
 def scaleObject(
@@ -703,45 +775,38 @@ def applyPivotConstraint(
 def applyGearConstraint(
     objectName,
     gearObjectName,
-    ratio,
+    ratio:float = 1,
     keywordArguments = {}
     ):
     
-    gearObject = getObject(gearObjectName)
-
-    constraintType = BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION
-    
-    applyConstraint(
-        objectName,
-        constraintType,
-        dict(
-            {
-                "target": gearObject
-            },
-            **keywordArguments
-        )
-    )
+    for axis in Utilities.Axis:
+        # e.g. constraints["Limit Location"].min_x
+        driver = createDriver(objectName, "rotation_euler", axis.value)
+        setDriver(driver, "SCRIPTED", f"{-1*ratio} * gearRotation")
+        setDriverVariableSingleProp(driver, "gearRotation", gearObjectName, f"rotation_euler[{axis.value}]")
 
 # MARK: Drivers / Computed variables
 
 def createDriver(
         objectName,
         path,
+        index=-1
     ):
 
     blenderObject = getObject(objectName)
 
-    blenderObject.driver_add(path)
+    return blenderObject.driver_add(path, index).driver
 
 
 def removeDriver(
         objectName,
         path,
+        index=-1
     ):
 
     blenderObject = getObject(objectName)
 
-    blenderObject.driver_remove(path)
+    blenderObject.driver_remove(path, index)
 
 
 def getDriver(
@@ -760,28 +825,22 @@ def getDriver(
 
 
 def setDriver(
-        objectName,
-        path,
+        driver,
         driverType:BlenderDefinitions.BlenderDriverTypes,
         expression = ""
     ):
 
-    driver = getDriver(objectName, path)
-
-    driver.type = driverType.name
+    driver.type = driverType
 
     driver.expression = expression if expression else ""
 
 
 def setDriverVariableSingleProp(
-        objectName,
-        path,
+        driver,
         variableName,
         targetObjectName,
         targetDataPath
     ):
-
-    driver = getDriver(objectName, path)
 
     variable = driver.variables.get(variableName)
 
@@ -799,15 +858,12 @@ def setDriverVariableSingleProp(
 
     
 def setDriverVariableTransforms(
-        objectName,
-        path,
+        driver,
         variableName,
         targetObjectName,
         transform_type:BlenderDefinitions.BlenderDriverVariableTransformTypes,
         transform_space:BlenderDefinitions.BlenderDriverVariableTransformSpaces
     ):
-
-    driver = getDriver(objectName, path)
 
     variable = driver.variables.get(variableName)
 
@@ -827,14 +883,11 @@ def setDriverVariableTransforms(
 
 
 def setDriverVariableLocationDifference(
-        objectName,
-        path,
+        driver,
         variableName,
         target1ObjectName,
         target2ObjectName
     ):
-
-    driver = getDriver(objectName, path)
 
     variable = driver.variables.get(variableName)
 
@@ -854,14 +907,11 @@ def setDriverVariableLocationDifference(
 
     
 def setDriverVariableRotationDifference(
-        objectName,
-        path,
+        driver,
         variableName,
         target1ObjectName,
         target2ObjectName
     ):
-
-    driver = getDriver(objectName, path)
 
     variable = driver.variables.get(variableName)
 
@@ -882,50 +932,40 @@ def setDriverVariableRotationDifference(
 
 # MARK: Landmarks
 
-def transformLandmarkInsideParent(
-        objectName,
-        landmarkObjectName,
-        localPosition
-    ):
-        # Figure out how far we need to translate the landmark inside the object:
-        boundingBox = getBoundingBox(objectName)
-
-        localPosition:list[Utilities.Dimension] = Utilities.getDimensionsFromString(localPosition, boundingBox) or []
-
-        localPosition = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPosition)
-        
-        while len(localPosition) < 3:
-            localPosition.append(Utilities.Dimension("1"))
-        
-        translateObject(landmarkObjectName, localPosition, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
-
-def transformLandmarkRelativeToAnother(
+def translateLandmarkRelativeToAnother(
         objectName,
         landmarkObjectName,
         otherObjectName,
         otherLandmarkName,
-        offset = None
+        offset:list[Utilities.Dimension] = None
     ):
         _ = getObject(objectName)
         
         otherObjectLandmarkObjectName = f"{otherObjectName}_{otherLandmarkName}"
         _ = getObject(otherObjectLandmarkObjectName)
 
-        localPosition = getObjectWorldLocation(otherObjectLandmarkObjectName) - getObjectWorldLocation(objectName)
+        localPositionXYZ = getObjectWorldLocation(otherObjectLandmarkObjectName) - getObjectWorldLocation(objectName)
         
         if offset:
-            dimensions = Utilities.getDimensionsFromString(offset)
-            dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
+            dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(offset)
             offset = [dimension.value for dimension in dimensions]
 
-            localPosition += Vector(offset)
+            localPositionXYZ += Vector(offset)
 
-        localPosition = localPosition.to_tuple()
+        localPositionXYZ = localPositionXYZ.to_tuple()
 
-        transformLandmarkInsideParent(objectName, landmarkObjectName, localPosition)
+        localPositionXYZ = [
+            Utilities.Dimension(
+                    localPosition,
+                    BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT
+                )
+                for localPosition in localPositionXYZ
+        ]
+
+        translateObject(landmarkObjectName, localPositionXYZ, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
 
-def transformLandmarkOntoAnother(
+def translateLandmarkOntoAnother(
         object1Name,
         object2Name,
         object1Landmark,
@@ -1339,7 +1379,7 @@ def createSpline(
 
     coordinates = [
             BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
-                Utilities.getDimensionsFromString(coordinate) or []
+                Utilities.getDimensionsFromStringList(coordinate) or []
             ) for coordinate in coordinates
         ]
     coordinates = [[dimension.value for dimension in coordinate] for coordinate in coordinates]
@@ -1436,7 +1476,7 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Line,
             dict(
                 {
-                    "Simple_endlocation": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(endLocation)).value,
+                    "Simple_endlocation": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(endLocation)).value,
                     "use_cyclic_u": False
                 },
                 **keywordArguments
@@ -1447,7 +1487,7 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Distance,
             dict(
                 {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length)).value,
+                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
                     "Simple_center": True,
                     "use_cyclic_u": False
                 },
@@ -1459,8 +1499,8 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Angle,
             dict(
                 {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length)).value,
-                    "Simple_angle": Utilities.Angle(angle).toDegrees().value,
+                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
+                    "Simple_angle": Utilities.Angle.fromString(angle).toDegrees().value,
                     "use_cyclic_u": False
                 },
                 **keywordArguments
@@ -1471,7 +1511,7 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Circle,
             dict(
                 {
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius)).value,
+                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
                     "Simple_sides": 64
                 },
                 **keywordArguments
@@ -1482,8 +1522,8 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Ellipse,
             dict(
                 {
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius_x)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius_y)).value
+                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_x)).value,
+                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_y)).value
                 },
                 **keywordArguments
             )
@@ -1494,9 +1534,9 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius)).value,
+                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle(angle).toDegrees().value,
+                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value,
                     "use_cyclic_u": False
                 },
                 **keywordArguments
@@ -1508,9 +1548,9 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius)).value,
+                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle(angle).toDegrees().value
+                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value
                 },
                 **keywordArguments
             )
@@ -1521,10 +1561,10 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": 64,
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(outter_radius)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(inner_radius)).value,
+                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(outter_radius)).value,
+                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(inner_radius)).value,
                     "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle(angle).toDegrees().value
+                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value
                 },
                 **keywordArguments
             )
@@ -1535,8 +1575,8 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rectangle,
             dict(
                 {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length)).value,
-                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(width)).value,
+                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
+                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(width)).value,
                     "Simple_rounded": 0
                 },
                 **keywordArguments
@@ -1547,8 +1587,8 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rhomb,
             dict(
                 {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length)).value,
-                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(width)).value,
+                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
+                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(width)).value,
                     "Simple_center": True
                 },
                 **keywordArguments
@@ -1560,7 +1600,7 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": numberOfSides,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius)).value
+                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value
                 },
                 **keywordArguments
             )
@@ -1571,8 +1611,8 @@ class BlenderCurvePrimitives():
             dict(
                 {
                     "Simple_sides": numberOfSides,
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius_x)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(radius_y)).value
+                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_x)).value,
+                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_y)).value
                 },
                 **keywordArguments
             )
@@ -1582,9 +1622,9 @@ class BlenderCurvePrimitives():
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Trapezoid,
             dict(
                 {
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length_upper)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(length_lower)).value,
-                    "Simple_h": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension(height)).value
+                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length_upper)).value,
+                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length_lower)).value,
+                    "Simple_h": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(height)).value
                 },
                 **keywordArguments
             )

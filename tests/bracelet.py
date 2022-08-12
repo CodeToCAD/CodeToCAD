@@ -36,17 +36,17 @@ buttonInnerYTranslation = (bracelet["outerDiameter"] - buttonInner["depth"]) / 2
 
 Part("bracelet") \
 .createPrimitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
-.scale("1,1,{}cm".format(bracelet["thickness"])) # Scale x,y by a scale factor of 1, so the number is unitless
+.scale(1, 1, f"{bracelet['thickness']}cm") # Scale x,y by a scale factor of 1, so the number is unitless
 
 Part("button") \
 .createPrimitive("cylinder", [button["diameter"]/2,button["depth"], "cm"]) \
-.rotate("90deg,0,0") \
-.translate([0,buttonTranslation,0,"cm"])
+.rotate(90,0,0) \
+.translate(0,f"{buttonTranslation}cm",0)
 
 Part("buttonInner") \
 .createPrimitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
-.rotate("90deg,0,0") \
-.translate([0,buttonInnerYTranslation,0,"cm"])
+.rotate(90, 0, 0) \
+.translate(0,f"{buttonInnerYTranslation}cm",0)
 
 Part("belt") \
 .createPrimitive("cylinder", [belt["outerDiameter"]/2,belt["thickness"], "cm"])
