@@ -957,7 +957,7 @@ def translateLandmarkRelativeToAnother(
         localPositionXYZ = [
             Utilities.Dimension(
                     localPosition,
-                    BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT
+                    BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
                 )
                 for localPosition in localPositionXYZ
         ]

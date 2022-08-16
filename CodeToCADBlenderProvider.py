@@ -290,7 +290,7 @@ class Entity:
         ):
         
         if isinstance(otherEntityName, Entity): otherEntityName = otherEntityName.name
-        if isinstance(otherLandmarkName, Landmark): otherLandmarkName = otherLandmarkName.name
+        if isinstance(otherLandmarkName, Landmark): otherLandmarkName = otherLandmarkName.landmarkName
 
         landmark = Landmark(landmarkName, self.name)
         landmarkObjectName = landmark.entityName
@@ -312,7 +312,7 @@ class Entity:
             landmarkObjectName,
             otherEntityName,
             otherLandmarkName,
-            [Utilities.Dimension.fromString(offset) for offset in [offsetX, offsetY, offsetZ]]
+            [Utilities.Dimension.fromString(offset) for offset in [offsetX or 0, offsetY or 0, offsetZ or 0]]
         )
 
         return landmark
