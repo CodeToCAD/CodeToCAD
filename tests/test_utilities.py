@@ -1,3 +1,4 @@
+from CodeToCAD.utilities import getAnglesFromStringList, getDimensionsFromStringList
 from utilities import Dimension, getDimensionsFromString, LengthUnit, convertToLengthUnit, getAnglesFromString, AngleUnit, Angle
 
 def test_dimensions():
@@ -34,25 +35,25 @@ def test_dimensions():
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.foot
 
-    dimensions = getDimensionsFromString(",1cm,")
+    dimensions = getDimensionsFromStringList(",1cm,")
     assert dimensions[0].value == None and dimensions[1].value == 1
     assert dimensions[0].unit == None and dimensions[1].unit == LengthUnit.centimeter
-    dimensions = getDimensionsFromString("10,1")
+    dimensions = getDimensionsFromStringList("10,1")
     assert dimensions[0].value == 10 and dimensions[1].value == 1
     assert dimensions[0].unit == None and dimensions[1].unit == None
-    dimensions = getDimensionsFromString("1,2,m")
+    dimensions = getDimensionsFromStringList("1,2,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter
-    dimensions = getDimensionsFromString("1,2,3,m")
+    dimensions = getDimensionsFromStringList("1,2,3,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter and dimensions[2].unit == LengthUnit.meter
-    dimensions = getDimensionsFromString("1m,2m,3m")
+    dimensions = getDimensionsFromStringList("1m,2m,3m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter and dimensions[2].unit == LengthUnit.meter
-    dimensions = getDimensionsFromString("1,2,3mm,m")
+    dimensions = getDimensionsFromStringList("1,2,3mm,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter and dimensions[2].unit == LengthUnit.millimeter
-    dimensions = getDimensionsFromString("21,1/8,1/8, in")
+    dimensions = getDimensionsFromStringList("21,1/8,1/8, in")
     assert dimensions[0].value == 21 and dimensions[1].value == .125 and dimensions[2].value == .125
     assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.inch
 
@@ -62,22 +63,22 @@ def test_dimensions():
     print("test_dimensions done.")
 
 def test_angles():
-    angles = getAnglesFromString("10,1")
+    angles = getAnglesFromStringList("10,1")
     assert angles[0].value == 10 and angles[1].value == 1
     assert angles[0].unit == AngleUnit.RADIANS and angles[1].unit == AngleUnit.RADIANS
-    angles = getAnglesFromString("1,2,deg")
+    angles = getAnglesFromStringList("1,2,deg")
     assert angles[0].value == 1 and angles[1].value == 2
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
-    angles = getAnglesFromString("1,2,3,deg")
+    angles = getAnglesFromStringList("1,2,3,deg")
     assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES and angles[2].unit == AngleUnit.DEGREES
-    angles = getAnglesFromString("1deg,2rad,3deg")
+    angles = getAnglesFromStringList("1deg,2rad,3deg")
     assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.RADIANS and angles[2].unit == AngleUnit.DEGREES
-    angles = getAnglesFromString("1,2,3deg,rad")
+    angles = getAnglesFromStringList("1,2,3deg,rad")
     assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
     assert angles[0].unit == AngleUnit.RADIANS and angles[1].unit == AngleUnit.RADIANS and angles[2].unit == AngleUnit.DEGREES
-    angles = getAnglesFromString("21,1/8,1/8, degrees")
+    angles = getAnglesFromStringList("21,1/8,1/8, degrees")
     assert angles[0].value == 21 and angles[1].value == .125 and angles[2].value == .125
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES and angles[2].unit == AngleUnit.DEGREES
 

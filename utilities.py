@@ -4,31 +4,12 @@ from enum import Enum
 import re
 import math
 
-class Point:
-    x:float
-    y:float
-    z:float
+reservedWords = ["min", "max", "center"]
 
-class BoundaryAxis:
-    min = None
-    max = None
-    center = None
-    range = None
-    def __init__(self, min=None, max=None, center=None, range=None):
-        self.min = min
-        self.max = max
-        self.center = center
-        self.range = range
-
-
-class BoundaryBox:
-    x = BoundaryAxis()
-    y = BoundaryAxis()
-    z = BoundaryAxis()
-    def __init__(self, x:BoundaryAxis=BoundaryAxis(), y:BoundaryAxis=BoundaryAxis(), z:BoundaryAxis=BoundaryAxis()):
-        self.x = x
-        self.y = y
-        self.z = z
+def isReservedWordInString(stringToCheck:str) -> bool:
+    for word in reservedWords: 
+        if word in stringToCheck: return True
+    return False
 
 # An enum that uses the enum type and value for comparison
 class EquittableEnum(Enum):
@@ -76,67 +57,76 @@ class Angle():
           
       return self
 
-  # Default unit is radians if unit not passed
-  def __init__(self, value:float, unit:AngleUnit = AngleUnit.RADIANS):
-      self.value = value
-      self.unit = unit
+  # Default unit is degrees if unit not passed
+  def __init__(self, value:float, defaultUnit:AngleUnit = AngleUnit.DEGREES):
+    
+    unit = AngleUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
+    assert (unit is None and defaultUnit is None) \
+        or type(unit) is AngleUnit, \
+            "Could not parse default unit."
+            
+    self.value = value
+    self.unit = unit or AngleUnit.DEGREES
 
   # fromString: takes a string with a math operation and an optional unit of measurement
-  # Default unit is radians if unit not passed
-  def __init__(self, fromString:str, unit:AngleUnit = AngleUnit.RADIANS):
+  # Default unit is degrees if unit not passed
+  @staticmethod
+  def fromString(fromString:str, defaultUnit:AngleUnit = AngleUnit.DEGREES):
 
-      fromString = str(fromString) # safe-guard if a non-string is passed in
+        unit = AngleUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
+        assert (unit is None and defaultUnit is None) \
+            or type(unit) is AngleUnit, \
+                "Could not parse default unit."
 
-      fromString = fromString.replace(" ", "")
+        if isinstance(fromString, (int, float)):
+            return Angle(fromString, unit)
 
-      unitInString = re.search('[A-Za-z]+$', fromString)
+        assert type(fromString) is str, "fromString must be a string."
 
-      if unitInString:
-          value = fromString[0:-1*len(unitInString[0])]
+        fromString = fromString.replace(" ", "").lower()
 
-          self.unit = AngleUnit.fromString(unitInString[0])
-      else:
-          value = fromString
-
-          self.unit = unit or AngleUnit.RADIANS
-      
-      # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
-      if re.match("[+\-*\/%\d]+", value):
-          self.value = eval(value)
-      else:
-          self.value = None
-
-def getAnglesFromString(anglesString):
-    
-    if type(anglesString) == list:
-        anglesString = ",".join(
-            map(
-                lambda angle:str(angle),
-                anglesString
-            )
-        )
-
-    parsedAngles = None
-    if anglesString != None and type(anglesString) == str and "," in anglesString:
-        anglesArray = anglesString.split(',')
-
-        # besides accepting a unit in the angle, e.g. 1deg,1rad,1,rad. we also
-        # accept the last input as a default unit
-        # e.g. 1,1,1,rad => default value radians
-        defaultUnit = re.search('[A-Za-z]+$', anglesArray[-1].strip())
-        # check if the last value contains only a unit:
-        if defaultUnit and len(defaultUnit[0]) == len(anglesArray[-1].strip()):
-            defaultUnit = anglesArray.pop().strip()
-        else:
-            defaultUnit = None
-
-        defaultUnit = AngleUnit.fromString(defaultUnit) if defaultUnit else None
+        value = fromString
         
-        parsedAngles = [Angle(angle, defaultUnit) for angle in anglesArray ]
-    elif anglesString != None and (type(anglesString) == str or type(anglesString) == int):
-        parsedAngles = [Angle(anglesString)]
-    else:
-        print("getAnglesFromString: ", anglesString, " is not a valid input. Cannot parse angles.")
+        # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
+        unitInString = re.search('[A-Za-z]+$', fromString)
+        if unitInString:
+            value = fromString[0:-1*len(unitInString[0])]
+            unitInString = LengthUnit.fromString(unitInString[0])
+            unit = unitInString or unit or AngleUnit.DEGREES
+        
+        # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
+        assert re.match("[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
+
+        value = eval(value)
+
+        return Angle(value, unit)
+
+
+def getAnglesFromStringList(angles):
+    
+    if type(angles) == str:
+        angles = angles.replace(" ","").lower().split(",")
+
+
+    assert isinstance(angles, (list,tuple)), "Only a list of strings is allowed."
+
+    defaultUnit = None
+
+    angleString = angles[-1]
+    
+    if type(angleString) == str:
+        angleString = angleString.replace(" ", "").lower()
+        angleString = re.search('[A-Za-z]+$', angleString)
+        
+        unitInString = AngleUnit.fromString(angleString[0]) if angleString else None
+        if unitInString != None:
+            defaultUnit = unitInString
+            if len(angleString[0]) == len(angles[-1]):
+                angles.pop()
+
+    parsedAngles = []
+    for angle in angles:
+        parsedAngles.append(Angle.fromString(angle, defaultUnit))
 
     return parsedAngles
 
@@ -157,10 +147,12 @@ class LengthUnit(Units):
     def fromString(fromString:str):
         aliases = {
             #metric
+            "micrometer": LengthUnit.micrometer,
             "millimeter": LengthUnit.millimeter,
             "millimeters": LengthUnit.millimeter,
             "centimeter": LengthUnit.centimeter,
             "centimeters": LengthUnit.centimeter,
+            "kilometer": LengthUnit.kilometer,
             "meter": LengthUnit.meter,
             "meters": LengthUnit.meter,
             "mm": LengthUnit.millimeter,
@@ -187,111 +179,6 @@ class LengthUnit(Units):
         return aliases[fromString] if fromString in aliases else None
 
     
-    
-
-
-class Dimension():
-
-  # Default unit is None (scale factor) if it's not passed in
-  def __init__(self, value:float, unit:LengthUnit = None):
-      self.value = value
-      self.unit = unit
-
-  # fromString: takes a string with a math operation and an optional unit of measurement
-  # Default unit is None (scale factor) if it's not passed in
-  # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
-  def __init__(self, fromString:str, unit:LengthUnit = None):
-
-      fromString = str(fromString) # safe-guard if a non-string is passed in
-
-      fromString = fromString.replace(" ", "")
-
-      unitInString = re.search('[A-Za-z]+$', fromString)
-
-      value = fromString
-
-      self.unit = unit or None
-
-      if unitInString:
-          value = fromString[0:-1*len(unitInString[0])]
-
-          self.unit = LengthUnit.fromString(unitInString[0])
-      
-      # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
-      if re.match("[+\-*\/%\d\(\)]+", value):
-          self.value = eval(value)
-      else:
-          self.value = None
-
-def convertToLengthUnit(targetUnit:LengthUnit, value, unit:LengthUnit) -> float:
-    # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
-    return value * (unit.value/targetUnit.value)
-
-def getDimensionsFromString(dimensions, boundingBox:BoundaryBox=None):
-
-    # This is a tech debt, we need to separate the logic for figuring out default units from being dependent on the input being a string.
-    if type(dimensions) == list or type(dimensions) == tuple:
-        dimensions = ",".join(
-            map(
-                lambda dimension:str(dimension),
-                dimensions
-            )
-        )
-
-    parsedDimensions = None
-    if dimensions != None and type(dimensions) == str and "," in dimensions:
-        dimensionsArray = dimensions.split(',')
-
-        # besides accepting a unit in the dimension, e.g. 1m,1cm,1,m. we also
-        # accept the last input as a default unit
-        # e.g. 1,1,1,m => default value meter
-        lastDimension = dimensionsArray[-1].strip()
-        defaultUnit = None
-        if lastDimension not in ["min", "max", "center"]:
-            defaultUnit = re.search('[A-Za-z]+$', lastDimension)
-            # check if the last value contains only a unit:
-            if defaultUnit and len(defaultUnit[0]) == len(lastDimension):
-                defaultUnit = dimensionsArray.pop().strip()
-            else:
-                defaultUnit = None
-
-        defaultUnit = LengthUnit.fromString(defaultUnit) if defaultUnit else None
-
-        parsedDimensions = []
-
-        for index, dimension in enumerate(dimensionsArray):
-            dimension = dimension.lower()
-            if boundingBox != None and index < 3:
-                boundary = getattr(boundingBox, "xyz"[index])
-                
-                dimension = dimension.replace(" ", "")
-
-                localUnit = re.search('[A-Za-z]+$', dimension)
-
-                if localUnit:
-                    localUnit = LengthUnit.fromString(localUnit[0])
-                    
-                if localUnit in ["min", "max", "center"]:
-                    localUnit = None
-
-                localUnit = localUnit or defaultUnit or LengthUnit.meter
-
-                if "min" in dimension:
-                    dimension = dimension.replace("min","({})".format( convertToLengthUnit(localUnit, boundary.min, LengthUnit.meter) ))
-                if "max" in dimension:
-                    dimension = dimension.replace("max","({})".format( convertToLengthUnit(localUnit, boundary.max, LengthUnit.meter) ))
-                if "center" in dimension:
-                    dimension = dimension.replace("center","({})".format( convertToLengthUnit(localUnit, boundary.center, LengthUnit.meter) ))
-
-            parsedDimensions.append(Dimension(dimension, defaultUnit))
-
-    elif dimensions != None and (type(dimensions) == str or type(dimensions) == int):
-        parsedDimensions = [Dimension(dimensions)]
-    else:
-        print("getDimensionsFromString: ", dimensions, " is not a valid input. Cannot parse dimensions.")
-
-    return parsedDimensions
-
 class Axis(EquittableEnum):
     X = 0
     Y = 1
@@ -306,6 +193,7 @@ class Axis(EquittableEnum):
             return Axis.Y
         if axis == "z":
             return Axis.Z
+        return None
 
 class CurvePrimitiveTypes(EquittableEnum):
     Point = 0
@@ -339,3 +227,135 @@ class ConstraintTypes(EquittableEnum):
     Rotation = 1 # Rotation locked between specified start and end angles in all axes.
     Pivot = 2 # Rotation locked between specified start and end angles in all axes, but rotation origin is offset.
     Gear = 3 # Rotation of one object is a percentage of another's in a specified axis.
+
+class Point:
+    x:float
+    y:float
+    z:float
+
+class BoundaryAxis:
+    min = None
+    max = None
+    center = None
+    range = None
+    unit = LengthUnit.meter
+    def __init__(self, min=None, max=None, center=None, range=None, unit=LengthUnit.meter):
+        self.min = min
+        self.max = max
+        self.center = center
+        self.range = range
+        self.unit = unit if unit else LengthUnit.meter
+
+
+class BoundaryBox:
+    x = BoundaryAxis()
+    y = BoundaryAxis()
+    z = BoundaryAxis()
+    def __init__(self, x:BoundaryAxis=BoundaryAxis(), y:BoundaryAxis=BoundaryAxis(), z:BoundaryAxis=BoundaryAxis()):
+        self.x = x
+        self.y = y
+        self.z = z
+
+class Dimension():
+  def __init__(self, value:float, unit:LengthUnit = None):
+    assert isinstance(value, (int, float)) , "Dimension value must be a number."
+
+    unit = LengthUnit.fromString(unit.replace(" ", "").lower()) if type(unit) is str else unit
+    assert unit is None or type(unit) is LengthUnit , "Dimension unit must be of type LengthUnit or None."
+
+    self.value = value
+    self.unit = unit
+
+  # fromString: takes a string with a math operation and an optional unit of measurement
+  # Default unit is None (scale factor) if it's not passed in
+  # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm" 
+  # boundaryAxis is required if min,center,max are used
+  @staticmethod
+  def fromString(fromString:str, defaultUnit:LengthUnit = None, boundaryAxis:BoundaryAxis = None):
+
+    unit = LengthUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
+    assert (unit is None and defaultUnit is None) \
+        or type(unit) is LengthUnit, \
+            "Could not parse default unit."
+
+    if isinstance(fromString, (int, float)):
+        return Dimension(fromString, unit)
+
+    assert type(fromString) is str, "fromString must be a string."
+
+    fromString = fromString.replace(" ", "").lower()
+    value = fromString
+    
+    # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
+    unitInString = re.search('[A-Za-z]+$', fromString)
+    if unitInString and not isReservedWordInString(unitInString[0]):
+        value = fromString[0:-1*len(unitInString[0])]
+        unitInString = LengthUnit.fromString(unitInString[0])
+        unit = unitInString or unit
+
+    # if min,max,center is used, try to parse those words into their respective values.
+    if isReservedWordInString(value):
+        assert boundaryAxis != None, "min,max,center keywords used, but boundaryAxis is not known."
+        assert unit != None, "min,max,center keywords used, but unit is not known."
+        value = replaceMinMaxCenterWithRespectiveValue(value, boundaryAxis, unit)
+    
+    # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
+    assert re.match("[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
+
+    value = eval(value)
+
+    return Dimension(value, unit)
+
+
+# Convert on LengthUnit to another
+def convertToLengthUnit(targetUnit:LengthUnit, value:float, unit:LengthUnit) -> float:
+    # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
+    return value * (unit.value/targetUnit.value)
+
+
+# Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
+def replaceMinMaxCenterWithRespectiveValue(dimension:str, boundaryAxis:BoundaryAxis, defaultUnit:LengthUnit):
+    dimension = dimension.lower()
+
+    while "min" in dimension:
+        dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.min, boundaryAxis.unit) ))
+    while "max" in dimension:
+        dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.max, boundaryAxis.unit) ))
+    while "center" in dimension:
+        dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.center, boundaryAxis.unit) ))
+
+    return dimension
+
+
+def getDimensionsFromStringList(dimensions:list[str], boundingBox:BoundaryBox=None) -> list[Dimension]:
+
+    if type(dimensions) is str:
+        dimensions = dimensions.replace(" ","").lower().split(",")
+
+    assert isinstance(dimensions, (list,tuple)), "Only a list of strings is allowed."
+
+    parsedDimensions = []
+    
+    defaultUnit = LengthUnit.meter
+
+    dimensionString = dimensions[-1]
+    
+    if type(dimensionString) == str:
+        dimensionString = dimensionString.replace(" ", "").lower()
+        dimensionString = re.search('[A-Za-z]+$', dimensionString)
+
+        unitInString = LengthUnit.fromString(dimensionString[0]) if dimensionString else None
+        if unitInString != None:
+            defaultUnit = unitInString
+            if len(dimensionString[0]) == len(dimensions[-1]):
+                dimensions.pop()
+
+    for index, dimension in enumerate(dimensions):
+        if boundingBox != None and index < 3:
+            boundaryAxis = getattr(boundingBox, "xyz"[index])
+            parsedDimensions.append(Dimension.fromString(dimension, defaultUnit, boundaryAxis))
+            continue
+
+        parsedDimensions.append(Dimension.fromString(dimension, defaultUnit, None))
+
+    return parsedDimensions

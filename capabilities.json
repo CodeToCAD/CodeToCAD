@@ -576,9 +576,13 @@
             "information": "Landmarks are named positions on an entity.",
             "constructor": {
                 "parameters": {
+                    "landmarkName": {
+                        "type": "string",
+                        "required": true
+                    },
                     "localToEntityWithName": {
                         "type": "string",
-                        "required": false
+                        "required": true
                     }
                 }
             }
@@ -601,7 +605,7 @@
                     }
                 }
             },
-            "transformLandmarkOntoAnother": {
+            "translateLandmarkOntoAnother": {
                 "action": "modify",
                 "information": "Transforms one landmark onto another",
                 "parameters": {}

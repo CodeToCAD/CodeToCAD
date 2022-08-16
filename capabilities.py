@@ -350,9 +350,9 @@ class Joint:
         self.entity1LandmarkName = entity1LandmarkName
         self.entity2LandmarkName = entity2LandmarkName
 
-    def transformLandmarkOntoAnother(self
+    def translateLandmarkOntoAnother(self
     ):
-        print("transformLandmarkOntoAnother is not implemented") # implement 
+        print("translateLandmarkOntoAnother is not implemented") # implement 
         return self
 
     def pivot(self
