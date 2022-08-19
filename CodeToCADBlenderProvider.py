@@ -2,6 +2,7 @@ import math
 import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
 import BlenderActions
+import sys
 
 from pathlib import Path
 
@@ -130,7 +131,7 @@ class Entity:
         if renameLandmarks:
             BlenderActions.updateObjectLandmarkNames(newName, self.name, newName)
 
-        return self
+        return Part(newName)
 
 
     def clone(self,
@@ -184,7 +185,7 @@ class Entity:
     
         BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)})
         
-        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 2})
+        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 1})
 
         return self
 
@@ -193,7 +194,10 @@ class Entity:
     axis:str
     ):
     
-        if isinstance(mirrorAcrossEntityName, Entity): mirrorAcrossEntityName = mirrorAcrossEntityName.name
+        if isinstance(mirrorAcrossEntityName, Entity):
+            mirrorAcrossEntityName = mirrorAcrossEntityName.name
+        if isinstance(mirrorAcrossEntityName, Landmark):
+            mirrorAcrossEntityName = mirrorAcrossEntityName.entityName
     
         axis = Utilities.Axis.fromString(axis)
 
@@ -394,12 +398,16 @@ class Part(Entity):
     filePath:str,  \
     fileType:str=None \
     ):
-    
-        path = Path(filePath)
+        
 
+        path = Path(filePath)
         fileName = path.stem
         
-        BlenderActions.importFile(filePath, fileType)
+        absoluteFilePath = filePath
+        if not path.is_absolute():
+            absoluteFilePath = str(Path(sys.argv[0]).parent.joinpath(path).resolve())
+        
+        BlenderActions.importFile(absoluteFilePath, fileType)
         
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
@@ -524,7 +532,8 @@ class Part(Entity):
     
 
     def union(self,
-    withPartName:str \
+    withPartName:str,
+    isTransferLandmarks:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
@@ -533,6 +542,9 @@ class Part(Entity):
                         BlenderDefinitions.BlenderBooleanTypes.UNION,
                         withPartName
                     )
+
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPartName, self.name)
 
         return self
 

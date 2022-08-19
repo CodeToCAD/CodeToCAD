@@ -360,7 +360,7 @@ def importFile(
         fileType:str=None
     ):
     
-    path = Path(filePath)
+    path = Path(filePath).resolve()
 
     # Check if the file exists:
     assert \
@@ -428,11 +428,12 @@ def applyObjectRotationAndScale(objectName):
 
     blenderObject.data.transform(transformation)
     
-    # Reset the object's transformations (resets everything in side menu to 0's)
+    # Set the object to its world translation
     blenderObject.matrix_basis = translation
 
     for child in blenderObject.children:
         child.matrix_basis = transformation @ child.matrix_basis
+        child.matrix_basis = Matrix.Translation(child.matrix_basis.translation)
 
 
 def rotateObject(
@@ -501,7 +502,7 @@ def scaleObject(
     # this might be confusing, but if [None,1m,None] is passed in
     # we would want to scale y to 1m and adjust x and z by the same scale factor
     # this also means that two values need to be None, and only 1 should have a value
-    emptyValuesCount = len( list( filter(lambda dimension: dimension.value == None, scalingDimensions) ) )
+    emptyValuesCount = len( list( filter(lambda dimension: dimension == None or dimension.value == None, scalingDimensions) ) )
 
     assert \
         emptyValuesCount != 1, \
@@ -517,8 +518,8 @@ def scaleObject(
         scalingMethod = Utilities.ScalingMethods.lockAspectRatio
 
     
-    [x,y,z] = scalingDimensions
     sceneDimensions = blenderObject.dimensions
+    scaleFactorX = scaleFactorY = scaleFactorZ = 1
 
     if scalingMethod == Utilities.ScalingMethods.lockAspectRatio:
         nonEmptyIndex = next((index for index,dimension in enumerate(scalingDimensions) if dimension.value != None), None)
@@ -535,19 +536,18 @@ def scaleObject(
         if sceneDimensions and scalingDimensions[nonEmptyIndex].unit != None:
             lockAspectRatio = scalingDimensions[nonEmptyIndex].value/sceneDimensions[nonEmptyIndex]
         
-        x.value = lockAspectRatio
-        y.value = lockAspectRatio
-        z.value = lockAspectRatio
+        scaleFactorX = scaleFactorY = scaleFactorZ = lockAspectRatio
 
     elif scalingMethod == Utilities.ScalingMethods.toSpecificLength or scalingMethod == Utilities.ScalingMethods.scaleFactor:
 
+        [x,y,z] = scalingDimensions
         #calculate scale factors if a unit is passed into the dimension
         if sceneDimensions:
-            x.value = x.value/sceneDimensions.x if x.unit != None else x.value
-            y.value = y.value/sceneDimensions.y if y.unit != None else y.value
-            z.value = z.value/sceneDimensions.z if z.unit != None else z.value
+            scaleFactorX = x.value/sceneDimensions.x if x.unit != None else x.value
+            scaleFactorY = y.value/sceneDimensions.y if y.unit != None else y.value
+            scaleFactorZ = z.value/sceneDimensions.z if z.unit != None else z.value
     
-    blenderObject.scale = (x.value,y.value,z.value)
+    blenderObject.scale = (scaleFactorX,scaleFactorY,scaleFactorZ)
 
 
 # MARK: collections and groups:
@@ -1129,6 +1129,27 @@ def setObjectVisibility(
     # blenderObject.hide_render = not isVisible
     blenderObject.hide_set(not isVisible)
 
+def transferLandmarks(
+    fromObjectName,
+    toObjectName
+):
+
+    updateViewLayer()
+
+    fromBlenderObject = getObject(fromObjectName)
+    toBlenderObject = getObject(toObjectName)
+
+    translation = getObjectWorldLocation(fromObjectName) - getObjectWorldLocation(toObjectName)
+
+    defaultCollection = getObjectCollection(toObjectName)
+    
+    for child in fromBlenderObject.children:
+        if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+            child.name = f"{toObjectName}_{child.name}"
+            child.parent = toBlenderObject
+            child.location = child.location + translation
+            assignObjectToCollection(child.name, defaultCollection)
+
 def duplicateObject(
         existingObjectName,
         newObjectName,
@@ -1263,6 +1284,8 @@ def getClosestPointsToVertex(objectName, vertex):
 
 # References https://blender.stackexchange.com/a/32288/138679
 def getBoundingBox(objectName):
+
+    updateViewLayer()
     
     blenderObject = getObject(objectName)
 
