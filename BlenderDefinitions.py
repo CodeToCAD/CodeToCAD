@@ -8,7 +8,6 @@ class BlenderTypes(Enum):
     MESH = bpy.types.Mesh
     CURVE = bpy.types.Curve
     TEXT = bpy.types.TextCurve
-    # EMPTY = bpy.types.Empty
 
 
 # These are the units allowed in a Blender document:
