@@ -140,7 +140,7 @@ def applyBooleanModifier(
                 "operation": blenderBooleanType.name,
                 "object": blenderBooleanObject,
                 # "use_self": True,
-                # "use_hole_tolerant": True,
+                "use_hole_tolerant": True,
                 # "solver": "EXACT",
                 # "double_threshold": 1e-6
             },
@@ -522,7 +522,7 @@ def scaleObject(
     scaleFactorX = scaleFactorY = scaleFactorZ = 1
 
     if scalingMethod == Utilities.ScalingMethods.lockAspectRatio:
-        nonEmptyIndex = next((index for index,dimension in enumerate(scalingDimensions) if dimension.value != None), None)
+        nonEmptyIndex = next((index for index,dimension in enumerate(scalingDimensions) if dimension and dimension.value != None), None)
 
         assert \
             nonEmptyIndex != None, \
@@ -1255,6 +1255,12 @@ def removeMesh(mesh):
 
     bpy.data.meshes.remove(mesh)
 
+def setEdgesMeanCrease(meshName, meanCreaseValue):
+
+    blenderMesh = getMesh(meshName)
+
+    for edge in blenderMesh.edges:
+        edge.crease = meanCreaseValue
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
 def getClosestPointsToVertex(objectName, vertex):
