@@ -143,6 +143,7 @@ class Entity:
     newPartName:str,
     copyLandmarks:bool = True
     ):
+
         BlenderActions.duplicateObject(self.name, newPartName, copyLandmarks)
 
         return Part(newPartName)
@@ -631,9 +632,9 @@ class Part(Entity):
         startLandmarkLocation = [center, center, center]
         startLandmarkLocation[axis.value] = min if flipAxis else max
 
-        startAxisLandmark = self.createLandmark(f"{uuid4()}", startLandmarkLocation)
+        startAxisLandmark = self.createLandmark_fromString(f"{uuid4()}", startLandmarkLocation)
 
-        insidePart = Part(f"{uuid4()}").clone(self, copyLandmarks=False)
+        insidePart = self.clone(f"{uuid4()}", copyLandmarks=False)
         insidePart_start = insidePart.createLandmark_fromString("start", startLandmarkLocation)
 
         thicknessXYZ = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
@@ -645,9 +646,9 @@ class Part(Entity):
         dimensions = blenderObject.dimensions
 
         scale = [
-            thicknessXYZ[0] * (1 if axis.value == 0 else 2) / dimensions[0],
-            thicknessXYZ[1] * (1 if axis.value == 1 else 2) / dimensions[1],
-            thicknessXYZ[2] * (1 if axis.value == 2 else 2) / dimensions[2]
+            (dimensions[0]-thicknessXYZ[0] * (1 if axis.value == 0 else 2)) / dimensions[0],
+            (dimensions[1]-thicknessXYZ[1] * (1 if axis.value == 1 else 2)) / dimensions[1],
+            (dimensions[2]-thicknessXYZ[2] * (1 if axis.value == 2 else 2)) / dimensions[2]
         ]
 
         insidePart.scale_fromstring(scale)
