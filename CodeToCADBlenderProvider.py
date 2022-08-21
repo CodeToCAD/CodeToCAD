@@ -1019,8 +1019,7 @@ class Joint:
 
         return self
 
-class Material: 
-    # Text to 3D Modeling Automation Capabilities.
+class Material:
 
 
     def __init__(self
@@ -1028,8 +1027,7 @@ class Material:
         pass
 
 
-class Scene: 
-    # Text to 3D Modeling Automation Capabilities.
+class Scene:
 
     name = None
     description = None
