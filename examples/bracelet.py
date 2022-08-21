@@ -4,7 +4,6 @@ from CodeToCADBlenderProvider import Part, Scene, Analytics
 
 Scene().setDefaultUnit("cm")
 Scene().createGroup("Bracelet")
-Scene().createGroup("BraceletBooleanShapes")
 # Defining dimensions and calculated properties
 
 # in mm
@@ -55,21 +54,16 @@ Part("beltInner") \
 .createPrimitive("cylinder", [belt["innerDiameter"]/2,belt["thickness"], "cm"])
 
 Part("booleanButton")\
-    .clone("button")
+    .cloneFrom("button")
 
 Part("booleanBracelet")\
-    .clone("bracelet")
+    .cloneFrom("bracelet")
 
 # Grouping
 
 Scene().assignToGroup("bracelet", "Bracelet")
 Scene().assignToGroup("button", "Bracelet")
 Scene().assignToGroup("belt", "Bracelet")
-
-Scene().assignToGroup("beltInner", "BraceletBooleanShapes").setVisible("beltInner", False)
-Scene().assignToGroup("buttonInner", "BraceletBooleanShapes").setVisible("buttonInner", False)
-Scene().assignToGroup("booleanBracelet", "BraceletBooleanShapes").setVisible("booleanBracelet", False)
-Scene().assignToGroup("booleanButton", "BraceletBooleanShapes").setVisible("booleanButton", False)
 
 # Modifying the shapes
 
@@ -87,14 +81,10 @@ Part("belt") \
 
 ## Save a copy of the belt to subtract from bracelet later
 Part("booleanbelt")\
-    .clone("belt")
+    .cloneFrom("belt")
     
 Part("booleanBracelet2")\
-    .clone("bracelet")
-
-Scene().assignToGroup("booleanbelt", "BraceletBooleanShapes").setVisible("booleanbelt", False)
-    
-Scene().assignToGroup("booleanBracelet2", "BraceletBooleanShapes").setVisible("booleanBracelet2", False)
+    .cloneFrom("bracelet")
     
 Part("belt") \
     .intersect("booleanBracelet2")
@@ -103,6 +93,6 @@ Part("bracelet") \
     .subtract("booleanbelt")
 
 # Remesh final shapes
-Part("belt").remesh()
-Part("bracelet").remesh()
-Part("button").remesh()
+Part("belt").remesh(strategy="edgesplit", amount=2)
+Part("bracelet").remesh(strategy="edgesplit", amount=2)
+Part("button").remesh(strategy="edgesplit", amount=2)

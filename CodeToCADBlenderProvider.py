@@ -139,6 +139,7 @@ class Entity:
         return Part(newName)
 
 
+    # Part("existingPartName").clone("newPartName") -> returns Part("newPartName")
     def clone(self,
     newPartName:str,
     copyLandmarks:bool = True
@@ -147,6 +148,17 @@ class Entity:
         BlenderActions.duplicateObject(self.name, newPartName, copyLandmarks)
 
         return Part(newPartName)
+        
+    # Part("newPartName").clone("existingPartName") -> returns Part("newPartName")
+    def cloneFrom(self,
+    existingPartName:str,
+    copyLandmarks:bool = True
+    ):
+        if isinstance(existingPartName, Entity): existingPartName = existingPartName.name
+
+        BlenderActions.duplicateObject(existingPartName, self.name, copyLandmarks)
+
+        return self
         
     def revolve(self,
     angle:str,
@@ -339,17 +351,6 @@ class Entity:
         assert len(localPositions) == 3, "localPositions should contain 3 dimensions for XYZ"
 
         localPositions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPositions)
-
-        # there is a bug in Blender3.2 for Curve types' children not being exactly at origin
-        # https://developer.blender.org/T100531
-        # this is a fix for this.
-        blenderObject = self.getNativeInstance()
-        if hasattr(blenderObject, "data") and type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value:
-            splines = blenderObject.data.splines
-            if len(splines) > 0:
-                points = splines[0].points
-                if len(points) > 0:
-                    for (index,position) in enumerate(localPositions): position.value -= points[0].co[index]
         
         landmark = Landmark(landmarkName, self.name)
         landmarkObjectName = landmark.entityName
@@ -358,13 +359,25 @@ class Entity:
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        Part(landmarkObjectName).createPrimitive("Empty", "0")
+        landmarkObject = Part(landmarkObjectName).createPrimitive("Empty", "0")
 
         # Assign the landmark to the parent's collection
         BlenderActions.assignObjectToCollection(landmarkObjectName, BlenderActions.getObjectCollection(self.name))
 
         # Parent the landmark to the object
         BlenderActions.makeParent(landmarkObjectName, self.name)
+
+        # there is a bug in Blender3.2 for Curve types' children not being exactly at origin
+        # https://developer.blender.org/T100531
+        # this is a fix for this.
+        blenderObject = self.getNativeInstance()
+        if hasattr(blenderObject, "data") and type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value:
+            BlenderActions.updateViewLayer()
+            curveOrigin = BlenderActions.getObjectWorldLocation(landmarkObjectName)
+
+            for (index,position) in enumerate(localPositions): position.value -= curveOrigin[index]
+
+            landmarkObject.getNativeInstance()['initialOffset'] = curveOrigin
 
         BlenderActions.translateObject(landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
@@ -575,6 +588,7 @@ class Part(Entity):
 
     def subtract(self,
     withPartName:str,
+    isTransferLandmarks:bool = True,
     deleteAfterSubtract:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
@@ -585,6 +599,9 @@ class Part(Entity):
                     withPartName
                 )
 
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPartName, self.name)
+
         if deleteAfterSubtract:
             self.apply()
             BlenderActions.removeObject(withPartName, removeChildren=True)
@@ -593,6 +610,7 @@ class Part(Entity):
 
     def intersect(self,
     withPartName:str,
+    isTransferLandmarks:bool = True,
     deleteAfterIntersect:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
@@ -602,6 +620,9 @@ class Part(Entity):
                         BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
                         withPartName
                     )
+
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPartName, self.name)
 
         if deleteAfterIntersect:
             self.apply()
@@ -655,7 +676,7 @@ class Part(Entity):
 
         Joint(startAxisLandmark, insidePart_start).limitLocation(0,0,0)
 
-        self.subtract(insidePart)
+        self.subtract(insidePart, isTransferLandmarks=False)
 
         startAxisLandmark.delete()
 
@@ -685,7 +706,7 @@ class Part(Entity):
             else:
                 hole.linearPattern(instanceCount, normalAxis, instanceSeparation)
         
-        self.subtract(hole, deleteAfterSubtract=(not leaveHoleEntity))
+        self.subtract(hole, deleteAfterSubtract=(not leaveHoleEntity), isTransferLandmarks=False)
 
 # alias for Part
 Shape = Part
@@ -707,12 +728,18 @@ class Sketch(Entity):
 
 
     def extrude(self,
-    length:str \
+    length:str,
+    convertToMesh:bool = True
     ):
         
         BlenderActions.extrude(self.name, Utilities.Dimension.fromString(length))
 
-        return self
+        if not convertToMesh:
+            return self
+
+        BlenderActions.createMeshFromCurve(self.name)
+        
+        return Part(self.name)
 
     def sweep(self,
         profileCurveName,
@@ -865,6 +892,9 @@ class Landmark:
 
     def rename(self, newName):
         BlenderActions.updateObjectName(self.entityName, newName)
+        
+    def getNativeInstance(self): 
+        return BlenderActions.getObject(self.entityName)
 
 
 class Joint: 
@@ -903,7 +933,7 @@ class Joint:
         
     def translateLandmarkOntoAnother(self):
         
-        BlenderActions.translateLandmarkOntoAnother(self.part1.name, self.part2.name, self.part1Landmark.entityName, self.part2Landmark.entityName)
+        BlenderActions.translateLandmarkOntoAnother(self.part2.name, self.part1Landmark.entityName, self.part2Landmark.entityName)
 
         return self
 

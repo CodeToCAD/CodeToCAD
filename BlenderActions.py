@@ -2,6 +2,7 @@
 # An implementation of an action should avoid performing any logic
 # An implementation of an action is allowed to perform unit conversions or perform read operations for pre-checks.
 
+from uuid import uuid4
 import bpy
 import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
@@ -966,41 +967,21 @@ def translateLandmarkRelativeToAnother(
 
 
 def translateLandmarkOntoAnother(
-        object1Name,
-        object2Name,
-        object1Landmark,
-        object2Landmark
+        objectToTranslateName,
+        object1LandmarkName,
+        object2LandmarkName
     ):
-
-    blenderObject1 = getObject(object1Name)
-    [blenderObject1Landmark] = filter(lambda child: child.name == object1Landmark, blenderObject1.children)
-    blenderObject2 = getObject(object2Name)
-    [blenderObject2Landmark] = filter(lambda child: child.name == object2Landmark, blenderObject2.children)
-
-    # transform landmark1 onto landmark2
-    # t1 = blenderObject2Landmark.matrix_world.inverted() @ blenderObject1Landmark.matrix_world
-    # transform object onto landmark1
-    # t2 = blenderObject2.matrix_world.inverted() @ blenderObject2Landmark.matrix_world
-
-    # transform the object onto landmark1, the result onto landmark2, then restore the transform of the object onto the landmark to maintain their position 
-    # transformation = blenderObject2.matrix_world.copy() @ t2 @ t1 @ t2.inverted()
     
-    # rotation = transformation.to_euler()
-    
-    # rotateObject(object2Name, [Angle(rotation.x),Angle(rotation.y),Angle(rotation.z)], BlenderRotationTypes.EULER)
+    updateViewLayer()
+    object1LandmarkLocation = getObjectWorldLocation(object1LandmarkName)
+    object2LandmarkLocation = getObjectWorldLocation(object2LandmarkName)
 
-    # Use matrix_basis if transformations are applied.
-    # blenderObject1Translation = blenderObject1Landmark.matrix_basis.to_translation()
-    # blenderObject2Translation = blenderObject2Landmark.matrix_basis.to_translation()
-    blenderObject1Translation = blenderObject1Landmark.matrix_world.to_translation()
-    blenderObject2Translation = blenderObject2Landmark.matrix_world.to_translation()
-    translation = (blenderObject1Translation)-(blenderObject2Translation)
-    print("blenderObject1Translation: ",blenderObject1Translation, " blenderObject2Translation: ", blenderObject2Translation, " translation: ", translation)
+    translation = (object1LandmarkLocation)-(object2LandmarkLocation)
     
     blenderDefaultUnit = BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
     
     translateObject(
-        object2Name,
+        objectToTranslateName,
         [
             Utilities.Dimension(translation.x, blenderDefaultUnit),
             Utilities.Dimension(translation.y, blenderDefaultUnit),
@@ -1082,8 +1063,12 @@ def removeObject(
     
     # Not all objects have data, but if they do, then deleting the data
     # deletes the object
-    if blenderObject.data:
+    if blenderObject.data and type(blenderObject.data) == bpy.types.Mesh:
         bpy.data.meshes.remove(blenderObject.data)
+    elif blenderObject.data and type(blenderObject.data) == bpy.types.Curve:
+        bpy.data.curves.remove(blenderObject.data)
+    elif blenderObject.data and type(blenderObject.data) == bpy.types.TextCurve:
+        bpy.data.curves.remove(blenderObject.data)
     else:    
         bpy.data.objects.remove(blenderObject)
 
@@ -1101,21 +1086,37 @@ def createObject(
     return bpy.data.objects.new( name , data )
 
 
-# TODO: this is not used anywhere right now, 
-# but the logic is here for when it needs to be moved into the Provider
+
 def createMeshFromCurve(
-        newObjectName,
-        blenderCurveObject
+        existingCurveObjectName,
+        newObjectName = None
     ):
 
+    existingCurveObject = getObject(existingCurveObjectName)
+
+    if newObjectName is None:
+        updateObjectName(existingCurveObjectName, str(uuid4()))
+        newObjectName = existingCurveObjectName
+
     dependencyGraph = bpy.context.evaluated_depsgraph_get()
-    mesh = bpy.data.meshes.new_from_object(blenderCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
+    mesh = bpy.data.meshes.new_from_object(existingCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
     
     blenderObject = createObject(newObjectName, mesh)
 
-    blenderObject.matrix_world = blenderCurveObject.matrix_world
+    blenderObject.matrix_world = existingCurveObject.matrix_world
     
     assignObjectToCollection(newObjectName)
+
+    for child in existingCurveObject.children:
+        if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+            child.parent = blenderObject
+            # adjust location of landmark between curve and mesh types:
+            if child['initialOffset']:
+                child.location += child['initialOffset']
+
+    # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
+    if existingCurveObject.name != existingCurveObjectName:
+        removeObject(existingCurveObject.name, removeChildren=True)
 
 
 def setObjectVisibility(
