@@ -3,6 +3,7 @@ import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
 import BlenderActions
 import sys
+from uuid import uuid4
 
 from pathlib import Path
 
@@ -21,7 +22,9 @@ class Entity:
     def translate_fromstring(self,
         translateString:str
     ):
-        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(translateString)
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(translateString, boundingBox)
 
         dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -43,7 +46,9 @@ class Entity:
     def setPosition_fromstring(self,
     dimensions:str\
     ):
-        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions) or []
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions, boundingBox) or []
         
         dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -180,12 +185,15 @@ class Entity:
 
     def remesh(self,
     strategy:str = None,  \
-    amount:float = None \
+    amount:float = 1 \
     ):
     
-        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)})
+        if strategy == "crease":
+            BlenderActions.setEdgesMeanCrease(self.name, 1.0)
+        if strategy == "edgesplit":
+            BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {"name": "EdgeDiv", "split_angle": math.radians(30)})
         
-        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": 1})
+        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {"name": "Subdivision", "levels": amount})
 
         return self
 
@@ -330,6 +338,17 @@ class Entity:
         assert len(localPositions) == 3, "localPositions should contain 3 dimensions for XYZ"
 
         localPositions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(localPositions)
+
+        # there is a bug in Blender3.2 for Curve types' children not being exactly at origin
+        # https://developer.blender.org/T100531
+        # this is a fix for this.
+        blenderObject = self.getNativeInstance()
+        if hasattr(blenderObject, "data") and type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value:
+            splines = blenderObject.data.splines
+            if len(splines) > 0:
+                points = splines[0].points
+                if len(points) > 0:
+                    for (index,position) in enumerate(localPositions): position.value -= points[0].co[index]
         
         landmark = Landmark(landmarkName, self.name)
         landmarkObjectName = landmark.entityName
@@ -533,7 +552,8 @@ class Part(Entity):
 
     def union(self,
     withPartName:str,
-    isTransferLandmarks:bool = True
+    isTransferLandmarks:bool = True,
+    deleteAfterUnion:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
@@ -546,10 +566,15 @@ class Part(Entity):
         if isTransferLandmarks:
             BlenderActions.transferLandmarks(withPartName, self.name)
 
+        if deleteAfterUnion:
+            self.apply()
+            BlenderActions.removeObject(withPartName, removeChildren=True)
+
         return self
 
     def subtract(self,
-    withPartName:str \
+    withPartName:str,
+    deleteAfterSubtract:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
@@ -559,10 +584,15 @@ class Part(Entity):
                     withPartName
                 )
 
+        if deleteAfterSubtract:
+            self.apply()
+            BlenderActions.removeObject(withPartName, removeChildren=True)
+
         return self
 
     def intersect(self,
-    withPartName:str \
+    withPartName:str,
+    deleteAfterIntersect:bool = True
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
@@ -571,6 +601,10 @@ class Part(Entity):
                         BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
                         withPartName
                     )
+
+        if deleteAfterIntersect:
+            self.apply()
+            BlenderActions.removeObject(withPartName, removeChildren=True)
 
         return self
 
@@ -583,10 +617,74 @@ class Part(Entity):
         return self
 
     def hollow(self,
-    wallThickness:float \
+    thicknessX:str,
+    thicknessY:str,
+    thicknessZ:str,
+    startAxis:str = "z",
+    flipAxis:bool = False
     ):
-        print("hollow is not implemented") # implement 
+        blenderObject = self.getNativeInstance()
+
+        axis = Utilities.Axis.fromString(startAxis)
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        startLandmarkLocation = [center, center, center]
+        startLandmarkLocation[axis.value] = min if flipAxis else max
+
+        startAxisLandmark = self.createLandmark(f"{uuid4()}", startLandmarkLocation)
+
+        insidePart = Part(f"{uuid4()}").clone(self, copyLandmarks=False)
+        insidePart_start = insidePart.createLandmark_fromString("start", startLandmarkLocation)
+
+        thicknessXYZ = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
+            Utilities.Dimension.fromString(thicknessX),
+            Utilities.Dimension.fromString(thicknessY),
+            Utilities.Dimension.fromString(thicknessZ),
+        ])]
+
+        dimensions = blenderObject.dimensions
+
+        scale = [
+            thicknessXYZ[0] * (1 if axis.value == 0 else 2) / dimensions[0],
+            thicknessXYZ[1] * (1 if axis.value == 1 else 2) / dimensions[1],
+            thicknessXYZ[2] * (1 if axis.value == 2 else 2) / dimensions[2]
+        ]
+
+        insidePart.scale_fromstring(scale)
+
+        Joint(startAxisLandmark, insidePart_start).limitLocation(0,0,0)
+
+        self.subtract(insidePart)
+
+        startAxisLandmark.delete()
+
         return self
+
+    def hole(self,
+    holeLandmarkName,
+    radius,
+    depth,
+    instanceCount = 1,
+    instanceSeparation = 0,
+    normalAxis = "z",
+    aroundEntityName=None,
+    flip=False,
+    leaveHoleEntity=False
+    ):
+        if isinstance(holeLandmarkName, Landmark): holeLandmarkName = holeLandmarkName.landmarkName
+        
+        hole = Part(f"{uuid4()}").createCylinder(radius,depth)
+        hole_head = hole.createLandmark("hole",center,center, min if flip else max)
+        
+        Joint(self, hole, holeLandmarkName, hole_head).limitLocation(0,0,0)
+
+        if instanceCount > 1:
+            if aroundEntityName != None:
+                hole.circularPattern(instanceCount, instanceSeparation, normalAxis, aroundEntityName)
+            else:
+                hole.linearPattern(instanceCount, normalAxis, instanceSeparation)
+        
+        self.subtract(hole, deleteAfterSubtract=(not leaveHoleEntity))
 
 # alias for Part
 Shape = Part
@@ -761,6 +859,12 @@ class Landmark:
         else:
             self.entityName = landmarkName
 
+    def delete(self):
+        BlenderActions.removeObject(self.entityName)
+
+    def rename(self, newName):
+        BlenderActions.updateObjectName(self.entityName, newName)
+
 
 class Joint: 
     # Text to 3D Modeling Automation Capabilities.
@@ -774,12 +878,26 @@ class Joint:
     part1LandmarkName:Landmark = None, \
     part2LandmarkName:Landmark = None
     ):
-        self.part1 = part1Name if isinstance(part1Name, Entity) else Part(part1Name)
-        self.part2 = part2Name if isinstance(part2Name, Entity) else Part(part2Name)
-        self.part1Landmark = part1LandmarkName if type(part1LandmarkName) is Landmark else \
-            Landmark(part1LandmarkName, part1Name) if part1LandmarkName else None
-        self.part2Landmark = part2LandmarkName if type(part2LandmarkName) is Landmark else \
-            Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
+        if isinstance(part1Name, Landmark):
+            self.part1 = Part(part1Name.localToEntityWithName)
+            self.part1Landmark = part1Name
+        else:
+            if isinstance(part1Name, Entity): self.part1 = part1Name
+            else: self.part1 = Part(part1Name)
+
+            self.part1Landmark = part1LandmarkName if type(part1LandmarkName) is Landmark else \
+                Landmark(part1LandmarkName, part1Name) if part1LandmarkName else None
+                
+        if isinstance(part2Name, Landmark):
+            self.part2 = Part(part2Name.localToEntityWithName)
+            self.part2Landmark = part2Name
+        else:
+            if isinstance(part2Name, Entity): self.part2 = part2Name
+            else: self.part2 = Part(part2Name)
+
+            self.part2Landmark = part2LandmarkName if type(part2LandmarkName) is Landmark else \
+                Landmark(part2LandmarkName, part2Name) if part2LandmarkName else None
+
 
         
     def translateLandmarkOntoAnother(self):
