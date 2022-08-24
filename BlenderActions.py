@@ -1323,8 +1323,7 @@ def getBoundingBox(objectName):
             Utilities.BoundaryAxis(
                 minVal,
                 maxVal,
-                (maxVal+minVal)/2,
-                maxVal - minVal
+                (maxVal+minVal)/2
             )
         )
     
