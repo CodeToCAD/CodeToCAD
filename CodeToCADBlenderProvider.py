@@ -16,6 +16,8 @@ BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyG
 min = "min"
 max = "max"
 center = "center"
+Dimension = Utilities.Dimension
+Angle = Utilities.Angle
 
 class Entity:
 
@@ -391,6 +393,19 @@ class Entity:
     def getWorldLocation(self): 
         BlenderActions.updateViewLayer()
         return BlenderActions.getObjectWorldLocation(self.name)
+
+    def getBoundingBox(self):
+        return BlenderActions.getBoundingBox(self.name)
+    
+    def getDimensions(self):
+        dimensions = BlenderActions.getObject(self.name).dimensions
+        return [
+            Utilities.Dimension.fromString(
+                dimension,
+                BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+            ) 
+            for dimension in dimensions
+            ]
         
     def getLandmark(self, landmarkName):
         landmark = Landmark(landmarkName, self.name)
@@ -1190,13 +1205,5 @@ class Analytics:
     def getDimensions(self,
     partName:str \
     ):
-        if isinstance(partName, Entity): partName = partName.name
+        return partName.getDimensions() if isinstance(partName, Entity) else Part(partName).getDimensions()
         
-        dimensions = BlenderActions.getObject(partName).dimensions
-        return [
-            Utilities.Dimension.fromString(
-                dimension,
-                BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-            ) 
-            for dimension in dimensions
-            ]

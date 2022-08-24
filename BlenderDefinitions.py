@@ -58,15 +58,7 @@ class BlenderLength(Utilities.Units):
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
     def convertDimensionToBlenderUnit(dimension:Utilities.Dimension):
-        return  Utilities.Dimension(
-                    float(
-                        Utilities.convertToLengthUnit(
-                            BlenderLength.DEFAULT_BLENDER_UNIT.value, dimension.value,
-                            dimension.unit or BlenderLength.DEFAULT_BLENDER_UNIT.value
-                        )
-                    ),
-                    BlenderLength.DEFAULT_BLENDER_UNIT.value
-                ) \
+        return dimension.convertToUnit(BlenderLength.DEFAULT_BLENDER_UNIT.value) \
                 if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value) \
                 else dimension
 
