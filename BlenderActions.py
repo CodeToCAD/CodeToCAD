@@ -123,7 +123,7 @@ def applyBooleanModifier(
         meshObjectName,
         blenderBooleanType:BlenderDefinitions.BlenderBooleanTypes,
         withMeshObjectName,
-        keywordArguments:dict = {}
+        keywordArguments:dict = None
     ):
     blenderObject = getObject(meshObjectName)
     blenderBooleanObject = getObject(withMeshObjectName)
@@ -141,11 +141,11 @@ def applyBooleanModifier(
                 "operation": blenderBooleanType.name,
                 "object": blenderBooleanObject,
                 # "use_self": True,
-                "use_hole_tolerant": True,
+                # "use_hole_tolerant": True,
                 # "solver": "EXACT",
                 # "double_threshold": 1e-6
             },
-            **keywordArguments
+            **(keywordArguments or {})
         )
     )
 
@@ -352,7 +352,7 @@ fileImportFunctions = {
     "png": lambda filePath: bpy.ops.image.open(filepath=filePath),
     "fbx": lambda filePath: bpy.ops.import_scene.fbx(filepath=filePath),
     "gltf": lambda filePath: bpy.ops.import_scene.gltf(filepath=filePath),
-    "obj": lambda filePath: bpy.ops.import_scene.obj(filepath=filePath),
+    "obj": lambda filePath: bpy.ops.import_scene.obj(filepath=filePath,use_split_objects=False),
     "x3d": lambda filePath: bpy.ops.import_scene.x3d(filepath=filePath)
 }
 
@@ -1110,9 +1110,6 @@ def createMeshFromCurve(
     for child in existingCurveObject.children:
         if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
             child.parent = blenderObject
-            # adjust location of landmark between curve and mesh types:
-            if child['initialOffset']:
-                child.location += child['initialOffset']
 
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
     if existingCurveObject.name != existingCurveObjectName:
@@ -1392,7 +1389,7 @@ def createText(curveName, text,
     assignObjectToCollection(curveName)
 
 
-def createCurve(
+def create3DCurve(
         curveName,
         curveType:BlenderDefinitions.BlenderCurveTypes,
         coordinates,
@@ -1402,6 +1399,7 @@ def createCurve(
     curveData = bpy.data.curves.new(curveName, type='CURVE')
     curveData.dimensions = '3D'
     curveData.resolution_u = interpolation
+    curveData.use_path = False
     
     createSpline(curveData, curveType, coordinates)
 
