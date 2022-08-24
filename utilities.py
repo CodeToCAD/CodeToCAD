@@ -67,6 +67,12 @@ class Angle():
             
     self.value = value
     self.unit = unit or AngleUnit.DEGREES
+    
+  def __str__(self) -> str:
+      return f"{self.value}{' '+self.unit.name.lower() if self.unit else ''}"
+
+  def __repr__(self) -> str:
+      return self.__str__()
 
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is degrees if unit not passed
@@ -237,14 +243,19 @@ class BoundaryAxis:
     min = None
     max = None
     center = None
-    range = None
     unit = LengthUnit.meter
-    def __init__(self, min=None, max=None, center=None, range=None, unit=LengthUnit.meter):
+    def __init__(self, min=None, max=None, center=None, unit=LengthUnit.meter):
         self.min = min
         self.max = max
         self.center = center
-        self.range = range
         self.unit = unit if unit else LengthUnit.meter
+    def __str__(self):
+        return \
+f"""    min   max   unit
+x   {self.min}  {self.max}  {self.unit.name+'(s)'}
+"""
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class BoundaryBox:
@@ -255,6 +266,16 @@ class BoundaryBox:
         self.x = x
         self.y = y
         self.z = z
+    def __str__(self):
+        return \
+f"""    min   max   unit
+x   {self.x.min}  {self.x.max}  {self.x.unit.name+'(s)'}
+y   {self.y.min}  {self.y.max}  {self.y.unit.name+'(s)'}
+z   {self.z.min}  {self.z.max}  {self.z.unit.name+'(s)'}
+"""
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 class Dimension():
   def __init__(self, value:float, unit:LengthUnit = None):
@@ -265,6 +286,18 @@ class Dimension():
 
     self.value = value
     self.unit = unit
+  def __str__(self) -> str:
+      return f"{self.value}{' '+self.unit.name+'(s)' if self.unit else ''}"
+
+  def __repr__(self) -> str:
+      return self.__str__()
+
+  def convertToUnit(self, targetUnit:LengthUnit) -> float:
+    assert self.unit != None, f"Current dimension does not have a unit."
+    targetUnit = LengthUnit.fromString(targetUnit) if not isinstance(targetUnit, LengthUnit) else targetUnit
+    assert isinstance(targetUnit, LengthUnit), f"Could not convert to unit {targetUnit}"
+    self.value = self.value * (self.unit.value/targetUnit.value)
+    return self
 
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is None (scale factor) if it's not passed in
@@ -307,22 +340,16 @@ class Dimension():
     return Dimension(value, unit)
 
 
-# Convert on LengthUnit to another
-def convertToLengthUnit(targetUnit:LengthUnit, value:float, unit:LengthUnit) -> float:
-    # LengthUnit enum has conversions based on the millimeter, so multiplying by the enum value will always yield millimeters
-    return value * (unit.value/targetUnit.value)
-
-
 # Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
 def replaceMinMaxCenterWithRespectiveValue(dimension:str, boundaryAxis:BoundaryAxis, defaultUnit:LengthUnit):
     dimension = dimension.lower()
 
     while "min" in dimension:
-        dimension = dimension.replace("min","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.min, boundaryAxis.unit) ))
+        dimension = dimension.replace("min","({})".format(Dimension(boundaryAxis.min, boundaryAxis.unit).convertToUnit(defaultUnit).value))
     while "max" in dimension:
-        dimension = dimension.replace("max","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.max, boundaryAxis.unit) ))
+        dimension = dimension.replace("max","({})".format(Dimension(boundaryAxis.max, boundaryAxis.unit).convertToUnit(defaultUnit).value))
     while "center" in dimension:
-        dimension = dimension.replace("center","({})".format( convertToLengthUnit(defaultUnit, boundaryAxis.center, boundaryAxis.unit) ))
+        dimension = dimension.replace("center","({})".format( Dimension(boundaryAxis.center, boundaryAxis.unit).convertToUnit(defaultUnit).value))
 
     return dimension
 

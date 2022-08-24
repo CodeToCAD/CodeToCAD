@@ -1,5 +1,4 @@
-from CodeToCAD.utilities import getAnglesFromStringList, getDimensionsFromStringList
-from utilities import Dimension, getDimensionsFromString, LengthUnit, convertToLengthUnit, getAnglesFromString, AngleUnit, Angle
+from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionsFromStringList
 
 def test_dimensions():
     dimension = Dimension("")
@@ -57,8 +56,8 @@ def test_dimensions():
     assert dimensions[0].value == 21 and dimensions[1].value == .125 and dimensions[2].value == .125
     assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.inch
 
-    assert convertToLengthUnit(LengthUnit.millimeter, 1, LengthUnit.meter) == 1000
-    assert convertToLengthUnit(LengthUnit.meter, 1000, LengthUnit.millimeter) == 1
+    assert Dimension(1, LengthUnit.meter).convertToUnit(LengthUnit.millimeter).value == 1000
+    assert Dimension(1000, LengthUnit.millimeter).convertToUnit(LengthUnit.meter).value == 1
 
     print("test_dimensions done.")
 
