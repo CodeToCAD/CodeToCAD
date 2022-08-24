@@ -193,11 +193,11 @@ class Axis(EquittableEnum):
     @staticmethod
     def fromString(axis):
         axis = str(axis).lower()
-        if axis == "x":
+        if axis == "x" or axis == "0":
             return Axis.X
-        if axis == "y":
+        if axis == "y" or axis == "1":
             return Axis.Y
-        if axis == "z":
+        if axis == "z" or axis == "2":
             return Axis.Z
         return None
 
