@@ -20,8 +20,6 @@ profile = [
     "21.5,0,0,in" #end E
     ]
 
-circleRadius = "(1/4)/2 in"
-
-Sketch("circle").createCircle(circleRadius)
+Sketch("circle").createCircle("1in").setVisible(False)
 
 Sketch("profile").createFromVerticies(profile).sweep("circle")

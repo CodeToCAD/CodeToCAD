@@ -367,18 +367,6 @@ class Entity:
         # Parent the landmark to the object
         BlenderActions.makeParent(landmarkObjectName, self.name)
 
-        # there is a bug in Blender3.2 for Curve types' children not being exactly at origin
-        # https://developer.blender.org/T100531
-        # this is a fix for this.
-        blenderObject = self.getNativeInstance()
-        if hasattr(blenderObject, "data") and type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value:
-            BlenderActions.updateViewLayer()
-            curveOrigin = BlenderActions.getObjectWorldLocation(landmarkObjectName)
-
-            for (index,position) in enumerate(localPositions): position.value -= curveOrigin[index]
-
-            landmarkObject.getNativeInstance()['initialOffset'] = curveOrigin
-
         BlenderActions.translateObject(landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return landmark
@@ -397,9 +385,18 @@ class Entity:
 
         return self
 
-    def getNativeInstance(self
-    ): 
+    def getNativeInstance(self): 
         return BlenderActions.getObject(self.name)
+
+    def getWorldLocation(self): 
+        BlenderActions.updateViewLayer()
+        return BlenderActions.getObjectWorldLocation(self.name)
+        
+    def getLandmark(self, landmarkName):
+        landmark = Landmark(landmarkName, self.name)
+
+        assert BlenderActions.getObject(landmark.entityName) != None, f"Landmark {landmarkName} does not exist for {self.name}."
+        return landmark
         
     def select(self,
     landmarkName:str,  \
@@ -535,8 +532,8 @@ class Part(Entity):
         return self.createPrimitive("torus", "{},{}".format(innerRadius,outerRadius), keywordArguments)
 
     def createSphere(self,
-    radius:str,  \
-    keywordArguments:dict=None \
+    radius:str,
+    keywordArguments:dict=None
     ):
         return self.createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
 
@@ -566,15 +563,17 @@ class Part(Entity):
 
     def union(self,
     withPartName:str,
-    isTransferLandmarks:bool = True,
-    deleteAfterUnion:bool = True
+    deleteAfterUnion:bool = True,
+    isTransferLandmarks:bool = False,
+    keywordArguments:dict=None
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
         BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.UNION,
-                        withPartName
+                        withPartName,
+                        keywordArguments
                     )
 
         if isTransferLandmarks:
@@ -588,15 +587,17 @@ class Part(Entity):
 
     def subtract(self,
     withPartName:str,
-    isTransferLandmarks:bool = True,
-    deleteAfterSubtract:bool = True
+    deleteAfterSubtract:bool = True,
+    isTransferLandmarks:bool = False,
+    keywordArguments:dict=None
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
         BlenderActions.applyBooleanModifier(
                     self.name,
                     BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
-                    withPartName
+                    withPartName,
+                    keywordArguments
                 )
 
         if isTransferLandmarks:
@@ -610,15 +611,17 @@ class Part(Entity):
 
     def intersect(self,
     withPartName:str,
-    isTransferLandmarks:bool = True,
-    deleteAfterIntersect:bool = True
+    deleteAfterIntersect:bool = True,
+    isTransferLandmarks:bool = False,
+    keywordArguments:dict=None
     ):
         if isinstance(withPartName, Entity): withPartName = withPartName.name
 
         BlenderActions.applyBooleanModifier(
                         self.name,
                         BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
-                        withPartName
+                        withPartName,
+                        keywordArguments
                     )
 
         if isTransferLandmarks:
@@ -686,23 +689,34 @@ class Part(Entity):
     holeLandmarkName,
     radius,
     depth,
+    normalAxis = "z",
+    flip=False,
     instanceCount = 1,
     instanceSeparation = 0,
-    normalAxis = "z",
-    aroundEntityName=None,
-    flip=False,
+    aboutEntityName=None,
+    mirror=False,
     leaveHoleEntity=False
     ):
         if isinstance(holeLandmarkName, Landmark): holeLandmarkName = holeLandmarkName.landmarkName
         
+        axis = Utilities.Axis.fromString(normalAxis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+        
         hole = Part(f"{uuid4()}").createCylinder(radius,depth)
         hole_head = hole.createLandmark("hole",center,center, min if flip else max)
+
+        if axis is Utilities.Axis.X: hole.rotate(0,-90,0)
+        elif axis is Utilities.Axis.Y: hole.rotate(-90,0,0)
         
         Joint(self, hole, holeLandmarkName, hole_head).limitLocation(0,0,0)
 
+        if mirror:
+            hole.mirror(aboutEntityName, normalAxis).apply()
+
         if instanceCount > 1:
-            if aroundEntityName != None:
-                hole.circularPattern(instanceCount, instanceSeparation, normalAxis, aroundEntityName)
+            if aboutEntityName != None:
+                hole.circularPattern(instanceCount, instanceSeparation, normalAxis, aboutEntityName)
             else:
                 hole.linearPattern(instanceCount, normalAxis, instanceSeparation)
         
@@ -785,7 +799,7 @@ class Sketch(Entity):
         interpolation = 64 \
         ):
 
-        BlenderActions.createCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation)
+        BlenderActions.create3DCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation)
 
         return self
 
@@ -812,7 +826,9 @@ class Sketch(Entity):
                 # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
                 # therefore, we'll use the object's "expected" name and rename it to what it should be
                 # note: this will fail if the "expected" name is incorrect
-                Part(blenderCurvePrimitiveType.name).rename(self.name)
+                curve = Sketch(blenderCurvePrimitiveType.name).rename(self.name)
+
+                curve.getNativeInstance().data.use_path = False
 
                 return primitiveFunction(*args, **kwargs)
             return wrapper
@@ -895,6 +911,10 @@ class Landmark:
         
     def getNativeInstance(self): 
         return BlenderActions.getObject(self.entityName)
+        
+    def getWorldLocation(self):
+        BlenderActions.updateViewLayer()
+        return BlenderActions.getObjectWorldLocation(self.entityName)
 
 
 class Joint: 

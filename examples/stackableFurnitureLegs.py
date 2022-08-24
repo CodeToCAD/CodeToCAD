@@ -17,7 +17,7 @@ ellipseLegOuterCutout.createLandmark("bottom", center, center, min)
 Joint(ellipseLeg, ellipseLegOuterCutout, ellipseLeg_top, ellipseLegOuterCutout_top).translateLandmarkOntoAnother()
 
 ellipseLeg.hollow("5mm","5mm",0)
-ellipseLeg.subtract(ellipseLegOuterCutout)
+ellipseLeg.subtract(ellipseLegOuterCutout, isTransferLandmarks=True)
 
 leg2 = ellipseLeg.clone("Leg2")
 Joint(ellipseLeg, leg2, "ellipseLegOuterCutout_bottom", "bottom").limitLocation(0,0,0,0,0,10).limitRotation(0,0,0)
