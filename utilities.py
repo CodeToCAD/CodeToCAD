@@ -73,6 +73,44 @@ class Angle():
 
   def __repr__(self) -> str:
       return self.__str__()
+      
+  def arithmeticPrecheckAndUnitConversion(self, other, operationName):
+    if not isinstance(other, Angle):
+        other = Angle.fromString(other)
+    if other.unit != self.unit:
+        if self.unit == AngleUnit.DEGREES:
+            other.toDegrees()
+        else:
+            other.toRadians()
+    return other
+
+
+  def __add__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "add")
+    return Angle(self.value + other.value, self.unit)
+  def __sub__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "subtract")
+    return Angle(self.value - other.value, self.unit)
+  def __mul__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "multiply")
+    return Angle(self.value * other.value, self.unit)
+  def __truediv__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "divide")
+    return Angle(self.value / other.value, self.unit)
+  def __floordiv__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "floor divide")
+    return Angle(self.value // other.value, self.unit)
+  def __mod__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "modulo")
+    return Angle(self.value % other.value, self.unit)
+  def __divmod__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "divmod")
+    return Angle( divmod(self.value, other.value), self.unit)
+  def __pow__(self, other, mod=None):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "pow")
+    return Angle( pow(self.value, other.value,mod), self.unit)
+  def __abs__(self):
+    return Angle(abs(self.value), self.unit)
 
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is degrees if unit not passed
@@ -180,7 +218,7 @@ class LengthUnit(Units):
             "mi": LengthUnit.mile
         }
 
-        fromString = fromString.lower()
+        fromString = fromString.lower().replace("(s)","")
 
         return aliases[fromString] if fromString in aliases else None
 
@@ -287,7 +325,7 @@ class Dimension():
     self.value = value
     self.unit = unit
   def __str__(self) -> str:
-      return f"{self.value}{' '+self.unit.name+'(s)' if self.unit else ''}"
+      return f"{self.value}{' '+self.unit.name+'s' if self.unit else ''}"
 
   def __repr__(self) -> str:
       return self.__str__()
@@ -297,7 +335,43 @@ class Dimension():
     targetUnit = LengthUnit.fromString(targetUnit) if not isinstance(targetUnit, LengthUnit) else targetUnit
     assert isinstance(targetUnit, LengthUnit), f"Could not convert to unit {targetUnit}"
     self.value = self.value * (self.unit.value/targetUnit.value)
+    self.unit = targetUnit
     return self
+
+  def arithmeticPrecheckAndUnitConversion(self, other, operationName):
+    if not isinstance(other, Dimension):
+        other = Dimension.fromString(other)
+    if other.unit != None and other.unit != self.unit:
+        other = other.convertToUnit(self.unit)
+    return other
+
+
+  def __add__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "add")
+    return Dimension(self.value + other.value, self.unit)
+  def __sub__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "subtract")
+    return Dimension(self.value - other.value, self.unit)
+  def __mul__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "multiply")
+    return Dimension(self.value * other.value, self.unit)
+  def __truediv__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "divide")
+    return Dimension(self.value / other.value, self.unit)
+  def __floordiv__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "floor divide")
+    return Dimension(self.value // other.value, self.unit)
+  def __mod__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "modulo")
+    return Dimension(self.value % other.value, self.unit)
+  def __divmod__(self, other):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "divmod")
+    return Dimension( divmod(self.value, other.value), self.unit)
+  def __pow__(self, other, mod=None):
+    other = self.arithmeticPrecheckAndUnitConversion(other, "pow")
+    return Dimension( pow(self.value, other.value,mod), self.unit)
+  def __abs__(self):
+    return Dimension(abs(self.value), self.unit)
 
   # fromString: takes a string with a math operation and an optional unit of measurement
   # Default unit is None (scale factor) if it's not passed in
