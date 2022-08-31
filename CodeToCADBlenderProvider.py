@@ -392,7 +392,7 @@ class Entity:
 
     def getWorldLocation(self): 
         BlenderActions.updateViewLayer()
-        return BlenderActions.getObjectWorldLocation(self.name)
+        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.name)]
 
     def getBoundingBox(self):
         return BlenderActions.getBoundingBox(self.name)
@@ -710,6 +710,9 @@ class Part(Entity):
     instanceSeparation = 0,
     aboutEntityName=None,
     mirror=False,
+    initialRotationX=0,
+    initialRotationY=0,
+    initialRotationZ=0,
     leaveHoleEntity=False
     ):
         if isinstance(holeLandmarkName, Landmark): holeLandmarkName = holeLandmarkName.landmarkName
@@ -721,8 +724,11 @@ class Part(Entity):
         hole = Part(f"{uuid4()}").createCylinder(radius,depth)
         hole_head = hole.createLandmark("hole",center,center, min if flip else max)
 
-        if axis is Utilities.Axis.X: hole.rotate(0,-90,0)
-        elif axis is Utilities.Axis.Y: hole.rotate(-90,0,0)
+        axisRotation = Utilities.Angle(-90, Utilities.AngleUnit.DEGREES)
+
+        if axis is Utilities.Axis.X: initialRotationY = (axisRotation+initialRotationY).value
+        elif axis is Utilities.Axis.Y: initialRotationX = (axisRotation+initialRotationX).value
+        hole.rotate(initialRotationX, initialRotationY, initialRotationZ)
         
         Joint(self, hole, holeLandmarkName, hole_head).limitLocation(0,0,0)
 
@@ -929,7 +935,7 @@ class Landmark:
         
     def getWorldLocation(self):
         BlenderActions.updateViewLayer()
-        return BlenderActions.getObjectWorldLocation(self.entityName)
+        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.entityName)]
 
 
 class Joint: 
@@ -1198,9 +1204,7 @@ class Analytics:
     def getBoundingBox(self,
     partName:str \
     ):
-        if isinstance(partName, Entity): partName = partName.name
-
-        return BlenderActions.getBoundingBox(partName)
+        return partName.getBoundingBox() if isinstance(partName, Entity) else Part(partName).getBoundingBox()
 
     def getDimensions(self,
     partName:str \
