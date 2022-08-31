@@ -152,7 +152,7 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
     
-    from CodeToCADBlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, min, max, center
+    from CodeToCADBlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, min, max, center, Dimension, Angle
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -165,6 +165,8 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     namspace["min"] = min
     namspace["max"] = max
     namspace["center"] = center
+    namspace["Dimension"] = Dimension
+    namspace["Angle"] = Angle
 
 def register():
     print ("Registering ", __name__)

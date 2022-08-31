@@ -699,6 +699,7 @@ def applyLimitLocationConstraint(
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION,
         dict(
             {
+                "name": f"loc_{objectName}_{relativeToObjectName}",
                 "use_min_x": minX != None,
                 "use_min_y": minY != None,
                 "use_min_z": minZ != None,
@@ -735,6 +736,7 @@ def applyLimitRotationConstraint(
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
         dict(
             {
+                "name": f"rot_{objectName}_{relativeToObjectName}",
                 "use_limit_x": x != None,
                 "use_limit_y": y != None,
                 "use_limit_z": z != None,
@@ -765,6 +767,7 @@ def applyPivotConstraint(
         BlenderDefinitions.BlenderConstraintTypes.PIVOT,
         dict(
             {
+                "name": f"pivot_{objectName}_{pivotObjectName}",
                 "target": pivotObject,
                 "rotation_range": "ALWAYS_ACTIVE"
             },
