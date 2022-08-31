@@ -9,6 +9,9 @@ class BlenderTypes(Enum):
     CURVE = bpy.types.Curve
     TEXT = bpy.types.TextCurve
 
+class BlenderVersions(Enum):
+    TWO_DOT_EIGHTY = (2,80,0)
+    THREE_DOT_ONE = (3,1,0)
 
 # These are the units allowed in a Blender document:
 class BlenderLength(Utilities.Units):

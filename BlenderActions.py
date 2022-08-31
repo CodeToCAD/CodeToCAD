@@ -1803,3 +1803,57 @@ def assignMaterialToObject(materialName, objectName):
         objectMaterial[0] = material
     
     return material
+    
+
+def getBlenderVersion():
+    return bpy.app.version
+
+
+fileExportFunctions = {
+    "stl": lambda filePath: bpy.ops.export_mesh.stl(
+            filepath=filePath,
+            use_selection=True),
+    "obj": lambda filePath: 
+            bpy.ops.wm.obj_export(
+                filepath=filePath,
+                export_selected_objects=True
+            )
+        if getBlenderVersion() >= BlenderDefinitions.BlenderVersions.THREE_DOT_ONE.value else
+            bpy.ops.export_scene.obj(
+                filepath=filePath,
+                use_selection=True,
+            ),
+                
+}
+
+def exportObject(
+    objectName,
+    filePath,
+    overwrite=True):
+    
+    path = Path(filePath).resolve()
+
+    # Check if the file exists:
+    if not overwrite:
+        assert \
+            not path.is_file(),\
+                f"File {filePath} already exists"
+
+    bpy.ops.object.select_all(action='DESELECT')    
+
+    blenderObject = bpy.data.objects.get(objectName)
+
+    blenderObject.select_set(True)
+    
+    # Check if this is a file-type we support:
+    fileType = path.suffix.replace(".","")
+
+    assert \
+        fileType in fileImportFunctions, \
+            f"File type {fileType} is not supported"
+
+    # export the file:
+    isSuccess = fileExportFunctions[fileType](filePath) == {'FINISHED'}
+
+    assert isSuccess == True, \
+            f"Could not export {filePath}"

@@ -7,6 +7,9 @@ from uuid import uuid4
 
 from pathlib import Path
 
+if BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
+    print(f"CodeToCAD BlenderProvider only supports Blender versions {'.'.join(BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(BlenderActions.getBlenderVersion())}")
+
 def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
     for update in depsgraph.updates:
         print("Received Event: {} Type: {}".format(update.id.name, type(update.id)))
@@ -589,6 +592,20 @@ class Part(Entity):
         print("loft is not implemented") # implement 
         return self
 
+
+    def export(self,
+    filePath:str,
+    overwrite:bool=True
+    ):
+        path = Path(filePath)
+
+        absoluteFilePath = filePath
+        if not path.is_absolute():
+            absoluteFilePath = str(Path(sys.argv[0]).parent.joinpath(path).resolve())
+        
+        BlenderActions.exportObject(self.name, absoluteFilePath, overwrite)
+
+        return self
     
 
     def mask(self,
@@ -1135,9 +1152,12 @@ class Scene:
         print("delete is not implemented") # implement 
         return self
 
-    def export(self
+    def export(self,
+    partName:str,
+    filePath:str,
+    overwrite:bool=True
     ):
-        print("export is not implemented") # implement 
+        Part(partName).export(filePath, overwrite)
         return self
 
     def setDefaultUnit(self,
