@@ -1771,16 +1771,16 @@ def createMaterial(newMaterialName):
     return material
 
 def setMaterialColor(materialName, rValue, gValue, bValue, aValue = 1.0):
-    if type(rValue) == "int":
+    if type(rValue) == int:
         rValue /= 255.0
 
-    if type(gValue) == "int":
-        gValue /= 255.0   
-
-    if type(bValue) == "int":
+    if type(gValue) == int:
+        gValue /= 255.0
+        
+    if type(bValue) == int:
         bValue /= 255.0
 
-    if type(aValue) == "int":
+    if type(aValue) == int:
         aValue /= 255.0
 
     material = getMaterial(materialName)
@@ -1801,3 +1801,5 @@ def assignMaterialToObject(materialName, objectName):
         objectMaterial.append(material)
     else:
         objectMaterial[0] = material
+    
+    return material

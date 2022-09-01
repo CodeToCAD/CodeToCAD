@@ -427,6 +427,26 @@ class Entity:
 
         return self
 
+class Material:
+
+
+    def __init__(self, materialName):
+        self.name = materialName
+
+    def assignToPart(self, partName):
+        try:
+            BlenderActions.getMaterial(self.name)
+        except:
+            BlenderActions.createMaterial(self.name)
+            
+        BlenderActions.assignMaterialToObject(self.name,partName)
+        return self
+
+    def setColor(self, rValue, gValue, bValue, aValue = 1.0):
+        BlenderActions.setMaterialColor(self.name, rValue, gValue, bValue, aValue)
+        return self
+
+
 class Part(Entity):
 
     name = None
@@ -438,6 +458,9 @@ class Part(Entity):
     ):
         self.name = name
         self.description = description
+    
+    def assignMaterial(self, materialName):
+        return Material(materialName).assignToPart(self.name)
 
     def createFromFile(self,
     filePath:str,  \
@@ -1089,13 +1112,6 @@ class Joint:
         BlenderActions.applyGearConstraint(self.part2.name, self.part1.name, ratio, keywordArguments)
 
         return self
-
-class Material:
-
-
-    def __init__(self
-    ):
-        pass
 
 
 class Scene:
