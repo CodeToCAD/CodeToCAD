@@ -1749,3 +1749,55 @@ def addDependencyGraphUpdateListener(callback):
 
 def addTimer(callback):
     bpy.app.timers.register(callback)
+
+def getMaterial(materialName):
+    blenderMaterial = bpy.data.materials.get(materialName)
+
+    assert \
+        blenderMaterial != None, \
+            f"Material {materialName} does not exists"
+
+    return blenderMaterial
+
+def createMaterial(newMaterialName):
+    material = bpy.data.materials.get(newMaterialName)
+
+    assert \
+        material == None, \
+            f"Material with name {material} already exists."
+
+    material = bpy.data.materials.new(name = newMaterialName)
+
+    return material
+
+def setMaterialColor(materialName, rValue, gValue, bValue, aValue = 1.0):
+    if type(rValue) == "int":
+        rValue /= 255.0
+
+    if type(gValue) == "int":
+        gValue /= 255.0   
+
+    if type(bValue) == "int":
+        bValue /= 255.0
+
+    if type(aValue) == "int":
+        aValue /= 255.0
+
+    material = getMaterial(materialName)
+
+    material.diffuse_color = (rValue, gValue, bValue, aValue)
+
+    return material
+
+def assignMaterialToObject(materialName, objectName):
+
+    material = getMaterial(materialName)
+
+    object = getObject(objectName)
+
+    objectMaterial = object.data.materials
+
+    if len(objectMaterial) == 0:
+        objectMaterial.append(material)
+    else:
+        objectMaterial[0] = material
