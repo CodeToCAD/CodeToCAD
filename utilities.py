@@ -116,34 +116,37 @@ class Angle():
   # Default unit is degrees if unit not passed
   @staticmethod
   def fromString(fromString:str, defaultUnit:AngleUnit = AngleUnit.DEGREES):
+    
+    if isinstance(fromString, Angle):
+        return fromString
 
-        unit = AngleUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
-        assert (unit is None and defaultUnit is None) \
-            or type(unit) is AngleUnit, \
-                "Could not parse default unit."
+    unit = AngleUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
+    assert (unit is None and defaultUnit is None) \
+        or type(unit) is AngleUnit, \
+            "Could not parse default unit."
 
-        if isinstance(fromString, (int, float)):
-            return Angle(fromString, unit)
+    if isinstance(fromString, (int, float)):
+        return Angle(fromString, unit)
 
-        assert type(fromString) is str, "fromString must be a string."
+    assert type(fromString) is str, "fromString must be a string."
 
-        fromString = fromString.replace(" ", "").lower()
+    fromString = fromString.replace(" ", "").lower()
 
-        value = fromString
-        
-        # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
-        unitInString = re.search('[A-Za-z]+$', fromString)
-        if unitInString:
-            value = fromString[0:-1*len(unitInString[0])]
-            unitInString = LengthUnit.fromString(unitInString[0])
-            unit = unitInString or unit or AngleUnit.DEGREES
-        
-        # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
-        assert re.match("[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
+    value = fromString
+    
+    # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
+    unitInString = re.search('[A-Za-z]+$', fromString)
+    if unitInString:
+        value = fromString[0:-1*len(unitInString[0])]
+        unitInString = LengthUnit.fromString(unitInString[0])
+        unit = unitInString or unit or AngleUnit.DEGREES
+    
+    # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
+    assert re.match("[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
 
-        value = eval(value)
+    value = eval(value)
 
-        return Angle(value, unit)
+    return Angle(value, unit)
 
 
 def getAnglesFromStringList(angles):
@@ -379,6 +382,9 @@ class Dimension():
   # boundaryAxis is required if min,center,max are used
   @staticmethod
   def fromString(fromString:str, defaultUnit:LengthUnit = None, boundaryAxis:BoundaryAxis = None):
+
+    if isinstance(fromString, Dimension):
+        return fromString
 
     unit = LengthUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(defaultUnit) is str else defaultUnit
     assert (unit is None and defaultUnit is None) \
