@@ -936,39 +936,6 @@ def setDriverVariableRotationDifference(
 
 # MARK: Landmarks
 
-def translateLandmarkRelativeToAnother(
-        objectName,
-        landmarkObjectName,
-        otherObjectName,
-        otherLandmarkName,
-        offset:list[Utilities.Dimension] = None
-    ):
-        _ = getObject(objectName)
-        
-        otherObjectLandmarkObjectName = f"{otherObjectName}_{otherLandmarkName}"
-        _ = getObject(otherObjectLandmarkObjectName)
-
-        localPositionXYZ = getObjectWorldLocation(otherObjectLandmarkObjectName) - getObjectWorldLocation(objectName)
-        
-        if offset:
-            dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(offset)
-            offset = [dimension.value for dimension in dimensions]
-
-            localPositionXYZ += Vector(offset)
-
-        localPositionXYZ = localPositionXYZ.to_tuple()
-
-        localPositionXYZ = [
-            Utilities.Dimension(
-                    localPosition,
-                    BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-                )
-                for localPosition in localPositionXYZ
-        ]
-
-        translateObject(landmarkObjectName, localPositionXYZ, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
-
-
 def translateLandmarkOntoAnother(
         objectToTranslateName,
         object1LandmarkName,
@@ -1147,6 +1114,10 @@ def transferLandmarks(
     for child in fromBlenderObject.children:
         if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
             child.name = f"{toObjectName}_{child.name}"
+            isAlreadyExists = bpy.data.objects.get(child.name) == None
+            if isAlreadyExists:
+                print(f"{child.name} already exists. Skipping landmark transfer.")
+                continue
             child.parent = toBlenderObject
             child.location = child.location + translation
             assignObjectToCollection(child.name, defaultCollection)
@@ -1188,12 +1159,17 @@ def duplicateObject(
 def updateViewLayer():
     bpy.context.view_layer.update()
 
+def getObjectLocalLocation(objectName):
+    
+    blenderObject = getObject(objectName)
+
+    return blenderObject.location
+    
 def getObjectWorldLocation(objectName):
     
     blenderObject = getObject(objectName)
 
     return blenderObject.matrix_world.translation
-    # return blenderObject.matrix_basis.translation
 
     
 def getObjectWorldPose(objectName):
@@ -1201,7 +1177,6 @@ def getObjectWorldPose(objectName):
     blenderObject = getObject(objectName)
 
     return blenderObject.matrix_world
-    # return blenderObject.matrix_basis
 
 
 def getObject(objectName):
@@ -1810,18 +1785,22 @@ def getBlenderVersion():
 
 
 fileExportFunctions = {
-    "stl": lambda filePath: bpy.ops.export_mesh.stl(
+    "stl": lambda filePath,scale: bpy.ops.export_mesh.stl(
             filepath=filePath,
-            use_selection=True),
-    "obj": lambda filePath: 
+            use_selection=True,
+            global_scale=scale
+            ),
+    "obj": lambda filePath,scale: 
             bpy.ops.wm.obj_export(
                 filepath=filePath,
-                export_selected_objects=True
+                export_selected_objects=True,
+                global_scale=scale
             )
         if getBlenderVersion() >= BlenderDefinitions.BlenderVersions.THREE_DOT_ONE.value else
             bpy.ops.export_scene.obj(
                 filepath=filePath,
                 use_selection=True,
+                global_scale=scale
             ),
                 
 }
@@ -1829,7 +1808,9 @@ fileExportFunctions = {
 def exportObject(
     objectName,
     filePath,
-    overwrite=True):
+    overwrite=True,
+    scale=1.0
+    ):
     
     path = Path(filePath).resolve()
 
@@ -1853,7 +1834,22 @@ def exportObject(
             f"File type {fileType} is not supported"
 
     # export the file:
-    isSuccess = fileExportFunctions[fileType](filePath) == {'FINISHED'}
+    isSuccess = fileExportFunctions[fileType](filePath,scale) == {'FINISHED'}
 
     assert isSuccess == True, \
             f"Could not export {filePath}"
+
+
+# TODO: bind this to BlenderProvider    
+def separateObject(
+    objectName):
+    bpy.ops.object.select_all(action='DESELECT')    
+
+    blenderObject = bpy.data.objects.get(objectName)
+
+    blenderObject.select_set(True)
+    
+    isSuccess = bpy.ops.mesh.separate(type='LOOSE') == {'FINISHED'}
+
+    assert isSuccess == True, \
+        f"Could not separate object"
