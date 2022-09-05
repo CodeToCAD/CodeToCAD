@@ -23,6 +23,19 @@ Dimension = Utilities.Dimension
 Angle = Utilities.Angle
 
 class Entity:
+    
+    name = None
+
+    def __init__(self, name) -> None:
+        self.name = name
+
+    @property
+    def isExists(self):
+        try:
+            BlenderActions.getObject(self.name)
+            return True
+        except:
+            return False
 
     def translate_fromstring(self,
         translateString:str
@@ -133,6 +146,8 @@ class Entity:
     renameData = True,
     renameLandmarks = True
     ):
+        assert Entity(newName).isExists == False, f"{newName} already exists."
+
         BlenderActions.updateObjectName(self.name, newName)
 
         if renameData:
@@ -150,6 +165,8 @@ class Entity:
     copyLandmarks:bool = True
     ):
 
+        assert Entity(newPartName).isExists == False, f"{newPartName} already exists."
+
         BlenderActions.duplicateObject(self.name, newPartName, copyLandmarks)
 
         return Part(newPartName)
@@ -159,6 +176,8 @@ class Entity:
     existingPartName:str,
     copyLandmarks:bool = True
     ):
+        assert self.isExists == False, f"{self.name} already exists."
+        
         if isinstance(existingPartName, Entity): existingPartName = existingPartName.name
 
         BlenderActions.duplicateObject(existingPartName, self.name, copyLandmarks)
@@ -260,6 +279,7 @@ class Entity:
     ):
 
         if isinstance(centerPartName, Entity): centerPartName = centerPartName.name
+        if isinstance(centerPartName, Landmark): centerPartName = centerPartName.entityName
         if isinstance(centerLandmarkName, Landmark): centerLandmarkName = centerLandmarkName.landmarkName
 
         centerObjectName = Landmark(centerPartName, centerLandmarkName).entityName if centerLandmarkName else centerPartName
@@ -298,6 +318,8 @@ class Entity:
     
     # This is a blender specific action to apply the dependency graph modifiers onto a mesh
     def apply(self):
+
+        BlenderActions.updateViewLayer()
         
         BlenderActions.applyDependencyGraph(self.name)
         
@@ -308,44 +330,6 @@ class Entity:
         BlenderActions.clearModifiers(self.name)
 
         return self
-        
-    def createLandmarkRelative(
-            self,
-            landmarkName,
-            otherEntityName,
-            otherLandmarkName,
-            offsetX,
-            offsetY,
-            offsetZ
-        ):
-        
-        if isinstance(otherEntityName, Entity): otherEntityName = otherEntityName.name
-        if isinstance(otherLandmarkName, Landmark): otherLandmarkName = otherLandmarkName.landmarkName
-
-        landmark = Landmark(landmarkName, self.name)
-        landmarkObjectName = landmark.entityName
-        
-        # Create an Empty object to represent the landmark
-        # Using an Empty object allows us to parent the object to this Empty.
-        # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
-        # This might not work in other CodeToCAD implementations, but it does in Blender
-        Part(landmarkObjectName).createPrimitive("Empty", "0")
-        
-        # Assign the landmark to the parent's collection
-        BlenderActions.assignObjectToCollection(landmarkObjectName, BlenderActions.getObjectCollection(self.name))
-
-        # Parent the landmark to the object
-        BlenderActions.makeParent(landmarkObjectName, self.name)
-
-        BlenderActions.translateLandmarkRelativeToAnother(
-            self.name,
-            landmarkObjectName,
-            otherEntityName,
-            otherLandmarkName,
-            [Utilities.Dimension.fromString(offset) for offset in [offsetX or 0, offsetY or 0, offsetZ or 0]]
-        )
-
-        return landmark
 
     def createLandmark_fromString(self, landmarkName, localPositionXYZ:str):
 
@@ -377,7 +361,6 @@ class Entity:
         return landmark
 
 
-
     def createLandmark(self, landmarkName, localXPosition, localYPosition, localZPosition):
         return self.createLandmark_fromString(landmarkName, [localXPosition, localYPosition, localZPosition])
         
@@ -393,9 +376,13 @@ class Entity:
     def getNativeInstance(self): 
         return BlenderActions.getObject(self.name)
 
-    def getWorldLocation(self): 
+    def getLocationWorld(self): 
         BlenderActions.updateViewLayer()
         return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.name)]
+        
+    def getLocationLocal(self): 
+        BlenderActions.updateViewLayer()
+        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.name)]
 
     def getBoundingBox(self):
         return BlenderActions.getBoundingBox(self.name)
@@ -465,11 +452,13 @@ class Part(Entity):
     def assignMaterial(self, materialName):
         return Material(materialName).assignToPart(self.name)
 
+
     def createFromFile(self,
     filePath:str,  \
     fileType:str=None \
     ):
         
+        assert self.isExists == False, f"{self.name} already exists."
 
         path = Path(filePath)
         fileName = path.stem
@@ -492,8 +481,11 @@ class Part(Entity):
     dimensions:str,  \
     keywordArguments:dict=None \
     ):
+    
+        assert self.isExists == False, f"{self.name} already exists."
+
         # TODO: account for blender auto-renaming with sequential numbers
-        primitiveType = getattr(BlenderDefinitions.BlenderObjectPrimitiveTypes, primitiveName.lower(), None)
+        primitiveType:BlenderDefinitions.BlenderObjectPrimitiveTypes = getattr(BlenderDefinitions.BlenderObjectPrimitiveTypes, primitiveName.lower(), None)
         expectedNameOfObjectInBlender = primitiveType.defaultNameInBlender() if primitiveType else None
 
         assert expectedNameOfObjectInBlender != None, \
@@ -595,7 +587,8 @@ class Part(Entity):
 
     def export(self,
     filePath:str,
-    overwrite:bool=True
+    overwrite:bool=True,
+    scale=1.0
     ):
         path = Path(filePath)
 
@@ -603,7 +596,7 @@ class Part(Entity):
         if not path.is_absolute():
             absoluteFilePath = str(Path(sys.argv[0]).parent.joinpath(path).resolve())
         
-        BlenderActions.exportObject(self.name, absoluteFilePath, overwrite)
+        BlenderActions.exportObject(self.name, absoluteFilePath, overwrite, scale)
 
         return self
     
@@ -744,12 +737,13 @@ class Part(Entity):
     holeLandmarkName,
     radius,
     depth,
-    normalAxis = "z",
+    normalAxis="z",
     flip=False,
     instanceCount = 1,
     instanceSeparation = 0,
     aboutEntityName=None,
     mirror=False,
+    mirrorAxis="x",
     initialRotationX=0,
     initialRotationY=0,
     initialRotationZ=0,
@@ -773,7 +767,7 @@ class Part(Entity):
         Joint(self, hole, holeLandmarkName, hole_head).limitLocation(0,0,0)
 
         if mirror:
-            hole.mirror(aboutEntityName, normalAxis).apply()
+            hole.mirror(aboutEntityName, mirrorAxis).apply()
 
         if instanceCount > 1:
             if aboutEntityName != None:
@@ -950,7 +944,7 @@ class Landmark:
 
     def __init__(self,
     landmarkName:str,
-    localToEntityWithName:str=None \
+    localToEntityWithName:str
     ):
     
         if isinstance(localToEntityWithName, Entity): localToEntityWithName = localToEntityWithName.name
@@ -959,10 +953,7 @@ class Landmark:
         
         self.landmarkName = landmarkName
         
-        if localToEntityWithName:
-            self.entityName = f"{localToEntityWithName}_{landmarkName}"
-        else:
-            self.entityName = landmarkName
+        self.entityName = f"{localToEntityWithName}_{landmarkName}"
 
     def delete(self):
         BlenderActions.removeObject(self.entityName)
@@ -973,9 +964,13 @@ class Landmark:
     def getNativeInstance(self): 
         return BlenderActions.getObject(self.entityName)
         
-    def getWorldLocation(self):
+    def getLocationWorld(self):
         BlenderActions.updateViewLayer()
         return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.entityName)]
+        
+    def getLocationLocal(self):
+        BlenderActions.updateViewLayer()
+        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.entityName)]
 
 
 class Joint: 
