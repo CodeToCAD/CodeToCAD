@@ -1,42 +1,41 @@
 from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionsFromStringList
 
 def test_dimensions():
-    dimension = Dimension("")
-    assert dimension.value == None
-    assert dimension.unit == None
-    dimension = Dimension("50")
+    try:
+        dimension = Dimension.fromString("")
+        assert False
+    except Exception as e:
+        assert str(e) == "Dimension value cannot be empty."
+    dimension = Dimension.fromString("50")
     assert dimension.value == 50
     assert dimension.unit == None
-    dimension = Dimension("100")
+    dimension = Dimension.fromString("100")
     assert dimension.value == 100
     assert dimension.unit == None
-    dimension = Dimension("100", LengthUnit.meter)
+    dimension = Dimension.fromString("100", LengthUnit.meter)
     assert dimension.value == 100
     assert dimension.unit == LengthUnit.meter
     dimension = Dimension(99, LengthUnit.meter)
     assert dimension.value == 99
     assert dimension.unit == LengthUnit.meter
 
-    dimension = Dimension("100mm")
+    dimension = Dimension.fromString("100mm")
     assert dimension.value == 100
     assert dimension.unit == LengthUnit.millimeter
-    dimension = Dimension("1m")
+    dimension = Dimension.fromString("1m")
     assert dimension.value == 1
     assert dimension.unit == LengthUnit.meter
     
-    dimension = Dimension("1/4mm")
+    dimension = Dimension.fromString("1/4mm")
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.millimeter
-    dimension = Dimension("1-(3/4)")
+    dimension = Dimension.fromString("1-(3/4)")
     assert dimension.value == 0.25
     assert dimension.unit == None
-    dimension = Dimension("1-(3/4)", LengthUnit.foot)
+    dimension = Dimension.fromString("1-(3/4)", LengthUnit.foot)
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.foot
 
-    dimensions = getDimensionsFromStringList(",1cm,")
-    assert dimensions[0].value == None and dimensions[1].value == 1
-    assert dimensions[0].unit == None and dimensions[1].unit == LengthUnit.centimeter
     dimensions = getDimensionsFromStringList("10,1")
     assert dimensions[0].value == 10 and dimensions[1].value == 1
     assert dimensions[0].unit == None and dimensions[1].unit == None
@@ -49,6 +48,9 @@ def test_dimensions():
     dimensions = getDimensionsFromStringList("1m,2m,3m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter and dimensions[2].unit == LengthUnit.meter
+    dimensions = getDimensionsFromStringList("1m,2in,3m")
+    assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
+    assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.meter
     dimensions = getDimensionsFromStringList("1,2,3mm,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.meter and dimensions[1].unit == LengthUnit.meter and dimensions[2].unit == LengthUnit.millimeter
@@ -64,7 +66,7 @@ def test_dimensions():
 def test_angles():
     angles = getAnglesFromStringList("10,1")
     assert angles[0].value == 10 and angles[1].value == 1
-    assert angles[0].unit == AngleUnit.RADIANS and angles[1].unit == AngleUnit.RADIANS
+    assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
     angles = getAnglesFromStringList("1,2,deg")
     assert angles[0].value == 1 and angles[1].value == 2
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
