@@ -134,11 +134,13 @@ class Angle():
 
     value = fromString
     
-    # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
+    assert len(value) > 0, f"Angle value cannot be empty."
+    
+    # check if a unit is passed into fromString, e.g. "1rad" -> radians
     unitInString = re.search('[A-Za-z]+$', fromString)
     if unitInString:
         value = fromString[0:-1*len(unitInString[0])]
-        unitInString = LengthUnit.fromString(unitInString[0])
+        unitInString = AngleUnit.fromString(unitInString[0])
         unit = unitInString or unit or AngleUnit.DEGREES
     
     # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
@@ -397,6 +399,7 @@ class Dimension():
     assert type(fromString) is str, "fromString must be a string."
 
     fromString = fromString.replace(" ", "").lower()
+    
     value = fromString
     
     # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
@@ -412,6 +415,8 @@ class Dimension():
         assert unit != None, "min,max,center keywords used, but unit is not known."
         value = replaceMinMaxCenterWithRespectiveValue(value, boundaryAxis, unit)
     
+    assert len(value) > 0, f"Dimension value cannot be empty."
+
     # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
     assert re.match("[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
 
@@ -443,7 +448,7 @@ def getDimensionsFromStringList(dimensions:list[str], boundingBox:BoundaryBox=No
 
     parsedDimensions = []
     
-    defaultUnit = LengthUnit.meter
+    defaultUnit = None
 
     dimensionString = dimensions[-1]
     
