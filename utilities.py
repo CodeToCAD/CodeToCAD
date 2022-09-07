@@ -412,7 +412,8 @@ class Dimension():
     # if min,max,center is used, try to parse those words into their respective values.
     if isReservedWordInString(value):
         assert boundaryAxis != None, "min,max,center keywords used, but boundaryAxis is not known."
-        assert unit != None, "min,max,center keywords used, but unit is not known."
+        if unit == None:
+            unit = boundaryAxis.unit
         value = replaceMinMaxCenterWithRespectiveValue(value, boundaryAxis, unit)
     
     assert len(value) > 0, f"Dimension value cannot be empty."

@@ -1,4 +1,4 @@
-from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionsFromStringList
+from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionsFromStringList,BoundaryAxis, BoundaryBox
 
 def test_dimensions():
     try:
@@ -63,6 +63,38 @@ def test_dimensions():
 
     print("test_dimensions done.")
 
+def test_minMaxCenter():
+    
+    boundingBox = BoundaryBox(
+        BoundaryAxis(
+            -1, 1, 0, LengthUnit.meter
+        ),
+        BoundaryAxis(
+            -1, 1, 0, LengthUnit.meter
+        ),
+        BoundaryAxis(
+            -1, 1, 0, LengthUnit.meter
+        )
+    )
+
+    dimensions = getDimensionsFromStringList("min", boundingBox)
+    assert dimensions[0].value == -1
+    assert dimensions[0].unit == LengthUnit.meter
+    dimensions = getDimensionsFromStringList("max", boundingBox)
+    assert dimensions[0].value == 1
+    assert dimensions[0].unit == LengthUnit.meter
+    dimensions = getDimensionsFromStringList("center", boundingBox)
+    assert dimensions[0].value == 0
+    assert dimensions[0].unit == LengthUnit.meter
+    dimensions = getDimensionsFromStringList("min-2", boundingBox)
+    assert dimensions[0].value == -3
+    assert dimensions[0].unit == LengthUnit.meter
+    dimensions = getDimensionsFromStringList("min-2cm", boundingBox)
+    assert dimensions[0].value == -102
+    assert dimensions[0].unit == LengthUnit.centimeter
+
+    print("test_minMaxCenter() done.")
+
 def test_angles():
     angles = getAnglesFromStringList("10,1")
     assert angles[0].value == 10 and angles[1].value == 1
@@ -89,4 +121,5 @@ def test_angles():
 
 if __name__ == "__main__":
     test_dimensions()
+    test_minMaxCenter()
     test_angles()
