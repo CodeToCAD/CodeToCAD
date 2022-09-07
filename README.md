@@ -11,7 +11,6 @@ Future planned integrations:
 - OnShape
 - OpenSCAD
 - ThreeJS
-
 ## Why does CodeToCAD matter?
 
 ### Purpose tl;dr
@@ -75,6 +74,22 @@ This project takes inspiration from the [SDF spec](http://sdformat.org/spec), [B
 
 ## Technical Concepts Start Here
 
+### [utilities.py](./utilities.py)
+
+[Utilities.py](./utilities.py) provides common and built-in features of CodeToCAD. This includes Length and Angle parsing from string, and unit conversions.
+
+Python3.8+ is needed to maintain [utilities.py](./utilities.py)
+
+[test_utilities](./tests/test_utilities.py) tests Angle and Length parsing and unit conversions.
+
+### Git Hooks
+
+If you're working on this project, it might be helpful to use git hooks. To install hooks into your dev environment, please run `sh ./development/installGitHooks.sh`
+
+### Running Tests
+
+Run tests using `sh runTests.sh`.
+
 ### Capabilities.json and Jinja2 templates
 
 [Capabilities.json](./capabilities.json) defines all the possible functions that can be used to create a model.
@@ -84,9 +99,14 @@ Jinja2 files are used to turn the json file into actual code:
 
 ### Generating Jinja2 templates:
 
-Currently using (https://j2live.ttl255.com/)[https://j2live.ttl255.com/] to generate the template. If merging it into an existing file, KDiff3 is used to resolve the merge process.
+run [capabilitiesToPython.sh](./capabilitiesToPython.sh) to automatically generate [capabilities.py](capabilities.py). This script does the following:
 
-## Capabilities
+- Create a python virtual environment
+- Sources the virtual environment
+- Runs `pip install jinja2-cli`
+- Runs `jinja2 capabilitiesToPython.j2 capabilities.json --format=json > capabilities.py`
+
+### Capabilities
 
 All capabilities are recorded in [capabilities.json](./capabilities.json). The lists below may be outdated.
 

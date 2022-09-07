@@ -41,13 +41,6 @@ class Entity:
         print("rename is not implemented") # implement 
         return self
 
-    def extrude(self,
-    landmarkName:str,  \
-    dimensions:str \
-    ):
-        print("extrude is not implemented") # implement 
-        return self
-
     def remesh(self,
     strategy:str,  \
     amount:float \
@@ -64,7 +57,7 @@ class Entity:
     def setVisible(self,
     isVisible:bool \
     ):
-        print("isVisible is not implemented") # implement 
+        print("setVisible is not implemented") # implement 
         return self
 
     def apply(self
@@ -219,6 +212,12 @@ class Sketch:
         self.curveType = curveType
         self.description = description
 
+    def extrude(self,
+    length:str \
+    ):
+        print("extrude is not implemented") # implement 
+        return self
+
     def sweep(self,
     profileCurveName:str,  \
     fillCap:bool \
@@ -326,11 +325,14 @@ class Sketch:
         return self
 
 class Landmark: 
-    # Capabilities for CodeToCAD.localToEntityWithName = None
+    # Capabilities for CodeToCAD.landmarkName = None
+    localToEntityWithName = None
 
     def __init__(self,
-    localToEntityWithName:str=None \
+    landmarkName:str, \
+    localToEntityWithName:str \
     ):
+        self.landmarkName = landmarkName
         self.localToEntityWithName = localToEntityWithName
 
 class Joint: 
