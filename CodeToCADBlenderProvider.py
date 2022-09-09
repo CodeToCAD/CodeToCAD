@@ -419,16 +419,18 @@ class Entity:
 
 class Material:
 
-
     def __init__(self, materialName):
-        self.name = materialName
+        if isinstance(materialName, Material):
+            materialName = materialName.name
 
-    def assignToPart(self, partName):
+        self.name = materialName
+        
         try:
             BlenderActions.getMaterial(self.name)
         except:
             BlenderActions.createMaterial(self.name)
-            
+
+    def assignToPart(self, partName):
         BlenderActions.assignMaterialToObject(self.name,partName)
         return self
 
@@ -448,10 +450,6 @@ class Part(Entity):
     ):
         self.name = name
         self.description = description
-    
-    def assignMaterial(self, materialName):
-        return Material(materialName).assignToPart(self.name)
-
 
     def createFromFile(self,
     filePath:str,  \
@@ -496,7 +494,8 @@ class Part(Entity):
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
-        Part(expectedNameOfObjectInBlender).rename(self.name, primitiveType.hasData())
+        if self.name != expectedNameOfObjectInBlender:
+            Part(expectedNameOfObjectInBlender).rename(self.name, primitiveType.hasData())
 
         return self
 
@@ -681,12 +680,76 @@ class Part(Entity):
 
         return self
 
-    def bevel(self,
-    landmarkName:str,  \
-    angle:float,  \
-    roundedness:int \
+    def filletAllEdges(self,
+        radius,
+        useWidth = False,
+        keywordArguments:dict = None
+        ):
+        return self.bevel(
+            radius,
+            chamfer=False,
+            useWidth=useWidth,
+            keywordArguments=keywordArguments
+        )
+    def filletEdges(self,
+    radius:str,
+    landmarkNamesNearEdges:list[str],
+    useWidth = False,
+    keywordArguments:dict = None
     ):
-        print("bevel is not implemented") # implement 
+        return self.bevel(
+            radius,
+            landmarkNamesNearEdges=landmarkNamesNearEdges,
+            chamfer=False,
+            useWidth=useWidth,
+            keywordArguments=keywordArguments
+        )
+    def chamferAllEdges(self,
+        radius,
+        keywordArguments:dict = None
+        ):
+        return self.bevel(
+            radius,
+            chamfer=True,
+            useWidth=False,
+            keywordArguments=keywordArguments
+        )
+    def chamferEdges(self,
+    radius:str,
+    landmarkNamesNearEdges:list[str],
+    keywordArguments:dict = None
+    ):
+        return self.bevel(
+            radius,
+            landmarkNamesNearEdges=landmarkNamesNearEdges,
+            chamfer=True,
+            useWidth=False,
+            keywordArguments=keywordArguments
+        )
+
+    def bevel(self,
+    radius:str,
+    landmarkNamesNearEdges:list[str] = None,
+    useWidth = False,
+    chamfer = False,
+    keywordArguments:dict = None
+    ):
+        vertexGroupName = None
+
+        radius = Utilities.Dimension.fromString(radius)
+
+        radius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(radius)
+
+        BlenderActions.applyBevelModifier(
+            self.name,
+            radius,
+            vertexGroupName=vertexGroupName,
+            useEdges=True,
+            useWidth=useWidth,
+            chamfer = chamfer,
+            keywordArguments = keywordArguments or None
+        )
+
         return self
 
     def hollow(self,
@@ -776,6 +839,11 @@ class Part(Entity):
                 hole.linearPattern(instanceCount, normalAxis, instanceSeparation)
         
         self.subtract(hole, deleteAfterSubtract=(not leaveHoleEntity), isTransferLandmarks=False)
+        
+    
+    def assignMaterial(self, materialName):
+        Material(materialName).assignToPart(self.name)
+        return self
 
 # alias for Part
 Shape = Part
