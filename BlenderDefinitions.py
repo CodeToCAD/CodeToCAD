@@ -96,6 +96,7 @@ class BlenderModifiers(Enum):
     SOLIDIFY = 5
     CURVE = 6
     ARRAY = 7
+    BEVEL = 8
 
 
 # This is a list of Blender Constraint types that we have implemented:

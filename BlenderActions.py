@@ -31,6 +31,30 @@ def applyModifier(
     for key,value in keywordArguments.items():
         setattr(modifier, key, value)
 
+def applyBevelModifier(
+    entityName,
+    radius:Utilities.Dimension,
+    vertexGroupName = None,
+    useEdges = True,
+    useWidth = False,
+    chamfer = False,
+    keywordArguments:dict = None
+):
+    applyModifier(
+        entityName,
+        BlenderDefinitions.BlenderModifiers.BEVEL,
+        dict({
+            "affect": "EDGES" if useEdges else "VERTICES",
+            "offset_type": "WIDTH" if useWidth else "OFFSET",
+            "width": radius.value,
+            "segments": 1 if chamfer else 24,
+            "limit_method": "VGROUP" if vertexGroupName else "ANGLE",
+            "vertex_group": vertexGroupName or ""
+        },
+         **(keywordArguments or {})
+        )
+    )
+
 def applyLinearPattern(
         entityName,
         instanceCount,
@@ -1055,7 +1079,16 @@ def createObject(
 
     return bpy.data.objects.new( name , data )
 
+def createObjectVertexGroup(objectName, vertexGroupName):
+    blenderObject = getObject(objectName)
+    return blenderObject.vertex_groups.new(name=vertexGroupName)
 
+def getObjectVertexGroup(objectName, vertexGroupName):
+    blenderObject = getObject(objectName)
+    return blenderObject.vertex_groups.get(vertexGroupName)
+
+def addVerticiesToVertexGroup(vertexGroupObject, vertexGroupData):
+    vertexGroupObject.add(vertexGroupData, 1.0, 'ADD')
 
 def createMeshFromCurve(
         existingCurveObjectName,
