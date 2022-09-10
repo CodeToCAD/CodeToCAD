@@ -1325,7 +1325,7 @@ def getClosestFaceToVertex(objectName, vertex):
             f"Could not find a point close to {vertex} on {objectName}"
             
     assert \
-        polygonIndex and polygonIndex != -1, \
+        polygonIndex != None and polygonIndex != -1, \
             f"Could not find a face near {vertex} on {objectName}"
 
     blenderPolygon = blenderObject.data.polygons[polygonIndex]
