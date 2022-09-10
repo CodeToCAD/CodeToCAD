@@ -49,7 +49,7 @@ class Entity:
         while len(dimensions) < 3:
             dimensions.append(Utilities.Dimension(1))
     
-        BlenderActions.translateObject(self.name, dimensions, BlenderDefinitions.BlenderTranslationTypes.RELATIVE)
+        BlenderActions.translateObject(self.name, dimensions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
