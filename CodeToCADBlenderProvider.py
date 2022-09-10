@@ -398,24 +398,13 @@ class Entity:
             ]
         
     def getLandmark(self, landmarkName):
+        if isinstance(landmarkName, Landmark):
+            landmarkName = landmarkName.landmarkName
+
         landmark = Landmark(landmarkName, self.name)
 
         assert BlenderActions.getObject(landmark.entityName) != None, f"Landmark {landmarkName} does not exist for {self.name}."
         return landmark
-        
-    def select(self,
-    landmarkName:str,  \
-    selectionType:str = "face" \
-    ):
-        landmarkObject = Landmark(landmarkName, self.name)
-        landmarkLocation = BlenderActions.getObjectWorldLocation(landmarkObject.entityName)
-        [closestPoint, normal, blenderPolygon, blenderVertices] = BlenderActions.getClosestPointsToVertex(self.name, landmarkLocation)
-
-        if blenderVertices != None:
-            for vertex in blenderVertices:
-                vertex.select = True
-
-        return self
 
 class Material:
 
@@ -699,7 +688,20 @@ class Part(Entity):
     ):
         return self.bevel(
             radius,
-            landmarkNamesNearEdges=landmarkNamesNearEdges,
+            bevelEdgesNearlandmarkNames=landmarkNamesNearEdges,
+            chamfer=False,
+            useWidth=useWidth,
+            keywordArguments=keywordArguments
+        )
+    def filletFaces(self,
+    radius:str,
+    landmarkNamesNearFaces:list[str],
+    useWidth = False,
+    keywordArguments:dict = None
+    ):
+        return self.bevel(
+            radius,
+            bevelFacesNearlandmarkNames=landmarkNamesNearFaces,
             chamfer=False,
             useWidth=useWidth,
             keywordArguments=keywordArguments
@@ -721,20 +723,74 @@ class Part(Entity):
     ):
         return self.bevel(
             radius,
-            landmarkNamesNearEdges=landmarkNamesNearEdges,
+            bevelEdgesNearlandmarkNames=landmarkNamesNearEdges,
+            chamfer=True,
+            useWidth=False,
+            keywordArguments=keywordArguments
+        )
+    def chamferFaces(self,
+    radius:str,
+    landmarkNamesNearFaces:list[str],
+    keywordArguments:dict = None
+    ):
+        return self.bevel(
+            radius,
+            bevelFacesNearlandmarkNames=landmarkNamesNearFaces,
             chamfer=True,
             useWidth=False,
             keywordArguments=keywordArguments
         )
 
+    def _addEdgesNearLandmarksToVertexGroup(self, bevelEdgesNearlandmarkNames:list[str], vertexGroupName):
+        # accept non-list input:
+        if type(bevelEdgesNearlandmarkNames) == str or isinstance(bevelEdgesNearlandmarkNames, Landmark):
+            bevelEdgesNearlandmarkNames = [bevelEdgesNearlandmarkNames]
+        
+        if len(bevelEdgesNearlandmarkNames) > 0:
+            kdTree = BlenderActions.createKdTreeForObject(self.name)
+            vertexGroupObject = BlenderActions.createObjectVertexGroup(self.name, vertexGroupName)
+
+            for landmark in bevelEdgesNearlandmarkNames:
+                landmark:Landmark = self.getLandmark(landmark)
+                vertexIndecies = [index for (_, index, _) in BlenderActions.getClosestPointsToVertex(self.name, [dimension.value for dimension in landmark.getLocationWorld()], numberOfPoints=2, objectKdTree=kdTree)]
+
+                assert len(vertexIndecies) == 2, f"Could not find edges near landmark {landmark.landmarkName}"
+
+                BlenderActions.addVerticiesToVertexGroup(vertexGroupObject,vertexIndecies)
+                
+    def _addFacesNearLandmarksToVertexGroup(self, bevelFacesNearlandmarkNames:list[str], vertexGroupName):
+        # accept non-list input:
+        if type(bevelFacesNearlandmarkNames) == str or isinstance(bevelFacesNearlandmarkNames, Landmark):
+            bevelFacesNearlandmarkNames = [bevelFacesNearlandmarkNames]
+        
+        if len(bevelFacesNearlandmarkNames) > 0:
+            vertexGroupObject = BlenderActions.createObjectVertexGroup(self.name, vertexGroupName)
+
+            for landmark in bevelFacesNearlandmarkNames:
+                landmark:Landmark = self.getLandmark(landmark)
+                
+                blenderPolygon = BlenderActions.getClosestFaceToVertex(self.name, [dimension.value for dimension in landmark.getLocationWorld()])
+
+                BlenderActions.addVerticiesToVertexGroup(vertexGroupObject, blenderPolygon.vertices)
+
+
     def bevel(self,
     radius:str,
-    landmarkNamesNearEdges:list[str] = None,
+    bevelEdgesNearlandmarkNames:list[str] = None,
+    bevelFacesNearlandmarkNames:list[str] = None,
     useWidth = False,
     chamfer = False,
     keywordArguments:dict = None
     ):
         vertexGroupName = None
+
+        if bevelEdgesNearlandmarkNames != None:
+            vertexGroupName = str(uuid4())
+            self._addEdgesNearLandmarksToVertexGroup(bevelEdgesNearlandmarkNames, vertexGroupName)
+
+        if bevelFacesNearlandmarkNames != None:
+            vertexGroupName = vertexGroupName or str(uuid4())
+            self._addFacesNearLandmarksToVertexGroup(bevelFacesNearlandmarkNames, vertexGroupName)
 
         radius = Utilities.Dimension.fromString(radius)
 
@@ -844,6 +900,12 @@ class Part(Entity):
     def assignMaterial(self, materialName):
         Material(materialName).assignToPart(self.name)
         return self
+
+    def isCollidingWithPart(self, otherPartName):
+        if isinstance(otherPartName, Part):
+            otherPartName = otherPartName.name
+
+        return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
 # alias for Part
 Shape = Part

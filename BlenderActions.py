@@ -9,7 +9,8 @@ import BlenderDefinitions
 
 from pathlib import Path
 from mathutils import Vector, Matrix
-from enum import Enum
+from mathutils.bvhtree import BVHTree
+from mathutils.kdtree import KDTree
 
 # MARK: Modifiers
 
@@ -1087,8 +1088,8 @@ def getObjectVertexGroup(objectName, vertexGroupName):
     blenderObject = getObject(objectName)
     return blenderObject.vertex_groups.get(vertexGroupName)
 
-def addVerticiesToVertexGroup(vertexGroupObject, vertexGroupData):
-    vertexGroupObject.add(vertexGroupData, 1.0, 'ADD')
+def addVerticiesToVertexGroup(vertexGroupObject, vertexIndecies:list[int]):
+    vertexGroupObject.add(vertexIndecies, 1.0, 'ADD')
 
 def createMeshFromCurve(
         existingCurveObjectName,
@@ -1271,8 +1272,38 @@ def setEdgesMeanCrease(meshName, meanCreaseValue):
     for edge in blenderMesh.edges:
         edge.crease = meanCreaseValue
 
+
+# Note: transformations have to be applied for this to be reliable.
+def isCollisionBetweenTwoObjects(object1Name, object2Name):
+    blenderObject1 = getObject(object1Name)
+    blenderObject2 = getObject(object2Name)
+
+    dependencyGraph = bpy.context.evaluated_depsgraph_get()
+
+    bvhTreeObject1 = BVHTree.FromObject(blenderObject1,dependencyGraph)
+    bvhTreeObject2 = BVHTree.FromObject(blenderObject2,dependencyGraph)
+
+    uniqueIndecies = bvhTreeObject1.overlap(bvhTreeObject2)
+
+    return len(uniqueIndecies) > 0
+
+
+#References https://docs.blender.org/api/current/mathutils.kdtree.html
+def createKdTreeForObject(objectName):
+    blenderObject = getObject(objectName)
+    mesh = blenderObject.data
+    size = len(mesh.vertices)
+    kd = KDTree(size)
+
+    for i, v in enumerate(mesh.vertices):
+        kd.insert(v.co, i)
+
+    kd.balance()
+    return kd
+
+
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
-def getClosestPointsToVertex(objectName, vertex):
+def getClosestFaceToVertex(objectName, vertex):
     
     blenderObject = getObject(objectName)
     
@@ -1280,21 +1311,45 @@ def getClosestPointsToVertex(objectName, vertex):
         len(vertex) == 3, \
             "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
 
+    matrixWorld = blenderObject.matrix_world
+    invertedMatrixWorld = matrixWorld.inverted()
+
+    # vertex in object space:
+    vertexInverted = invertedMatrixWorld @ Vector(vertex)
+
     # polygonIndex references an index at blenderObject.data.polygons[polygonIndex], in other words, the face or edge data
-    [isFound, closestPoint, normal, polygonIndex] = blenderObject.closest_point_on_mesh(vertex)
+    [isFound, closestPoint, normal, polygonIndex] = blenderObject.closest_point_on_mesh(vertexInverted)
 
     assert \
         isFound, \
             f"Could not find a point close to {vertex} on {objectName}"
+            
+    assert \
+        polygonIndex and polygonIndex != -1, \
+            f"Could not find a face near {vertex} on {objectName}"
 
-    blenderPolygon = None
-    blenderVertices = None
+    blenderPolygon = blenderObject.data.polygons[polygonIndex]
 
-    if polygonIndex and polygonIndex != -1:
-        blenderPolygon = blenderObject.data.polygons[polygonIndex]
-        blenderVertices = [blenderObject.data.vertices[vertexIndex] for vertexIndex in blenderObject.data.polygons[polygonIndex].vertices]
+    return blenderPolygon
 
-    return [closestPoint, normal, blenderPolygon, blenderVertices]
+
+# Returns a list of (co, index, dist)
+def getClosestPointsToVertex(objectName, vertex, numberOfPoints = 2, objectKdTree = None):
+    
+    blenderObject = getObject(objectName)
+
+    kdTree = objectKdTree or createKdTreeForObject(objectName)
+    
+    assert \
+        len(vertex) == 3, \
+            "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
+
+    matrixWorld = blenderObject.matrix_world
+    invertedMatrixWorld = matrixWorld.inverted()
+
+    vertexInverted = invertedMatrixWorld @ Vector(vertex)
+
+    return kdTree.find_n(vertexInverted, numberOfPoints)
 
 
 # References https://blender.stackexchange.com/a/32288/138679
