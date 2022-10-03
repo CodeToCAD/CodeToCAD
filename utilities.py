@@ -40,7 +40,14 @@ class AngleUnit(Units):
             "deg": AngleUnit.DEGREES,
             "d": AngleUnit.DEGREES
         }
-        return aliases[fromString.lower()]
+
+        fromString = fromString.lower().replace("(s)","")
+        
+        parsedUnit = aliases[fromString] if fromString in aliases else None
+
+        assert parsedUnit != None, f"Could not parse unit {fromString}"
+
+        return parsedUnit
 
 
 class Angle():
@@ -181,51 +188,55 @@ def getAnglesFromStringList(angles):
 
 class LengthUnit(Units):
     #metric
-    micrometer = 1 / 1000
-    millimeter = 1
-    centimeter = 10
-    meter = 1000
-    kilometer = 1000000
+    μm = 1 / 1000
+    mm = 1
+    cm = 10
+    m = 1000
+    km = 1000000
 
     #imperial
-    thousandthInch = 25.4 / 1000
+    thou = 25.4 / 1000
     inch = 25.4
-    foot = 25.4 * 12
-    mile = 25.4 * 63360
+    ft = 25.4 * 12
+    mi = 25.4 * 63360
 
     def fromString(fromString:str):
         aliases = {
             #metric
-            "micrometer": LengthUnit.micrometer,
-            "millimeter": LengthUnit.millimeter,
-            "millimeters": LengthUnit.millimeter,
-            "centimeter": LengthUnit.centimeter,
-            "centimeters": LengthUnit.centimeter,
-            "kilometer": LengthUnit.kilometer,
-            "meter": LengthUnit.meter,
-            "meters": LengthUnit.meter,
-            "mm": LengthUnit.millimeter,
-            "cm": LengthUnit.centimeter,
-            "m": LengthUnit.meter,
-            "km": LengthUnit.kilometer,
+            "micrometer": LengthUnit.μm,
+            "millimeter": LengthUnit.mm,
+            "millimeters": LengthUnit.mm,
+            "centimeter": LengthUnit.cm,
+            "centimeters": LengthUnit.cm,
+            "kilometer": LengthUnit.km,
+            "meter": LengthUnit.m,
+            "meters": LengthUnit.m,
+            "mm": LengthUnit.mm,
+            "cm": LengthUnit.cm,
+            "m": LengthUnit.m,
+            "km": LengthUnit.km,
             #imperial
-            "thousandthInch": LengthUnit.thousandthInch,
-            "thousandth": LengthUnit.thousandthInch,
+            "thousandthInch": LengthUnit.thou,
+            "thousandth": LengthUnit.thou,
             "inch": LengthUnit.inch,
             "inches": LengthUnit.inch,
-            "foot": LengthUnit.foot,
-            "feet": LengthUnit.foot,
-            "mile": LengthUnit.mile,
-            "miles": LengthUnit.mile,
-            "thou": LengthUnit.thousandthInch,
+            "foot": LengthUnit.ft,
+            "feet": LengthUnit.ft,
+            "mile": LengthUnit.mi,
+            "miles": LengthUnit.mi,
+            "thou": LengthUnit.thou,
             "in": LengthUnit.inch,
-            "ft": LengthUnit.foot,
-            "mi": LengthUnit.mile
+            "ft": LengthUnit.ft,
+            "mi": LengthUnit.mi
         }
 
         fromString = fromString.lower().replace("(s)","")
 
-        return aliases[fromString] if fromString in aliases else None
+        parsedUnit = aliases[fromString] if fromString in aliases else None
+
+        assert parsedUnit != None, f"Could not parse unit {fromString}"
+
+        return parsedUnit
 
     
 class Axis(EquittableEnum):
@@ -242,7 +253,8 @@ class Axis(EquittableEnum):
             return Axis.Y
         if axis == "z" or axis == "2":
             return Axis.Z
-        return None
+        
+        assert False, f"Cannot parse axis {axis}"
 
 class CurvePrimitiveTypes(EquittableEnum):
     Point = 0
@@ -286,12 +298,12 @@ class BoundaryAxis:
     min = None
     max = None
     center = None
-    unit = LengthUnit.meter
-    def __init__(self, min=None, max=None, center=None, unit=LengthUnit.meter):
+    unit = LengthUnit.m
+    def __init__(self, min=None, max=None, center=None, unit=LengthUnit.m):
         self.min = min
         self.max = max
         self.center = center
-        self.unit = unit if unit else LengthUnit.meter
+        self.unit = unit if unit else LengthUnit.m
     def __str__(self):
         return \
 f"""    min   max   unit
@@ -330,7 +342,7 @@ class Dimension():
     self.value = value
     self.unit = unit
   def __str__(self) -> str:
-      return f"{self.value}{' '+self.unit.name+'s' if self.unit else ''}"
+      return f"{self.value}{' '+self.unit.name if self.unit else ''}"
 
   def __repr__(self) -> str:
       return self.__str__()
@@ -403,10 +415,10 @@ class Dimension():
     value = fromString
     
     # check if a unit is passed into fromString, e.g. "1-(3/4)cm" -> cm
-    unitInString = re.search('[A-Za-z]+$', fromString)
-    if unitInString and not isReservedWordInString(unitInString[0]):
-        value = fromString[0:-1*len(unitInString[0])]
-        unitInString = LengthUnit.fromString(unitInString[0])
+    unitInString = getUnitInString(fromString)
+    if unitInString:
+        value = fromString[0:-1*len(unitInString)]
+        unitInString = LengthUnit.fromString(unitInString)
         unit = unitInString or unit
 
     # if min,max,center is used, try to parse those words into their respective values.
@@ -439,6 +451,18 @@ def replaceMinMaxCenterWithRespectiveValue(dimension:str, boundaryAxis:BoundaryA
 
     return dimension
 
+def getUnitInString(dimensionString):
+    if type(dimensionString) != str:
+        return None
+
+    dimensionString = dimensionString.replace(" ", "").lower()
+
+    unitSearchResults = re.search('[A-Za-z]+$', dimensionString)
+
+    unitInString = unitSearchResults[0] if unitSearchResults else None
+
+    return unitInString if unitInString and not isReservedWordInString(unitInString) else None
+
 
 def getDimensionsFromStringList(dimensions:list[str], boundingBox:BoundaryBox=None) -> list[Dimension]:
 
@@ -450,18 +474,12 @@ def getDimensionsFromStringList(dimensions:list[str], boundingBox:BoundaryBox=No
     parsedDimensions = []
     
     defaultUnit = None
-
-    dimensionString = dimensions[-1]
     
-    if type(dimensionString) == str:
-        dimensionString = dimensionString.replace(" ", "").lower()
-        dimensionString = re.search('[A-Za-z]+$', dimensionString)
-
-        unitInString = LengthUnit.fromString(dimensionString[0]) if dimensionString else None
-        if unitInString != None:
-            defaultUnit = unitInString
-            if len(dimensionString[0]) == len(dimensions[-1]):
-                dimensions.pop()
+    unitInString = getUnitInString(dimensions[-1])
+    if unitInString != None:
+        defaultUnit = LengthUnit.fromString(unitInString)
+        if len(unitInString) == len(dimensions[-1].replace(" ", "").lower()):
+            dimensions.pop()
 
     for index, dimension in enumerate(dimensions):
         if boundingBox != None and index < 3:
