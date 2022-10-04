@@ -306,9 +306,6 @@ def addPrimitive(
 
     dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
-    while len(dimensions) < 3:
-        dimensions.append(Utilities.Dimension(1))
-    
     # Add the object:
     blenderPrimitiveFunction(
         primitiveType,
