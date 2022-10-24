@@ -16,10 +16,14 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 
 BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
+def createUUID():
+    return str(uuid4()).replace("-","")[:10]
+
 min = "min"
 max = "max"
 center = "center"
 Dimension = Utilities.Dimension
+Dimensions = Utilities.Dimensions
 Angle = Utilities.Angle
 
 class Entity:
@@ -42,7 +46,7 @@ class Entity:
     ):
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
-        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(translateString, boundingBox)
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(translateString, boundingBox)
 
         dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -66,7 +70,7 @@ class Entity:
     ):
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
-        dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions, boundingBox) or []
+        dimensions:list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(dimensions, boundingBox) or []
         
         dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -284,7 +288,7 @@ class Entity:
 
         centerObjectName = Landmark(centerPartName, centerLandmarkName).entityName if centerLandmarkName else centerPartName
 
-        pivotLandmark = Landmark("circularPatternPivot", self.name)
+        pivotLandmark = Landmark(createUUID(), self.name)
 
         self.createLandmark(pivotLandmark.landmarkName, 0, 0, 0)
         
@@ -335,7 +339,7 @@ class Entity:
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
         
-        localPositions = Utilities.getDimensionsFromStringList(localPositionXYZ, boundingBox)
+        localPositions = Utilities.getDimensionListFromStringList(localPositionXYZ, boundingBox)
 
         assert len(localPositions) == 3, "localPositions should contain 3 dimensions for XYZ"
 
@@ -389,13 +393,14 @@ class Entity:
     
     def getDimensions(self):
         dimensions = BlenderActions.getObject(self.name).dimensions
-        return [
+        dimensions = [
             Utilities.Dimension.fromString(
                 dimension,
                 BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
             ) 
             for dimension in dimensions
             ]
+        return Utilities.Dimensions(dimensions[0], dimensions[1], dimensions[2]) 
         
     def getLandmark(self, landmarkName):
         if isinstance(landmarkName, Landmark):
@@ -459,7 +464,8 @@ class Part(Entity):
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
-        Part(fileName).rename(self.name)
+        if self.name != fileName: 
+            Part(fileName).rename(self.name)
         
         return self
 
@@ -785,11 +791,11 @@ class Part(Entity):
         vertexGroupName = None
 
         if bevelEdgesNearlandmarkNames != None:
-            vertexGroupName = str(uuid4())
+            vertexGroupName = createUUID()
             self._addEdgesNearLandmarksToVertexGroup(bevelEdgesNearlandmarkNames, vertexGroupName)
 
         if bevelFacesNearlandmarkNames != None:
-            vertexGroupName = vertexGroupName or str(uuid4())
+            vertexGroupName = vertexGroupName or createUUID()
             self._addFacesNearLandmarksToVertexGroup(bevelFacesNearlandmarkNames, vertexGroupName)
 
         radius = Utilities.Dimension.fromString(radius)
@@ -823,9 +829,9 @@ class Part(Entity):
         startLandmarkLocation = [center, center, center]
         startLandmarkLocation[axis.value] = min if flipAxis else max
 
-        startAxisLandmark = self.createLandmark_fromString(f"{uuid4()}", startLandmarkLocation)
+        startAxisLandmark = self.createLandmark_fromString(createUUID(), startLandmarkLocation)
 
-        insidePart = self.clone(f"{uuid4()}", copyLandmarks=False)
+        insidePart = self.clone(createUUID(), copyLandmarks=False)
         insidePart_start = insidePart.createLandmark_fromString("start", startLandmarkLocation)
 
         thicknessXYZ = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
@@ -862,7 +868,7 @@ class Part(Entity):
     instanceSeparation = 0,
     aboutEntityName=None,
     mirror=False,
-    mirrorAxis="x",
+    instanceAxis=None,
     initialRotationX=0,
     initialRotationY=0,
     initialRotationZ=0,
@@ -874,7 +880,7 @@ class Part(Entity):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
         
-        hole = Part(f"{uuid4()}").createCylinder(radius,depth)
+        hole = Part(createUUID()).createCylinder(radius,depth)
         hole_head = hole.createLandmark("hole",center,center, min if flip else max)
 
         axisRotation = Utilities.Angle(-90, Utilities.AngleUnit.DEGREES)
@@ -886,13 +892,15 @@ class Part(Entity):
         Joint(self, hole, holeLandmarkName, hole_head).limitLocation(0,0,0)
 
         if mirror:
-            hole.mirror(aboutEntityName, mirrorAxis).apply()
+            hole.mirror(aboutEntityName, instanceAxis or "x").apply()
 
         if instanceCount > 1:
             if aboutEntityName != None:
-                hole.circularPattern(instanceCount, instanceSeparation, normalAxis, aboutEntityName)
+                instanceSeparation = 360.0/float(instanceCount) if instanceSeparation == 0 else instanceSeparation
+                hole.circularPattern(instanceCount, instanceSeparation, instanceAxis or "z", aboutEntityName)
             else:
-                hole.linearPattern(instanceCount, normalAxis, instanceSeparation)
+                assert instanceSeparation != 0, "InstanceCount is set, but instanceSeparation is 0. Did you mean to add an instanceSeparation?"
+                hole.linearPattern(instanceCount, instanceAxis or "x", instanceSeparation)
         
         self.subtract(hole, deleteAfterSubtract=(not leaveHoleEntity), isTransferLandmarks=False)
         
@@ -1070,7 +1078,10 @@ class Landmark:
 
     localToEntityWithName = None
     landmarkName = None
-    entityName = None
+
+    @property
+    def entityName(self):
+        return f"{self.localToEntityWithName}_{self.landmarkName}"
 
     def __init__(self,
     landmarkName:str,
@@ -1082,14 +1093,14 @@ class Landmark:
         self.localToEntityWithName = localToEntityWithName
         
         self.landmarkName = landmarkName
-        
-        self.entityName = f"{localToEntityWithName}_{landmarkName}"
 
     def delete(self):
         BlenderActions.removeObject(self.entityName)
 
     def rename(self, newName):
-        BlenderActions.updateObjectName(self.entityName, newName)
+        oldEntityName = self.entityName
+        self.landmarkName = newName
+        BlenderActions.updateObjectName(oldEntityName, self.entityName)
         
     def getNativeInstance(self): 
         return BlenderActions.getObject(self.entityName)
