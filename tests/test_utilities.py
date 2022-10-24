@@ -1,4 +1,4 @@
-from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionsFromStringList,BoundaryAxis, BoundaryBox
+from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionListFromStringList,BoundaryAxis, BoundaryBox
 
 def test_dimensions():
     try:
@@ -43,28 +43,28 @@ def test_dimensions():
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.ft
 
-    dimensions = getDimensionsFromStringList("10,1")
+    dimensions = getDimensionListFromStringList("10,1")
     assert dimensions[0].value == 10 and dimensions[1].value == 1
     assert dimensions[0].unit == None and dimensions[1].unit == None
-    dimensions = getDimensionsFromStringList("1,2,m")
+    dimensions = getDimensionListFromStringList("1,2,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2
     assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("1,2,3,m")
+    dimensions = getDimensionListFromStringList("1,2,3,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("1m,2m,3m")
+    dimensions = getDimensionListFromStringList("1m,2m,3m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("1m,2in,3m")
+    dimensions = getDimensionListFromStringList("1m,2in,3m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("1,2,3mm,m")
+    dimensions = getDimensionListFromStringList("1,2,3mm,m")
     assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
     assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.mm
-    dimensions = getDimensionsFromStringList("21,1/8,1/8, in")
+    dimensions = getDimensionListFromStringList("21,1/8,1/8, in")
     assert dimensions[0].value == 21 and dimensions[1].value == .125 and dimensions[2].value == .125
     assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.inch
-    dimensions = getDimensionsFromStringList("3in,1mm")
+    dimensions = getDimensionListFromStringList("3in,1mm")
     assert dimensions[0].value == 3 and dimensions[1].value == 1
     assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.mm
 
@@ -87,19 +87,19 @@ def test_minMaxCenter():
         )
     )
 
-    dimensions = getDimensionsFromStringList("min", boundingBox)
+    dimensions = getDimensionListFromStringList("min", boundingBox)
     assert dimensions[0].value == -1
     assert dimensions[0].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("max", boundingBox)
+    dimensions = getDimensionListFromStringList("max", boundingBox)
     assert dimensions[0].value == 1
     assert dimensions[0].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("center", boundingBox)
+    dimensions = getDimensionListFromStringList("center", boundingBox)
     assert dimensions[0].value == 0
     assert dimensions[0].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("min-2", boundingBox)
+    dimensions = getDimensionListFromStringList("min-2", boundingBox)
     assert dimensions[0].value == -3
     assert dimensions[0].unit == LengthUnit.m
-    dimensions = getDimensionsFromStringList("min-2cm", boundingBox)
+    dimensions = getDimensionListFromStringList("min-2cm", boundingBox)
     assert dimensions[0].value == -102
     assert dimensions[0].unit == LengthUnit.cm
 

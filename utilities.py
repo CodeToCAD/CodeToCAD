@@ -332,6 +332,7 @@ z   {self.z.min}  {self.z.max}  {self.z.unit.name+'(s)'}
     def __repr__(self) -> str:
         return self.__str__()
 
+
 class Dimension():
   def __init__(self, value:float, unit:LengthUnit = None):
     assert isinstance(value, (int, float)) , "Dimension value must be a number."
@@ -437,6 +438,45 @@ class Dimension():
 
     return Dimension(value, unit)
 
+class Dimensions():
+    def __init__(self,
+        x:Dimension,
+        y:Dimension,
+        z:Dimension
+    ) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+
+    @property
+    def radius(self):
+        return self.x
+    @property
+    def width(self):
+        return self.x
+    @property
+    def length(self):
+        return self.y
+    @property
+    def height(self):
+        return self.z
+
+    def __getitem__(self, key):
+        if (key == 0):
+            return self.x
+        if (key == 1):
+            return self.y
+        if (key == 2):
+            return self.z
+        if (key == "radius"):
+            return self.radius
+        if (key == "width"):
+            return self.width
+        if (key == "length"):
+            return self.length
+        if (key == "height"):
+            return self.height
+
 
 # Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
 def replaceMinMaxCenterWithRespectiveValue(dimension:str, boundaryAxis:BoundaryAxis, defaultUnit:LengthUnit):
@@ -464,7 +504,7 @@ def getUnitInString(dimensionString):
     return unitInString if unitInString and not isReservedWordInString(unitInString) else None
 
 
-def getDimensionsFromStringList(dimensions:list[str], boundingBox:BoundaryBox=None) -> list[Dimension]:
+def getDimensionListFromStringList(dimensions:list[str], boundingBox:BoundaryBox=None) -> list[Dimension]:
 
     if type(dimensions) is str:
         dimensions = dimensions.replace(" ","").lower().split(",")
