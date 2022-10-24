@@ -302,7 +302,7 @@ def addPrimitive(
     assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
-    dimensions:list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(dimensions) or []
+    dimensions:list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(dimensions) or []
 
     dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(dimensions)
 
@@ -1481,7 +1481,7 @@ def createSpline(
 
     coordinates = [
             BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
-                Utilities.getDimensionsFromStringList(coordinate) or []
+                Utilities.getDimensionListFromStringList(coordinate) or []
             ) for coordinate in coordinates
         ]
     coordinates = [[dimension.value for dimension in coordinate] for coordinate in coordinates]
