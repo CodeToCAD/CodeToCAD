@@ -6,3 +6,4 @@ SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from
 GIT_HOOKS_DIR=`git rev-parse --git-dir`/hooks
 
 cp "$SCRIPT_DIR/gitHooks/pre-commit.sh" "$GIT_HOOKS_DIR/pre-commit"
+chmod +x "$GIT_HOOKS_DIR/pre-commit"
