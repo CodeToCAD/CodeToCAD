@@ -297,17 +297,28 @@ class Point:
 class BoundaryAxis:
     min = None
     max = None
-    center = None
-    unit = LengthUnit.m
-    def __init__(self, min=None, max=None, center=None, unit=LengthUnit.m):
+    unit = None
+
+    @property
+    def center(self):
+        return (self.max + self.min) / 2.0
+
+    def __init__(self, min=None, max=None, unit=None):
         self.min = min
         self.max = max
-        self.center = center
-        self.unit = unit if unit else LengthUnit.m
+
+        if (unit == None): 
+            return
+
+        unit = LengthUnit.fromString(unit.replace(" ", "").lower()) if type(unit) is str else unit
+        assert type(unit) is LengthUnit, "Dimension unit must be of type LengthUnit or string."
+
+        self.unit = unit
+
     def __str__(self):
         return \
 f"""    min   max   unit
-x   {self.min}  {self.max}  {self.unit.name+'(s)'}
+x   {self.min}  {self.max}  {self.unit.name+'(s)' if self.unit else "No Unit"}
 """
     def __repr__(self) -> str:
         return self.__str__()
