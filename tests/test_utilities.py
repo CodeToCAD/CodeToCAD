@@ -77,13 +77,13 @@ def test_minMaxCenter():
     
     boundingBox = BoundaryBox(
         BoundaryAxis(
-            -1, 1, 0, LengthUnit.m
+            -1, 1, LengthUnit.m
         ),
         BoundaryAxis(
-            -1, 1, 0, LengthUnit.m
+            -1, 1, LengthUnit.m
         ),
         BoundaryAxis(
-            -1, 1, 0, LengthUnit.m
+            -1, 1, LengthUnit.m
         )
     )
 
