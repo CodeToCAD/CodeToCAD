@@ -457,6 +457,11 @@ class Point:
     def toList(self):
         return [self.x, self.y, self.z]
 
+    @classmethod
+    def fromList(cls, pointList:list[Dimension]):
+        assert len(pointList) == 3, "Point list must contain three Dimensions."
+        return cls(pointList[0], pointList[1], pointList[2])
+
     def __add__(self, other):
         x = self.x + other.x
         y = self.y + other.y
@@ -503,6 +508,16 @@ class Point:
         z = abs(self.z)
         return Point(x,y,z)
 
+
+    def __getitem__(self, key):
+        if (key == 0):
+            return self.x
+        if (key == 1):
+            return self.y
+        if (key == 2):
+            return self.z
+
+
     def __str__(self):
         return \
 f"""x   y   z
@@ -520,6 +535,14 @@ class Dimensions():
         z:Dimension
     ) -> None:
         self.point = Point(x,y,z)
+
+    def toList(self):
+        return self.point.toList()
+
+    @classmethod
+    def fromList(cls, dimensionsList:list[Dimension]):
+        assert len(dimensionsList) == 3, "Dimensions list must contain three Dimensions."
+        return cls(dimensionsList[0],dimensionsList[1],dimensionsList[2])
 
     def __add__(self, other):
         point = self.point + other.point
