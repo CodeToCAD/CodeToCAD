@@ -289,11 +289,6 @@ class ConstraintTypes(EquittableEnum):
     Pivot = 2 # Rotation locked between specified start and end angles in all axes, but rotation origin is offset.
     Gear = 3 # Rotation of one object is a percentage of another's in a specified axis.
 
-class Point:
-    x:float
-    y:float
-    z:float
-
 class BoundaryAxis:
     min = None
     max = None
@@ -487,6 +482,74 @@ class Dimensions():
             return self.length
         if (key == "height"):
             return self.height
+
+
+class Point:
+    x:Dimension
+    y:Dimension
+    z:Dimension
+
+    def __init__(self, x:Dimension, y:Dimension, z:Dimension) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def toList(self):
+        return [self.x, self.y, self.z]
+
+    def __add__(self, other):
+        x = self.x + other.x
+        y = self.y + other.y
+        z = self.z + other.z
+        return Point(x,y,z)
+    def __sub__(self, other):
+        x = self.x - other.x
+        y = self.y - other.y
+        z = self.z - other.z
+        return Point(x,y,z)
+    def __mul__(self, other):
+        x = self.x * other.x
+        y = self.y * other.y
+        z = self.z * other.z
+        return Point(x,y,z)
+    def __truediv__(self, other):
+        x = self.x / other.x
+        y = self.y / other.y
+        z = self.z / other.z
+        return Point(x,y,z)
+    def __floordiv__(self, other):
+        x = self.x // other.x
+        y = self.y // other.y
+        z = self.z // other.z
+        return Point(x,y,z)
+    def __mod__(self, other):
+        x = self.x % other.x
+        y = self.y % other.y
+        z = self.z % other.z
+        return Point(x,y,z)
+    def __divmod__(self, other):
+        x = divmod(self.x, other.x)
+        y = divmod(self.y, other.y)
+        z = divmod(self.z, other.z)
+        return Point(x,y,z)
+    def __pow__(self, other, mod=None):
+        x = pow(self.x, other.x)
+        y = pow(self.y, other.y)
+        z = pow(self.z, other.z)
+        return Point(x,y,z)
+    def __abs__(self):
+        x = abs(self.x)
+        y = abs(self.y)
+        z = abs(self.z)
+        return Point(x,y,z)
+
+    def __str__(self):
+        return \
+f"""x   y   z
+{self.x}  {self.y}  {self.z}
+"""
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 # Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
