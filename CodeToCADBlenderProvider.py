@@ -14,7 +14,7 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
     for update in depsgraph.updates:
         print("Received Event: {} Type: {}".format(update.id.name, type(update.id)))
 
-BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
+# BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 def createUUID():
     return str(uuid4()).replace("-","")[:10]
@@ -352,7 +352,7 @@ class Entity:
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        landmarkObject = Part(landmarkObjectName).createPrimitive("Empty", "0")
+        _ = Part(landmarkObjectName).createPrimitive("Empty", "0")
 
         # Assign the landmark to the parent's collection
         BlenderActions.assignObjectToCollection(landmarkObjectName, BlenderActions.getObjectCollection(self.name))
@@ -382,11 +382,13 @@ class Entity:
 
     def getLocationWorld(self): 
         BlenderActions.updateViewLayer()
-        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.name)]
+        location = [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.name)]
+        return Utilities.Point(location[0],location[1],location[2])
         
     def getLocationLocal(self): 
         BlenderActions.updateViewLayer()
-        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.name)]
+        location = [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.name)]
+        return Utilities.Point(location[0],location[1],location[2])
 
     def getBoundingBox(self):
         return BlenderActions.getBoundingBox(self.name)
@@ -1107,11 +1109,13 @@ class Landmark:
         
     def getLocationWorld(self):
         BlenderActions.updateViewLayer()
-        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.entityName)]
+        location = [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectWorldLocation(self.entityName)]
+        return Utilities.Point(location[0],location[1],location[2])
         
     def getLocationLocal(self):
         BlenderActions.updateViewLayer()
-        return [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.entityName)]
+        location = [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for value in BlenderActions.getObjectLocalLocation(self.entityName)]
+        return Utilities.Point(location[0],location[1],location[2])
 
 
 class Joint: 
@@ -1266,6 +1270,23 @@ class Joint:
 
         return self
 
+class Animation:
+
+    @staticmethod
+    def createKeyFrameLocation(
+        partName:str,
+        frameNumber:str,
+    ):
+        if isinstance(partName, Entity): partName = partName.name
+        BlenderActions.addKeyframeToObject(partName, frameNumber, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE.value)
+
+    @staticmethod
+    def createKeyFrameRotation(
+        partName:str,
+        frameNumber:str,
+    ):
+        if isinstance(partName, Entity): partName = partName.name
+        BlenderActions.addKeyframeToObject(partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
 class Scene:
 
@@ -1344,6 +1365,15 @@ class Scene:
 
         BlenderActions.assignObjectToCollection(entityName, groupName, self.name, removeFromOtherGroups)
 
+        return self
+
+    def assignManyToGroup(self,
+    entityNames:list[str], \
+    groupName:str, \
+    removeFromOtherGroups:bool = True \
+    ):
+        for entityName in entityNames:
+            self.assignToGroup(entityName, groupName, removeFromOtherGroups)
         return self
         
 

@@ -1386,7 +1386,7 @@ def getBoundingBox(objectName):
             Utilities.BoundaryAxis(
                 minVal,
                 maxVal,
-                (maxVal+minVal)/2
+                "m"
             )
         )
     
@@ -1803,6 +1803,16 @@ def setDefaultUnit(
     blenderScene.unit_settings.length_unit = blenderUnit.name
 
 
+def zoomToSelectedObjects():
+    # References https://blender.stackexchange.com/a/7419/138679
+    for area in bpy.context.screen.areas:
+        if area.type == 'VIEW_3D':
+            for region in area.regions:
+                if region.type == 'WINDOW':
+                    override = {'area': area, 'region': region, 'edit_object': bpy.context.edit_object}
+                    bpy.ops.view3d.view_all(override)
+
+
 def addDependencyGraphUpdateListener(callback):
     bpy.app.handlers.depsgraph_update_post.append(callback)
 
@@ -1938,3 +1948,9 @@ def separateObject(
 
     assert isSuccess == True, \
         f"Could not separate object"
+
+# MARK: Animation
+def addKeyframeToObject(objectName:str, frameNumber:int, dataPath:str):
+    blenderObject = getObject(objectName)
+
+    blenderObject.keyframe_insert(data_path=dataPath, frame=frameNumber)
