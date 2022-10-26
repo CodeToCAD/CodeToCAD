@@ -75,6 +75,9 @@ class ImportCodeToCAD(Operator, ImportHelper):
             print("Running script", path)
             runpy.run_path(path, run_name="__main__")
 
+        from BlenderActions import zoomToSelectedObjects
+        zoomToSelectedObjects()
+
         return {'FINISHED'}
 
     def draw(self, context):
