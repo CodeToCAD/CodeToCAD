@@ -474,6 +474,16 @@ class Material:
             self.name, rValue, gValue, bValue, aValue)
         return self
 
+class Texture:
+
+    def __init__(self, textureName):
+        self.textureName = textureName
+    def assignToPart(self, partName):
+        try:
+            pass #create the BlenderActions.getTexture method
+        except:
+            pass #create the BlenderActions.createTexture method
+
 
 class Part(Entity):
 

@@ -246,3 +246,19 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
             return BlenderCurveTypes.NURBS
         else:
             raise "Unknown primitive"
+
+class RepeatMode(Enum):
+    extend = 0,
+    clip = 1,
+    repeat = 2
+
+     # references https://docs.blender.org/api/current/bpy.types.ImageTexture.html#bpy.types.ImageTexture.extension
+
+    @property
+    def getBlenderName(self):
+        if self == RepeatMode.extend:
+            return 'EXTEND'
+        if self == RepeatMode.clip:
+            return 'CLIP'
+        if self == RepeatMode.repeat:
+            return 'REPEAT'

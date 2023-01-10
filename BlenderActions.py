@@ -1889,7 +1889,7 @@ def getMaterial(materialName):
 
     assert \
         blenderMaterial != None, \
-        f"Material {materialName} does not exists"
+            f"Material {materialName} does not exist."
 
     return blenderMaterial
 
@@ -2025,3 +2025,19 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
 
     # Acts on https://docs.blender.org/api/current/bpy.types.Keyframe.html
     blenderObject.keyframe_insert(data_path=dataPath, frame=frameNumber)
+    
+
+def getTexture(textureName):
+	blenderTexture = bpy.data.textures.get(textureName)
+	
+	assert \
+		blenderTexture != None, \
+			f"Texture {textureName} does not exist."
+	
+	return blenderTexture
+
+def createImageTexture(textureName, imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
+  image = bpy.data.iamges.load(imageFilePath)
+  blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
+  blenderTexture.image = image
+  blenderTexture.extension = repeatMode.getBlenderName
