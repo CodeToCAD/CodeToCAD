@@ -474,15 +474,20 @@ class Material:
             self.name, rValue, gValue, bValue, aValue)
         return self
 
+    def addImageTexture(self,textureName,imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
+        texture = Texture(textureName,imageFilePath, repeatMode)
+        BlenderActions.addTextureToMaterial(self.name, textureName)
+        
+        
+
 class Texture:
 
-    def __init__(self, textureName):
+    def __init__(self, textureName, imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
         self.textureName = textureName
-    def assignToPart(self, partName):
         try:
-            pass #create the BlenderActions.getTexture method
+            BlenderActions.getTexture(self.textureName)
         except:
-            pass #create the BlenderActions.createTexture method
+            BlenderActions.createImageTexture(self.textureName, imageFilePath, repeatMode)
 
 
 class Part(Entity):

@@ -2041,3 +2041,9 @@ def createImageTexture(textureName, imageFilePath, repeatMode:BlenderDefinitions
   blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
   blenderTexture.image = image
   blenderTexture.extension = repeatMode.getBlenderName
+  
+def addTextureToMaterial(materialName, textureName):
+    material = getMaterial(materialName)
+    texture = getTexture(textureName)
+    slot = material.texture_slots.add()
+    slot.texture = texture
