@@ -306,7 +306,7 @@ def addPrimitive(
     assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
-    dimensions: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
+    dimensions: list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(
         dimensions) or []
 
     dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
@@ -1526,7 +1526,7 @@ def createSpline(
 
     coordinates = [
         BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
-            Utilities.getDimensionListFromStringList(coordinate) or []
+            Utilities.getDimensionsFromStringList(coordinate) or []
         ) for coordinate in coordinates
     ]
     coordinates = [[dimension.value for dimension in coordinate]
@@ -2027,23 +2027,27 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
     blenderObject.keyframe_insert(data_path=dataPath, frame=frameNumber)
     
 
-def getTexture(textureName):
-	blenderTexture = bpy.data.textures.get(textureName)
+# def getTexture(textureName):
+# 	blenderTexture = bpy.data.textures.get(textureName)
 	
-	assert \
-		blenderTexture != None, \
-			f"Texture {textureName} does not exist."
+# 	assert \
+# 		blenderTexture != None, \
+# 			f"Texture {textureName} does not exist."
 	
-	return blenderTexture
+# 	return blenderTexture
 
-def createImageTexture(textureName, imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
-  image = bpy.data.iamges.load(imageFilePath)
-  blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
-  blenderTexture.image = image
-  blenderTexture.extension = repeatMode.getBlenderName
+
+# def createImageTexture(textureName, imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
+#   image = bpy.data.images.load(imageFilePath)
+#   blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
+#   blenderTexture.image = image
+#   blenderTexture.extension = repeatMode.getBlenderName
   
-def addTextureToMaterial(materialName, textureName):
+def addTextureToMaterial(materialName, imageFilePath):
     material = getMaterial(materialName)
-    texture = getTexture(textureName)
-    slot = material.texture_slots.add()
-    slot.texture = texture
+    material.use_nodes = True
+    bsdf = material.node_tree.nodes["Principled BSDF"]
+    texImage = material.node_tree.nodes.new('ShaderNodeTexImage')
+    image = bpy.data.images.load(imageFilePath)
+    texImage.image = image
+    material.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])

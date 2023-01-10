@@ -28,7 +28,6 @@ min = "min"
 max = "max"
 center = "center"
 Dimension = Utilities.Dimension
-Dimensions = Utilities.Dimensions
 Angle = Utilities.Angle
 
 
@@ -474,9 +473,17 @@ class Material:
             self.name, rValue, gValue, bValue, aValue)
         return self
 
-    def addImageTexture(self,textureName,imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
-        texture = Texture(textureName,imageFilePath, repeatMode)
-        BlenderActions.addTextureToMaterial(self.name, textureName)
+    def addImageTexture(self,imageFilePath):
+        path = Path(imageFilePath)
+        fileName = path.stem
+
+        absoluteFilePath = imageFilePath
+        if not path.is_absolute():
+            absoluteFilePath = str(
+                Path(sys.argv[0]).parent.joinpath(path).resolve())
+
+        BlenderActions.addTextureToMaterial(self.name,absoluteFilePath)
+
         
         
 
@@ -487,7 +494,15 @@ class Texture:
         try:
             BlenderActions.getTexture(self.textureName)
         except:
-            BlenderActions.createImageTexture(self.textureName, imageFilePath, repeatMode)
+            path = Path(imageFilePath)
+            fileName = path.stem
+
+            absoluteFilePath = imageFilePath
+            if not path.is_absolute():
+                absoluteFilePath = str(
+                    Path(sys.argv[0]).parent.joinpath(path).resolve())
+
+            BlenderActions.createImageTexture(self.textureName, absoluteFilePath, repeatMode)
 
 
 class Part(Entity):

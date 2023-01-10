@@ -16,16 +16,16 @@ class BlenderVersions(Enum):
 # These are the units allowed in a Blender document:
 class BlenderLength(Utilities.Units):
     #metric
-    KILOMETERS = Utilities.LengthUnit.km
-    METERS = Utilities.LengthUnit.m
-    CENTIMETERS = Utilities.LengthUnit.cm
-    MILLIMETERS = Utilities.LengthUnit.mm
-    MICROMETERS = Utilities.LengthUnit.μm
+    KILOMETERS = Utilities.LengthUnit.kilometer
+    METERS = Utilities.LengthUnit.meter
+    CENTIMETERS = Utilities.LengthUnit.centimeter
+    MILLIMETERS = Utilities.LengthUnit.millimeter
+    MICROMETERS = Utilities.LengthUnit.micrometer
     #imperial
-    MILES = Utilities.LengthUnit.mi
-    FEET = Utilities.LengthUnit.ft
+    MILES = Utilities.LengthUnit.mile
+    FEET = Utilities.LengthUnit.foot
     INCHES = Utilities.LengthUnit.inch
-    THOU = Utilities.LengthUnit.thou
+    THOU = Utilities.LengthUnit.thousandthInch
     
     # Blender internally uses this unit for everything:
     DEFAULT_BLENDER_UNIT = METERS
