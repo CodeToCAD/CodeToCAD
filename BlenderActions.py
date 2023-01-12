@@ -306,7 +306,7 @@ def addPrimitive(
     assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
-    dimensions: list[Utilities.Dimension] = Utilities.getDimensionsFromStringList(
+    dimensions: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
         dimensions) or []
 
     dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
@@ -1526,7 +1526,7 @@ def createSpline(
 
     coordinates = [
         BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
-            Utilities.getDimensionsFromStringList(coordinate) or []
+            Utilities.getDimensionListFromStringList(coordinate) or []
         ) for coordinate in coordinates
     ]
     coordinates = [[dimension.value for dimension in coordinate]
@@ -2043,6 +2043,8 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
 #   blenderTexture.image = image
 #   blenderTexture.extension = repeatMode.getBlenderName
   
+#ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
+
 def addTextureToMaterial(materialName, imageFilePath):
     material = getMaterial(materialName)
     material.use_nodes = True
@@ -2051,3 +2053,4 @@ def addTextureToMaterial(materialName, imageFilePath):
     image = bpy.data.images.load(imageFilePath)
     texImage.image = image
     material.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])
+

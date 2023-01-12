@@ -483,6 +483,7 @@ class Material:
                 Path(sys.argv[0]).parent.joinpath(path).resolve())
 
         BlenderActions.addTextureToMaterial(self.name,absoluteFilePath)
+        return self
 
         
         
