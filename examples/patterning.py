@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 Part("Linear Cube").createCube("5cm","5cm","5cm").linearPattern(10, "x", "7cm")
 

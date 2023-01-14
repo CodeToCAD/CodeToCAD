@@ -1,3 +1,6 @@
+import console_python
+from console_python import replace_help
+from functools import wraps
 import bpy
 import os
 import sys
@@ -21,16 +24,17 @@ bl_info = {
     "category": "Scripting",
 }
 
+
 class DisplayMessage(Operator):
     bl_idname = "code_to_cad.display_message"
     bl_label = "Display CodeToCAD Message"
     bl_options = {'REGISTER'}
 
-    message:StringProperty()
-    log_type:StringProperty() # e.g. INFO, WARNING, ERROR
+    message: StringProperty()
+    log_type: StringProperty()  # e.g. INFO, WARNING, ERROR
 
     def execute(self, context):
-        
+
         # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
         self.report(
             {self.log_type},
@@ -38,6 +42,7 @@ class DisplayMessage(Operator):
         )
 
         return {'FINISHED'}
+
 
 @orientation_helper(axis_forward='Y', axis_up='Z')
 class ImportCodeToCAD(Operator, ImportHelper):
@@ -60,7 +65,8 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
     def execute(self, context):
 
-        paths = [os.path.join(self.directory, name.name) for name in self.files]
+        paths = [os.path.join(self.directory, name.name)
+                 for name in self.files]
 
         # Add the directory to python execute path, so that imports work.
         # if there are submodules for the script being imported, the user will have to use:
@@ -82,52 +88,59 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
     def draw(self, context):
         pass
-    
+
 
 def menu_import(self, context):
     self.layout.operator_context = 'INVOKE_DEFAULT'
-    self.layout.operator(ImportCodeToCAD.bl_idname, text="CodeToCAD (.codetocad)")
+    self.layout.operator(ImportCodeToCAD.bl_idname,
+                         text="CodeToCAD (.codetocad)")
 
 # References https://docs.blender.org/api/current/bpy.types.AddonPreferences.html
+
+
 class CodeToCADAddonPreferences(AddonPreferences):
     bl_idname = __name__
 
-    blenderProviderFilePath: StringProperty(
-        name="BlenderProvider Folder",
+    codeToCadFilePath: StringProperty(
+        name="CodeToCAD Folder",
         subtype='FILE_PATH',
     )
-    
-    class AddBlenderProviderToPath(Operator):
+
+    class addCodeToCADToPath(Operator):
         """Print object name in Console"""
         bl_idname = "code_to_cad.add_blender_provider_to_path"
-        bl_label = "Add Blender Provider To Path"
+        bl_label = "Add CodeToCAD To Path"
         bl_options = {'REGISTER'}
 
         def execute(self, context):
 
-            return addBlenderProviderToPath(context=context, returnBlenderOperationStatus=True)
+            return addCodeToCADToPath(context=context, returnBlenderOperationStatus=True)
 
     def draw(self, context):
         layout = self.layout
         layout.label(text="Configure CodeToCAD.")
-        layout.label(text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad-Blender", icon="QUESTION")
-        layout.prop(self, "blenderProviderFilePath")
-        
-        layout.operator(CodeToCADAddonPreferences.AddBlenderProviderToPath.bl_idname, text="Refresh BlenderProvider", icon="CONSOLE")
+        layout.label(
+            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad-Blender", icon="QUESTION")
+        layout.prop(self, "codeToCadFilePath")
+
+        layout.operator(CodeToCADAddonPreferences.addCodeToCADToPath.bl_idname,
+                        text="Refresh BlenderProvider", icon="CONSOLE")
 
     @staticmethod
-    def getBlenderProviderFilePathFromPreferences(context):
-        preferenceKey = "blenderProviderFilePath"
+    def getCodeToCadFilePathFromPreferences(context):
+        preferenceKey = "codeToCadFilePath"
         preferences = context.preferences.addons[__name__].preferences
         return preferences[preferenceKey] if preferenceKey in preferences else None
 
 
-def addBlenderProviderToPath(context=bpy.context, returnBlenderOperationStatus=False):
-    print("addBlenderProviderToPath called")
-    
-    blenderProviderPath = CodeToCADAddonPreferences.getBlenderProviderFilePathFromPreferences(context)
+def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
+    print("addCodeToCADToPath called")
 
-    if not blenderProviderPath or not os.path.exists(blenderProviderPath) or not Path(blenderProviderPath+"/CodeToCADBlenderProvider.py").is_file():
+    codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
+        context)
+    blenderProviderPath = codeToCADPath+"/providers/blender"
+
+    if not codeToCADPath or not os.path.exists(codeToCADPath) or not Path(blenderProviderPath+"/BlenderProvider.py").is_file():
         print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
         return {'CANCELLED'} if returnBlenderOperationStatus else None
 
@@ -135,27 +148,22 @@ def addBlenderProviderToPath(context=bpy.context, returnBlenderOperationStatus=F
 
     sys.path.append(blenderProviderPath)
 
-
-    codeToCADPath = blenderProviderPath+"/CodeToCAD/"
-    
     print("Adding {} to path".format(codeToCADPath))
 
     sys.path.append(codeToCADPath)
 
-
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
+
 # references https://blender.stackexchange.com/a/2751
-from functools import wraps
-from console_python import replace_help
-import console_python
+
 
 @wraps(replace_help)
 def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
-    
-    from CodeToCADBlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, min, max, center, Dimension, Dimensions, Angle
+
+    from BlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, min, max, center, Dimension, Dimensions, Angle
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -173,23 +181,24 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     namspace["Dimensions"] = Dimensions
     namspace["Angle"] = Angle
 
+
 def register():
-    print ("Registering ", __name__)
+    print("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
-    bpy.utils.register_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
+    bpy.utils.register_class(CodeToCADAddonPreferences.addCodeToCADToPath)
     bpy.utils.register_class(DisplayMessage)
     bpy.utils.register_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.append(menu_import)
-    
-    bpy.app.timers.register(addBlenderProviderToPath)
+
+    bpy.app.timers.register(addCodeToCADToPath)
 
     console_python.replace_help = addCodeToCADConvenienceWordsToConsole
 
 
 def unregister():
-    print ("Unregistering ", __name__)
+    print("Unregistering ", __name__)
     bpy.utils.unregister_class(CodeToCADAddonPreferences)
-    bpy.utils.unregister_class(CodeToCADAddonPreferences.AddBlenderProviderToPath)
+    bpy.utils.unregister_class(CodeToCADAddonPreferences.addCodeToCADToPath)
     bpy.utils.unregister_class(DisplayMessage)
     bpy.utils.unregister_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.remove(menu_import)

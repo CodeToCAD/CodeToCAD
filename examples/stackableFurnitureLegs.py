@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 Scene().setDefaultUnit("mm")
 

@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 # MARK: Create body
 body = Part("body").createCube(1,2,3)
