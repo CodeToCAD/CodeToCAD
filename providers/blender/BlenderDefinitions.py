@@ -1,7 +1,7 @@
 import bpy
 
 from enum import Enum
-import CodeToCAD.utilities as Utilities
+import core.utilities as Utilities
 
 class BlenderTypes(Enum):
     OBJECT = bpy.types.Object

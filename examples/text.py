@@ -1,5 +1,5 @@
 from pathlib import Path
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 # chamfered profile
 Curve("path").createFromVerticies([[0,0,0],[0.02,0.15,0]]).setVisible(False)

@@ -1,0 +1,7 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "python.analysis.extraPaths": [
+        "providers/blender"
+    ]
+}

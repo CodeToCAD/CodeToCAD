@@ -1,6 +1,6 @@
 print("Starting bracelet.py")
 
-from CodeToCADBlenderProvider import Part, Scene, Analytics
+from BlenderProvider import Part, Scene, Analytics
 
 Scene().setDefaultUnit("cm")
 Scene().createGroup("Bracelet")

@@ -4,7 +4,7 @@
 
 from uuid import uuid4
 import bpy
-import CodeToCAD.utilities as Utilities
+import core.utilities as Utilities
 import BlenderDefinitions
 
 from pathlib import Path

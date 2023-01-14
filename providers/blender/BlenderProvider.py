@@ -1,5 +1,5 @@
 import math
-import CodeToCAD.utilities as Utilities
+import core.utilities as Utilities
 import BlenderDefinitions
 import BlenderActions
 import sys
