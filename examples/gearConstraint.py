@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 gear = Part("gear").createGear(1,0.1,0.8,0.2,0.2)
 

@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 Curve("centerline").createLine("1")
 Curve("half-donut").createCircle("10cm").translate("-100cm",0,0).revolve("180d", "y", "centerline")

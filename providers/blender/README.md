@@ -2,7 +2,7 @@
 
 This is the CodeToCAD Blender Provider repo, that allows CodeToCAD to talk to Blender.
 
-Please refer to the [CodeToCAD repo](https://github.com/CodeToCad/CodeToCAD) for more information about this CodeToCAD.
+Please refer to the [CodeToCAD repo](https://github.com/CodeToCad/CodeToCAD) for more information about CodeToCAD.
 
 ## Cloning
 
@@ -25,7 +25,7 @@ There are two options:
 
 1. Use the File > Import > CodeToCAD menu to import a python file uses the CodeToCAD commands. For example, you could import one of the [test scripts](./tests/text.py).
 
-2. In the console, type `from CodeToCADBlenderProvider import shape, curve, landmark, scene, analytics, joint`. Now you can use CodeToCAD commands in the console.
+2. In the console, type `from BlenderProvider import shape, curve, landmark, scene, analytics, joint`. Now you can use CodeToCAD commands in the console.
 
 
 ## VSCode Syntax highlighting and auto-complete

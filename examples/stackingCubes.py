@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 a = Part("a").createCube(1,1,1)
 a_top = a.createLandmark("top", center, center, max)

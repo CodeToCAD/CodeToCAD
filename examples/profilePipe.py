@@ -1,4 +1,4 @@
-from CodeToCADBlenderProvider import *
+from BlenderProvider import *
 
 # We are trying to draw a bull-horn shapes pipe:
 """
