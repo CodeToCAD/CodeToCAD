@@ -28,6 +28,7 @@ min = "min"
 max = "max"
 center = "center"
 Dimension = Utilities.Dimension
+Dimensions = Utilities.Dimensions
 Angle = Utilities.Angle
 
 
