@@ -1,4 +1,4 @@
-# CodeToCAD - code-based modeling automation
+# CodeToCAD - Code-based modeling automation
 
 CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape). 
 
@@ -7,6 +7,13 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 <div align="center">
 <image src="./documentation/three_axis_mill.gif"/>
 </div>
+
+## Getting Started
+
+1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+> If you're a developer, instead of downloading a release, you can clone this repository.
+
+2. Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
 
 ## Integrations
