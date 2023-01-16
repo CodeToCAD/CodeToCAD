@@ -95,10 +95,9 @@ def menu_import(self, context):
     self.layout.operator(ImportCodeToCAD.bl_idname,
                          text="CodeToCAD (.codetocad)")
 
-# References https://docs.blender.org/api/current/bpy.types.AddonPreferences.html
-
 
 class CodeToCADAddonPreferences(AddonPreferences):
+    # References https://docs.blender.org/api/current/bpy.types.AddonPreferences.html
     bl_idname = __name__
 
     codeToCadFilePath: StringProperty(
@@ -155,15 +154,14 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
 
-# references https://blender.stackexchange.com/a/2751
-
-
 @wraps(replace_help)
 def addCodeToCADConvenienceWordsToConsole(namspace):
+    # references https://blender.stackexchange.com/a/2751
 
     replace_help(namspace)
 
-    from BlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, min, max, center, Dimension, Dimensions, Angle
+    from BlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, Material
+    from core.utilities import Dimension, Dimensions, Angle
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -174,9 +172,9 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     namspace["Analytics"] = Analytics
     namspace["Joint"] = Joint
     namspace["Material"] = Material
-    namspace["min"] = min
-    namspace["max"] = max
-    namspace["center"] = center
+    namspace["min"] = "min"
+    namspace["max"] = "max"
+    namspace["center"] = "center"
     namspace["Dimension"] = Dimension
     namspace["Dimensions"] = Dimensions
     namspace["Angle"] = Angle

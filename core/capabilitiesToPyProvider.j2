@@ -25,7 +25,11 @@ Sample context:
         }
 
 -#}
-from utilities import Dimension, CurveTypes, Point, Angle
+import core.utilities as Utilities
+import core.CodeToCADInterface as CodeToCADInterface
+
+from core.CodeToCADInterface import createUUID, getAbsoluteFilepath, getFilename
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
 
 {% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
 {% macro typeMapping(typeName) -%}
@@ -33,7 +37,7 @@ from utilities import Dimension, CurveTypes, Point, Angle
 {%- endmacro %}
 {%- for className, methods in capabilities.items() -%}
 
-class {{className}}: {# e.g. Part #}
+class {{className}}(CodeToCADInterface.{{className}}): {# e.g. Part #}
 
     {%-for method, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 

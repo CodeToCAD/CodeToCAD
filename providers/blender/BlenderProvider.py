@@ -1,11 +1,11 @@
 import math
 import core.utilities as Utilities
+import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
 import BlenderActions
-import sys
-from uuid import uuid4
 
-from pathlib import Path
+from core.CodeToCADInterface import createUUID, getAbsoluteFilepath, getFilename
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
 
 if BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
     print(
@@ -20,19 +20,7 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 # BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 
-def createUUID():
-    return str(uuid4()).replace("-", "")[:10]
-
-
-min = "min"
-max = "max"
-center = "center"
-Dimension = Utilities.Dimension
-Dimensions = Utilities.Dimensions
-Angle = Utilities.Angle
-
-
-class Entity:
+class Entity(CodeToCADInterface.Entity):
 
     name = None
 
@@ -452,7 +440,7 @@ class Entity:
         return landmark
 
 
-class Material:
+class Material(CodeToCADInterface.Material):
 
     def __init__(self, materialName):
         if isinstance(materialName, Material):
@@ -474,40 +462,27 @@ class Material:
             self.name, rValue, gValue, bValue, aValue)
         return self
 
-    def addImageTexture(self,imageFilePath):
-        path = Path(imageFilePath)
-        fileName = path.stem
+    def addImageTexture(self, imageFilePath):
+        absoluteFilePath = getAbsoluteFilepath(imageFilePath)
 
-        absoluteFilePath = imageFilePath
-        if not path.is_absolute():
-            absoluteFilePath = str(
-                Path(sys.argv[0]).parent.joinpath(path).resolve())
-
-        BlenderActions.addTextureToMaterial(self.name,absoluteFilePath)
+        BlenderActions.addTextureToMaterial(self.name, absoluteFilePath)
         return self
 
-        
-        
 
 class Texture:
 
-    def __init__(self, textureName, imageFilePath, repeatMode:BlenderDefinitions.RepeatMode):
+    def __init__(self, textureName, imageFilePath, repeatMode: BlenderDefinitions.RepeatMode):
         self.textureName = textureName
         try:
             BlenderActions.getTexture(self.textureName)
         except:
-            path = Path(imageFilePath)
-            fileName = path.stem
+            absoluteFilePath = getAbsoluteFilepath(imageFilePath)
 
-            absoluteFilePath = imageFilePath
-            if not path.is_absolute():
-                absoluteFilePath = str(
-                    Path(sys.argv[0]).parent.joinpath(path).resolve())
-
-            BlenderActions.createImageTexture(self.textureName, absoluteFilePath, repeatMode)
+            BlenderActions.createImageTexture(
+                self.textureName, absoluteFilePath, repeatMode)
 
 
-class Part(Entity):
+class Part(CodeToCADInterface.Part):
 
     name = None
     description = None
@@ -526,13 +501,9 @@ class Part(Entity):
 
         assert self.isExists == False, f"{self.name} already exists."
 
-        path = Path(filePath)
-        fileName = path.stem
+        fileName = getFilename(filePath)
 
-        absoluteFilePath = filePath
-        if not path.is_absolute():
-            absoluteFilePath = str(
-                Path(sys.argv[0]).parent.joinpath(path).resolve())
+        absoluteFilePath = getAbsoluteFilepath(filePath)
 
         BlenderActions.importFile(absoluteFilePath, fileType)
 
@@ -661,12 +632,7 @@ class Part(Entity):
                overwrite: bool = True,
                scale=1.0
                ):
-        path = Path(filePath)
-
-        absoluteFilePath = filePath
-        if not path.is_absolute():
-            absoluteFilePath = str(
-                Path(sys.argv[0]).parent.joinpath(path).resolve())
+        absoluteFilePath = getAbsoluteFilepath(filePath)
 
         BlenderActions.exportObject(
             self.name, absoluteFilePath, overwrite, scale)
@@ -1023,11 +989,7 @@ class Part(Entity):
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
 
-# alias for Part
-Shape = Part
-
-
-class Sketch(Entity):
+class Sketch(CodeToCADInterface.Sketch):
 
     name = None
     curveType = None
@@ -1198,11 +1160,7 @@ class Sketch(Entity):
         return self
 
 
-# alias for Sketch
-Curve = Sketch
-
-
-class Landmark:
+class Landmark(CodeToCADInterface.Landmark):
     # Text to 3D Modeling Automation Capabilities.
 
     localToEntityWithName = None
@@ -1250,7 +1208,7 @@ class Landmark:
         )
 
 
-class Joint:
+class Joint(CodeToCADInterface.Joint):
     # Text to 3D Modeling Automation Capabilities.
 
     part1Landmark: Landmark = None
@@ -1438,7 +1396,7 @@ class Animation:
             partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
 
-class Scene:
+class Scene(CodeToCADInterface.Scene):
 
     name = None
     description = None
@@ -1540,7 +1498,7 @@ class Scene:
         return self
 
 
-class Analytics:
+class Analytics(CodeToCADInterface.Analytics):
     # Text to 3D Modeling Automation Capabilities.
 
     def measureLandmarks(self,

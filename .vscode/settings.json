@@ -3,5 +3,6 @@
     "editor.formatOnPaste": true,
     "python.analysis.extraPaths": [
         "providers/blender"
-    ]
+    ],
+    "editor.wordWrap": "on"
 }
