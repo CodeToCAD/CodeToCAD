@@ -1,27 +1,6 @@
-import sys
-from uuid import uuid4
-from pathlib import Path
 from abc import ABCMeta, abstractmethod
 
 from core.utilities import Point, Dimension, CurveTypes, Angle
-
-
-def createUUID():
-    return str(uuid4()).replace("-", "")[:10]
-
-
-def getFilename(relativeFilePath: str):
-    path = Path(relativeFilePath)
-    return path.stem
-
-
-def getAbsoluteFilepath(relativeFilePath: str):
-    path = Path(relativeFilePath)
-    absoluteFilePath = relativeFilePath
-    if not path.is_absolute():
-        absoluteFilePath = str(
-            Path(sys.argv[0]).parent.joinpath(path).resolve())
-    return absoluteFilePath
 
 
 class Entity(metaclass=ABCMeta):
@@ -102,16 +81,8 @@ class Entity(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class Part(metaclass=ABCMeta):
-    # Capabilities for CodeToCAD.name = None
-    description = None
-
-    def __init__(self,
-                 name: str,
-                 description: str = None
-                 ):
-        self.name = name
-        self.description = description
+class Part(Entity):
+    # Capabilities for CodeToCAD.
 
     @abstractmethod
     def createFromFile(self,
@@ -224,19 +195,8 @@ class Part(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class Sketch(metaclass=ABCMeta):
-    # Capabilities for CodeToCAD.name = None
-    curveType = None
-    description = None
-
-    def __init__(self,
-                 name: str,
-                 curveType: CurveTypes,
-                 description: str = None
-                 ):
-        self.name = name
-        self.curveType = curveType
-        self.description = description
+class Sketch(Entity):
+    # Capabilities for CodeToCAD.
 
     @abstractmethod
     def extrude(self,
@@ -352,33 +312,12 @@ class Sketch(metaclass=ABCMeta):
 
 
 class Landmark(metaclass=ABCMeta):
-    # Capabilities for CodeToCAD.landmarkName = None
-    localToEntityWithName = None
-
-    def __init__(self,
-                 landmarkName: str,
-                 localToEntityWithName: str
-                 ):
-        self.landmarkName = landmarkName
-        self.localToEntityWithName = localToEntityWithName
+    # Capabilities for CodeToCAD.
+    pass
 
 
 class Joint(metaclass=ABCMeta):
-    # Capabilities for CodeToCAD.entity1Name = None
-    entity2Name = None
-    entity1LandmarkName = None
-    entity2LandmarkName = None
-
-    def __init__(self,
-                 entity1Name: str,
-                 entity2Name: str,
-                 entity1LandmarkName: str,
-                 entity2LandmarkName: str
-                 ):
-        self.entity1Name = entity1Name
-        self.entity2Name = entity2Name
-        self.entity1LandmarkName = entity1LandmarkName
-        self.entity2LandmarkName = entity2LandmarkName
+    # Capabilities for CodeToCAD.
 
     @abstractmethod
     def translateLandmarkOntoAnother(self
@@ -415,22 +354,11 @@ class Joint(metaclass=ABCMeta):
 
 class Material(metaclass=ABCMeta):
     # Capabilities for CodeToCAD.
-
-    def __init__(self
-                 ):
-        pass
+    pass
 
 
 class Scene(metaclass=ABCMeta):
-    # Capabilities for CodeToCAD.name = None
-    description = None
-
-    def __init__(self,
-                 name: str,
-                 description: str = None
-                 ):
-        self.name = name
-        self.description = description
+    # Capabilities for CodeToCAD.
 
     @abstractmethod
     def create(self
@@ -491,10 +419,6 @@ class Scene(metaclass=ABCMeta):
 
 class Analytics(metaclass=ABCMeta):
     # Capabilities for CodeToCAD.
-
-    def __init__(self
-                 ):
-        pass
 
     @abstractmethod
     def measureLandmarks(self,

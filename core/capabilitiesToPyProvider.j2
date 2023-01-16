@@ -28,8 +28,7 @@ Sample context:
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 
-from core.CodeToCADInterface import createUUID, getAbsoluteFilepath, getFilename
-from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
 
 {% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
 {% macro typeMapping(typeName) -%}
