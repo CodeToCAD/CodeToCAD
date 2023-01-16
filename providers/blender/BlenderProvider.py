@@ -4,8 +4,7 @@ import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
 import BlenderActions
 
-from core.CodeToCADInterface import createUUID, getAbsoluteFilepath, getFilename
-from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
 
 if BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
     print(
@@ -20,7 +19,8 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 # BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 
-class Entity(CodeToCADInterface.Entity):
+# class Entity(CodeToCADInterface.Entity):
+class Entity:
 
     name = None
 
@@ -440,7 +440,8 @@ class Entity(CodeToCADInterface.Entity):
         return landmark
 
 
-class Material(CodeToCADInterface.Material):
+# class Material(CodeToCADInterface.Material):
+class Material:
 
     def __init__(self, materialName):
         if isinstance(materialName, Material):
@@ -482,7 +483,8 @@ class Texture:
                 self.textureName, absoluteFilePath, repeatMode)
 
 
-class Part(CodeToCADInterface.Part):
+# class Part(CodeToCADInterface.Part):
+class Part(Entity):
 
     name = None
     description = None
@@ -989,7 +991,8 @@ class Part(CodeToCADInterface.Part):
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
 
-class Sketch(CodeToCADInterface.Sketch):
+# class Sketch(CodeToCADInterface.Sketch):
+class Sketch(Entity):
 
     name = None
     curveType = None

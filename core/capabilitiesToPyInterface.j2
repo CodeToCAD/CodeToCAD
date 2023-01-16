@@ -25,25 +25,9 @@ Sample context:
         }
 
 -#}
-import sys
-from uuid import uuid4
-from pathlib import Path
 from abc import ABCMeta, abstractmethod
 
 from core.utilities import Point, Dimension, CurveTypes, Angle
-
-
-def createUUID():
-    return str(uuid4()).replace("-", "")[:10]
-
-
-def getAbsoluteFilepath(relativeFilePath:str):
-    path = Path(relativeFilePath)
-    absoluteFilePath = relativeFilePath
-    if not path.is_absolute():
-        absoluteFilePath = str(
-            Path(sys.argv[0]).parent.joinpath(path).resolve())
-    return absoluteFilePath
 
 
 {% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
@@ -64,24 +48,10 @@ class {{className}}(metaclass=ABCMeta): {# e.g. Part #}
     {%- elif method == "alias"-%}
     
     {%- set alias = properties -%}
-    
+
     {%- elif method == "constructor"-%}
-
-    {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
-
-    def __init__(self
-    {%- if parameters.keys()|length > 0 -%}
-    ,
-    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
-    {%-endfor%}
-    {%-endif%}
-    ):
-    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-        self.{{ parameter }} = {{parameter}}
-    {%- else %}
-        pass
-    {%-endfor%}
+    
+    {# Do nothing #}
 
     {%- else %}
 

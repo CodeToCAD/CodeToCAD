@@ -3,6 +3,9 @@
 from enum import Enum
 import re
 import math
+import sys
+from uuid import uuid4
+from pathlib import Path
 
 min = "min"
 max = "max"
@@ -17,7 +20,23 @@ def isReservedWordInString(stringToCheck: str) -> bool:
             return True
     return False
 
-# An enum that uses the enum type and value for comparison
+
+def getFilename(relativeFilePath: str):
+    path = Path(relativeFilePath)
+    return path.stem
+
+
+def createUUID():
+    return str(uuid4()).replace("-", "")[:10]
+
+
+def getAbsoluteFilepath(relativeFilePath: str):
+    path = Path(relativeFilePath)
+    absoluteFilePath = relativeFilePath
+    if not path.is_absolute():
+        absoluteFilePath = str(
+            Path(sys.argv[0]).parent.joinpath(path).resolve())
+    return absoluteFilePath
 
 
 class EquittableEnum(Enum):
