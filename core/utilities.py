@@ -4,6 +4,10 @@ from enum import Enum
 import re
 import math
 
+min = "min"
+max = "max"
+center = "center"
+
 reservedWords = ["min", "max", "center"]
 
 
@@ -59,13 +63,15 @@ class Angle():
 
     def toRadians(self):
         return Angle(
-            math.radians(self.value) if self.unit == AngleUnit.DEGREES else self.value,
+            math.radians(
+                self.value) if self.unit == AngleUnit.DEGREES else self.value,
             AngleUnit.RADIANS
         )
 
     def toDegrees(self):
         return Angle(
-            math.degrees(self.value) if self.unit == AngleUnit.RADIANS else self.value,
+            math.degrees(
+                self.value) if self.unit == AngleUnit.RADIANS else self.value,
             AngleUnit.DEGREES
         )
 

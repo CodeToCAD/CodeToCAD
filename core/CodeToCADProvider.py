@@ -1,6 +1,10 @@
-from utilities import Dimension, CurveTypes, Point, Angle
+import core.utilities as Utilities
+import core.CodeToCADInterface as CodeToCADInterface
 
-class Entity: 
+from core.CodeToCADInterface import createUUID, getAbsoluteFilepath
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
+
+class Entity(CodeToCADInterface.Entity): 
     # Capabilities for CodeToCAD.
 
     def clone(self,
@@ -77,7 +81,7 @@ class Entity:
         print("select is not implemented") # implement 
         return self
 
-class Part: 
+class Part(CodeToCADInterface.Part): 
     # Capabilities for CodeToCAD.name = None
     description = None
 
@@ -198,7 +202,7 @@ class Part:
         print("hollow is not implemented") # implement 
         return self
 
-class Sketch: 
+class Sketch(CodeToCADInterface.Sketch): 
     # Capabilities for CodeToCAD.name = None
     curveType = None
     description = None
@@ -324,7 +328,7 @@ class Sketch:
         print("createTrapezoid is not implemented") # implement 
         return self
 
-class Landmark: 
+class Landmark(CodeToCADInterface.Landmark): 
     # Capabilities for CodeToCAD.landmarkName = None
     localToEntityWithName = None
 
@@ -335,7 +339,7 @@ class Landmark:
         self.landmarkName = landmarkName
         self.localToEntityWithName = localToEntityWithName
 
-class Joint: 
+class Joint(CodeToCADInterface.Joint): 
     # Capabilities for CodeToCAD.entity1Name = None
     entity2Name = None
     entity1LandmarkName = None
@@ -384,14 +388,14 @@ class Joint:
         print("limitRotation is not implemented") # implement 
         return self
 
-class Material: 
+class Material(CodeToCADInterface.Material): 
     # Capabilities for CodeToCAD.
 
     def __init__(self
     ):
         pass
 
-class Scene: 
+class Scene(CodeToCADInterface.Scene): 
     # Capabilities for CodeToCAD.name = None
     description = None
 
@@ -458,7 +462,7 @@ class Scene:
         print("setVisible is not implemented") # implement 
         return self
 
-class Analytics: 
+class Analytics(CodeToCADInterface.Analytics): 
     # Capabilities for CodeToCAD.
 
     def __init__(self
