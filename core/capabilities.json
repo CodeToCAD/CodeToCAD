@@ -120,7 +120,9 @@
         },
         "Part": {
             "information": "Capabilities Part CRUD.",
-            "alias": ["Shape"],
+            "alias": [
+                "Shape"
+            ],
             "constructor": {
                 "parameters": {
                     "name": {
@@ -344,7 +346,9 @@
         },
         "Sketch": {
             "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
-            "alias": ["Curve"],
+            "alias": [
+                "Curve"
+            ],
             "constructor": {
                 "parameters": {
                     "name": {
@@ -629,13 +633,13 @@
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
                     "x": {
-                        "type":"string"
+                        "type": "string"
                     },
                     "y": {
-                        "type":"string"
+                        "type": "string"
                     },
                     "z": {
-                        "type":"string"
+                        "type": "string"
                     }
                 }
             },
@@ -644,13 +648,13 @@
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
                     "x": {
-                        "type":"string"
+                        "type": "string"
                     },
                     "y": {
-                        "type":"string"
+                        "type": "string"
                     },
                     "z": {
-                        "type":"string"
+                        "type": "string"
                     }
                 }
             }
