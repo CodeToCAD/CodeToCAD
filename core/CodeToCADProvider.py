@@ -1,8 +1,7 @@
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 
-from core.CodeToCADInterface import createUUID, getAbsoluteFilepath
-from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
 
 class Entity(CodeToCADInterface.Entity): 
     # Capabilities for CodeToCAD.
