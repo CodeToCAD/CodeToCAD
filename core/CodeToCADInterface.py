@@ -439,10 +439,10 @@ class Joint(metaclass=ABCMeta):
         return self
 
     @abstractmethod
-    def gear(self,
-             ratio: float
-             ):
-        print("gear is called in the interface. Please override this method.")
+    def gearRatio(self,
+                  ratio: float
+                  ):
+        print("gearRatio is called in the interface. Please override this method.")
         return self
 
     @abstractmethod
