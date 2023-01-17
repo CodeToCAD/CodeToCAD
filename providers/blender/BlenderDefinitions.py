@@ -3,68 +3,72 @@ import bpy
 from enum import Enum
 import core.utilities as Utilities
 
+
 class BlenderTypes(Enum):
     OBJECT = bpy.types.Object
     MESH = bpy.types.Mesh
     CURVE = bpy.types.Curve
     TEXT = bpy.types.TextCurve
 
+
 class BlenderVersions(Enum):
-    TWO_DOT_EIGHTY = (2,80,0)
-    THREE_DOT_ONE = (3,1,0)
+    TWO_DOT_EIGHTY = (2, 80, 0)
+    THREE_DOT_ONE = (3, 1, 0)
 
 # These are the units allowed in a Blender document:
+
+
 class BlenderLength(Utilities.Units):
-    #metric
+    # metric
     KILOMETERS = Utilities.LengthUnit.km
     METERS = Utilities.LengthUnit.m
     CENTIMETERS = Utilities.LengthUnit.cm
     MILLIMETERS = Utilities.LengthUnit.mm
     MICROMETERS = Utilities.LengthUnit.μm
-    #imperial
+    # imperial
     MILES = Utilities.LengthUnit.mi
     FEET = Utilities.LengthUnit.ft
     INCHES = Utilities.LengthUnit.inch
     THOU = Utilities.LengthUnit.thou
-    
+
     # Blender internally uses this unit for everything:
     DEFAULT_BLENDER_UNIT = METERS
 
     def getSystem(self):
         if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
-            return'METRIC'
+            return 'METRIC'
         else:
-            return'IMPERIAL'
-
+            return 'IMPERIAL'
 
     # Convert a utilities LengthUnit to BlenderLength
-    @staticmethod
-    def fromLengthUnit(unit:Utilities.LengthUnit):
 
-        [result] = list(filter(lambda b: b.value == unit, [b for b in BlenderLength]))
+    @staticmethod
+    def fromLengthUnit(unit: Utilities.LengthUnit):
+
+        [result] = list(filter(lambda b: b.value == unit,
+                        [b for b in BlenderLength]))
 
         return result
-            
-    # Takes in a list of Dimension and converts them to the `DEFAULT_BLENDER_UNIT`, which is the unit blender deals with, no matter what we set the document unit to. 
+
+    # Takes in a list of Dimension and converts them to the `DEFAULT_BLENDER_UNIT`, which is the unit blender deals with, no matter what we set the document unit to.
     @staticmethod
-    def convertDimensionsToBlenderUnit(dimensions:list):
+    def convertDimensionsToBlenderUnit(dimensions: list):
         return [
             BlenderLength.convertDimensionToBlenderUnit(dimension)
-            
-                if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
-                else dimension
+            if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
-                    for dimension in dimensions 
+            else dimension
+
+            for dimension in dimensions
         ]
 
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
-    def convertDimensionToBlenderUnit(dimension:Utilities.Dimension):
+    def convertDimensionToBlenderUnit(dimension: Utilities.Dimension):
         return dimension.convertToUnit(BlenderLength.DEFAULT_BLENDER_UNIT.value) \
-                if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value) \
-                else dimension
-
+            if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value) \
+            else dimension
 
 
 # These are the rotation transformations supported by Blender:
@@ -86,12 +90,13 @@ class BlenderBooleanTypes(Enum):
     UNION = 0
     DIFFERENCE = 1
     INTERSECT = 2
-    
+
+
 class BlenderModifiers(Enum):
     EDGE_SPLIT = 0
     SUBSURF = 1
     BOOLEAN = 2
-    MIRROR = 3 # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
+    MIRROR = 3  # https://docs.blender.org/api/current/bpy.types.MirrorModifier.html
     SCREW = 4
     SOLIDIFY = 5
     CURVE = 6
@@ -115,12 +120,13 @@ class BlenderConstraintTypes(Utilities.EquittableEnum):
             return "Pivot"
         if self == BlenderConstraintTypes.COPY_ROTATION:
             return "Copy Rotation"
-    
+
     # Convert a utilities ConstraintTypes to BlenderConstraintTypes
     @staticmethod
-    def fromConstraintTypes(constraintType:Utilities.ConstraintTypes):
+    def fromConstraintTypes(constraintType: Utilities.ConstraintTypes):
 
-        [result] = list(filter(lambda b: b.value == constraintType, [b for b in BlenderConstraintTypes]))
+        [result] = list(filter(lambda b: b.value == constraintType, [
+                        b for b in BlenderConstraintTypes]))
 
         return result
 
@@ -137,11 +143,13 @@ BlenderDriverVariableTypes = bpy.types.DriverVariable.bl_rna.properties['type'].
 
 # https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_type
 # [‘LOC_X’, ‘LOC_Y’, ‘LOC_Z’, ‘ROT_X’, ‘ROT_Y’, ‘ROT_Z’, ‘ROT_W’, ‘SCALE_X’, ‘SCALE_Y’, ‘SCALE_Z’, ‘SCALE_AVG’]
-BlenderDriverVariableTransformTypes = bpy.types.DriverTarget.bl_rna.properties['transform_type'].enum_items
+BlenderDriverVariableTransformTypes = bpy.types.DriverTarget.bl_rna.properties[
+    'transform_type'].enum_items
 
-#https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_space
-#[‘WORLD_SPACE’, ‘TRANSFORM_SPACE’, ‘LOCAL_SPACE’]
-BlenderDriverVariableTransformSpaces = bpy.types.DriverTarget.bl_rna.properties['transform_space'].enum_items
+# https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_space
+# [‘WORLD_SPACE’, ‘TRANSFORM_SPACE’, ‘LOCAL_SPACE’]
+BlenderDriverVariableTransformSpaces = bpy.types.DriverTarget.bl_rna.properties[
+    'transform_space'].enum_items
 
 
 # This is a list of Blender primitives that we have implemented:
@@ -174,16 +182,19 @@ class BlenderObjectPrimitiveTypes(Enum):
         return True
 
 # This is a list of Blender Curve types that we have implemented:
+
+
 class BlenderCurveTypes(Utilities.EquittableEnum):
     POLY = Utilities.CurveTypes.POLY
     NURBS = Utilities.CurveTypes.NURBS
     BEZIER = Utilities.CurveTypes.BEZIER
-    
+
     # Convert a utilities CurveTypes to BlenderCurveTypes
     @staticmethod
-    def fromCurveTypes(curveType:Utilities.CurveTypes):
+    def fromCurveTypes(curveType: Utilities.CurveTypes):
 
-        [result] = list(filter(lambda b: b.value == curveType, [b for b in BlenderCurveTypes]))
+        [result] = list(filter(lambda b: b.value == curveType,
+                        [b for b in BlenderCurveTypes]))
 
         return result
 
@@ -209,12 +220,13 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
 
     # Convert a utilities CurvePrimitiveTypes to BlenderCurvePrimitiveTypes
     @staticmethod
-    def fromCurvePrimitiveTypes(curvePrimitiveType:Utilities.CurvePrimitiveTypes):
+    def fromCurvePrimitiveTypes(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
 
-        [result] = list(filter(lambda b: b.value == curvePrimitiveType, [b for b in BlenderCurvePrimitiveTypes]))
+        [result] = list(filter(lambda b: b.value == curvePrimitiveType, [
+                        b for b in BlenderCurvePrimitiveTypes]))
 
         return result
-            
+
     def getDefaultCurveType(self):
         if self == BlenderCurvePrimitiveTypes.Point:
             return BlenderCurveTypes.NURBS
@@ -247,12 +259,13 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
         else:
             raise "Unknown primitive"
 
+
 class RepeatMode(Enum):
     extend = 0,
     clip = 1,
     repeat = 2
 
-     # references https://docs.blender.org/api/current/bpy.types.ImageTexture.html#bpy.types.ImageTexture.extension
+    # references https://docs.blender.org/api/current/bpy.types.ImageTexture.html#bpy.types.ImageTexture.extension
 
     @property
     def getBlenderName(self):

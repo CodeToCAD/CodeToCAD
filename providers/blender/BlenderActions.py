@@ -1415,7 +1415,7 @@ def getBoundingBox(objectName):
     # z (-1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0)
     zipped = zip('xyz', zip(*coords))
 
-    boundingBox = Utilities.BoundaryBox()
+    boundingBox = Utilities.BoundaryBox(None, None, None)
 
     for (axis, _list) in zipped:
 
@@ -1889,7 +1889,7 @@ def getMaterial(materialName):
 
     assert \
         blenderMaterial != None, \
-            f"Material {materialName} does not exist."
+        f"Material {materialName} does not exist."
 
     return blenderMaterial
 
@@ -2025,15 +2025,15 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
 
     # Acts on https://docs.blender.org/api/current/bpy.types.Keyframe.html
     blenderObject.keyframe_insert(data_path=dataPath, frame=frameNumber)
-    
+
 
 # def getTexture(textureName):
 # 	blenderTexture = bpy.data.textures.get(textureName)
-	
+
 # 	assert \
 # 		blenderTexture != None, \
 # 			f"Texture {textureName} does not exist."
-	
+
 # 	return blenderTexture
 
 
@@ -2042,8 +2042,8 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
 #   blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
 #   blenderTexture.image = image
 #   blenderTexture.extension = repeatMode.getBlenderName
-  
-#ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
+
+# ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
 
 def addTextureToMaterial(materialName, imageFilePath):
     material = getMaterial(materialName)
@@ -2052,5 +2052,5 @@ def addTextureToMaterial(materialName, imageFilePath):
     texImage = material.node_tree.nodes.new('ShaderNodeTexImage')
     image = bpy.data.images.load(imageFilePath)
     texImage.image = image
-    material.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])
-
+    material.node_tree.links.new(
+        bsdf.inputs['Base Color'], texImage.outputs['Color'])
