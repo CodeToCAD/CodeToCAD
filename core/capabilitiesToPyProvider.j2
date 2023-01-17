@@ -43,13 +43,13 @@ class {{className}}(CodeToCADInterface.{{className}}): {# e.g. Part #}
     {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
     {%- if method == "information" %}
-    # {{ information }}
+    # {{ properties }}
 
     {%- elif method == "alias"-%}
     
     {%- set alias = properties -%}
     
-    {%- elif method == "constructor"-%}
+    {%- elif method == "constructor"%}
 
     {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
 
