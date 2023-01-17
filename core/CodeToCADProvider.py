@@ -2,7 +2,8 @@ import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 
 from typing import Optional
-from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, min, max, center, createUUID, getAbsoluteFilepath, getFilename, StringOrFloat, StringNameOrPart, StringNameOrEntity, StringNameOrLandmark, IntOrFloat, StringNameOrMaterial
+from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, min, max, center, createUUID, getAbsoluteFilepath, getFilename
+from core.CodeToCADInterface import StringOrFloat, StringNameOrPart, StringNameOrEntity, StringNameOrLandmark, IntOrFloat, StringNameOrMaterial
 
 
 class Entity(CodeToCADInterface.Entity):

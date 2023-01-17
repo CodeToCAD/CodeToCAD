@@ -1,8 +1,17 @@
 {
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.analysis.extraPaths": [
+        "core",
+        "providers/",
         "providers/blender"
     ],
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.autoImportUserSymbols": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.typeCheckingMode": "basic"
 }

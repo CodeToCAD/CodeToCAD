@@ -1,4 +1,5 @@
 import math
+from typing import Union, cast
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
@@ -8,7 +9,7 @@ from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center
 
 if BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
     print(
-        f"CodeToCAD BlenderProvider only supports Blender versions {'.'.join(BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(BlenderActions.getBlenderVersion())}")
+        f"CodeToCAD BlenderProvider only supports Blender versions {'.'.join(cast(tuple, BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value))}+. You are running version {'.'.join(BlenderActions.getBlenderVersion())}")
 
 
 def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
@@ -19,10 +20,24 @@ def debugOnReceiveBlenderDependencyGraphUpdateEvent(scene, depsgraph):
 # BlenderActions.addDependencyGraphUpdateListener(debugOnReceiveBlenderDependencyGraphUpdateEvent)
 
 
+def injectBlenderProvider() -> None:
+    from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider
+
+    setPartProvider(Part)
+    setSketchProvider(Sketch)
+    setMaterialProvider(Material)
+    setLandmarkProvider(Landmark)
+    setJointProvider(Joint)
+    setAnimationProvider(Animation)
+    setSceneProvider(Scene)
+    setAnalyticsProvider(Analytics)
+
 # class Entity(CodeToCADInterface.Entity):
+
+
 class Entity:
 
-    name = None
+    name: str
 
     def __init__(self, name) -> None:
         self.name = name
@@ -36,7 +51,7 @@ class Entity:
             return False
 
     def translate_fromstring(self,
-                             translateString: str
+                             translateString: Union[str, list[str]]
                              ):
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
@@ -62,12 +77,12 @@ class Entity:
         return self.translate_fromstring([translateX, translateY, translateZ])
 
     def setPosition_fromstring(self,
-                               dimensions: str
+                               dimensionsString: Union[str, list[str]]
                                ):
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
         dimensions: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
-            dimensions, boundingBox) or []
+            dimensionsString, boundingBox) or []
 
         dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
             dimensions)
@@ -87,20 +102,24 @@ class Entity:
         return self.setPosition_fromstring([postitionX, positionY, positionZ])
 
     def scale_fromstring(self,
-                         dimensions: str
+                         dimensions: Union[str, list[str]]
                          ):
+        dimensionsStringList: list[str]
         if type(dimensions) is str:
-            dimensions = dimensions.replace(" ", "").lower().split(",")
+            dimensionsStringList = dimensions.replace(
+                " ", "").lower().split(",")
+        else:
+            dimensionsStringList = cast(list[str], dimensions)
 
         # special case for scaling aspect ratio
-        dimensions = [
+        dimensionsList: list[Dimension] = [
             BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 Utilities.Dimension.fromString(dimension)
             )
-            if dimension else None for dimension in dimensions
+            for dimension in dimensionsStringList
         ]
 
-        BlenderActions.scaleObject(self.name, dimensions)
+        BlenderActions.scaleObject(self.name, dimensionsList)
 
         BlenderActions.applyObjectRotationAndScale(self.name)
 
