@@ -388,10 +388,10 @@ class Joint(CodeToCADInterface.Joint):
         print("pivot is not implemented")  # TODO: implement
         return self
 
-    def gear(self,
-             ratio: float
-             ):
-        print("gear is not implemented")  # TODO: implement
+    def gearRatio(self,
+                  ratio: float
+                  ):
+        print("gearRatio is not implemented")  # TODO: implement
         return self
 
     def limitLocation(self,
