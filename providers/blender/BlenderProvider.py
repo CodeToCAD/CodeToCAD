@@ -459,8 +459,7 @@ class Entity:
         return landmark
 
 
-# class Material(CodeToCADInterface.Material):
-class Material:
+class Material(CodeToCADInterface.Material):
 
     def __init__(self, materialName):
         if isinstance(materialName, Material):
