@@ -179,8 +179,8 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
 
-    from BlenderProvider import Part, Sketch, Landmark, Scene, Analytics, Joint, Material
-    from core.utilities import Dimension, Dimensions, Angle
+    from CodeToCAD import Part, Shape, Sketch, Curve, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, Angle
+    from core.utilities import Dimension, Dimensions, Angle, min, max, center
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -191,9 +191,10 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     namspace["Analytics"] = Analytics
     namspace["Joint"] = Joint
     namspace["Material"] = Material
-    namspace["min"] = "min"
-    namspace["max"] = "max"
-    namspace["center"] = "center"
+    namspace["Animation"] = Animation
+    namspace["min"] = min
+    namspace["max"] = max
+    namspace["center"] = center
     namspace["Dimension"] = Dimension
     namspace["Dimensions"] = Dimensions
     namspace["Angle"] = Angle
