@@ -7,16 +7,8 @@ from enum import Enum
 from uuid import uuid4
 from pathlib import Path
 
-from typing import Optional, Union, TypeAlias
+from typing import Optional, Union, cast
 
-from CodeToCADInterface import Part, Entity, Landmark, Material
-
-StringOrFloat: TypeAlias = Union[str, float]
-IntOrFloat: TypeAlias = Union[int, float]
-StringNameOrMaterial: TypeAlias = Union[str, 'Material']
-StringNameOrPart: TypeAlias = Union[str, 'Part']
-StringNameOrEntity: TypeAlias = Union[str, 'Entity']
-StringNameOrLandmark: TypeAlias = Union[str, 'Landmark']
 
 min = "min"
 max = "max"
@@ -64,11 +56,9 @@ class AngleUnit(Units):
     RADIANS = 0
     DEGREES = 1
 
-    def toDegrees(va):
-        return math.degrees()
-
-    def fromString(fromString: str):
-        aliases = {
+    @staticmethod
+    def fromString(name: str) -> 'AngleUnit':
+        aliases: dict[str, AngleUnit] = {
             "radians": AngleUnit.RADIANS,
             "rad": AngleUnit.RADIANS,
             "rads": AngleUnit.RADIANS,
@@ -80,9 +70,9 @@ class AngleUnit(Units):
             "d": AngleUnit.DEGREES
         }
 
-        fromString = fromString.lower().replace("(s)", "")
+        fromString: str = name.lower().replace("(s)", "")
 
-        parsedUnit = aliases[fromString] if fromString in aliases else None
+        parsedUnit: Optional[AngleUnit] = aliases[fromString] if fromString in aliases else None
 
         assert parsedUnit != None, f"Could not parse unit {fromString}"
 
@@ -91,14 +81,14 @@ class AngleUnit(Units):
 
 class Angle():
 
-    def toRadians(self):
+    def toRadians(self) -> 'Angle':
         return Angle(
             math.radians(
                 self.value) if self.unit == AngleUnit.DEGREES else self.value,
             AngleUnit.RADIANS
         )
 
-    def toDegrees(self):
+    def toDegrees(self) -> 'Angle':
         return Angle(
             math.degrees(
                 self.value) if self.unit == AngleUnit.RADIANS else self.value,
@@ -106,7 +96,7 @@ class Angle():
         )
 
     # Default unit is degrees if unit not passed
-    def __init__(self, value: float, defaultUnit: AngleUnit = AngleUnit.DEGREES):
+    def __init__(self, value: float, defaultUnit: AngleUnit = AngleUnit.DEGREES) -> None:
 
         unit = AngleUnit.fromString(defaultUnit.replace(" ", "").lower()) if type(
             defaultUnit) is str else defaultUnit
@@ -157,9 +147,9 @@ class Angle():
         other = self.arithmeticPrecheckAndUnitConversion(other)
         return Angle(self.value % other.value, self.unit)
 
-    def __divmod__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Angle(divmod(self.value, other.value), self.unit)
+    # def __divmod__(self, other):
+    #     other = self.arithmeticPrecheckAndUnitConversion(other)
+    #     return Angle(divmod(self.value, other.value), self.unit)
 
     def __pow__(self, other, mod=None):
         other = self.arithmeticPrecheckAndUnitConversion(other)
@@ -205,7 +195,7 @@ class Angle():
     # fromString: takes a string with a math operation and an optional unit of measurement
     # Default unit is degrees if unit not passed
     @staticmethod
-    def fromString(fromString: str, defaultUnit: AngleUnit = AngleUnit.DEGREES):
+    def fromString(fromString: str, defaultUnit: Union[str, AngleUnit] = AngleUnit.DEGREES):
 
         if isinstance(fromString, Angle):
             return fromString.copy()
@@ -243,17 +233,19 @@ class Angle():
         return Angle(value, unit)
 
 
-def getAnglesFromStringList(angles):
-
+def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
+    anglesList: list[str]
     if type(angles) == str:
-        angles = angles.replace(" ", "").lower().split(",")
+        anglesList = cast(str, angles).replace(" ", "").lower().split(",")
+    else:
+        anglesList = cast(list[str], angles)
 
     assert isinstance(angles, (list, tuple)
                       ), "Only a list of strings is allowed."
 
-    defaultUnit = None
+    defaultUnit: AngleUnit = AngleUnit.DEGREES
 
-    angleString = angles[-1]
+    angleString = anglesList[-1]
 
     if type(angleString) == str:
         angleString = angleString.replace(" ", "").lower()
@@ -263,7 +255,7 @@ def getAnglesFromStringList(angles):
             angleString[0]) if angleString else None
         if unitInString != None:
             defaultUnit = unitInString
-            if len(angleString[0]) == len(angles[-1]):
+            if len(cast(re.Match[str], angleString)[0]) == len(angles[-1]):
                 angles.pop()
 
     parsedAngles = []
@@ -287,8 +279,9 @@ class LengthUnit(Units):
     ft = 25.4 * 12
     mi = 25.4 * 63360
 
-    def fromString(fromString: str):
-        aliases = {
+    @staticmethod
+    def fromString(name: str) -> 'LengthUnit':
+        aliases: dict[str, LengthUnit] = {
             # metric
             "micrometer": LengthUnit.μm,
             "millimeter": LengthUnit.mm,
@@ -317,9 +310,9 @@ class LengthUnit(Units):
             "mi": LengthUnit.mi
         }
 
-        fromString = fromString.lower().replace("(s)", "")
+        fromString: str = name.lower().replace("(s)", "")
 
-        parsedUnit = aliases[fromString] if fromString in aliases else None
+        parsedUnit: LengthUnit | None = aliases[fromString] if fromString in aliases else None
 
         assert parsedUnit != None, f"Could not parse unit {fromString}"
 
@@ -385,15 +378,15 @@ class ConstraintTypes(EquittableEnum):
 
 
 class BoundaryAxis:
-    min = None
-    max = None
-    unit = None
+    min: float
+    max: float
+    unit: Optional[LengthUnit]
 
     @property
-    def center(self):
+    def center(self) -> float:
         return (self.max + self.min) / 2.0
 
-    def __init__(self, min=None, max=None, unit=None):
+    def __init__(self, min: float, max: float, unit=None) -> None:
         self.min = min
         self.max = max
 
@@ -418,11 +411,11 @@ x   {self.min}  {self.max}  {self.unit.name+'(s)' if self.unit else "No Unit"}
 
 
 class BoundaryBox:
-    x = BoundaryAxis()
-    y = BoundaryAxis()
-    z = BoundaryAxis()
+    x: Optional[BoundaryAxis]
+    y: Optional[BoundaryAxis]
+    z: Optional[BoundaryAxis]
 
-    def __init__(self, x: BoundaryAxis = BoundaryAxis(), y: BoundaryAxis = BoundaryAxis(), z: BoundaryAxis = BoundaryAxis()):
+    def __init__(self, x: Optional[BoundaryAxis], y: Optional[BoundaryAxis], z: Optional[BoundaryAxis]):
         self.x = x
         self.y = y
         self.z = z
@@ -430,9 +423,9 @@ class BoundaryBox:
     def __str__(self):
         return \
             f"""    min   max   unit
-x   {self.x.min}  {self.x.max}  {self.x.unit.name+'(s)'}
-y   {self.y.min}  {self.y.max}  {self.y.unit.name+'(s)'}
-z   {self.z.min}  {self.z.max}  {self.z.unit.name+'(s)'}
+x   {self.x and self.x.min}  {self.x and self.x.max}  {self.x and self.x.unit and self.x.unit.name+'(s)'}
+y   {self.y and self.y.min}  {self.y and self.y.max}  {self.y and self.y.unit and self.y.unit.name+'(s)'}
+z   {self.z and self.z.min}  {self.z and self.z.max}  {self.z and self.z.unit and self.z.unit.name+'(s)'}
 """
 
     def __repr__(self) -> str:
@@ -440,7 +433,7 @@ z   {self.z.min}  {self.z.max}  {self.z.unit.name+'(s)'}
 
 
 class Dimension():
-    def __init__(self, value: float, unit: LengthUnit = None):
+    def __init__(self, value: float, unit: Optional[LengthUnit] = None):
         assert isinstance(value, (int, float)
                           ), "Dimension value must be a number."
 
@@ -458,7 +451,7 @@ class Dimension():
     def __repr__(self) -> str:
         return self.__str__()
 
-    def convertToUnit(self, targetUnit: LengthUnit) -> float:
+    def convertToUnit(self, targetUnit: LengthUnit) -> 'Dimension':
         assert self.unit != None, f"Current dimension does not have a unit."
         targetUnit = LengthUnit.fromString(targetUnit) if not isinstance(
             targetUnit, LengthUnit) else targetUnit
@@ -471,12 +464,12 @@ class Dimension():
         )
         return newDimension
 
-    def arithmeticPrecheckAndUnitConversion(self, other):
+    def arithmeticPrecheckAndUnitConversion(self, other) -> 'Dimension':
         assert other != None, "Right-hand value cannot be None."
         if not isinstance(other, Dimension):
             other = Dimension.fromString(other)
         if other.unit != None and other.unit != self.unit:
-            other = other.convertToUnit(self.unit)
+            other = other.convertToUnit(cast(LengthUnit, self.unit))
         return other
 
     def __add__(self, other):
@@ -503,9 +496,9 @@ class Dimension():
         other = self.arithmeticPrecheckAndUnitConversion(other)
         return Dimension(self.value % other.value, self.unit)
 
-    def __divmod__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(divmod(self.value, other.value), self.unit)
+    # def __divmod__(self, other):
+    #     other = self.arithmeticPrecheckAndUnitConversion(other)
+    #     return Dimension(divmod(self.value, other.value), self.unit)
 
     def __pow__(self, other, mod=None):
         other = self.arithmeticPrecheckAndUnitConversion(other)
@@ -554,7 +547,7 @@ class Dimension():
     # boundaryAxis is required if min,center,max are used
 
     @staticmethod
-    def fromString(fromString: str, defaultUnit: LengthUnit = None, boundaryAxis: BoundaryAxis = None):
+    def fromString(fromString: str, defaultUnit: Optional[LengthUnit] = None, boundaryAxis: Optional[BoundaryAxis] = None):
 
         if isinstance(fromString, Dimension):
             return fromString.copy()
@@ -587,7 +580,7 @@ class Dimension():
             if unit == None:
                 unit = boundaryAxis.unit
             value = replaceMinMaxCenterWithRespectiveValue(
-                value, boundaryAxis, unit)
+                value, boundaryAxis, cast(LengthUnit, unit))
 
         assert len(value) > 0, f"Dimension value cannot be empty."
 
@@ -837,7 +830,7 @@ def getUnitInString(dimensionString):
     return unitInString if unitInString and not isReservedWordInString(unitInString) else None
 
 
-def getDimensionListFromStringList(dimensions: list[str], boundingBox: BoundaryBox = None) -> list[Dimension]:
+def getDimensionListFromStringList(dimensions: Union[str, list[str]], boundingBox: Optional[BoundaryBox] = None) -> list[Dimension]:
 
     if type(dimensions) is str:
         dimensions = dimensions.replace(" ", "").lower().split(",")

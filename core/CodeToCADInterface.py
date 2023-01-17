@@ -1,7 +1,14 @@
 from abc import ABCMeta, abstractmethod
-from typing import Optional
+from typing import Optional, Union, TypeAlias, cast
 
-from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, StringOrFloat, StringNameOrPart, StringNameOrEntity, StringNameOrLandmark, IntOrFloat, StringNameOrMaterial
+from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox
+
+StringOrFloat: TypeAlias = Union[str, float]
+IntOrFloat: TypeAlias = Union[int, float]
+StringNameOrMaterial: TypeAlias = Union[str, 'Material']
+StringNameOrPart: TypeAlias = Union[str, 'Part']
+StringNameOrEntity: TypeAlias = Union[str, 'Entity']
+StringNameOrLandmark: TypeAlias = Union[str, 'Landmark']
 
 
 class Entity(metaclass=ABCMeta):

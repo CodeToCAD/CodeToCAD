@@ -137,11 +137,27 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
         context)
-    blenderProviderPath = codeToCADPath+"/providers/blender"
 
-    if not codeToCADPath or not os.path.exists(codeToCADPath) or not Path(blenderProviderPath+"/BlenderProvider.py").is_file():
+    if not codeToCADPath or not os.path.exists(codeToCADPath):
         print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
         return {'CANCELLED'} if returnBlenderOperationStatus else None
+
+    corePath = codeToCADPath+"/core"
+    codeToCadProviderPath = codeToCADPath+"/providers"
+    blenderProviderPath = codeToCADPath+"/providers/blender"
+
+    if not Path(blenderProviderPath+"/BlenderProvider.py").is_file():
+        print(
+            "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon")
+        return {'CANCELLED'} if returnBlenderOperationStatus else None
+
+    print("Adding {} to path".format(corePath))
+
+    sys.path.append(corePath)
+
+    print("Adding {} to path".format(codeToCadProviderPath))
+
+    sys.path.append(codeToCadProviderPath)
 
     print("Adding {} to path".format(blenderProviderPath))
 
@@ -150,6 +166,9 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     print("Adding {} to path".format(codeToCADPath))
 
     sys.path.append(codeToCADPath)
+
+    from BlenderProvider import injectBlenderProvider
+    injectBlenderProvider()
 
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
