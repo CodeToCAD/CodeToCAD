@@ -1,18 +1,18 @@
-import console_python
-from console_python import replace_help
-from functools import wraps
-import bpy
+
 import os
+import pkgutil
+import runpy
 import sys
+from functools import wraps
+from importlib import reload
 from pathlib import Path
 
-import runpy
-
-from bpy.types import Operator, AddonPreferences, OperatorFileListElement
-from bpy.props import StringProperty, CollectionProperty
-
+import bpy
+import console_python
+from bpy.props import CollectionProperty, StringProperty
+from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
-
+from console_python import replace_help
 
 bl_info = {
     "name": "CodeToCAD",
@@ -44,6 +44,26 @@ class DisplayMessage(Operator):
         return {'FINISHED'}
 
 
+def reloadCodeToCADModules():
+    print("Reloading CodeToCAD modules")
+    import BlenderActions
+    import BlenderDefinitions
+    import BlenderProvider
+    import CodeToCADInterface
+    import utilities
+    import CodeToCAD
+
+    reload(utilities)
+    reload(CodeToCADInterface)
+    reload(BlenderProvider)
+    reload(BlenderDefinitions)
+    reload(BlenderActions)
+    reload(CodeToCAD)
+
+    from BlenderProvider import injectBlenderProvider
+    injectBlenderProvider()
+
+
 @orientation_helper(axis_forward='Y', axis_up='Z')
 class ImportCodeToCAD(Operator, ImportHelper):
     bl_idname = "code_to_cad.import_codetocad"
@@ -65,8 +85,10 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
     def execute(self, context):
 
-        paths = [os.path.join(self.directory, name.name)
-                 for name in self.files]
+        paths: list[str] = [os.path.join(self.directory, name.name)
+                            for name in self.files]
+
+        reloadCodeToCADModules()
 
         # Add the directory to python execute path, so that imports work.
         # if there are submodules for the script being imported, the user will have to use:
@@ -74,15 +96,18 @@ class ImportCodeToCAD(Operator, ImportHelper):
         # sys.path.append( Path(__file__).parent.absolute() )
         sys.path.append(self.directory)
 
-        if not paths:
-            paths.append(self.filepath)
-
         for path in paths:
             print("Running script", path)
             runpy.run_path(path, run_name="__main__")
 
         from BlenderActions import zoomToSelectedObjects
         zoomToSelectedObjects()
+
+        # Cleanup:
+        sys.path.remove(self.directory)
+        for _, package_name, _ in pkgutil.iter_modules([self.directory]):
+            if package_name in sys.modules:
+                del sys.modules[package_name]
 
         return {'FINISHED'}
 
@@ -179,8 +204,10 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
 
-    from CodeToCAD import Part, Shape, Sketch, Curve, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, Angle
-    from core.utilities import Dimension, Dimensions, Angle, min, max, center
+    from CodeToCAD import (Analytics, Angle, Animation, Curve, Dimension,
+                           Dimensions, Joint, Landmark, Material, Part, Scene,
+                           Shape, Sketch, center, max, min)
+    from core.utilities import Angle, Dimension, Dimensions, center, max, min
 
     namspace["Part"] = Part
     namspace["Shape"] = Part

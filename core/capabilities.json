@@ -635,7 +635,7 @@
                 "information": "Constraint the rotation origin of entity B to entity A's landmark.",
                 "parameters": {}
             },
-            "gear": {
+            "gearRatio": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B to be a percentage of entity A's",
                 "parameters": {
