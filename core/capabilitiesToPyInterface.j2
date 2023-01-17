@@ -43,15 +43,29 @@ class {{className}}(metaclass=ABCMeta): {# e.g. Part #}
     {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
     {%- if method == "information" %}
-    # {{ information }}
+    # {{ properties }}
 
     {%- elif method == "alias"-%}
     
     {%- set alias = properties -%}
-
-    {%- elif method == "constructor"-%}
     
-    {# Do nothing #}
+    {%- elif method == "constructor"%}
+
+    {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
+
+    def __init__(self
+    {%- if parameters.keys()|length > 0 -%}
+    ,
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
+    {%-endfor%}
+    {%-endif%}
+    ):
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        self.{{ parameter }} = {{parameter}}
+    {%- else %}
+        pass
+    {%-endfor%}
 
     {%- else %}
 

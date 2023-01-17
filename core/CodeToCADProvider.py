@@ -4,7 +4,7 @@ import core.CodeToCADInterface as CodeToCADInterface
 from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
 
 class Entity(CodeToCADInterface.Entity): 
-    # Capabilities for CodeToCAD.
+    # Capabilities shared between Parts and Sketches.
 
     def clone(self,
     entityName:str \
@@ -81,7 +81,9 @@ class Entity(CodeToCADInterface.Entity):
         return self
 
 class Part(CodeToCADInterface.Part): 
-    # Capabilities for CodeToCAD.name = None
+    # Capabilities Part CRUD.
+
+    name = None
     description = None
 
     def __init__(self,
@@ -202,7 +204,9 @@ class Part(CodeToCADInterface.Part):
         return self
 
 class Sketch(CodeToCADInterface.Sketch): 
-    # Capabilities for CodeToCAD.name = None
+    # Capabilities related to adding, multiplying, and/or modifying a curve.
+
+    name = None
     curveType = None
     description = None
 
@@ -328,7 +332,9 @@ class Sketch(CodeToCADInterface.Sketch):
         return self
 
 class Landmark(CodeToCADInterface.Landmark): 
-    # Capabilities for CodeToCAD.landmarkName = None
+    # Landmarks are named positions on an entity.
+
+    landmarkName = None
     localToEntityWithName = None
 
     def __init__(self,
@@ -339,7 +345,9 @@ class Landmark(CodeToCADInterface.Landmark):
         self.localToEntityWithName = localToEntityWithName
 
 class Joint(CodeToCADInterface.Joint): 
-    # Capabilities for CodeToCAD.entity1Name = None
+    # Joints define the relationships and constraints between entities.
+
+    entity1Name = None
     entity2Name = None
     entity1LandmarkName = None
     entity2LandmarkName = None
@@ -388,14 +396,18 @@ class Joint(CodeToCADInterface.Joint):
         return self
 
 class Material(CodeToCADInterface.Material): 
-    # Capabilities for CodeToCAD.
+    # Materials affect the appearance and simulation properties of the parts.
+
+    
 
     def __init__(self
     ):
         pass
 
 class Scene(CodeToCADInterface.Scene): 
-    # Capabilities for CodeToCAD.name = None
+    # Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.
+
+    name = None
     description = None
 
     def __init__(self,
@@ -462,7 +474,9 @@ class Scene(CodeToCADInterface.Scene):
         return self
 
 class Analytics(CodeToCADInterface.Analytics): 
-    # Capabilities for CodeToCAD.
+    # Tools for collecting data about the entities and scene.
+
+    
 
     def __init__(self
     ):
