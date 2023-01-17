@@ -1,11 +1,22 @@
 # utilities.py contains enums and helper functions for CodeToCAD python functionality.
 
-from enum import Enum
 import re
 import math
 import sys
+from enum import Enum
 from uuid import uuid4
 from pathlib import Path
+
+from typing import Optional, Union, TypeAlias
+
+from CodeToCADInterface import Part, Entity, Landmark, Material
+
+StringOrFloat: TypeAlias = Union[str, float]
+IntOrFloat: TypeAlias = Union[int, float]
+StringNameOrMaterial: TypeAlias = Union[str, 'Material']
+StringNameOrPart: TypeAlias = Union[str, 'Part']
+StringNameOrEntity: TypeAlias = Union[str, 'Entity']
+StringNameOrLandmark: TypeAlias = Union[str, 'Landmark']
 
 min = "min"
 max = "max"

@@ -4,6 +4,11 @@
     "capabilities": {
         "Entity": {
             "information": "Capabilities shared between Parts and Sketches.",
+            "isExists": {
+                "action": "get",
+                "information": "Check if an entity exists",
+                "returnType": "boolean"
+            },
             "clone": {
                 "action": "create",
                 "information": "Clone an existing entity with its geometry and properties.",
@@ -123,6 +128,7 @@
             "alias": [
                 "Shape"
             ],
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -169,13 +175,13 @@
                 "information": "Adds cuboid geometry to a part.",
                 "parameters": {
                     "width": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "length": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "height": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -189,13 +195,13 @@
                 "information": "Adds cone geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "height": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "draftRadius": {
-                        "type": "string",
+                        "type": "string,float",
                         "defaultValue": 0
                     },
                     "keywordArguments": {
@@ -210,10 +216,10 @@
                 "information": "Adds cylinder geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "height": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -227,10 +233,10 @@
                 "information": "Adds torus geometry to a part.",
                 "parameters": {
                     "innerRadius": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "outerRadius": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -244,7 +250,7 @@
                 "information": "Adds sphere geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string"
+                        "type": "string,float"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -267,16 +273,16 @@
                 "information": "Interpolate between two existing parts.",
                 "parameters": {
                     "part1Name": {
-                        "type": "string"
+                        "type": "string,Part"
                     },
                     "part1LandmarkName": {
-                        "type": "string"
+                        "type": "string,Landmark"
                     },
                     "part2Name": {
-                        "type": "string"
+                        "type": "string,Part"
                     },
                     "part2LandmarkName": {
-                        "type": "string"
+                        "type": "string,Landmark"
                     }
                 }
             },
@@ -342,6 +348,15 @@
                         "type": "float"
                     }
                 }
+            },
+            "assignMaterial": {
+                "action": "modify",
+                "information": "Assign a known material to this part.",
+                "parameters": {
+                    "materialName": {
+                        "type": "string,Material"
+                    }
+                }
             }
         },
         "Sketch": {
@@ -349,6 +364,7 @@
             "alias": [
                 "Curve"
             ],
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -661,7 +677,51 @@
         },
         "Material": {
             "information": "Materials affect the appearance and simulation properties of the parts.",
-            "constructor": {}
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "assignToPart": {
+                "action": "modify",
+                "parameters": {
+                    "partName": {
+                        "type": "string,Part"
+                    }
+                }
+            },
+            "setColor": {
+                "action": "modify",
+                "parameters": {
+                    "rValue": {
+                        "type": "int,float"
+                    },
+                    "gValue": {
+                        "type": "int,float"
+                    },
+                    "bValue": {
+                        "type": "int,float"
+                    },
+                    "aValue": {
+                        "type": "int,float",
+                        "default": 1.0
+                    }
+                }
+            },
+            "addImageTexture": {
+                "action": "modify",
+                "parameters": {
+                    "imageFilePath": {
+                        "type": "string"
+                    }
+                }
+            }
         },
         "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
@@ -762,6 +822,7 @@
             "constructor": {},
             "measureLandmarks": {
                 "action": "get",
+                "returnType": "Dimension",
                 "information": "The ubiquitous ruler and angle measurement tool.",
                 "parameters": {
                     "landmark1Name": {
@@ -784,6 +845,7 @@
             },
             "getBoundingBox": {
                 "action": "get",
+                "returnType": "BoundaryBox",
                 "information": "Returns the bounding box of an entity.",
                 "parameters": {
                     "entityName": {
@@ -793,6 +855,7 @@
             },
             "getDimensions": {
                 "action": "get",
+                "returnType": "Dimensions",
                 "information": "Returns the dimensions of an entity.",
                 "parameters": {
                     "entityName": {

@@ -28,9 +28,10 @@ Sample context:
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 
-from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
+from typing import Optional
+from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, min, max, center, createUUID, getAbsoluteFilepath, getFilename, StringOrFloat, StringNameOrPart, StringNameOrEntity, StringNameOrLandmark, IntOrFloat, StringNameOrMaterial
 
-{% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool"} -%}
+{% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool", "string,float":"StringOrFloat","int,float":"IntOrFloat", "string,Part":"StringNameOrPart", "string,Entity":"StringNameOrEntity", "string,Landmark":"StringNameOrLandmark", "string,Material":"StringNameOrMaterial"} -%}
 {% macro typeMapping(typeName) -%}
     {{types[typeName] if typeName in types else typeName}}
 {%- endmacro %}
@@ -45,19 +46,24 @@ class {{className}}(CodeToCADInterface.{{className}}): {# e.g. Part #}
     {%- if method == "information" %}
     # {{ properties }}
 
+    {%- elif method == "extends"-%}
+    {# Do nothing #}
+
     {%- elif method == "alias"-%}
     
     {%- set alias = properties -%}
     
     {%- elif method == "constructor"%}
 
-    {{ parameters.keys()| join(' = None\n    ') }} {{-" = None" if parameters.keys()|length>0}}
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}}
+    {%-endfor%}
 
     def __init__(self
     {%- if parameters.keys()|length > 0 -%}
     ,
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-"," if not loop.last}} \
     {%-endfor%}
     {%-endif%}
     ):
@@ -73,12 +79,12 @@ class {{className}}(CodeToCADInterface.{{className}}): {# e.g. Part #}
     {%- if parameters.keys()|length > 0 -%}
     ,
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {{ parameter }} {{-":" + typeMapping(definition.type) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-", " if not loop.last}} \
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- "=None" if definition and definition.required == false -}} {{-", " if not loop.last}} \
     {%-endfor%}
     {%-endif%}
-    ):
-        print("{{method}} is not implemented") # implement 
-        return {{ "self" if "action" in properties and properties["action"] != "get" else "\"return value here\"" }}
+    ){{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+        print("{{method}} is not implemented") # TODO: implement 
+        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError" }}
     
     {%-endif-%}
 
