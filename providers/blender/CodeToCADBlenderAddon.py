@@ -28,22 +28,52 @@ bl_info = {
     "category": "Scripting",
 }
 
+namespace = "code_to_cad"
 
-class DisplayMessage(Operator):
-    bl_idname = "code_to_cad.display_message"
-    bl_label = "Display CodeToCAD Message"
+operatorIds = {
+    "ReloadLastImport": namespace + ".reload_last_import",
+    "StopAutoReload": namespace + ".stop_auth_reload_last_import",
+    "ImportCodeToCAD": namespace + ".import_codetocad",
+    "ConfirmImportedFileReload": namespace + ".confirm_imported_file_reload",
+    "AddCodeToCADToPath": namespace + ".add_blender_provider_to_path",
+    "OpenPreferences": namespace + ".open_preferences"
+}
+
+
+class ReloadLastImport(Operator):
+    bl_idname = operatorIds["ReloadLastImport"]
+    bl_label = "Reload last import"
     bl_options = {'REGISTER'}
-
-    message: StringProperty()  # type: ignore
-    log_type: StringProperty()   # type: ignore # e.g. INFO, WARNING, ERROR
 
     def execute(self, context):
 
         # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
-        self.report(
-            {self.log_type},
-            self.message
-        )
+
+        global importedFileWatcher
+        if not importedFileWatcher:
+            self.report({'ERROR'}, "No CodeToCAD file imported")
+            return {'CANCELLED'}
+
+        importedFileWatcher.reloadFile(context)
+
+        return {'FINISHED'}
+
+
+class StopAutoReload(Operator):
+    bl_idname = operatorIds["StopAutoReload"]
+    bl_label = "Stop auto-reloading last import"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+
+        # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
+
+        global importedFileWatcher
+        if not importedFileWatcher:
+            self.report({'ERROR'}, "No CodeToCAD file imported")
+            return {'CANCELLED'}
+
+        importedFileWatcher.stopWatchingFile()
 
         return {'FINISHED'}
 
@@ -72,15 +102,18 @@ class ImportedFileWatcher():
     filepath: str
     directory: str
     lastTimestamp: float = 0
-    isWatching = True
+    _isWatching = True
+    isAskBeforeReloading = False
 
-    def __init__(self, path: str, directory: str) -> None:
+    def __init__(self, path: str, directory: str, context) -> None:
         self.filepath = path
         self.directory = directory
+        self.isAskBeforeReloading = CodeToCADAddonPreferences.getIsAskBeforeReloadingFromPreferences(
+            context)
 
     def checkFileChanged(self) -> bool:
         stamp: float = os.stat(self.filepath).st_mtime
-        print("Watchdog, last modified", stamp)
+        print("Import auto-reload: last modified", stamp)
         if stamp != self.lastTimestamp and self.lastTimestamp != 0:
             self.lastTimestamp = stamp
             return True
@@ -91,23 +124,37 @@ class ImportedFileWatcher():
         bpy.ops.wm.revert_mainfile()
 
         bpy.app.timers.register(functools.partial(
-            importCodeToCADFile, self.filepath, self.directory, False))
+            importCodeToCADFile, context, self.filepath, self.directory, False))
+
+    def stopWatchingFile(self):
+        self._isWatching = False
+        try:
+            bpy.app.timers.unregister(self.watchFile)
+        except:
+            pass
+
+    def registerFileWatcher(self):
+        bpy.app.timers.register(self.watchFile, persistent=True)
 
     def watchFile(self) -> Optional[int]:
-        # if self.isShowingDialog:
-        #     return
-        if not self.isWatching:
+        if not self._isWatching:
+            print("Import auto-reload: stopping imported-file modify check timer.")
             return None
         if self.checkFileChanged():
-            bpy.ops.code_to_cad.confirm_imported_file_reload('INVOKE_DEFAULT')
-            return None
+            print("Import auto-reload: file has changed.")
+            if self.isAskBeforeReloading:
+                bpy.ops.code_to_cad.confirm_imported_file_reload(  # type: ignore
+                    'INVOKE_DEFAULT')
+            else:
+                self.reloadFile(bpy.context)
+        # number of seconds before re-checking (courtesy of bpy.app.timers)
         return 5
 
 
 importedFileWatcher: Optional[ImportedFileWatcher] = None
 
 
-def importCodeToCADFile(filePath, directory, saveFile):
+def importCodeToCADFile(context, filePath, directory, saveFile):
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
@@ -135,19 +182,21 @@ def importCodeToCADFile(filePath, directory, saveFile):
         if package_name in sys.modules:
             del sys.modules[package_name]
 
+    if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(context):
+        return
+
     global importedFileWatcher
     if not importedFileWatcher or importedFileWatcher.filepath != filePath:
         if importedFileWatcher:
-            importedFileWatcher.isWatching = False
-            bpy.app.timers.unregister(importedFileWatcher.watchFile)
-        importedFileWatcher = ImportedFileWatcher(filePath, directory)
+            importedFileWatcher.stopWatchingFile()
+        importedFileWatcher = ImportedFileWatcher(filePath, directory, context)
     importedFileWatcher.watchFile()
-    bpy.app.timers.register(importedFileWatcher.watchFile, persistent=True)
+    importedFileWatcher.registerFileWatcher()
 
 
 @ orientation_helper(axis_forward='Y', axis_up='Z')  # type: ignore
 class ImportCodeToCAD(Operator, ImportHelper):
-    bl_idname = "code_to_cad.import_codetocad"
+    bl_idname = operatorIds["ImportCodeToCAD"]
     bl_label = "Import CodeToCAD"
     bl_description = "Load a CodeToCAD file"
     bl_options = {'UNDO'}
@@ -169,7 +218,7 @@ class ImportCodeToCAD(Operator, ImportHelper):
         paths: list[str] = [os.path.join(self.directory, name.name)
                             for name in self.files]
 
-        importCodeToCADFile(paths[0], self.directory, True)
+        importCodeToCADFile(context, paths[0], self.directory, True)
 
         return {'FINISHED'}
 
@@ -191,10 +240,14 @@ class CodeToCADAddonPreferences(AddonPreferences):
         name="CodeToCAD Folder",
         subtype='FILE_PATH',
     )  # type: ignore
+    isAutoReloadImports: bpy.props.BoolProperty(
+        name="Auto Reload", default=False)  # type: ignore
+    isAskBeforeReloading: bpy.props.BoolProperty(
+        name="Ask before auto-reload", default=False)  # type: ignore
 
-    class addCodeToCADToPath(Operator):
+    class AddCodeToCADToPath(Operator):
         """Print object name in Console"""
-        bl_idname = "code_to_cad.add_blender_provider_to_path"
+        bl_idname = operatorIds["AddCodeToCADToPath"]
         bl_label = "Add CodeToCAD To Path"
         bl_options = {'REGISTER'}
 
@@ -204,19 +257,40 @@ class CodeToCADAddonPreferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+
         layout.label(text="Configure CodeToCAD.")
-        layout.label(
+        layout.separator()
+        box = layout.box()
+        box.label(text="Path to CodeToCAD folder:")
+        box.label(
             text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad-Blender", icon="QUESTION")
-        layout.prop(self, "codeToCadFilePath")  # type: ignore
+        box.prop(self, "codeToCadFilePath")  # type: ignore
 
-        layout.operator(CodeToCADAddonPreferences.addCodeToCADToPath.bl_idname,
-                        text="Refresh BlenderProvider", icon="CONSOLE")
+        box.operator(CodeToCADAddonPreferences.AddCodeToCADToPath.bl_idname,
+                     text="Refresh BlenderProvider", icon="CONSOLE")
 
-    @ staticmethod
-    def getCodeToCadFilePathFromPreferences(context):
-        preferenceKey = "codeToCadFilePath"
+        layout.separator()
+        box = layout.box()
+        box.label(text="Importing:")
+        box.prop(self, "isAutoReloadImports")  # type: ignore
+        box.prop(self, "isAskBeforeReloading")  # type: ignore
+
+    @staticmethod
+    def getPreferenceKey(preferenceKey, context):
         preferences = context.preferences.addons[__name__].preferences
         return preferences[preferenceKey] if preferenceKey in preferences else None
+
+    @staticmethod
+    def getisAutoReloadImportsFromPreferences(context):
+        return CodeToCADAddonPreferences.getPreferenceKey("isAutoReloadImports", context) or False
+
+    @staticmethod
+    def getIsAskBeforeReloadingFromPreferences(context):
+        return CodeToCADAddonPreferences.getPreferenceKey("isAskBeforeReloading", context) or False
+
+    @staticmethod
+    def getCodeToCadFilePathFromPreferences(context):
+        return CodeToCADAddonPreferences.getPreferenceKey("codeToCadFilePath", context)
 
 
 def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
@@ -290,12 +364,12 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
 
 class ConfirmImportedFileReload(bpy.types.Operator):
-    bl_idname = "code_to_cad.confirm_imported_file_reload"
+    bl_idname = operatorIds["ConfirmImportedFileReload"]
     bl_label = "Imported file has changed. Reload?"
     bl_options = {'REGISTER'}
 
-    reload: bpy.props.BoolProperty(name="reload", default=True)
-    stopWatching: bpy.props.BoolProperty(name="stopWatching")
+    reload: bpy.props.BoolProperty(name="Reload", default=True)  # type: ignore
+    stopWatching: bpy.props.BoolProperty(name="Stop Watching")  # type: ignore
 
     @ classmethod
     def poll(cls, context):
@@ -308,8 +382,8 @@ class ConfirmImportedFileReload(bpy.types.Operator):
         if importedFileWatcher and self.reload:
             importedFileWatcher.reloadFile(context=context)
 
-        if importedFileWatcher:
-            importedFileWatcher.isWatching = not self.stopWatching
+        if importedFileWatcher and self.stopWatching:
+            importedFileWatcher.stopWatchingFile()
 
         return {'FINISHED'}
 
@@ -318,21 +392,56 @@ class ConfirmImportedFileReload(bpy.types.Operator):
 
     def draw(self, context):
         row = self.layout
-        row.prop(self, "reload", text="Reload")
-        row.prop(self, "stopWatching", text="Stop watching file changes.")
+        row.prop(self, "reload", text="Reload")  # type: ignore
+        row.prop(self, "stopWatching",  # type: ignore
+                 text="Stop watching file changes.")
+
+
+class OpenPreferences(bpy.types.Operator):
+    bl_idname = operatorIds["OpenPreferences"]
+    bl_label = "Open Preferences"
+    bl_options = {'REGISTER'}
+
+    @staticmethod
+    def openPreferences():
+        bpy.ops.screen.userpref_show()
+        bpy.context.preferences.active_section = 'ADDONS'
+        bpy.data.window_managers["WinMan"].addon_search = bl_info["name"]
+
+    def execute(self, context):
+        OpenPreferences.openPreferences()
+        return {"FINISHED"}
+
+
+class CodeToCADPanel(bpy.types.Panel):
+    bl_idname = "code_to_cad.main_panel"
+    bl_label = "CodeToCAD"
+    bl_space_type = "VIEW_3D"
+    bl_category = "CodeToCAD"
+    bl_region_type = "UI"
+
+    def draw(self, context):
+        self.layout.operator(ImportCodeToCAD.bl_idname,
+                             icon='IMPORT', text="Import CodeToCAD")
+        self.layout.operator(ReloadLastImport.bl_idname,
+                             icon='FILE_REFRESH', text="Reload imported file")
+        self.layout.operator(StopAutoReload.bl_idname,
+                             icon='REMOVE', text="Stop auto-reload")
+        self.layout.operator(OpenPreferences.bl_idname,
+                             icon='PREFERENCES', text="Open Preferences")
 
 
 def register():
     print("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
-    bpy.utils.register_class(CodeToCADAddonPreferences.addCodeToCADToPath)
-    bpy.utils.register_class(DisplayMessage)
+    bpy.utils.register_class(CodeToCADAddonPreferences.AddCodeToCADToPath)
+    bpy.utils.register_class(ReloadLastImport)
+    bpy.utils.register_class(StopAutoReload)
     bpy.utils.register_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.append(menu_import)
     bpy.utils.register_class(ConfirmImportedFileReload)
-
-    # bpy.types.Scene.importedFileWatcher = bpy.props.PointerProperty(
-    #     type=ImportedFileWatcher)
+    bpy.utils.register_class(CodeToCADPanel)
+    bpy.utils.register_class(OpenPreferences)
 
     bpy.app.timers.register(addCodeToCADToPath)
 
@@ -342,12 +451,14 @@ def register():
 def unregister():
     print("Unregistering ", __name__)
     bpy.utils.unregister_class(CodeToCADAddonPreferences)
-    bpy.utils.unregister_class(CodeToCADAddonPreferences.addCodeToCADToPath)
-    bpy.utils.unregister_class(DisplayMessage)
+    bpy.utils.unregister_class(CodeToCADAddonPreferences.AddCodeToCADToPath)
+    bpy.utils.unregister_class(ReloadLastImport)
+    bpy.utils.unregister_class(StopAutoReload)
     bpy.utils.unregister_class(ImportCodeToCAD)
     bpy.types.TOPBAR_MT_file_import.remove(menu_import)
     bpy.utils.unregister_class(ConfirmImportedFileReload)
-    # del bpy.types.Scene.importedFileWatcher
+    bpy.utils.unregister_class(CodeToCADPanel)
+    bpy.utils.unregister_class(OpenPreferences)
 
     console_python.replace_help = replace_help
 
