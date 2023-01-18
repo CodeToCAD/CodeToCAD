@@ -1865,6 +1865,10 @@ def setDefaultUnit(
     blenderScene.unit_settings.length_unit = blenderUnit.name
 
 
+def selectObject(object: bpy.types.Object):
+    object.select_set(True)
+
+
 def zoomToSelectedObjects():
     # References https://blender.stackexchange.com/a/7419/138679
     for area in bpy.context.screen.areas:
