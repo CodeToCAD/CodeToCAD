@@ -42,3 +42,9 @@ To enable syntax highlighting and auto-complete for your project's folder, pleas
     ]
 }
 ```
+
+## Development
+
+### Dependencies
+
+1. Run `pip install fake-bpy-module-latest` to get intellisense for the Blender API modules
