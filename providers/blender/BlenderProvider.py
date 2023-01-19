@@ -1,5 +1,5 @@
 import math
-from typing import Union, cast
+from typing import Optional, Union, cast
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
@@ -32,10 +32,8 @@ def injectBlenderProvider() -> None:
     setSceneProvider(Scene)
     setAnalyticsProvider(Analytics)
 
-# class Entity(CodeToCADInterface.Entity):
 
-
-class Entity:
+class Entity(CodeToCADInterface.Entity):
 
     name: str
 
@@ -490,33 +488,30 @@ class Material(CodeToCADInterface.Material):
 
 class Texture:
 
-    def __init__(self, textureName, imageFilePath, repeatMode: BlenderDefinitions.RepeatMode):
+    textureName: str
+
+    def __init__(self, textureName: str, imageFilePath, ) -> None:
         self.textureName = textureName
-        try:
-            BlenderActions.getTexture(self.textureName)
-        except:
-            absoluteFilePath = getAbsoluteFilepath(imageFilePath)
 
-            BlenderActions.createImageTexture(
-                self.textureName, absoluteFilePath, repeatMode)
+    def setTextureRepeatMode(self, repeatMode: BlenderDefinitions.RepeatMode):
+        raise NotImplementedError()
 
 
-# class Part(CodeToCADInterface.Part):
-class Part(Entity):
+class Part(CodeToCADInterface.Part):
 
-    name = None
-    description = None
+    name: str
+    description: Optional[str]
 
     def __init__(self,
                  name: str,
-                 description: str = None
+                 description:  Optional[str] = None
                  ):
         self.name = name
         self.description = description
 
     def createFromFile(self,
                        filePath: str,
-                       fileType: str = None
+                       fileType:  Optional[str] = None
                        ):
 
         assert self.isExists == False, f"{self.name} already exists."
@@ -1009,17 +1004,16 @@ class Part(Entity):
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
 
-# class Sketch(CodeToCADInterface.Sketch):
-class Sketch(Entity):
+class Sketch(CodeToCADInterface.Sketch):
 
-    name = None
-    curveType = None
-    description = None
+    name: str
+    curveType: Optional[Utilities.CurveTypes]
+    description: Optional[str]
 
     def __init__(self,
                  name: str,
-                 curveType: Utilities.CurveTypes = None,
-                 description: str = None
+                 curveType: Optional[Utilities.CurveTypes] = None,
+                 description:  Optional[str] = None
                  ):
         self.name = name
         self.curveType = curveType

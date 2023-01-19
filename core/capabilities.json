@@ -13,32 +13,60 @@
                 "action": "create",
                 "information": "Clone an existing entity with its geometry and properties.",
                 "parameters": {
-                    "entityName": {
+                    "newName": {
                         "type": "string"
+                    },
+                    "copyLandmarks": {
+                        "type": "boolean",
+                        "default": true
                     }
                 }
             },
             "mirror": {
                 "action": "create",
-                "information": "Mirror an existing entity with respect to a landmark.",
+                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
                 "parameters": {
-                    "entityName": {
-                        "type": "string"
+                    "mirrorAcrossEntity": {
+                        "type": "string,Entity"
                     },
-                    "landmarkName": {
+                    "axis": {
+                        "type": "string,int,Axis"
+                    },
+                    "resultingMirroredEntityName": {
                         "type": "string"
                     }
                 }
             },
-            "pattern": {
+            "linearPattern": {
                 "action": "create",
-                "information": "Clone an existing entity to follow a pattern.",
+                "information": "Clone an existing entity to follow a pattern in a uniform direction.",
                 "parameters": {
-                    "entityName": {
-                        "type": "string"
+                    "instanceCount": {
+                        "type": "int"
                     },
-                    "landmarkName": {
-                        "type": "string"
+                    "directionAxis": {
+                        "type": "string,int,Axis"
+                    },
+                    "offset": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "circularPattern": {
+                "action": "create",
+                "information": "Clone an existing entity to follow a circular pattern.",
+                "parameters": {
+                    "instanceCount": {
+                        "type": "int"
+                    },
+                    "separationAngle": {
+                        "type": "string,float,Angle"
+                    },
+                    "normalDirectionAxis": {
+                        "type": "string,int,Axis"
+                    },
+                    "centerEntityOrLandmark": {
+                        "type": "string,Entity,Landmark"
                     }
                 }
             },
@@ -46,8 +74,20 @@
                 "action": "modify",
                 "information": "Scale operation.",
                 "parameters": {
-                    "dimensions": {
-                        "type": "string"
+                    "scaleXYZ": {
+                        "type": "string,list[string,float,Dimension],Dimensions"
+                    }
+                }
+            },
+            "scaleKeepAspectRatio": {
+                "action": "modify",
+                "information": "Scale in one axis and maintain the others.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis"
                     }
                 }
             },
@@ -99,6 +139,18 @@
                     }
                 }
             },
+            "createLandmark": {
+                "action": "modify",
+                "information": "Shortcut for creating and assigning a landmark to this entity.",
+                "parameters": {
+                    "landmarkName": {
+                        "type": "string"
+                    },
+                    "localPositionInXYZ": {
+                        "type": "string,list[string,float,Dimension],Dimensions"
+                    }
+                }
+            },
             "apply": {
                 "action": "modify",
                 "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
@@ -109,24 +161,77 @@
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object.",
                 "parameters": {}
             },
-            "select": {
-                "action": "interact",
-                "information": "Select the closest vertex or edge or face to a landmark.",
+            "getLocationWorld": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the entities XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "getLocationLocal": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the entities XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "getBoundingBox": {
+                "action": "get",
+                "returnType": "BoundaryBox",
+                "information": "Get the Boundary Box around the entity.",
+                "parameters": {}
+            },
+            "getDimensions": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the length span in each coordinate axis (X,Y,Z).",
+                "parameters": {}
+            },
+            "getLandmark": {
+                "action": "get",
+                "returnType": "Landmark",
+                "information": "Get the landmark by name",
                 "parameters": {
                     "landmarkName": {
                         "type": "string"
+                    }
+                }
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
                     },
                     "selectionType": {
                         "type": "string",
                         "defaultValue": "vertex"
                     }
                 }
+            },
+            "export": {
+                "action": "interact",
+                "information": "Export Entity",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "scale": {
+                        "type": "float",
+                        "defaultValue": 1.0
+                    }
+                }
             }
         },
         "Part": {
-            "information": "Capabilities Part CRUD.",
+            "information": "Create and manipulate 3D shapes.",
             "alias": [
-                "Shape"
+                "Shape",
+                "Mesh"
             ],
             "extends": "Entity",
             "constructor": {
@@ -175,13 +280,13 @@
                 "information": "Adds cuboid geometry to a part.",
                 "parameters": {
                     "width": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "length": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "height": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -195,13 +300,13 @@
                 "information": "Adds cone geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "height": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "draftRadius": {
-                        "type": "string,float",
+                        "type": "string,float,Dimension",
                         "defaultValue": 0
                     },
                     "keywordArguments": {
@@ -216,10 +321,10 @@
                 "information": "Adds cylinder geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "height": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -233,10 +338,10 @@
                 "information": "Adds torus geometry to a part.",
                 "parameters": {
                     "innerRadius": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "outerRadius": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -250,7 +355,7 @@
                 "information": "Adds sphere geometry to a part.",
                 "parameters": {
                     "radius": {
-                        "type": "string,float"
+                        "type": "string,float,Dimension"
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -259,12 +364,49 @@
                     }
                 }
             },
-            "verticies": {
+            "createGear": {
                 "action": "create",
-                "information": "Adds geometry to a part from a list of verticies.",
+                "information": "Adds gear geometry to a part.",
                 "parameters": {
-                    "verticies": {
-                        "type": "list"
+                    "outerRadius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "addendum": {
+                        "type": "string,float,Dimension"
+                    },
+                    "innerRadius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "dedendum": {
+                        "type": "string,float,Dimension"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "pressureAngle": {
+                        "type": "string,float,Angle",
+                        "default": "20d"
+                    },
+                    "numberOfTeeth": {
+                        "type": "int",
+                        "default": 12
+                    },
+                    "skewAngle": {
+                        "type": "string,float,Angle",
+                        "default": 0
+                    },
+                    "conicalAngle": {
+                        "type": "string,float,Angle",
+                        "default": 0
+                    },
+                    "crownAngle": {
+                        "type": "string,float,Angle",
+                        "default": 0
+                    },
+                    "keywordArguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
                     }
                 }
             },
@@ -272,29 +414,11 @@
                 "action": "create",
                 "information": "Interpolate between two existing parts.",
                 "parameters": {
-                    "part1Name": {
-                        "type": "string,Part"
+                    "Landmark1": {
+                        "type": "Landmark"
                     },
-                    "part1LandmarkName": {
-                        "type": "string,Landmark"
-                    },
-                    "part2Name": {
-                        "type": "string,Part"
-                    },
-                    "part2LandmarkName": {
-                        "type": "string,Landmark"
-                    }
-                }
-            },
-            "mask": {
-                "action": "create",
-                "information": "Clone a part of an existing part, as bounded by a landmark.",
-                "parameters": {
-                    "partName": {
-                        "type": "string"
-                    },
-                    "landmarkName": {
-                        "type": "string"
+                    "Landmark2": {
+                        "type": "Landmark"
                     }
                 }
             },
@@ -302,8 +426,16 @@
                 "action": "modify",
                 "information": "Boolean union",
                 "parameters": {
-                    "withPartName": {
-                        "type": "string"
+                    "withPart": {
+                        "type": "string,Part"
+                    },
+                    "deleteAfterUnion": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "isTransferLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": false
                     }
                 }
             },
@@ -311,8 +443,16 @@
                 "action": "modify",
                 "information": "Boolean subtraction",
                 "parameters": {
-                    "withPartName": {
-                        "type": "string"
+                    "withPart": {
+                        "type": "string,Part"
+                    },
+                    "deleteAfterUnion": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "isTransferLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": false
                     }
                 }
             },
@@ -320,23 +460,16 @@
                 "action": "modify",
                 "information": "Boolean intersection",
                 "parameters": {
-                    "withPartName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "bevel": {
-                "action": "modify",
-                "information": "A bevel is capable of creating both a fillet and a chamfer",
-                "parameters": {
-                    "landmarkName": {
-                        "type": "string"
+                    "withPart": {
+                        "type": "string,Part"
                     },
-                    "angle": {
-                        "type": "float"
+                    "deleteAfterUnion": {
+                        "type": "boolean",
+                        "defaultValue": true
                     },
-                    "roundedness": {
-                        "type": "number"
+                    "isTransferLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": false
                     }
                 }
             },
@@ -344,8 +477,81 @@
                 "action": "modify",
                 "information": "Remove vertices, if necessary, until the part has a specified wall thickness.",
                 "parameters": {
-                    "wallThickness": {
-                        "type": "float"
+                    "thicknessX": {
+                        "type": "string,float,Dimension"
+                    },
+                    "thicknessY": {
+                        "type": "string,float,Dimension"
+                    },
+                    "thicknessZ": {
+                        "type": "string,float,Dimension"
+                    },
+                    "startAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    },
+                    "flipAxis": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "hole": {
+                "action": "modify",
+                "information": "Create a hole.",
+                "parameters": {
+                    "holeLandmark": {
+                        "type": "string,Landmark"
+                    },
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "depth": {
+                        "type": "string,float,Dimension"
+                    },
+                    "normalAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    },
+                    "flip": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "instanceCount": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "instanceSeparation": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 0.0
+                    },
+                    "aboutEntityOrLandmark": {
+                        "type": "string,Entity,Landmark",
+                        "required": false
+                    },
+                    "mirror": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "instanceAxis": {
+                        "type": "string,int,Axis",
+                        "required": false
+                    },
+                    "initialRotationX": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "initialRotationY": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "initialRotationZ": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "leaveHoleEntity": {
+                        "type": "boolean",
+                        "defaultValue": false
                     }
                 }
             },
@@ -355,6 +561,93 @@
                 "parameters": {
                     "materialName": {
                         "type": "string,Material"
+                    }
+                }
+            },
+            "isCollidingWithPart": {
+                "action": "get",
+                "information": "Check if this part is colliding with another.",
+                "parameters": {
+                    "otherPart": {
+                        "type": "string,Part"
+                    }
+                }
+            },
+            "filletAllEdges": {
+                "action": "modify",
+                "information": "Fillet all edges.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "useWidth": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "filletEdges": {
+                "action": "modify",
+                "information": "Fillet specific edges.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "landmarksNearEdges": {
+                        "type": "list[string,Landmark]"
+                    },
+                    "useWidth": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "filletFaces": {
+                "action": "modify",
+                "information": "Fillet specific faces.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "landmarksNearFaces": {
+                        "type": "list[string,Landmark]"
+                    },
+                    "useWidth": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    }
+                }
+            },
+            "chamferAllEdges": {
+                "action": "modify",
+                "information": "Chamfer all edges.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "chamferEdges": {
+                "action": "modify",
+                "information": "Chamfer specific edges.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "landmarksNearEdges": {
+                        "type": "list[string,Landmark]"
+                    }
+                }
+            },
+            "chamferFaces": {
+                "action": "modify",
+                "information": "Chamfer specific faces.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "landmarksNearFaces": {
+                        "type": "list[string,Landmark]"
                     }
                 }
             }
@@ -371,7 +664,8 @@
                         "type": "string"
                     },
                     "curveType": {
-                        "type": "CurveTypes"
+                        "type": "CurveTypes",
+                        "required": false
                     },
                     "description": {
                         "type": "string",
@@ -384,7 +678,11 @@
                 "information": "Extrude a curve by a specified length.",
                 "parameters": {
                     "length": {
-                        "type": "string"
+                        "type": "string,float,Dimension"
+                    },
+                    "convertToMesh": {
+                        "type": "boolean",
+                        "defaultValue": true
                     }
                 }
             },
@@ -409,7 +707,8 @@
                         "type": "string"
                     },
                     "fontSize": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension",
+                        "defaultValue": 1.0
                     },
                     "bold": {
                         "type": "boolean",
@@ -445,8 +744,8 @@
                 "action": "create",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
-                    "verticesArray": {
-                        "type": "list[Point]"
+                    "coordinates": {
+                        "type": "list[string,list[string],Point]"
                     },
                     "interpolation": {
                         "type": "int",
@@ -457,14 +756,26 @@
             "createPoint": {
                 "action": "create",
                 "information": "Create a point",
-                "parameters": {}
+                "parameters": {
+                    "coordinate": {
+                        "type": "string,list[string],Point"
+                    }
+                }
             },
             "createLine": {
                 "action": "create",
                 "information": "Create a line",
                 "parameters": {
                     "length": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
+                    },
+                    "angleX": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "angleY": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
                     },
                     "symmetric": {
                         "type": "boolean",
@@ -476,11 +787,13 @@
                 "action": "create",
                 "information": "Create a line between two points",
                 "parameters": {
-                    "pointA": {
-                        "type": "Point"
+                    "endAt": {
+                        "type": "string,list[string],Point"
                     },
-                    "pointB": {
-                        "type": "Point"
+                    "startAt": {
+                        "type": "string,list[string],Point",
+                        "required": false,
+                        "defaultValue": null
                     }
                 }
             },
@@ -594,34 +907,33 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
+            "extend": "Entity",
             "constructor": {
                 "parameters": {
                     "landmarkName": {
                         "type": "string",
                         "required": true
                     },
-                    "localToEntityWithName": {
-                        "type": "string",
+                    "parentEntity": {
+                        "type": "string,Entity",
                         "required": true
                     }
                 }
+            },
+            "landmarkEntityName": {
+                "action": "get",
+                "returnType": "string"
             }
         },
         "Joint": {
             "information": "Joints define the relationships and constraints between entities.",
             "constructor": {
                 "parameters": {
-                    "entity1Name": {
-                        "type": "string"
+                    "entity1": {
+                        "type": "string,Entity,Landmark"
                     },
-                    "entity2Name": {
-                        "type": "string"
-                    },
-                    "entity1LandmarkName": {
-                        "type": "string"
-                    },
-                    "entity2LandmarkName": {
-                        "type": "string"
+                    "entity2": {
+                        "type": "string,Entity,Landmark"
                     }
                 }
             },
@@ -644,33 +956,87 @@
                     }
                 }
             },
-            "limitLocation": {
+            "limitXLocation": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
-                    "x": {
-                        "type": "string"
+                    "min": {
+                        "type": "string,list[string],Point",
+                        "required": false
                     },
-                    "y": {
-                        "type": "string"
-                    },
-                    "z": {
-                        "type": "string"
+                    "max": {
+                        "type": "string,list[string],Point",
+                        "required": false
                     }
                 }
             },
-            "limitRotation": {
+            "limitYLocation": {
+                "action": "modify",
+                "information": "Constraint the translation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "min": {
+                        "type": "string,list[string],Point",
+                        "required": false
+                    },
+                    "max": {
+                        "type": "string,list[string],Point",
+                        "required": false
+                    }
+                }
+            },
+            "limitZLocation": {
+                "action": "modify",
+                "information": "Constraint the translation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "min": {
+                        "type": "string,list[string],Point",
+                        "required": false
+                    },
+                    "max": {
+                        "type": "string,list[string],Point",
+                        "required": false
+                    }
+                }
+            },
+            "limitXRotation": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
-                    "x": {
-                        "type": "string"
+                    "min": {
+                        "type": "string,float,Angle",
+                        "required": false
                     },
-                    "y": {
-                        "type": "string"
+                    "max": {
+                        "type": "string,float,Angle",
+                        "required": false
+                    }
+                }
+            },
+            "limitYRotation": {
+                "action": "modify",
+                "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "min": {
+                        "type": "string,float,Angle",
+                        "required": false
                     },
-                    "z": {
-                        "type": "string"
+                    "max": {
+                        "type": "string,float,Angle",
+                        "required": false
+                    }
+                }
+            },
+            "limitZRotation": {
+                "action": "modify",
+                "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "min": {
+                        "type": "string,float,Angle",
+                        "required": false
+                    },
+                    "max": {
+                        "type": "string,float,Angle",
+                        "required": false
                     }
                 }
             }
@@ -723,12 +1089,42 @@
                 }
             }
         },
+        "Animation": {
+            "information": "Camera, lighting, rendering, animation related functionality.",
+            "constructor": {},
+            "default": {
+                "action": "get",
+                "staticMethod": true,
+                "returnType": "Animation"
+            },
+            "createKeyFrameLocation": {
+                "parameters": {
+                    "entity": {
+                        "type": "string,Entity"
+                    },
+                    "frameNumber": {
+                        "type": "int"
+                    }
+                }
+            },
+            "createKeyFrameRotation": {
+                "parameters": {
+                    "entity": {
+                        "type": "string,Entity"
+                    },
+                    "frameNumber": {
+                        "type": "int"
+                    }
+                }
+            }
+        },
         "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
             "constructor": {
                 "parameters": {
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     },
                     "description": {
                         "type": "string",
@@ -736,21 +1132,45 @@
                     }
                 }
             },
+            "default": {
+                "action": "get",
+                "staticMethod": true,
+                "returnType": "Scene"
+            },
             "create": {
-                "information": "Creates a new scene"
+                "information": "Creates a new scene",
+                "action": "create"
             },
             "delete": {
-                "information": "Deletes a scene"
+                "information": "Deletes a scene",
+                "action": "delete"
             },
             "export": {
-                "information": "The ability to export the whole scene or specific parts and/or part groups as a 3D model, a video or image."
+                "action": "interact",
+                "information": "Export the entire scene or specific entities.",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "entities": {
+                        "type": "list[str,Entity]"
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "scale": {
+                        "type": "float",
+                        "defaultValue": 1.0
+                    }
+                }
             },
             "setDefaultUnit": {
                 "action": "update",
                 "information": "Set the document's default measurements system.",
                 "parameters": {
                     "unit": {
-                        "type": "string"
+                        "type": "string,LengthUnit"
                     }
                 }
             },
@@ -791,8 +1211,8 @@
                 "action": "update",
                 "information": "Assigns an existing entity to a new group",
                 "parameters": {
-                    "entityName": {
-                        "type": "string"
+                    "entities": {
+                        "type": "list[str,Entity]"
                     },
                     "groupName": {
                         "type": "string"
@@ -808,8 +1228,8 @@
                 "action": "update",
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {
-                    "entityName": {
-                        "type": "string"
+                    "entities": {
+                        "type": "list[str,Entity]"
                     },
                     "isVisible": {
                         "type": "boolean"
@@ -820,26 +1240,43 @@
         "Analytics": {
             "information": "Tools for collecting data about the entities and scene.",
             "constructor": {},
-            "measureLandmarks": {
+            "measureDistance": {
                 "action": "get",
-                "returnType": "Dimension",
-                "information": "The ubiquitous ruler and angle measurement tool.",
+                "returnType": "Dimensions",
+                "information": "The ubiquitous ruler.",
                 "parameters": {
-                    "landmark1Name": {
-                        "type": "string"
+                    "entity1": {
+                        "type": "string,Entity,Landmark"
                     },
-                    "landmark2Name": {
-                        "type": "string",
+                    "entity2": {
+                        "type": "string,Entity,Landmark"
+                    }
+                }
+            },
+            "measureAngle": {
+                "action": "get",
+                "returnType": "list[Angle]",
+                "information": "The ubiquitous ruler.",
+                "parameters": {
+                    "entity1": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "entity2": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "pivot": {
+                        "type": "string,Entity,Landmark",
                         "required": false
                     }
                 }
             },
             "getWorldPose": {
                 "action": "get",
+                "returnType": "list[float]",
                 "information": "Returns the world pose of an entity.",
                 "parameters": {
-                    "entityName": {
-                        "type": "string"
+                    "entity": {
+                        "type": "string,Entity"
                     }
                 }
             },
@@ -849,7 +1286,7 @@
                 "information": "Returns the bounding box of an entity.",
                 "parameters": {
                     "entityName": {
-                        "type": "string"
+                        "type": "string,Entity"
                     }
                 }
             },
@@ -859,7 +1296,7 @@
                 "information": "Returns the dimensions of an entity.",
                 "parameters": {
                     "entityName": {
-                        "type": "string"
+                        "type": "string,Entity"
                     }
                 }
             }
