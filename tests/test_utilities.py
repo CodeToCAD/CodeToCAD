@@ -1,4 +1,5 @@
-from utilities import Dimension, LengthUnit, AngleUnit, Angle,getAnglesFromStringList, getDimensionListFromStringList,BoundaryAxis, BoundaryBox
+from core.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox
+
 
 def test_dimensions():
     try:
@@ -6,7 +7,7 @@ def test_dimensions():
         assert False
     except Exception as e:
         assert str(e) == "Dimension value cannot be empty."
-        
+
     try:
         dimension = Dimension.fromString("50NotAUnit")
         assert False
@@ -32,7 +33,7 @@ def test_dimensions():
     dimension = Dimension.fromString("1m")
     assert dimension.value == 1
     assert dimension.unit == LengthUnit.m
-    
+
     dimension = Dimension.fromString("1/4mm")
     assert dimension.value == 0.25
     assert dimension.unit == LengthUnit.mm
@@ -68,13 +69,16 @@ def test_dimensions():
     assert dimensions[0].value == 3 and dimensions[1].value == 1
     assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.mm
 
-    assert Dimension(1, LengthUnit.m).convertToUnit(LengthUnit.mm).value == 1000
-    assert Dimension(1000, LengthUnit.mm).convertToUnit(LengthUnit.m).value == 1
+    assert Dimension(1, LengthUnit.m).convertToUnit(
+        LengthUnit.mm).value == 1000
+    assert Dimension(1000, LengthUnit.mm).convertToUnit(
+        LengthUnit.m).value == 1
 
     print("test_dimensions done.")
 
+
 def test_minMaxCenter():
-    
+
     boundingBox = BoundaryBox(
         BoundaryAxis(
             -1, 1, LengthUnit.m
@@ -105,6 +109,7 @@ def test_minMaxCenter():
 
     print("test_minMaxCenter() done.")
 
+
 def test_angles():
     angles = getAnglesFromStringList("10,1")
     assert angles[0].value == 10 and angles[1].value == 1
@@ -126,7 +131,6 @@ def test_angles():
     assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES and angles[2].unit == AngleUnit.DEGREES
 
     print("test_angles done")
-
 
 
 if __name__ == "__main__":
