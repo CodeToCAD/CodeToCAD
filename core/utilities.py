@@ -240,7 +240,7 @@ def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
     else:
         anglesList = cast(list[str], angles)
 
-    assert isinstance(angles, (list, tuple)
+    assert isinstance(anglesList, (list, tuple)
                       ), "Only a list of strings is allowed."
 
     defaultUnit: AngleUnit = AngleUnit.DEGREES
@@ -255,11 +255,11 @@ def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
             angleString[0]) if angleString else None
         if unitInString != None:
             defaultUnit = unitInString
-            if len(cast(re.Match[str], angleString)[0]) == len(angles[-1]):
-                angles.pop()
+            if len(cast(re.Match[str], angleString)[0]) == len(anglesList[-1]):
+                anglesList.pop()
 
     parsedAngles = []
-    for angle in angles:
+    for angle in anglesList:
         parsedAngles.append(Angle.fromString(angle, defaultUnit))
 
     return parsedAngles
