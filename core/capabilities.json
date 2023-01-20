@@ -3,11 +3,95 @@
     "information": "Capabilities for CodeToCAD.",
     "capabilities": {
         "Entity": {
-            "information": "Capabilities shared between Parts and Sketches.",
+            "information": "Capabilities shared between Parts, Sketches and Landmarks.",
             "isExists": {
                 "action": "get",
                 "information": "Check if an entity exists",
                 "returnType": "boolean"
+            },
+            "rename": {
+                "action": "modify",
+                "information": "Rename the entity, with an option to rename linked landmarks and underlying data.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    },
+                    "renamelinkedEntitiesAndLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
+                "parameters": {
+                    "removeChildren": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "setVisible": {
+                "action": "interact",
+                "information": "Toggles visibility of an entity in the scene.",
+                "parameters": {
+                    "isVisible": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "apply": {
+                "action": "modify",
+                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
+                "parameters": {}
+            },
+            "getNativeInstance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "parameters": {}
+            },
+            "getLocationWorld": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the entities XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "getLocationLocal": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the entities XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
+                    },
+                    "selectionType": {
+                        "type": "string",
+                        "defaultValue": "vertex"
+                    }
+                }
+            },
+            "export": {
+                "action": "interact",
+                "information": "Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "scale": {
+                        "type": "float",
+                        "defaultValue": 1.0
+                    }
+                }
             },
             "clone": {
                 "action": "create",
@@ -18,7 +102,7 @@
                     },
                     "copyLandmarks": {
                         "type": "boolean",
-                        "default": true
+                        "defaultValue": true
                     }
                 }
             },
@@ -70,18 +154,36 @@
                     }
                 }
             },
-            "scale": {
+            "scaleX": {
                 "action": "modify",
-                "information": "Scale operation.",
+                "information": "Scale in the X direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
-                    "scaleXYZ": {
-                        "type": "string,list[string,float,Dimension],Dimensions"
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scaleY": {
+                "action": "modify",
+                "information": "Scale in the Y direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scaleZ": {
+                "action": "modify",
+                "information": "Scale in the Z direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
             "scaleKeepAspectRatio": {
                 "action": "modify",
-                "information": "Scale in one axis and maintain the others.",
+                "information": "Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
                     "scale": {
                         "type": "string,float,Dimension"
@@ -91,21 +193,50 @@
                     }
                 }
             },
-            "rotate": {
+            "rotateX": {
                 "action": "modify",
-                "information": "Rotate operation.",
+                "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
                 "parameters": {
                     "rotation": {
-                        "type": "string"
+                        "type": "string,float,Angle"
                     }
                 }
             },
-            "rename": {
+            "rotateY": {
                 "action": "modify",
-                "information": "Rename the entity.",
+                "information": "Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
                 "parameters": {
-                    "name": {
-                        "type": "string"
+                    "rotation": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "rotateZ": {
+                "action": "modify",
+                "information": "Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
+                "parameters": {
+                    "rotation": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "twist": {
+                "action": "modify",
+                "information": "AKA Helix, Screw. Revolve an entity",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "screwPitch": {
+                        "type": "string,float,Dimension"
+                    },
+                    "interations": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
                     }
                 }
             },
@@ -121,24 +252,6 @@
                     }
                 }
             },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
-                "parameters": {
-                    "removeChildren": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "setVisible": {
-                "action": "modify",
-                "information": "Toggles visibility of an entity in the scene.",
-                "parameters": {
-                    "isVisible": {
-                        "type": "boolean"
-                    }
-                }
-            },
             "createLandmark": {
                 "action": "modify",
                 "information": "Shortcut for creating and assigning a landmark to this entity.",
@@ -146,32 +259,16 @@
                     "landmarkName": {
                         "type": "string"
                     },
-                    "localPositionInXYZ": {
-                        "type": "string,list[string,float,Dimension],Dimensions"
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
                     }
                 }
-            },
-            "apply": {
-                "action": "modify",
-                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
-                "parameters": {}
-            },
-            "getNativeInstance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object.",
-                "parameters": {}
-            },
-            "getLocationWorld": {
-                "action": "get",
-                "returnType": "Dimensions",
-                "information": "Get the entities XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "getLocationLocal": {
-                "action": "get",
-                "returnType": "Dimensions",
-                "information": "Get the entities XYZ location relative to Local Space.",
-                "parameters": {}
             },
             "getBoundingBox": {
                 "action": "get",
@@ -192,37 +289,6 @@
                 "parameters": {
                     "landmarkName": {
                         "type": "string"
-                    }
-                }
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
-                "parameters": {
-                    "landmarkName": {
-                        "required": false,
-                        "type": "string,Landmark"
-                    },
-                    "selectionType": {
-                        "type": "string",
-                        "defaultValue": "vertex"
-                    }
-                }
-            },
-            "export": {
-                "action": "interact",
-                "information": "Export Entity",
-                "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
-                    "overwrite": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    },
-                    "scale": {
-                        "type": "float",
-                        "defaultValue": 1.0
                     }
                 }
             }
@@ -385,23 +451,23 @@
                     },
                     "pressureAngle": {
                         "type": "string,float,Angle",
-                        "default": "20d"
+                        "defaultValue": "20d"
                     },
                     "numberOfTeeth": {
                         "type": "int",
-                        "default": 12
+                        "defaultValue": 12
                     },
                     "skewAngle": {
                         "type": "string,float,Angle",
-                        "default": 0
+                        "defaultValue": 0
                     },
                     "conicalAngle": {
                         "type": "string,float,Angle",
-                        "default": 0
+                        "defaultValue": 0
                     },
                     "crownAngle": {
                         "type": "string,float,Angle",
-                        "default": 0
+                        "defaultValue": 0
                     },
                     "keywordArguments": {
                         "type": "object",
@@ -673,6 +739,22 @@
                     }
                 }
             },
+            "revolve": {
+                "action": "modify",
+                "information": "Revolve a Sketch around another Entity or Landmark",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "aboutEntityOrLandmark": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
             "extrude": {
                 "action": "modify",
                 "information": "Extrude a curve by a specified length.",
@@ -736,7 +818,8 @@
                     },
                     "fontFilePath": {
                         "type": "string",
-                        "defaultValue": null
+                        "defaultValue": null,
+                        "required": false
                     }
                 }
             },
@@ -826,7 +909,7 @@
                         "type": "Dimension"
                     },
                     "angle": {
-                        "type": "Angle",
+                        "type": "string,float,Angle",
                         "defaultValue": "180d"
                     }
                 }
@@ -857,7 +940,7 @@
                         "type": "Dimension"
                     },
                     "angle": {
-                        "type": "Angle",
+                        "type": "string,float,Angle",
                         "defaultValue": "180d"
                     }
                 }
@@ -907,7 +990,7 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
-            "extend": "Entity",
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "landmarkName": {
@@ -1076,7 +1159,7 @@
                     },
                     "aValue": {
                         "type": "int,float",
-                        "default": 1.0
+                        "defaultValue": 1.0
                     }
                 }
             },
@@ -1153,7 +1236,7 @@
                         "type": "string"
                     },
                     "entities": {
-                        "type": "list[str,Entity]"
+                        "type": "list[string,Entity]"
                     },
                     "overwrite": {
                         "type": "boolean",
@@ -1212,7 +1295,7 @@
                 "information": "Assigns an existing entity to a new group",
                 "parameters": {
                     "entities": {
-                        "type": "list[str,Entity]"
+                        "type": "list[string,Entity]"
                     },
                     "groupName": {
                         "type": "string"
@@ -1229,7 +1312,7 @@
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {
                     "entities": {
-                        "type": "list[str,Entity]"
+                        "type": "list[string,Entity]"
                     },
                     "isVisible": {
                         "type": "boolean"
