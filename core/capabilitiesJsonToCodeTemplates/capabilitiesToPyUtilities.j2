@@ -1,0 +1,16 @@
+
+{% set types = {"string":"str", "array": "list", "object": "dict", "number":"int", "float":"float", "boolean":"bool", "string,float":"FloatOrItsStringValue","int,float":"IntOrFloat", "string,Part":"PartOrItsName", "string,Entity":"EntityOrItsName", "list[string,Entity]":"list[EntityOrItsName]", "string,Landmark":"LandmarkOrItsName","list[string,Landmark]":"list[LandmarkOrItsName]", "string,Material":"MaterialOrItsName", "string,int,Axis":"AxisOrItsIndexOrItsName", "string,float,Dimension":"DimensionOrItsFloatOrStringValue","string,float,Angle":"AngleOrItsFloatOrStringValue", "string,Entity,Landmark": "EntityOrItsNameOrLandmark", "string,list[string],Point": "PointOrListOfFloatOrItsStringValue", "list[string,list[string],Point]": "list[PointOrListOfFloatOrItsStringValue]", "string,LengthUnit": "LengthUnitOrItsName" } -%}
+
+{% macro typeMapping(typeName) -%}
+    {{types[typeName] if typeName in types else "'"+typeName+"'"}}
+{%- endmacro %}
+
+{%macro generateMethodArguments(parameters) -%}
+{%- if parameters.keys()|length > 0 -%}
+    , {%for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        {%-set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
+        {%-set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
+        {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition  else "=None") if definition.required == false or "defaultValue" in definition -}} {{-", " if not loop.last}} 
+    {%-endfor%}
+{%-endif%}
+{%- endmacro %}

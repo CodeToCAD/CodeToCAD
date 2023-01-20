@@ -1,0 +1,41 @@
+{% from 'capabilitiesToPyUtilities.j2' import typeMapping, generateMethodArguments %}
+
+    {%-for method, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if method == "information" %}
+    # {{ properties }}
+
+    {%- elif method == "extends"-%}
+    {# Do nothing #}
+    {%- elif method == "alias"-%}
+    
+    {%- set alias = properties -%}
+    
+    {%- elif method == "constructor"%}
+
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
+    {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == false or "defaultValue" in definition  -}}
+    {%-endfor%}
+
+    def __init__(self{{ generateMethodArguments(parameters) }}):
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        self.{{ parameter }} = {{parameter}}
+    {%- else %}
+        pass
+    {%-endfor%}
+
+    {%- else %}
+
+    @abstractmethod
+    def {{method}}(self{{ generateMethodArguments(parameters) }}
+    ) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+        print("{{method}} is called in the interface. Please override this method.") 
+        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError" }}
+    
+    {%-endif-%}
+
+    {%-endfor%}

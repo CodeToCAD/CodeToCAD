@@ -1,547 +1,677 @@
+# THIS IS AN AUTO-GENERATE FILE.
+# DO NOT EDIT MANUALLY.
+# Please run capabilitiesToPyProvider.sh to generate this file.
+
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 
 from typing import Optional
 from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, min, max, center, createUUID, getAbsoluteFilepath, getFilename
-from core.CodeToCADInterface import StringOrFloat, StringNameOrPart, StringNameOrEntity, StringNameOrLandmark, IntOrFloat, StringNameOrMaterial
+from core.CodeToCADInterface import *
 
 
 class Entity(CodeToCADInterface.Entity):
-    # Capabilities shared between Parts and Sketches.
 
+    # Capabilities shared between Parts, Sketches and Landmarks.
+
+    @abstractmethod
     def isExists(self
                  ) -> bool:
-        print("isExists is not implemented")  # TODO: implement
+        print("isExists is called in the interface. Please override this method.")
         raise NotImplementedError
 
-    def clone(self,
-              entityName: str
-              ):
-        print("clone is not implemented")  # TODO: implement
-        return self
-
-    def mirror(self,
-               entityName: str,
-               landmarkName: str
+    @abstractmethod
+    def rename(self, newName: str, renamelinkedEntitiesAndLandmarks: bool = True
                ):
-        print("mirror is not implemented")  # TODO: implement
+        print("rename is called in the interface. Please override this method.")
         return self
 
-    def pattern(self,
-                entityName: str,
-                landmarkName: str
-                ):
-        print("pattern is not implemented")  # TODO: implement
-        return self
-
-    def scale(self,
-              dimensions: str
-              ):
-        print("scale is not implemented")  # TODO: implement
-        return self
-
-    def rotate(self,
-               rotation: str
+    @abstractmethod
+    def delete(self, removeChildren: bool
                ):
-        print("rotate is not implemented")  # TODO: implement
+        print("delete is called in the interface. Please override this method.")
         return self
 
-    def rename(self,
-               name: str
-               ):
-        print("rename is not implemented")  # TODO: implement
-        return self
-
-    def remesh(self,
-               strategy: str,
-               amount: float
-               ):
-        print("remesh is not implemented")  # TODO: implement
-        return self
-
-    def delete(self,
-               removeChildren: bool
-               ):
-        print("delete is not implemented")  # TODO: implement
-        return self
-
-    def setVisible(self,
-                   isVisible: bool
+    @abstractmethod
+    def setVisible(self, isVisible: bool
                    ):
-        print("setVisible is not implemented")  # TODO: implement
+        print("setVisible is called in the interface. Please override this method.")
         return self
 
+    @abstractmethod
     def apply(self
               ):
-        print("apply is not implemented")  # TODO: implement
+        print("apply is called in the interface. Please override this method.")
         return self
 
+    @abstractmethod
     def getNativeInstance(self
                           ):
-        print("getNativeInstance is not implemented")  # TODO: implement
+        print("getNativeInstance is called in the interface. Please override this method.")
         raise NotImplementedError
 
-    def select(self,
-               landmarkName: str,
-               selectionType: str
+    @abstractmethod
+    def getLocationWorld(self
+                         ) -> 'Dimensions':
+        print("getLocationWorld is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def getLocationLocal(self
+                         ) -> 'Dimensions':
+        print("getLocationLocal is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def select(self, landmarkName: Optional[LandmarkOrItsName] = None, selectionType: str = "vertex"
                ):
-        print("select is not implemented")  # TODO: implement
+        print("select is called in the interface. Please override this method.")
         return self
+
+    @abstractmethod
+    def export(self, filePath: str, overwrite: bool = True, scale: float = 1.0
+               ):
+        print("export is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def clone(self, newName: str, copyLandmarks: bool = True
+              ):
+        print("clone is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def mirror(self, mirrorAcrossEntity: EntityOrItsName, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: str
+               ):
+        print("mirror is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def linearPattern(self, instanceCount: 'int', directionAxis: AxisOrItsIndexOrItsName, offset: DimensionOrItsFloatOrStringValue
+                      ):
+        print("linearPattern is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, normalDirectionAxis: AxisOrItsIndexOrItsName, centerEntityOrLandmark: EntityOrItsNameOrLandmark
+                        ):
+        print("circularPattern is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def scaleX(self, scale: DimensionOrItsFloatOrStringValue
+               ):
+        print("scaleX is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def scaleY(self, scale: DimensionOrItsFloatOrStringValue
+               ):
+        print("scaleY is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def scaleZ(self, scale: DimensionOrItsFloatOrStringValue
+               ):
+        print("scaleZ is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+                             ):
+        print(
+            "scaleKeepAspectRatio is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def rotateX(self, rotation: AngleOrItsFloatOrStringValue
+                ):
+        print("rotateX is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def rotateY(self, rotation: AngleOrItsFloatOrStringValue
+                ):
+        print("rotateY is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def rotateZ(self, rotation: AngleOrItsFloatOrStringValue
+                ):
+        print("rotateZ is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"
+              ):
+        print("twist is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def remesh(self, strategy: str, amount: float
+               ):
+        print("remesh is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def createLandmark(self, landmarkName: str, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
+                       ):
+        print("createLandmark is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def getBoundingBox(self
+                       ) -> 'BoundaryBox':
+        print("getBoundingBox is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def getDimensions(self
+                      ) -> 'Dimensions':
+        print("getDimensions is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def getLandmark(self, landmarkName: str
+                    ) -> 'Landmark':
+        print("getLandmark is called in the interface. Please override this method.")
+        raise NotImplementedError
 
 
 class Part(CodeToCADInterface.Part):
-    # Capabilities Part CRUD.
+
+    # Create and manipulate 3D shapes.
     name: str
     description: Optional[str] = None
 
-    def __init__(self,
-                 name: str,
-                 description: Optional[str] = None
-                 ):
+    def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
 
-    def createFromFile(self,
-                       filePath: str,
-                       fileType: Optional[str] = None
+    @abstractmethod
+    def createFromFile(self, filePath: str, fileType: Optional[str] = None
                        ):
-        print("createFromFile is not implemented")  # TODO: implement
+        print("createFromFile is called in the interface. Please override this method.")
         return self
 
-    def createPrimitive(self,
-                        primitiveName: str,
-                        dimensions: str,
-                        keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
                         ):
-        print("createPrimitive is not implemented")  # TODO: implement
+        print("createPrimitive is called in the interface. Please override this method.")
         return self
 
-    def createCube(self,
-                   width: StringOrFloat,
-                   length: StringOrFloat,
-                   height: StringOrFloat,
-                   keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createCube(self, width: DimensionOrItsFloatOrStringValue, length: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                    ):
-        print("createCube is not implemented")  # TODO: implement
+        print("createCube is called in the interface. Please override this method.")
         return self
 
-    def createCone(self,
-                   radius: StringOrFloat,
-                   height: StringOrFloat,
-                   draftRadius: StringOrFloat,
-                   keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createCone(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, draftRadius: DimensionOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
-        print("createCone is not implemented")  # TODO: implement
+        print("createCone is called in the interface. Please override this method.")
         return self
 
-    def createCylinder(self,
-                       radius: StringOrFloat,
-                       height: StringOrFloat,
-                       keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createCylinder(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                        ):
-        print("createCylinder is not implemented")  # TODO: implement
+        print("createCylinder is called in the interface. Please override this method.")
         return self
 
-    def createTorus(self,
-                    innerRadius: StringOrFloat,
-                    outerRadius: StringOrFloat,
-                    keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createTorus(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                     ):
-        print("createTorus is not implemented")  # TODO: implement
+        print("createTorus is called in the interface. Please override this method.")
         return self
 
-    def createSphere(self,
-                     radius: StringOrFloat,
-                     keywordArguments: Optional[dict] = None
+    @abstractmethod
+    def createSphere(self, radius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                      ):
-        print("createSphere is not implemented")  # TODO: implement
+        print("createSphere is called in the interface. Please override this method.")
         return self
 
-    def verticies(self,
-                  verticies: list
-                  ):
-        print("verticies is not implemented")  # TODO: implement
+    @abstractmethod
+    def createGear(self, outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
+                   ):
+        print("createGear is called in the interface. Please override this method.")
         return self
 
-    def loft(self,
-             part1Name: StringNameOrPart,
-             part1LandmarkName: StringNameOrLandmark,
-             part2Name: StringNameOrPart,
-             part2LandmarkName: StringNameOrLandmark
+    @abstractmethod
+    def loft(self, Landmark1: 'Landmark', Landmark2: 'Landmark'
              ):
-        print("loft is not implemented")  # TODO: implement
+        print("loft is called in the interface. Please override this method.")
         return self
 
-    def mask(self,
-             partName: str,
-             landmarkName: str
-             ):
-        print("mask is not implemented")  # TODO: implement
-        return self
-
-    def union(self,
-              withPartName: str
+    @abstractmethod
+    def union(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
               ):
-        print("union is not implemented")  # TODO: implement
+        print("union is called in the interface. Please override this method.")
         return self
 
-    def subtract(self,
-                 withPartName: str
+    @abstractmethod
+    def subtract(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
                  ):
-        print("subtract is not implemented")  # TODO: implement
+        print("subtract is called in the interface. Please override this method.")
         return self
 
-    def intersect(self,
-                  withPartName: str
+    @abstractmethod
+    def intersect(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
                   ):
-        print("intersect is not implemented")  # TODO: implement
+        print("intersect is called in the interface. Please override this method.")
         return self
 
-    def bevel(self,
-              landmarkName: str,
-              angle: float,
-              roundedness: int
-              ):
-        print("bevel is not implemented")  # TODO: implement
-        return self
-
-    def hollow(self,
-               wallThickness: float
+    @abstractmethod
+    def hollow(self, thicknessX: DimensionOrItsFloatOrStringValue, thicknessY: DimensionOrItsFloatOrStringValue, thicknessZ: DimensionOrItsFloatOrStringValue, startAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False
                ):
-        print("hollow is not implemented")  # TODO: implement
+        print("hollow is called in the interface. Please override this method.")
         return self
 
-    def assignMaterial(self,
-                       materialName: StringNameOrMaterial
+    @abstractmethod
+    def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flip: bool = False, instanceCount: 'int' = 1, instanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, aboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirror: bool = False, instanceAxis: Optional[AxisOrItsIndexOrItsName] = None, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, leaveHoleEntity: bool = False
+             ):
+        print("hole is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def assignMaterial(self, materialName: MaterialOrItsName
                        ):
-        print("assignMaterial is not implemented")  # TODO: implement
+        print("assignMaterial is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def isCollidingWithPart(self, otherPart: PartOrItsName
+                            ):
+        print(
+            "isCollidingWithPart is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def filletAllEdges(self, radius: DimensionOrItsFloatOrStringValue, useWidth: bool = False
+                       ):
+        print("filletAllEdges is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def filletEdges(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearEdges: list[LandmarkOrItsName], useWidth: bool = False
+                    ):
+        print("filletEdges is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def filletFaces(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearFaces: list[LandmarkOrItsName], useWidth: bool = False
+                    ):
+        print("filletFaces is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def chamferAllEdges(self, radius: DimensionOrItsFloatOrStringValue
+                        ):
+        print("chamferAllEdges is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def chamferEdges(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearEdges: list[LandmarkOrItsName]
+                     ):
+        print("chamferEdges is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def chamferFaces(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearFaces: list[LandmarkOrItsName]
+                     ):
+        print("chamferFaces is called in the interface. Please override this method.")
         return self
 
 
 class Sketch(CodeToCADInterface.Sketch):
+
     # Capabilities related to adding, multiplying, and/or modifying a curve.
     name: str
-    curveType: CurveTypes
+    curveType: Optional['CurveTypes'] = None
     description: Optional[str] = None
 
-    def __init__(self,
-                 name: str,
-                 curveType: CurveTypes,
-                 description: Optional[str] = None
-                 ):
+    def __init__(self, name: str, curveType: Optional['CurveTypes'] = None, description: Optional[str] = None):
         self.name = name
         self.curveType = curveType
         self.description = description
 
-    def extrude(self,
-                length: str
+    @abstractmethod
+    def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z"
                 ):
-        print("extrude is not implemented")  # TODO: implement
+        print("revolve is called in the interface. Please override this method.")
         return self
 
-    def sweep(self,
-              profileCurveName: str,
-              fillCap: bool
+    @abstractmethod
+    def extrude(self, length: DimensionOrItsFloatOrStringValue, convertToMesh: bool = True
+                ):
+        print("extrude is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def sweep(self, profileCurveName: str, fillCap: bool = False
               ):
-        print("sweep is not implemented")  # TODO: implement
+        print("sweep is called in the interface. Please override this method.")
         return self
 
-    def createText(self,
-                   text: str,
-                   fontSize: Dimension,
-                   bold: bool,
-                   italic: bool,
-                   underlined: bool,
-                   characterSpacing: int,
-                   wordSpacing: int,
-                   lineSpacing: int,
-                   fontFilePath: str
+    @abstractmethod
+    def createText(self, text: str, fontSize: DimensionOrItsFloatOrStringValue = 1.0, bold: bool = False, italic: bool = False, underlined: bool = False, characterSpacing: 'int' = 1, wordSpacing: 'int' = 1, lineSpacing: 'int' = 1, fontFilePath: Optional[str] = None
                    ):
-        print("createText is not implemented")  # TODO: implement
+        print("createText is called in the interface. Please override this method.")
         return self
 
-    def createFromVertices(self,
-                           verticesArray: list[Point],
-                           interpolation: int
+    @abstractmethod
+    def createFromVertices(self, coordinates: list[PointOrListOfFloatOrItsStringValue], interpolation: 'int' = 64
                            ):
-        print("createFromVertices is not implemented")  # TODO: implement
+        print("createFromVertices is called in the interface. Please override this method.")
         return self
 
-    def createPoint(self
+    @abstractmethod
+    def createPoint(self, coordinate: PointOrListOfFloatOrItsStringValue
                     ):
-        print("createPoint is not implemented")  # TODO: implement
+        print("createPoint is called in the interface. Please override this method.")
         return self
 
-    def createLine(self,
-                   length: Dimension,
-                   symmetric: bool
+    @abstractmethod
+    def createLine(self, length: DimensionOrItsFloatOrStringValue, angleX: AngleOrItsFloatOrStringValue = 0.0, angleY: AngleOrItsFloatOrStringValue = 0.0, symmetric: bool = False
                    ):
-        print("createLine is not implemented")  # TODO: implement
+        print("createLine is called in the interface. Please override this method.")
         return self
 
-    def createLineBetweenPoints(self,
-                                pointA: Point,
-                                pointB: Point
+    @abstractmethod
+    def createLineBetweenPoints(self, endAt: PointOrListOfFloatOrItsStringValue, startAt: Optional[PointOrListOfFloatOrItsStringValue] = None
                                 ):
-        print("createLineBetweenPoints is not implemented")  # TODO: implement
+        print("createLineBetweenPoints is called in the interface. Please override this method.")
         return self
 
-    def createCircle(self,
-                     radius: Dimension
+    @abstractmethod
+    def createCircle(self, radius: 'Dimension'
                      ):
-        print("createCircle is not implemented")  # TODO: implement
+        print("createCircle is called in the interface. Please override this method.")
         return self
 
-    def createEllipse(self,
-                      radiusA: Dimension,
-                      radiusB: Dimension
+    @abstractmethod
+    def createEllipse(self, radiusA: 'Dimension', radiusB: 'Dimension'
                       ):
-        print("createEllipse is not implemented")  # TODO: implement
+        print("createEllipse is called in the interface. Please override this method.")
         return self
 
-    def createArc(self,
-                  radius: Dimension,
-                  angle: Angle
+    @abstractmethod
+    def createArc(self, radius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                   ):
-        print("createArc is not implemented")  # TODO: implement
+        print("createArc is called in the interface. Please override this method.")
         return self
 
-    def createArcBetweenThreePoints(self,
-                                    pointA: Point,
-                                    pointB: Point,
-                                    centerPoint: Point
+    @abstractmethod
+    def createArcBetweenThreePoints(self, pointA: 'Point', pointB: 'Point', centerPoint: 'Point'
                                     ):
-        print("createArcBetweenThreePoints is not implemented")  # TODO: implement
+        print("createArcBetweenThreePoints is called in the interface. Please override this method.")
         return self
 
-    def createSegment(self,
-                      innerRadius: Dimension,
-                      outerRadius: Dimension,
-                      angle: Angle
+    @abstractmethod
+    def createSegment(self, innerRadius: 'Dimension', outerRadius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                       ):
-        print("createSegment is not implemented")  # TODO: implement
+        print("createSegment is called in the interface. Please override this method.")
         return self
 
-    def createRectangle(self,
-                        length: Dimension,
-                        width: Dimension
+    @abstractmethod
+    def createRectangle(self, length: 'Dimension', width: 'Dimension'
                         ):
-        print("createRectangle is not implemented")  # TODO: implement
+        print("createRectangle is called in the interface. Please override this method.")
         return self
 
-    def createPolygon(self,
-                      numberOfSides: int,
-                      length: Dimension,
-                      width: Dimension
+    @abstractmethod
+    def createPolygon(self, numberOfSides: 'int', length: 'Dimension', width: 'Dimension'
                       ):
-        print("createPolygon is not implemented")  # TODO: implement
+        print("createPolygon is called in the interface. Please override this method.")
         return self
 
-    def createTrapezoid(self,
-                        lengthUpper: Dimension,
-                        lengthLower: Dimension,
-                        height: Dimension
+    @abstractmethod
+    def createTrapezoid(self, lengthUpper: 'Dimension', lengthLower: 'Dimension', height: 'Dimension'
                         ):
-        print("createTrapezoid is not implemented")  # TODO: implement
+        print("createTrapezoid is called in the interface. Please override this method.")
         return self
 
 
 class Landmark(CodeToCADInterface.Landmark):
+
     # Landmarks are named positions on an entity.
     landmarkName: str
-    localToEntityWithName: str
+    parentEntity: EntityOrItsName
 
-    def __init__(self,
-                 landmarkName: str,
-                 localToEntityWithName: str
-                 ):
+    def __init__(self, landmarkName: str, parentEntity: EntityOrItsName):
         self.landmarkName = landmarkName
-        self.localToEntityWithName = localToEntityWithName
+        self.parentEntity = parentEntity
+
+    @abstractmethod
+    def landmarkEntityName(self
+                           ) -> str:
+        print("landmarkEntityName is called in the interface. Please override this method.")
+        raise NotImplementedError
 
 
 class Joint(CodeToCADInterface.Joint):
+
     # Joints define the relationships and constraints between entities.
-    entity1Name: str
-    entity2Name: str
-    entity1LandmarkName: str
-    entity2LandmarkName: str
+    entity1: EntityOrItsNameOrLandmark
+    entity2: EntityOrItsNameOrLandmark
 
-    def __init__(self,
-                 entity1Name: str,
-                 entity2Name: str,
-                 entity1LandmarkName: str,
-                 entity2LandmarkName: str
-                 ):
-        self.entity1Name = entity1Name
-        self.entity2Name = entity2Name
-        self.entity1LandmarkName = entity1LandmarkName
-        self.entity2LandmarkName = entity2LandmarkName
+    def __init__(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark):
+        self.entity1 = entity1
+        self.entity2 = entity2
 
+    @abstractmethod
     def translateLandmarkOntoAnother(self
                                      ):
-        # TODO: implement
-        print("translateLandmarkOntoAnother is not implemented")
+        print("translateLandmarkOntoAnother is called in the interface. Please override this method.")
         return self
 
+    @abstractmethod
     def pivot(self
               ):
-        print("pivot is not implemented")  # TODO: implement
+        print("pivot is called in the interface. Please override this method.")
         return self
 
-    def gearRatio(self,
-                  ratio: float
+    @abstractmethod
+    def gearRatio(self, ratio: float
                   ):
-        print("gearRatio is not implemented")  # TODO: implement
+        print("gearRatio is called in the interface. Please override this method.")
         return self
 
-    def limitLocation(self,
-                      x: str,
-                      y: str,
-                      z: str
-                      ):
-        print("limitLocation is not implemented")  # TODO: implement
+    @abstractmethod
+    def limitXLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+                       ):
+        print("limitXLocation is called in the interface. Please override this method.")
         return self
 
-    def limitRotation(self,
-                      x: str,
-                      y: str,
-                      z: str
-                      ):
-        print("limitRotation is not implemented")  # TODO: implement
+    @abstractmethod
+    def limitYLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+                       ):
+        print("limitYLocation is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def limitZLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+                       ):
+        print("limitZLocation is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def limitXRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+                       ):
+        print("limitXRotation is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def limitYRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+                       ):
+        print("limitYRotation is called in the interface. Please override this method.")
+        return self
+
+    @abstractmethod
+    def limitZRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+                       ):
+        print("limitZRotation is called in the interface. Please override this method.")
         return self
 
 
 class Material(CodeToCADInterface.Material):
+
     # Materials affect the appearance and simulation properties of the parts.
     name: str
     description: Optional[str] = None
 
-    def __init__(self,
-                 name: str,
-                 description: Optional[str] = None
-                 ):
+    def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
 
-    def assignToPart(self,
-                     partName: StringNameOrPart
+    @abstractmethod
+    def assignToPart(self, partName: PartOrItsName
                      ):
-        print("assignToPart is not implemented")  # TODO: implement
+        print("assignToPart is called in the interface. Please override this method.")
         return self
 
-    def setColor(self,
-                 rValue: IntOrFloat,
-                 gValue: IntOrFloat,
-                 bValue: IntOrFloat,
-                 aValue: IntOrFloat
+    @abstractmethod
+    def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat, aValue: IntOrFloat = 1.0
                  ):
-        print("setColor is not implemented")  # TODO: implement
+        print("setColor is called in the interface. Please override this method.")
         return self
 
-    def addImageTexture(self,
-                        imageFilePath: str
+    @abstractmethod
+    def addImageTexture(self, imageFilePath: str
                         ):
-        print("addImageTexture is not implemented")  # TODO: implement
+        print("addImageTexture is called in the interface. Please override this method.")
         return self
+
+
+class Animation(CodeToCADInterface.Animation):
+
+    # Camera, lighting, rendering, animation related functionality.
+
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def default(self
+                ) -> 'Animation':
+        print("default is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def createKeyFrameLocation(self, entity: EntityOrItsName, frameNumber: 'int'
+                               ):
+        print("createKeyFrameLocation is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def createKeyFrameRotation(self, entity: EntityOrItsName, frameNumber: 'int'
+                               ):
+        print("createKeyFrameRotation is called in the interface. Please override this method.")
+        raise NotImplementedError
 
 
 class Scene(CodeToCADInterface.Scene):
+
     # Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.
-    name: str
+    name: Optional[str] = None
     description: Optional[str] = None
 
-    def __init__(self,
-                 name: str,
-                 description: Optional[str] = None
-                 ):
+    def __init__(self, name: Optional[str] = None, description: Optional[str] = None):
         self.name = name
         self.description = description
 
+    @abstractmethod
+    def default(self
+                ) -> 'Scene':
+        print("default is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
     def create(self
                ):
-        print("create is not implemented")  # TODO: implement
-        raise NotImplementedError
+        print("create is called in the interface. Please override this method.")
+        return self
 
+    @abstractmethod
     def delete(self
                ):
-        print("delete is not implemented")  # TODO: implement
-        raise NotImplementedError
+        print("delete is called in the interface. Please override this method.")
+        return self
 
-    def export(self
+    @abstractmethod
+    def export(self, filePath: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0
                ):
-        print("export is not implemented")  # TODO: implement
-        raise NotImplementedError
+        print("export is called in the interface. Please override this method.")
+        return self
 
-    def setDefaultUnit(self,
-                       unit: str
+    @abstractmethod
+    def setDefaultUnit(self, unit: LengthUnitOrItsName
                        ):
-        print("setDefaultUnit is not implemented")  # TODO: implement
+        print("setDefaultUnit is called in the interface. Please override this method.")
         return self
 
-    def createGroup(self,
-                    name: str
+    @abstractmethod
+    def createGroup(self, name: str
                     ):
-        print("createGroup is not implemented")  # TODO: implement
+        print("createGroup is called in the interface. Please override this method.")
         return self
 
-    def deleteGroup(self,
-                    name: str,
-                    removeChildren: bool
+    @abstractmethod
+    def deleteGroup(self, name: str, removeChildren: bool
                     ):
-        print("deleteGroup is not implemented")  # TODO: implement
+        print("deleteGroup is called in the interface. Please override this method.")
         return self
 
-    def removeFromGroup(self,
-                        entityName: str,
-                        groupName: str
+    @abstractmethod
+    def removeFromGroup(self, entityName: str, groupName: str
                         ):
-        print("removeFromGroup is not implemented")  # TODO: implement
+        print("removeFromGroup is called in the interface. Please override this method.")
         return self
 
-    def assignToGroup(self,
-                      entityName: str,
-                      groupName: str,
-                      removeFromOtherGroups: Optional[bool] = None
+    @abstractmethod
+    def assignToGroup(self, entities: list[EntityOrItsName], groupName: str, removeFromOtherGroups: Optional[bool] = True
                       ):
-        print("assignToGroup is not implemented")  # TODO: implement
+        print("assignToGroup is called in the interface. Please override this method.")
         return self
 
-    def setVisible(self,
-                   entityName: str,
-                   isVisible: bool
+    @abstractmethod
+    def setVisible(self, entities: list[EntityOrItsName], isVisible: bool
                    ):
-        print("setVisible is not implemented")  # TODO: implement
+        print("setVisible is called in the interface. Please override this method.")
         return self
 
 
 class Analytics(CodeToCADInterface.Analytics):
+
     # Tools for collecting data about the entities and scene.
 
-    def __init__(self
-                 ):
+    def __init__(self):
         pass
 
-    def measureLandmarks(self,
-                         landmark1Name: str,
-                         landmark2Name: Optional[str] = None
-                         ) -> Dimension:
-        print("measureLandmarks is not implemented")  # TODO: implement
+    @abstractmethod
+    def measureDistance(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
+                        ) -> 'Dimensions':
+        print("measureDistance is called in the interface. Please override this method.")
         raise NotImplementedError
 
-    def getWorldPose(self,
-                     entityName: str
-                     ):
-        print("getWorldPose is not implemented")  # TODO: implement
+    @abstractmethod
+    def measureAngle(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark, pivot: Optional[EntityOrItsNameOrLandmark] = None
+                     ) -> 'list[Angle]':
+        print("measureAngle is called in the interface. Please override this method.")
         raise NotImplementedError
 
-    def getBoundingBox(self,
-                       entityName: str
-                       ) -> BoundaryBox:
-        print("getBoundingBox is not implemented")  # TODO: implement
+    @abstractmethod
+    def getWorldPose(self, entity: EntityOrItsName
+                     ) -> 'list[float]':
+        print("getWorldPose is called in the interface. Please override this method.")
         raise NotImplementedError
 
-    def getDimensions(self,
-                      entityName: str
-                      ) -> Dimensions:
-        print("getDimensions is not implemented")  # TODO: implement
+    @abstractmethod
+    def getBoundingBox(self, entityName: EntityOrItsName
+                       ) -> 'BoundaryBox':
+        print("getBoundingBox is called in the interface. Please override this method.")
+        raise NotImplementedError
+
+    @abstractmethod
+    def getDimensions(self, entityName: EntityOrItsName
+                      ) -> 'Dimensions':
+        print("getDimensions is called in the interface. Please override this method.")
         raise NotImplementedError

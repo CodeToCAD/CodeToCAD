@@ -21,4 +21,4 @@ if [ ! $(pip list | grep jinja2-cli) ]; then
 fi
 
 
-jinja2 capabilitiesToPyProvider.j2 capabilities.json --format=json > CodeToCADProvider.py
+jinja2 "$SCRIPT_DIR/capabilitiesJsonToCodeTemplates/capabilitiesToPyProvider.j2" "$SCRIPT_DIR/capabilities.json" --format=json > "$SCRIPT_DIR/CodeToCADProvider.py"
