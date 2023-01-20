@@ -36,6 +36,11 @@ class Entity(CodeToCADInterface.Entity):
         return self
         
 
+    def isVisible(self
+    ) -> bool:
+        raise NotImplementedError()
+        
+
     def setVisible(self, isVisible:bool
     ):
         return self
@@ -52,12 +57,12 @@ class Entity(CodeToCADInterface.Entity):
         
 
     def getLocationWorld(self
-    ) -> 'Dimensions':
+    ) -> 'Point':
         raise NotImplementedError()
         
 
     def getLocationLocal(self
-    ) -> 'Dimensions':
+    ) -> 'Point':
         raise NotImplementedError()
         
 

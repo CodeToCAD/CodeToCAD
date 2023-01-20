@@ -54,6 +54,13 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def isVisible(self
+    ) -> bool:
+        print("isVisible is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
     def setVisible(self, isVisible:bool
     ):
         print("setVisible is called in an abstract method. Please override this method.")
@@ -76,14 +83,14 @@ class Entity(metaclass=ABCMeta):
 
     @abstractmethod
     def getLocationWorld(self
-    ) -> 'Dimensions':
+    ) -> 'Point':
         print("getLocationWorld is called in an abstract method. Please override this method.")
         raise NotImplementedError()
         
 
     @abstractmethod
     def getLocationLocal(self
-    ) -> 'Dimensions':
+    ) -> 'Point':
         print("getLocationLocal is called in an abstract method. Please override this method.")
         raise NotImplementedError()
         
