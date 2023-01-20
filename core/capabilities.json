@@ -4,6 +4,17 @@
     "capabilities": {
         "Entity": {
             "information": "Capabilities shared between Parts, Sketches and Landmarks.",
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
             "isExists": {
                 "action": "get",
                 "information": "Check if an entity exists",
@@ -300,17 +311,6 @@
                 "Mesh"
             ],
             "extends": "Entity",
-            "constructor": {
-                "parameters": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
             "createFromFile": {
                 "action": "create",
                 "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
@@ -993,13 +993,17 @@
             "extends": "Entity",
             "constructor": {
                 "parameters": {
-                    "landmarkName": {
+                    "name": {
                         "type": "string",
                         "required": true
                     },
                     "parentEntity": {
                         "type": "string,Entity",
                         "required": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
                 }
             },

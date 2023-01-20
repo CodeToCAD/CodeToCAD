@@ -2,12 +2,14 @@
 # DO NOT EDIT MANUALLY.
 # Please run capabilitiesToPyProvider.sh to generate this file.
 
-import core.utilities as Utilities
-import core.CodeToCADInterface as CodeToCADInterface
-
 from typing import Optional
-from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, min, max, center, createUUID, getAbsoluteFilepath, getFilename
+
+import core.CodeToCADInterface as CodeToCADInterface
+import core.utilities as Utilities
 from core.CodeToCADInterface import *
+from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
+                            Dimensions, Point, center, createUUID,
+                            getAbsoluteFilepath, getFilename, max, min)
 
 {% for className, methods in capabilities.items() -%}
 
