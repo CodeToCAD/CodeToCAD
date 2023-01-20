@@ -1,0 +1,57 @@
+# THIS IS AN AUTO-GENERATE FILE. 
+# DO NOT EDIT MANUALLY.
+# Please run capabilitiesToPyTest.sh to generate this file.
+
+from typing import Optional
+
+from CodeToCAD import *
+import core.CodeToCADInterface as CodeToCADInterface
+import core.utilities as Utilities
+from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
+                            Dimensions, Point, center, createUUID,
+                            getAbsoluteFilepath, getFilename, max, min)
+
+{% for className, methods in capabilities.items() -%}
+
+class Test{{className}}:    
+    {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}
+
+    {%- set className = "Part" if className == "Entity" else className -%}
+
+    {%-set classConstructor = methods["constructor"] if "constructor" in methods else {}-%}
+    {%-set classConstructorParameters = classConstructor["parameters"] if "parameters" in classConstructor else {}-%}
+
+    {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+
+    {%- set isStaticMethod = "staticMethod" in properties and properties["staticMethod"] -%}
+
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if methodName == "information" %}
+    {# Do nothing #}
+    {%- elif methodName == "extends"-%}
+    {# Do nothing #}
+    {%- elif methodName == "alias"-%}
+    {# Do nothing #}
+    {%- elif methodName == "constructor"%}
+    {# Do nothing #}
+    {%- elif methodName == "default"%}
+    {# Do nothing #}
+    {%- else %}
+    def test_{{methodName}}(self):
+        instance = {{className}}("{{ classConstructorParameters.keys()|join('","') }}")
+
+        value = instance.{{methodName}}("{{ properties["parameters"].keys()|join('","') if "parameters" in properties}}")
+
+        {% if properties["action"] == "get" %}
+        assert value, "Get method succeeded."
+        {%elif properties["action"] == "create"%}
+        assert value.isExists(), "Create method failed."
+        {%elif properties["action"] == "modify"%}
+        assert value, "Modify method succeeded."
+        {%endif%}
+        
+    
+    {%-endif-%}
+    {%-endfor%}
+{% endfor -%}

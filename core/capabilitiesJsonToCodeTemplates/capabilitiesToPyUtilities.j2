@@ -5,9 +5,11 @@
     {{types[typeName] if typeName in types else "'"+typeName+"'"}}
 {%- endmacro %}
 
-{%macro generateMethodArguments(parameters) -%}
-{%- if parameters.keys()|length > 0 -%}
-    , {%for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+{%macro generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) -%}
+    {{"@abstractmethod\n    " if useAbstractMethodDecorator and not isStaticMethod-}}
+    {{"@staticmethod\n    " if isStaticMethod-}}
+    def {{methodName}}({{"self" if not isStaticMethod}}{%- if parameters.keys()|length > 0 -%}
+    {{"," if not isStaticMethod}} {%for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
         {%-set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
         {%-set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
         {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition  else "=None") if definition.required == false or "defaultValue" in definition -}} {{-", " if not loop.last}} 
