@@ -878,7 +878,7 @@ def getDriver(
 
 def setDriver(
     driver,
-    driverType: BlenderDefinitions.BlenderDriverTypes,
+    driverType,  # : BlenderDefinitions.BlenderDriverTypes,
     expression=""
 ):
 
@@ -913,8 +913,8 @@ def setDriverVariableTransforms(
     driver,
     variableName,
     targetObjectName,
-    transform_type: BlenderDefinitions.BlenderDriverVariableTransformTypes,
-    transform_space: BlenderDefinitions.BlenderDriverVariableTransformSpaces
+    transform_type,  # : BlenderDefinitions.BlenderDriverVariableTransformTypes,
+    transform_space,  # : BlenderDefinitions.BlenderDriverVariableTransformSpaces
 ):
 
     variable = driver.variables.get(variableName)
@@ -1151,6 +1151,15 @@ def createMeshFromCurve(
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
     if existingCurveObject.name != existingCurveObjectName:
         removeObject(existingCurveObject.name, removeChildren=True)
+
+
+def getObjectVisibility(
+    existingObjectName
+) -> bool:
+
+    blenderObject = getObject(existingObjectName)
+
+    return blenderObject.visible_get()
 
 
 def setObjectVisibility(
@@ -1952,8 +1961,8 @@ def assignMaterialToObject(materialName, objectName):
     return material
 
 
-def getBlenderVersion():
-    return bpy.app.version
+def getBlenderVersion() -> tuple:
+    return bpy.app.version  # type: ignore
 
 
 fileExportFunctions = {

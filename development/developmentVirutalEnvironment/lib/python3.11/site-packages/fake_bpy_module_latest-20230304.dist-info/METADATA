@@ -1,0 +1,182 @@
+Metadata-Version: 2.1
+Name: fake-bpy-module-latest
+Version: 20230304
+Summary: Collection of the fake Blender Python API module for the code completion.
+Home-page: https://github.com/nutti/fake-bpy-module
+Author: nutti
+Author-email: nutti.metro@gmail.com
+Maintainer: nutti
+Maintainer-email: nutti.metro@gmail.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/nutti/fake-bpy-module/issues
+Project-URL: Documentation, https://github.com/nutti/fake-bpy-module/blob/master/README.md
+Project-URL: Source Code, https://github.com/nutti/fake-bpy-module
+Platform: Windows
+Platform: Linux
+Platform: Mac OS-X
+Classifier: Topic :: Multimedia :: Graphics :: 3D Modeling
+Classifier: Topic :: Multimedia :: Graphics :: 3D Rendering
+Classifier: Topic :: Text Editors :: Integrated Development Environments (IDE)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.7
+
+Fake Blender Python API module collection: fake-bpy-module
+==========================================================
+
+fake-bpy-module is the collections of the fake Blender Python API
+modules for the code completion in commonly used IDEs.
+
+Note: The similar project for Blender Game Engine (BGE) is available on
+`fake-bge-module <https://github.com/nutti/fake-bge-module>`__ which
+targets `UPBGE <https://upbge.org/>`__.
+
+.. figure:: docs/images/fake-bpy-module_thumbnail.png
+   :alt: fake-bpy-module Thumbnail
+
+   fake-bpy-module Thumbnail
+
+*To realize the long support of this project, your support is helpful.*
+*You can support the development of this project via* `GitHub
+Sponsors <https://github.com/sponsors/nutti>`__. *See*\ `the
+contribution document <CONTRIBUTING.md>`__\ *for the detail of* *the
+support.*
+
+Requirements
+------------
+
+fake-bpy-module uses typing module and type hints which are available
+from Python 3.7. Check your Python version is >= 3.7.
+
+Install
+-------
+
+fake-bpy-module can be installed via a pip package, or pre-generated
+modules. You can also generate and install modules manually.
+
+Install via pip package
+~~~~~~~~~~~~~~~~~~~~~~~
+
+| fake-bpy-module is registered to PyPI.
+| You can install it as a pip package.
+
+.. code:: sh
+
+   pip install fake-bpy-module-<version>
+
+If you install fake-bpy-module for Blender 2.93, run below command.
+
+.. code:: sh
+
+   pip install fake-bpy-module-2.93
+
+If you install fake-bpy-module for Blender latest build (master branch
+daily build powered by
+`nutti/blender-daily-build <https://github.com/nutti/blender-daily-build>`__),
+run below command.
+
+.. code:: sh
+
+   pip install fake-bpy-module-latest
+
+*Note: For PyCharm users, change the value
+``idea.max.intellisense.filesize`` in ``idea.properties`` file to more
+than 2600 because some modules have the issue of being too big for
+intelliSense to work.*
+
+Supported Blender Version
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+======= ================================================
+Version PyPI
+======= ================================================
+2.78    https://pypi.org/project/fake-bpy-module-2.78/
+2.79    https://pypi.org/project/fake-bpy-module-2.79/
+2.80    https://pypi.org/project/fake-bpy-module-2.80/
+2.81    https://pypi.org/project/fake-bpy-module-2.81/
+2.82    https://pypi.org/project/fake-bpy-module-2.82/
+2.83    https://pypi.org/project/fake-bpy-module-2.83/
+2.90    https://pypi.org/project/fake-bpy-module-2.90/
+2.91    https://pypi.org/project/fake-bpy-module-2.91/
+2.92    https://pypi.org/project/fake-bpy-module-2.92/
+2.93    https://pypi.org/project/fake-bpy-module-2.93/
+3.0     https://pypi.org/project/fake-bpy-module-3.0/
+3.1     https://pypi.org/project/fake-bpy-module-3.1/
+3.2     https://pypi.org/project/fake-bpy-module-3.2/
+3.3     https://pypi.org/project/fake-bpy-module-3.3/
+3.4     https://pypi.org/project/fake-bpy-module-3.4/
+latest  https://pypi.org/project/fake-bpy-module-latest/
+======= ================================================
+
+Install via pre-generated modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Download Pre-generated modules from `Release
+page <https://github.com/nutti/fake-bpy-module/releases>`__.
+
+The process of installation via pre-generated modules is different by
+IDE. See the installation processes as follows for detail.
+
+-  `PyCharm <docs/setup_pycharm.md>`__
+-  `Visual Studio Code <docs/setup_visual_studio_code.md>`__
+-  `All Text Editor (Install as Python
+   module) <docs/setup_all_text_editor.md>`__
+
+Generate Modules Manually
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can also generate modules manually. See `Generate
+Module <docs/generate_modules.md>`__ for detail.
+
+Change Log
+----------
+
+See `CHANGELOG.md <CHANGELOG.md>`__
+
+Bug report / Feature request / Disscussions
+-------------------------------------------
+
+If you want to report bug, request features or discuss about this
+project, see `ISSUES.md <ISSUES.md>`__.
+
+| `fake-bpy-module <https://blender.chat/channel/fake-bpy-module>`__
+  channel is available on `blender.chat <https://blender.chat/>`__.
+| The timely discussion and release announcement about fake-bpy-module
+  will be made in this channel.
+
+Note: Registration of blender.chat is required for accessing
+fake-bpy-module channel.
+
+Contribution
+------------
+
+If you want to contribute to this project, see
+`CONTRIBUTING.md <CONTRIBUTING.md>`__.
+
+Project Authors
+---------------
+
+Owner
+~~~~~
+
+`@nutti <https://github.com/nutti>`__
+
+| Indie Game/Application Developer.
+| Especially, I spend most time to improve Blender and Unreal Game
+  Engine via providing the extensions.
+
+Support via `GitHub Sponsors <https://github.com/sponsors/nutti>`__
+
+-  CONTACTS: `Twitter <https://twitter.com/nutti__>`__
+-  WEBSITE: `Japanese Only <https://colorful-pico.net/>`__
+
+Contributors
+~~~~~~~~~~~~
+
+-  `@grische <https://github.com/grische>`__
+-  `@echantry <https://github.com/echantry>`__
+-  `@kant <https://github.com/kant>`__
+-  `@theoryshaw <https://github.com/theoryshaw>`__
+
+
