@@ -3,9 +3,10 @@
 # Please run capabilitiesToPyInterface.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Union, TypeAlias, cast
+from typing import Optional, TypeAlias, Union
 
-from core.utilities import Point, Dimension, Dimensions, CurveTypes, Angle, BoundaryBox, Axis, LengthUnit
+from core.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension,
+                            Dimensions, LengthUnit, Point)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -19,6 +20,8 @@ AngleOrItsFloatOrStringValue: TypeAlias = Union[str,float, Angle]
 EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
 LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
+
+{%-set useAbstractMethodDecorator = True%}
 
 {% for className, methods in capabilities.items() -%}
 
