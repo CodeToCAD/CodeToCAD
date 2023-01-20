@@ -1,0 +1,41 @@
+Metadata-Version: 2.1
+Name: jinja2-cli
+Version: 0.8.2
+Summary: A CLI interface to Jinja2
+Home-page: https://github.com/mattrobenolt/jinja2-cli
+Author: Matt Robenolt
+Author-email: matt@ydekproductions.com
+License: BSD
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development
+License-File: LICENSE
+Requires-Dist: jinja2
+Provides-Extra: tests
+Requires-Dist: jinja2 ; extra == 'tests'
+Requires-Dist: pytest ; extra == 'tests'
+Requires-Dist: flake8 ; extra == 'tests'
+Provides-Extra: toml
+Requires-Dist: jinja2 ; extra == 'toml'
+Requires-Dist: toml ; extra == 'toml'
+Provides-Extra: xml
+Requires-Dist: jinja2 ; extra == 'xml'
+Requires-Dist: xmltodict ; extra == 'xml'
+Provides-Extra: yaml
+Requires-Dist: jinja2 ; extra == 'yaml'
+Requires-Dist: pyyaml ; extra == 'yaml'
+
+
+jinja2-cli
+==========
+
+.. code:: shell
+
+  $ jinja2 helloworld.tmpl data.json --format=json
+  $ cat data.json | jinja2 helloworld.tmpl
+  $ curl -s http://httpbin.org/ip | jinja2 helloip.tmpl
+  $ curl -s http://httpbin.org/ip | jinja2 helloip.tmpl > helloip.html
+
+

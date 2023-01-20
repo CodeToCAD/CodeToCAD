@@ -3,6 +3,8 @@
 from typing import Optional
 import unittest
 
+from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
+
 from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
@@ -13,6 +15,11 @@ from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
 
 class TestEntity(unittest.TestCase):
 
+    def setUp(self) -> None:
+        resetMockModelingProvider()
+        injectMockModelingProvider()
+        super().setUp()
+
     def test_isExists(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
@@ -20,27 +27,51 @@ class TestEntity(unittest.TestCase):
 
         assert value, "Get method succeeded."
 
-    @unittest.skip
     def test_rename(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.rename("newName", "renamelinkedEntitiesAndLandmarks")
+        value = instance.rename("newName", True)
 
-        assert value, "Modify method succeeded."
+        renamedPart = Part("newName")
 
-    @unittest.skip
+        assert value.name == renamedPart.name, "Modify method succeeded."
+
+        # TODO: test for renamelinkedEntitiesAndLandmarks = False. This is blocked by landmarking implementation
+
     def test_delete(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.delete("removeChildren")
+        value = instance.isExists()
 
-    @unittest.skip
+        assert value, "Expected True, got False"
+
+        value = instance.delete(False)
+
+        value = instance.isExists()
+
+        assert not value, "Expected False, got True"
+
+        # TODO: test for removeChildren = True
+
+    def test_isVisible(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value = instance.isVisible()
+
+        assert value, "Get method succeeded."
+
     def test_setVisible(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.setVisible("isVisible")
+        value = instance.setVisible(True)
 
-    @unittest.skip
+        assert value.isVisible() == True, "Expected False, got True"
+
+        value = instance.setVisible(False)
+
+        assert value.isVisible() == False, "Expected True, got False"
+
+    @unittest.skip("Blocked by understanding the consequences of implementating this capability.")
     def test_apply(self):
         instance = Part("name", "description")
 
@@ -48,29 +79,30 @@ class TestEntity(unittest.TestCase):
 
         assert value, "Modify method succeeded."
 
-    @unittest.skip
     def test_getNativeInstance(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.getNativeInstance("")
+        value = instance.getNativeInstance()
 
         assert value, "Get method succeeded."
 
-    @unittest.skip
     def test_getLocationWorld(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.getLocationWorld("")
+        value = instance.getLocationWorld()
 
-        assert value, "Get method succeeded."
+        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method succeeded."
 
-    @unittest.skip
+        # TODO: get location world after translating
+
     def test_getLocationLocal(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.getLocationLocal("")
+        value = instance.getLocationWorld()
 
-        assert value, "Get method succeeded."
+        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method succeeded."
+
+        # TODO: get location world after translating
 
     @unittest.skip
     def test_select(self):
@@ -78,11 +110,14 @@ class TestEntity(unittest.TestCase):
 
         value = instance.select("landmarkName", "selectionType")
 
-    @unittest.skip
     def test_export(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.export("filePath", "overwrite", "scale")
+        value = instance.export("filePath.stl", True, 1.0)
+
+        # TODO: Test file absolute path resolution
+        # TODO: Test export scale
+        # TODO: Test overwriting
 
     @unittest.skip
     def test_clone(self):
