@@ -6,14 +6,14 @@ from typing import Optional
 
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
-from core.CodeToCADInterface import *
+from core.CodeToCADInterface import FloatOrItsStringValue,IntOrFloat,MaterialOrItsName,PartOrItsName,EntityOrItsName,LandmarkOrItsName,AxisOrItsIndexOrItsName,DimensionOrItsFloatOrStringValue,AngleOrItsFloatOrStringValue,EntityOrItsNameOrLandmark,PointOrListOfFloatOrItsStringValue,LengthUnitOrItsName
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUID,
                             getAbsoluteFilepath, getFilename, max, min)
 
 {% for className, methods in capabilities.items() -%}
 
-class {{className}}(CodeToCADInterface.{{className}}): {# e.g. Part #}
+class {{className}}({{ methods["extends"]+"," if "extends" in methods}}CodeToCADInterface.{{className}}): {# e.g. Part #}
     {% include 'capabilitiesToPyClassDefinition.j2' %}
     
 {% endfor -%}
