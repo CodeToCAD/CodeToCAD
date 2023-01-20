@@ -6,11 +6,10 @@ from typing import Optional
 
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
-from core.CodeToCADInterface import *
+from core.CodeToCADInterface import FloatOrItsStringValue,IntOrFloat,MaterialOrItsName,PartOrItsName,EntityOrItsName,LandmarkOrItsName,AxisOrItsIndexOrItsName,DimensionOrItsFloatOrStringValue,AngleOrItsFloatOrStringValue,EntityOrItsNameOrLandmark,PointOrListOfFloatOrItsStringValue,LengthUnitOrItsName
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUID,
                             getAbsoluteFilepath, getFilename, max, min)
-
 
 class Entity(CodeToCADInterface.Entity): 
     
@@ -158,7 +157,7 @@ class Entity(CodeToCADInterface.Entity):
         
 
     
-class Part(CodeToCADInterface.Part): 
+class Part(Entity,CodeToCADInterface.Part): 
     
     # Create and manipulate 3D shapes.
 
@@ -273,7 +272,7 @@ class Part(CodeToCADInterface.Part):
         
 
     
-class Sketch(CodeToCADInterface.Sketch): 
+class Sketch(Entity,CodeToCADInterface.Sketch): 
     
     # Capabilities related to adding, multiplying, and/or modifying a curve.
     name:str
@@ -366,7 +365,7 @@ class Sketch(CodeToCADInterface.Sketch):
         
 
     
-class Landmark(CodeToCADInterface.Landmark): 
+class Landmark(Entity,CodeToCADInterface.Landmark): 
     
     # Landmarks are named positions on an entity.
     name:str

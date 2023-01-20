@@ -134,6 +134,8 @@ def test_angles():
 
 
 if __name__ == "__main__":
+    print("Started test_utilities")
     test_dimensions()
     test_minMaxCenter()
     test_angles()
+    print("Completed test_utilities")

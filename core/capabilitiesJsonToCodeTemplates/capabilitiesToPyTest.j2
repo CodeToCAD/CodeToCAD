@@ -3,6 +3,7 @@
 # Please run capabilitiesToPyTest.sh to generate this file.
 
 from typing import Optional
+import unittest
 
 from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
@@ -13,7 +14,7 @@ from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
 
 {% for className, methods in capabilities.items() -%}
 
-class Test{{className}}:    
+class Test{{className}}(unittest.TestCase):    
     {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}
 
     {%- set className = "Part" if className == "Entity" else className -%}
@@ -38,6 +39,7 @@ class Test{{className}}:
     {%- elif methodName == "default"%}
     {# Do nothing #}
     {%- else %}
+    @unittest.skip
     def test_{{methodName}}(self):
         instance = {{className}}("{{ classConstructorParameters.keys()|join('","') }}")
 

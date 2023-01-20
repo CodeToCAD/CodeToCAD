@@ -1,6 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
-# DO NOT EDIT MANUALLY.
-# Please run capabilitiesToPyTest.sh to generate this file.
+# This file was forked from core/TestCodeToCADProvider.py
 
 from typing import Optional
 import unittest
@@ -15,11 +13,10 @@ from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
 
 class TestEntity(unittest.TestCase):
 
-    @unittest.skip
     def test_isExists(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.isExists("")
+        value = instance.isExists()
 
         assert value, "Get method succeeded."
 

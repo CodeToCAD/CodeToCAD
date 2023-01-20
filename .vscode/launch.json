@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Test Provider",
+            "type": "python",
+            "request": "launch",
+            "module": "tests.test_provider",
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "PYTHONPATH": "providers:providers/blender"
+            }
+        },
+        {
+            "name": "Test Provider Compliance",
+            "type": "python",
+            "request": "launch",
+            "module": "tests.test_provider_compliance",
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "PYTHONPATH": "providers:providers/blender"
+            }
+        },
+        {
+            "name": "Test Utilities",
+            "type": "python",
+            "request": "launch",
+            "module": "tests.test_utilities",
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}"
+        }
+    ]
+}
