@@ -133,28 +133,30 @@
                         "type": "string,int,Axis"
                     },
                     "resultingMirroredEntityName": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     }
                 }
             },
             "linearPattern": {
-                "action": "create",
-                "information": "Clone an existing entity to follow a pattern in a uniform direction.",
+                "action": "modify",
+                "information": "Pattern in a uniform direction.",
                 "parameters": {
                     "instanceCount": {
                         "type": "int"
                     },
-                    "directionAxis": {
-                        "type": "string,int,Axis"
-                    },
                     "offset": {
                         "type": "string,float,Dimension"
+                    },
+                    "directionAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
                     }
                 }
             },
             "circularPattern": {
-                "action": "create",
-                "information": "Clone an existing entity to follow a circular pattern.",
+                "action": "modify",
+                "information": "Pattern in a circular direction.",
                 "parameters": {
                     "instanceCount": {
                         "type": "int"
@@ -162,11 +164,39 @@
                     "separationAngle": {
                         "type": "string,float,Angle"
                     },
-                    "normalDirectionAxis": {
-                        "type": "string,int,Axis"
-                    },
                     "centerEntityOrLandmark": {
                         "type": "string,Entity,Landmark"
+                    },
+                    "normalDirectionAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
+            "translateX": {
+                "action": "modify",
+                "information": "Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "translateY": {
+                "action": "modify",
+                "information": "Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "translateZ": {
+                "action": "modify",
+                "information": "Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1012,7 +1042,7 @@
                     }
                 }
             },
-            "landmarkEntityName": {
+            "getLandmarkEntityName": {
                 "action": "get",
                 "returnType": "string"
             }

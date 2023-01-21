@@ -1,0 +1,4 @@
+autopep8
+
+# Blender Development Dependencies:
+fake-bpy-module-latest

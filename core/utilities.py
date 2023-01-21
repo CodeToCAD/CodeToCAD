@@ -29,8 +29,12 @@ def getFilename(relativeFilePath: str):
     return path.stem
 
 
-def createUUID():
+def createUUIDLikeId():
     return str(uuid4()).replace("-", "")[:10]
+
+
+def formatLandmarkEntityName(parentEntityName: str, landmarkName: str):
+    return f"{parentEntityName}_{landmarkName}"
 
 
 def getAbsoluteFilepath(relativeFilePath: str):
@@ -444,6 +448,15 @@ class Dimension():
 
         self.value = value
         self.unit = unit
+
+    @staticmethod
+    def fromDimensionOrItsFloatOrStringValue(mysteryDimension: Union[str, float, 'Dimension'], boundaryAxis: Optional[BoundaryAxis]) -> 'Dimension':
+        if isinstance(mysteryDimension, Dimension):
+            return mysteryDimension
+        if isinstance(mysteryDimension, (int, float)):
+            return Dimension(mysteryDimension)
+        return Dimension.fromString(
+            mysteryDimension, None, boundaryAxis)
 
     def __str__(self) -> str:
         return f"{self.value}{' '+self.unit.name if self.unit else ''}"
