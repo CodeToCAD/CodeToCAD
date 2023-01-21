@@ -9,7 +9,7 @@ from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUID,
+                            Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 
 
@@ -75,7 +75,7 @@ class TestEntity(unittest.TestCase):
     def test_apply(self):
         instance = Part("name", "description")
 
-        value = instance.apply("")
+        value = instance.apply()
 
         assert value, "Modify method succeeded."
 
@@ -104,7 +104,7 @@ class TestEntity(unittest.TestCase):
 
         # TODO: get location world after translating
 
-    @unittest.skip
+    @unittest.skip("Not yet implemented")
     def test_select(self):
         instance = Part("name", "description")
 
@@ -115,44 +115,68 @@ class TestEntity(unittest.TestCase):
 
         value = instance.export("filePath.stl", True, 1.0)
 
+        # no extension:
+        self.assertRaises(
+            AssertionError, lambda: instance.export("filePath", True, 1.0))
+
+        # bad extension:
+        self.assertRaises(
+            AssertionError, lambda: instance.export("filePath.NotARealExtension", True, 1.0))
+
         # TODO: Test file absolute path resolution
         # TODO: Test export scale
         # TODO: Test overwriting
 
-    @unittest.skip
     def test_clone(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.clone("newName", "copyLandmarks")
+        value = instance.clone("newName", False)
 
-        assert value.isExists(), "Create method failed."
+        assert instance.isExists(), "The original object should still exist."
 
-    @unittest.skip
+        assert instance.name == value.name, "Clone should not return the cloned Entity."
+
+        assert Part("newName").isExists(), "Clone method failed."
+
+        # TODO: test copyLandmarks parameter
+
     def test_mirror(self):
-        instance = Part("name", "description")
+        partToMirror = Part("partToMirror", "description").createCube(
+            1, 1, 1).translateX(-5)
+        partToMirrorAcross = Part(
+            "partToMirrorAcross", "description").createCube(1, 1, 1)
 
-        value = instance.mirror("mirrorAcrossEntity",
-                                "axis", "resultingMirroredEntityName")
+        value = partToMirror.mirror(partToMirrorAcross, "x", None)
 
         assert value.isExists(), "Create method failed."
 
-    @unittest.skip
+        # TODO: add test for bad mirrorAcrossEntity name
+        # TODO: add test for bad axis name
+        # TODO: add test for supplying resultingMirroredEntityName
+        # TODO: add test to make sure mirrored object is really mirrored across the intended axis and distance
+
     def test_linearPattern(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
         value = instance.linearPattern(
-            "instanceCount", "directionAxis", "offset")
+            2, "2m")
 
-        assert value.isExists(), "Create method failed."
+        assert value.isExists(), "Modify method failed."
 
-    @unittest.skip
+        # TODO: make sure patterning works on all axes correctly
+
     def test_circularPattern(self):
-        instance = Part("name", "description")
+        partToPattern = Part(
+            "partToPattern", "description").createCube(1, 1, 1).translateX(-5)
+        centerPart = Part("centerPart", "description").createCube(1, 1, 1)
 
-        value = instance.circularPattern(
-            "instanceCount", "separationAngle", "normalDirectionAxis", "centerEntityOrLandmark")
+        value = partToPattern.circularPattern(
+            4, 90, centerPart)
 
-        assert value.isExists(), "Create method failed."
+        assert value.isExists(), "Modify method failed."
+
+        # TODO: make sure Entity, Landmark and string name all work correctly.
+        # TODO: make sure patterning works on all axes correctly
 
     @unittest.skip
     def test_scaleX(self):
@@ -226,13 +250,16 @@ class TestEntity(unittest.TestCase):
 
         assert value, "Modify method succeeded."
 
-    @unittest.skip
     def test_createLandmark(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.createLandmark("landmarkName", "x", "y", "z")
+        value = instance.createLandmark("landmarkName", 0, 0, 0)
 
         assert value, "Modify method succeeded."
+
+        landmark = instance.getLandmark("landmarkName")
+
+        assert landmark.isExists(), "Landmark was not created."
 
     @unittest.skip
     def test_getBoundingBox(self):
@@ -587,10 +614,10 @@ class TestSketch(unittest.TestCase):
 class TestLandmark(unittest.TestCase):
 
     @unittest.skip
-    def test_landmarkEntityName(self):
+    def test_getLandmarkEntityName(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.landmarkEntityName("")
+        value = instance.getLandmarkEntityName()
 
         assert value, "Get method succeeded."
 

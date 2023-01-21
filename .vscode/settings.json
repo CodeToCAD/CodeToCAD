@@ -7,6 +7,7 @@
         "providers/",
         "providers/blender"
     ],
+    "python.defaultInterpreterPath": "development/developmentVirutalEnvironment/bin/python3",
     "editor.wordWrap": "on",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,

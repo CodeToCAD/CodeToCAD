@@ -128,19 +128,46 @@ class TestEntity(unittest.TestCase):
     def test_linearPattern(self):
         instance = Part("name","description")
 
-        value = instance.linearPattern("instanceCount","directionAxis","offset")
+        value = instance.linearPattern("instanceCount","offset","directionAxis")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value, "Modify method succeeded."
         
     @unittest.skip
     def test_circularPattern(self):
         instance = Part("name","description")
 
-        value = instance.circularPattern("instanceCount","separationAngle","normalDirectionAxis","centerEntityOrLandmark")
+        value = instance.circularPattern("instanceCount","separationAngle","centerEntityOrLandmark","normalDirectionAxis")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value, "Modify method succeeded."
+        
+    @unittest.skip
+    def test_translateX(self):
+        instance = Part("name","description")
+
+        value = instance.translateX("scale")
+
+        
+        assert value, "Modify method succeeded."
+        
+    @unittest.skip
+    def test_translateY(self):
+        instance = Part("name","description")
+
+        value = instance.translateY("scale")
+
+        
+        assert value, "Modify method succeeded."
+        
+    @unittest.skip
+    def test_translateZ(self):
+        instance = Part("name","description")
+
+        value = instance.translateZ("scale")
+
+        
+        assert value, "Modify method succeeded."
         
     @unittest.skip
     def test_scaleX(self):
@@ -610,10 +637,10 @@ class TestLandmark(unittest.TestCase):
     
     
     @unittest.skip
-    def test_landmarkEntityName(self):
+    def test_getLandmarkEntityName(self):
         instance = Landmark("name","parentEntity","description")
 
-        value = instance.landmarkEntityName("")
+        value = instance.getLandmarkEntityName("")
 
         
         assert value, "Get method succeeded."
