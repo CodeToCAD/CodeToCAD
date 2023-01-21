@@ -1,26 +1,40 @@
-from typing import Any, Optional
-import typing
+from typing import Any, Optional, Union
+from mock.modeling.MockBlenderMath import Vector, Matrix
 
 
 class Mesh:
-    def __init__(self) -> None:
-        self.name = ""
+    def __init__(self, name) -> None:
+        self.name = name
 
+    def copy(self) -> 'Mesh':
+        copy = Mesh(self.name)
 
-class Matrix:
-    def __init__(self) -> None:
-        self.translation = (0, 0, 0)
+        global mockBpy
+        mockBpy.data.meshes.meshes.append(copy)
+
+        return copy
 
 
 class Object:
     isHide = False
 
-    def __init__(self) -> None:
-        self.name = ""
+    def __init__(self, name, default_users_collection: Optional['Collection']) -> None:
+        self.name = name
         self.data: Optional[Any] = None
         self.children: list['Object'] = []
         self.location = (0, 0, 0)
         self.matrix_world = Matrix()
+        self.matrix_basis = Matrix()
+        self.bound_box = [[0, 0, 0] for i in range(8)]
+        self.users_collection = [
+            default_users_collection] if default_users_collection else []
+        self.modifiers = Object.Modifiers()
+        self.constraints = Object.Constraints()
+
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        super().__setattr__(__name, __value)
+        if __name == "parent":
+            __value.children.append(self)
 
     def visible_get(self):
         return not self.isHide
@@ -31,6 +45,81 @@ class Object:
     def select_set(self, isSelected):
         global mockBpy
         mockBpy.data.selectedObject = self if isSelected else None
+
+    def copy(self) -> 'Object':
+        global mockBpy
+        copy = Object(self.name, mockBpy.context.default_user_collection)
+        copy.data = self.data
+        copy.children = self.children
+        copy.location = self.location
+        copy.matrix_world = self.matrix_world
+        copy.users_collection = self.users_collection
+
+        mockBpy.data.objects.objects.append(copy)
+
+        return copy
+
+    class Modifiers:
+        def __init__(self) -> None:
+            self.modifiers = []
+
+        def new(self, name, type):
+            modifier = Object.Modifiers.Modifier(name, type)
+            self.modifiers.append(modifier)
+            return modifier
+
+        def get(self, name):
+            for modifier in self.modifiers:
+                if modifier.name == name:
+                    return modifier
+
+        class Modifier:
+            def __init__(self, name, type) -> None:
+                self.name = name
+                self.type = type
+
+    class Constraints:
+        def __init__(self) -> None:
+            self.constraints = []
+
+        def new(self, name):
+            constraint = Object.Constraints.Constraint(name)
+            self.constraints.append(constraint)
+            return constraint
+
+        def get(self, name):
+            for constraint in self.constraints:
+                if constraint.name == name:
+                    return constraint
+
+        class Constraint:
+            def __init__(self, name) -> None:
+                self.name = name
+
+
+class Collection:
+    def __init__(self, name) -> None:
+        self.name = name
+        self.objects = Collection.CollectionObjects(self)
+
+    def objectBelongsToCollection(self, object: Object) -> bool:
+        global mockBpy
+        return self in object.users_collection
+
+    @property
+    def linkedObjects(self):
+        return list(filter(self.objectBelongsToCollection, mockBpy.data.objects.objects))
+
+    class CollectionObjects:
+
+        def __init__(self, collection: 'Collection') -> None:
+            self.collection = collection
+
+        def unlink(self, object: Object):
+            object.users_collection.remove(self.collection)
+
+        def link(self, object: Object):
+            object.users_collection.append(self.collection)
 
 
 class Objects:
@@ -54,6 +143,16 @@ class Objects:
             self.objects.remove(object)
 
 
+class Collections:
+    def __init__(self) -> None:
+        self.collections: list[Collection] = []
+
+    def get(self, name):
+        for collection in self.collections:
+            if collection.name == name:
+                return collection
+
+
 class Meshes:
     def __init__(self) -> None:
         self.meshes: list[Mesh] = []
@@ -75,14 +174,16 @@ class Data:
     def __init__(self) -> None:
         self.objects = Objects()
         self.meshes = Meshes()
+        self.collections = Collections()
+        self.collections.collections.append(Collection("Scene"))
 
         self.selectedObject: Optional[Object] = None
 
     def createMeshObject(self, objectName, meshName):
-        mesh = Mesh()
-        mesh.name = meshName
-        obj = Object()
-        obj.name = objectName
+        global mockBpy
+
+        mesh = Mesh(meshName)
+        obj = Object(objectName, mockBpy.context.default_user_collection)
         obj.data = mesh
         mockBpy.data.objects.objects.append(obj)
         mockBpy.data.meshes.meshes.append(mesh)
@@ -99,50 +200,63 @@ class Ops:
     class OpsExportMesh:
         @staticmethod
         def stl(
-                filepath: typing.Union[str, typing.Any] = "",
-                use_selection: typing.Union[bool, typing.Any] = False,
-                global_scale: typing.Optional[typing.Any] = 1.0
+                filepath: Union[str, Any] = "",
+                use_selection: Union[bool, Any] = False,
+                global_scale: Optional[Any] = 1.0
         ):
             return {'FINISHED'}
 
     class OpsExportScene:
         @staticmethod
         def obj(
-                filepath: typing.Union[str, typing.Any] = "",
-                use_selection: typing.Union[bool, typing.Any] = False,
-                global_scale: typing.Optional[typing.Any] = 1.0
+                filepath: Union[str, Any] = "",
+                use_selection: Union[bool, Any] = False,
+                global_scale: Optional[Any] = 1.0
         ):
             return {'FINISHED'}
 
     class OpsWM:
         @staticmethod
         def obj_export(
-                filepath: typing.Union[str, typing.Any] = "",
-                export_selected_objects: typing.Union[bool,
-                                                      typing.Any] = False,
-                global_scale: typing.Optional[typing.Any] = 1.0
+                filepath: Union[str, Any] = "",
+                export_selected_objects: Union[bool,
+                                               Any] = False,
+                global_scale: Optional[Any] = 1.0
         ):
             return {'FINISHED'}
 
     class OpsObject:
         @staticmethod
-        def select_all(action: typing.Optional[typing.Any] = 'TOGGLE'):
+        def empty_add(radius, **keywordArguments):
+            global mockBpy
+            mockBpy.data.objects.objects.append(
+                Object("Empty", mockBpy.context.default_user_collection))
+
+        @staticmethod
+        def select_all(action: Optional[Any] = 'TOGGLE'):
             pass
 
     class OpsMesh:
+
         @staticmethod
         def primitive_cube_add(
-                size: typing.Optional[typing.Any] = 2.0,
-                location: typing.Optional[typing.Any] = (
+                size: Optional[Any] = 2.0,
+                location: Optional[Any] = (
                     0.0, 0.0, 0.0),
-                rotation: typing.Optional[typing.Any] = (
+                rotation: Optional[Any] = (
                     0.0, 0.0, 0.0),
-                scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0)):
+                scale: Optional[Any] = (0.0, 0.0, 0.0)):
             global mockBpy
             mockBpy.data.createMeshObject("Cube", "Cube")
 
 
 class Context:
+
+    @property
+    def default_user_collection(self):
+        global mockBpy
+        return mockBpy.data.collections.collections[0]
+
     def __init__(self) -> None:
         self.view_layer = Context.ViewLayer()
 
@@ -171,6 +285,10 @@ def injectMockBpy():
     setattr(bpy, "data", mockBpy.data)
     setattr(bpy, "ops", mockBpy.ops)
     setattr(bpy, "context", mockBpy.context)
+
+    import mathutils
+    setattr(mathutils, "Matrix", Matrix)
+    setattr(mathutils, "Vector", Vector)
 
 
 def resetMockBpy():

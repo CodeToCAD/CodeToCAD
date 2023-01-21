@@ -7,14 +7,11 @@
     {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
     {%- if methodName == "information" %}
-    # {{ properties }}
-
+    {# Do nothing #}
     {%- elif methodName == "extends"-%}
     {# Do nothing #}
     {%- elif methodName == "alias"-%}
-    
-    {%- set alias = properties -%}
-    
+    {# Do nothing #}
     {%- elif methodName == "constructor"%}
 
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
@@ -50,6 +47,11 @@
 
     {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}
     ) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+        {% if "information" in properties and useAbstractMethodDecorator -%}
+        '''
+        {{ properties["information"] }}
+        '''
+        {%endif%}
         {% if useAbstractMethodDecorator -%}
         print("{{methodName}} is called in an abstract method. Please override this method.")
         {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}

@@ -5,7 +5,7 @@ import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
 import BlenderActions
 
-from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUID, getAbsoluteFilepath, getFilename
+from core.utilities import Point, Dimension, CurveTypes, Angle, min, max, center, createUUIDLikeId, getAbsoluteFilepath, getFilename
 
 
 class Entity(CodeToCADInterface.Entity):
@@ -270,7 +270,7 @@ class Entity(CodeToCADInterface.Entity):
         centerObjectName = Landmark(
             centerPartName, centerLandmarkName).entityName if centerLandmarkName else centerPartName
 
-        pivotLandmark = Landmark(createUUID(), self.name)
+        pivotLandmark = Landmark(createUUIDLikeId(), self.name)
 
         self.createLandmark(pivotLandmark.landmarkName, 0, 0, 0)
 
@@ -332,7 +332,7 @@ class Entity(CodeToCADInterface.Entity):
 
         # Assign the landmark to the parent's collection
         BlenderActions.assignObjectToCollection(
-            landmarkObjectName, BlenderActions.getObjectCollection(self.name))
+            landmarkObjectName, BlenderActions.getObjectCollectionName(self.name))
 
         # Parent the landmark to the object
         BlenderActions.makeParent(landmarkObjectName, self.name)
@@ -801,12 +801,12 @@ class Part(CodeToCADInterface.Part):
         vertexGroupName = None
 
         if bevelEdgesNearlandmarkNames != None:
-            vertexGroupName = createUUID()
+            vertexGroupName = createUUIDLikeId()
             self._addEdgesNearLandmarksToVertexGroup(
                 bevelEdgesNearlandmarkNames, vertexGroupName)
 
         if bevelFacesNearlandmarkNames != None:
-            vertexGroupName = vertexGroupName or createUUID()
+            vertexGroupName = vertexGroupName or createUUIDLikeId()
             self._addFacesNearLandmarksToVertexGroup(
                 bevelFacesNearlandmarkNames, vertexGroupName)
 
@@ -843,9 +843,9 @@ class Part(CodeToCADInterface.Part):
         startLandmarkLocation[axis.value] = min if flipAxis else max
 
         startAxisLandmark = self.createLandmark_fromString(
-            createUUID(), startLandmarkLocation)
+            createUUIDLikeId(), startLandmarkLocation)
 
-        insidePart = self.clone(createUUID(), copyLandmarks=False)
+        insidePart = self.clone(createUUIDLikeId(), copyLandmarks=False)
         insidePart_start = insidePart.createLandmark_fromString(
             "start", startLandmarkLocation)
 
@@ -899,7 +899,7 @@ class Part(CodeToCADInterface.Part):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        hole = Part(createUUID()).createCylinder(radius, depth)
+        hole = Part(createUUIDLikeId()).createCylinder(radius, depth)
         hole_head = hole.createLandmark(
             "hole", center, center, min if flip else max)
 

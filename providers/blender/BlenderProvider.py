@@ -10,7 +10,7 @@ import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 from core.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUID,
+                            Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 
 
@@ -34,7 +34,6 @@ def injectBlenderProvider() -> None:
 
 class Entity(CodeToCADInterface.Entity):
 
-    # Capabilities shared between Parts, Sketches and Landmarks.
     name: str
     description: Optional[str] = None
 
@@ -133,18 +132,106 @@ class Entity(CodeToCADInterface.Entity):
 
     def clone(self, newName: str, copyLandmarks: bool = True
               ):
+
+        assert Entity(
+            newName).isExists() == False, f"{newName} already exists."
+
+        BlenderActions.duplicateObject(self.name, newName, copyLandmarks)
+
         return self
 
-    def mirror(self, mirrorAcrossEntity: EntityOrItsName, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: str
+    def mirror(self, mirrorAcrossEntity: EntityOrItsName, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str]
                ):
+
+        if resultingMirroredEntityName != None:
+            raise NotImplementedError("Not yet supported. COD-113")
+
+        mirrorAcrossEntityName = mirrorAcrossEntity
+        if isinstance(mirrorAcrossEntity, Landmark):
+            mirrorAcrossEntityName = mirrorAcrossEntity.getLandmarkEntityName()
+        elif isinstance(mirrorAcrossEntity, Entity):
+            mirrorAcrossEntityName = mirrorAcrossEntity.name
+
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        BlenderActions.applyMirrorModifier(
+            self.name, mirrorAcrossEntityName, axis)
+
         return self
 
-    def linearPattern(self, instanceCount: 'int', directionAxis: AxisOrItsIndexOrItsName, offset: DimensionOrItsFloatOrStringValue
-                      ):
+    def linearPattern(self, instanceCount: 'int', offset: DimensionOrItsFloatOrStringValue, directionAxis: AxisOrItsIndexOrItsName = "z"):
+
+        axis = Utilities.Axis.fromString(directionAxis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        offsetAmount: float = offset  # type: ignore
+        if isinstance(offset, str):
+            offset = Utilities.Dimension.fromString(offset)
+
+        if isinstance(offset, Utilities.Dimension):
+            offset = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                offset)
+            offsetAmount = offset.value
+
+        BlenderActions.applyLinearPattern(
+            self.name, instanceCount, axis, offsetAmount)
+
         return self
 
-    def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, normalDirectionAxis: AxisOrItsIndexOrItsName, centerEntityOrLandmark: EntityOrItsNameOrLandmark
-                        ):
+    def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, centerEntityOrLandmark: EntityOrItsNameOrLandmark, normalDirectionAxis: AxisOrItsIndexOrItsName = "z"):
+        centerEntityOrLandmarkName = centerEntityOrLandmark
+        if isinstance(centerEntityOrLandmark, Landmark):
+            centerEntityOrLandmarkName = centerEntityOrLandmark.getLandmarkEntityName()
+        elif isinstance(centerEntityOrLandmark, Entity):
+            centerEntityOrLandmarkName = centerEntityOrLandmark.name
+
+        pivotLandmarkName = createUUIDLikeId()
+
+        self.createLandmark(pivotLandmarkName, 0, 0, 0)
+
+        pivotLandmarkEntityName = self.getLandmark(
+            pivotLandmarkName).getLandmarkEntityName()
+
+        BlenderActions.applyPivotConstraint(
+            pivotLandmarkEntityName, centerEntityOrLandmarkName)
+
+        axis = Utilities.Axis.fromString(normalDirectionAxis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        angles = [Utilities.Angle(0) for _ in range(3)]
+        angle: Angle = separationAngle  # type: ignore
+        if isinstance(separationAngle, str):
+            angle = Utilities.Angle.fromString(separationAngle)
+        elif isinstance(separationAngle, (float, int)):
+            angle = Utilities.Angle(separationAngle)
+
+        angles[axis.value] = angle
+
+        BlenderActions.rotateObject(
+            pivotLandmarkEntityName, angles, BlenderDefinitions.BlenderRotationTypes.EULER)
+
+        BlenderActions.applyCircularPattern(
+            self.name, instanceCount, pivotLandmarkEntityName)
+
+        return self
+
+    def translateX(self, scale: DimensionOrItsFloatOrStringValue
+                   ):
+
+        return self
+
+    def translateY(self, scale: DimensionOrItsFloatOrStringValue
+                   ):
+
+        return self
+
+    def translateZ(self, scale: DimensionOrItsFloatOrStringValue
+                   ):
+
         return self
 
     def scaleX(self, scale: DimensionOrItsFloatOrStringValue
@@ -185,6 +272,36 @@ class Entity(CodeToCADInterface.Entity):
 
     def createLandmark(self, landmarkName: str, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
                        ):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        localPositions = [
+            Dimension.fromDimensionOrItsFloatOrStringValue(x, boundingBox.x),
+            Dimension.fromDimensionOrItsFloatOrStringValue(y, boundingBox.y),
+            Dimension.fromDimensionOrItsFloatOrStringValue(z, boundingBox.z),
+        ]
+
+        localPositions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
+            localPositions)
+
+        landmark = Landmark(landmarkName, self.name)
+        landmarkObjectName = landmark.getLandmarkEntityName()
+
+        # Create an Empty object to represent the landmark
+        # Using an Empty object allows us to parent the object to this Empty.
+        # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
+        # This might not work in other CodeToCAD implementations, but it does in Blender
+        _ = Part(landmarkObjectName).createPrimitive("Empty", "0")
+
+        # Assign the landmark to the parent's collection
+        BlenderActions.assignObjectToCollection(
+            landmarkObjectName, BlenderActions.getObjectCollectionName(self.name))
+
+        # Parent the landmark to the object
+        BlenderActions.makeParent(landmarkObjectName, self.name)
+
+        BlenderActions.translateObject(
+            landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
         return self
 
     def getBoundingBox(self
@@ -197,12 +314,17 @@ class Entity(CodeToCADInterface.Entity):
 
     def getLandmark(self, landmarkName: str
                     ) -> 'Landmark':
-        raise NotImplementedError()
+        if isinstance(landmarkName, Landmark):
+            landmarkName = landmarkName.name
+
+        landmark = Landmark(landmarkName, self.name)
+
+        assert BlenderActions.getObject(
+            landmark.getLandmarkEntityName()) != None, f"Landmark {landmarkName} does not exist for {self.name}."
+        return landmark
 
 
 class Part(Entity, CodeToCADInterface.Part):
-
-    # Create and manipulate 3D shapes.
 
     def createFromFile(self, filePath: str, fileType: Optional[str] = None
                        ):
@@ -317,7 +439,6 @@ class Part(Entity, CodeToCADInterface.Part):
 
 class Sketch(Entity, CodeToCADInterface.Sketch):
 
-    # Capabilities related to adding, multiplying, and/or modifying a curve.
     name: str
     curveType: Optional['CurveTypes'] = None
     description: Optional[str] = None
@@ -394,7 +515,6 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
 class Landmark(Entity, CodeToCADInterface.Landmark):
 
-    # Landmarks are named positions on an entity.
     name: str
     parentEntity: EntityOrItsName
     description: Optional[str] = None
@@ -404,14 +524,23 @@ class Landmark(Entity, CodeToCADInterface.Landmark):
         self.parentEntity = parentEntity
         self.description = description
 
-    def landmarkEntityName(self
-                           ) -> str:
-        raise NotImplementedError()
+    def isExists(self) -> bool:
+        try:
+            return BlenderActions.getObject(self.getLandmarkEntityName()) != None
+        except:
+            return False
+
+    def getLandmarkEntityName(self
+                              ) -> str:
+        parentEntityName: str = self.parentEntity  # type: ignore
+        if isinstance(self.parentEntity, Entity):
+            parentEntityName = self.parentEntity.name
+
+        return Utilities.formatLandmarkEntityName(parentEntityName, self.name)
 
 
 class Joint(CodeToCADInterface.Joint):
 
-    # Joints define the relationships and constraints between entities.
     entity1: EntityOrItsNameOrLandmark
     entity2: EntityOrItsNameOrLandmark
 
@@ -458,7 +587,6 @@ class Joint(CodeToCADInterface.Joint):
 
 class Material(CodeToCADInterface.Material):
 
-    # Materials affect the appearance and simulation properties of the parts.
     name: str
     description: Optional[str] = None
 
@@ -530,8 +658,6 @@ class Camera(Entity):
 
 class Animation(CodeToCADInterface.Animation):
 
-    # Camera, lighting, rendering, animation related functionality.
-
     def __init__(self):
         pass
 
@@ -551,7 +677,6 @@ class Animation(CodeToCADInterface.Animation):
 
 class Scene(CodeToCADInterface.Scene):
 
-    # Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.
     name: Optional[str] = None
     description: Optional[str] = None
     light = Light
@@ -614,8 +739,6 @@ class Scene(CodeToCADInterface.Scene):
 
 
 class Analytics(CodeToCADInterface.Analytics):
-
-    # Tools for collecting data about the entities and scene.
 
     def __init__(self):
         pass

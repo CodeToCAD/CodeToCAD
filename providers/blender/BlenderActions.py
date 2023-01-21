@@ -62,11 +62,11 @@ def applyLinearPattern(
     entityName,
     instanceCount,
     direction: Utilities.Axis,
-    offset: int,
+    offset: float,
     keywordArguments: dict = {}
 ):
 
-    offsetArray = [0, 0, 0]
+    offsetArray = [0.0, 0.0, 0.0]
 
     offsetArray[direction.value] = offset
 
@@ -1032,14 +1032,14 @@ def updateObjectName(
     blenderObject.name = newName
 
 
-def getObjectCollection(objectName):
+def getObjectCollectionName(objectName) -> str:
 
     blenderObject = getObject(objectName)
 
     # Assumes the first collection is the main collection
     [currentCollection] = blenderObject.users_collection
 
-    return currentCollection.name if currentCollection else None
+    return currentCollection.name
 
 
 def updateObjectDataName(
@@ -1187,7 +1187,7 @@ def transferLandmarks(
     translation = getObjectWorldLocation(
         fromObjectName) - getObjectWorldLocation(toObjectName)
 
-    defaultCollection = getObjectCollection(toObjectName)
+    defaultCollection = getObjectCollectionName(toObjectName)
 
     for child in fromBlenderObject.children:
         if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
@@ -1220,7 +1220,7 @@ def duplicateObject(
     clonedObject.data.name = newObjectName
 
     # Link clonedObject to the original object's collection.
-    defaultCollection = getObjectCollection(existingObjectName)
+    defaultCollection = getObjectCollectionName(existingObjectName)
 
     assignObjectToCollection(newObjectName, defaultCollection)
 
