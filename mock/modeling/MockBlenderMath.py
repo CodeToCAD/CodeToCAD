@@ -1,6 +1,6 @@
 import math
-from sqlite3 import NotSupportedError
 from typing import Optional
+
 import numpy as np
 
 
@@ -156,19 +156,19 @@ class Matrix:
         return self
 
     def __add__(self, other):
-        return Vector(np.add(self.matrix, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+        return Matrix(np.add(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
 
     def __sub__(self, other):
-        return Vector(np.subtract(self.matrix, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+        return Matrix(np.subtract(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
 
     def __mul__(self, other):
-        return Vector(np.multiply(self.matrix, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+        return Matrix(np.multiply(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
 
     def __pow__(self, other, mod=None):
-        return Vector(np.power(self.matrix, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+        return Matrix(np.power(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
 
     def __abs__(self):
-        return Vector(np.abs(self.matrix).tolist())
+        return Matrix(np.abs(self.matrix))
 
     def __matmul__(self, other):
-        return Vector(np.matmul(self.matrix, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+        return Matrix(np.matmul(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
