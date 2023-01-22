@@ -219,18 +219,51 @@ class Entity(CodeToCADInterface.Entity):
 
         return self
 
-    def translateX(self, scale: DimensionOrItsFloatOrStringValue
+    def translateX(self, amount: DimensionOrItsFloatOrStringValue
                    ):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.x)
+
+        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            dimension)
+
+        BlenderActions.translateObject(
+            self.name, [dimension, Dimension(0), Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
-    def translateY(self, scale: DimensionOrItsFloatOrStringValue
+    def translateY(self, amount: DimensionOrItsFloatOrStringValue
                    ):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.y)
+
+        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            dimension)
+
+        BlenderActions.translateObject(
+            self.name, [Dimension(0), dimension, Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
-    def translateZ(self, scale: DimensionOrItsFloatOrStringValue
+    def translateZ(self, amount: DimensionOrItsFloatOrStringValue
                    ):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.z)
+
+        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            dimension)
+
+        BlenderActions.translateObject(
+            self.name, [Dimension(0), Dimension(0), dimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 

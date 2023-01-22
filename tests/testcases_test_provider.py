@@ -178,6 +178,36 @@ class TestEntity(unittest.TestCase):
         # TODO: make sure Entity, Landmark and string name all work correctly.
         # TODO: make sure patterning works on all axes correctly
 
+    def test_translateX(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value: Part = instance.translateX(5)
+
+        assert value, "Modify method succeeded."
+
+        assert instance.getLocationWorld() == Point(
+            Dimension(5), Dimension(0), Dimension(0)), "Translation is not correct"
+
+    def test_translateY(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value = instance.translateY(5)
+
+        assert value, "Modify method succeeded."
+
+        assert instance.getLocationWorld() == Point(
+            Dimension(0), Dimension(5), Dimension(0)), "Translation is not correct"
+
+    def test_translateZ(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value = instance.translateZ(5)
+
+        assert value, "Modify method succeeded."
+
+        assert instance.getLocationWorld() == Point(
+            Dimension(0), Dimension(0), Dimension(5)), "Translation is not correct"
+
     @unittest.skip
     def test_scaleX(self):
         instance = Part("name", "description")
