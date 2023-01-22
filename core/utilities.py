@@ -624,6 +624,9 @@ class Point:
         assert len(pointList) == 3, "Point list must contain three Dimensions."
         return cls(pointList[0], pointList[1], pointList[2])
 
+    def __eq__(self, other) -> bool:
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
     def __add__(self, other):
         x = self.x + other.x
         y = self.y + other.y
@@ -722,6 +725,9 @@ class Dimensions():
         assert len(
             dimensionsList) == 3, "Dimensions list must contain three Dimensions."
         return cls(dimensionsList[0], dimensionsList[1], dimensionsList[2])
+
+    def __eq__(self, other) -> bool:
+        return self.point == other.point
 
     def __add__(self, other):
         point = self.point + other.point

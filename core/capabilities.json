@@ -177,7 +177,7 @@
                 "action": "modify",
                 "information": "Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
                 "parameters": {
-                    "scale": {
+                    "amount": {
                         "type": "string,float,Dimension"
                     }
                 }
@@ -186,7 +186,7 @@
                 "action": "modify",
                 "information": "Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
                 "parameters": {
-                    "scale": {
+                    "amount": {
                         "type": "string,float,Dimension"
                     }
                 }
@@ -195,7 +195,7 @@
                 "action": "modify",
                 "information": "Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
                 "parameters": {
-                    "scale": {
+                    "amount": {
                         "type": "string,float,Dimension"
                     }
                 }
@@ -241,7 +241,7 @@
             },
             "rotateX": {
                 "action": "modify",
-                "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
+                "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
                 "parameters": {
                     "rotation": {
                         "type": "string,float,Angle"
@@ -250,7 +250,7 @@
             },
             "rotateY": {
                 "action": "modify",
-                "information": "Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
+                "information": "Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
                 "parameters": {
                     "rotation": {
                         "type": "string,float,Angle"
@@ -259,7 +259,7 @@
             },
             "rotateZ": {
                 "action": "modify",
-                "information": "Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. '1/4radians' or '1/4r' or '90d'",
+                "information": "Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
                 "parameters": {
                     "rotation": {
                         "type": "string,float,Angle"

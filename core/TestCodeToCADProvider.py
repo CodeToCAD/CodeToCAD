@@ -146,7 +146,7 @@ class TestEntity(unittest.TestCase):
     def test_translateX(self):
         instance = Part("name","description")
 
-        value = instance.translateX("scale")
+        value = instance.translateX("amount")
 
         
         assert value, "Modify method succeeded."
@@ -155,7 +155,7 @@ class TestEntity(unittest.TestCase):
     def test_translateY(self):
         instance = Part("name","description")
 
-        value = instance.translateY("scale")
+        value = instance.translateY("amount")
 
         
         assert value, "Modify method succeeded."
@@ -164,7 +164,7 @@ class TestEntity(unittest.TestCase):
     def test_translateZ(self):
         instance = Part("name","description")
 
-        value = instance.translateZ("scale")
+        value = instance.translateZ("amount")
 
         
         assert value, "Modify method succeeded."
