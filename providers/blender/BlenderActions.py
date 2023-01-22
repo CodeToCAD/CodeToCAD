@@ -7,7 +7,7 @@ import bpy
 import core.utilities as Utilities
 import BlenderDefinitions
 from pathlib import Path
-from mathutils import Vector, Matrix
+import mathutils
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
 
@@ -462,9 +462,9 @@ def applyObjectRotationAndScale(objectName):
 
     translation, rotation, scale = blenderObject.matrix_basis.decompose()
 
-    translation = Matrix.Translation(translation)
+    translation = mathutils.Matrix.Translation(translation)
     rotation = rotation.to_matrix().to_4x4()
-    scale = Matrix.Diagonal(scale).to_4x4()
+    scale = mathutils.Matrix.Diagonal(scale).to_4x4()
 
     transformation = rotation @ scale
 
@@ -475,7 +475,8 @@ def applyObjectRotationAndScale(objectName):
 
     for child in blenderObject.children:
         child.matrix_basis = transformation @ child.matrix_basis
-        child.matrix_basis = Matrix.Translation(child.matrix_basis.translation)
+        child.matrix_basis = mathutils.Matrix.Translation(
+            child.matrix_basis.translation)
 
 
 def rotateObject(
@@ -1368,7 +1369,7 @@ def getClosestFaceToVertex(objectName, vertex):
     invertedMatrixWorld = matrixWorld.inverted()
 
     # vertex in object space:
-    vertexInverted = invertedMatrixWorld @ Vector(vertex)
+    vertexInverted = invertedMatrixWorld @ mathutils.Vector(vertex)
 
     # polygonIndex references an index at blenderObject.data.polygons[polygonIndex], in other words, the face or edge data
     [isFound, closestPoint, normal,
@@ -1401,7 +1402,7 @@ def getClosestPointsToVertex(objectName, vertex, numberOfPoints=2, objectKdTree=
     matrixWorld = blenderObject.matrix_world
     invertedMatrixWorld = matrixWorld.inverted()
 
-    vertexInverted = invertedMatrixWorld @ Vector(vertex)
+    vertexInverted = invertedMatrixWorld @ mathutils.Vector(vertex)
 
     return kdTree.find_n(vertexInverted, numberOfPoints)
 
@@ -1419,7 +1420,8 @@ def getBoundingBox(objectName):
     om = blenderObject.matrix_basis
 
     # matrix multiple world transform by all the vertices in the boundary
-    coords = [(om @ Vector(p[:])).to_tuple() for p in local_coords]
+    coords = [(om @ mathutils.
+               Vector(p[:])).to_tuple() for p in local_coords]
     coords = coords[::-1]
     # Coords should be a 1x8 array containing 1x3 vertices, example:
     # [(1.0, 1.0, -1.0), (1.0, 1.0, 1.0), (1.0, -1.0, 1.0), (1.0, -1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, 1.0, 1.0), (-1.0, -1.0, 1.0), (-1.0, -1.0, -1.0)]
