@@ -1,18 +1,39 @@
 from typing import Any, Optional, Union
-from mock.modeling.MockBlenderMath import Vector, Matrix
+
+import numpy as np
+
+from mock.modeling.MockBlenderMath import Matrix, Vector
 
 
 class Mesh:
-    def __init__(self, name) -> None:
+    def __init__(self, name: str, verticies: list[
+            'Mesh.MeshVertex']) -> None:
         self.name = name
+        self.vertices: list[Mesh.MeshVertex] = verticies
 
     def copy(self) -> 'Mesh':
-        copy = Mesh(self.name)
+        copy = Mesh(self.name, self.vertices)
 
         global mockBpy
         mockBpy.data.meshes.meshes.append(copy)
 
         return copy
+
+    def assignVertices(self, vectors: list[Vector]):
+        self.vertices = [Mesh.MeshVertex(vector) for vector in vectors]
+
+    @property
+    def bound_box(self):
+        minX, minY, minZ, _ = np.min(
+            [v.co.vector for v in self.vertices], axis=0).tolist()
+        maxX, maxY, maxZ, _ = np.max(
+            [v.co.vector for v in self.vertices], axis=0).tolist()
+
+        return [[minX, minY, minZ], [minX, minY, maxZ],  [minX, maxY, maxZ], [minX, maxY, minZ], [maxX, minY, minZ], [maxX, minY, maxZ], [maxX, maxY, maxZ],  [maxX, maxY, minZ]]
+
+    class MeshVertex:
+        def __init__(self, co: Vector) -> None:
+            self.co = co
 
 
 class Object:
@@ -25,7 +46,6 @@ class Object:
         self.parent: Optional[Object] = None
         self.matrix_world = Matrix()
         self.matrix_basis = self.matrix_world
-        self.bound_box = [[0, 0, 0] for i in range(8)]
         self.users_collection = [
             default_users_collection] if default_users_collection else []
         self.modifiers = Object.Modifiers()
@@ -36,6 +56,12 @@ class Object:
         if self.parent is None:
             return self.matrix_world
         return self.parent.matrix_world - self.matrix_world
+
+    @property
+    def bound_box(self):
+        if isinstance(self.data, Mesh):
+            return self.data.bound_box
+        raise TypeError()
 
     @property
     def location(self):
@@ -75,7 +101,8 @@ class Object:
         copy = Object(self.name, mockBpy.context.default_user_collection)
         copy.data = self.data
         copy.children = self.children
-        copy.location = self.location
+        copy.location = self.location  # type: ignore
+        copy.parent = self.parent
         copy.matrix_world = self.matrix_world
         copy.users_collection = self.users_collection
 
@@ -203,10 +230,10 @@ class Data:
 
         self.selectedObject: Optional[Object] = None
 
-    def createMeshObject(self, objectName, meshName):
+    def createMeshObject(self, objectName, meshName, verticies: list[Mesh.MeshVertex]):
         global mockBpy
 
-        mesh = Mesh(meshName)
+        mesh = Mesh(meshName, verticies)
         obj = Object(objectName, mockBpy.context.default_user_collection)
         obj.data = mesh
         mockBpy.data.objects.objects.append(obj)
@@ -271,7 +298,8 @@ class Ops:
                     0.0, 0.0, 0.0),
                 scale: Optional[Any] = (0.0, 0.0, 0.0)):
             global mockBpy
-            mockBpy.data.createMeshObject("Cube", "Cube")
+            mockBpy.data.createMeshObject("Cube", "Cube", [Mesh.MeshVertex(v) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
+                (-1.0, 1.0, 1.0)), Vector((1.0, -1.0, -1.0)), Vector((1.0, -1.0, 1.0)), Vector((1.0, 1.0, -1.0)), Vector((1.0, 1.0, 1.0))]])
 
 
 class Context:
