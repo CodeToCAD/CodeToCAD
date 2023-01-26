@@ -1272,6 +1272,13 @@ def getMesh(meshName):
 
     return blenderMesh
 
+# https://blender.stackexchange.com/questions/204781/how-to-sculpt-a-continuous-brush-stroke-with-python
+
+
+def getContext():
+    window = bpy.context.window_manager.windows[0]
+    return bpy.context.temp_override(window=window)
+
 
 # Applies the dependency graph to the object and persists its data using .copy()
 # This allows us to apply modifiers, UV data, etc.. to the mesh.
@@ -2058,3 +2065,7 @@ def addTextureToMaterial(materialName, imageFilePath):
     texImage.image = image
     material.node_tree.links.new(
         bsdf.inputs['Base Color'], texImage.outputs['Color'])
+
+
+def logMessage(message):
+    bpy.ops.code_to_cad.log_message(message=message)

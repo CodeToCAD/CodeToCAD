@@ -1,4 +1,3 @@
-
 import functools
 import os
 import pkgutil
@@ -36,7 +35,8 @@ operatorIds = {
     "ImportCodeToCAD": namespace + ".import_codetocad",
     "ConfirmImportedFileReload": namespace + ".confirm_imported_file_reload",
     "AddCodeToCADToPath": namespace + ".add_blender_provider_to_path",
-    "OpenPreferences": namespace + ".open_preferences"
+    "OpenPreferences": namespace + ".open_preferences",
+    "LogMessage": namespace + ".log_message",
 }
 
 
@@ -55,6 +55,23 @@ class ReloadLastImport(Operator):
             return {'CANCELLED'}
 
         importedFileWatcher.reloadFile(context)
+
+        return {'FINISHED'}
+
+
+class LogMessage(Operator):
+    bl_idname = operatorIds["LogMessage"]
+    bl_label = "Log Message"
+    bl_options = {'REGISTER'}
+    message: bpy.props.StringProperty(
+        name="Message", default="Reporting : Base message")
+
+    def execute(self, context):
+
+        # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
+
+        log = {"INFO"}
+        self.report(log, self.message)
 
         return {'FINISHED'}
 
@@ -442,6 +459,7 @@ def register():
     bpy.utils.register_class(ConfirmImportedFileReload)
     bpy.utils.register_class(CodeToCADPanel)
     bpy.utils.register_class(OpenPreferences)
+    bpy.utils.register_class(LogMessage)
 
     bpy.app.timers.register(addCodeToCADToPath)
 
@@ -459,6 +477,7 @@ def unregister():
     bpy.utils.unregister_class(ConfirmImportedFileReload)
     bpy.utils.unregister_class(CodeToCADPanel)
     bpy.utils.unregister_class(OpenPreferences)
+    bpy.utils.unregister_class(LogMessage)
 
     console_python.replace_help = replace_help
 
