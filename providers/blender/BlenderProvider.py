@@ -1545,3 +1545,6 @@ class Analytics(CodeToCADInterface.Analytics):
                       partName: str
                       ):
         return partName.getDimensions() if isinstance(partName, Entity) else Part(partName).getDimensions()
+
+    def log(self, message):
+        return BlenderActions.logMessage(message)
