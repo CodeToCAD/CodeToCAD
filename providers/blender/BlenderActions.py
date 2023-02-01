@@ -2,6 +2,7 @@
 # An implementation of an action should avoid performing any logic
 # An implementation of an action is allowed to perform unit conversions or perform read operations for pre-checks.
 
+from typing import Optional
 from uuid import uuid4
 import bpy
 import core.utilities as Utilities
@@ -532,69 +533,17 @@ def setObjectLocation(
 
 def scaleObject(
     objectName: str,
-    scalingDimensions: list[Utilities.Dimension]
+    xScaleFactor: Optional[float],
+    yScaleFactor: Optional[float],
+    zScaleFactor: Optional[float]
 ):
 
     blenderObject = getObject(objectName)
 
-    assert \
-        len(scalingDimensions) == 3, \
-        "scalingDimensions must be length 3"
+    currentScale = blenderObject.scale
 
-    # by default we'll try to scale to the specific length passed in, or a scale factor if no unit is passed. If two of the passed in lengths are None, we will do a lockAspectRatio scaling
-    scalingMethod = Utilities.ScalingMethods.toSpecificLength
-
-    # this might be confusing, but if [None,1m,None] is passed in
-    # we would want to scale y to 1m and adjust x and z by the same scale factor
-    # this also means that two values need to be None, and only 1 should have a value
-    emptyValuesCount = len(list(filter(
-        lambda dimension: dimension == None or dimension.value == None, scalingDimensions)))
-
-    assert \
-        emptyValuesCount != 1, \
-        "One of the scaling dimensions is None. At least two should be empty for lockAspectRatio calculations."
-
-    assert \
-        emptyValuesCount != 3, \
-        "All of the scaling dimensions are None. There are no values to scale by."
-
-    if emptyValuesCount == 0:
-        scalingMethod = Utilities.ScalingMethods.scaleFactor
-    elif emptyValuesCount == 2:
-        scalingMethod = Utilities.ScalingMethods.lockAspectRatio
-
-    sceneDimensions = blenderObject.dimensions
-    scaleFactorX = scaleFactorY = scaleFactorZ = 1
-
-    if scalingMethod == Utilities.ScalingMethods.lockAspectRatio:
-        nonEmptyIndex = next((index for index, dimension in enumerate(
-            scalingDimensions) if dimension and dimension.value != None), None)
-
-        assert \
-            nonEmptyIndex != None, \
-            "Could not find the value to compute lockAspectRatio scaling"
-
-        # assert \
-        #     sceneDimensions != None, \
-        #         "Could not get sceneDimensions to compute lockAspectRatio value"
-
-        lockAspectRatio = scalingDimensions[nonEmptyIndex].value
-        if sceneDimensions and scalingDimensions[nonEmptyIndex].unit != None:
-            lockAspectRatio = scalingDimensions[nonEmptyIndex].value / \
-                sceneDimensions[nonEmptyIndex]
-
-        scaleFactorX = scaleFactorY = scaleFactorZ = lockAspectRatio
-
-    elif scalingMethod == Utilities.ScalingMethods.toSpecificLength or scalingMethod == Utilities.ScalingMethods.scaleFactor:
-
-        [x, y, z] = scalingDimensions
-        # calculate scale factors if a unit is passed into the dimension
-        if sceneDimensions:
-            scaleFactorX = x.value/sceneDimensions.x if x.unit != None else x.value
-            scaleFactorY = y.value/sceneDimensions.y if y.unit != None else y.value
-            scaleFactorZ = z.value/sceneDimensions.z if z.unit != None else z.value
-
-    blenderObject.scale = (scaleFactorX, scaleFactorY, scaleFactorZ)
+    blenderObject.scale = (xScaleFactor or currentScale.x,
+                           yScaleFactor or currentScale.y, zScaleFactor or currentScale.z)
 
 
 # MARK: collections and groups:

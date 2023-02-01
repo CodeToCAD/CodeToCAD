@@ -1,6 +1,7 @@
 # THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
-# Please run capabilitiesToPyProvider.sh to generate this file.
+# Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
+# Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from typing import Optional
 
@@ -123,6 +124,21 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleZ(self, scale: DimensionOrItsFloatOrStringValue
                ):
+
+        return self
+
+    def scaleXByFactor(self, scaleFactor: float
+                       ):
+
+        return self
+
+    def scaleYByFactor(self, scaleFactor: float
+                       ):
+
+        return self
+
+    def scaleZByFactor(self, scaleFactor: float
+                       ):
 
         return self
 

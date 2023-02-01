@@ -13,4 +13,4 @@ export PYTHONPATH=$PYTHONPATH:"$SCRIPT_DIR/providers/blender"
 python -m tests.test_provider_compliance || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_provider_compliance
 
 
-python -m tests.test_provider || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_provider
+python -m tests.test_providers || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_providers

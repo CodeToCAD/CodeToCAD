@@ -19,17 +19,17 @@ if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < B
         f"CodeToCAD BlenderProvider only supports Blender versions {'.'.join(tuple, BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(BlenderActions.getBlenderVersion())}")  # type: ignore
 
 
-def injectBlenderProvider() -> None:
+def injectBlenderProvider(globalContext: Optional[dict]) -> None:
     from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider
 
-    setPartProvider(Part)
-    setSketchProvider(Sketch)
-    setMaterialProvider(Material)
-    setLandmarkProvider(Landmark)
-    setJointProvider(Joint)
-    setAnimationProvider(Animation)
-    setSceneProvider(Scene)
-    setAnalyticsProvider(Analytics)
+    setPartProvider(Part, globalContext)
+    setSketchProvider(Sketch, globalContext)
+    setMaterialProvider(Material, globalContext)
+    setLandmarkProvider(Landmark, globalContext)
+    setJointProvider(Joint, globalContext)
+    setAnimationProvider(Animation, globalContext)
+    setSceneProvider(Scene, globalContext)
+    setAnalyticsProvider(Analytics, globalContext)
 
 
 class Entity(CodeToCADInterface.Entity):
@@ -269,18 +269,64 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleX(self, scale: DimensionOrItsFloatOrStringValue
                ):
+        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+                scale, None)
+        )
+        scaleFactor: float = (valueInBlenderDefaultLength /
+                              self.getDimensions().x).value
+        BlenderActions.scaleObject(self.name, scaleFactor, None, None)
         return self
 
     def scaleY(self, scale: DimensionOrItsFloatOrStringValue
                ):
+        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+                scale, None)
+        )
+        scaleFactor: float = (valueInBlenderDefaultLength /
+                              self.getDimensions().y).value
+        BlenderActions.scaleObject(self.name, None, scaleFactor, None)
         return self
 
     def scaleZ(self, scale: DimensionOrItsFloatOrStringValue
                ):
+        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+                scale, None)
+        )
+        scaleFactor: float = (valueInBlenderDefaultLength /
+                              self.getDimensions().z).value
+        BlenderActions.scaleObject(self.name, None, None, scaleFactor)
+        return self
+
+    def scaleXByFactor(self, scaleFactor: float
+                       ):
+        BlenderActions.scaleObject(self.name, scaleFactor, None, None)
+        return self
+
+    def scaleYByFactor(self, scaleFactor: float
+                       ):
+        BlenderActions.scaleObject(self.name, None, scaleFactor, None)
+        return self
+
+    def scaleZByFactor(self, scaleFactor: float
+                       ):
+        BlenderActions.scaleObject(self.name, None, None, scaleFactor)
         return self
 
     def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                              ):
+
+        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+                scale, None)
+        )
+        scaleFactor: float = (valueInBlenderDefaultLength /
+                              self.getDimensions()[Utilities.Axis.fromString(axis)]).value
+
+        BlenderActions.scaleObject(
+            self.name, scaleFactor, scaleFactor, scaleFactor)
         return self
 
     def rotateX(self, rotation: AngleOrItsFloatOrStringValue
@@ -339,11 +385,19 @@ class Entity(CodeToCADInterface.Entity):
 
     def getBoundingBox(self
                        ) -> 'BoundaryBox':
-        raise NotImplementedError()
+        return BlenderActions.getBoundingBox(self.name)
 
     def getDimensions(self
                       ) -> 'Dimensions':
-        raise NotImplementedError()
+        dimensions = BlenderActions.getObject(self.name).dimensions
+        dimensions = [
+            Utilities.Dimension.fromString(
+                dimension,
+                BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value  # type: ignore
+            )
+            for dimension in dimensions
+        ]
+        return Utilities.Dimensions(dimensions[0], dimensions[1], dimensions[2])
 
     def getLandmark(self, landmarkName: str
                     ) -> 'Landmark':
