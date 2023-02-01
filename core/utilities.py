@@ -7,7 +7,7 @@ from enum import Enum
 from uuid import uuid4
 from pathlib import Path
 
-from typing import Optional, Union, cast
+from typing import Optional, Union
 
 
 min = "min"
@@ -240,9 +240,9 @@ class Angle():
 def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
     anglesList: list[str]
     if type(angles) == str:
-        anglesList = cast(str, angles).replace(" ", "").lower().split(",")
+        anglesList = angles.replace(" ", "").lower().split(",")
     else:
-        anglesList = cast(list[str], angles)
+        anglesList = angles
 
     assert isinstance(anglesList, (list, tuple)
                       ), "Only a list of strings is allowed."
@@ -259,7 +259,7 @@ def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
             angleString[0]) if angleString else None
         if unitInString != None:
             defaultUnit = unitInString
-            if len(cast(re.Match[str], angleString)[0]) == len(anglesList[-1]):
+            if len(angleString[0]) == len(anglesList[-1]):
                 anglesList.pop()
 
     parsedAngles = []
@@ -329,7 +329,9 @@ class Axis(EquittableEnum):
     Z = 2
 
     @staticmethod
-    def fromString(axis):
+    def fromString(axis: Union[str, float, 'Axis']):
+        if isinstance(axis, Axis):
+            return axis
         axis = str(axis).lower()
         if axis == "x" or axis == "0":
             return Axis.X
@@ -482,7 +484,7 @@ class Dimension():
         if not isinstance(other, Dimension):
             other = Dimension.fromString(other)
         if other.unit != None and other.unit != self.unit:
-            other = other.convertToUnit(cast(LengthUnit, self.unit))
+            other = other.convertToUnit(self.unit)
         return other
 
     def __add__(self, other):
@@ -593,7 +595,7 @@ class Dimension():
             if unit == None:
                 unit = boundaryAxis.unit
             value = replaceMinMaxCenterWithRespectiveValue(
-                value, boundaryAxis, cast(LengthUnit, unit))
+                value, boundaryAxis, unit)
 
         assert len(value) > 0, f"Dimension value cannot be empty."
 
