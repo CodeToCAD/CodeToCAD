@@ -5,6 +5,8 @@ import unittest
 
 from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
 
+from importlib import reload
+
 from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
@@ -12,12 +14,24 @@ from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 
+if __name__ == "__main__":
+    print("Started test_provider")
+
+    import tests.test_providers
+    unittest.main(tests.test_providers)
+
+    print("Completed test_provider")
+
+
+def injectMockProvider():
+    resetMockModelingProvider()
+    injectMockModelingProvider(globals())
+
 
 class TestEntity(unittest.TestCase):
 
     def setUp(self) -> None:
-        resetMockModelingProvider()
-        injectMockModelingProvider()
+        injectMockProvider()
         super().setUp()
 
     def test_isExists(self):
@@ -210,9 +224,9 @@ class TestEntity(unittest.TestCase):
 
     @unittest.skip
     def test_scaleX(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleX("scale")
+        value = instance.scaleX(5)
 
         assert value, "Modify method succeeded."
 
@@ -229,6 +243,30 @@ class TestEntity(unittest.TestCase):
         instance = Part("name", "description")
 
         value = instance.scaleZ("scale")
+
+        assert value, "Modify method succeeded."
+
+    @unittest.skip
+    def test_scaleXByFactor(self):
+        instance = Part("name", "description")
+
+        value = instance.scaleXByFactor("scale")
+
+        assert value, "Modify method succeeded."
+
+    @unittest.skip
+    def test_scaleYByFactor(self):
+        instance = Part("name", "description")
+
+        value = instance.scaleYByFactor("scale")
+
+        assert value, "Modify method succeeded."
+
+    @unittest.skip
+    def test_scaleZByFactor(self):
+        instance = Part("name", "description")
+
+        value = instance.scaleZByFactor("scale")
 
         assert value, "Modify method succeeded."
 

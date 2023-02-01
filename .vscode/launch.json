@@ -1,35 +1,24 @@
 {
     "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "confirmCapabilitiesToPython",
+            "description": "Are you sure? This will overwrite existing templates.",
+            "type": "promptString"
+        }
+    ],
     "configurations": [
         {
-            "name": "Test Provider",
+            "name": "Capabilities.json to Python",
             "type": "python",
             "request": "launch",
-            "module": "tests.test_provider",
+            "module": "development.capabilitiesJsonToPython.capabilitiesToPy",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmCapabilitiesToPython}"
+            ],
             "justMyCode": true,
             "cwd": "${workspaceRoot}",
-            "env": {
-                "PYTHONPATH": "providers:providers/blender"
-            }
-        },
-        {
-            "name": "Test Provider Compliance",
-            "type": "python",
-            "request": "launch",
-            "module": "tests.test_provider_compliance",
-            "justMyCode": true,
-            "cwd": "${workspaceRoot}",
-            "env": {
-                "PYTHONPATH": "providers:providers/blender"
-            }
-        },
-        {
-            "name": "Test Utilities",
-            "type": "python",
-            "request": "launch",
-            "module": "tests.test_utilities",
-            "justMyCode": true,
-            "cwd": "${workspaceRoot}"
         }
     ]
 }

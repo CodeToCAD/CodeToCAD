@@ -1,5 +1,7 @@
 autopep8
 
+jinja2-cli
+
 # Blender Development Dependencies:
 fake-bpy-module-latest
 numpy

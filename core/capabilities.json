@@ -202,7 +202,7 @@
             },
             "scaleX": {
                 "action": "modify",
-                "information": "Scale in the X direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "information": "Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
                     "scale": {
                         "type": "string,float,Dimension"
@@ -211,7 +211,7 @@
             },
             "scaleY": {
                 "action": "modify",
-                "information": "Scale in the Y direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "information": "Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
                     "scale": {
                         "type": "string,float,Dimension"
@@ -220,10 +220,37 @@
             },
             "scaleZ": {
                 "action": "modify",
-                "information": "Scale in the Z direction. Pass a number to scale by a factor. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "information": "Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
                     "scale": {
                         "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scaleXByFactor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scaleFactor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scaleYByFactor": {
+                "action": "modify",
+                "information": "Scale in the Y direction by a multiple.",
+                "parameters": {
+                    "scaleFactor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scaleZByFactor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scaleFactor": {
+                        "type": "float"
                     }
                 }
             },

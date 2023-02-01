@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional, Type
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 
@@ -25,43 +25,61 @@ Material: Type[CodeToCADInterface.Material] = CodeToCADInterface.Material
 Animation = None
 
 
-def setPartProvider(provider: Type[CodeToCADInterface.Part]) -> None:
+def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
     global Part, Shape
     Part = provider
     Shape = provider
+    if globalContext:
+        globalContext["Part"] = provider
+        globalContext["Shape"] = provider
 
 
-def setSketchProvider(provider: Type[CodeToCADInterface.Sketch]) -> None:
+def setSketchProvider(provider: Type[CodeToCADInterface.Sketch], globalContext: Optional[dict]) -> None:
     global Sketch, Curve
     Sketch = provider
     Curve = provider
+    if globalContext:
+        globalContext["Sketch"] = provider
+        globalContext["Curve"] = provider
 
 
-def setLandmarkProvider(provider: Type[CodeToCADInterface.Landmark]) -> None:
+def setLandmarkProvider(provider: Type[CodeToCADInterface.Landmark], globalContext: Optional[dict]) -> None:
     global Landmark
     Landmark = provider
+    if globalContext:
+        globalContext["Landmark"] = provider
 
 
-def setSceneProvider(provider: Type[CodeToCADInterface.Scene]) -> None:
+def setSceneProvider(provider: Type[CodeToCADInterface.Scene], globalContext: Optional[dict]) -> None:
     global Scene
     Scene = provider
+    if globalContext:
+        globalContext["Scene"] = provider
 
 
-def setAnalyticsProvider(provider: Type[CodeToCADInterface.Analytics]) -> None:
+def setAnalyticsProvider(provider: Type[CodeToCADInterface.Analytics], globalContext: Optional[dict]) -> None:
     global Analytics
     Analytics = provider
+    if globalContext:
+        globalContext["Analytics"] = provider
 
 
-def setJointProvider(provider: Type[CodeToCADInterface.Joint]) -> None:
+def setJointProvider(provider: Type[CodeToCADInterface.Joint], globalContext: Optional[dict]) -> None:
     global Joint
     Joint = provider
+    if globalContext:
+        globalContext["Joint"] = provider
 
 
-def setMaterialProvider(provider: Type[CodeToCADInterface.Material]) -> None:
+def setMaterialProvider(provider: Type[CodeToCADInterface.Material], globalContext: Optional[dict]) -> None:
     global Material
     Material = provider
+    if globalContext:
+        globalContext["Material"] = provider
 
 
-def setAnimationProvider(provider) -> None:
+def setAnimationProvider(provider, globalContext: Optional[dict]) -> None:
     global Animation
     Animation = provider
+    if globalContext:
+        globalContext["Animation"] = provider
