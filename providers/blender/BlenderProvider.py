@@ -1,5 +1,6 @@
 import math
 from typing import Union, cast
+from unicodedata import name
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
@@ -1394,6 +1395,41 @@ class Joint(CodeToCADInterface.Joint):
         return self
 
 
+class Light(Entity):
+
+    def __init__(self, lightName):
+        self.name = lightName
+
+    def createSun(self, energyLevel=100):
+        BlenderActions.createLight(self.name, energyLevel, type="SUN")
+        return self
+
+    def createPoint(self, energyLevel=100):
+        BlenderActions.createLight(self.name, energyLevel, type="POINT")
+        return self
+
+    def createSpot(self, energyLevel=100):
+        BlenderActions.createLight(self.name, energyLevel, type="SPOT")
+        return self
+
+    def createArea(self, energyLevel=100):
+        BlenderActions.createLight(self.name, energyLevel, type="AREA")
+        return self
+
+    def setColor(self, rValue, gValue, bValue):
+        BlenderActions.setLightColor(
+            self.name, rValue, gValue, bValue)
+        return self
+
+
+class Camera(Entity):
+
+    def __init__(self, cameraName):
+        self.name = cameraName
+
+    # we need a create camera --> look at different cameras within blender API
+
+
 class Animation:
 
     @staticmethod
@@ -1416,11 +1452,14 @@ class Animation:
         BlenderActions.addKeyframeToObject(
             partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
+    # light class will need to be called as the Light(ID) states that there is an animation_data for this block!
+
 
 class Scene(CodeToCADInterface.Scene):
 
     name = None
     description = None
+    light = Light
 
     # Names a scene
     def __init__(self,
