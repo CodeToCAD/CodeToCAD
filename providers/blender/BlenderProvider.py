@@ -1427,7 +1427,21 @@ class Camera(Entity):
     def __init__(self, cameraName):
         self.name = cameraName
 
-    # we need a create camera --> look at different cameras within blender API
+    def createPerspective(self):
+        BlenderActions.createCamera(self.name, type="PERSP")
+        return self
+
+    def createOrthogonal(self):
+        BlenderActions.createCamera(self.name, type="ORTHO")
+        return self
+
+    def createPanoramic(self):
+        BlenderActions.createCamera(self.name, type="PANO")
+        return self
+
+    def setFocalLength(self, length):
+        BlenderActions.setFocalLength(self.name, length)
+        return self
 
 
 class Animation:
@@ -1453,6 +1467,7 @@ class Animation:
             partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
     # light class will need to be called as the Light(ID) states that there is an animation_data for this block!
+    # camera class will also need to be called it
 
 
 class Scene(CodeToCADInterface.Scene):
