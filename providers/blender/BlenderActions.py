@@ -2078,6 +2078,33 @@ def createLight(objName, energyLevel, type):
     assignObjectToCollection(objName)
 
 
+def getLight(lightName):
+    blenderLight = bpy.data.lights.get(lightName)
+
+    assert \
+        blenderLight != None, \
+        f"Material {lightName} does not exist."
+
+    return blenderLight
+
+
+def setLightColor(lightName, rValue, gValue, bValue):
+    if type(rValue) == int:
+        rValue /= 255.0
+
+    if type(gValue) == int:
+        gValue /= 255.0
+
+    if type(bValue) == int:
+        bValue /= 255.0
+
+    light = getLight(lightName)
+
+    light.color = (rValue, gValue, bValue)
+
+    return light
+
+
 def createCamera(objName):
     camera_data = bpy.data.cameras.new(name=objName)
     createObject(objName, data=camera_data)
