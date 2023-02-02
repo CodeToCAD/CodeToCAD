@@ -2069,3 +2069,16 @@ def addTextureToMaterial(materialName, imageFilePath):
 
 def logMessage(message):
     bpy.ops.code_to_cad.log_message(message=message)
+
+
+def createLight(objName, energyLevel, type):
+    light_data = bpy.data.lights.new(name=objName, type=type)
+    light_data.energy = energyLevel
+    createObject(objName, data=light_data)
+    assignObjectToCollection(objName)
+
+
+def createCamera(objName):
+    camera_data = bpy.data.cameras.new(name=objName)
+    createObject(objName, data=camera_data)
+    assignObjectToCollection(objName)
