@@ -2083,7 +2083,7 @@ def getLight(lightName):
 
     assert \
         blenderLight != None, \
-        f"Material {lightName} does not exist."
+        f"Light {lightName} does not exist."
 
     return blenderLight
 
@@ -2105,7 +2105,26 @@ def setLightColor(lightName, rValue, gValue, bValue):
     return light
 
 
-def createCamera(objName):
+def createCamera(objName, type):
     camera_data = bpy.data.cameras.new(name=objName)
     createObject(objName, data=camera_data)
     assignObjectToCollection(objName)
+
+
+def getCamera(cameraName):
+    blenderCamera = bpy.data.cameras.get(cameraName)
+
+    assert \
+        blenderCamera != None, \
+        f"Camera {cameraName} does not exist."
+
+    return blenderCamera
+
+
+def setFocalLength(cameraName, length=50.0):
+    camera = getCamera(cameraName)
+    assert \
+        length >= 1, \
+        "Length needs to be greater than or equal to 1."
+
+    camera.lens = length
