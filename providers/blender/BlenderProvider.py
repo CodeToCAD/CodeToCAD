@@ -1,6 +1,5 @@
 import math
 from typing import Union, cast
-from unicodedata import name
 import core.utilities as Utilities
 import core.CodeToCADInterface as CodeToCADInterface
 import BlenderDefinitions
@@ -1465,9 +1464,6 @@ class Animation:
             partName = partName.name
         BlenderActions.addKeyframeToObject(
             partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
-
-    # light class will need to be called as the Light(ID) states that there is an animation_data for this block!
-    # camera class will also need to be called it
 
 
 class Scene(CodeToCADInterface.Scene):
