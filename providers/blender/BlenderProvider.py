@@ -302,28 +302,27 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleXByFactor(self, scaleFactor: float
                        ):
-        BlenderActions.scaleObject(self.name, scaleFactor, None, None)
-        return self
+        return self.scaleX(scaleFactor)
 
     def scaleYByFactor(self, scaleFactor: float
                        ):
-        BlenderActions.scaleObject(self.name, None, scaleFactor, None)
-        return self
+        return self.scaleY(scaleFactor)
 
     def scaleZByFactor(self, scaleFactor: float
                        ):
-        BlenderActions.scaleObject(self.name, None, None, scaleFactor)
-        return self
+        return self.scaleZ(scaleFactor)
 
     def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                              ):
-
+        scale = Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+            scale, None)
         valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
-                scale, None)
-        )
-        scaleFactor: float = (valueInBlenderDefaultLength /
-                              self.getDimensions()[Utilities.Axis.fromString(axis)]).value
+            scale)
+
+        dimensionInAxis = self.getDimensions(
+        )[Utilities.Axis.fromString(axis).value]
+        scaleFactor: float = (
+            valueInBlenderDefaultLength / dimensionInAxis).value
 
         BlenderActions.scaleObject(
             self.name, scaleFactor, scaleFactor, scaleFactor)

@@ -10,6 +10,8 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 
 ## Getting Started
 
+> Pre-requisites: Python 3.10, Blender 3.1 
+
 1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 > If you're a developer, instead of downloading a release, you can clone this repository.
 
