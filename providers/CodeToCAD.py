@@ -29,8 +29,9 @@ def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Opti
     global Part, Shape
     Part = provider
     Shape = provider
-    if globalContext:
+    if globalContext and "Part" in globalContext:
         globalContext["Part"] = provider
+    if globalContext and "Shape" in globalContext:
         globalContext["Shape"] = provider
 
 
@@ -38,48 +39,49 @@ def setSketchProvider(provider: Type[CodeToCADInterface.Sketch], globalContext: 
     global Sketch, Curve
     Sketch = provider
     Curve = provider
-    if globalContext:
+    if globalContext and "Sketch" in globalContext:
         globalContext["Sketch"] = provider
+    if globalContext and "Curve" in globalContext:
         globalContext["Curve"] = provider
 
 
 def setLandmarkProvider(provider: Type[CodeToCADInterface.Landmark], globalContext: Optional[dict]) -> None:
     global Landmark
     Landmark = provider
-    if globalContext:
+    if globalContext and "Landmark" in globalContext:
         globalContext["Landmark"] = provider
 
 
 def setSceneProvider(provider: Type[CodeToCADInterface.Scene], globalContext: Optional[dict]) -> None:
     global Scene
     Scene = provider
-    if globalContext:
+    if globalContext and "Scene" in globalContext:
         globalContext["Scene"] = provider
 
 
 def setAnalyticsProvider(provider: Type[CodeToCADInterface.Analytics], globalContext: Optional[dict]) -> None:
     global Analytics
     Analytics = provider
-    if globalContext:
+    if globalContext and "Analytics" in globalContext:
         globalContext["Analytics"] = provider
 
 
 def setJointProvider(provider: Type[CodeToCADInterface.Joint], globalContext: Optional[dict]) -> None:
     global Joint
     Joint = provider
-    if globalContext:
+    if globalContext and "Joint" in globalContext:
         globalContext["Joint"] = provider
 
 
 def setMaterialProvider(provider: Type[CodeToCADInterface.Material], globalContext: Optional[dict]) -> None:
     global Material
     Material = provider
-    if globalContext:
+    if globalContext and "Material" in globalContext:
         globalContext["Material"] = provider
 
 
 def setAnimationProvider(provider, globalContext: Optional[dict]) -> None:
     global Animation
     Animation = provider
-    if globalContext:
+    if globalContext and "Animation" in globalContext:
         globalContext["Animation"] = provider
