@@ -291,7 +291,7 @@ def blenderPrimitiveFunction(
 def addPrimitive(
     primitiveType: BlenderDefinitions.BlenderObjectPrimitiveTypes,
     dimensions: str,
-    keywordArguments: dict
+    keywordArguments: Optional[dict]
 ):
 
     assert primitiveType != None, f"Primitive type is required."
@@ -482,25 +482,29 @@ def applyObjectRotationAndScale(objectName):
 
 def rotateObject(
     objectName,
-    rotationAngles: list[Utilities.Angle],
+    rotationAngles: list[Optional[Utilities.Angle]],
     rotationType: BlenderDefinitions.BlenderRotationTypes
 ):
 
     blenderObject = getObject(objectName)
 
-    assert \
-        len(rotationAngles) == 3, \
-        "rotationAngles must be length 3"
+    currentRotation = getattr(blenderObject, rotationType.value)
 
-    rotationTuple = (rotationAngles[0].toRadians(
-    ).value, rotationAngles[1].toRadians().value, rotationAngles[2].toRadians().value)
+    outputRotation = []
 
-    setattr(blenderObject, rotationType.value, rotationTuple)
+    for index in range(len(currentRotation)):
+        angle = currentRotation[index]
+        newAngle = rotationAngles[index]
+        if newAngle != None:
+            angle = newAngle.toRadians().value
+        outputRotation.append(angle)
+
+    setattr(blenderObject, rotationType.value, outputRotation)
 
 
 def translateObject(
     objectName,
-    translationDimensions: list[Utilities.Dimension],
+    translationDimensions: list[Optional[Utilities.Dimension]],
     translationType: BlenderDefinitions.BlenderTranslationTypes
 ):
 
@@ -510,15 +514,23 @@ def translateObject(
         len(translationDimensions) == 3, \
         "translationDimensions must be length 3"
 
-    translationTuple = (
-        translationDimensions[0].value, translationDimensions[1].value, translationDimensions[2].value)
+    currentLocation = blenderObject.location
 
-    setattr(blenderObject, translationType.value, translationTuple)
+    outputLocation = []
+
+    for index in range(3):
+        location = currentLocation[index]
+        newLocation = translationDimensions[index]
+        if newLocation != None:
+            location = newLocation.value
+        outputLocation.append(location)
+
+    setattr(blenderObject, translationType.value, outputLocation)
 
 
 def setObjectLocation(
     objectName,
-    locationDimensions: list[Utilities.Dimension]
+    locationDimensions: list[Optional[Utilities.Dimension]]
 ):
 
     blenderObject = getObject(objectName)
@@ -527,8 +539,18 @@ def setObjectLocation(
         len(locationDimensions) == 3, \
         "locationDimensions must be length 3"
 
-    blenderObject.location = (
-        locationDimensions[0].value, locationDimensions[1].value, locationDimensions[2].value)
+    currentLocation = blenderObject.location
+
+    outputLocation = []
+
+    for index in range(3):
+        location = currentLocation[index]
+        newLocation = locationDimensions[index]
+        if newLocation != None:
+            location = newLocation.value
+        outputLocation.append(location)
+
+    blenderObject.location = outputLocation
 
 
 def scaleObject(

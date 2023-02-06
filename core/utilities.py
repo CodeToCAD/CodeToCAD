@@ -111,6 +111,14 @@ class Angle():
         self.value = value
         self.unit = unit or AngleUnit.DEGREES
 
+    @staticmethod
+    def fromAngleOrItsFloatOrStringValue(mysteryAngle: Union[str, float, 'Angle']) -> 'Angle':
+        if isinstance(mysteryAngle, Angle):
+            return mysteryAngle
+        if isinstance(mysteryAngle, (int, float)):
+            return Angle(mysteryAngle)
+        return Angle.fromString(mysteryAngle)
+
     def __str__(self) -> str:
         return f"{self.value}{' '+self.unit.name.lower() if self.unit else ''}"
 
