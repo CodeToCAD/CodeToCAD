@@ -1,4 +1,4 @@
-from BlenderProvider import injectBlenderProvider
+from providers.blender.BlenderProvider import injectBlenderProvider
 
 import unittest
 

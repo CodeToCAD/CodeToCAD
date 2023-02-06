@@ -1,16 +1,32 @@
 #!/bin/sh
 
-SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from https://stackoverflow.com/a/4774063/
-
 set -e # exit script if there is an error.
 
-python -m tests.test_utilities || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_utilities
+SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from https://stackoverflow.com/a/4774063/
+
+VENV_DIR="$SCRIPT_DIR/development/developmentVirutalEnvironment"
+
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Virtual environment is not set up. Please run 'sh development/createPythonVirtualEnvironment.sh'"
+    exit 1
+fi
 
 
-export PYTHONPATH=$PYTHONPATH:"$SCRIPT_DIR/providers"
-export PYTHONPATH=$PYTHONPATH:"$SCRIPT_DIR/providers/blender"
+if [ -f "$VENV_DIR/Scripts/activate" ]; then
+    . "$VENV_DIR/Scripts/activate"
+else
+    . "$VENV_DIR/bin/activate"
+fi
 
-python -m tests.test_provider_compliance || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_provider_compliance
+
+python -m tests.test_utilities
 
 
-python -m tests.test_providers || echo "Going to try running tests with python3, instead:" && python3 -m tests.test_providers
+export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/providers"
+export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/providers/blender"
+
+
+python -m tests.test_provider_compliance
+
+
+python -m tests.test_providers

@@ -14,8 +14,8 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 
 1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 > If you're a developer, instead of downloading a release, you can clone this repository.
-
-2. Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
+2. Run or browse the [examples](./examples/)! 
+3. Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
 
 ## Integrations
@@ -44,19 +44,26 @@ Future planned integrations:
 💕 Built by people who believe in automation and that modeling workflows should be intuitive, reliable and most importantly free and open source!
 
 
-## Technical Concepts Start Here
+## Development & Contributing
 
-### [utilities.py](./utilities.py)
+### Setting up development environment.
 
-[Utilities.py](./utilities.py) provides common and built-in features of CodeToCAD. This includes Length and Angle parsing from string, and unit conversions.
+1. Please install the VSCode python virtual environment using
+`sh development/createPythonVirtualEnvironment.sh` 
+or 
+`sh development/createPythonVirtualEnvironment.sh /path/to/python_binary`.
 
-Python3.8+ is needed to maintain [utilities.py](./utilities.py)
+> If you are on Windows, please use Git Bash.
+> Note: Python 3.10+ is required.
+> Note 2: It might be a good idea to restart VSCode after installing the virtual environment. 
+> Note 3: If VSCode prompts you, please use the interpreter under `development/developmentVirtualEnvironment`.
 
-[test_utilities](./tests/test_utilities.py) tests Angle and Length parsing and unit conversions.
+2. It's good practice to run tests before committing. Please run `sh ./development/installGitHooks.sh` to instll Git Hooks.
 
-### Git Hooks
+3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
 
-If you're working on this project, it might be helpful to use git hooks. To install hooks into your dev environment, please run `sh ./development/installGitHooks.sh`
+4. Install the Blender Addon at [providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+
 
 ### Running Tests
 
@@ -64,20 +71,14 @@ Run tests using `sh runTests.sh`.
 
 ### Capabilities.json and Jinja2 templates
 
-[Capabilities.json](./capabilities.json) defines all the possible functions that can be used to create a model.
+[core/capabilities.json](./core/capabilities.json) is a schema used to generate the [CodeToCAD interface](./core/CodeToCADInterface.py).
 
-Jinja2 files are used to turn the json file into actual code:
-- [Python template](./capabilitiesToPython.j2) - Creates the classes and methods templates in python
+Jinja2 templates are used to turn capabilities.json into an interface, as well as templates for CodeToCAD Providers and Tests.
 
-### Generating Jinja2 templates:
+You can generate the Jinja2 templates by running the "Capabilities.json to Python" task in VSCode, or `sh development/capabilitiesJsonToPython/capabilitiesToPy.sh`
 
-run [capabilitiesToPython.sh](./capabilitiesToPython.sh) to automatically generate [capabilities.py](capabilities.py). This script does the following:
+### Contributing
 
-- Create a python virtual environment
-- Sources the virtual environment
-- Runs `pip install jinja2-cli`
-- Runs `jinja2 capabilitiesToPython.j2 capabilities.json --format=json > capabilities.py`
+If you would like to contribute to the project, please feel free to submit a PR. 
 
-### Capabilities
-
-All capabilities are recorded in [capabilities.json](./capabilities.json). 
+Please join the Discord Server if you have any questions or suggestions: [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)

@@ -7,7 +7,7 @@
         "providers/",
         "providers/blender"
     ],
-    "python.defaultInterpreterPath": "development/developmentVirutalEnvironment/bin/python3",
+    "python.defaultInterpreterPath": "${workspaceFolder}/development/developmentVirutalEnvironment/bin/python",
     "editor.wordWrap": "on",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,
@@ -15,6 +15,12 @@
     "python.analysis.inlayHints.functionReturnTypes": true,
     "python.analysis.inlayHints.variableTypes": true,
     "python.analysis.typeCheckingMode": "basic",
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "providers;providers/blender"
+    },
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "providers:providers/blender"
+    },
     "python.envFile": "${workspaceFolder}/development/.pythonpath.env",
     "python.testing.unittestArgs": [
         "-v",

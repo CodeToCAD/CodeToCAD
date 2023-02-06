@@ -48,6 +48,12 @@ class Vector:
     def to_tuple(self):
         return (self.x, self.y, self.z)
 
+    def __sizeof__(self) -> int:
+        return self.vector.size
+
+    def __len__(self) -> int:
+        return self.__sizeof__()
+
     def __add__(self, other):
         return Vector(np.add(self.vector, getNumpyArrayFromVectorOrMatrix(other)).tolist())
 
