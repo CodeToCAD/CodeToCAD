@@ -5,8 +5,6 @@ import unittest
 
 from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
 
-from importlib import reload
-
 from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
@@ -285,27 +283,24 @@ class TestEntity(unittest.TestCase):
 
         assert dimensions.x.value == 5 and dimensions.y.value == 5 and dimensions.z.value == 5, "Modify method failed."
 
-    @unittest.skip
     def test_rotateX(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.rotateX("rotation")
+        value = instance.rotateX(45)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_rotateY(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.rotateY("rotation")
+        value = instance.rotateY(45)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_rotateZ(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.rotateZ("rotation")
+        value = instance.rotateZ(45)
 
         assert value, "Modify method failed."
 

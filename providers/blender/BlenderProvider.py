@@ -330,22 +330,54 @@ class Entity(CodeToCADInterface.Entity):
 
     def rotateX(self, rotation: AngleOrItsFloatOrStringValue
                 ):
+        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+
+        BlenderActions.rotateObject(
+            self.name, [angle, None, None], BlenderDefinitions.BlenderRotationTypes.EULER)
+
         return self
 
     def rotateY(self, rotation: AngleOrItsFloatOrStringValue
                 ):
+        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+
+        BlenderActions.rotateObject(
+            self.name, [None, angle, None], BlenderDefinitions.BlenderRotationTypes.EULER)
         return self
 
     def rotateZ(self, rotation: AngleOrItsFloatOrStringValue
                 ):
+        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+
+        BlenderActions.rotateObject(
+            self.name, [None, None, angle], BlenderDefinitions.BlenderRotationTypes.EULER)
         return self
 
     def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"
               ):
+        if isinstance(entityNameToDetermineAxis, Entity):
+            entityNameToDetermineAxis = entityNameToDetermineAxis.name
+
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
+            angle).toRadians(), axis, entityNameToDetermineAxis=entityNameToDetermineAxis)
+
         return self
 
     def remesh(self, strategy: str, amount: float
                ):
+
+        if strategy == "crease":
+            BlenderActions.setEdgesMeanCrease(self.name, 1.0)
+        if strategy == "edgesplit":
+            BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {
+                                         "name": "EdgeDiv", "split_angle": math.radians(30)})
+
+        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
+                                     "name": "Subdivision", "levels": amount})
         return self
 
     def createLandmark(self, landmarkName: str, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
@@ -414,6 +446,20 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def createFromFile(self, filePath: str, fileType: Optional[str] = None
                        ):
+        assert self.isExists() == False, f"{self.name} already exists."
+
+        fileName = getFilename(filePath)
+
+        absoluteFilePath = getAbsoluteFilepath(filePath)
+
+        BlenderActions.importFile(absoluteFilePath, fileType)
+
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        if self.name != fileName:
+            Part(fileName).rename(self.name)
+
         return self
 
     def createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
@@ -423,7 +469,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         # TODO: account for blender auto-renaming with sequential numbers
         primitiveType: BlenderDefinitions.BlenderObjectPrimitiveTypes = getattr(
-            BlenderDefinitions.BlenderObjectPrimitiveTypes, primitiveName.lower(), None)
+            BlenderDefinitions.BlenderObjectPrimitiveTypes, primitiveName.lower())
         expectedNameOfObjectInBlender = primitiveType.defaultNameInBlender(
         ) if primitiveType else None
 
@@ -448,78 +494,330 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def createCone(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, draftRadius: DimensionOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
-        return self
+        return self.createPrimitive("cone", "{},{},{}".format(radius, height, draftRadius), keywordArguments)
 
     def createCylinder(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                        ):
-        return self
+        return self.createPrimitive("cylinder", "{},{}".format(radius, height), keywordArguments)
 
     def createTorus(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                     ):
-        return self
+        return self.createPrimitive("torus", "{},{}".format(innerRadius, outerRadius), keywordArguments)
 
     def createSphere(self, radius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                      ):
-        return self
+        return self.createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
 
     def createGear(self, outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
+        BlenderActions.createGear(
+            self.name,
+            numberOfTeeth,
+            pressureAngle,
+            addendum,
+            dedendum,
+            outerRadius,
+            innerRadius,
+            height,
+            skewAngle,
+            conicalAngle,
+            crownAngle
+        )
+
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        Part("Gear").rename(self.name, True)
+
         return self
 
     def loft(self, Landmark1: 'Landmark', Landmark2: 'Landmark'
              ):
+        raise NotImplementedError()
         return self
 
     def union(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
               ):
+        if isinstance(withPart, Entity):
+            withPart = withPart.name
+
+        BlenderActions.applyBooleanModifier(
+            self.name,
+            BlenderDefinitions.BlenderBooleanTypes.UNION,
+            withPart
+        )
+
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPart, self.name)
+
+        if deleteAfterUnion:
+            self.apply()
+            BlenderActions.removeObject(withPart, removeChildren=True)
         return self
 
-    def subtract(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
+    def subtract(self, withPart: PartOrItsName, deleteAfterSubtract: bool = True, isTransferLandmarks: bool = False
                  ):
+        if isinstance(withPart, Entity):
+            withPart = withPart.name
+
+        BlenderActions.applyBooleanModifier(
+            self.name,
+            BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
+            withPart
+        )
+
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPart, self.name)
+
+        if deleteAfterSubtract:
+            self.apply()
+            BlenderActions.removeObject(withPart, removeChildren=True)
         return self
 
-    def intersect(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
+    def intersect(self, withPart: PartOrItsName, deleteAfterIntersect: bool = True, isTransferLandmarks: bool = False
                   ):
+        if isinstance(withPart, Entity):
+            withPart = withPart.name
+
+        BlenderActions.applyBooleanModifier(
+            self.name,
+            BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
+            withPart
+        )
+
+        if isTransferLandmarks:
+            BlenderActions.transferLandmarks(withPart, self.name)
+
+        if deleteAfterIntersect:
+            self.apply()
+            BlenderActions.removeObject(withPart, removeChildren=True)
+
         return self
 
     def hollow(self, thicknessX: DimensionOrItsFloatOrStringValue, thicknessY: DimensionOrItsFloatOrStringValue, thicknessZ: DimensionOrItsFloatOrStringValue, startAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False
                ):
+        blenderObject = self.getNativeInstance()
+
+        axis = Utilities.Axis.fromString(startAxis)
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        startLandmarkLocation = [center, center, center]
+        startLandmarkLocation[axis.value] = min if flipAxis else max
+
+        startAxisLandmark = self.createLandmark(
+            createUUIDLikeId(), startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
+
+        insidePart = self.clone(createUUIDLikeId(), copyLandmarks=False)
+        insidePart_start = insidePart.createLandmark(
+            "start", startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
+
+        thicknessXYZ = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
+            Utilities.Dimension.fromString(thicknessX),
+            Utilities.Dimension.fromString(thicknessY),
+            Utilities.Dimension.fromString(thicknessZ),
+        ])]
+
+        dimensions = blenderObject.dimensions
+
+        scale = [
+            (dimensions[0]-thicknessXYZ[0] *
+             (1 if axis.value == 0 else 2)) / dimensions[0],
+            (dimensions[1]-thicknessXYZ[1] *
+             (1 if axis.value == 1 else 2)) / dimensions[1],
+            (dimensions[2]-thicknessXYZ[2] *
+             (1 if axis.value == 2 else 2)) / dimensions[2]
+        ]
+
+        insidePart.scale_fromstring(scale)
+
+        Joint(startAxisLandmark, insidePart_start).limitLocation(0, 0, 0)
+
+        self.subtract(insidePart, isTransferLandmarks=False)
+
+        startAxisLandmark.delete(removeChildren=True)
+
         return self
 
     def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flip: bool = False, instanceCount: 'int' = 1, instanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, aboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirror: bool = False, instanceAxis: Optional[AxisOrItsIndexOrItsName] = None, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, leaveHoleEntity: bool = False
              ):
+        if isinstance(holeLandmark, Landmark):
+            holeLandmark = holeLandmark.name
+
+        axis = Utilities.Axis.fromString(normalAxis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        hole = Part(createUUIDLikeId()).createCylinder(radius, depth)
+        hole_head = hole.createLandmark(
+            "hole", center, center, min if flip else max)
+
+        axisRotation = Utilities.Angle(-90, Utilities.AngleUnit.DEGREES)
+
+        if axis is Utilities.Axis.X:
+            initialRotationY = (axisRotation+initialRotationY).value
+        elif axis is Utilities.Axis.Y:
+            initialRotationX = (axisRotation+initialRotationX).value
+        hole.rotate(initialRotationX, initialRotationY, initialRotationZ)
+
+        Joint(self, hole, holeLandmark, hole_head).limitLocation(0, 0, 0)
+
+        if mirror:
+            hole.mirror(aboutEntityOrLandmark, instanceAxis or "x").apply()
+
+        if instanceCount > 1:
+            if aboutEntityOrLandmark != None:
+                instanceSeparation = 360.0 / \
+                    float(
+                        instanceCount) if instanceSeparation == 0 else instanceSeparation
+                hole.circularPattern(
+                    instanceCount, instanceSeparation, instanceAxis or "z", aboutEntityOrLandmark)
+            else:
+                assert instanceSeparation != 0, "InstanceCount is set, but instanceSeparation is 0. Did you mean to add an instanceSeparation?"
+                hole.linearPattern(
+                    instanceCount, instanceAxis or "x", instanceSeparation)
+
+        self.subtract(hole, deleteAfterSubtract=(
+            not leaveHoleEntity), isTransferLandmarks=False)
         return self
 
     def assignMaterial(self, materialName: MaterialOrItsName
                        ):
+        Material(materialName).assignToPart(self.name)
         return self
 
     def isCollidingWithPart(self, otherPart: PartOrItsName
                             ):
-        raise NotImplementedError()
+        if isinstance(otherPartName, Part):
+            otherPartName = otherPartName.name
+
+        return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
     def filletAllEdges(self, radius: DimensionOrItsFloatOrStringValue, useWidth: bool = False
                        ):
-        return self
+        return self.bevel(
+            radius,
+            chamfer=False,
+            useWidth=useWidth
+        )
 
     def filletEdges(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearEdges: list[LandmarkOrItsName], useWidth: bool = False
                     ):
-        return self
+        return self.bevel(
+            radius,
+            bevelEdgesNearlandmarkNames=landmarksNearEdges,
+            chamfer=False,
+            useWidth=useWidth
+        )
 
     def filletFaces(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearFaces: list[LandmarkOrItsName], useWidth: bool = False
                     ):
-        return self
+        return self.bevel(
+            radius,
+            bevelFacesNearlandmarkNames=landmarksNearFaces,
+            chamfer=False,
+            useWidth=useWidth
+        )
 
     def chamferAllEdges(self, radius: DimensionOrItsFloatOrStringValue
                         ):
-        return self
+        return self.bevel(
+            radius,
+            chamfer=True,
+            useWidth=False
+        )
 
     def chamferEdges(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearEdges: list[LandmarkOrItsName]
                      ):
-        return self
+        return self.bevel(
+            radius,
+            bevelEdgesNearlandmarkNames=landmarksNearEdges,
+            chamfer=True,
+            useWidth=False
+        )
 
     def chamferFaces(self, radius: DimensionOrItsFloatOrStringValue, landmarksNearFaces: list[LandmarkOrItsName]
                      ):
+        return self.bevel(
+            radius,
+            bevelFacesNearlandmarkNames=landmarksNearFaces,
+            chamfer=True,
+            useWidth=False
+        )
+
+    def _addEdgesNearLandmarksToVertexGroup(self, bevelEdgesNearlandmarkNames: list[str], vertexGroupName):
+        # accept non-list input:
+        if type(bevelEdgesNearlandmarkNames) == str or isinstance(bevelEdgesNearlandmarkNames, Landmark):
+            bevelEdgesNearlandmarkNames = [bevelEdgesNearlandmarkNames]
+
+        if len(bevelEdgesNearlandmarkNames) > 0:
+            kdTree = BlenderActions.createKdTreeForObject(self.name)
+            vertexGroupObject = BlenderActions.createObjectVertexGroup(
+                self.name, vertexGroupName)
+
+            for landmark in bevelEdgesNearlandmarkNames:
+                landmark: Landmark = self.getLandmark(landmark)
+                vertexIndecies = [index for (_, index, _) in BlenderActions.getClosestPointsToVertex(self.name, [
+                    dimension.value for dimension in landmark.getLocationWorld()], numberOfPoints=2, objectKdTree=kdTree)]
+
+                assert len(
+                    vertexIndecies) == 2, f"Could not find edges near landmark {landmark.landmarkName}"
+
+                BlenderActions.addVerticiesToVertexGroup(
+                    vertexGroupObject, vertexIndecies)
+
+    def _addFacesNearLandmarksToVertexGroup(self, bevelFacesNearlandmarkNames: list[str], vertexGroupName):
+        # accept non-list input:
+        if type(bevelFacesNearlandmarkNames) == str or isinstance(bevelFacesNearlandmarkNames, Landmark):
+            bevelFacesNearlandmarkNames = [bevelFacesNearlandmarkNames]
+
+        if len(bevelFacesNearlandmarkNames) > 0:
+            vertexGroupObject = BlenderActions.createObjectVertexGroup(
+                self.name, vertexGroupName)
+
+            for landmark in bevelFacesNearlandmarkNames:
+                landmark: Landmark = self.getLandmark(landmark)
+
+                blenderPolygon = BlenderActions.getClosestFaceToVertex(
+                    self.name, [dimension.value for dimension in landmark.getLocationWorld()])
+
+                BlenderActions.addVerticiesToVertexGroup(
+                    vertexGroupObject, blenderPolygon.vertices)
+
+    def bevel(self,
+              radius: str,
+              bevelEdgesNearlandmarkNames: list[str] = None,
+              bevelFacesNearlandmarkNames: list[str] = None,
+              useWidth=False,
+              chamfer=False,
+              keywordArguments: dict = None
+              ):
+        vertexGroupName = None
+
+        if bevelEdgesNearlandmarkNames != None:
+            vertexGroupName = createUUIDLikeId()
+            self._addEdgesNearLandmarksToVertexGroup(
+                bevelEdgesNearlandmarkNames, vertexGroupName)
+
+        if bevelFacesNearlandmarkNames != None:
+            vertexGroupName = vertexGroupName or createUUIDLikeId()
+            self._addFacesNearLandmarksToVertexGroup(
+                bevelFacesNearlandmarkNames, vertexGroupName)
+
+        radius = Utilities.Dimension.fromString(radius)
+
+        radius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            radius)
+
+        BlenderActions.applyBevelModifier(
+            self.name,
+            radius,
+            vertexGroupName=vertexGroupName,
+            useEdges=True,
+            useWidth=useWidth,
+            chamfer=chamfer,
+            keywordArguments=keywordArguments or None
+        )
+
         return self
 
 
@@ -536,64 +834,139 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
     def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z"
                 ):
+
+        if isinstance(aboutEntityOrLandmark, Entity):
+            aboutEntityOrLandmark = aboutEntityOrLandmark.name
+
+        axis = Utilities.Axis.fromString(axis)
+
+        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
+
+        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
+            angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
+
         return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue, convertToMesh: bool = True
                 ):
+
+        BlenderActions.extrude(
+            self.name, Utilities.Dimension.fromString(length))
+
+        if not convertToMesh:
+            return self
+
+        BlenderActions.createMeshFromCurve(self.name)
+
         return self
 
     def sweep(self, profileCurveName: str, fillCap: bool = False
               ):
+        if isinstance(profileCurveName, Entity):
+            profileCurveName = profileCurveName.name
+
+        BlenderActions.addBevelObjectToCurve(
+            self.name, profileCurveName, fillCap)
+
         return self
 
     def createText(self, text: str, fontSize: DimensionOrItsFloatOrStringValue = 1.0, bold: bool = False, italic: bool = False, underlined: bool = False, characterSpacing: 'int' = 1, wordSpacing: 'int' = 1, lineSpacing: 'int' = 1, fontFilePath: Optional[str] = None
                    ):
+        size = Utilities.Dimension.fromString(fontSize)
+
+        BlenderActions.createText(self.name, text, size, bold, italic, underlined,
+                                  characterSpacing, wordSpacing, lineSpacing, fontFilePath)
         return self
 
     def createFromVertices(self, coordinates: list[PointOrListOfFloatOrItsStringValue], interpolation: 'int' = 64
                            ):
+        BlenderActions.create3DCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(
+            self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation)
+
         return self
 
+    def createPrimitiveDecorator(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
+        def decorator(primitiveFunction):
+            def wrapper(*args, **kwargs):
+
+                self = args[0]
+
+                blenderCurvePrimitiveType = BlenderDefinitions.BlenderCurvePrimitiveTypes.fromCurvePrimitiveTypes(
+                    curvePrimitiveType)
+
+                blenderPrimitiveFunction = BlenderActions.getBlenderCurvePrimitiveFunction(
+                    blenderCurvePrimitiveType)
+
+                blenderPrimitiveFunction(
+                    *args[1:],
+                    dict(
+                        {"curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None}, **kwargs
+                    )
+                )
+
+                # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+                # therefore, we'll use the object's "expected" name and rename it to what it should be
+                # note: this will fail if the "expected" name is incorrect
+                curve = Sketch(
+                    blenderCurvePrimitiveType.name).rename(self.name)
+
+                curve.getNativeInstance().data.use_path = False
+
+                return primitiveFunction(*args, **kwargs)
+            return wrapper
+        return decorator
+
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Point)
     def createPoint(self, coordinate: PointOrListOfFloatOrItsStringValue
                     ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Line)
     def createLine(self, length: DimensionOrItsFloatOrStringValue, angleX: AngleOrItsFloatOrStringValue = 0.0, angleY: AngleOrItsFloatOrStringValue = 0.0, symmetric: bool = False
                    ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.LineTo)
     def createLineBetweenPoints(self, endAt: PointOrListOfFloatOrItsStringValue, startAt: Optional[PointOrListOfFloatOrItsStringValue] = None
                                 ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
     def createCircle(self, radius: 'Dimension'
                      ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
     def createEllipse(self, radiusA: 'Dimension', radiusB: 'Dimension'
                       ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
     def createArc(self, radius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                   ):
         return self
 
     def createArcBetweenThreePoints(self, pointA: 'Point', pointB: 'Point', centerPoint: 'Point'
                                     ):
+        raise NotImplementedError()
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
     def createSegment(self, innerRadius: 'Dimension', outerRadius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                       ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)
     def createRectangle(self, length: 'Dimension', width: 'Dimension'
                         ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon)
     def createPolygon(self, numberOfSides: 'int', length: 'Dimension', width: 'Dimension'
                       ):
         return self
 
+    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
     def createTrapezoid(self, lengthUpper: 'Dimension', lengthLower: 'Dimension', height: 'Dimension'
                         ):
         return self
