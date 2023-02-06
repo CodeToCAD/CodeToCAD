@@ -16,7 +16,6 @@ class Vector:
 
     def __init__(self, vector: tuple[float, float, float]) -> None:
         self.vector = np.array(vector)
-        self.vector = np.append(self.vector, [1])
 
         self.iteratorIndex = 0
 
@@ -36,11 +35,11 @@ class Vector:
         return self
 
     def __next__(self):
-        value = self[self.iteratorIndex]
-        self.iteratorIndex += 1
-        if self.iteratorIndex > 3:
+        if self.iteratorIndex >= 3:
             self.iteratorIndex = 0
             raise StopIteration
+        value = self[self.iteratorIndex]
+        self.iteratorIndex += 1
         return value
 
     def toList(self):
@@ -171,4 +170,9 @@ class Matrix:
         return Matrix(np.abs(self.matrix))
 
     def __matmul__(self, other):
-        return Matrix(np.matmul(self.matrix, getNumpyArrayFromVectorOrMatrix(other)))
+        other = getNumpyArrayFromVectorOrMatrix(other)
+        shapeDifference = self.matrix.shape[1] - other.shape[0]
+        if shapeDifference > 0:
+            other = np.pad(getNumpyArrayFromVectorOrMatrix(
+                other), (0, shapeDifference), constant_values=[1])
+        return Matrix(np.matmul(self.matrix, other))
