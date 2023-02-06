@@ -33,7 +33,7 @@ class BlenderLength(Utilities.Units):
     THOU = Utilities.LengthUnit.thou
 
     # Blender internally uses this unit for everything:
-    DEFAULT_BLENDER_UNIT = METERS
+    DEFAULT_BLENDER_UNIT: Utilities.LengthUnit = METERS  # type: ignore
 
     def getSystem(self):
         if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
@@ -67,9 +67,12 @@ class BlenderLength(Utilities.Units):
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
     def convertDimensionToBlenderUnit(dimension: Utilities.Dimension):
-        return dimension.convertToUnit(BlenderLength.DEFAULT_BLENDER_UNIT.value) \
-            if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value) \
-            else dimension
+        if dimension.value == None or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value:
+            return dimension
+        if dimension.unit == None:
+            dimension.unit = BlenderLength.DEFAULT_BLENDER_UNIT.value
+            return dimension
+        return dimension.convertToUnit(BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
 
 # These are the rotation transformations supported by Blender:
@@ -258,7 +261,7 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
         elif self == BlenderCurvePrimitiveTypes.Arc:
             return BlenderCurveTypes.NURBS
         else:
-            raise "Unknown primitive"
+            raise LookupError("Unknown primitive")
 
 
 class RepeatMode(Enum):
