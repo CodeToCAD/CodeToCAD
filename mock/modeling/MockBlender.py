@@ -23,21 +23,26 @@ class Mesh:
         self.vertices = [Mesh.MeshVertex(vector) for vector in vectors]
 
     @property
-    def bound_box(self) -> list[list[float]]:
-        minX, minY, minZ, _ = np.min(
+    def bound_box(self) -> tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]:
+        minX, minY, minZ = np.min(
             [v.co.vector for v in self.vertices], axis=0).tolist()
-        maxX, maxY, maxZ, _ = np.max(
+        maxX, maxY, maxZ = np.max(
             [v.co.vector for v in self.vertices], axis=0).tolist()
 
-        return [[minX, minY, minZ], [minX, minY, maxZ],  [minX, maxY, maxZ], [minX, maxY, minZ], [maxX, minY, minZ], [maxX, minY, maxZ], [maxX, maxY, maxZ],  [maxX, maxY, minZ]]
+        return ((minX, minY, minZ), (minX, minY, maxZ),  (minX, maxY, maxZ), (minX, maxY, minZ), (maxX, minY, minZ), (maxX, minY, maxZ), (maxX, maxY, maxZ),  (maxX, maxY, minZ))
+
+    def calculateDimensions(self, scale: Optional[Vector]) -> Vector:
+        dimensions = Vector((
+            np.max(
+                [v.co.vector for v in self.vertices], axis=0) - np.min([v.co.vector for v in self.vertices], axis=0)
+        ).tolist())
+        if scale:
+            dimensions *= scale
+        return dimensions
 
     @property
     def dimensions(self) -> Vector:
-        return Vector((
-            np.min([v.co.vector for v in self.vertices], axis=0) -
-            np.max(
-                [v.co.vector for v in self.vertices], axis=0)
-        ).tolist())
+        return self.calculateDimensions(None)
 
     class MeshVertex:
         def __init__(self, co: Vector) -> None:
@@ -54,6 +59,7 @@ class Object:
         self.parent: Optional[Object] = None
         self.matrix_world = Matrix()
         self.matrix_basis = self.matrix_world
+        self.location = Vector((0, 0, 0))
         self.scale = Vector((1, 1, 1))
         self.rotation_euler = Vector((0, 0, 0))
         self.users_collection = [
@@ -77,12 +83,9 @@ class Object:
     def dimensions(self):
 
         if isinstance(self.data, Mesh):
-            return self.data.dimensions
-        raise TypeError()
+            return self.data.calculateDimensions(self.scale)
 
-    @ property
-    def location(self):
-        return self.matrix_local.translation
+        raise TypeError()
 
     def __setattr__(self, __name: str, __value: Any) -> None:
         if __name == "location":
@@ -92,7 +95,6 @@ class Object:
             for child in self.children:
                 child.matrix_world.translate(
                     __value[0], __value[1], __value[2])
-            return
 
         if __name == "parent":
             if __value == None:
@@ -323,7 +325,7 @@ class Ops:
                     0.0, 0.0, 0.0),
                 scale: Optional[Any] = (0.0, 0.0, 0.0)):
             global mockBpy
-            mockBpy.data.createMeshObject("Cube", "Cube", [Mesh.MeshVertex(v) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
+            mockBpy.data.createMeshObject("Cube", "Cube", [Mesh.MeshVertex(v * 0.5 * size * Vector(scale or (1, 1, 1))) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
                 (-1.0, 1.0, 1.0)), Vector((1.0, -1.0, -1.0)), Vector((1.0, -1.0, 1.0)), Vector((1.0, 1.0, -1.0)), Vector((1.0, 1.0, 1.0))]])
 
 
