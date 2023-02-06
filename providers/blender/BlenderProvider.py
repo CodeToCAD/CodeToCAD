@@ -269,10 +269,10 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleX(self, scale: DimensionOrItsFloatOrStringValue
                ):
+        value = Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+            scale, None)
         valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
-                scale, None)
-        )
+            value)
         scaleFactor: float = (valueInBlenderDefaultLength /
                               self.getDimensions().x).value
         BlenderActions.scaleObject(self.name, scaleFactor, None, None)

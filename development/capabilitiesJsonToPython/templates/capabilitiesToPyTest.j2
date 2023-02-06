@@ -47,11 +47,11 @@ class Test{{className}}(unittest.TestCase):
         value = instance.{{methodName}}("{{ properties["parameters"].keys()|join('","') if "parameters" in properties}}")
 
         {% if properties["action"] == "get" %}
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
         {%elif properties["action"] == "create"%}
         assert value.isExists(), "Create method failed."
         {%elif properties["action"] == "modify"%}
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
         {%endif%}
         
     

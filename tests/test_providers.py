@@ -39,7 +39,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.isExists()
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     def test_rename(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -48,7 +48,7 @@ class TestEntity(unittest.TestCase):
 
         renamedPart = Part("newName")
 
-        assert value.name == renamedPart.name, "Modify method succeeded."
+        assert value.name == renamedPart.name, "Modify method failed."
 
         # TODO: test for renamelinkedEntitiesAndLandmarks = False. This is blocked by landmarking implementation
 
@@ -72,7 +72,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.isVisible()
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     def test_setVisible(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -91,21 +91,21 @@ class TestEntity(unittest.TestCase):
 
         value = instance.apply()
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     def test_getNativeInstance(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
         value = instance.getNativeInstance()
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     def test_getLocationWorld(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
         value = instance.getLocationWorld()
 
-        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method succeeded."
+        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method failed."
 
         # TODO: get location world after translating
 
@@ -114,7 +114,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.getLocationWorld()
 
-        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method succeeded."
+        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method failed."
 
         # TODO: get location world after translating
 
@@ -197,7 +197,7 @@ class TestEntity(unittest.TestCase):
 
         value: Part = instance.translateX(5)
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
             Dimension(5), Dimension(0), Dimension(0)), "Translation is not correct"
@@ -207,7 +207,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.translateY(5)
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
             Dimension(0), Dimension(5), Dimension(0)), "Translation is not correct"
@@ -217,18 +217,17 @@ class TestEntity(unittest.TestCase):
 
         value = instance.translateZ(5)
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
             Dimension(0), Dimension(0), Dimension(5)), "Translation is not correct"
 
-    @unittest.skip
     def test_scaleX(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
         value = instance.scaleX(5)
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleY(self):
@@ -236,7 +235,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleY("scale")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleZ(self):
@@ -244,7 +243,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleZ("scale")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleXByFactor(self):
@@ -252,7 +251,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleXByFactor("scale")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleYByFactor(self):
@@ -260,7 +259,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleYByFactor("scale")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleZByFactor(self):
@@ -268,7 +267,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleZByFactor("scale")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_scaleKeepAspectRatio(self):
@@ -276,7 +275,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.scaleKeepAspectRatio("scale", "axis")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_rotateX(self):
@@ -284,7 +283,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.rotateX("rotation")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_rotateY(self):
@@ -292,7 +291,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.rotateY("rotation")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_rotateZ(self):
@@ -300,7 +299,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.rotateZ("rotation")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_twist(self):
@@ -308,7 +307,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.twist("angle", "screwPitch", "interations", "axis")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_remesh(self):
@@ -316,14 +315,14 @@ class TestEntity(unittest.TestCase):
 
         value = instance.remesh("strategy", "amount")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     def test_createLandmark(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
         value = instance.createLandmark("landmarkName", 0, 0, 0)
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
         landmark = instance.getLandmark("landmarkName")
 
@@ -335,7 +334,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.getBoundingBox("")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_getDimensions(self):
@@ -343,7 +342,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.getDimensions("")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_getLandmark(self):
@@ -351,7 +350,7 @@ class TestEntity(unittest.TestCase):
 
         value = instance.getLandmark("landmarkName")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
 
 class TestPart(unittest.TestCase):
@@ -440,7 +439,7 @@ class TestPart(unittest.TestCase):
         value = instance.union(
             "withPart", "deleteAfterUnion", "isTransferLandmarks")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_subtract(self):
@@ -449,7 +448,7 @@ class TestPart(unittest.TestCase):
         value = instance.subtract(
             "withPart", "deleteAfterUnion", "isTransferLandmarks")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_intersect(self):
@@ -458,7 +457,7 @@ class TestPart(unittest.TestCase):
         value = instance.intersect(
             "withPart", "deleteAfterUnion", "isTransferLandmarks")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_hollow(self):
@@ -467,7 +466,7 @@ class TestPart(unittest.TestCase):
         value = instance.hollow(
             "thicknessX", "thicknessY", "thicknessZ", "startAxis", "flipAxis")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_hole(self):
@@ -476,7 +475,7 @@ class TestPart(unittest.TestCase):
         value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", "flip", "instanceCount", "instanceSeparation",
                               "aboutEntityOrLandmark", "mirror", "instanceAxis", "initialRotationX", "initialRotationY", "initialRotationZ", "leaveHoleEntity")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_assignMaterial(self):
@@ -484,7 +483,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.assignMaterial("materialName")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_isCollidingWithPart(self):
@@ -492,7 +491,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.isCollidingWithPart("otherPart")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_filletAllEdges(self):
@@ -500,7 +499,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.filletAllEdges("radius", "useWidth")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_filletEdges(self):
@@ -509,7 +508,7 @@ class TestPart(unittest.TestCase):
         value = instance.filletEdges(
             "radius", "landmarksNearEdges", "useWidth")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_filletFaces(self):
@@ -518,7 +517,7 @@ class TestPart(unittest.TestCase):
         value = instance.filletFaces(
             "radius", "landmarksNearFaces", "useWidth")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_chamferAllEdges(self):
@@ -526,7 +525,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.chamferAllEdges("radius")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_chamferEdges(self):
@@ -534,7 +533,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.chamferEdges("radius", "landmarksNearEdges")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_chamferFaces(self):
@@ -542,7 +541,7 @@ class TestPart(unittest.TestCase):
 
         value = instance.chamferFaces("radius", "landmarksNearFaces")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
 
 class TestSketch(unittest.TestCase):
@@ -553,7 +552,7 @@ class TestSketch(unittest.TestCase):
 
         value = instance.revolve("angle", "aboutEntityOrLandmark", "axis")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_extrude(self):
@@ -561,7 +560,7 @@ class TestSketch(unittest.TestCase):
 
         value = instance.extrude("length", "convertToMesh")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_sweep(self):
@@ -569,7 +568,7 @@ class TestSketch(unittest.TestCase):
 
         value = instance.sweep("profileCurveName", "fillCap")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_createText(self):
@@ -687,7 +686,7 @@ class TestLandmark(unittest.TestCase):
 
         value = instance.getLandmarkEntityName()
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
 
 class TestJoint(unittest.TestCase):
@@ -698,7 +697,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.translateLandmarkOntoAnother("")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_pivot(self):
@@ -706,7 +705,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.pivot("")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_gearRatio(self):
@@ -714,7 +713,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.gearRatio("ratio")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitXLocation(self):
@@ -722,7 +721,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitXLocation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitYLocation(self):
@@ -730,7 +729,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitYLocation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitZLocation(self):
@@ -738,7 +737,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitZLocation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitXRotation(self):
@@ -746,7 +745,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitXRotation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitYRotation(self):
@@ -754,7 +753,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitYRotation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_limitZRotation(self):
@@ -762,7 +761,7 @@ class TestJoint(unittest.TestCase):
 
         value = instance.limitZRotation("min", "max")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
 
 class TestMaterial(unittest.TestCase):
@@ -773,7 +772,7 @@ class TestMaterial(unittest.TestCase):
 
         value = instance.assignToPart("partName")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_setColor(self):
@@ -781,7 +780,7 @@ class TestMaterial(unittest.TestCase):
 
         value = instance.setColor("rValue", "gValue", "bValue", "aValue")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
     @unittest.skip
     def test_addImageTexture(self):
@@ -789,7 +788,7 @@ class TestMaterial(unittest.TestCase):
 
         value = instance.addImageTexture("imageFilePath")
 
-        assert value, "Modify method succeeded."
+        assert value, "Modify method failed."
 
 
 class TestAnimation(unittest.TestCase):
@@ -877,7 +876,7 @@ class TestAnalytics(unittest.TestCase):
 
         value = instance.measureDistance("entity1", "entity2")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_measureAngle(self):
@@ -885,7 +884,7 @@ class TestAnalytics(unittest.TestCase):
 
         value = instance.measureAngle("entity1", "entity2", "pivot")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_getWorldPose(self):
@@ -893,7 +892,7 @@ class TestAnalytics(unittest.TestCase):
 
         value = instance.getWorldPose("entity")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_getBoundingBox(self):
@@ -901,7 +900,7 @@ class TestAnalytics(unittest.TestCase):
 
         value = instance.getBoundingBox("entityName")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_getDimensions(self):
@@ -909,4 +908,4 @@ class TestAnalytics(unittest.TestCase):
 
         value = instance.getDimensions("entityName")
 
-        assert value, "Get method succeeded."
+        assert value, "Get method failed."

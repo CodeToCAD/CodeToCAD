@@ -239,7 +239,7 @@ class Angle():
 
 def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
     anglesList: list[str]
-    if type(angles) == str:
+    if isinstance(angles, str):
         anglesList = angles.replace(" ", "").lower().split(",")
     else:
         anglesList = angles
@@ -257,7 +257,7 @@ def getAnglesFromStringList(angles: Union[str, list[str]]) -> list[Angle]:
 
         unitInString = AngleUnit.fromString(
             angleString[0]) if angleString else None
-        if unitInString != None:
+        if unitInString != None and angleString != None:
             defaultUnit = unitInString
             if len(angleString[0]) == len(anglesList[-1]):
                 anglesList.pop()
