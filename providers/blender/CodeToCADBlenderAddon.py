@@ -112,7 +112,7 @@ def reloadCodeToCADModules():
     reload(CodeToCAD)
 
     from BlenderProvider import injectBlenderProvider
-    injectBlenderProvider()
+    injectBlenderProvider(globals())
 
 
 class ImportedFileWatcher():
@@ -346,7 +346,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     sys.path.append(codeToCADPath)
 
     from BlenderProvider import injectBlenderProvider
-    injectBlenderProvider()
+    injectBlenderProvider(globals())
 
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
