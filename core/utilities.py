@@ -230,7 +230,7 @@ class Angle():
 
         # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
         assert re.match(
-            "[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
+            r"[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
 
         value = eval(value)
 

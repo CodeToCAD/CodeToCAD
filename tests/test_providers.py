@@ -229,51 +229,45 @@ class TestEntity(unittest.TestCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleY(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleY("scale")
+        value = instance.scaleY(5)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleZ(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleZ("scale")
+        value = instance.scaleZ(5)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleXByFactor(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleXByFactor("scale")
+        value = instance.scaleXByFactor(5)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleYByFactor(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleYByFactor("scale")
+        value = instance.scaleYByFactor(5)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleZByFactor(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleZByFactor("scale")
+        value = instance.scaleZByFactor(5)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_scaleKeepAspectRatio(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.scaleKeepAspectRatio("scale", "axis")
+        value = instance.scaleKeepAspectRatio(5, "x")
 
         assert value, "Modify method failed."
 
