@@ -1568,6 +1568,17 @@ class Scene(CodeToCADInterface.Scene):
 
         return self
 
+    def setHDRIBackground(self,
+                          filePath, x=0, y=0):
+
+        absoluteFilePath = getAbsoluteFilepath(filePath)
+
+        BlenderActions.addHDRTexture(self.name, absoluteFilePath)
+
+        BlenderActions.setBackgroundLocation(self.name, x, y)
+
+        return self
+
 
 class Analytics(CodeToCADInterface.Analytics):
     # Text to 3D Modeling Automation Capabilities.

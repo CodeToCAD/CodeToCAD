@@ -6,7 +6,6 @@ from uuid import uuid4
 import bpy
 import core.utilities as Utilities
 import BlenderDefinitions
-
 from pathlib import Path
 from mathutils import Vector, Matrix
 from mathutils.bvhtree import BVHTree
@@ -2128,3 +2127,48 @@ def setFocalLength(cameraName, length=50.0):
         "Length needs to be greater than or equal to 1."
 
     camera.lens = length
+
+
+def addHDRTexture(sceneName, imageFilePath):
+    deleteNodes(sceneName)
+    nodeBackground = createNodes(sceneName, 'ShaderNodeBackground')
+    nodeEnvironment = createNodes(sceneName, 'ShaderNodeTexEnvironment')
+    nodeEnvironment.image = bpy.data.images.load(imageFilePath)
+    nodeEnvironment.location = 0, 0
+    nodeOutput = createNodes(sceneName, 'ShaderNodeOutputWorld')
+    nodeOutput.location = 0, 0
+    links = getNodeTree(sceneName).links
+    links.new(nodeEnvironment.outputs["Color"], nodeBackground.inputs["Color"])
+    links.new(nodeBackground.outputs["Background"],
+              nodeOutput.inputs["Surface"])
+
+
+def getNodeTree(sceneName):
+    scene = getScene(sceneName)
+    nodeTree = scene.world.node_tree
+    return nodeTree
+
+
+def deleteNodes(sceneName):
+    nodes = getNodeTree(sceneName).nodes
+    nodes.clear()
+
+
+def createNodes(sceneName, type):
+    nodes = getNodeTree(sceneName).nodes.new(type=type)
+    return nodes
+
+
+def setBackgroundLocation(sceneName, x, y):
+    getNodeTree(sceneName).nodes.get('Environment Texture').location = x, y
+
+
+def getScene(sceneName):
+
+    blenderScene = bpy.data.scenes.get(sceneName or "Scene")
+
+    assert \
+        blenderScene != None, \
+        f"Scene{sceneName} does not exists"
+
+    return blenderScene
