@@ -1009,10 +1009,22 @@ class Joint(CodeToCADInterface.Joint):
 
     def translateLandmarkOntoAnother(self
                                      ):
+        if not isinstance(self.entity1, Landmark) or not isinstance(self.entity2, Landmark):
+            raise TypeError("Entities 1 and 2 should be landmarks.")
+
+        landmark1: Landmark = self.entity1
+        landmark2: Landmark = self.entity2
+
+        BlenderActions.translateLandmarkOntoAnother(
+            landmark1.parentEntity,  landmark1.getLandmarkEntityName(), landmark2.getLandmarkEntityName())
+
         return self
 
     def pivot(self
               ):
+
+        # BlenderActions.applyPivotConstraint(
+        #     self.part2.name, self.part1Landmark.entityName, keywordArguments)
         return self
 
     def gearRatio(self, ratio: float

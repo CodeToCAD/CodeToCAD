@@ -266,6 +266,21 @@
                     }
                 }
             },
+            "rotateXYZ": {
+                "action": "modify",
+                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Angle"
+                    },
+                    "y": {
+                        "type": "string,float,Angle"
+                    },
+                    "z": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
             "rotateX": {
                 "action": "modify",
                 "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
