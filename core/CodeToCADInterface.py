@@ -199,6 +199,17 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
+    ):
+        '''
+        Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
+        '''
+        
+        print("translateXYZ is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
     def translateX(self, amount:DimensionOrItsFloatOrStringValue
     ):
         '''
@@ -228,6 +239,17 @@ class Entity(metaclass=ABCMeta):
         '''
         
         print("translateZ is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def scaleXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
+    ):
+        '''
+        Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
+        '''
+        
+        print("scaleXYZ is called in an abstract method. Please override this method.")
         return self
         
 
@@ -305,6 +327,17 @@ class Entity(metaclass=ABCMeta):
         '''
         
         print("scaleKeepAspectRatio is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
+    ):
+        '''
+        Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
+        '''
+        
+        print("rotateXYZ is called in an abstract method. Please override this method.")
         return self
         
 
@@ -522,7 +555,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def subtract(self, withPart:PartOrItsName, deleteAfterUnion:bool=True, isTransferLandmarks:bool=False
+    def subtract(self, withPart:PartOrItsName, deleteAfterSubtract:bool=True, isTransferLandmarks:bool=False
     ):
         '''
         Boolean subtraction
@@ -533,7 +566,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def intersect(self, withPart:PartOrItsName, deleteAfterUnion:bool=True, isTransferLandmarks:bool=False
+    def intersect(self, withPart:PartOrItsName, deleteAfterIntersect:bool=True, isTransferLandmarks:bool=False
     ):
         '''
         Boolean intersection

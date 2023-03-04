@@ -173,6 +173,21 @@
                     }
                 }
             },
+            "translateXYZ": {
+                "action": "modify",
+                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
             "translateX": {
                 "action": "modify",
                 "information": "Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
@@ -196,6 +211,21 @@
                 "information": "Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
                 "parameters": {
                     "amount": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scaleXYZ": {
+                "action": "modify",
+                "information": "Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
                         "type": "string,float,Dimension"
                     }
                 }
