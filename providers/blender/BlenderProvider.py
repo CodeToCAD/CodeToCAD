@@ -9,7 +9,7 @@ import BlenderDefinitions
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 from core.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
-from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
+from core.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 
@@ -219,16 +219,39 @@ class Entity(CodeToCADInterface.Entity):
 
         return self
 
+    @staticmethod
+    def _translationDimensionFromDimensionOrItsFloatOrStringValue(dimensionOrItsFloatOrStringValue: DimensionOrItsFloatOrStringValue, boundaryAxis: BoundaryAxis):
+
+        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
+            dimensionOrItsFloatOrStringValue, boundaryAxis)
+
+        return BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            dimension)
+
+    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
+                     ):
+
+        boundingBox = BlenderActions.getBoundingBox(self.name)
+
+        xDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            x, boundingBox.x)  # type: ignore
+        yDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            y, boundingBox.y)  # type: ignore
+        zDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            z, boundingBox.z)  # type: ignore
+
+        BlenderActions.translateObject(
+            self.name, [xDimension, yDimension, zDimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+
+        return self
+
     def translateX(self, amount: DimensionOrItsFloatOrStringValue
                    ):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
-        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.x)
-
-        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            dimension)
+        dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.x)  # type: ignore
 
         BlenderActions.translateObject(
             self.name, [dimension, Dimension(0), Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -240,11 +263,8 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
-        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.y)
-
-        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            dimension)
+        dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.y)  # type: ignore
 
         BlenderActions.translateObject(
             self.name, [Dimension(0), dimension, Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -256,47 +276,56 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
-        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.z)
-
-        dimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            dimension)
+        dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
+            amount, boundingBox.z)  # type: ignore
 
         BlenderActions.translateObject(
             self.name, [Dimension(0), Dimension(0), dimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
-    def scaleX(self, scale: DimensionOrItsFloatOrStringValue
-               ):
-        value = Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
-            scale, None)
+    @staticmethod
+    def _scaleFactorFromDimensionOrItsFloatOrStringValue(dimensionOrItsFloatOrStringValue: DimensionOrItsFloatOrStringValue, currentValueInBlender: float):
+
+        value = Dimension.fromDimensionOrItsFloatOrStringValue(
+            dimensionOrItsFloatOrStringValue, None)
         valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             value)
-        scaleFactor: float = (valueInBlenderDefaultLength /
-                              self.getDimensions().x).value
+        return (valueInBlenderDefaultLength /
+                currentValueInBlender).value
+
+    def scaleXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
+                 ):
+        currentDimensions = self.getDimensions()
+        xScaleFactor: float = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            x, currentDimensions.x.value)
+        yScaleFactor: float = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            y, currentDimensions.y.value)
+        zScaleFactor: float = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            z, currentDimensions.z.value)
+
+        BlenderActions.scaleObject(
+            self.name, xScaleFactor, yScaleFactor, zScaleFactor)
+        return self
+
+    def scaleX(self, scale: DimensionOrItsFloatOrStringValue
+               ):
+        scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            scale, self.getDimensions().x.value)
         BlenderActions.scaleObject(self.name, scaleFactor, None, None)
         return self
 
     def scaleY(self, scale: DimensionOrItsFloatOrStringValue
                ):
-        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
-                scale, None)
-        )
-        scaleFactor: float = (valueInBlenderDefaultLength /
-                              self.getDimensions().y).value
+        scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            scale, self.getDimensions().y.value)
         BlenderActions.scaleObject(self.name, None, scaleFactor, None)
         return self
 
     def scaleZ(self, scale: DimensionOrItsFloatOrStringValue
                ):
-        valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
-                scale, None)
-        )
-        scaleFactor: float = (valueInBlenderDefaultLength /
-                              self.getDimensions().z).value
+        scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
+            scale, self.getDimensions().z.value)
         BlenderActions.scaleObject(self.name, None, None, scaleFactor)
         return self
 
@@ -326,6 +355,18 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.scaleObject(
             self.name, scaleFactor, scaleFactor, scaleFactor)
+        return self
+
+    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
+                  ):
+
+        xAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(x)
+        yAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(y)
+        zAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(z)
+
+        BlenderActions.rotateObject(
+            self.name, [xAngle, yAngle, zAngle], BlenderDefinitions.BlenderRotationTypes.EULER)
+
         return self
 
     def rotateX(self, rotation: AngleOrItsFloatOrStringValue
