@@ -190,10 +190,20 @@ class TestEntity(unittest.TestCase):
         # TODO: make sure Entity, Landmark and string name all work correctly.
         # TODO: make sure patterning works on all axes correctly
 
+    def test_translateXYZ(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value = instance.translateXYZ(5, 7, 9)
+
+        assert value, "Modify method failed."
+
+        assert instance.getLocationWorld() == Point(
+            Dimension(5), Dimension(7), Dimension(9)), "Translation is not correct"
+
     def test_translateX(self):
         instance = Part("name", "description").createCube(1, 1, 1)
 
-        value: Part = instance.translateX(5)
+        value = instance.translateX(5)
 
         assert value, "Modify method failed."
 
@@ -219,6 +229,15 @@ class TestEntity(unittest.TestCase):
 
         assert instance.getLocationWorld() == Point(
             Dimension(0), Dimension(0), Dimension(5)), "Translation is not correct"
+
+    def test_scaleXYZ(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        instance.scaleXYZ(5, 7, 9)
+
+        dimensions = instance.getDimensions()
+
+        assert dimensions.x.value == 5 and dimensions.y.value == 7 and dimensions.z.value == 9, "Modify method failed."
 
     def test_scaleX(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -282,6 +301,14 @@ class TestEntity(unittest.TestCase):
         dimensions = instance.getDimensions()
 
         assert dimensions.x.value == 5 and dimensions.y.value == 5 and dimensions.z.value == 5, "Modify method failed."
+
+    def test_rotateXYZ(self):
+        instance = Part("name", "description").createCube(1, 1, 1)
+
+        value = instance.rotateXYZ(45, 45, 45)
+
+        assert value, "Modify method failed."
+        # TODO: check the rotation value
 
     def test_rotateX(self):
         instance = Part("name", "description").createCube(1, 1, 1)

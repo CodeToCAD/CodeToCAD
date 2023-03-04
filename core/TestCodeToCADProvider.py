@@ -132,6 +132,14 @@ class TestEntity(unittest.TestCase):
         assert value, "Modify method failed."
 
     @unittest.skip
+    def test_translateXYZ(self):
+        instance = Part("name", "description")
+
+        value = instance.translateXYZ("x", "y", "z")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
     def test_translateX(self):
         instance = Part("name", "description")
 
@@ -152,6 +160,14 @@ class TestEntity(unittest.TestCase):
         instance = Part("name", "description")
 
         value = instance.translateZ("amount")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
+    def test_scaleXYZ(self):
+        instance = Part("name", "description")
+
+        value = instance.scaleXYZ("x", "y", "z")
 
         assert value, "Modify method failed."
 
@@ -208,6 +224,14 @@ class TestEntity(unittest.TestCase):
         instance = Part("name", "description")
 
         value = instance.scaleKeepAspectRatio("scale", "axis")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
+    def test_rotateXYZ(self):
+        instance = Part("name", "description")
+
+        value = instance.rotateXYZ("x", "y", "z")
 
         assert value, "Modify method failed."
 
@@ -377,7 +401,7 @@ class TestPart(unittest.TestCase):
         instance = Part("")
 
         value = instance.subtract(
-            "withPart", "deleteAfterUnion", "isTransferLandmarks")
+            "withPart", "deleteAfterSubtract", "isTransferLandmarks")
 
         assert value, "Modify method failed."
 
@@ -386,7 +410,7 @@ class TestPart(unittest.TestCase):
         instance = Part("")
 
         value = instance.intersect(
-            "withPart", "deleteAfterUnion", "isTransferLandmarks")
+            "withPart", "deleteAfterIntersect", "isTransferLandmarks")
 
         assert value, "Modify method failed."
 
