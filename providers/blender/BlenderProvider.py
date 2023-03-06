@@ -917,7 +917,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     @staticmethod
-    def createPrimitiveDecorator(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
+    def _createPrimitiveDecorator(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
         def decorator(primitiveFunction):
             def wrapper(*args, **kwargs):
 
@@ -952,32 +952,32 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             return wrapper
         return decorator
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Point)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Point)
     def createPoint(self, coordinate: PointOrListOfFloatOrItsStringValue
                     ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Line)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Line)
     def createLine(self, length: DimensionOrItsFloatOrStringValue, angleX: AngleOrItsFloatOrStringValue = 0.0, angleY: AngleOrItsFloatOrStringValue = 0.0, symmetric: bool = False
                    ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.LineTo)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.LineTo)
     def createLineBetweenPoints(self, endAt: PointOrListOfFloatOrItsStringValue, startAt: Optional[PointOrListOfFloatOrItsStringValue] = None
                                 ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
     def createCircle(self, radius: 'Dimension'
                      ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
     def createEllipse(self, radiusA: 'Dimension', radiusB: 'Dimension'
                       ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
     def createArc(self, radius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                   ):
         return self
@@ -987,22 +987,22 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         raise NotImplementedError()
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
     def createSegment(self, innerRadius: 'Dimension', outerRadius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
                       ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)
     def createRectangle(self, length: 'Dimension', width: 'Dimension'
                         ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon)
     def createPolygon(self, numberOfSides: 'int', length: 'Dimension', width: 'Dimension'
                       ):
         return self
 
-    @createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
     def createTrapezoid(self, lengthUpper: 'Dimension', lengthLower: 'Dimension', height: 'Dimension'
                         ):
         return self
