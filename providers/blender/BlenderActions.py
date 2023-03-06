@@ -41,7 +41,7 @@ def applyBevelModifier(
     useEdges=True,
     useWidth=False,
     chamfer=False,
-    keywordArguments: dict = None
+    keywordArguments: Optional[dict] = None
 ):
     applyModifier(
         entityName,
@@ -152,7 +152,7 @@ def applyBooleanModifier(
     meshObjectName,
     blenderBooleanType: BlenderDefinitions.BlenderBooleanTypes,
     withMeshObjectName,
-    keywordArguments: dict = None
+    keywordArguments: Optional[dict] = None
 ):
     blenderObject = getObject(meshObjectName)
     blenderBooleanObject = getObject(withMeshObjectName)
@@ -306,16 +306,16 @@ def addPrimitive(
     assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
-    dimensions: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
+    dimensionsList: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
         dimensions) or []
 
-    dimensions = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
-        dimensions)
+    dimensionsList = BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(
+        dimensionsList)
 
     # Add the object:
     blenderPrimitiveFunction(
         primitiveType,
-        dimensions,
+        dimensionsList,
         keywordArguments or {}
     )
 
@@ -345,41 +345,43 @@ def createGear(
         addon != None, \
         f"Could not enable the {addonName} addon to create extra objects"
 
-    outerRadius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+    outerRadiusDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         Utilities.Dimension.fromString(outerRadius)).value
-    innerRadius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+    innerRadiusDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         Utilities.Dimension.fromString(innerRadius)).value
-    addendum = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+    addendumDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         Utilities.Dimension.fromString(addendum)).value
-    dedendum = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+    dedendumDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         Utilities.Dimension.fromString(dedendum)).value
-    height = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+    heightDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         Utilities.Dimension.fromString(height)).value
 
-    if addendum > outerRadius/2:
-        addendum = outerRadius/2
-    if innerRadius > outerRadius:
-        innerRadius = outerRadius
-    if dedendum + innerRadius > outerRadius:
-        dedendum = outerRadius - innerRadius
+    if addendumDimension > outerRadiusDimension/2:
+        addendumDimension = outerRadiusDimension/2
+    if innerRadiusDimension > outerRadiusDimension:
+        innerRadiusDimension = outerRadiusDimension
+    if dedendumDimension + innerRadiusDimension > outerRadiusDimension:
+        dedendumDimension = outerRadiusDimension - innerRadiusDimension
 
-    pressureAngle = Utilities.Angle.fromString(pressureAngle).toRadians().value
-    skewAngle = Utilities.Angle.fromString(skewAngle).toRadians().value
-    conicalAngle = Utilities.Angle.fromString(conicalAngle).toRadians().value
-    crownAngle = Utilities.Angle.fromString(crownAngle).toRadians().value
+    pressureAngleValue = Utilities.Angle.fromString(
+        pressureAngle).toRadians().value
+    skewAngleValue = Utilities.Angle.fromString(skewAngle).toRadians().value
+    conicalAngleValue = Utilities.Angle.fromString(
+        conicalAngle).toRadians().value
+    crownAngleValue = Utilities.Angle.fromString(crownAngle).toRadians().value
 
-    return bpy.ops.mesh.primitive_gear(
+    return bpy.ops.mesh.primitive_gear(  # type: ignore
         name=objectName,
         number_of_teeth=numberOfTeeth,
-        radius=outerRadius,
-        addendum=addendum,
-        dedendum=dedendum,
-        angle=pressureAngle,
-        base=innerRadius,
-        width=height,
-        skew=skewAngle,
-        conangle=conicalAngle,
-        crown=crownAngle
+        radius=outerRadiusDimension,
+        addendum=addendumDimension,
+        dedendum=dedendumDimension,
+        angle=pressureAngleValue,
+        base=innerRadiusDimension,
+        width=heightDimension,
+        skew=skewAngleValue,
+        conangle=conicalAngleValue,
+        crown=crownAngleValue
     )
 
 
@@ -397,7 +399,7 @@ fileImportFunctions = {
 
 def importFile(
     filePath: str,
-    fileType: str = None
+    fileType: Optional[str] = None
 ):
 
     path = Path(filePath).resolve()
@@ -580,8 +582,7 @@ def createCollection(
         f"Collection {name} already exists"
 
     assert \
-        sceneName in bpy.data.scenes, \
-        f"Scene {sceneName} does not exist"
+        sceneName in bpy.data.scenes, f"Scene {sceneName} does not exist"  # type: ignore
 
     collection = bpy.data.collections.new(name)
 
@@ -1252,13 +1253,6 @@ def getMesh(meshName):
 
     return blenderMesh
 
-# https://blender.stackexchange.com/questions/204781/how-to-sculpt-a-continuous-brush-stroke-with-python
-
-
-def getContext():
-    window = bpy.context.window_manager.windows[0]
-    return bpy.context.temp_override(window=window)
-
 
 # Applies the dependency graph to the object and persists its data using .copy()
 # This allows us to apply modifiers, UV data, etc.. to the mesh.
@@ -1308,7 +1302,7 @@ def isCollisionBetweenTwoObjects(object1Name, object2Name):
     bvhTreeObject1 = BVHTree.FromObject(blenderObject1, dependencyGraph)
     bvhTreeObject2 = BVHTree.FromObject(blenderObject2, dependencyGraph)
 
-    uniqueIndecies = bvhTreeObject1.overlap(bvhTreeObject2)
+    uniqueIndecies = bvhTreeObject1.overlap(bvhTreeObject2)  # type: ignore
 
     return len(uniqueIndecies) > 0
 
@@ -1462,22 +1456,25 @@ def createText(curveName, text,
                fontFilePath=None):
 
     curveData = bpy.data.curves.new(type="FONT", name=curveName)
-    curveData.body = text
-    curveData.size = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-        size).value
-    curveData.space_character = characterSpacing
-    curveData.space_word = wordSpacing
-    curveData.space_line = lineSpacing
+    setattr(curveData, "body", text)
+    setattr(curveData, "size", BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+        size).value)
+    setattr(curveData, "space_character", characterSpacing)
+    setattr(curveData, "space_word", wordSpacing)
+    setattr(curveData, "space_line", lineSpacing)
 
     if fontFilePath:
         fontData = bpy.data.fonts.load(fontFilePath.replace("\\", "/"))
-        curveData.font = fontData
+        setattr(curveData, "font", fontData)
 
     if bold or italic or underlined:
+        curveDataBodyFormat = curveData.body_format  # type: ignore
         for index in range(len(text)):
-            curveData.body_format[index].use_underline = underlined
-            curveData.body_format[index].use_bold = bold
-            curveData.body_format[index].use_bold = italic
+            curveDataBodyFormat[index].use_underline = underlined
+            curveDataBodyFormat[index].use_bold = bold
+            curveDataBodyFormat[index].use_bold = italic
+
+        setattr(curveData, "body_format", curveDataBodyFormat)
 
     createObject(curveName, curveData)
 
@@ -1595,10 +1592,11 @@ def getBlenderCurvePrimitiveFunction(curvePrimitive: BlenderDefinitions.BlenderC
     elif curvePrimitive == BlenderDefinitions.BlenderCurvePrimitiveTypes.Arc:
         return BlenderCurvePrimitives.createArc
 
-    raise "Unknown primitive"
+    raise TypeError("Unknown primitive")
 
 
 class BlenderCurvePrimitives():
+    @staticmethod
     def createPoint(curveType=BlenderDefinitions.BlenderCurveTypes.NURBS, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Point,
@@ -1610,9 +1608,10 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createLineTo(endLocation, keywordArguments={}):
         createSimpleCurve(
-            BlenderDefinitions.BlenderCurvePrimitiveTypes.Line,
+            BlenderDefinitions.BlenderCurvePrimitiveTypes.LineTo,
             dict(
                 {
                     "Simple_endlocation": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(endLocation)).value,
@@ -1622,6 +1621,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createLine(length, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Distance,
@@ -1635,6 +1635,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createAngle(length, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Angle,
@@ -1648,6 +1649,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createCircle(radius, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Circle,
@@ -1660,6 +1662,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createEllipse(radius_x, radius_y, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Ellipse,
@@ -1672,6 +1675,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createArc(radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Arc,
@@ -1687,6 +1691,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createSector(radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Sector,
@@ -1701,6 +1706,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createSegment(outter_radius, inner_radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Segment,
@@ -1716,6 +1722,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createRectangle(length, width, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rectangle,
@@ -1729,6 +1736,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createRhomb(length, width, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rhomb,
@@ -1742,6 +1750,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createPolygon(numberOfSides, radius, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon,
@@ -1754,6 +1763,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createPolygon_ab(numberOfSides, radius_x, radius_y, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon_ab,
@@ -1767,6 +1777,7 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
     def createTrapezoid(length_upper, length_lower, height, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Trapezoid,
@@ -1827,7 +1838,7 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
 
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
-    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name,
+    bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name,  # type: ignore
                          order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
 
 
@@ -1869,7 +1880,7 @@ def zoomToSelectedObjects():
 
 
 def addDependencyGraphUpdateListener(callback):
-    bpy.app.handlers.depsgraph_update_post.append(callback)
+    bpy.app.handlers.depsgraph_update_post.append(callback)  # type: ignore
 
 
 def addTimer(callback):
@@ -1979,7 +1990,7 @@ def exportObject(
 
     blenderObject = bpy.data.objects.get(objectName)
 
-    blenderObject.select_set(True)
+    setattr(blenderObject, "select_set", True)
 
     # Check if this is a file-type we support:
     fileType = path.suffix.replace(".", "")
@@ -2002,7 +2013,7 @@ def separateObject(
 
     blenderObject = bpy.data.objects.get(objectName)
 
-    blenderObject.select_set(True)
+    setattr(blenderObject, "select_set", True)
 
     isSuccess = bpy.ops.mesh.separate(type='LOOSE') == {'FINISHED'}
 
@@ -2049,12 +2060,12 @@ def addTextureToMaterial(materialName, imageFilePath):
 
 
 def logMessage(message):
-    bpy.ops.code_to_cad.log_message(message=message)
+    bpy.ops.code_to_cad.log_message(message=message)  # type: ignore
 
 
 def createLight(objName, energyLevel, type):
     light_data = bpy.data.lights.new(name=objName, type=type)
-    light_data.energy = energyLevel
+    setattr(light_data, "energy", energyLevel)
     createObject(objName, data=light_data)
     assignObjectToCollection(objName)
 
