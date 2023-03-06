@@ -207,7 +207,7 @@ class Angle():
     # fromString: takes a string with a math operation and an optional unit of measurement
     # Default unit is degrees if unit not passed
     @staticmethod
-    def fromString(fromString: str, defaultUnit: Union[str, AngleUnit] = AngleUnit.DEGREES):
+    def fromString(fromString: Union[str, float, 'Angle'], defaultUnit: Union[str, AngleUnit] = AngleUnit.DEGREES):
 
         if isinstance(fromString, Angle):
             return fromString.copy()
@@ -570,7 +570,7 @@ class Dimension():
     # boundaryAxis is required if min,center,max are used
 
     @staticmethod
-    def fromString(fromString: str, defaultUnit: Optional[LengthUnit] = None, boundaryAxis: Optional[BoundaryAxis] = None):
+    def fromString(fromString: Union[str, float, 'Dimension'], defaultUnit: Optional[LengthUnit] = None, boundaryAxis: Optional[BoundaryAxis] = None):
 
         if isinstance(fromString, Dimension):
             return fromString.copy()
