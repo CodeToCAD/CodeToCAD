@@ -686,29 +686,9 @@
                         "type": "string,int,Axis",
                         "defaultValue": "z"
                     },
-                    "flip": {
+                    "flipAxis": {
                         "type": "boolean",
                         "defaultValue": false
-                    },
-                    "instanceCount": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
-                    "instanceSeparation": {
-                        "type": "string,float,Dimension",
-                        "defaultValue": 0.0
-                    },
-                    "aboutEntityOrLandmark": {
-                        "type": "string,Entity,Landmark",
-                        "required": false
-                    },
-                    "mirror": {
-                        "type": "boolean",
-                        "defaultValue": false
-                    },
-                    "instanceAxis": {
-                        "type": "string,int,Axis",
-                        "required": false
                     },
                     "initialRotationX": {
                         "type": "string,float,Angle",
@@ -722,9 +702,45 @@
                         "type": "string,float,Angle",
                         "defaultValue": 0.0
                     },
-                    "leaveHoleEntity": {
+                    "mirrorAboutEntityOrLandmark": {
+                        "type": "string,Entity,Landmark",
+                        "required": false
+                    },
+                    "mirrorAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "x"
+                    },
+                    "mirror": {
                         "type": "boolean",
                         "defaultValue": false
+                    },
+                    "circularPatternInstanceCount": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "circularPatternInstanceSeparation": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "circularPatternInstanceAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    },
+                    "circularPatternAboutEntityOrLandmark": {
+                        "type": "string,Entity,Landmark",
+                        "required": false
+                    },
+                    "linearPatternInstanceCount": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "linearPatternInstanceSeparation": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 0.0
+                    },
+                    "linearPatternInstanceAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "x"
                     }
                 }
             },
