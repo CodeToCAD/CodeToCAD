@@ -5,6 +5,7 @@
 from typing import Optional
 from uuid import uuid4
 import bpy
+from core.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import core.utilities as Utilities
 import BlenderDefinitions
 from pathlib import Path
@@ -322,16 +323,7 @@ def addPrimitive(
 
 def createGear(
     objectName: str,
-    numberOfTeeth: int,
-    pressureAngle: str,
-    addendum: str,
-    dedendum: str,
-    outerRadius: str,
-    innerRadius: str,
-    height: str,
-    skewAngle: str,
-    conicalAngle: str,
-    crownAngle: str
+    outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0
 ):
     addonName = "add_mesh_extra_objects"
 

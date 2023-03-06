@@ -202,7 +202,7 @@ class Entity(CodeToCADInterface.Entity):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        angles = [Utilities.Angle(0) for _ in range(3)]
+        angles: list[Optional[Angle]] = [Utilities.Angle(0) for _ in range(3)]
         angle: Angle = separationAngle  # type: ignore
         if isinstance(separationAngle, str):
             angle = Utilities.Angle.fromString(separationAngle)
@@ -396,15 +396,15 @@ class Entity(CodeToCADInterface.Entity):
 
     def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"
               ):
-        if isinstance(entityNameToDetermineAxis, Entity):
-            entityNameToDetermineAxis = entityNameToDetermineAxis.name
 
         axis = Utilities.Axis.fromString(axis)
 
+        angleParsed = Utilities.Angle.fromString(angle)
+
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
-            angle).toRadians(), axis, entityNameToDetermineAxis=entityNameToDetermineAxis)
+        BlenderActions.applyScrewModifier(
+            self.name, angleParsed.toRadians(), axis)
 
         return self
 
@@ -552,17 +552,7 @@ class Part(Entity, CodeToCADInterface.Part):
     def createGear(self, outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
         BlenderActions.createGear(
-            self.name,
-            numberOfTeeth,
-            pressureAngle,
-            addendum,
-            dedendum,
-            outerRadius,
-            innerRadius,
-            height,
-            skewAngle,
-            conicalAngle,
-            crownAngle
+            self.name, outerRadius, addendum, innerRadius, dedendum, height, pressureAngle, numberOfTeeth, skewAngle, conicalAngle, crownAngle
         )
 
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
@@ -652,26 +642,25 @@ class Part(Entity, CodeToCADInterface.Part):
         insidePart_start = insidePart.createLandmark(
             "start", startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
 
-        thicknessXYZ = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
+        thicknessXYZ: list[Dimension] = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
             Utilities.Dimension.fromString(thicknessX),
             Utilities.Dimension.fromString(thicknessY),
             Utilities.Dimension.fromString(thicknessZ),
         ])]
 
-        dimensions = blenderObject.dimensions
+        dimensions: list[float] = blenderObject.dimensions
 
-        scale = [
-            (dimensions[0]-thicknessXYZ[0] *
-             (1 if axis.value == 0 else 2)) / dimensions[0],
-            (dimensions[1]-thicknessXYZ[1] *
-             (1 if axis.value == 1 else 2)) / dimensions[1],
-            (dimensions[2]-thicknessXYZ[2] *
-             (1 if axis.value == 2 else 2)) / dimensions[2]
-        ]
+        def scaleValue(mainDimension: float, thickness: float, axis: Utilities.Axis) -> float:
+            axisSubtraction = (1 if axis.value == 0 else 2)
+            return (mainDimension-thickness * axisSubtraction) / mainDimension
 
-        insidePart.scale_fromstring(scale)
+        scaleX: float = scaleValue(dimensions[0], thicknessXYZ[0].value, axis)
+        scaleY = scaleValue(dimensions[1], thicknessXYZ[1].value, axis)
+        scaleZ = scaleValue(dimensions[2], thicknessXYZ[2].value, axis)
 
-        Joint(startAxisLandmark, insidePart_start).limitLocation(0, 0, 0)
+        insidePart.scaleXYZ(scaleX, scaleY, scaleZ)
+
+        Joint(startAxisLandmark, insidePart_start).limitLocationXYZ(0, 0, 0)
 
         self.subtract(insidePart, isTransferLandmarks=False)
 
