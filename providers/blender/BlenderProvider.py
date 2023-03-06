@@ -670,8 +670,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self
 
-    def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flip: bool = False, instanceCount: 'int' = 1, instanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, aboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirror: bool = False, instanceAxis: Optional[AxisOrItsIndexOrItsName] = None, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, leaveHoleEntity: bool = False
-             ):
+    def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x"):
 
         axis = Utilities.Axis.fromString(normalAxis)
 
@@ -679,7 +678,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         hole = Part(createUUIDLikeId()).createCylinder(radius, depth)
         hole_head = hole.createLandmark(
-            "hole", center, center, min if flip else max)
+            "hole", center, center, min if flipAxis else max)
 
         axisRotation = Utilities.Angle(-90, Utilities.AngleUnit.DEGREES)
 
@@ -693,35 +692,41 @@ class Part(Entity, CodeToCADInterface.Part):
         Joint(holeLandmark, hole_head).limitLocationY(0, 0)
         Joint(holeLandmark, hole_head).limitLocationZ(0, 0)
 
-        if mirror and aboutEntityOrLandmark:
-            hole.mirror(aboutEntityOrLandmark, instanceAxis or "x",
+        if mirror and mirrorAboutEntityOrLandmark:
+            hole.mirror(mirrorAboutEntityOrLandmark, mirrorAxis,
                         resultingMirroredEntityName=None).apply()
 
-        if instanceCount > 1:
-            if aboutEntityOrLandmark != None:
-                instanceSeparation = 360.0 / \
-                    float(
-                        instanceCount) if instanceSeparation == 0 else instanceSeparation
-                hole.circularPattern(
-                    instanceCount, instanceSeparation, aboutEntityOrLandmark, instanceAxis or "z")
-            else:
-                assert instanceSeparation != 0, "InstanceCount is set, but instanceSeparation is 0. Did you mean to add an instanceSeparation?"
-                hole.linearPattern(
-                    instanceCount, instanceSeparation, instanceAxis or "x")
+        if circularPatternInstanceCount > 1:
+            circularPatternAboutEntityOrLandmark = circularPatternAboutEntityOrLandmark or self
+            instanceSeparation = 360.0 / \
+                float(
+                    circularPatternInstanceCount) if circularPatternInstanceSeparation == 0 else circularPatternInstanceSeparation
+            hole.circularPattern(
+                circularPatternInstanceCount, instanceSeparation, circularPatternAboutEntityOrLandmark, circularPatternInstanceAxis)
 
-        self.subtract(hole, deleteAfterSubtract=(
-            not leaveHoleEntity), isTransferLandmarks=False)
+        if linearPatternInstanceCount > 1:
+            hole.linearPattern(
+                linearPatternInstanceCount, linearPatternInstanceSeparation, linearPatternInstanceAxis)
+
+        self.subtract(hole, deleteAfterSubtract=True,
+                      isTransferLandmarks=False)
         return self
 
     def assignMaterial(self, materialName: MaterialOrItsName
                        ):
-        Material(materialName).assignToPart(self.name)
+        material = materialName
+
+        if isinstance(material, str):
+            material = Material(material)
+
+        material.assignToPart(self.name)
         return self
 
     def isCollidingWithPart(self, otherPart: PartOrItsName
                             ):
-        if isinstance(otherPartName, Part):
-            otherPartName = otherPartName.name
+        otherPartName = otherPart
+        if isinstance(otherPart, Part):
+            otherPartName = otherPart.name
 
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
@@ -817,7 +822,7 @@ class Part(Entity, CodeToCADInterface.Part):
                     vertexGroupObject, blenderPolygon.vertices)
 
     def bevel(self,
-              radius: str,
+              radius: DimensionOrItsFloatOrStringValue,
               bevelEdgesNearlandmarkNames: Optional[list[str]] = None,
               bevelFacesNearlandmarkNames: Optional[list[str]] = None,
               useWidth=False,
