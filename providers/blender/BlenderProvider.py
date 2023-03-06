@@ -782,49 +782,42 @@ class Part(Entity, CodeToCADInterface.Part):
             useWidth=False
         )
 
-    def _addEdgesNearLandmarksToVertexGroup(self, bevelEdgesNearlandmarkNames: list[str], vertexGroupName):
-        # accept non-list input:
-        if type(bevelEdgesNearlandmarkNames) == str or isinstance(bevelEdgesNearlandmarkNames, Landmark):
-            bevelEdgesNearlandmarkNames = [bevelEdgesNearlandmarkNames]
+    def _addEdgesNearLandmarksToVertexGroup(self, bevelEdgesNearlandmarkNames: list[LandmarkOrItsName], vertexGroupName):
 
-        if len(bevelEdgesNearlandmarkNames) > 0:
-            kdTree = BlenderActions.createKdTreeForObject(self.name)
-            vertexGroupObject = BlenderActions.createObjectVertexGroup(
-                self.name, vertexGroupName)
+        kdTree = BlenderActions.createKdTreeForObject(self.name)
+        vertexGroupObject = BlenderActions.createObjectVertexGroup(
+            self.name, vertexGroupName)
 
-            for landmark in bevelEdgesNearlandmarkNames:
-                landmark: Landmark = self.getLandmark(landmark)
-                vertexIndecies = [index for (_, index, _) in BlenderActions.getClosestPointsToVertex(self.name, [
-                    dimension.value for dimension in landmark.getLocationWorld()], numberOfPoints=2, objectKdTree=kdTree)]
+        for landmarkOrItsName in bevelEdgesNearlandmarkNames:
+            landmark = self.getLandmark(landmarkOrItsName) if isinstance(
+                landmarkOrItsName, str) else landmarkOrItsName
+            vertexIndecies = [index for (_, index, _) in BlenderActions.getClosestPointsToVertex(self.name, [
+                dimension.value for dimension in landmark.getLocationWorld().toList()], numberOfPoints=2, objectKdTree=kdTree)]
 
-                assert len(
-                    vertexIndecies) == 2, f"Could not find edges near landmark {landmark.landmarkName}"
+            assert len(
+                vertexIndecies) == 2, f"Could not find edges near landmark {landmark.getLandmarkEntityName()}"
 
-                BlenderActions.addVerticiesToVertexGroup(
-                    vertexGroupObject, vertexIndecies)
+            BlenderActions.addVerticiesToVertexGroup(
+                vertexGroupObject, vertexIndecies)
 
-    def _addFacesNearLandmarksToVertexGroup(self, bevelFacesNearlandmarkNames: list[str], vertexGroupName):
-        # accept non-list input:
-        if type(bevelFacesNearlandmarkNames) == str or isinstance(bevelFacesNearlandmarkNames, Landmark):
-            bevelFacesNearlandmarkNames = [bevelFacesNearlandmarkNames]
+    def _addFacesNearLandmarksToVertexGroup(self, bevelFacesNearlandmarkNames: list[LandmarkOrItsName], vertexGroupName):
+        vertexGroupObject = BlenderActions.createObjectVertexGroup(
+            self.name, vertexGroupName)
 
-        if len(bevelFacesNearlandmarkNames) > 0:
-            vertexGroupObject = BlenderActions.createObjectVertexGroup(
-                self.name, vertexGroupName)
+        for landmarkOrItsName in bevelFacesNearlandmarkNames:
+            landmark = self.getLandmark(landmarkOrItsName) if isinstance(
+                landmarkOrItsName, str) else landmarkOrItsName
 
-            for landmark in bevelFacesNearlandmarkNames:
-                landmark: Landmark = self.getLandmark(landmark)
+            blenderPolygon = BlenderActions.getClosestFaceToVertex(
+                self.name, [dimension.value for dimension in landmark.getLocationWorld().toList()])
 
-                blenderPolygon = BlenderActions.getClosestFaceToVertex(
-                    self.name, [dimension.value for dimension in landmark.getLocationWorld()])
-
-                BlenderActions.addVerticiesToVertexGroup(
-                    vertexGroupObject, blenderPolygon.vertices)
+            BlenderActions.addVerticiesToVertexGroup(
+                vertexGroupObject, blenderPolygon.vertices)
 
     def bevel(self,
               radius: DimensionOrItsFloatOrStringValue,
-              bevelEdgesNearlandmarkNames: Optional[list[str]] = None,
-              bevelFacesNearlandmarkNames: Optional[list[str]] = None,
+              bevelEdgesNearlandmarkNames: Optional[list[LandmarkOrItsName]] = None,
+              bevelFacesNearlandmarkNames: Optional[list[LandmarkOrItsName]] = None,
               useWidth=False,
               chamfer=False,
               keywordArguments: Optional[dict] = None
@@ -923,6 +916,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return self
 
+    @staticmethod
     def createPrimitiveDecorator(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
         def decorator(primitiveFunction):
             def wrapper(*args, **kwargs):
@@ -935,11 +929,15 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
                 blenderPrimitiveFunction = BlenderActions.getBlenderCurvePrimitiveFunction(
                     blenderCurvePrimitiveType)
 
+                keywordArgs = dict(
+                    {
+                        "curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None},
+                    **kwargs
+                )
+
                 blenderPrimitiveFunction(
                     *args[1:],
-                    dict(
-                        {"curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None}, **kwargs
-                    )
+                    keywordArguments=keywordArgs
                 )
 
                 # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
