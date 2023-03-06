@@ -1150,49 +1150,49 @@
                     }
                 }
             },
-            "limitXLocation": {
+            "limitLocationX": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
                     "min": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     },
                     "max": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     }
                 }
             },
-            "limitYLocation": {
+            "limitLocationY": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
                     "min": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     },
                     "max": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     }
                 }
             },
-            "limitZLocation": {
+            "limitLocationZ": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
                     "min": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     },
                     "max": {
-                        "type": "string,list[string],Point",
+                        "type": "string,float,Dimension",
                         "required": false
                     }
                 }
             },
-            "limitXRotation": {
+            "limitRotationX": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1206,7 +1206,7 @@
                     }
                 }
             },
-            "limitYRotation": {
+            "limitRotationY": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1220,7 +1220,7 @@
                     }
                 }
             },
-            "limitZRotation": {
+            "limitRotationZ": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {

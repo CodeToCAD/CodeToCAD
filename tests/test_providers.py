@@ -746,50 +746,50 @@ class TestJoint(unittest.TestCase):
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitXLocation(self):
+    def test_limitLocationX(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitXLocation("min", "max")
+        value = instance.limitLocationX("min", "max")
 
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitYLocation(self):
+    def test_limitLocationY(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitYLocation("min", "max")
+        value = instance.limitLocationY("min", "max")
 
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitZLocation(self):
+    def test_limitLocationZ(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitZLocation("min", "max")
+        value = instance.limitLocationZ("min", "max")
 
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitXRotation(self):
+    def test_limitRotationX(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitXRotation("min", "max")
+        value = instance.limitRotationX("min", "max")
 
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitYRotation(self):
+    def test_limitRotationY(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitYRotation("min", "max")
+        value = instance.limitRotationY("min", "max")
 
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitZRotation(self):
+    def test_limitRotationZ(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitZRotation("min", "max")
+        value = instance.limitRotationZ("min", "max")
 
         assert value, "Modify method failed."
 

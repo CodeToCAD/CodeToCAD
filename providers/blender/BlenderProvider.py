@@ -660,7 +660,9 @@ class Part(Entity, CodeToCADInterface.Part):
 
         insidePart.scaleXYZ(scaleX, scaleY, scaleZ)
 
-        Joint(startAxisLandmark, insidePart_start).limitLocationXYZ(0, 0, 0)
+        Joint(startAxisLandmark, insidePart_start).limitLocationX(0, 0)
+        Joint(startAxisLandmark, insidePart_start).limitLocationY(0, 0)
+        Joint(startAxisLandmark, insidePart_start).limitLocationZ(0, 0)
 
         self.subtract(insidePart, isTransferLandmarks=False)
 
@@ -670,8 +672,6 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flip: bool = False, instanceCount: 'int' = 1, instanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, aboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirror: bool = False, instanceAxis: Optional[AxisOrItsIndexOrItsName] = None, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, leaveHoleEntity: bool = False
              ):
-        if isinstance(holeLandmark, Landmark):
-            holeLandmark = holeLandmark.name
 
         axis = Utilities.Axis.fromString(normalAxis)
 
@@ -687,12 +687,15 @@ class Part(Entity, CodeToCADInterface.Part):
             initialRotationY = (axisRotation+initialRotationY).value
         elif axis is Utilities.Axis.Y:
             initialRotationX = (axisRotation+initialRotationX).value
-        hole.rotate(initialRotationX, initialRotationY, initialRotationZ)
+        hole.rotateXYZ(initialRotationX, initialRotationY, initialRotationZ)
 
-        Joint(self, hole, holeLandmark, hole_head).limitLocation(0, 0, 0)
+        Joint(holeLandmark, hole_head).limitLocationX(0, 0)
+        Joint(holeLandmark, hole_head).limitLocationY(0, 0)
+        Joint(holeLandmark, hole_head).limitLocationZ(0, 0)
 
-        if mirror:
-            hole.mirror(aboutEntityOrLandmark, instanceAxis or "x").apply()
+        if mirror and aboutEntityOrLandmark:
+            hole.mirror(aboutEntityOrLandmark, instanceAxis or "x",
+                        resultingMirroredEntityName=None).apply()
 
         if instanceCount > 1:
             if aboutEntityOrLandmark != None:
@@ -700,11 +703,11 @@ class Part(Entity, CodeToCADInterface.Part):
                     float(
                         instanceCount) if instanceSeparation == 0 else instanceSeparation
                 hole.circularPattern(
-                    instanceCount, instanceSeparation, instanceAxis or "z", aboutEntityOrLandmark)
+                    instanceCount, instanceSeparation, aboutEntityOrLandmark, instanceAxis or "z")
             else:
                 assert instanceSeparation != 0, "InstanceCount is set, but instanceSeparation is 0. Did you mean to add an instanceSeparation?"
                 hole.linearPattern(
-                    instanceCount, instanceAxis or "x", instanceSeparation)
+                    instanceCount, instanceSeparation, instanceAxis or "x")
 
         self.subtract(hole, deleteAfterSubtract=(
             not leaveHoleEntity), isTransferLandmarks=False)
@@ -1061,27 +1064,27 @@ class Joint(CodeToCADInterface.Joint):
                   ):
         return self
 
-    def limitXLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+    def limitLocationX(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
         return self
 
-    def limitYLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+    def limitLocationY(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
         return self
 
-    def limitZLocation(self, min: Optional[PointOrListOfFloatOrItsStringValue] = None, max: Optional[PointOrListOfFloatOrItsStringValue] = None
+    def limitLocationZ(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
         return self
 
-    def limitXRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+    def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
         return self
 
-    def limitYRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+    def limitRotationY(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
         return self
 
-    def limitZRotation(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
+    def limitRotationZ(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
         return self
 
