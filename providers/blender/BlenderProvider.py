@@ -826,11 +826,11 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def bevel(self,
               radius: str,
-              bevelEdgesNearlandmarkNames: list[str] = None,
-              bevelFacesNearlandmarkNames: list[str] = None,
+              bevelEdgesNearlandmarkNames: Optional[list[str]] = None,
+              bevelFacesNearlandmarkNames: Optional[list[str]] = None,
               useWidth=False,
               chamfer=False,
-              keywordArguments: dict = None
+              keywordArguments: Optional[dict] = None
               ):
         vertexGroupName = None
 
@@ -844,14 +844,14 @@ class Part(Entity, CodeToCADInterface.Part):
             self._addFacesNearLandmarksToVertexGroup(
                 bevelFacesNearlandmarkNames, vertexGroupName)
 
-        radius = Utilities.Dimension.fromString(radius)
+        radiusDimension = Utilities.Dimension.fromString(radius)
 
-        radius = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            radius)
+        radiusDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            radiusDimension)
 
         BlenderActions.applyBevelModifier(
             self.name,
-            radius,
+            radiusDimension,
             vertexGroupName=vertexGroupName,
             useEdges=True,
             useWidth=useWidth,

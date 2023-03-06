@@ -271,6 +271,7 @@ class Ops:
     def __init__(self) -> None:
         self.object = Ops.OpsObject()
         self.mesh = Ops.OpsMesh()
+        self.curve = Ops.OpsCurve()
         self.export_mesh = Ops.OpsExportMesh()
         self.export_scene = Ops.OpsExportScene()
         self.wm = Ops.OpsWM()
@@ -314,7 +315,30 @@ class Ops:
         def select_all(action: Optional[Any] = 'TOGGLE'):
             pass
 
+    class OpsCurve:
+        @staticmethod
+        def simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45,
+                   Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True):
+            raise NotImplementedError()
+
     class OpsMesh:
+
+        @staticmethod
+        def primitive_gear(
+                name,
+                number_of_teeth,
+                radius,
+                addendum,
+                dedendum,
+                angle,
+                base,
+                width,
+                skew,
+                conangle,
+                crown):
+            global mockBpy
+            mockBpy.data.createMeshObject("Gear", "Gear", [Mesh.MeshVertex(v * 0.5 * radius * Vector((1, 1, 1))) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
+                (-1.0, 1.0, 1.0)), Vector((1.0, -1.0, -1.0)), Vector((1.0, -1.0, 1.0)), Vector((1.0, 1.0, -1.0)), Vector((1.0, 1.0, 1.0))]])
 
         @ staticmethod
         def primitive_cube_add(
