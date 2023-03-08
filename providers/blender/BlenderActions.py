@@ -1982,9 +1982,9 @@ def exportObject(
 
     bpy.ops.object.select_all(action='DESELECT')
 
-    blenderObject = bpy.data.objects.get(objectName)
+    blenderObject = getObject(objectName)
 
-    setattr(blenderObject, "select_set", True)
+    blenderObject.select_set(True)
 
     # Check if this is a file-type we support:
     fileType = path.suffix.replace(".", "")
@@ -2005,9 +2005,9 @@ def separateObject(
         objectName):
     bpy.ops.object.select_all(action='DESELECT')
 
-    blenderObject = bpy.data.objects.get(objectName)
+    blenderObject = getObject(objectName)
 
-    setattr(blenderObject, "select_set", True)
+    blenderObject.select_set(True)
 
     isSuccess = bpy.ops.mesh.separate(type='LOOSE') == {'FINISHED'}
 
