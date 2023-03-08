@@ -190,7 +190,7 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
     runpy.run_path(filePath, run_name="__main__")
 
     from BlenderActions import zoomToSelectedObjects, selectObject
-    selectObject(bpy.data.objects[-1])
+    selectObject(bpy.data.objects[-1].name)
     zoomToSelectedObjects()
 
     # Cleanup:

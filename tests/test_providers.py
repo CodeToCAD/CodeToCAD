@@ -120,7 +120,7 @@ class TestEntity(unittest.TestCase):
     def test_select(self):
         instance = Part("name", "description")
 
-        value = instance.select("landmarkName", "selectionType")
+        value = instance.select()
 
     def test_export(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -358,29 +358,44 @@ class TestEntity(unittest.TestCase):
 
         assert landmark.isExists(), "Landmark was not created."
 
-    @unittest.skip
     def test_getBoundingBox(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.getBoundingBox("")
+        value = instance.getBoundingBox()
 
         assert value, "Get method failed."
+        assert value.x.center == 0.0
+        assert value.y.center == 0.0
+        assert value.z.center == 0.0
+        assert value.x.min == -0.5
+        assert value.x.max == 0.5
+        assert value.y.min == -0.5
+        assert value.y.max == 0.5
+        assert value.z.min == -0.5
+        assert value.z.max == 0.5
 
-    @unittest.skip
     def test_getDimensions(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
 
-        value = instance.getDimensions("")
+        value = instance.getDimensions()
 
         assert value, "Get method failed."
+        assert value.height == 1
+        assert value.width == 1
+        assert value.length == 1
 
-    @unittest.skip
     def test_getLandmark(self):
-        instance = Part("name", "description")
+        instance = Part("name", "description").createCube(1, 1, 1)
+        instance.createLandmark("landmarkName", max, max, max)
 
         value = instance.getLandmark("landmarkName")
 
+        valueLocation = value.getLocationWorld()
+
         assert value, "Get method failed."
+        assert valueLocation.x == 0.5
+        assert valueLocation.y == 0.5
+        assert valueLocation.z == 0.5
 
 
 class TestPart(unittest.TestCase):
@@ -573,6 +588,24 @@ class TestPart(unittest.TestCase):
 
         assert value, "Modify method failed."
 
+    @unittest.skip
+    def test_selectVertexNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectVertexNearLandmark("landmarkName")
+
+    @unittest.skip
+    def test_selectEdgeNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectEdgeNearLandmark("landmarkName")
+
+    @unittest.skip
+    def test_selectFaceNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectFaceNearLandmark("landmarkName")
+
 
 class TestSketch(unittest.TestCase):
 
@@ -719,6 +752,14 @@ class TestLandmark(unittest.TestCase):
         assert value, "Get method failed."
 
     @unittest.skip
+    def test_getParentEntity(self):
+        instance = Landmark("name", "parentEntity", "description")
+
+        value = instance.getParentEntity("")
+
+        assert value, "Get method failed."
+
+    @unittest.skip
     def test_isExists(self):
         instance = Landmark("name", "parentEntity", "description")
 
@@ -753,14 +794,6 @@ class TestLandmark(unittest.TestCase):
         instance = Landmark("name", "parentEntity", "description")
 
         value = instance.setVisible("isVisible")
-
-    @unittest.skip
-    def test_apply(self):
-        instance = Landmark("name", "parentEntity", "description")
-
-        value = instance.apply("")
-
-        assert value, "Modify method failed."
 
     @unittest.skip
     def test_getNativeInstance(self):

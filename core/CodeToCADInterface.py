@@ -133,10 +133,10 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    def select(self
     ):
         '''
-        Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.
+        Select the entity (in UI).
         '''
         
         print("select is called in an abstract method. Please override this method.")
@@ -685,6 +685,39 @@ class Part(Entity,metaclass=ABCMeta):
         print("chamferFaces is called in an abstract method. Please override this method.")
         return self
         
+
+    @abstractmethod
+    def selectVertexNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        '''
+        Select the vertex closest to a Landmark on the entity (in UI).
+        '''
+        
+        print("selectVertexNearLandmark is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def selectEdgeNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        '''
+        Select an edge closest to a landmark on the entity (in UI).
+        '''
+        
+        print("selectEdgeNearLandmark is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def selectFaceNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        '''
+        Select a face closest to a landmark on the entity (in UI).
+        '''
+        
+        print("selectFaceNearLandmark is called in an abstract method. Please override this method.")
+        return self
+        
 class Sketch(Entity,metaclass=ABCMeta):
     '''Capabilities related to adding, multiplying, and/or modifying a curve.'''
     
@@ -899,10 +932,18 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def getParentEntity(self
+    ) -> 'Entity':
+        
+        print("getParentEntity is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
     def isExists(self
     ) -> bool:
         '''
-        Check if an entity exists
+        Check if an landmark exists
         '''
         
         print("isExists is called in an abstract method. Please override this method.")
@@ -910,10 +951,10 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True
+    def rename(self, newName:str
     ):
         '''
-        Rename the entity, with an option to rename linked landmarks and underlying data.
+        Rename the landmark.
         '''
         
         print("rename is called in an abstract method. Please override this method.")
@@ -921,10 +962,10 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self, removeChildren:bool
+    def delete(self
     ):
         '''
-        Delete the entity from the scene. You may need to delete an associated joint or other features.
+        Delete the landmark from the scene.
         '''
         
         print("delete is called in an abstract method. Please override this method.")
@@ -935,7 +976,7 @@ class Landmark(metaclass=ABCMeta):
     def isVisible(self
     ) -> bool:
         '''
-        Returns whether the entity is visible in the scene.
+        Returns whether the landmark is visible in the scene.
         '''
         
         print("isVisible is called in an abstract method. Please override this method.")
@@ -946,21 +987,10 @@ class Landmark(metaclass=ABCMeta):
     def setVisible(self, isVisible:bool
     ):
         '''
-        Toggles visibility of an entity in the scene.
+        Toggles visibility of an landmark in the scene.
         '''
         
         print("setVisible is called in an abstract method. Please override this method.")
-        return self
-        
-
-    @abstractmethod
-    def apply(self
-    ):
-        '''
-        Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.
-        '''
-        
-        print("apply is called in an abstract method. Please override this method.")
         return self
         
 
@@ -979,7 +1009,7 @@ class Landmark(metaclass=ABCMeta):
     def getLocationWorld(self
     ) -> 'Point':
         '''
-        Get the entities XYZ location relative to World Space.
+        Get the landmark XYZ location relative to World Space.
         '''
         
         print("getLocationWorld is called in an abstract method. Please override this method.")
@@ -990,7 +1020,7 @@ class Landmark(metaclass=ABCMeta):
     def getLocationLocal(self
     ) -> 'Point':
         '''
-        Get the entities XYZ location relative to Local Space.
+        Get the landmark XYZ location relative to Local Space.
         '''
         
         print("getLocationLocal is called in an abstract method. Please override this method.")
@@ -998,10 +1028,10 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    def select(self
     ):
         '''
-        Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.
+        Select the landmark (in UI).
         '''
         
         print("select is called in an abstract method. Please override this method.")

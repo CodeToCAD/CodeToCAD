@@ -97,7 +97,7 @@ class TestEntity(unittest.TestCase):
     def test_select(self):
         instance = Part("name","description")
 
-        value = instance.select("landmarkName","selectionType")
+        value = instance.select("")
 
         
     @unittest.skip
@@ -541,6 +541,27 @@ class TestPart(unittest.TestCase):
         
         assert value, "Modify method failed."
         
+    @unittest.skip
+    def test_selectVertexNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectVertexNearLandmark("landmarkName")
+
+        
+    @unittest.skip
+    def test_selectEdgeNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectEdgeNearLandmark("landmarkName")
+
+        
+    @unittest.skip
+    def test_selectFaceNearLandmark(self):
+        instance = Part("")
+
+        value = instance.selectFaceNearLandmark("landmarkName")
+
+        
 class TestSketch(unittest.TestCase):
     
     
@@ -701,6 +722,15 @@ class TestLandmark(unittest.TestCase):
         assert value, "Get method failed."
         
     @unittest.skip
+    def test_getParentEntity(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.getParentEntity("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
     def test_isExists(self):
         instance = Landmark("name","parentEntity","description")
 
@@ -713,7 +743,7 @@ class TestLandmark(unittest.TestCase):
     def test_rename(self):
         instance = Landmark("name","parentEntity","description")
 
-        value = instance.rename("newName","renamelinkedEntitiesAndLandmarks")
+        value = instance.rename("newName")
 
         
         assert value, "Modify method failed."
@@ -722,7 +752,7 @@ class TestLandmark(unittest.TestCase):
     def test_delete(self):
         instance = Landmark("name","parentEntity","description")
 
-        value = instance.delete("removeChildren")
+        value = instance.delete("")
 
         
     @unittest.skip
@@ -740,15 +770,6 @@ class TestLandmark(unittest.TestCase):
 
         value = instance.setVisible("isVisible")
 
-        
-    @unittest.skip
-    def test_apply(self):
-        instance = Landmark("name","parentEntity","description")
-
-        value = instance.apply("")
-
-        
-        assert value, "Modify method failed."
         
     @unittest.skip
     def test_getNativeInstance(self):
@@ -781,7 +802,7 @@ class TestLandmark(unittest.TestCase):
     def test_select(self):
         instance = Landmark("name","parentEntity","description")
 
-        value = instance.select("landmarkName","selectionType")
+        value = instance.select("")
 
         
 class TestJoint(unittest.TestCase):
