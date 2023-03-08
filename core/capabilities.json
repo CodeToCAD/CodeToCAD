@@ -422,23 +422,6 @@
                     }
                 }
             },
-            "createPrimitive": {
-                "action": "create",
-                "information": "Adds geometry to a part from a primitive named primitive shape.",
-                "parameters": {
-                    "primitiveName": {
-                        "type": "string"
-                    },
-                    "dimensions": {
-                        "type": "string"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
             "createCube": {
                 "action": "create",
                 "information": "Adds cuboid geometry to a part.",

@@ -441,7 +441,7 @@ class Entity(CodeToCADInterface.Entity):
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        _ = Part(landmarkObjectName).createPrimitive("Empty", "0")
+        _ = Part(landmarkObjectName)._createPrimitive("Empty", "0")
 
         # Assign the landmark to the parent's collection
         BlenderActions.assignObjectToCollection(
@@ -502,8 +502,8 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self
 
-    def createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
-                        ):
+    def _createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
+                         ):
 
         assert self.isExists() == False, f"{self.name} already exists."
 
@@ -530,23 +530,23 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def createCube(self, width: DimensionOrItsFloatOrStringValue, length: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                    ):
-        return self.createPrimitive("cube", "{},{},{}".format(width, length, height), keywordArguments)
+        return self._createPrimitive("cube", "{},{},{}".format(width, length, height), keywordArguments)
 
     def createCone(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, draftRadius: DimensionOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
-        return self.createPrimitive("cone", "{},{},{}".format(radius, height, draftRadius), keywordArguments)
+        return self._createPrimitive("cone", "{},{},{}".format(radius, height, draftRadius), keywordArguments)
 
     def createCylinder(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                        ):
-        return self.createPrimitive("cylinder", "{},{}".format(radius, height), keywordArguments)
+        return self._createPrimitive("cylinder", "{},{}".format(radius, height), keywordArguments)
 
     def createTorus(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                     ):
-        return self.createPrimitive("torus", "{},{}".format(innerRadius, outerRadius), keywordArguments)
+        return self._createPrimitive("torus", "{},{}".format(innerRadius, outerRadius), keywordArguments)
 
     def createSphere(self, radius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                      ):
-        return self.createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
+        return self._createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
 
     def createGear(self, outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
@@ -1038,16 +1038,23 @@ class Landmark(CodeToCADInterface.Landmark):
 
     def getLandmarkEntityName(self
                               ) -> str:
-        parentEntityName: str = self.parentEntity  # type: ignore
-        if isinstance(self.parentEntity, Entity):
-            parentEntityName = self.parentEntity.name
+        parentEntityName = self.parentEntity
 
-        return Utilities.formatLandmarkEntityName(parentEntityName, self.name)
+        if isinstance(parentEntityName, Entity):
+            parentEntityName = parentEntityName.name
+
+        entityName = Utilities.formatLandmarkEntityName(
+            parentEntityName, self.name)  # type: ignore
+
+        return entityName
 
     def getParentEntity(self
                         ) -> 'Entity':
 
-        raise NotImplementedError()
+        if isinstance(self.parentEntity, str):
+            return Entity(self.parentEntity)
+
+        return self.parentEntity  # type: ignore
 
     def isExists(self) -> bool:
         try:
@@ -1139,32 +1146,103 @@ class Joint(CodeToCADInterface.Joint):
 
         return self
 
+    @staticmethod
+    def _getEntityOrLandmarkName(entityOrLandmark) -> str:
+        if isinstance(entityOrLandmark, str):
+            return entityOrLandmark
+        elif isinstance(entityOrLandmark, Entity):
+            return entityOrLandmark.name
+        elif isinstance(entityOrLandmark, Landmark):
+            return entityOrLandmark.getLandmarkEntityName()
+
+        raise TypeError("Only Entity or Landmark types are allowed.")
+
     def pivot(self
               ):
 
-        # BlenderActions.applyPivotConstraint(
-        #     self.part2.name, self.part1Landmark.entityName, keywordArguments)
-        raise NotImplementedError()
+        objectToPivotName = Joint._getEntityOrLandmarkName(self.entity2)
+
+        objectToPivotAboutName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        BlenderActions.applyPivotConstraint(
+            objectToPivotName, objectToPivotAboutName)
+
         return self
 
     def gearRatio(self, ratio: float
                   ):
-        raise NotImplementedError()
+
+        object1 = Joint._getEntityOrLandmarkName(self.entity2)
+
+        object2 = Joint._getEntityOrLandmarkName(self.entity1)
+
+        BlenderActions.applyGearConstraint(
+            object1, object2, ratio)
+
         return self
+
+    @staticmethod
+    def _getLimitLocationPair(min, max) -> list[Optional[Dimension]]:
+        locationPair: list[Optional[Dimension]] = [None, None]
+
+        if min:
+            locationPair[0] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(min))
+        if max:
+            locationPair[1] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(max))
+
+        return locationPair
+
+    def _limitLocationXYZ(self, x: Optional[list[Optional[Dimension]]], y: Optional[list[Optional[Dimension]]], z: Optional[list[Optional[Dimension]]]):
+
+        objectToLimitName = self.entity2
+
+        if isinstance(objectToLimitName, Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, Landmark):
+            # if a landmark, offset the dimensions relative to the parent object
+            offset = objectToLimitName.getLocationLocal()
+            if x and x[0]:
+                x[0] = x[0] + offset.x
+            if x and x[1]:
+                x[1] = x[1] + offset.x
+            if y and y[0]:
+                y[0] = y[0] + offset.y
+            if y and y[1]:
+                y[1] = y[1] + offset.y
+            if z and z[0]:
+                z[0] = z[0] + offset.z
+            if z and z[1]:
+                z[1] = z[1] + offset.z
+
+            objectToLimitName = objectToLimitName.getParentEntity().name
+
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        BlenderActions.applyLimitLocationConstraint(
+            objectToLimitName, x, y, z, relativeToObjectName)
 
     def limitLocationX(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+
+        dimensions = Joint._getLimitLocationPair(min, max)
+
+        self._limitLocationXYZ(dimensions, None, None)
         return self
 
     def limitLocationY(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+        dimensions = Joint._getLimitLocationPair(min, max)
+
+        self._limitLocationXYZ(None, dimensions, None)
         return self
 
     def limitLocationZ(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+        dimensions = Joint._getLimitLocationPair(min, max)
+
+        self._limitLocationXYZ(None, None, dimensions)
         return self
 
     def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
@@ -1192,19 +1270,27 @@ class Material(CodeToCADInterface.Material):
         self.name = name
         self.description = description
 
+        try:
+            BlenderActions.getMaterial(self.name)
+        except:
+            BlenderActions.createMaterial(self.name)
+
     def assignToPart(self, partName: PartOrItsName
                      ):
-        raise NotImplementedError()
+        BlenderActions.assignMaterialToObject(self.name, partName)
         return self
 
     def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat, aValue: IntOrFloat = 1.0
                  ):
-        raise NotImplementedError()
+        BlenderActions.setMaterialColor(
+            self.name, rValue, gValue, bValue, aValue)
         return self
 
     def addImageTexture(self, imageFilePath: str
                         ):
-        raise NotImplementedError()
+        absoluteFilePath = getAbsoluteFilepath(imageFilePath)
+
+        BlenderActions.addTextureToMaterial(self.name, absoluteFilePath)
         return self
 
 

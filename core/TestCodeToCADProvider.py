@@ -359,15 +359,6 @@ class TestPart(TestProviderCase):
         assert value.isExists(), "Create method failed."
         
     @unittest.skip
-    def test_createPrimitive(self):
-        instance = Part("")
-
-        value = instance.createPrimitive("primitiveName","dimensions","keywordArguments")
-
-        
-        assert value.isExists(), "Create method failed."
-        
-    @unittest.skip
     def test_createCube(self):
         instance = Part("")
 
