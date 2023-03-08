@@ -44,7 +44,7 @@ class BlenderLength(Utilities.Units):
     # Convert a utilities LengthUnit to BlenderLength
 
     @staticmethod
-    def fromLengthUnit(unit: Utilities.LengthUnit):
+    def fromLengthUnit(unit: Utilities.LengthUnit) -> 'BlenderLength':
 
         [result] = list(filter(lambda b: b.value == unit,
                         [b for b in BlenderLength]))

@@ -741,9 +741,9 @@ def applyLimitLocationConstraint(
 
 def applyLimitRotationConstraint(
     objectName,
-    x: list[Utilities.Angle],
-    y: list[Utilities.Angle],
-    z: list[Utilities.Angle],
+    x: Optional[list[Optional[Utilities.Angle]]],
+    y:  Optional[list[Optional[Utilities.Angle]]],
+    z:  Optional[list[Optional[Utilities.Angle]]],
     relativeToObjectName,
     keywordArguments={}
 ):
@@ -751,21 +751,37 @@ def applyLimitRotationConstraint(
     relativeToObject = getObject(
         relativeToObjectName) if relativeToObjectName else None
 
+    [minX, maxX] = x or [None, None]
+    [minY, maxY] = y or [None, None]
+    [minZ, maxZ] = z or [None, None]
+    if minX:
+        minX = minX.toRadians().value
+    if minY:
+        minY = minY.toRadians().value
+    if minZ:
+        minZ = minZ.toRadians().value
+    if maxX:
+        maxX = maxX.toRadians().value
+    if maxY:
+        maxY = maxY.toRadians().value
+    if maxZ:
+        maxZ = maxZ.toRadians().value
+
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
         dict(
             {
                 "name": f"rot_{objectName}_{relativeToObjectName}",
-                "use_limit_x": x != None,
-                "use_limit_y": y != None,
-                "use_limit_z": z != None,
-                "min_x": x[0].toRadians().value if x else 0,
-                "min_y": y[0].toRadians().value if y else 0,
-                "min_z": z[0].toRadians().value if z else 0,
-                "max_x": x[1].toRadians().value if x else 0,
-                "max_y": y[1].toRadians().value if y else 0,
-                "max_z": z[1].toRadians().value if z else 0,
+                "use_limit_x": minX or maxX,
+                "use_limit_y": minY or maxY,
+                "use_limit_z": minZ or maxZ,
+                "min_x": minX,
+                "min_y": minY,
+                "min_z": minZ,
+                "max_x": maxX,
+                "max_y": maxY,
+                "max_z": maxZ,
                 "owner_space": "CUSTOM" if relativeToObject else "WORLD",
                 "space_object": relativeToObject
             },
@@ -1597,7 +1613,7 @@ def getBlenderCurvePrimitiveFunction(curvePrimitive: BlenderDefinitions.BlenderC
 
 
 class BlenderCurvePrimitives():
-    @staticmethod
+    @ staticmethod
     def createPoint(curveType=BlenderDefinitions.BlenderCurveTypes.NURBS, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Point,
@@ -1609,7 +1625,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createLineTo(endLocation, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.LineTo,
@@ -1622,7 +1638,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createLine(length, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Distance,
@@ -1636,7 +1652,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createAngle(length, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Angle,
@@ -1650,7 +1666,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createCircle(radius, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Circle,
@@ -1663,7 +1679,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createEllipse(radius_x, radius_y, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Ellipse,
@@ -1676,7 +1692,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createArc(radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Arc,
@@ -1692,7 +1708,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createSector(radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Sector,
@@ -1707,7 +1723,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createSegment(outter_radius, inner_radius, angle, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Segment,
@@ -1723,7 +1739,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createRectangle(length, width, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rectangle,
@@ -1737,7 +1753,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createRhomb(length, width, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rhomb,
@@ -1751,7 +1767,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createPolygon(numberOfSides, radius, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon,
@@ -1764,7 +1780,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createPolygon_ab(numberOfSides, radius_x, radius_y, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon_ab,
@@ -1778,7 +1794,7 @@ class BlenderCurvePrimitives():
             )
         )
 
-    @staticmethod
+    @ staticmethod
     def createTrapezoid(length_upper, length_lower, height, keywordArguments={}):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Trapezoid,
