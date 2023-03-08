@@ -53,7 +53,7 @@ class BlenderLength(Utilities.Units):
 
     # Takes in a list of Dimension and converts them to the `DEFAULT_BLENDER_UNIT`, which is the unit blender deals with, no matter what we set the document unit to.
     @staticmethod
-    def convertDimensionsToBlenderUnit(dimensions: list) -> list[Dimension]:
+    def convertDimensionsToBlenderUnit(dimensions: list) -> list[Utilities.Dimension]:
         return [
             BlenderLength.convertDimensionToBlenderUnit(dimension)
 
