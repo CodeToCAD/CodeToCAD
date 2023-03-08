@@ -94,7 +94,7 @@ class Entity(CodeToCADInterface.Entity):
         return self
         
 
-    def mirror(self, mirrorAcrossEntity:EntityOrItsName, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
+    def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
     ):
         
         return self
@@ -488,7 +488,7 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         return self
         
     
-class Landmark(Entity,CodeToCADInterface.Landmark): 
+class Landmark(CodeToCADInterface.Landmark): 
     
     
     name:str
@@ -504,6 +504,66 @@ class Landmark(Entity,CodeToCADInterface.Landmark):
     ) -> str:
         
         raise NotImplementedError()
+        
+
+    def isExists(self
+    ) -> bool:
+        
+        raise NotImplementedError()
+        
+
+    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True
+    ):
+        
+        return self
+        
+
+    def delete(self, removeChildren:bool
+    ):
+        
+        return self
+        
+
+    def isVisible(self
+    ) -> bool:
+        
+        raise NotImplementedError()
+        
+
+    def setVisible(self, isVisible:bool
+    ):
+        
+        return self
+        
+
+    def apply(self
+    ):
+        
+        return self
+        
+
+    def getNativeInstance(self
+    ):
+        
+        raise NotImplementedError()
+        
+
+    def getLocationWorld(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def getLocationLocal(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    ):
+        
+        return self
         
     
 class Joint(CodeToCADInterface.Joint): 

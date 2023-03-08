@@ -126,8 +126,8 @@
                 "action": "create",
                 "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
                 "parameters": {
-                    "mirrorAcrossEntity": {
-                        "type": "string,Entity"
+                    "mirrorAcrossEntityOrLandmark": {
+                        "type": "string,Entity,Landmark"
                     },
                     "axis": {
                         "type": "string,int,Axis"
@@ -1113,7 +1113,6 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
-            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1133,6 +1132,83 @@
             "getLandmarkEntityName": {
                 "action": "get",
                 "returnType": "string"
+            },
+            "isExists": {
+                "action": "get",
+                "information": "Check if an entity exists",
+                "returnType": "boolean"
+            },
+            "rename": {
+                "action": "modify",
+                "information": "Rename the entity, with an option to rename linked landmarks and underlying data.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    },
+                    "renamelinkedEntitiesAndLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
+                "parameters": {
+                    "removeChildren": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "isVisible": {
+                "action": "get",
+                "information": "Returns whether the entity is visible in the scene.",
+                "returnType": "boolean"
+            },
+            "setVisible": {
+                "action": "interact",
+                "information": "Toggles visibility of an entity in the scene.",
+                "parameters": {
+                    "isVisible": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "apply": {
+                "action": "modify",
+                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
+                "parameters": {}
+            },
+            "getNativeInstance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "parameters": {}
+            },
+            "getLocationWorld": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the entities XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "getLocationLocal": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the entities XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
+                    },
+                    "selectionType": {
+                        "type": "string",
+                        "defaultValue": "vertex"
+                    }
+                }
             }
         },
         "Joint": {
