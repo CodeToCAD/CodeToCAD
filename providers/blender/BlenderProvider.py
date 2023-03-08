@@ -166,17 +166,16 @@ class Entity(CodeToCADInterface.Entity):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        offsetAmount: float = offset  # type: ignore
         if isinstance(offset, str):
             offset = Utilities.Dimension.fromString(offset)
 
         if isinstance(offset, Utilities.Dimension):
             offset = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 offset)
-            offsetAmount = offset.value
+            offset = offset.value
 
         BlenderActions.applyLinearPattern(
-            self.name, instanceCount, axis, offsetAmount)
+            self.name, instanceCount, axis, offset)
 
         return self
 
@@ -202,11 +201,12 @@ class Entity(CodeToCADInterface.Entity):
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
         angles: list[Optional[Angle]] = [Utilities.Angle(0) for _ in range(3)]
-        angle: Angle = separationAngle  # type: ignore
-        if isinstance(separationAngle, str):
-            angle = Utilities.Angle.fromString(separationAngle)
-        elif isinstance(separationAngle, (float, int)):
-            angle = Utilities.Angle(separationAngle)
+
+        angle = separationAngle
+        if isinstance(angle, str):
+            angle = Utilities.Angle.fromString(angle)
+        elif isinstance(angle, (float, int)):
+            angle = Utilities.Angle(angle)
 
         angles[axis.value] = angle
 
@@ -232,12 +232,14 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
+        assert boundingBox.x and boundingBox.y and boundingBox.z, "Could not get bounding box"
+
         xDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            x, boundingBox.x)  # type: ignore
+            x, boundingBox.x)
         yDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            y, boundingBox.y)  # type: ignore
+            y, boundingBox.y)
         zDimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            z, boundingBox.z)  # type: ignore
+            z, boundingBox.z)
 
         BlenderActions.translateObject(
             self.name, [xDimension, yDimension, zDimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -249,8 +251,10 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
+        assert boundingBox.x, "Could not get bounding box"
+
         dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.x)  # type: ignore
+            amount, boundingBox.x)
 
         BlenderActions.translateObject(
             self.name, [dimension, Dimension(0), Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -262,8 +266,10 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
+        assert boundingBox.y, "Could not get bounding box"
+
         dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.y)  # type: ignore
+            amount, boundingBox.y)
 
         BlenderActions.translateObject(
             self.name, [Dimension(0), dimension, Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -275,8 +281,10 @@ class Entity(CodeToCADInterface.Entity):
 
         boundingBox = BlenderActions.getBoundingBox(self.name)
 
+        assert boundingBox.z, "Could not get bounding box"
+
         dimension = Entity._translationDimensionFromDimensionOrItsFloatOrStringValue(
-            amount, boundingBox.z)  # type: ignore
+            amount, boundingBox.z)
 
         BlenderActions.translateObject(
             self.name, [Dimension(0), Dimension(0), dimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
@@ -1040,21 +1048,21 @@ class Landmark(CodeToCADInterface.Landmark):
                               ) -> str:
         parentEntityName = self.parentEntity
 
-        if isinstance(parentEntityName, Entity):
+        if isinstance(parentEntityName, CodeToCADInterface.Entity):
             parentEntityName = parentEntityName.name
 
         entityName = Utilities.formatLandmarkEntityName(
-            parentEntityName, self.name)  # type: ignore
+            parentEntityName, self.name)
 
         return entityName
 
     def getParentEntity(self
-                        ) -> 'Entity':
+                        ) -> 'CodeToCADInterface.Entity':
 
         if isinstance(self.parentEntity, str):
             return Entity(self.parentEntity)
 
-        return self.parentEntity  # type: ignore
+        return self.parentEntity
 
     def isExists(self) -> bool:
         try:
@@ -1068,9 +1076,9 @@ class Landmark(CodeToCADInterface.Landmark):
         assert Landmark(newName, self.parentEntity).isExists(
         ) == False, f"{newName} already exists."
 
-        parentEntityName: str = self.parentEntity  # type: ignore
-        if isinstance(self.parentEntity, Entity):
-            parentEntityName = self.parentEntity.name
+        parentEntityName = self.parentEntity
+        if isinstance(parentEntityName, CodeToCADInterface.Entity):
+            parentEntityName = parentEntityName.name
 
         BlenderActions.updateObjectName(self.getLandmarkEntityName(
         ), Utilities.formatLandmarkEntityName(parentEntityName, newName))
@@ -1245,19 +1253,54 @@ class Joint(CodeToCADInterface.Joint):
         self._limitLocationXYZ(None, None, dimensions)
         return self
 
+    @staticmethod
+    def _getLimitRotationPair(min, max) -> list[Optional[Angle]]:
+        rotationPair: list[Optional[Angle]] = [None, None]
+
+        if min:
+            rotationPair[0] = Angle.fromString(min)
+        if max:
+            rotationPair[1] = Angle.fromString(max)
+
+        return rotationPair
+
     def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        rotationPair = Joint._getLimitRotationPair(min, max)
+
+        BlenderActions.applyLimitRotationConstraint(
+            objectToLimitName, rotationPair, None, None, relativeToObjectName)
+
         return self
 
     def limitRotationY(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        rotationPair = Joint._getLimitRotationPair(min, max)
+
+        BlenderActions.applyLimitRotationConstraint(
+            objectToLimitName, None, rotationPair, None, relativeToObjectName)
+
         return self
 
     def limitRotationZ(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        raise NotImplementedError()
+        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        rotationPair = Joint._getLimitRotationPair(min, max)
+
+        BlenderActions.applyLimitRotationConstraint(
+            objectToLimitName, None, None, rotationPair, relativeToObjectName)
+
         return self
 
 
@@ -1355,21 +1398,34 @@ class Animation(CodeToCADInterface.Animation):
 
     def createKeyFrameLocation(self, entity: EntityOrItsName, frameNumber: 'int'
                                ):
-        raise NotImplementedError()
+        partName = entity
+
+        if isinstance(partName, CodeToCADInterface.Entity):
+            partName = partName.name
+
+        BlenderActions.addKeyframeToObject(
+            partName, frameNumber, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE.value)
 
     def createKeyFrameRotation(self, entity: EntityOrItsName, frameNumber: 'int'
                                ):
-        raise NotImplementedError()
+        partName = entity
+
+        if isinstance(partName, CodeToCADInterface.Entity):
+            partName = partName.name
+
+        BlenderActions.addKeyframeToObject(
+            partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
 
 class Scene(CodeToCADInterface.Scene):
 
-    name: Optional[str] = None
+    # Blender's default Scene name is "Scene"
+    name: str = "Scene"
     description: Optional[str] = None
     light = Light
 
     def __init__(self, name: Optional[str] = None, description: Optional[str] = None):
-        self.name = name
+        self.name = name or self.name
         self.description = description
 
     @staticmethod
@@ -1389,37 +1445,63 @@ class Scene(CodeToCADInterface.Scene):
 
     def export(self, filePath: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0
                ):
-        raise NotImplementedError()
+        for entity in entities:
+            part = entity
+            if isinstance(part, str):
+                part = Part(part)
+            part.export(filePath, overwrite, scale)
         return self
 
     def setDefaultUnit(self, unit: LengthUnitOrItsName
                        ):
-        raise NotImplementedError()
+        if isinstance(unit, str):
+            unit = Utilities.LengthUnit.fromString(unit)
+
+        blenderUnit = BlenderDefinitions.BlenderLength.fromLengthUnit(unit)
+
+        BlenderActions.setDefaultUnit(blenderUnit, self.name)
         return self
 
     def createGroup(self, name: str
                     ):
-        raise NotImplementedError()
+        BlenderActions.createCollection(name, self.name)
         return self
 
     def deleteGroup(self, name: str, removeChildren: bool
                     ):
-        raise NotImplementedError()
+        BlenderActions.removeCollection(name, removeChildren)
         return self
 
     def removeFromGroup(self, entityName: str, groupName: str
                         ):
-        raise NotImplementedError()
+        if isinstance(entityName, Entity):
+            entityName = entityName.name
+
+        BlenderActions.removeObjectFromCollection(entityName, groupName)
         return self
 
     def assignToGroup(self, entities: list[EntityOrItsName], groupName: str, removeFromOtherGroups: Optional[bool] = True
                       ):
-        raise NotImplementedError()
+        for entity in entities:
+            entityName = entity
+            if isinstance(entityName, Entity):
+                entityName = entityName.name
+
+            BlenderActions.assignObjectToCollection(
+                entityName, groupName, self.name, removeFromOtherGroups or True)
+
         return self
 
     def setVisible(self, entities: list[EntityOrItsName], isVisible: bool
                    ):
-        raise NotImplementedError()
+
+        for entity in entities:
+            entityName = entity
+            if isinstance(entityName, Entity):
+                entityName = entityName.name
+
+            BlenderActions.setObjectVisibility(entityName, isVisible)
+
         return self
 
     def setHDRIBackground(self,
@@ -1439,9 +1521,17 @@ class Analytics(CodeToCADInterface.Analytics):
     def __init__(self):
         pass
 
+    @staticmethod
+    def _getEntityFromNameOrLandmark(entityOrLandmark: EntityOrItsNameOrLandmark) -> Union[CodeToCADInterface.Entity, CodeToCADInterface.Landmark]:
+        if isinstance(entityOrLandmark, str):
+            return Entity(entityOrLandmark)
+        return entityOrLandmark
+
     def measureDistance(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
                         ) -> 'Dimensions':
-        raise NotImplementedError()
+        distance = Analytics._getEntityFromNameOrLandmark(entity2).getLocationWorld(
+        ) - Analytics._getEntityFromNameOrLandmark(entity1).getLocationWorld()
+        return Dimensions.fromPoint(distance)
 
     def measureAngle(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark, pivot: Optional[EntityOrItsNameOrLandmark] = None
                      ) -> 'list[Angle]':
@@ -1449,11 +1539,18 @@ class Analytics(CodeToCADInterface.Analytics):
 
     def getWorldPose(self, entity: EntityOrItsName
                      ) -> 'list[float]':
-        raise NotImplementedError()
+        partName = entity
+        if isinstance(partName, Entity):
+            partName = partName.name
+        return BlenderActions.getObjectWorldPose(partName)
 
     def getBoundingBox(self, entityName: EntityOrItsName
                        ) -> 'BoundaryBox':
-        raise NotImplementedError()
+        entity = entityName
+        if isinstance(entity, str):
+            entity = Entity(entity)
+
+        return entity.getBoundingBox()
 
     def getDimensions(self, entityName: EntityOrItsName
                       ) -> 'Dimensions':
@@ -1464,4 +1561,5 @@ class Analytics(CodeToCADInterface.Analytics):
         raise TypeError("entityName must be a string or an Entity")
 
     def log(self, message):
-        return BlenderActions.logMessage(message)
+        BlenderActions.logMessage(message)
+        return self
