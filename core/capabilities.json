@@ -80,17 +80,8 @@
             },
             "select": {
                 "action": "interact",
-                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
-                "parameters": {
-                    "landmarkName": {
-                        "required": false,
-                        "type": "string,Landmark"
-                    },
-                    "selectionType": {
-                        "type": "string",
-                        "defaultValue": "vertex"
-                    }
-                }
+                "information": "Select the entity (in UI).",
+                "parameters": {}
             },
             "export": {
                 "action": "interact",
@@ -839,6 +830,36 @@
                         "type": "list[string,Landmark]"
                     }
                 }
+            },
+            "selectVertexNearLandmark": {
+                "action": "interact",
+                "information": "Select the vertex closest to a Landmark on the entity (in UI).",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
+                    }
+                }
+            },
+            "selectEdgeNearLandmark": {
+                "action": "interact",
+                "information": "Select an edge closest to a landmark on the entity (in UI).",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
+                    }
+                }
+            },
+            "selectFaceNearLandmark": {
+                "action": "interact",
+                "information": "Select a face closest to a landmark on the entity (in UI).",
+                "parameters": {
+                    "landmarkName": {
+                        "required": false,
+                        "type": "string,Landmark"
+                    }
+                }
             }
         },
         "Sketch": {
@@ -1133,51 +1154,42 @@
                 "action": "get",
                 "returnType": "string"
             },
+            "getParentEntity": {
+                "action": "get",
+                "returnType": "Entity"
+            },
             "isExists": {
                 "action": "get",
-                "information": "Check if an entity exists",
+                "information": "Check if an landmark exists",
                 "returnType": "boolean"
             },
             "rename": {
                 "action": "modify",
-                "information": "Rename the entity, with an option to rename linked landmarks and underlying data.",
+                "information": "Rename the landmark.",
                 "parameters": {
                     "newName": {
                         "type": "string"
-                    },
-                    "renamelinkedEntitiesAndLandmarks": {
-                        "type": "boolean",
-                        "defaultValue": true
                     }
                 }
             },
             "delete": {
                 "action": "delete",
-                "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
-                "parameters": {
-                    "removeChildren": {
-                        "type": "boolean"
-                    }
-                }
+                "information": "Delete the landmark from the scene.",
+                "parameters": {}
             },
             "isVisible": {
                 "action": "get",
-                "information": "Returns whether the entity is visible in the scene.",
+                "information": "Returns whether the landmark is visible in the scene.",
                 "returnType": "boolean"
             },
             "setVisible": {
                 "action": "interact",
-                "information": "Toggles visibility of an entity in the scene.",
+                "information": "Toggles visibility of an landmark in the scene.",
                 "parameters": {
                     "isVisible": {
                         "type": "boolean"
                     }
                 }
-            },
-            "apply": {
-                "action": "modify",
-                "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
-                "parameters": {}
             },
             "getNativeInstance": {
                 "action": "get",
@@ -1187,28 +1199,19 @@
             "getLocationWorld": {
                 "action": "get",
                 "returnType": "Point",
-                "information": "Get the entities XYZ location relative to World Space.",
+                "information": "Get the landmark XYZ location relative to World Space.",
                 "parameters": {}
             },
             "getLocationLocal": {
                 "action": "get",
                 "returnType": "Point",
-                "information": "Get the entities XYZ location relative to Local Space.",
+                "information": "Get the landmark XYZ location relative to Local Space.",
                 "parameters": {}
             },
             "select": {
                 "action": "interact",
-                "information": "Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.",
-                "parameters": {
-                    "landmarkName": {
-                        "required": false,
-                        "type": "string,Landmark"
-                    },
-                    "selectionType": {
-                        "type": "string",
-                        "defaultValue": "vertex"
-                    }
-                }
+                "information": "Select the landmark (in UI).",
+                "parameters": {}
             }
         },
         "Joint": {

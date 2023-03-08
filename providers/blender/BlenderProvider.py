@@ -117,9 +117,8 @@ class Entity(CodeToCADInterface.Entity):
              for value in BlenderActions.getObjectLocalLocation(self.name)]
         )
 
-    def select(self, landmarkName: Optional[LandmarkOrItsName] = None, selectionType: str = "vertex"
-               ):
-        raise NotImplementedError()
+    def select(self):
+        BlenderActions.selectObject(self.name)
         return self
 
     def export(self, filePath: str, overwrite: bool = True, scale: float = 1.0
@@ -851,6 +850,24 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self
 
+    def selectVertexNearLandmark(self, landmarkName: Optional[LandmarkOrItsName] = None
+                                 ):
+
+        raise NotImplementedError()
+        return self
+
+    def selectEdgeNearLandmark(self, landmarkName: Optional[LandmarkOrItsName] = None
+                               ):
+
+        raise NotImplementedError()
+        return self
+
+    def selectFaceNearLandmark(self, landmarkName: Optional[LandmarkOrItsName] = None
+                               ):
+
+        raise NotImplementedError()
+        return self
+
 
 class Sketch(Entity, CodeToCADInterface.Sketch):
 
@@ -1008,7 +1025,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
 
-class Landmark(Entity, CodeToCADInterface.Landmark):
+class Landmark(CodeToCADInterface.Landmark):
 
     name: str
     parentEntity: EntityOrItsName
@@ -1027,55 +1044,76 @@ class Landmark(Entity, CodeToCADInterface.Landmark):
 
         return Utilities.formatLandmarkEntityName(parentEntityName, self.name)
 
+    def getParentEntity(self
+                        ) -> 'Entity':
+
+        raise NotImplementedError()
+
     def isExists(self) -> bool:
         try:
             return BlenderActions.getObject(self.getLandmarkEntityName()) != None
         except:
             return False
 
-    def rename(self, newName: str, renamelinkedEntitiesAndLandmarks: bool = True
+    def rename(self, newName: str
                ):
+
+        assert Landmark(newName, self.parentEntity).isExists(
+        ) == False, f"{newName} already exists."
+
+        parentEntityName: str = self.parentEntity  # type: ignore
+        if isinstance(self.parentEntity, Entity):
+            parentEntityName = self.parentEntity.name
+
+        BlenderActions.updateObjectName(self.getLandmarkEntityName(
+        ), Utilities.formatLandmarkEntityName(parentEntityName, newName))
+
+        self.name = newName
 
         return self
 
-    def delete(self, removeChildren: bool
-               ):
-
+    def delete(self):
+        BlenderActions.removeObject(self.getLandmarkEntityName())
         return self
 
     def isVisible(self
                   ) -> bool:
-
-        raise NotImplementedError()
+        return BlenderActions.getObjectVisibility(self.getLandmarkEntityName())
 
     def setVisible(self, isVisible: bool
                    ):
 
-        return self
-
-    def apply(self
-              ):
+        BlenderActions.setObjectVisibility(
+            self.getLandmarkEntityName(), isVisible)
 
         return self
 
     def getNativeInstance(self
                           ):
 
-        raise NotImplementedError()
+        return BlenderActions.getObject(self.getLandmarkEntityName())
 
     def getLocationWorld(self
                          ) -> 'Point':
 
-        raise NotImplementedError()
+        BlenderActions.updateViewLayer()
+        return Utilities.Point.fromList(
+            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
+             for value in BlenderActions.getObjectWorldLocation(self.getLandmarkEntityName())]
+        )
 
     def getLocationLocal(self
                          ) -> 'Point':
 
-        raise NotImplementedError()
+        BlenderActions.updateViewLayer()
+        return Utilities.Point.fromList(
+            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
+             for value in BlenderActions.getObjectLocalLocation(self.getLandmarkEntityName())]
+        )
 
-    def select(self, landmarkName: Optional[LandmarkOrItsName] = None, selectionType: str = "vertex"
+    def select(self
                ):
-
+        BlenderActions.selectObject(self.getLandmarkEntityName())
         return self
 
 
@@ -1106,34 +1144,42 @@ class Joint(CodeToCADInterface.Joint):
 
         # BlenderActions.applyPivotConstraint(
         #     self.part2.name, self.part1Landmark.entityName, keywordArguments)
+        raise NotImplementedError()
         return self
 
     def gearRatio(self, ratio: float
                   ):
+        raise NotImplementedError()
         return self
 
     def limitLocationX(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
     def limitLocationY(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
     def limitLocationZ(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
     def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
     def limitRotationY(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
     def limitRotationZ(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
+        raise NotImplementedError()
         return self
 
 
@@ -1148,14 +1194,17 @@ class Material(CodeToCADInterface.Material):
 
     def assignToPart(self, partName: PartOrItsName
                      ):
+        raise NotImplementedError()
         return self
 
     def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat, aValue: IntOrFloat = 1.0
                  ):
+        raise NotImplementedError()
         return self
 
     def addImageTexture(self, imageFilePath: str
                         ):
+        raise NotImplementedError()
         return self
 
 
@@ -1244,38 +1293,47 @@ class Scene(CodeToCADInterface.Scene):
 
     def create(self
                ):
+        raise NotImplementedError()
         return self
 
     def delete(self
                ):
+        raise NotImplementedError()
         return self
 
     def export(self, filePath: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0
                ):
+        raise NotImplementedError()
         return self
 
     def setDefaultUnit(self, unit: LengthUnitOrItsName
                        ):
+        raise NotImplementedError()
         return self
 
     def createGroup(self, name: str
                     ):
+        raise NotImplementedError()
         return self
 
     def deleteGroup(self, name: str, removeChildren: bool
                     ):
+        raise NotImplementedError()
         return self
 
     def removeFromGroup(self, entityName: str, groupName: str
                         ):
+        raise NotImplementedError()
         return self
 
     def assignToGroup(self, entities: list[EntityOrItsName], groupName: str, removeFromOtherGroups: Optional[bool] = True
                       ):
+        raise NotImplementedError()
         return self
 
     def setVisible(self, entities: list[EntityOrItsName], isVisible: bool
                    ):
+        raise NotImplementedError()
         return self
 
     def setHDRIBackground(self,
