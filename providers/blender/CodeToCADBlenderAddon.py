@@ -21,9 +21,9 @@ bl_info = {
     "name": "CodeToCAD",
     "author": "CodeToCAD",
     "version": (1, 0),
-    "blender": (3, 0, 0),
+    "blender": (3, 1, 0),
     "description": "",
-    "doc_url": "https://github.com/CodeToCad/CodeToCad-Blender",
+    "doc_url": "https://github.com/CodeToCad/CodeToCad",
     "category": "Scripting",
 }
 
@@ -37,7 +37,18 @@ operatorIds = {
     "AddCodeToCADToPath": namespace + ".add_blender_provider_to_path",
     "OpenPreferences": namespace + ".open_preferences",
     "LogMessage": namespace + ".log_message",
+    "ReloadCodeToCADModules": namespace + ".reload_codetocad_modules",
 }
+
+
+class ReloadCodeToCADModules(Operator):
+    bl_idname = operatorIds["ReloadCodeToCADModules"]
+    bl_label = "Reload CodeToCAD Modules"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        reloadCodeToCADModules()
+        return {'FINISHED'}
 
 
 class ReloadLastImport(Operator):
@@ -46,8 +57,6 @@ class ReloadLastImport(Operator):
     bl_options = {'REGISTER'}
 
     def execute(self, context):
-
-        # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
 
         global importedFileWatcher
         if not importedFileWatcher:
@@ -64,7 +73,7 @@ class LogMessage(Operator):
     bl_label = "Log Message"
     bl_options = {'REGISTER'}
     message: bpy.props.StringProperty(
-        name="Message", default="Reporting : Base message")
+        name="Message", default="Reporting : Base message")  # type: ignore
 
     def execute(self, context):
 
@@ -444,6 +453,9 @@ class CodeToCADPanel(bpy.types.Panel):
                              icon='FILE_REFRESH', text="Reload imported file")
         self.layout.operator(StopAutoReload.bl_idname,
                              icon='REMOVE', text="Stop auto-reload")
+        self.layout.separator()
+        self.layout.operator(ReloadCodeToCADModules.bl_idname,
+                             icon='FILE_REFRESH', text="Reload CodeToCAD Modules")
         self.layout.operator(OpenPreferences.bl_idname,
                              icon='PREFERENCES', text="Open Preferences")
 
@@ -460,6 +472,7 @@ def register():
     bpy.utils.register_class(CodeToCADPanel)
     bpy.utils.register_class(OpenPreferences)
     bpy.utils.register_class(LogMessage)
+    bpy.utils.register_class(ReloadCodeToCADModules)
 
     bpy.app.timers.register(addCodeToCADToPath)
 
@@ -478,6 +491,7 @@ def unregister():
     bpy.utils.unregister_class(CodeToCADPanel)
     bpy.utils.unregister_class(OpenPreferences)
     bpy.utils.unregister_class(LogMessage)
+    bpy.utils.unregister_class(ReloadCodeToCADModules)
 
     console_python.replace_help = replace_help
 
