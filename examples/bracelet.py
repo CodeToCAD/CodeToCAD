@@ -1,6 +1,6 @@
+from BlenderProvider import Part, Scene, Analytics
 print("Starting bracelet.py")
 
-from BlenderProvider import Part, Scene, Analytics
 
 Scene().setDefaultUnit("cm")
 Scene().createGroup("Bracelet")
@@ -29,29 +29,30 @@ belt = {
 # TODO: translation calculations should be obsolete with the introduction of landmarks and joints
 buttonTranslation = (bracelet["outerDiameter"] - button["depth"]) / 2
 
-buttonInnerYTranslation = (bracelet["outerDiameter"] - buttonInner["depth"]) / 2
+buttonInnerYTranslation = (
+    bracelet["outerDiameter"] - buttonInner["depth"]) / 2
 
 # Creating the shapes we will use
 
 Part("bracelet") \
-.createPrimitive("torus", [bracelet["innerDiameter"]/2,bracelet["outerDiameter"]/2, "cm"]) \
-.scale(1, 1, f"{bracelet['thickness']}cm") # Scale x,y by a scale factor of 1, so the number is unitless
+    ._createPrimitive("torus", [bracelet["innerDiameter"]/2, bracelet["outerDiameter"]/2, "cm"]) \
+    .scale(1, 1, f"{bracelet['thickness']}cm")  # Scale x,y by a scale factor of 1, so the number is unitless
 
 Part("button") \
-.createPrimitive("cylinder", [button["diameter"]/2,button["depth"], "cm"]) \
-.rotate(90,0,0) \
-.translate(0,f"{buttonTranslation}cm",0)
+    ._createPrimitive("cylinder", [button["diameter"]/2, button["depth"], "cm"]) \
+    .rotate(90, 0, 0) \
+    .translate(0, f"{buttonTranslation}cm", 0)
 
 Part("buttonInner") \
-.createPrimitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
-.rotate(90, 0, 0) \
-.translate(0,f"{buttonInnerYTranslation}cm",0)
+    ._createPrimitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
+    .rotate(90, 0, 0) \
+    .translate(0, f"{buttonInnerYTranslation}cm", 0)
 
 Part("belt") \
-.createPrimitive("cylinder", [belt["outerDiameter"]/2,belt["thickness"], "cm"])
+    ._createPrimitive("cylinder", [belt["outerDiameter"]/2, belt["thickness"], "cm"])
 
 Part("beltInner") \
-.createPrimitive("cylinder", [belt["innerDiameter"]/2,belt["thickness"], "cm"])
+    ._createPrimitive("cylinder", [belt["innerDiameter"]/2, belt["thickness"], "cm"])
 
 Part("booleanButton")\
     .cloneFrom("button")
@@ -74,18 +75,18 @@ Part("button") \
     .subtract("buttonInner")
 
 Part("bracelet") \
-    .subtract("booleanButton") 
+    .subtract("booleanButton")
 
 Part("belt") \
     .subtract("beltInner")
 
-## Save a copy of the belt to subtract from bracelet later
+# Save a copy of the belt to subtract from bracelet later
 Part("booleanbelt")\
     .cloneFrom("belt")
-    
+
 Part("booleanBracelet2")\
     .cloneFrom("bracelet")
-    
+
 Part("belt") \
     .intersect("booleanBracelet2")
 

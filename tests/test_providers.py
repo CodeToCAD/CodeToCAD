@@ -407,25 +407,18 @@ class TestPart(TestProviderCase):
     def test_createFromFile(self):
         instance = Part("TestPart")
 
-        value = instance.createFromFile("filePath", "fileType")
+        import pathlib
+
+        value = instance.createFromFile(
+            f"{pathlib.Path(__file__).parent}/../examples/importableCube.stl")
 
         assert value.isExists(), "Create method failed."
 
-    @unittest.skip
-    def test_createPrimitive(self):
-        instance = Part("TestPart")
-
-        value = instance.createPrimitive(
-            "primitiveName", "dimensions", "keywordArguments")
-
-        assert value.isExists(), "Create method failed."
-
-    @unittest.skip
     def test_createCube(self):
         instance = Part("TestPart")
 
         value = instance.createCube(
-            "width", "length", "height", "keywordArguments")
+            1, 1, 1)
 
         assert value.isExists(), "Create method failed."
 
@@ -434,7 +427,7 @@ class TestPart(TestProviderCase):
         instance = Part("TestPart")
 
         value = instance.createCone(
-            "radius", "height", "draftRadius", "keywordArguments")
+            1, 1, 1)
 
         assert value.isExists(), "Create method failed."
 
@@ -442,7 +435,7 @@ class TestPart(TestProviderCase):
     def test_createCylinder(self):
         instance = Part("TestPart")
 
-        value = instance.createCylinder("radius", "height", "keywordArguments")
+        value = instance.createCylinder(1, 1)
 
         assert value.isExists(), "Create method failed."
 
@@ -451,7 +444,7 @@ class TestPart(TestProviderCase):
         instance = Part("TestPart")
 
         value = instance.createTorus(
-            "innerRadius", "outerRadius", "keywordArguments")
+            0.5, 1)
 
         assert value.isExists(), "Create method failed."
 
@@ -459,7 +452,7 @@ class TestPart(TestProviderCase):
     def test_createSphere(self):
         instance = Part("TestPart")
 
-        value = instance.createSphere("radius", "keywordArguments")
+        value = instance.createSphere(1)
 
         assert value.isExists(), "Create method failed."
 
@@ -467,8 +460,7 @@ class TestPart(TestProviderCase):
     def test_createGear(self):
         instance = Part("TestPart")
 
-        value = instance.createGear("outerRadius", "addendum", "innerRadius", "dedendum", "height",
-                                    "pressureAngle", "numberOfTeeth", "skewAngle", "conicalAngle", "crownAngle", "keywordArguments")
+        value = instance.createGear(1, 1, 1, 1, 1)
 
         assert value.isExists(), "Create method failed."
 
@@ -520,14 +512,13 @@ class TestPart(TestProviderCase):
     def test_hole(self):
         instance = Part("TestPart")
 
-        value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", "flipAxis", "initialRotationX", "initialRotationY", "initialRotationZ", "mirrorAboutEntityOrLandmark", "mirrorAxis", "mirror", "circularPatternInstanceCount",
-                              "circularPatternInstanceSeparation", "circularPatternInstanceAxis", "circularPatternAboutEntityOrLandmark", "linearPatternInstanceCount", "linearPatternInstanceSeparation", "linearPatternInstanceAxis")
+        value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", False, "initialRotationX", "initialRotationY", "initialRotationZ", "mirrorAboutEntityOrLandmark", "mirrorAxis", False, 1,
+                              "circularPatternInstanceSeparation", "circularPatternInstanceAxis", "circularPatternAboutEntityOrLandmark", 1, "linearPatternInstanceSeparation", "linearPatternInstanceAxis")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
     def test_assignMaterial(self):
-        instance = Part("TestPart")
+        instance = Part("TestPart").createCube(1, 1, 1)
 
         value = instance.assignMaterial("materialName")
 
