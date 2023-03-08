@@ -459,7 +459,8 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.makeParent(landmarkObjectName, self.name)
 
         BlenderActions.translateObject(
-            landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+            landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)  # type: ignore
+
         return self
 
     def getBoundingBox(self
@@ -649,7 +650,7 @@ class Part(Entity, CodeToCADInterface.Part):
         insidePart_start = insidePart.createLandmark(
             "start", startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
 
-        thicknessXYZ: list[Dimension] = [dimension.value for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
+        thicknessXYZ: list[Dimension] = [dimension for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
             Utilities.Dimension.fromString(thicknessX),
             Utilities.Dimension.fromString(thicknessY),
             Utilities.Dimension.fromString(thicknessZ),
