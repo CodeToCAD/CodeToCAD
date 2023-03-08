@@ -730,6 +730,10 @@ class Dimensions():
     def toList(self):
         return self.point.toList()
 
+    @staticmethod
+    def fromPoint(point: Point) -> 'Dimensions':
+        return Dimensions(point.x, point.y, point.z)
+
     @classmethod
     def fromList(cls, dimensionsList: list[Dimension]):
         assert len(
