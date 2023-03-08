@@ -26,11 +26,14 @@ def injectMockProvider():
     injectMockModelingProvider(globals())
 
 
-class TestEntity(unittest.TestCase):
+class TestProviderCase(unittest.TestCase):
 
     def setUp(self) -> None:
         injectMockProvider()
         super().setUp()
+
+
+class TestEntity(TestProviderCase):
 
     def test_isExists(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -398,11 +401,11 @@ class TestEntity(unittest.TestCase):
         assert valueLocation.z == 0.5
 
 
-class TestPart(unittest.TestCase):
+class TestPart(TestProviderCase):
 
     @unittest.skip
     def test_createFromFile(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createFromFile("filePath", "fileType")
 
@@ -410,7 +413,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createPrimitive(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createPrimitive(
             "primitiveName", "dimensions", "keywordArguments")
@@ -419,7 +422,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createCube(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createCube(
             "width", "length", "height", "keywordArguments")
@@ -428,7 +431,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createCone(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createCone(
             "radius", "height", "draftRadius", "keywordArguments")
@@ -437,7 +440,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createCylinder(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createCylinder("radius", "height", "keywordArguments")
 
@@ -445,7 +448,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createTorus(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createTorus(
             "innerRadius", "outerRadius", "keywordArguments")
@@ -454,7 +457,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createSphere(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createSphere("radius", "keywordArguments")
 
@@ -462,7 +465,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_createGear(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.createGear("outerRadius", "addendum", "innerRadius", "dedendum", "height",
                                     "pressureAngle", "numberOfTeeth", "skewAngle", "conicalAngle", "crownAngle", "keywordArguments")
@@ -471,7 +474,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_loft(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.loft("Landmark1", "Landmark2")
 
@@ -479,7 +482,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_union(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.union(
             "withPart", "deleteAfterUnion", "isTransferLandmarks")
@@ -488,25 +491,25 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_subtract(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.subtract(
-            "withPart", "deleteAfterUnion", "isTransferLandmarks")
+            "withPart", "deleteAfterSubtract", "isTransferLandmarks")
 
         assert value, "Modify method failed."
 
     @unittest.skip
     def test_intersect(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.intersect(
-            "withPart", "deleteAfterUnion", "isTransferLandmarks")
+            "withPart", "deleteAfterIntersect", "isTransferLandmarks")
 
         assert value, "Modify method failed."
 
     @unittest.skip
     def test_hollow(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.hollow(
             "thicknessX", "thicknessY", "thicknessZ", "startAxis", "flipAxis")
@@ -515,16 +518,16 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_hole(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
-        value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", "flip", "instanceCount", "instanceSeparation",
-                              "aboutEntityOrLandmark", "mirror", "instanceAxis", "initialRotationX", "initialRotationY", "initialRotationZ", "leaveHoleEntity")
+        value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", "flipAxis", "initialRotationX", "initialRotationY", "initialRotationZ", "mirrorAboutEntityOrLandmark", "mirrorAxis", "mirror", "circularPatternInstanceCount",
+                              "circularPatternInstanceSeparation", "circularPatternInstanceAxis", "circularPatternAboutEntityOrLandmark", "linearPatternInstanceCount", "linearPatternInstanceSeparation", "linearPatternInstanceAxis")
 
         assert value, "Modify method failed."
 
     @unittest.skip
     def test_assignMaterial(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.assignMaterial("materialName")
 
@@ -532,7 +535,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_isCollidingWithPart(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.isCollidingWithPart("otherPart")
 
@@ -540,7 +543,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_filletAllEdges(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.filletAllEdges("radius", "useWidth")
 
@@ -548,7 +551,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_filletEdges(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.filletEdges(
             "radius", "landmarksNearEdges", "useWidth")
@@ -557,7 +560,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_filletFaces(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.filletFaces(
             "radius", "landmarksNearFaces", "useWidth")
@@ -566,7 +569,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_chamferAllEdges(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.chamferAllEdges("radius")
 
@@ -574,7 +577,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_chamferEdges(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.chamferEdges("radius", "landmarksNearEdges")
 
@@ -582,7 +585,7 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_chamferFaces(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.chamferFaces("radius", "landmarksNearFaces")
 
@@ -590,24 +593,24 @@ class TestPart(unittest.TestCase):
 
     @unittest.skip
     def test_selectVertexNearLandmark(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.selectVertexNearLandmark("landmarkName")
 
     @unittest.skip
     def test_selectEdgeNearLandmark(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.selectEdgeNearLandmark("landmarkName")
 
     @unittest.skip
     def test_selectFaceNearLandmark(self):
-        instance = Part("")
+        instance = Part("TestPart")
 
         value = instance.selectFaceNearLandmark("landmarkName")
 
 
-class TestSketch(unittest.TestCase):
+class TestSketch(TestProviderCase):
 
     @unittest.skip
     def test_revolve(self):
@@ -741,7 +744,7 @@ class TestSketch(unittest.TestCase):
         assert value.isExists(), "Create method failed."
 
 
-class TestLandmark(unittest.TestCase):
+class TestLandmark(TestProviderCase):
 
     @unittest.skip
     def test_getLandmarkEntityName(self):
@@ -826,7 +829,7 @@ class TestLandmark(unittest.TestCase):
         value = instance.select("landmarkName", "selectionType")
 
 
-class TestJoint(unittest.TestCase):
+class TestJoint(TestProviderCase):
 
     @unittest.skip
     def test_translateLandmarkOntoAnother(self):
@@ -901,7 +904,7 @@ class TestJoint(unittest.TestCase):
         assert value, "Modify method failed."
 
 
-class TestMaterial(unittest.TestCase):
+class TestMaterial(TestProviderCase):
 
     @unittest.skip
     def test_assignToPart(self):
@@ -928,7 +931,7 @@ class TestMaterial(unittest.TestCase):
         assert value, "Modify method failed."
 
 
-class TestAnimation(unittest.TestCase):
+class TestAnimation(TestProviderCase):
 
     @unittest.skip
     def test_createKeyFrameLocation(self):
@@ -943,7 +946,7 @@ class TestAnimation(unittest.TestCase):
         value = instance.createKeyFrameRotation("entity", "frameNumber")
 
 
-class TestScene(unittest.TestCase):
+class TestScene(TestProviderCase):
 
     @unittest.skip
     def test_create(self):
@@ -1005,7 +1008,7 @@ class TestScene(unittest.TestCase):
         value = instance.setVisible("entities", "isVisible")
 
 
-class TestAnalytics(unittest.TestCase):
+class TestAnalytics(TestProviderCase):
 
     @unittest.skip
     def test_measureDistance(self):

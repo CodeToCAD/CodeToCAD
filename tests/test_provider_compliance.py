@@ -1,6 +1,7 @@
-from providers.blender.BlenderProvider import injectBlenderProvider
-
 import unittest
+
+from CodeToCAD import *
+from providers.blender.BlenderProvider import injectBlenderProvider
 
 
 class TestProviderCompliance(unittest.TestCase):
@@ -8,6 +9,9 @@ class TestProviderCompliance(unittest.TestCase):
     def test_injectBlenderProvider(self):
         # NOTE: if you're running this test locally, you might need `pip install fake-bpy-module-latest` or Blender API added to python path
         injectBlenderProvider(globals())
+        Part("")
+        Sketch("")
+        Landmark("", "")
 
 
 if __name__ == "__main__":

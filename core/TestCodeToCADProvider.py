@@ -10,10 +10,16 @@ from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUID,
+                            Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 
-class TestEntity(unittest.TestCase):
+class TestProviderCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        # inject provider?
+        super().setUp()
+
+class TestEntity(TestProviderCase):
     
     
     @unittest.skip
@@ -341,7 +347,7 @@ class TestEntity(unittest.TestCase):
         
         assert value, "Get method failed."
         
-class TestPart(unittest.TestCase):
+class TestPart(TestProviderCase):
     
     @unittest.skip
     def test_createFromFile(self):
@@ -562,7 +568,7 @@ class TestPart(unittest.TestCase):
         value = instance.selectFaceNearLandmark("landmarkName")
 
         
-class TestSketch(unittest.TestCase):
+class TestSketch(TestProviderCase):
     
     
     @unittest.skip
@@ -709,7 +715,7 @@ class TestSketch(unittest.TestCase):
         
         assert value.isExists(), "Create method failed."
         
-class TestLandmark(unittest.TestCase):
+class TestLandmark(TestProviderCase):
     
     
     @unittest.skip
@@ -805,7 +811,7 @@ class TestLandmark(unittest.TestCase):
         value = instance.select("")
 
         
-class TestJoint(unittest.TestCase):
+class TestJoint(TestProviderCase):
     
     
     @unittest.skip
@@ -889,7 +895,7 @@ class TestJoint(unittest.TestCase):
         
         assert value, "Modify method failed."
         
-class TestMaterial(unittest.TestCase):
+class TestMaterial(TestProviderCase):
     
     
     @unittest.skip
@@ -919,7 +925,7 @@ class TestMaterial(unittest.TestCase):
         
         assert value, "Modify method failed."
         
-class TestAnimation(unittest.TestCase):
+class TestAnimation(TestProviderCase):
     
     
     
@@ -937,7 +943,7 @@ class TestAnimation(unittest.TestCase):
         value = instance.createKeyFrameRotation("entity","frameNumber")
 
         
-class TestScene(unittest.TestCase):
+class TestScene(TestProviderCase):
     
     
     
@@ -1008,7 +1014,7 @@ class TestScene(unittest.TestCase):
         value = instance.setVisible("entities","isVisible")
 
         
-class TestAnalytics(unittest.TestCase):
+class TestAnalytics(TestProviderCase):
     
     
     @unittest.skip
