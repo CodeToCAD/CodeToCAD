@@ -1856,8 +1856,10 @@ def setDefaultUnit(
     blenderScene.unit_settings.length_unit = blenderUnit.name
 
 
-def selectObject(object: bpy.types.Object):
-    object.select_set(True)
+def selectObject(objectName: str):
+    blenderObject = getObject(objectName)
+
+    blenderObject.select_set(True)
 
 
 def zoomToSelectedObjects():

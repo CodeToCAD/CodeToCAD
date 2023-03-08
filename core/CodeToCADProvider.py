@@ -76,7 +76,7 @@ class Entity(CodeToCADInterface.Entity):
         raise NotImplementedError()
         
 
-    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    def select(self
     ):
         
         return self
@@ -379,6 +379,24 @@ class Part(Entity,CodeToCADInterface.Part):
         
         return self
         
+
+    def selectVertexNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        
+        return self
+        
+
+    def selectEdgeNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        
+        return self
+        
+
+    def selectFaceNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
+    ):
+        
+        return self
+        
     
 class Sketch(Entity,CodeToCADInterface.Sketch): 
     
@@ -506,19 +524,25 @@ class Landmark(CodeToCADInterface.Landmark):
         raise NotImplementedError()
         
 
+    def getParentEntity(self
+    ) -> 'Entity':
+        
+        raise NotImplementedError()
+        
+
     def isExists(self
     ) -> bool:
         
         raise NotImplementedError()
         
 
-    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True
+    def rename(self, newName:str
     ):
         
         return self
         
 
-    def delete(self, removeChildren:bool
+    def delete(self
     ):
         
         return self
@@ -531,12 +555,6 @@ class Landmark(CodeToCADInterface.Landmark):
         
 
     def setVisible(self, isVisible:bool
-    ):
-        
-        return self
-        
-
-    def apply(self
     ):
         
         return self
@@ -560,7 +578,7 @@ class Landmark(CodeToCADInterface.Landmark):
         raise NotImplementedError()
         
 
-    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    def select(self
     ):
         
         return self
