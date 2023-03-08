@@ -10,12 +10,18 @@ from CodeToCAD import *
 import core.CodeToCADInterface as CodeToCADInterface
 import core.utilities as Utilities
 from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUID,
+                            Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
+
+class TestProviderCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        # inject provider?
+        super().setUp()
 
 {% for className, methods in capabilities.items() -%}
 
-class Test{{className}}(unittest.TestCase):    
+class Test{{className}}(TestProviderCase):    
     {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}
 
     {%- set className = "Part" if className == "Entity" else className -%}
