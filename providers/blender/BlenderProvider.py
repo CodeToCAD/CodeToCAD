@@ -140,17 +140,17 @@ class Entity(CodeToCADInterface.Entity):
 
         return self
 
-    def mirror(self, mirrorAcrossEntity: EntityOrItsName, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str]
+    def mirror(self, mirrorAcrossEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str]
                ):
 
         if resultingMirroredEntityName != None:
             raise NotImplementedError("Not yet supported. COD-113")
 
-        mirrorAcrossEntityName = mirrorAcrossEntity
-        if isinstance(mirrorAcrossEntity, Landmark):
-            mirrorAcrossEntityName = mirrorAcrossEntity.getLandmarkEntityName()
-        elif isinstance(mirrorAcrossEntity, Entity):
-            mirrorAcrossEntityName = mirrorAcrossEntity.name
+        mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark
+        if isinstance(mirrorAcrossEntityOrLandmark, Landmark):
+            mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark.getLandmarkEntityName()
+        elif isinstance(mirrorAcrossEntityOrLandmark, Entity):
+            mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark.name
 
         axis = Utilities.Axis.fromString(axis)
 
@@ -1019,12 +1019,6 @@ class Landmark(Entity, CodeToCADInterface.Landmark):
         self.parentEntity = parentEntity
         self.description = description
 
-    def isExists(self) -> bool:
-        try:
-            return BlenderActions.getObject(self.getLandmarkEntityName()) != None
-        except:
-            return False
-
     def getLandmarkEntityName(self
                               ) -> str:
         parentEntityName: str = self.parentEntity  # type: ignore
@@ -1032,6 +1026,57 @@ class Landmark(Entity, CodeToCADInterface.Landmark):
             parentEntityName = self.parentEntity.name
 
         return Utilities.formatLandmarkEntityName(parentEntityName, self.name)
+
+    def isExists(self) -> bool:
+        try:
+            return BlenderActions.getObject(self.getLandmarkEntityName()) != None
+        except:
+            return False
+
+    def rename(self, newName: str, renamelinkedEntitiesAndLandmarks: bool = True
+               ):
+
+        return self
+
+    def delete(self, removeChildren: bool
+               ):
+
+        return self
+
+    def isVisible(self
+                  ) -> bool:
+
+        raise NotImplementedError()
+
+    def setVisible(self, isVisible: bool
+                   ):
+
+        return self
+
+    def apply(self
+              ):
+
+        return self
+
+    def getNativeInstance(self
+                          ):
+
+        raise NotImplementedError()
+
+    def getLocationWorld(self
+                         ) -> 'Point':
+
+        raise NotImplementedError()
+
+    def getLocationLocal(self
+                         ) -> 'Point':
+
+        raise NotImplementedError()
+
+    def select(self, landmarkName: Optional[LandmarkOrItsName] = None, selectionType: str = "vertex"
+               ):
+
+        return self
 
 
 class Joint(CodeToCADInterface.Joint):

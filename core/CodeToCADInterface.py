@@ -166,7 +166,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def mirror(self, mirrorAcrossEntity:EntityOrItsName, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
+    def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
     ):
         '''
         Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.
@@ -876,7 +876,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         print("createTrapezoid is called in an abstract method. Please override this method.")
         return self
         
-class Landmark(Entity,metaclass=ABCMeta):
+class Landmark(metaclass=ABCMeta):
     '''Landmarks are named positions on an entity.'''
     
     
@@ -886,8 +886,6 @@ class Landmark(Entity,metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, name:str, parentEntity:EntityOrItsName, description:Optional[str]=None):
-        super().__init__(name,description)
-    
         self.name = name
         self.parentEntity = parentEntity
         self.description = description
@@ -898,6 +896,116 @@ class Landmark(Entity,metaclass=ABCMeta):
         
         print("getLandmarkEntityName is called in an abstract method. Please override this method.")
         raise NotImplementedError()
+        
+
+    @abstractmethod
+    def isExists(self
+    ) -> bool:
+        '''
+        Check if an entity exists
+        '''
+        
+        print("isExists is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
+    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True
+    ):
+        '''
+        Rename the entity, with an option to rename linked landmarks and underlying data.
+        '''
+        
+        print("rename is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def delete(self, removeChildren:bool
+    ):
+        '''
+        Delete the entity from the scene. You may need to delete an associated joint or other features.
+        '''
+        
+        print("delete is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def isVisible(self
+    ) -> bool:
+        '''
+        Returns whether the entity is visible in the scene.
+        '''
+        
+        print("isVisible is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
+    def setVisible(self, isVisible:bool
+    ):
+        '''
+        Toggles visibility of an entity in the scene.
+        '''
+        
+        print("setVisible is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def apply(self
+    ):
+        '''
+        Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.
+        '''
+        
+        print("apply is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def getNativeInstance(self
+    ):
+        '''
+        Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
+        '''
+        
+        print("getNativeInstance is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
+    def getLocationWorld(self
+    ) -> 'Point':
+        '''
+        Get the entities XYZ location relative to World Space.
+        '''
+        
+        print("getLocationWorld is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
+    def getLocationLocal(self
+    ) -> 'Point':
+        '''
+        Get the entities XYZ location relative to Local Space.
+        '''
+        
+        print("getLocationLocal is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
+    def select(self, landmarkName:Optional[LandmarkOrItsName]=None, selectionType:str="vertex"
+    ):
+        '''
+        Select the entity (in UI). If a landmark is specified, select the closest vertex or edge or face to a landmark.
+        '''
+        
+        print("select is called in an abstract method. Please override this method.")
+        return self
         
 class Joint(metaclass=ABCMeta):
     '''Joints define the relationships and constraints between entities.'''

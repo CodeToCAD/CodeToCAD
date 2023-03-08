@@ -120,7 +120,7 @@ class TestEntity(unittest.TestCase):
     def test_mirror(self):
         instance = Part("name","description")
 
-        value = instance.mirror("mirrorAcrossEntity","axis","resultingMirroredEntityName")
+        value = instance.mirror("mirrorAcrossEntityOrLandmark","axis","resultingMirroredEntityName")
 
         
         assert value.isExists(), "Create method failed."
@@ -699,6 +699,90 @@ class TestLandmark(unittest.TestCase):
 
         
         assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_isExists(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.isExists("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_rename(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.rename("newName","renamelinkedEntitiesAndLandmarks")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_delete(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.delete("removeChildren")
+
+        
+    @unittest.skip
+    def test_isVisible(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.isVisible("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_setVisible(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.setVisible("isVisible")
+
+        
+    @unittest.skip
+    def test_apply(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.apply("")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_getNativeInstance(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.getNativeInstance("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationWorld(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.getLocationWorld("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationLocal(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.getLocationLocal("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_select(self):
+        instance = Landmark("name","parentEntity","description")
+
+        value = instance.select("landmarkName","selectionType")
+
         
 class TestJoint(unittest.TestCase):
     
