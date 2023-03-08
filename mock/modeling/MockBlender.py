@@ -5,11 +5,17 @@ import numpy as np
 from mock.modeling.MockBlenderMath import Matrix, Vector
 
 
+class Material:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+
 class Mesh:
     def __init__(self, name: str, verticies: list[
             'Mesh.MeshVertex']) -> None:
         self.name = name
         self.vertices: list[Mesh.MeshVertex] = verticies
+        self.materials: list[Material] = []
 
     def copy(self) -> 'Mesh':
         copy = Mesh(self.name, self.vertices)
@@ -247,11 +253,30 @@ class Meshes:
         mockBpy.data.objects.removeUsingData(mesh)
 
 
+class Materials:
+    def __init__(self) -> None:
+        self.materials: list[Material] = []
+
+    def new(self, name):
+        material = Material(name)
+        self.materials.append(material)
+        return material
+
+    def get(self, name):
+        for material in self.materials:
+            if material.name == name:
+                return material
+
+    def remove(self, material):
+        self.materials.remove(material)
+
+
 class Data:
 
     def __init__(self) -> None:
         self.objects = Objects()
         self.meshes = Meshes()
+        self.materials = Materials()
         self.collections = Collections()
         self.collections.collections.append(Collection("Scene"))
 

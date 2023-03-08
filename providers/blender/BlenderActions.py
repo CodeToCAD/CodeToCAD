@@ -687,9 +687,9 @@ def applyConstraint(
 
 def applyLimitLocationConstraint(
     objectName,
-    x: list[Utilities.Dimension],
-    y: list[Utilities.Dimension],
-    z: list[Utilities.Dimension],
+    x: Optional[list[Optional[Utilities.Dimension]]],
+    y: Optional[list[Optional[Utilities.Dimension]]],
+    z: Optional[list[Optional[Utilities.Dimension]]],
     relativeToObjectName,
     keywordArguments={}
 ):
@@ -697,12 +697,21 @@ def applyLimitLocationConstraint(
     relativeToObject = getObject(
         relativeToObjectName) if relativeToObjectName else None
 
-    minX = x[0].value if x and len(x) > 0 else None
-    minY = y[0].value if y and len(y) > 0 else None
-    minZ = z[0].value if z and len(z) > 0 else None
-    maxX = x[1].value if x and len(x) > 1 else None
-    maxY = y[1].value if y and len(y) > 1 else None
-    maxZ = z[1].value if z and len(z) > 1 else None
+    [minX, maxX] = x or [None, None]
+    [minY, maxY] = y or [None, None]
+    [minZ, maxZ] = z or [None, None]
+    if minX:
+        minX = minX.value
+    if minY:
+        minY = minY.value
+    if minZ:
+        minZ = minZ.value
+    if maxX:
+        maxX = maxX.value
+    if maxY:
+        maxY = maxY.value
+    if maxZ:
+        maxZ = maxZ.value
 
     applyConstraint(
         objectName,

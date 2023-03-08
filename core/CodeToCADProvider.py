@@ -254,12 +254,6 @@ class Part(Entity,CodeToCADInterface.Part):
         return self
         
 
-    def createPrimitive(self, primitiveName:str, dimensions:str, keywordArguments:Optional[dict]=None
-    ):
-        
-        return self
-        
-
     def createCube(self, width:DimensionOrItsFloatOrStringValue, length:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
     ):
         

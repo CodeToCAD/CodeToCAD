@@ -456,17 +456,6 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createPrimitive(self, primitiveName:str, dimensions:str, keywordArguments:Optional[dict]=None
-    ):
-        '''
-        Adds geometry to a part from a primitive named primitive shape.
-        '''
-        
-        print("createPrimitive is called in an abstract method. Please override this method.")
-        return self
-        
-
-    @abstractmethod
     def createCube(self, width:DimensionOrItsFloatOrStringValue, length:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
     ):
         '''
