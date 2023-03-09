@@ -1426,6 +1426,96 @@
                 }
             }
         },
+        "Light": {
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "setColor": {
+                "action": "modify",
+                "parameters": {
+                    "rValue": {
+                        "type": "int,float"
+                    },
+                    "gValue": {
+                        "type": "int,float"
+                    },
+                    "bValue": {
+                        "type": "int,float"
+                    }
+                }
+            },
+            "createSun": {
+                "action": "create",
+                "parameters": {
+                    "energyLevel": {
+                        "type": "float"
+                    }
+                }
+            },
+            "createSpot": {
+                "action": "create",
+                "parameters": {
+                    "energyLevel": {
+                        "type": "float"
+                    }
+                }
+            },
+            "createPoint": {
+                "action": "create",
+                "parameters": {
+                    "energyLevel": {
+                        "type": "float"
+                    }
+                }
+            },
+            "createArea": {
+                "action": "create",
+                "parameters": {
+                    "energyLevel": {
+                        "type": "float"
+                    }
+                }
+            }
+        },
+        "Camera": {
+            "constructor": {
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "createPerspective": {
+                "action": "create",
+                "parameters": {}
+            },
+            "createOrthogonal": {
+                "action": "create",
+                "parameters": {}
+            },
+            "setFocalLength": {
+                "action": "modify",
+                "parameters": {
+                    "length": {
+                        "type": "float"
+                    }
+                }
+            }
+        },
         "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
             "constructor": {

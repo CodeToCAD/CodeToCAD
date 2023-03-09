@@ -22,7 +22,9 @@ Scene: Type[CodeToCADInterface.Scene] = CodeToCADInterface.Scene
 Analytics: Type[CodeToCADInterface.Analytics] = CodeToCADInterface.Analytics
 Joint: Type[CodeToCADInterface.Joint] = CodeToCADInterface.Joint
 Material: Type[CodeToCADInterface.Material] = CodeToCADInterface.Material
-Animation = None
+Animation: Type[CodeToCADInterface.Animation] = CodeToCADInterface.Animation
+Camera: Type[CodeToCADInterface.Camera] = CodeToCADInterface.Camera
+Light: Type[CodeToCADInterface.Light] = CodeToCADInterface.Light
 
 
 def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
@@ -85,3 +87,17 @@ def setAnimationProvider(provider, globalContext: Optional[dict]) -> None:
     Animation = provider
     if globalContext and "Animation" in globalContext:
         globalContext["Animation"] = provider
+
+
+def setCameraProvider(provider, globalContext: Optional[dict]) -> None:
+    global Camera
+    Camera = provider
+    if globalContext and "Camera" in globalContext:
+        globalContext["Camera"] = provider
+
+
+def setLightProvider(provider, globalContext: Optional[dict]) -> None:
+    global Light
+    Light = provider
+    if globalContext and "Light" in globalContext:
+        globalContext["Light"] = provider
