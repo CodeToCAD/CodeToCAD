@@ -20,7 +20,7 @@ if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < B
 
 
 def injectBlenderProvider(globalContext: Optional[dict]) -> None:
-    from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider
+    from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider, setCameraProvider, setLightProvider
 
     setPartProvider(Part, globalContext)
     setSketchProvider(Sketch, globalContext)
@@ -30,6 +30,8 @@ def injectBlenderProvider(globalContext: Optional[dict]) -> None:
     setAnimationProvider(Animation, globalContext)
     setSceneProvider(Scene, globalContext)
     setAnalyticsProvider(Analytics, globalContext)
+    setCameraProvider(Camera, globalContext)
+    setLightProvider(Light, globalContext)
 
 
 class Entity(CodeToCADInterface.Entity):
@@ -1473,7 +1475,6 @@ class Scene(CodeToCADInterface.Scene):
     # Blender's default Scene name is "Scene"
     name: str = "Scene"
     description: Optional[str] = None
-    light = Light
 
     def __init__(self, name: Optional[str] = None, description: Optional[str] = None):
         self.name = name or self.name

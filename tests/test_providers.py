@@ -961,7 +961,93 @@ class TestAnimation(TestProviderCase):
         value = instance.createKeyFrameRotation("entity", "frameNumber")
 
 
+class TestLight(TestProviderCase):
+
+    @unittest.skip
+    def test_setColor(self):
+        instance = Light("name", "description")
+
+        value = instance.setColor("rValue", "gValue", "bValue")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
+    def test_createSun(self):
+        instance = Light("name", "description")
+
+        value = instance.createSun("energyLevel")
+
+        assert value.isExists(), "Create method failed."
+
+    @unittest.skip
+    def test_createSpot(self):
+        instance = Light("name", "description")
+
+        value = instance.createSpot("energyLevel")
+
+        assert value.isExists(), "Create method failed."
+
+    @unittest.skip
+    def test_createPoint(self):
+        instance = Light("name", "description")
+
+        value = instance.createPoint("energyLevel")
+
+        assert value.isExists(), "Create method failed."
+
+    @unittest.skip
+    def test_createArea(self):
+        instance = Light("name", "description")
+
+        value = instance.createArea("energyLevel")
+
+        assert value.isExists(), "Create method failed."
+
+
+class TestCamera(TestProviderCase):
+
+    @unittest.skip
+    def test_createPerspective(self):
+        instance = Camera("name", "description")
+
+        value = instance.createPerspective("")
+
+        assert value.isExists(), "Create method failed."
+
+    @unittest.skip
+    def test_createOrthogonal(self):
+        instance = Camera("name", "description")
+
+        value = instance.createOrthogonal("")
+
+        assert value.isExists(), "Create method failed."
+
+    @unittest.skip
+    def test_setFocalLength(self):
+        instance = Camera("name", "description")
+
+        value = instance.setFocalLength("length")
+
+        assert value, "Modify method failed."
+
+
 class TestScene(TestProviderCase):
+
+    @unittest.skip
+    def test_light(self):
+        instance = Scene("name", "description")
+
+        value = instance.light("")
+
+        assert value, "Get method failed."
+
+    @unittest.skip
+    def test_camera(self):
+        instance = Scene("name", "description")
+
+        value = instance.camera("")
+
+        assert value, "Get method failed."
 
     @unittest.skip
     def test_create(self):
