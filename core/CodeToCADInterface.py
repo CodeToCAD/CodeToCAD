@@ -398,7 +398,7 @@ class Entity(metaclass=ABCMeta):
 
     @abstractmethod
     def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    ) -> 'Landmark':
         '''
         Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
         '''
@@ -735,14 +735,14 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def extrude(self, length:DimensionOrItsFloatOrStringValue, convertToMesh:bool=True
-    ):
+    def extrude(self, length:DimensionOrItsFloatOrStringValue
+    ) -> 'Part':
         '''
-        Extrude a curve by a specified length.
+        Extrude a curve by a specified length. Returns a Part type.
         '''
         
         print("extrude is called in an abstract method. Please override this method.")
-        return self
+        raise NotImplementedError()
         
 
     @abstractmethod
