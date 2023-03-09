@@ -906,18 +906,14 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return self
 
-    def extrude(self, length: DimensionOrItsFloatOrStringValue, convertToMesh: bool = True
-                ):
+    def extrude(self, length: DimensionOrItsFloatOrStringValue):
 
         BlenderActions.extrude(
             self.name, Utilities.Dimension.fromString(length))
 
-        if not convertToMesh:
-            return self
-
         BlenderActions.createMeshFromCurve(self.name)
 
-        return self
+        return Part(self.name, self.description)
 
     def sweep(self, profileCurveName: str, fillCap: bool = False
               ):

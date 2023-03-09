@@ -221,7 +221,7 @@ class Entity(CodeToCADInterface.Entity):
         
 
     def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    ) -> 'Landmark':
         
         raise NotImplementedError()
         
@@ -410,10 +410,10 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         return self
         
 
-    def extrude(self, length:DimensionOrItsFloatOrStringValue, convertToMesh:bool=True
-    ):
+    def extrude(self, length:DimensionOrItsFloatOrStringValue
+    ) -> 'Part':
         
-        return self
+        raise NotImplementedError()
         
 
     def sweep(self, profileCurveName:str, fillCap:bool=False

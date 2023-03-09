@@ -447,7 +447,7 @@ z   {self.z and self.z.min}  {self.z and self.z.max}  {self.z and self.z.unit an
 
 
 class Dimension():
-    def __init__(self, value: float, unit: Optional[LengthUnit] = None):
+    def __init__(self, value: float, unit: Optional[Union[str, LengthUnit]] = None):
         assert isinstance(value, (int, float)
                           ), "Dimension value must be a number."
 
