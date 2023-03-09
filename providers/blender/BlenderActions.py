@@ -1490,9 +1490,9 @@ def createText(curveName, text,
         for index in range(len(text)):
             curveDataBodyFormat[index].use_underline = underlined
             curveDataBodyFormat[index].use_bold = bold
-            curveDataBodyFormat[index].use_bold = italic
+            curveDataBodyFormat[index].use_italic = italic
 
-        setattr(curveData, "body_format", curveDataBodyFormat)
+        # setattr(curveData, "body_format", curveDataBodyFormat)
 
     createObject(curveName, curveData)
 

@@ -100,19 +100,6 @@
                     }
                 }
             },
-            "clone": {
-                "action": "create",
-                "information": "Clone an existing entity with its geometry and properties.",
-                "parameters": {
-                    "newName": {
-                        "type": "string"
-                    },
-                    "copyLandmarks": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    }
-                }
-            },
             "mirror": {
                 "action": "create",
                 "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
@@ -558,6 +545,20 @@
                     }
                 }
             },
+            "clone": {
+                "action": "get",
+                "returnType": "Part",
+                "information": "Clone an existing Part with its geometry and properties. Returns the new Part.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    },
+                    "copyLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    }
+                }
+            },
             "loft": {
                 "action": "create",
                 "information": "Interpolate between two existing parts.",
@@ -867,6 +868,20 @@
                     }
                 }
             },
+            "clone": {
+                "action": "get",
+                "returnType": "Sketch",
+                "information": "Clone an existing sketch with its geometry and properties. Returns the new Sketch.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    },
+                    "copyLandmarks": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    }
+                }
+            },
             "revolve": {
                 "action": "modify",
                 "information": "Revolve a Sketch around another Entity or Landmark",
@@ -903,6 +918,15 @@
                     "fillCap": {
                         "type": "boolean",
                         "defaultValue": false
+                    }
+                }
+            },
+            "profile": {
+                "action": "modify",
+                "information": "Bend this curve along the path of another",
+                "parameters": {
+                    "profileCurveName": {
+                        "type": "string"
                     }
                 }
             },
@@ -1010,7 +1034,7 @@
                 "information": "Create a circle",
                 "parameters": {
                     "radius": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1019,10 +1043,10 @@
                 "information": "Create an ellipse",
                 "parameters": {
                     "radiusA": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "radiusB": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1031,7 +1055,7 @@
                 "information": "Create an arc",
                 "parameters": {
                     "radius": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "angle": {
                         "type": "string,float,Angle",
@@ -1059,10 +1083,10 @@
                 "information": "Create a segment (intersection of two circles)",
                 "parameters": {
                     "innerRadius": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "outerRadius": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "angle": {
                         "type": "string,float,Angle",
@@ -1075,10 +1099,10 @@
                 "information": "Create a rectangle",
                 "parameters": {
                     "length": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "width": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1090,10 +1114,10 @@
                         "type": "int"
                     },
                     "length": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "width": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1102,13 +1126,13 @@
                 "information": "Create a trapezoid",
                 "parameters": {
                     "lengthUpper": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "lengthLower": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     },
                     "height": {
-                        "type": "Dimension"
+                        "type": "string,float,Dimension"
                     }
                 }
             }
@@ -1769,6 +1793,25 @@
                     },
                     "isVisible": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "setBackgroundImage": {
+                "action": "modify",
+                "information": "Set the scene background image. This can be an image or an HDRI texture.",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "locationX": {
+                        "type": "string,float,Dimension",
+                        "required": false,
+                        "defaultValue": 0
+                    },
+                    "locationY": {
+                        "type": "string,float,Dimension",
+                        "required": false,
+                        "defaultValue": 0
                     }
                 }
             }

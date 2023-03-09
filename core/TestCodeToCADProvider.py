@@ -114,15 +114,6 @@ class TestEntity(TestProviderCase):
 
         
     @unittest.skip
-    def test_clone(self):
-        instance = Part("name","description")
-
-        value = instance.clone("newName","copyLandmarks")
-
-        
-        assert value.isExists(), "Create method failed."
-        
-    @unittest.skip
     def test_mirror(self):
         instance = Part("name","description")
 
@@ -413,6 +404,15 @@ class TestPart(TestProviderCase):
         assert value.isExists(), "Create method failed."
         
     @unittest.skip
+    def test_clone(self):
+        instance = Part("")
+
+        value = instance.clone("newName","copyLandmarks")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
     def test_loft(self):
         instance = Part("")
 
@@ -563,6 +563,15 @@ class TestSketch(TestProviderCase):
     
     
     @unittest.skip
+    def test_clone(self):
+        instance = Sketch("name","curveType","description")
+
+        value = instance.clone("newName","copyLandmarks")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
     def test_revolve(self):
         instance = Sketch("name","curveType","description")
 
@@ -585,6 +594,15 @@ class TestSketch(TestProviderCase):
         instance = Sketch("name","curveType","description")
 
         value = instance.sweep("profileCurveName","fillCap")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_profile(self):
+        instance = Sketch("name","curveType","description")
+
+        value = instance.profile("profileCurveName")
 
         
         assert value, "Modify method failed."
@@ -1252,6 +1270,15 @@ class TestScene(TestProviderCase):
 
         value = instance.setVisible("entities","isVisible")
 
+        
+    @unittest.skip
+    def test_setBackgroundImage(self):
+        instance = Scene("name","description")
+
+        value = instance.setBackgroundImage("filePath","locationX","locationY")
+
+        
+        assert value, "Modify method failed."
         
 class TestAnalytics(TestProviderCase):
     
