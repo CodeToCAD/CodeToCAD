@@ -363,6 +363,7 @@
             },
             "createLandmark": {
                 "action": "get",
+                "returnType": "Landmark",
                 "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
                 "parameters": {
                     "landmarkName": {
@@ -883,15 +884,12 @@
                 }
             },
             "extrude": {
-                "action": "modify",
-                "information": "Extrude a curve by a specified length.",
+                "action": "get",
+                "returnType": "Part",
+                "information": "Extrude a curve by a specified length. Returns a Part type.",
                 "parameters": {
                     "length": {
                         "type": "string,float,Dimension"
-                    },
-                    "convertToMesh": {
-                        "type": "boolean",
-                        "defaultValue": true
                     }
                 }
             },

@@ -575,10 +575,10 @@ class TestSketch(TestProviderCase):
     def test_extrude(self):
         instance = Sketch("name","curveType","description")
 
-        value = instance.extrude("length","convertToMesh")
+        value = instance.extrude("length")
 
         
-        assert value, "Modify method failed."
+        assert value, "Get method failed."
         
     @unittest.skip
     def test_sweep(self):
