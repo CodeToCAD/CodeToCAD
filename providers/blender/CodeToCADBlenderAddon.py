@@ -74,13 +74,15 @@ class LogMessage(Operator):
     bl_options = {'REGISTER'}
     message: bpy.props.StringProperty(
         name="Message", default="Reporting : Base message")  # type: ignore
+    isError: bpy.props.BoolProperty(
+        name="isError", default=False)  # type: ignore
 
     def execute(self, context):
 
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
 
-        log = {"INFO"}
-        self.report(log, self.message)
+        logType = {"ERROR"} if self.isError else {"INFO"}
+        self.report(logType, self.message)
 
         return {'FINISHED'}
 
@@ -196,28 +198,37 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
     sys.path.append(directory)
 
     print("Running script", filePath)
-    runpy.run_path(filePath, run_name="__main__")
+    try:
+        runpy.run_path(filePath, run_name="__main__")
+    except Exception as err:
+        print("Import failed: ", err)
 
-    from BlenderActions import zoomToSelectedObjects, selectObject
-    selectObject(bpy.data.objects[-1].name)
-    zoomToSelectedObjects()
+        bpy.ops.code_to_cad.log_message(  # type: ignore
+            message=f"{err}", isError=True)
 
-    # Cleanup:
-    sys.path.remove(directory)
-    for _, package_name, _ in pkgutil.iter_modules([directory]):
-        if package_name in sys.modules:
-            del sys.modules[package_name]
+        raise err
+    finally:
+        from BlenderActions import zoomToSelectedObjects, selectObject
+        selectObject(bpy.data.objects[-1].name)
+        zoomToSelectedObjects()
 
-    if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(context):
-        return
+        # Cleanup:
+        sys.path.remove(directory)
+        for _, package_name, _ in pkgutil.iter_modules([directory]):
+            if package_name in sys.modules:
+                del sys.modules[package_name]
 
-    global importedFileWatcher
-    if not importedFileWatcher or importedFileWatcher.filepath != filePath:
-        if importedFileWatcher:
-            importedFileWatcher.stopWatchingFile()
-        importedFileWatcher = ImportedFileWatcher(filePath, directory, context)
-    importedFileWatcher.watchFile()
-    importedFileWatcher.registerFileWatcher()
+        if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(context):
+            return
+
+        global importedFileWatcher
+        if not importedFileWatcher or importedFileWatcher.filepath != filePath:
+            if importedFileWatcher:
+                importedFileWatcher.stopWatchingFile()
+            importedFileWatcher = ImportedFileWatcher(
+                filePath, directory, context)
+        importedFileWatcher.watchFile()
+        importedFileWatcher.registerFileWatcher()
 
 
 @ orientation_helper(axis_forward='Y', axis_up='Z')  # type: ignore
@@ -244,7 +255,11 @@ class ImportCodeToCAD(Operator, ImportHelper):
         paths: list[str] = [os.path.join(self.directory, name.name)
                             for name in self.files]
 
-        importCodeToCADFile(context, paths[0], self.directory, True)
+        try:
+            importCodeToCADFile(context, paths[0], self.directory, True)
+        except Exception as err:
+            self.report({'ERROR'}, f"Import failed: {err}")
+            return {'CANCELLED'}
 
         return {'FINISHED'}
 

@@ -517,10 +517,10 @@ class TestPart(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    def test_assignMaterial(self):
+    def test_setMaterial(self):
         instance = Part("TestPart").createCube(1, 1, 1)
 
-        value = instance.assignMaterial("materialName")
+        value = instance.setMaterial("materialName")
 
         assert value, "Modify method failed."
 
@@ -847,10 +847,22 @@ class TestJoint(TestProviderCase):
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitLocationX(self):
+    def test_limitLocationXYZ(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitLocationX("min", "max")
+        value = instance.limitLocationXYZ("x", "y", "z")
+
+        assert value, "Modify method failed."
+
+    def test_limitLocationX(self):
+        partA = Part("A").createCube(1, 1, 1).createLandmark(
+            "top", center, center, max)
+        partB = Part("B").createCube(1, 1, 1).createLandmark(
+            "bottom", center, center, min)
+
+        joint = Joint(partA, partB)
+
+        value = joint.limitLocationX(0, 0)
 
         assert value, "Modify method failed."
 
@@ -871,10 +883,22 @@ class TestJoint(TestProviderCase):
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_limitRotationX(self):
+    def test_limitRotationXYZ(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitRotationX("min", "max")
+        value = instance.limitRotationXYZ("x", "y", "z")
+
+        assert value, "Modify method failed."
+
+    def test_limitRotationX(self):
+        partA = Part("A").createCube(1, 1, 1).createLandmark(
+            "top", center, center, max)
+        partB = Part("B").createCube(1, 1, 1).createLandmark(
+            "bottom", center, center, min)
+
+        joint = Joint(partA, partB)
+
+        value = joint.limitRotationX(0, 0)
 
         assert value, "Modify method failed."
 
