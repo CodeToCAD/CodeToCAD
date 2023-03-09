@@ -708,10 +708,10 @@ class Animation(CodeToCADInterface.Animation):
     
 class Light(CodeToCADInterface.Light): 
     
-    name:Optional[str]=None
+    name:str
     description:Optional[str]=None
 
-    def __init__(self, name:Optional[str]=None, description:Optional[str]=None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
@@ -744,13 +744,67 @@ class Light(CodeToCADInterface.Light):
         
         return self
         
+
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
+    ):
+        
+        return self
+        
+
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
+    ):
+        
+        return self
+        
+
+    def isExists(self
+    ) -> bool:
+        
+        raise NotImplementedError()
+        
+
+    def rename(self, newName:str
+    ):
+        
+        return self
+        
+
+    def delete(self
+    ):
+        
+        return self
+        
+
+    def getNativeInstance(self
+    ):
+        
+        raise NotImplementedError()
+        
+
+    def getLocationWorld(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def getLocationLocal(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def select(self
+    ):
+        
+        return self
+        
     
 class Camera(CodeToCADInterface.Camera): 
     
-    name:Optional[str]=None
+    name:str
     description:Optional[str]=None
 
-    def __init__(self, name:Optional[str]=None, description:Optional[str]=None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
@@ -767,6 +821,60 @@ class Camera(CodeToCADInterface.Camera):
         
 
     def setFocalLength(self, length:float
+    ):
+        
+        return self
+        
+
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
+    ):
+        
+        return self
+        
+
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
+    ):
+        
+        return self
+        
+
+    def isExists(self
+    ) -> bool:
+        
+        raise NotImplementedError()
+        
+
+    def rename(self, newName:str
+    ):
+        
+        return self
+        
+
+    def delete(self
+    ):
+        
+        return self
+        
+
+    def getNativeInstance(self
+    ):
+        
+        raise NotImplementedError()
+        
+
+    def getLocationWorld(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def getLocationLocal(self
+    ) -> 'Point':
+        
+        raise NotImplementedError()
+        
+
+    def select(self
     ):
         
         return self

@@ -1390,10 +1390,14 @@ class Material(CodeToCADInterface.Material):
         return self
 
 
-class Light(Entity):
+class Light(CodeToCADInterface.Light):
 
-    def __init__(self, lightName):
-        self.name = lightName
+    name: str
+    description: Optional[str] = None
+
+    def __init__(self, name: str, description: Optional[str] = None):
+        self.name = name
+        self.description = description
 
     def createSun(self, energyLevel=100):
         BlenderActions.createLight(self.name, energyLevel, type="SUN")
@@ -1416,11 +1420,71 @@ class Light(Entity):
             self.name, rValue, gValue, bValue)
         return self
 
+    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
+                     ):
 
-class Camera(Entity):
+        Entity(self.name).translateXYZ(x, y, z)
 
-    def __init__(self, cameraName):
-        self.name = cameraName
+        return self
+
+    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
+                  ):
+
+        Entity(self.name).rotateXYZ(x, y, z)
+
+        return self
+
+    def isExists(self
+                 ) -> bool:
+
+        return Entity(self.name).isExists()
+
+    def rename(self, newName: str
+               ):
+
+        Entity(self.name).rename(newName, False)
+
+        self.name = newName
+
+        return self
+
+    def delete(self):
+
+        Entity(self.name).delete(False)
+
+        return self
+
+    def getNativeInstance(self
+                          ):
+
+        return Entity(self.name).getNativeInstance()
+
+    def getLocationWorld(self
+                         ) -> 'Point':
+
+        return Entity(self.name).getLocationWorld()
+
+    def getLocationLocal(self
+                         ) -> 'Point':
+
+        return Entity(self.name).getLocationLocal()
+
+    def select(self
+               ):
+
+        Entity(self.name).select()
+
+        return self
+
+
+class Camera(CodeToCADInterface.Camera):
+
+    name: str
+    description: Optional[str] = None
+
+    def __init__(self, name: str, description: Optional[str] = None):
+        self.name = name
+        self.description = description
 
     def createPerspective(self):
         BlenderActions.createCamera(self.name, type="PERSP")
@@ -1436,6 +1500,62 @@ class Camera(Entity):
 
     def setFocalLength(self, length):
         BlenderActions.setFocalLength(self.name, length)
+        return self
+
+    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
+                     ):
+
+        Entity(self.name).translateXYZ(x, y, z)
+
+        return self
+
+    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
+                  ):
+
+        Entity(self.name).rotateXYZ(x, y, z)
+
+        return self
+
+    def isExists(self
+                 ) -> bool:
+
+        return Entity(self.name).isExists()
+
+    def rename(self, newName: str
+               ):
+
+        Entity(self.name).rename(newName, False)
+
+        self.name = newName
+
+        return self
+
+    def delete(self):
+
+        Entity(self.name).delete(False)
+
+        return self
+
+    def getNativeInstance(self
+                          ):
+
+        return Entity(self.name).getNativeInstance()
+
+    def getLocationWorld(self
+                         ) -> 'Point':
+
+        return Entity(self.name).getLocationWorld()
+
+    def getLocationLocal(self
+                         ) -> 'Point':
+
+        return Entity(self.name).getLocationLocal()
+
+    def select(self
+               ):
+
+        Entity(self.name).select()
+
         return self
 
 
