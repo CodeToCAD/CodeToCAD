@@ -999,6 +999,83 @@ class TestLight(TestProviderCase):
         
         assert value.isExists(), "Create method failed."
         
+    @unittest.skip
+    def test_translateXYZ(self):
+        instance = Light("name","description")
+
+        value = instance.translateXYZ("x","y","z")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_rotateXYZ(self):
+        instance = Light("name","description")
+
+        value = instance.rotateXYZ("x","y","z")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_isExists(self):
+        instance = Light("name","description")
+
+        value = instance.isExists("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_rename(self):
+        instance = Light("name","description")
+
+        value = instance.rename("newName")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_delete(self):
+        instance = Light("name","description")
+
+        value = instance.delete("")
+
+        
+    @unittest.skip
+    def test_getNativeInstance(self):
+        instance = Light("name","description")
+
+        value = instance.getNativeInstance("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationWorld(self):
+        instance = Light("name","description")
+
+        value = instance.getLocationWorld("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationLocal(self):
+        instance = Light("name","description")
+
+        value = instance.getLocationLocal("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_select(self):
+        instance = Light("name","description")
+
+        value = instance.select("")
+
+        
 class TestCamera(TestProviderCase):
     
     @unittest.skip
@@ -1027,6 +1104,83 @@ class TestCamera(TestProviderCase):
 
         
         assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_translateXYZ(self):
+        instance = Camera("name","description")
+
+        value = instance.translateXYZ("x","y","z")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_rotateXYZ(self):
+        instance = Camera("name","description")
+
+        value = instance.rotateXYZ("x","y","z")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_isExists(self):
+        instance = Camera("name","description")
+
+        value = instance.isExists("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_rename(self):
+        instance = Camera("name","description")
+
+        value = instance.rename("newName")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_delete(self):
+        instance = Camera("name","description")
+
+        value = instance.delete("")
+
+        
+    @unittest.skip
+    def test_getNativeInstance(self):
+        instance = Camera("name","description")
+
+        value = instance.getNativeInstance("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationWorld(self):
+        instance = Camera("name","description")
+
+        value = instance.getLocationWorld("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_getLocationLocal(self):
+        instance = Camera("name","description")
+
+        value = instance.getLocationLocal("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
+    def test_select(self):
+        instance = Camera("name","description")
+
+        value = instance.select("")
+
         
 class TestScene(TestProviderCase):
     

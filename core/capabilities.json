@@ -1430,8 +1430,7 @@
             "constructor": {
                 "parameters": {
                     "name": {
-                        "type": "string",
-                        "required": false
+                        "type": "string"
                     },
                     "description": {
                         "type": "string",
@@ -1484,14 +1483,84 @@
                         "type": "float"
                     }
                 }
+            },
+            "translateXYZ": {
+                "action": "modify",
+                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "rotateXYZ": {
+                "action": "modify",
+                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Angle"
+                    },
+                    "y": {
+                        "type": "string,float,Angle"
+                    },
+                    "z": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "isExists": {
+                "action": "get",
+                "information": "Check if an light exists",
+                "returnType": "boolean"
+            },
+            "rename": {
+                "action": "modify",
+                "information": "Rename the light.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the light from the scene.",
+                "parameters": {}
+            },
+            "getNativeInstance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "parameters": {}
+            },
+            "getLocationWorld": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the light XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "getLocationLocal": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the light XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the light (in UI).",
+                "parameters": {}
             }
         },
         "Camera": {
             "constructor": {
                 "parameters": {
                     "name": {
-                        "type": "string",
-                        "required": false
+                        "type": "string"
                     },
                     "description": {
                         "type": "string",
@@ -1514,6 +1583,77 @@
                         "type": "float"
                     }
                 }
+            },
+            "translateXYZ": {
+                "action": "modify",
+                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "rotateXYZ": {
+                "action": "modify",
+                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Angle"
+                    },
+                    "y": {
+                        "type": "string,float,Angle"
+                    },
+                    "z": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "isExists": {
+                "action": "get",
+                "information": "Check if an camera exists",
+                "returnType": "boolean"
+            },
+            "rename": {
+                "action": "modify",
+                "information": "Rename the camera.",
+                "parameters": {
+                    "newName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the camera from the scene.",
+                "parameters": {}
+            },
+            "getNativeInstance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "parameters": {}
+            },
+            "getLocationWorld": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the camera XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "getLocationLocal": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the camera XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the entity (in UI).",
+                "parameters": {}
             }
         },
         "Scene": {
