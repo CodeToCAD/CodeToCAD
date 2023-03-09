@@ -35,36 +35,35 @@ buttonInnerYTranslation = (
 # Creating the shapes we will use
 
 Part("bracelet") \
-    ._createPrimitive("torus", [bracelet["innerDiameter"]/2, bracelet["outerDiameter"]/2, "cm"]) \
-    .scale(1, 1, f"{bracelet['thickness']}cm")  # Scale x,y by a scale factor of 1, so the number is unitless
+    .createTorus(f"{bracelet['innerDiameter']/2}cm", f"{bracelet['outerDiameter']/2}cm") \
+    .scaleZ(f"{bracelet['thickness']}cm").apply()  # Scale x,y by a scale factor of 1, so the number is unitless
 
 Part("button") \
-    ._createPrimitive("cylinder", [button["diameter"]/2, button["depth"], "cm"]) \
-    .rotate(90, 0, 0) \
-    .translate(0, f"{buttonTranslation}cm", 0)
+    .createCylinder(f"{button['diameter']/2}cm", f"{button['depth']}cm") \
+    .rotateXYZ(90, 0, 0) \
+    .translateXYZ(0, f"{buttonTranslation}cm", 0).apply()
 
 Part("buttonInner") \
-    ._createPrimitive("cylinder", [buttonInner["diameter"]/2, buttonInner["depth"], "cm"]) \
-    .rotate(90, 0, 0) \
-    .translate(0, f"{buttonInnerYTranslation}cm", 0)
+    .createCylinder(f"{buttonInner['diameter']/2}cm", f"{buttonInner['depth']}cm") \
+    .rotateXYZ(90, 0, 0) \
+    .translateXYZ(0, f"{buttonInnerYTranslation}cm", 0).apply()
 
 Part("belt") \
-    ._createPrimitive("cylinder", [belt["outerDiameter"]/2, belt["thickness"], "cm"])
+    .createCylinder(f"{belt['outerDiameter']/2}cm", f"{belt['thickness']}cm").apply()
 
 Part("beltInner") \
-    ._createPrimitive("cylinder", [belt["innerDiameter"]/2, belt["thickness"], "cm"])
+    .createCylinder(f"{belt['innerDiameter']/2}cm", f"{belt['thickness']}cm").apply()
 
-Part("booleanButton")\
-    .cloneFrom("button")
 
-Part("booleanBracelet")\
-    .cloneFrom("bracelet")
+Part("button")\
+    .clone("booleanButton")
+
+Part("bracelet")\
+    .clone("booleanBracelet")
 
 # Grouping
 
-Scene().assignToGroup("bracelet", "Bracelet")
-Scene().assignToGroup("button", "Bracelet")
-Scene().assignToGroup("belt", "Bracelet")
+Scene().assignToGroup(["bracelet", "button", "belt"], "Bracelet")
 
 # Modifying the shapes
 
@@ -81,11 +80,11 @@ Part("belt") \
     .subtract("beltInner")
 
 # Save a copy of the belt to subtract from bracelet later
-Part("booleanbelt")\
-    .cloneFrom("belt")
+Part("belt")\
+    .clone("booleanbelt")
 
-Part("booleanBracelet2")\
-    .cloneFrom("bracelet")
+Part("bracelet")\
+    .clone("booleanBracelet2")
 
 Part("belt") \
     .intersect("booleanBracelet2")

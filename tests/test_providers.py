@@ -149,7 +149,7 @@ class TestEntity(TestProviderCase):
 
         assert instance.isExists(), "The original object should still exist."
 
-        assert instance.name == value.name, "Clone should not return the cloned Entity."
+        assert instance.name != value.name, "Clone should return the cloned Entity."
 
         assert Part("newName").isExists(), "Clone method failed."
 
@@ -501,10 +501,9 @@ class TestPart(TestProviderCase):
 
     @unittest.skip
     def test_hollow(self):
-        instance = Part("TestPart")
+        instance = Part("TestPart").createCube(1, 1, 1)
 
-        value = instance.hollow(
-            "thicknessX", "thicknessY", "thicknessZ", "startAxis", "flipAxis")
+        value = instance.hollow("20cm", 0.2, 0.2, "z", False)
 
         assert value, "Modify method failed."
 

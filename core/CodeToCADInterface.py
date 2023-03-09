@@ -155,17 +155,6 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def clone(self, newName:str, copyLandmarks:bool=True
-    ):
-        '''
-        Clone an existing entity with its geometry and properties.
-        '''
-        
-        print("clone is called in an abstract method. Please override this method.")
-        return self
-        
-
-    @abstractmethod
     def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
     ):
         '''
@@ -522,6 +511,17 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
+    def clone(self, newName:str, copyLandmarks:bool=True
+    ) -> 'Part':
+        '''
+        Clone an existing Part with its geometry and properties. Returns the new Part.
+        '''
+        
+        print("clone is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
     def loft(self, Landmark1:'Landmark', Landmark2:'Landmark'
     ):
         '''
@@ -724,6 +724,17 @@ class Sketch(Entity,metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
+    def clone(self, newName:str, copyLandmarks:bool=True
+    ) -> 'Sketch':
+        '''
+        Clone an existing sketch with its geometry and properties. Returns the new Sketch.
+        '''
+        
+        print("clone is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
     def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z"
     ):
         '''
@@ -753,6 +764,17 @@ class Sketch(Entity,metaclass=ABCMeta):
         '''
         
         print("sweep is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def profile(self, profileCurveName:str
+    ):
+        '''
+        Bend this curve along the path of another
+        '''
+        
+        print("profile is called in an abstract method. Please override this method.")
         return self
         
 
@@ -812,7 +834,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createCircle(self, radius:'Dimension'
+    def createCircle(self, radius:DimensionOrItsFloatOrStringValue
     ):
         '''
         Create a circle
@@ -823,7 +845,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createEllipse(self, radiusA:'Dimension', radiusB:'Dimension'
+    def createEllipse(self, radiusA:DimensionOrItsFloatOrStringValue, radiusB:DimensionOrItsFloatOrStringValue
     ):
         '''
         Create an ellipse
@@ -834,7 +856,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createArc(self, radius:'Dimension', angle:AngleOrItsFloatOrStringValue="180d"
+    def createArc(self, radius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
     ):
         '''
         Create an arc
@@ -856,7 +878,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createSegment(self, innerRadius:'Dimension', outerRadius:'Dimension', angle:AngleOrItsFloatOrStringValue="180d"
+    def createSegment(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
     ):
         '''
         Create a segment (intersection of two circles)
@@ -867,7 +889,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createRectangle(self, length:'Dimension', width:'Dimension'
+    def createRectangle(self, length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
     ):
         '''
         Create a rectangle
@@ -878,7 +900,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createPolygon(self, numberOfSides:'int', length:'Dimension', width:'Dimension'
+    def createPolygon(self, numberOfSides:'int', length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
     ):
         '''
         Create an n-gon
@@ -889,7 +911,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createTrapezoid(self, lengthUpper:'Dimension', lengthLower:'Dimension', height:'Dimension'
+    def createTrapezoid(self, lengthUpper:DimensionOrItsFloatOrStringValue, lengthLower:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue
     ):
         '''
         Create a trapezoid
@@ -1619,6 +1641,17 @@ class Scene(metaclass=ABCMeta):
         '''
         
         print("setVisible is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def setBackgroundImage(self, filePath:str, locationX:Optional[DimensionOrItsFloatOrStringValue]=0, locationY:Optional[DimensionOrItsFloatOrStringValue]=0
+    ):
+        '''
+        Set the scene background image. This can be an image or an HDRI texture.
+        '''
+        
+        print("setBackgroundImage is called in an abstract method. Please override this method.")
         return self
         
 class Analytics(metaclass=ABCMeta):

@@ -88,12 +88,6 @@ class Entity(CodeToCADInterface.Entity):
         return self
         
 
-    def clone(self, newName:str, copyLandmarks:bool=True
-    ):
-        
-        return self
-        
-
     def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
     ):
         
@@ -290,6 +284,12 @@ class Part(Entity,CodeToCADInterface.Part):
         return self
         
 
+    def clone(self, newName:str, copyLandmarks:bool=True
+    ) -> 'Part':
+        
+        raise NotImplementedError()
+        
+
     def loft(self, Landmark1:'Landmark', Landmark2:'Landmark'
     ):
         
@@ -404,6 +404,12 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         self.curveType = curveType
         self.description = description
 
+    def clone(self, newName:str, copyLandmarks:bool=True
+    ) -> 'Sketch':
+        
+        raise NotImplementedError()
+        
+
     def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z"
     ):
         
@@ -417,6 +423,12 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         
 
     def sweep(self, profileCurveName:str, fillCap:bool=False
+    ):
+        
+        return self
+        
+
+    def profile(self, profileCurveName:str
     ):
         
         return self
@@ -452,19 +464,19 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         return self
         
 
-    def createCircle(self, radius:'Dimension'
+    def createCircle(self, radius:DimensionOrItsFloatOrStringValue
     ):
         
         return self
         
 
-    def createEllipse(self, radiusA:'Dimension', radiusB:'Dimension'
+    def createEllipse(self, radiusA:DimensionOrItsFloatOrStringValue, radiusB:DimensionOrItsFloatOrStringValue
     ):
         
         return self
         
 
-    def createArc(self, radius:'Dimension', angle:AngleOrItsFloatOrStringValue="180d"
+    def createArc(self, radius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
     ):
         
         return self
@@ -476,25 +488,25 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         return self
         
 
-    def createSegment(self, innerRadius:'Dimension', outerRadius:'Dimension', angle:AngleOrItsFloatOrStringValue="180d"
+    def createSegment(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
     ):
         
         return self
         
 
-    def createRectangle(self, length:'Dimension', width:'Dimension'
+    def createRectangle(self, length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
     ):
         
         return self
         
 
-    def createPolygon(self, numberOfSides:'int', length:'Dimension', width:'Dimension'
+    def createPolygon(self, numberOfSides:'int', length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
     ):
         
         return self
         
 
-    def createTrapezoid(self, lengthUpper:'Dimension', lengthLower:'Dimension', height:'Dimension'
+    def createTrapezoid(self, lengthUpper:DimensionOrItsFloatOrStringValue, lengthLower:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue
     ):
         
         return self
@@ -944,6 +956,12 @@ class Scene(CodeToCADInterface.Scene):
         
 
     def setVisible(self, entities:list[EntityOrItsName], isVisible:bool
+    ):
+        
+        return self
+        
+
+    def setBackgroundImage(self, filePath:str, locationX:Optional[DimensionOrItsFloatOrStringValue]=0, locationY:Optional[DimensionOrItsFloatOrStringValue]=0
     ):
         
         return self
