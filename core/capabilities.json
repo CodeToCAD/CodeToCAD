@@ -362,8 +362,8 @@
                 }
             },
             "createLandmark": {
-                "action": "modify",
-                "information": "Shortcut for creating and assigning a landmark to this entity.",
+                "action": "get",
+                "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
                 "parameters": {
                     "landmarkName": {
                         "type": "string"
@@ -718,7 +718,7 @@
                     }
                 }
             },
-            "assignMaterial": {
+            "setMaterial": {
                 "action": "modify",
                 "information": "Assign a known material to this part.",
                 "parameters": {
@@ -1228,6 +1228,24 @@
                     }
                 }
             },
+            "limitLocationXYZ": {
+                "action": "modify",
+                "information": "Constraint the translation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension",
+                        "required": false
+                    },
+                    "y": {
+                        "type": "string,float,Dimension",
+                        "required": false
+                    },
+                    "z": {
+                        "type": "string,float,Dimension",
+                        "required": false
+                    }
+                }
+            },
             "limitLocationX": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
@@ -1266,6 +1284,24 @@
                     },
                     "max": {
                         "type": "string,float,Dimension",
+                        "required": false
+                    }
+                }
+            },
+            "limitRotationXYZ": {
+                "action": "modify",
+                "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Angle",
+                        "required": false
+                    },
+                    "y": {
+                        "type": "string,float,Angle",
+                        "required": false
+                    },
+                    "z": {
+                        "type": "string,float,Angle",
                         "required": false
                     }
                 }

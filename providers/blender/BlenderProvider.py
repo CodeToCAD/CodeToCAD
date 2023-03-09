@@ -461,7 +461,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.translateObject(
             landmarkObjectName, localPositions, BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)  # type: ignore
 
-        return self
+        return landmark
 
     def getBoundingBox(self
                        ) -> 'BoundaryBox':
@@ -674,7 +674,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         self.subtract(insidePart, isTransferLandmarks=False)
 
-        startAxisLandmark.delete(removeChildren=True)
+        startAxisLandmark.delete()
 
         return self
 
@@ -720,8 +720,8 @@ class Part(Entity, CodeToCADInterface.Part):
                       isTransferLandmarks=False)
         return self
 
-    def assignMaterial(self, materialName: MaterialOrItsName
-                       ):
+    def setMaterial(self, materialName: MaterialOrItsName
+                    ):
         material = materialName
 
         if isinstance(material, str):
@@ -1149,9 +1149,12 @@ class Joint(CodeToCADInterface.Joint):
 
         landmark1: Landmark = self.entity1
         landmark2: Landmark = self.entity2
+        entityForLandmark2 = self.entity2.getParentEntity()
 
-        BlenderActions.translateLandmarkOntoAnother(
-            landmark1.parentEntity,  landmark1.getLandmarkEntityName(), landmark2.getLandmarkEntityName())
+        translation = landmark1.getLocationWorld() - landmark2.getLocationWorld()
+
+        entityForLandmark2.translateXYZ(
+            translation.x, translation.y, translation.z)
 
         return self
 
@@ -1194,10 +1197,10 @@ class Joint(CodeToCADInterface.Joint):
     def _getLimitLocationPair(min, max) -> list[Optional[Dimension]]:
         locationPair: list[Optional[Dimension]] = [None, None]
 
-        if min:
+        if min != None:
             locationPair[0] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 Utilities.Dimension.fromString(min))
-        if max:
+        if max != None:
             locationPair[1] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 Utilities.Dimension.fromString(max))
 
@@ -1211,19 +1214,20 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName = objectToLimitName.name
         elif isinstance(objectToLimitName, Landmark):
             # if a landmark, offset the dimensions relative to the parent object
-            offset = objectToLimitName.getLocationLocal()
+            offset = objectToLimitName.getParentEntity().getLocationWorld() - \
+                objectToLimitName.getLocationWorld()
             if x and x[0]:
-                x[0] = x[0] + offset.x
+                x[0] += offset.x
             if x and x[1]:
-                x[1] = x[1] + offset.x
+                x[1] += offset.x
             if y and y[0]:
-                y[0] = y[0] + offset.y
+                y[0] += offset.y
             if y and y[1]:
-                y[1] = y[1] + offset.y
+                y[1] += offset.y
             if z and z[0]:
-                z[0] = z[0] + offset.z
+                z[0] += offset.z
             if z and z[1]:
-                z[1] = z[1] + offset.z
+                z[1] += offset.z
 
             objectToLimitName = objectToLimitName.getParentEntity().name
 
@@ -1231,6 +1235,17 @@ class Joint(CodeToCADInterface.Joint):
 
         BlenderActions.applyLimitLocationConstraint(
             objectToLimitName, x, y, z, relativeToObjectName)
+
+    def limitLocationXYZ(self, x: Optional[DimensionOrItsFloatOrStringValue] = None, y: Optional[DimensionOrItsFloatOrStringValue] = None, z: Optional[DimensionOrItsFloatOrStringValue] = None
+                         ):
+
+        dimensionsX = Joint._getLimitLocationPair(x, x) if x != None else None
+        dimensionsY = Joint._getLimitLocationPair(y, y) if y != None else None
+        dimensionsZ = Joint._getLimitLocationPair(z, z) if y != None else None
+
+        self._limitLocationXYZ(dimensionsX, dimensionsY, dimensionsZ)
+
+        return self
 
     def limitLocationX(self, min: Optional[DimensionOrItsFloatOrStringValue] = None, max: Optional[DimensionOrItsFloatOrStringValue] = None
                        ):
@@ -1258,16 +1273,43 @@ class Joint(CodeToCADInterface.Joint):
     def _getLimitRotationPair(min, max) -> list[Optional[Angle]]:
         rotationPair: list[Optional[Angle]] = [None, None]
 
-        if min:
+        if min != None:
             rotationPair[0] = Angle.fromString(min)
-        if max:
+        if max != None:
             rotationPair[1] = Angle.fromString(max)
 
         return rotationPair
 
+    def limitRotationXYZ(self, x: Optional[AngleOrItsFloatOrStringValue] = None, y: Optional[AngleOrItsFloatOrStringValue] = None, z: Optional[AngleOrItsFloatOrStringValue] = None
+                         ):
+
+        objectToLimitName = self.entity2
+        if isinstance(objectToLimitName, Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, Landmark):
+            objectToLimitName = objectToLimitName.getParentEntity().name
+
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        rotationPairX = Joint._getLimitRotationPair(
+            x, x) if x != None else None
+        rotationPairY = Joint._getLimitRotationPair(
+            y, y) if y != None else None
+        rotationPairZ = Joint._getLimitRotationPair(
+            z, z) if z != None else None
+
+        BlenderActions.applyLimitRotationConstraint(
+            objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
+
+        return self
+
     def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+        objectToLimitName = self.entity2
+        if isinstance(objectToLimitName, Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, Landmark):
+            objectToLimitName = objectToLimitName.getParentEntity().name
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
@@ -1280,7 +1322,11 @@ class Joint(CodeToCADInterface.Joint):
 
     def limitRotationY(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+        objectToLimitName = self.entity2
+        if isinstance(objectToLimitName, Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, Landmark):
+            objectToLimitName = objectToLimitName.getParentEntity().name
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
@@ -1293,7 +1339,11 @@ class Joint(CodeToCADInterface.Joint):
 
     def limitRotationZ(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = Joint._getEntityOrLandmarkName(self.entity2)
+        objectToLimitName = self.entity2
+        if isinstance(objectToLimitName, Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, Landmark):
+            objectToLimitName = objectToLimitName.getParentEntity().name
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
@@ -1321,7 +1371,7 @@ class Material(CodeToCADInterface.Material):
 
     def assignToPart(self, partName: PartOrItsName
                      ):
-        BlenderActions.assignMaterialToObject(self.name, partName)
+        BlenderActions.setMaterialToObject(self.name, partName)
         return self
 
     def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat, aValue: IntOrFloat = 1.0
