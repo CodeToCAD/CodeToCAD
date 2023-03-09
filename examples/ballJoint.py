@@ -8,15 +8,26 @@ link = Part("link").createCube(1, 1, 2)
 link_top = link.createLandmark("top", center, center, max)
 link_bottom = link.createLandmark("bottom", center, center, min)
 
-Joint(ball, link, ball_center, link_bottom)\
-    .limitLocation(0, 0, 0).limitRotation(0, 0, 0)
+Joint(ball_center, link_bottom)\
+    .limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
 
-socket = Part("socket").createSphere(0.9)
-socket_cutoff = socket.createLandmark("cutoff", center, center, "min + 0.2")
+socket = Part("socket").createSphere(1.2)
+socket_cutoff = socket.createLandmark("cutoff", center, center, "min + 0.7")
 socket_center = socket.createLandmark("center", center, center, center)
 
-Joint(socket, ball, socket_cutoff, ball_bottom).translateLandmarkOntoAnother()
+Joint(ball_bottom, socket_cutoff).translateLandmarkOntoAnother()
 
-socket.subtract("ball", deleteAfterSubtract=False, isTransferLandmarks=False)
+socket.subtract(ball, deleteAfterSubtract=False,
+                isTransferLandmarks=False).apply()
 
-Joint("socket", "ball", "center").limitRotation(-30, -30, 0, 30, 30, 0).pivot()
+Joint(socket_center, ball) \
+    .limitRotationX(-30, 30) \
+    .limitRotationY(-30, 30) \
+    .limitRotationZ(0, 0)
+
+
+blueMaterial = Material("blue").setColor(0.0826006, 0.214978, 0.406714, 1.0)
+greenMaterial = Material("socket").setColor(0.249275, 0.709804, 0.392972, 0.8)
+ball.setMaterial(blueMaterial)
+link.setMaterial(blueMaterial)
+socket.setMaterial(greenMaterial)

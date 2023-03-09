@@ -664,6 +664,10 @@ def assignObjectToCollection(
 
 
 # MARK: Joints
+def getConstraint(objectName, constraintName):
+    blenderObject = getObject(objectName)
+    return blenderObject.constraints.get(constraintName)
+
 
 def applyConstraint(
     objectName,
@@ -673,8 +677,10 @@ def applyConstraint(
 
     blenderObject = getObject(objectName)
 
-    constraint = blenderObject.constraints.get(
-        constraintType.getDefaultBlenderName())
+    constraintName = keywordArguments.get(
+        "name") or constraintType.getDefaultBlenderName()
+
+    constraint = blenderObject.constraints.get(constraintName)
 
     # If it doesn't exist, create it:
     if constraint is None:
@@ -700,42 +706,38 @@ def applyLimitLocationConstraint(
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
     [minZ, maxZ] = z or [None, None]
+
+    keywordArguments = keywordArguments or {}
+
+    keywordArguments["name"] = f"loc_{objectName}_{relativeToObjectName}"
+
+    keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
+
+    keywordArguments["space_object"] = relativeToObject
+
     if minX:
-        minX = minX.value
+        keywordArguments["use_min_x"] = True
+        keywordArguments["min_x"] = minX.value
     if minY:
-        minY = minY.value
+        keywordArguments["use_min_y"] = True
+        keywordArguments["min_y"] = minY.value
     if minZ:
-        minZ = minZ.value
+        keywordArguments["use_min_z"] = True
+        keywordArguments["min_z"] = minZ.value
     if maxX:
-        maxX = maxX.value
+        keywordArguments["use_max_x"] = True
+        keywordArguments["max_x"] = maxX.value
     if maxY:
-        maxY = maxY.value
+        keywordArguments["use_max_y"] = True
+        keywordArguments["max_y"] = maxY.value
     if maxZ:
-        maxZ = maxZ.value
+        keywordArguments["use_max_z"] = True
+        keywordArguments["max_z"] = maxZ.value
 
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION,
-        dict(
-            {
-                "name": f"loc_{objectName}_{relativeToObjectName}",
-                "use_min_x": minX != None,
-                "use_min_y": minY != None,
-                "use_min_z": minZ != None,
-                "use_max_x": maxX != None,
-                "use_max_y": maxY != None,
-                "use_max_z": maxZ != None,
-                "min_x": minX or 0,
-                "min_y": minY or 0,
-                "min_z": minZ or 0,
-                "max_x": maxX or 0,
-                "max_y": maxY or 0,
-                "max_z": maxZ or 0,
-                "owner_space": "CUSTOM" if relativeToObject else "WORLD",
-                "space_object": relativeToObject
-            },
-            **keywordArguments
-        )
+        keywordArguments
     )
 
 
@@ -754,39 +756,38 @@ def applyLimitRotationConstraint(
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
     [minZ, maxZ] = z or [None, None]
+
+    keywordArguments = keywordArguments or {}
+
+    keywordArguments["name"] = f"rot_{objectName}_{relativeToObjectName}"
+
+    keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
+
+    keywordArguments["space_object"] = relativeToObject
+
     if minX:
-        minX = minX.toRadians().value
+        keywordArguments["use_limit_x"] = True
+        keywordArguments["min_x"] = minX.toRadians().value
     if minY:
-        minY = minY.toRadians().value
+        keywordArguments["use_limit_y"] = True
+        keywordArguments["min_y"] = minY.toRadians().value
     if minZ:
-        minZ = minZ.toRadians().value
+        keywordArguments["use_limit_z"] = True
+        keywordArguments["min_z"] = minZ.toRadians().value
     if maxX:
-        maxX = maxX.toRadians().value
+        keywordArguments["use_limit_x"] = True
+        keywordArguments["max_x"] = maxX.toRadians().value
     if maxY:
-        maxY = maxY.toRadians().value
+        keywordArguments["use_limit_y"] = True
+        keywordArguments["max_y"] = maxY.toRadians().value
     if maxZ:
-        maxZ = maxZ.toRadians().value
+        keywordArguments["use_limit_z"] = True
+        keywordArguments["max_z"] = maxZ.toRadians().value
 
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
-        dict(
-            {
-                "name": f"rot_{objectName}_{relativeToObjectName}",
-                "use_limit_x": minX or maxX,
-                "use_limit_y": minY or maxY,
-                "use_limit_z": minZ or maxZ,
-                "min_x": minX,
-                "min_y": minY,
-                "min_z": minZ,
-                "max_x": maxX,
-                "max_y": maxY,
-                "max_z": maxZ,
-                "owner_space": "CUSTOM" if relativeToObject else "WORLD",
-                "space_object": relativeToObject
-            },
-            **keywordArguments
-        )
+        keywordArguments
     )
 
 
@@ -1948,7 +1949,7 @@ def setMaterialColor(materialName, rValue, gValue, bValue, aValue=1.0):
     return material
 
 
-def assignMaterialToObject(materialName, objectName):
+def setMaterialToObject(materialName, objectName):
 
     material = getMaterial(materialName)
 

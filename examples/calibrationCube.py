@@ -37,7 +37,7 @@ def createCube(name, size):
     Joint(calibrationCube_size, size).limitLocation(0, 0, 0)
     calibrationCube.subtract(size.localToEntityWithName)
 
-    calibrationCube.assignMaterial(material)
+    calibrationCube.setMaterial(material)
 
     return calibrationCube
 
