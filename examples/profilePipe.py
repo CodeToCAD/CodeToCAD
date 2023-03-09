@@ -13,7 +13,7 @@ Pipe is 1/4" thick.
 """
 
 profile = [
-    "0,0,0,in",  # start A
+    [0, 0, 0],  # start A
     "2,1,0,in",  # B
     # "21.5/2,1,0,in", #midpoint C
     "21.5-2,1,0,in",  # D
@@ -22,4 +22,4 @@ profile = [
 
 Sketch("circle").createCircle("1in").setVisible(False)
 
-Sketch("profile").createFromVerticies(profile).sweep("circle")
+Sketch("profile").createFromVertices(profile).sweep("circle")

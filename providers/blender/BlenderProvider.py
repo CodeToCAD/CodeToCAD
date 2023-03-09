@@ -89,6 +89,8 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.updateViewLayer()
 
+        BlenderActions.applyObjectRotationAndScale(self.name)
+
         BlenderActions.applyDependencyGraph(self.name)
 
         BlenderActions.removeMesh(self.name)
@@ -129,16 +131,6 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.exportObject(
             self.name, absoluteFilePath, overwrite, scale)
-        return self
-
-    def clone(self, newName: str, copyLandmarks: bool = True
-              ):
-
-        assert Entity(
-            newName).isExists() == False, f"{newName} already exists."
-
-        BlenderActions.duplicateObject(self.name, newName, copyLandmarks)
-
         return self
 
     def mirror(self, mirrorAcrossEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str]
@@ -412,8 +404,10 @@ class Entity(CodeToCADInterface.Entity):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
+        screwPitch = Dimension.fromString(screwPitch)
+
         BlenderActions.applyScrewModifier(
-            self.name, angleParsed.toRadians(), axis)
+            self.name, angleParsed.toRadians(), axis, screwPitch=screwPitch, iterations=interations)
 
         return self
 
@@ -572,6 +566,16 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self
 
+    def clone(self, newName: str, copyLandmarks: bool = True
+              ) -> 'Part':
+
+        assert Entity(
+            newName).isExists() == False, f"{newName} already exists."
+
+        BlenderActions.duplicateObject(self.name, newName, copyLandmarks)
+
+        return Part(newName, self.description)
+
     def loft(self, Landmark1: 'Landmark', Landmark2: 'Landmark'
              ):
         raise NotImplementedError()
@@ -660,15 +664,18 @@ class Part(Entity, CodeToCADInterface.Part):
 
         dimensions: list[float] = blenderObject.dimensions
 
-        def scaleValue(mainDimension: float, thickness: float, axis: Utilities.Axis) -> float:
-            axisSubtraction = (1 if axis.value == 0 else 2)
-            return (mainDimension-thickness * axisSubtraction) / mainDimension
+        def scaleValue(mainDimension: float, thickness: float, subtractBothSides: bool) -> float:
+            return (mainDimension-thickness * (2 if subtractBothSides else 1)) / mainDimension
 
-        scaleX: float = scaleValue(dimensions[0], thicknessXYZ[0].value, axis)
-        scaleY = scaleValue(dimensions[1], thicknessXYZ[1].value, axis)
-        scaleZ = scaleValue(dimensions[2], thicknessXYZ[2].value, axis)
+        scaleX: float = scaleValue(
+            dimensions[0], thicknessXYZ[0].value, axis.value == 0)
+        scaleY = scaleValue(
+            dimensions[1], thicknessXYZ[1].value, axis.value == 1)
+        scaleZ = scaleValue(
+            dimensions[2], thicknessXYZ[2].value, axis.value == 2)
 
-        insidePart.scaleXYZ(scaleX, scaleY, scaleZ)
+        BlenderActions.scaleObject(
+            insidePart.name, scaleX, scaleY, scaleZ)
 
         Joint(startAxisLandmark, insidePart_start).limitLocationX(0, 0)
         Joint(startAxisLandmark, insidePart_start).limitLocationY(0, 0)
@@ -891,6 +898,16 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         self.curveType = curveType
         self.description = description
 
+    def clone(self, newName: str, copyLandmarks: bool = True
+              ) -> 'Sketch':
+
+        assert Entity(
+            newName).isExists() == False, f"{newName} already exists."
+
+        BlenderActions.duplicateObject(self.name, newName, copyLandmarks)
+
+        return Sketch(newName, self.curveType, self.description)
+
     def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z"
                 ):
 
@@ -914,6 +931,17 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         BlenderActions.createMeshFromCurve(self.name)
 
         return Part(self.name, self.description)
+
+    def profile(self,
+                profileCurveName
+                ):
+
+        if isinstance(profileCurveName, Entity):
+            profileCurveName = profileCurveName.name
+
+        BlenderActions.applyCurveModifier(self.name, profileCurveName)
+
+        return self
 
     def sweep(self, profileCurveName: str, fillCap: bool = False
               ):
@@ -992,17 +1020,17 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
-    def createCircle(self, radius: 'Dimension'
+    def createCircle(self, radius: DimensionOrItsFloatOrStringValue
                      ):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
-    def createEllipse(self, radiusA: 'Dimension', radiusB: 'Dimension'
+    def createEllipse(self, radiusA: DimensionOrItsFloatOrStringValue, radiusB: DimensionOrItsFloatOrStringValue
                       ):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
-    def createArc(self, radius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
+    def createArc(self, radius: DimensionOrItsFloatOrStringValue, angle: AngleOrItsFloatOrStringValue = "180d"
                   ):
         return self
 
@@ -1012,22 +1040,22 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
-    def createSegment(self, innerRadius: 'Dimension', outerRadius: 'Dimension', angle: AngleOrItsFloatOrStringValue = "180d"
+    def createSegment(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, angle: AngleOrItsFloatOrStringValue = "180d"
                       ):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)
-    def createRectangle(self, length: 'Dimension', width: 'Dimension'
+    def createRectangle(self, length: DimensionOrItsFloatOrStringValue, width: DimensionOrItsFloatOrStringValue
                         ):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon)
-    def createPolygon(self, numberOfSides: 'int', length: 'Dimension', width: 'Dimension'
+    def createPolygon(self, numberOfSides: 'int', length: DimensionOrItsFloatOrStringValue, width: DimensionOrItsFloatOrStringValue
                       ):
         return self
 
     @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
-    def createTrapezoid(self, lengthUpper: 'Dimension', lengthLower: 'Dimension', height: 'Dimension'
+    def createTrapezoid(self, lengthUpper: DimensionOrItsFloatOrStringValue, lengthLower: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue
                         ):
         return self
 
@@ -1672,12 +1700,16 @@ class Scene(CodeToCADInterface.Scene):
 
         return self
 
-    def setHDRIBackground(self,
-                          filePath, x=0, y=0):
+    def setBackgroundImage(self, filePath: str, locationX: Optional[DimensionOrItsFloatOrStringValue] = 0, locationY: Optional[DimensionOrItsFloatOrStringValue] = 0):
 
         absoluteFilePath = getAbsoluteFilepath(filePath)
 
         BlenderActions.addHDRTexture(self.name, absoluteFilePath)
+
+        x = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Dimension.fromString(locationX or 0)).value
+        y = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Dimension.fromString(locationY or 0)).value
 
         BlenderActions.setBackgroundLocation(self.name, x, y)
 

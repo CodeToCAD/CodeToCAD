@@ -2,4 +2,4 @@ from CodeToCAD import *
 
 Part("Sphere").createSphere(1)
 
-Scene().setHDRIBackground("./HDRBackgroundTestImage.jpg", -300, 0)
+Scene().setBackgroundImage("./HDRBackgroundTestImage.jpg", -300, 0)
