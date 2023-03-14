@@ -1,11 +1,14 @@
 from setuptools import setup
 
+from pathlib import Path
+long_description = (Path(__file__).parent / "README.md").read_text()
+
 setup(
     name='CodeToCAD',
-    version='0.2.4',
+    version='0.2.5',
     description='3D modeling automation in your favorite modeling software.',
-    long_description='Intuitive code-based CAD that enforces good modeling practices. Models are automatically generated in existing CAD or modeling software.',
-    long_description_content_type='text/x-rst',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/CodeToCAD/CodeToCAD',
     author='CodeToCAD',
     author_email='shehab@codethatdown.com',

@@ -13,7 +13,7 @@ from typing import Optional
 import bpy
 import console_python
 from bpy.props import CollectionProperty, StringProperty
-from bpy.types import AddonPreferences, Operator, OperatorFileListElement, PropertyGroup
+from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
 
@@ -108,18 +108,8 @@ class StopAutoReload(Operator):
 
 def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
-    import BlenderActions
-    import BlenderDefinitions
-    import BlenderProvider
-    import CodeToCADInterface
-    import utilities
     import CodeToCAD
 
-    reload(utilities)
-    reload(CodeToCADInterface)
-    reload(BlenderProvider)
-    reload(BlenderDefinitions)
-    reload(BlenderActions)
     reload(CodeToCAD)
 
     from BlenderProvider import injectBlenderProvider
