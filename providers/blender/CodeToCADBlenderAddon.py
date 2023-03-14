@@ -111,7 +111,17 @@ class StopAutoReload(Operator):
 def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
     import CodeToCAD
+    import BlenderActions
+    import BlenderDefinitions
+    import BlenderProvider
+    import CodeToCADInterface
+    import utilities
 
+    reload(utilities)
+    reload(CodeToCADInterface)
+    reload(BlenderProvider)
+    reload(BlenderDefinitions)
+    reload(BlenderActions)
     reload(CodeToCAD)
 
     from BlenderProvider import injectBlenderProvider
@@ -370,7 +380,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
 
-@ wraps(replace_help)
+@wraps(replace_help)
 def addCodeToCADConvenienceWordsToConsole(namspace):
     # references https://blender.stackexchange.com/a/2751
 
