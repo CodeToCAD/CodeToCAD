@@ -10,12 +10,43 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 
 ## Getting Started
 
-> Pre-requisites: Python 3.10, Blender 3.1 
+> Pre-requisites: Python 3.10 or newer. 
 
-1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
-> If you're a developer, instead of downloading a release, you can clone this repository.
-2. Run or browse the [examples](./examples/)! 
-3. Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
+1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
+
+    `pip install CodeToCAD`
+
+2. Create your own CodeToCAD python file and save it:
+    ```python
+    # myCodeToCAD.py
+    # This is also the examples/materials.py example
+    from CodeToCAD import *
+
+    myMaterial = Material("material").setColor(169, 76, 181, 0.8)
+    Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
+    ```
+
+    ![Material Cube](./documentation/materialCube.png)
+
+3. Run your script in your modeling software. See instructions for installing the [Blender Addon](#blender) addon below.
+
+### Blender
+
+> Note: Blender 3.1 or newer is required.
+
+1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon from [./providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py). [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+    > If you're a developer, instead of downloading a release, you can clone this repository.
+
+2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
+    ![threeaxismill](./documentation/import_file_in_blender.png)
+
+## What do I do next?
+
+- Run or browse the [examples](./examples/)! 
+
+    ![Stacked Cubes](./documentation/stackedCubes.png)
+
+- Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
 
 ## Integrations
