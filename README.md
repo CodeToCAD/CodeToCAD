@@ -34,8 +34,8 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 
 > Note: Blender 3.1 or newer is required.
 
-1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon from [./providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py). [Video Guide](https://youtu.be/YD_4nj0QUJ4)
-    > If you're a developer, instead of downloading a release, you can clone this repository.
+1. Download a release (Check Releases in the repository side-bar) and install the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip)
+    > If you're a developer, instead of downloading a release, you can clone this repository. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
     ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/import_file_in_blender.png)
