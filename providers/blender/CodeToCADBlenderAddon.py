@@ -270,6 +270,7 @@ class CodeToCADAddonPreferences(AddonPreferences):
     codeToCadFilePath: StringProperty(
         name="CodeToCAD Folder",
         subtype='FILE_PATH',
+        default=str(Path(__file__).parent.absolute())
     )  # type: ignore
     isAutoReloadImports: bpy.props.BoolProperty(
         name="Auto Reload", default=False)  # type: ignore
@@ -328,36 +329,31 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     print("addCodeToCADToPath called")
 
     codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
-        context)
+        context) or Path(__file__).parent.absolute()
 
     if not codeToCADPath or not os.path.exists(codeToCADPath):
         print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
         return {'CANCELLED'} if returnBlenderOperationStatus else None
 
-    corePath = codeToCADPath+"/core"
-    codeToCadProviderPath = codeToCADPath+"/providers"
-    blenderProviderPath = codeToCADPath+"/providers/blender"
+    corePath = codeToCADPath / "CodeToCAD"
+    blenderProviderPath = codeToCADPath / "providers/blender"
 
-    if not Path(blenderProviderPath+"/BlenderProvider.py").is_file():
+    if not Path(blenderProviderPath / "BlenderProvider.py").is_file() and not Path(codeToCADPath / "BlenderProvider.py").is_file():
         print(
-            "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon")
+            "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon", "Searching in: ", codeToCADPath)
         return {'CANCELLED'} if returnBlenderOperationStatus else None
 
     print("Adding {} to path".format(corePath))
 
-    sys.path.append(corePath)
-
-    print("Adding {} to path".format(codeToCadProviderPath))
-
-    sys.path.append(codeToCadProviderPath)
+    sys.path.append(str(corePath))
 
     print("Adding {} to path".format(blenderProviderPath))
 
-    sys.path.append(blenderProviderPath)
+    sys.path.append(str(blenderProviderPath))
 
     print("Adding {} to path".format(codeToCADPath))
 
-    sys.path.append(codeToCADPath)
+    sys.path.append(str(codeToCADPath))
 
     from BlenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
