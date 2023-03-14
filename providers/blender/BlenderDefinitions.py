@@ -2,7 +2,7 @@ import bpy
 
 from enum import Enum
 from CodeToCAD import Dimension
-import core.utilities as Utilities
+import CodeToCAD.utilities as Utilities
 
 
 class BlenderTypes(Enum):

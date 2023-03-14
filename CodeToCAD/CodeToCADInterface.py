@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional, TypeAlias, Union
 
-from core.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension,
+from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, LengthUnit, Point)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]

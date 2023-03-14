@@ -6,12 +6,12 @@ from typing import Optional, Union
 import BlenderActions
 import BlenderDefinitions
 
-import core.CodeToCADInterface as CodeToCADInterface
-import core.utilities as Utilities
-from core.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
-from core.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUIDLikeId,
-                            getAbsoluteFilepath, getFilename, max, min)
+import CodeToCAD.CodeToCADInterface as CodeToCADInterface
+import CodeToCAD.utilities as Utilities
+from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
+from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
+                                 Dimensions, Point, center, createUUIDLikeId,
+                                 getAbsoluteFilepath, getFilename, max, min)
 
 
 if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:

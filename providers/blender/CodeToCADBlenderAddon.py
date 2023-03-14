@@ -384,7 +384,7 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     from CodeToCAD import (Analytics, Angle, Animation, Curve, Dimension,
                            Dimensions, Joint, Landmark, Material, Part, Scene,
                            Shape, Sketch, center, max, min)
-    from core.utilities import Angle, Dimension, Dimensions, center, max, min
+    from CodeToCAD.utilities import Angle, Dimension, Dimensions, center, max, min
 
     namspace["Part"] = Part
     namspace["Shape"] = Part

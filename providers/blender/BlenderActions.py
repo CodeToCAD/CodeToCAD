@@ -5,8 +5,8 @@
 from typing import Optional
 from uuid import uuid4
 import bpy
-from core.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
-import core.utilities as Utilities
+from CodeToCAD.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
+import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
 from pathlib import Path
 import mathutils
