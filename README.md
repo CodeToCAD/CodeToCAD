@@ -5,7 +5,7 @@ CodeToCAD brings intuitive and reliable code-based automation to your favorite 3
 Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - there will be a cheat-sheet and documentation to help you get started.
 
 <div align="center">
-<image src="./documentation/three_axis_mill.gif"/>
+<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/three_axis_mill.gif"/>
 </div>
 
 ## Getting Started
@@ -26,7 +26,7 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
     Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
     ```
 
-    ![Material Cube](./documentation/materialCube.png)
+    ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/materialCube.png)
 
 3. Run your script in your modeling software. See instructions for installing the [Blender Addon](#blender) addon below.
 
@@ -38,13 +38,13 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
     > If you're a developer, instead of downloading a release, you can clone this repository.
 
 2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
-    ![threeaxismill](./documentation/import_file_in_blender.png)
+    ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/import_file_in_blender.png)
 
 ## What do I do next?
 
 - Run or browse the [examples](./examples/)! 
 
-    ![Stacked Cubes](./documentation/stackedCubes.png)
+    ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/stackedCubes.png)
 
 - Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
