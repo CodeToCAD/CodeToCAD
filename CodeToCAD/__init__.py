@@ -1,6 +1,6 @@
 from typing import Optional, Type
-import core.CodeToCADInterface as CodeToCADInterface
-import core.utilities as Utilities
+from . import CodeToCADInterface as CodeToCADInterface
+from . import utilities as Utilities
 
 # This is the CodeToCAD provider.
 # Use the following import line in your CodeToCAD file:

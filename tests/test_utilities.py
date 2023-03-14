@@ -1,4 +1,4 @@
-from core.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox
+from CodeToCAD.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox
 
 import unittest
 

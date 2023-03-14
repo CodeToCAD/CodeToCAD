@@ -3,8 +3,7 @@
     "editor.formatOnPaste": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.analysis.extraPaths": [
-        "core",
-        "providers/",
+        "CodeToCAD",
         "providers/blender"
     ],
     "python.defaultInterpreterPath": "${workspaceFolder}/development/developmentVirutalEnvironment/bin/python",
@@ -16,10 +15,10 @@
     "python.analysis.inlayHints.variableTypes": true,
     "python.analysis.typeCheckingMode": "basic",
     "terminal.integrated.env.windows": {
-        "PYTHONPATH": "providers;providers/blender"
+        "PYTHONPATH": "CodeToCAD;providers/blender"
     },
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "providers:providers/blender"
+        "PYTHONPATH": "CodeToCAD:providers/blender"
     },
     "python.envFile": "${workspaceFolder}/development/.pythonpath.env",
     "python.testing.unittestArgs": [
