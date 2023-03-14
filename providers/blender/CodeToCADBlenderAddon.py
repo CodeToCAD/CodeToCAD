@@ -8,6 +8,7 @@ from importlib import reload
 from pathlib import Path
 import tempfile
 import time
+import traceback
 from typing import Optional
 
 import bpy
@@ -132,7 +133,7 @@ class ImportedFileWatcher():
 
     def checkFileChanged(self) -> bool:
         stamp: float = os.stat(self.filepath).st_mtime
-        print("Import auto-reload: last modified", stamp)
+
         if stamp != self.lastTimestamp and self.lastTimestamp != 0:
             self.lastTimestamp = stamp
             return True
@@ -192,10 +193,13 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
     try:
         runpy.run_path(filePath, run_name="__main__")
     except Exception as err:
-        print("Import failed: ", err)
+        errorTrace = traceback.format_exc()
+        print("Import failed: ", err, errorTrace)
 
-        bpy.ops.code_to_cad.log_message(  # type: ignore
-            message=f"{err}", isError=True)
+        # bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT', # type: ignore
+        #                                 message=f"{err}", isError=True)
+        bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT',  # type: ignore
+                                        message=f"{errorTrace}", isError=True)
 
         raise err
     finally:
