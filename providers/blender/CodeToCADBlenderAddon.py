@@ -17,10 +17,11 @@ from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
 
+
 bl_info = {
     "name": "CodeToCAD",
     "author": "CodeToCAD",
-    "version": (1, 0),
+    "version": (1, 0),  # patch_version marker do not remove
     "blender": (3, 1, 0),
     "description": "",
     "doc_url": "https://github.com/CodeToCad/CodeToCad",
@@ -321,19 +322,23 @@ class CodeToCADAddonPreferences(AddonPreferences):
         return CodeToCADAddonPreferences.getPreferenceKey("isAskBeforeReloading", context) or False
 
     @staticmethod
-    def getCodeToCadFilePathFromPreferences(context):
-        return CodeToCADAddonPreferences.getPreferenceKey("codeToCadFilePath", context)
+    def getCodeToCadFilePathFromPreferences(context) -> str:
+        value: str = CodeToCADAddonPreferences.getPreferenceKey(
+            "codeToCadFilePath", context)  # type: ignore
+        return value
 
 
 def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     print("addCodeToCADToPath called")
 
     codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
-        context) or Path(__file__).parent.absolute()
+        context) or str(Path(__file__).parent.absolute())
 
     if not codeToCADPath or not os.path.exists(codeToCADPath):
         print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
         return {'CANCELLED'} if returnBlenderOperationStatus else None
+
+    codeToCADPath = Path(codeToCADPath)
 
     corePath = codeToCADPath / "CodeToCAD"
     blenderProviderPath = codeToCADPath / "providers/blender"
