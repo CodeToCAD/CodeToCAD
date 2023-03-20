@@ -89,8 +89,6 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.updateViewLayer()
 
-        BlenderActions.applyObjectRotationAndScale(self.name)
-
         BlenderActions.applyDependencyGraph(self.name)
 
         BlenderActions.removeMesh(self.name)
@@ -98,6 +96,8 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.updateObjectDataName(self.name, self.name)
 
         BlenderActions.clearModifiers(self.name)
+
+        BlenderActions.applyObjectRotationAndScale(self.name)
 
         return self
 
