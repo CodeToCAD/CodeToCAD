@@ -1,0 +1,43 @@
+on:
+  push:
+    branches:
+      - develop
+
+name: On Push To Develop
+
+jobs:
+  create_release_tag:
+    if: github.event.pull_request.head.ref == 'release/blenderAddonZipFile' 
+    name: Create release tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Assign Git Commit Epoch to $GITHUB_OUTPUT
+        id: git_commit_epoch
+        run: echo "GIT_COMMIT_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: actions-ecosystem/action-push-tag@v1
+        with:
+          tag: v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          message: 'v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
+
+
+  create_blender_addon_zip:
+    if: github.event.pull_request.head.ref != 'release/blenderAddonZipFile' 
+    name: Create Blender Addon Zip File
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build Blender Addon Zip File
+        run: bash ./createBlenderAddon.sh
+      - run: git checkout -b release/blenderAddonZipFile
+      - run: git add .
+      - run: git config user.name ${{ vars.COMMIT_BOT_NAME }}
+      - run: git config user.email ${{ vars.COMMIT_BOT_EMAIL }}
+      - run: git commit -m "Release Blender Addon Zip File"
+      - run: git push -u origin release/blenderAddonZipFile --force
+      - name: create pull request
+        run: gh pr create -B develop -H release/blenderAddonZipFile --title 'Blender Addon Zip File Release' --body 'Auto-created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
