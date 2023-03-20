@@ -16,7 +16,7 @@ jobs:
         id: git_commit_epoch
         run: echo "GIT_COMMIT_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build Blender Addon Zip File
-        run: sh ./createBlenderAddon.sh
+        run: bash ./createBlenderAddon.sh
       - name: Commit Blender Addon Zip File
         uses: EndBug/add-and-commit@v9
         with:
