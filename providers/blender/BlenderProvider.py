@@ -46,7 +46,7 @@ class Entity(CodeToCADInterface.Entity):
     def isExists(self
                  ) -> bool:
         try:
-            return BlenderActions.getObject(self.name) != None
+            return BlenderActions.getObject(self.name) is not None
         except:
             return False
 
@@ -136,7 +136,7 @@ class Entity(CodeToCADInterface.Entity):
     def mirror(self, mirrorAcrossEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str]
                ):
 
-        if resultingMirroredEntityName != None:
+        if resultingMirroredEntityName is not None:
             raise NotImplementedError("Not yet supported. COD-113")
 
         mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark
@@ -483,7 +483,7 @@ class Entity(CodeToCADInterface.Entity):
         landmark = Landmark(landmarkName, self.name)
 
         assert BlenderActions.getObject(
-            landmark.getLandmarkEntityName()) != None, f"Landmark {landmarkName} does not exist for {self.name}."
+            landmark.getLandmarkEntityName()) is not None, f"Landmark {landmarkName} does not exist for {self.name}."
         return landmark
 
 
@@ -518,7 +518,7 @@ class Part(Entity, CodeToCADInterface.Part):
         expectedNameOfObjectInBlender = primitiveType.defaultNameInBlender(
         ) if primitiveType else None
 
-        assert expectedNameOfObjectInBlender != None, \
+        assert expectedNameOfObjectInBlender is not None, \
             f"Primitive type with name {primitiveName} is not supported."
 
         BlenderActions.addPrimitive(
@@ -841,12 +841,12 @@ class Part(Entity, CodeToCADInterface.Part):
               ):
         vertexGroupName = None
 
-        if bevelEdgesNearlandmarkNames != None:
+        if bevelEdgesNearlandmarkNames is not None:
             vertexGroupName = createUUIDLikeId()
             self._addEdgesNearLandmarksToVertexGroup(
                 bevelEdgesNearlandmarkNames, vertexGroupName)
 
-        if bevelFacesNearlandmarkNames != None:
+        if bevelFacesNearlandmarkNames is not None:
             vertexGroupName = vertexGroupName or createUUIDLikeId()
             self._addFacesNearLandmarksToVertexGroup(
                 bevelFacesNearlandmarkNames, vertexGroupName)
@@ -964,7 +964,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
     def createFromVertices(self, coordinates: list[PointOrListOfFloatOrItsStringValue], interpolation: 'int' = 64
                            ):
         BlenderActions.create3DCurve(self.name, BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(
-            self.curveType) if self.curveType != None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation)
+            self.curveType) if self.curveType is not None else BlenderDefinitions.BlenderCurveTypes.BEZIER, coordinates, interpolation)
 
         return self
 
@@ -983,7 +983,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
                 keywordArgs = dict(
                     {
-                        "curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType != None else None},
+                        "curveType": BlenderDefinitions.BlenderCurveTypes.fromCurveTypes(self.curveType) if self.curveType is not None else None},
                     **kwargs
                 )
 
@@ -1093,7 +1093,7 @@ class Landmark(CodeToCADInterface.Landmark):
 
     def isExists(self) -> bool:
         try:
-            return BlenderActions.getObject(self.getLandmarkEntityName()) != None
+            return BlenderActions.getObject(self.getLandmarkEntityName()) is not None
         except:
             return False
 
@@ -1223,10 +1223,10 @@ class Joint(CodeToCADInterface.Joint):
     def _getLimitLocationPair(min, max) -> list[Optional[Dimension]]:
         locationPair: list[Optional[Dimension]] = [None, None]
 
-        if min != None:
+        if min is not None:
             locationPair[0] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 Utilities.Dimension.fromString(min))
-        if max != None:
+        if max is not None:
             locationPair[1] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 Utilities.Dimension.fromString(max))
 
@@ -1265,9 +1265,12 @@ class Joint(CodeToCADInterface.Joint):
     def limitLocationXYZ(self, x: Optional[DimensionOrItsFloatOrStringValue] = None, y: Optional[DimensionOrItsFloatOrStringValue] = None, z: Optional[DimensionOrItsFloatOrStringValue] = None
                          ):
 
-        dimensionsX = Joint._getLimitLocationPair(x, x) if x != None else None
-        dimensionsY = Joint._getLimitLocationPair(y, y) if y != None else None
-        dimensionsZ = Joint._getLimitLocationPair(z, z) if y != None else None
+        dimensionsX = Joint._getLimitLocationPair(
+            x, x) if x is not None else None
+        dimensionsY = Joint._getLimitLocationPair(
+            y, y) if y is not None else None
+        dimensionsZ = Joint._getLimitLocationPair(
+            z, z) if y is not None else None
 
         self._limitLocationXYZ(dimensionsX, dimensionsY, dimensionsZ)
 
@@ -1299,9 +1302,9 @@ class Joint(CodeToCADInterface.Joint):
     def _getLimitRotationPair(min, max) -> list[Optional[Angle]]:
         rotationPair: list[Optional[Angle]] = [None, None]
 
-        if min != None:
+        if min is not None:
             rotationPair[0] = Angle.fromString(min)
-        if max != None:
+        if max is not None:
             rotationPair[1] = Angle.fromString(max)
 
         return rotationPair
@@ -1318,11 +1321,11 @@ class Joint(CodeToCADInterface.Joint):
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
         rotationPairX = Joint._getLimitRotationPair(
-            x, x) if x != None else None
+            x, x) if x is not None else None
         rotationPairY = Joint._getLimitRotationPair(
-            y, y) if y != None else None
+            y, y) if y is not None else None
         rotationPairZ = Joint._getLimitRotationPair(
-            z, z) if z != None else None
+            z, z) if z is not None else None
 
         BlenderActions.applyLimitRotationConstraint(
             objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
