@@ -57,7 +57,7 @@ class BlenderLength(Utilities.Units):
         return [
             BlenderLength.convertDimensionToBlenderUnit(dimension)
 
-            if (dimension.value != None and dimension.unit != None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            if (dimension.value is not None and dimension.unit is not None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
             else dimension
 
