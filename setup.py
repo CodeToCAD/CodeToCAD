@@ -4,7 +4,7 @@ from pathlib import Path
 long_description = (Path(__file__).parent / "README.md").read_text()
 
 git_commit_epoch = subprocess.check_output(
-    ['git', 'show', '-s', '--format=%ct', 'HEAD~']).strip().decode()
+    ['git', 'show', '-s', '--format=%ct', 'HEAD']).strip().decode()
 
 setup(
     name='CodeToCAD',
