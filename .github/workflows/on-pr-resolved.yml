@@ -35,6 +35,23 @@ jobs:
           release_name: Release v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
           draft: false
           prerelease: true
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          pip install setuptools
+      - name: Build package
+        run: python setup.py sdist
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist/
 
 
   create_blender_addon_zip:
