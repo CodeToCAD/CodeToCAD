@@ -7,7 +7,11 @@ name: Release Version and Blender Addon
 
 jobs:
   create_release_tag:
+<<<<<<< HEAD
     if: github.base_ref == develop && github.head_ref == 'release/blenderAddonZipFile' 
+=======
+    if: github.base_ref == 'develop' && github.head_ref == 'release/blenderAddonZipFile' 
+>>>>>>> 7ea7071 (When a PR is merged, github actions create a new PR with a BlenderAddonZip file. When that PR is resolved, a release tag is created.)
     name: Create release tag
     runs-on: ubuntu-latest
     steps:
@@ -23,7 +27,11 @@ jobs:
 
 
   create_blender_addon_zip:
+<<<<<<< HEAD
     if: github.base_ref == develop && github.head_ref != 'release/blenderAddonZipFile' 
+=======
+    if: github.base_ref == 'develop' && github.head_ref != 'release/blenderAddonZipFile' 
+>>>>>>> 7ea7071 (When a PR is merged, github actions create a new PR with a BlenderAddonZip file. When that PR is resolved, a release tag is created.)
     name: Create Blender Addon Zip File
     runs-on: ubuntu-latest
     steps:
