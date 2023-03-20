@@ -295,7 +295,7 @@ def addPrimitive(
     keywordArguments: Optional[dict]
 ):
 
-    assert primitiveType != None, f"Primitive type is required."
+    assert primitiveType is not None, f"Primitive type is required."
 
     primitiveName = primitiveType.defaultNameInBlender()
 
@@ -334,7 +334,7 @@ def createGear(
         addon = bpy.context.preferences.addons.get(addonName)
 
     assert \
-        addon != None, \
+        addon is not None, \
         f"Could not enable the {addonName} addon to create extra objects"
 
     outerRadiusDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
@@ -434,7 +434,7 @@ def applyObjectTransformations(objectName):
 
     blenderObject = getObject(objectName)
 
-    assert blenderObject.data != None, \
+    assert blenderObject.data is not None, \
         f"Object {objectName} does not have data to transform."
 
     finalPose = blenderObject.matrix_basis
@@ -452,7 +452,7 @@ def applyObjectTransformations(objectName):
 def applyObjectRotationAndScale(objectName):
     blenderObject = getObject(objectName)
 
-    assert blenderObject.data != None, \
+    assert blenderObject.data is not None, \
         f"Object {objectName} does not have data to transform."
 
     translation, rotation, scale = blenderObject.matrix_basis.decompose()
@@ -489,7 +489,7 @@ def rotateObject(
     for index in range(len(currentRotation)):
         angle = currentRotation[index]
         newAngle = rotationAngles[index]
-        if newAngle != None:
+        if newAngle is not None:
             angle = newAngle.toRadians().value
         outputRotation.append(angle)
 
@@ -515,7 +515,7 @@ def translateObject(
     for index in range(3):
         location = currentLocation[index]
         newLocation = translationDimensions[index]
-        if newLocation != None:
+        if newLocation is not None:
             location = newLocation.value
         outputLocation.append(location)
 
@@ -540,7 +540,7 @@ def setObjectLocation(
     for index in range(3):
         location = currentLocation[index]
         newLocation = locationDimensions[index]
-        if newLocation != None:
+        if newLocation is not None:
             location = newLocation.value
         outputLocation.append(location)
 
@@ -610,7 +610,7 @@ def removeObjectFromCollection(
     collection = bpy.data.collections.get(collectionName)
 
     assert \
-        collection != None, \
+        collection is not None, \
         f"Collection {collectionName} does not exist"
 
     assert \
@@ -642,13 +642,13 @@ def assignObjectToCollection(
         scene = bpy.data.scenes.get(sceneName)
 
         assert \
-            scene != None, \
+            scene is not None, \
             f"Scene {sceneName} does not exist"
 
         collection = scene.collection
 
     assert \
-        collection != None, \
+        collection is not None, \
         f"Collection {collectionName} does not exist"
 
     if removeFromOtherGroups:
@@ -862,7 +862,7 @@ def getDriver(
     # https://docs.blender.org/api/current/bpy.types.FCurve.html
     fcurve = blenderObject.animation_data.drivers.find(path)
 
-    assert fcurve != None, f"Could not find driver {path} for object {objectName}."
+    assert fcurve is not None, f"Could not find driver {path} for object {objectName}."
 
     return fcurve.driver
 
@@ -1040,7 +1040,7 @@ def updateObjectDataName(
 
     blenderObject = getObject(parentObjectName)
 
-    assert blenderObject.data != None, f"Object {parentObjectName} does not have data to name."
+    assert blenderObject.data is not None, f"Object {parentObjectName} does not have data to name."
 
     blenderObject.data.name = newName
 
@@ -1255,7 +1255,7 @@ def getObject(objectName):
     blenderObject = bpy.data.objects.get(objectName)
 
     assert \
-        blenderObject != None, \
+        blenderObject is not None, \
         f"Object {objectName} does not exists"
 
     return blenderObject
@@ -1266,7 +1266,7 @@ def getMesh(meshName):
     blenderMesh = bpy.data.meshes.get(meshName)
 
     assert \
-        blenderMesh != None, \
+        blenderMesh is not None, \
         f"Mesh {meshName} does not exists"
 
     return blenderMesh
@@ -1363,7 +1363,7 @@ def getClosestFaceToVertex(objectName, vertex):
         f"Could not find a point close to {vertex} on {objectName}"
 
     assert \
-        polygonIndex != None and polygonIndex != -1, \
+        polygonIndex is not None and polygonIndex != -1, \
         f"Could not find a face near {vertex} on {objectName}"
 
     blenderPolygon = blenderObject.data.polygons[polygonIndex]
@@ -1828,7 +1828,7 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
         addon = bpy.context.preferences.addons.get(addonName)
 
     assert \
-        addon != None, \
+        addon is not None, \
         f"Could not enable the {addonName} addon to create simple curves"
 
     assert \
@@ -1875,7 +1875,7 @@ def setDefaultUnit(
     blenderScene = bpy.data.scenes.get(sceneName)
 
     assert \
-        blenderScene != None, \
+        blenderScene is not None, \
         f"Scene {sceneName} does not exist"
 
     blenderScene.unit_settings.system = blenderUnit.getSystem()
@@ -1911,7 +1911,7 @@ def getMaterial(materialName):
     blenderMaterial = bpy.data.materials.get(materialName)
 
     assert \
-        blenderMaterial != None, \
+        blenderMaterial is not None, \
         f"Material {materialName} does not exist."
 
     return blenderMaterial
@@ -2054,7 +2054,7 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
 # 	blenderTexture = bpy.data.textures.get(textureName)
 
 # 	assert \
-# 		blenderTexture != None, \
+# 		blenderTexture is not None, \
 # 			f"Texture {textureName} does not exist."
 
 # 	return blenderTexture
@@ -2094,7 +2094,7 @@ def getLight(lightName):
     blenderLight = bpy.data.lights.get(lightName)
 
     assert \
-        blenderLight != None, \
+        blenderLight is not None, \
         f"Light {lightName} does not exist."
 
     return blenderLight
@@ -2127,7 +2127,7 @@ def getCamera(cameraName):
     blenderCamera = bpy.data.cameras.get(cameraName)
 
     assert \
-        blenderCamera != None, \
+        blenderCamera is not None, \
         f"Camera {cameraName} does not exist."
 
     return blenderCamera
@@ -2181,7 +2181,7 @@ def getScene(sceneName):
     blenderScene = bpy.data.scenes.get(sceneName or "Scene")
 
     assert \
-        blenderScene != None, \
+        blenderScene is not None, \
         f"Scene{sceneName} does not exists"
 
     return blenderScene
