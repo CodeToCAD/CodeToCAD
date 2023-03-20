@@ -35,6 +35,14 @@ jobs:
           release_name: Release v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
           draft: false
           prerelease: true
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: CodeToCADBlenderAddon.zip
+          asset_name: CodeToCADBlenderAddon.zip
+          tag: v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          overwrite: true
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
