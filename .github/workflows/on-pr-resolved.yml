@@ -16,10 +16,15 @@ jobs:
       - name: Assign Git Commit Epoch to $GITHUB_OUTPUT
         id: git_commit_epoch
         run: echo "GIT_COMMIT_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_OUTPUT"
-      - uses: actions-ecosystem/action-push-tag@v1
+      - uses: actions/github-script@v5
         with:
-          tag: v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          message: 'v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
+              sha: context.sha
+            })
 
 
   create_blender_addon_zip:
