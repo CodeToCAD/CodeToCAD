@@ -20,8 +20,8 @@ jobs:
       - name: Commit Blender Addon Zip File
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: ${{ COMMIT_BOT_NAME }}
-          author_email: ${{ COMMIT_BOT_EMAIL }}
+          author_name: ${{ vars.COMMIT_BOT_NAME }}
+          author_email: ${{ vars.COMMIT_BOT_EMAIL }}
           fetch: false
           message: 'Release Blender Addon Zip File'
           pathspec_error_handling: exitImmediately
