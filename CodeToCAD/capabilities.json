@@ -15,6 +15,19 @@
                     }
                 }
             },
+            "createFromFile": {
+                "action": "create",
+                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
+                "parameters": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
             "isExists": {
                 "action": "get",
                 "information": "Check if an entity exists",
@@ -397,19 +410,6 @@
                 "Mesh"
             ],
             "extends": "Entity",
-            "createFromFile": {
-                "action": "create",
-                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
-                "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
-                    "fileType": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
             "createCube": {
                 "action": "create",
                 "information": "Adds cuboid geometry to a part.",
@@ -895,6 +895,15 @@
                     "axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "z"
+                    }
+                }
+            },
+            "thicken": {
+                "action": "modify",
+                "information": "Uniformly add a wall around a sketch.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },

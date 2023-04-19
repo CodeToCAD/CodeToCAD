@@ -7,9 +7,9 @@ from typing import Optional
 import unittest
 
 from CodeToCAD import *
-import core.CodeToCADInterface as CodeToCADInterface
-import core.utilities as Utilities
-from core.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
+import CodeToCAD.CodeToCADInterface as CodeToCADInterface
+import CodeToCAD.utilities as Utilities
+from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
 

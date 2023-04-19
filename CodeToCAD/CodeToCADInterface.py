@@ -1,12 +1,11 @@
-# THIS IS AN AUTO-GENERATE FILE. 
+# THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
 from typing import Optional, TypeAlias, Union
 
-from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, LengthUnit, Point)
+from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -23,7 +22,7 @@ LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
 
 class Entity(metaclass=ABCMeta):
     '''Capabilities shared between Parts, Sketches and Landmarks.'''
-    
+
     
     name:str
     description:Optional[str]=None
@@ -32,6 +31,17 @@ class Entity(metaclass=ABCMeta):
     def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
+
+    @abstractmethod
+    def createFromFile(self, filePath:str, fileType:Optional[str]=None
+    ):
+        '''
+        Adds geometry to a part from a file. If the part does not exist, this will create it.
+        '''
+        
+        print("createFromFile is called in an abstract method. Please override this method.")
+        return self
+        
 
     @abstractmethod
     def isExists(self
@@ -430,19 +440,8 @@ class Entity(metaclass=ABCMeta):
         
 class Part(Entity,metaclass=ABCMeta):
     '''Create and manipulate 3D shapes.'''
-    
-    
 
-    @abstractmethod
-    def createFromFile(self, filePath:str, fileType:Optional[str]=None
-    ):
-        '''
-        Adds geometry to a part from a file. If the part does not exist, this will create it.
-        '''
-        
-        print("createFromFile is called in an abstract method. Please override this method.")
-        return self
-        
+    
 
     @abstractmethod
     def createCube(self, width:DimensionOrItsFloatOrStringValue, length:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
@@ -709,7 +708,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 class Sketch(Entity,metaclass=ABCMeta):
     '''Capabilities related to adding, multiplying, and/or modifying a curve.'''
-    
+
     
     name:str
     curveType:Optional['CurveTypes']=None
@@ -742,6 +741,17 @@ class Sketch(Entity,metaclass=ABCMeta):
         '''
         
         print("revolve is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def thicken(self, radius:DimensionOrItsFloatOrStringValue
+    ):
+        '''
+        Uniformly add a wall around a sketch.
+        '''
+        
+        print("thicken is called in an abstract method. Please override this method.")
         return self
         
 
@@ -922,7 +932,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 class Landmark(metaclass=ABCMeta):
     '''Landmarks are named positions on an entity.'''
-    
+
     
     name:str
     parentEntity:EntityOrItsName
@@ -1050,7 +1060,7 @@ class Landmark(metaclass=ABCMeta):
         
 class Joint(metaclass=ABCMeta):
     '''Joints define the relationships and constraints between entities.'''
-    
+
     
     entity1:EntityOrItsNameOrLandmark
     entity2:EntityOrItsNameOrLandmark
@@ -1182,7 +1192,7 @@ class Joint(metaclass=ABCMeta):
         
 class Material(metaclass=ABCMeta):
     '''Materials affect the appearance and simulation properties of the parts.'''
-    
+
     
     name:str
     description:Optional[str]=None
@@ -1217,7 +1227,7 @@ class Material(metaclass=ABCMeta):
         
 class Animation(metaclass=ABCMeta):
     '''Camera, lighting, rendering, animation related functionality.'''
-    
+
     
 
     @abstractmethod
@@ -1247,7 +1257,7 @@ class Animation(metaclass=ABCMeta):
         
 class Light(metaclass=ABCMeta):
     
-    
+
     name:str
     description:Optional[str]=None
 
@@ -1396,7 +1406,7 @@ class Light(metaclass=ABCMeta):
         
 class Camera(metaclass=ABCMeta):
     
-    
+
     name:str
     description:Optional[str]=None
 
@@ -1529,7 +1539,7 @@ class Camera(metaclass=ABCMeta):
         
 class Scene(metaclass=ABCMeta):
     '''Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.'''
-    
+
     
     name:Optional[str]=None
     description:Optional[str]=None
@@ -1656,7 +1666,7 @@ class Scene(metaclass=ABCMeta):
         
 class Analytics(metaclass=ABCMeta):
     '''Tools for collecting data about the entities and scene.'''
-    
+
     
 
     @abstractmethod

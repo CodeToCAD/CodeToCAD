@@ -20,13 +20,13 @@ if [ ! $(pip list | grep jinja2-cli) ]; then
     pip install jinja2-cli
 fi
 
-CORE_DIR="$SCRIPT_DIR/../../core"
+CODETOCAD_DIR="$SCRIPT_DIR/../../CodeToCAD"
 
 
-jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyInterface.j2" "$CORE_DIR/capabilities.json" --format=json > "$CORE_DIR/CodeToCADInterface.py"
+jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyInterface.j2" "$CODETOCAD_DIR/capabilities.json" --format=json > "$CODETOCAD_DIR/CodeToCADInterface.py"
 
 
-jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyProvider.j2" "$CORE_DIR/capabilities.json" --format=json > "$CORE_DIR/CodeToCADProvider.py"
+jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyProvider.j2" "$CODETOCAD_DIR/capabilities.json" --format=json > "$CODETOCAD_DIR/CodeToCADProvider.py"
 
 
-jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyTest.j2" "$CORE_DIR/capabilities.json" --format=json > "$CORE_DIR/TestCodeToCADProvider.py"
+jinja2 "$SCRIPT_DIR/templates/capabilitiesToPyTest.j2" "$CODETOCAD_DIR/capabilities.json" --format=json > "$CODETOCAD_DIR/TestCodeToCADProvider.py"
