@@ -1,12 +1,11 @@
-# THIS IS AN AUTO-GENERATE FILE. 
+# THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
 from typing import Optional, TypeAlias, Union
 
-from core.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, LengthUnit, Point)
+from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -30,6 +29,6 @@ class {{className}}({{ methods["extends"]+"," if "extends" in methods}}metaclass
     '''
     {{- methods["information"] -}}
     '''
-    {%-endif%}
-    {% include 'capabilitiesToPyClassDefinition.j2' %}
+{%-endif%}
+{% include 'capabilitiesToPyClassDefinition.j2' %}
 {% endfor -%}

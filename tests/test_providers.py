@@ -1,4 +1,4 @@
-# This file was forked from core/TestCodeToCADProvider.py
+# This file was forked from CodeToCAD/TestCodeToCADProvider.py
 
 from typing import Optional
 import unittest
@@ -607,6 +607,14 @@ class TestSketch(TestProviderCase):
         instance = Sketch("name", "curveType", "description")
 
         value = instance.revolve("angle", "aboutEntityOrLandmark", "axis")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
+    def test_thicken(self):
+        instance = Sketch("name", "curveType", "description")
+
+        value = instance.thicken("radius")
 
         assert value, "Modify method failed."
 

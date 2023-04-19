@@ -23,6 +23,15 @@ class TestEntity(TestProviderCase):
     
     
     @unittest.skip
+    def test_createFromFile(self):
+        instance = Part("name","description")
+
+        value = instance.createFromFile("filePath","fileType")
+
+        
+        assert value.isExists(), "Create method failed."
+        
+    @unittest.skip
     def test_isExists(self):
         instance = Part("name","description")
 
@@ -341,15 +350,6 @@ class TestEntity(TestProviderCase):
 class TestPart(TestProviderCase):
     
     @unittest.skip
-    def test_createFromFile(self):
-        instance = Part("")
-
-        value = instance.createFromFile("filePath","fileType")
-
-        
-        assert value.isExists(), "Create method failed."
-        
-    @unittest.skip
     def test_createCube(self):
         instance = Part("")
 
@@ -576,6 +576,15 @@ class TestSketch(TestProviderCase):
         instance = Sketch("name","curveType","description")
 
         value = instance.revolve("angle","aboutEntityOrLandmark","axis")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_thicken(self):
+        instance = Sketch("name","curveType","description")
+
+        value = instance.thicken("radius")
 
         
         assert value, "Modify method failed."

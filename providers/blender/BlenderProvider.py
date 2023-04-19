@@ -1,4 +1,4 @@
-# This file was forked from core/CodeToCADProvider.py
+# This file was forked from CodeToCAD/CodeToCADProvider.py
 
 import math
 from typing import Optional, Union
@@ -42,6 +42,24 @@ class Entity(CodeToCADInterface.Entity):
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
+
+    def createFromFile(self, filePath: str, fileType: Optional[str] = None
+                       ):
+        assert self.isExists() == False, f"{self.name} already exists."
+
+        fileName = getFilename(filePath)
+
+        absoluteFilePath = getAbsoluteFilepath(filePath)
+
+        BlenderActions.importFile(absoluteFilePath, fileType)
+
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        if self.name != fileName:
+            Part(fileName).rename(self.name)
+
+        return self
 
     def isExists(self
                  ) -> bool:
@@ -489,24 +507,6 @@ class Entity(CodeToCADInterface.Entity):
 
 class Part(Entity, CodeToCADInterface.Part):
 
-    def createFromFile(self, filePath: str, fileType: Optional[str] = None
-                       ):
-        assert self.isExists() == False, f"{self.name} already exists."
-
-        fileName = getFilename(filePath)
-
-        absoluteFilePath = getAbsoluteFilepath(filePath)
-
-        BlenderActions.importFile(absoluteFilePath, fileType)
-
-        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-        # therefore, we'll use the object's "expected" name and rename it to what it should be
-        # note: this will fail if the "expected" name is incorrect
-        if self.name != fileName:
-            Part(fileName).rename(self.name)
-
-        return self
-
     def _createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
                          ):
 
@@ -920,6 +920,14 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
             angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
+
+        return self
+
+    def thicken(self, radius: DimensionOrItsFloatOrStringValue
+                ):
+
+        BlenderActions.applySolidifyModifier(
+            self.name, Utilities.Dimension.fromString(radius))
 
         return self
 

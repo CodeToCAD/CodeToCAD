@@ -423,6 +423,12 @@ def importFile(
     assert isSuccess == True, \
         f"Could not import {filePath}"
 
+    updateViewLayer()
+    currentName = bpy.data.objects[-1].name
+    updateObjectName(currentName, fileName)
+    updateObjectDataName(fileName, fileName)
+
+
 # MARK: Transformations
 
 # Apply the object's transformations (under Object Properties tab)

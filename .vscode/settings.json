@@ -1,6 +1,14 @@
 {
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
+    "[jinja-html]": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false
+    },
+    "[jinja]": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false
+    },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.analysis.extraPaths": [
         "CodeToCAD",
