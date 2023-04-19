@@ -47,17 +47,16 @@ class Entity(CodeToCADInterface.Entity):
                        ):
         assert self.isExists() == False, f"{self.name} already exists."
 
-        fileName = getFilename(filePath)
-
         absoluteFilePath = getAbsoluteFilepath(filePath)
 
-        BlenderActions.importFile(absoluteFilePath, fileType)
+        importedFileName = BlenderActions.importFile(
+            absoluteFilePath, fileType)
 
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
-        if self.name != fileName:
-            Part(fileName).rename(self.name)
+        if self.name != importedFileName:
+            Part(importedFileName).rename(self.name)
 
         return self
 

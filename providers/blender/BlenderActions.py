@@ -392,7 +392,7 @@ fileImportFunctions = {
 def importFile(
     filePath: str,
     fileType: Optional[str] = None
-):
+) -> str:
 
     path = Path(filePath).resolve()
 
@@ -423,10 +423,8 @@ def importFile(
     assert isSuccess == True, \
         f"Could not import {filePath}"
 
-    updateViewLayer()
-    currentName = bpy.data.objects[-1].name
-    updateObjectName(currentName, fileName)
-    updateObjectDataName(fileName, fileName)
+    # Assume the imported file is 1 part and it's the last added object. Lots of wrong assumptions here.
+    return bpy.data.objects[-1].name
 
 
 # MARK: Transformations
