@@ -268,7 +268,7 @@ class Entity(CodeToCADInterface.Entity):
             amount, boundingBox.x)
 
         BlenderActions.translateObject(
-            self.name, [dimension, Dimension(0), Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+            self.name, [dimension, None, None], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
@@ -283,7 +283,7 @@ class Entity(CodeToCADInterface.Entity):
             amount, boundingBox.y)
 
         BlenderActions.translateObject(
-            self.name, [Dimension(0), dimension, Dimension(0)], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+            self.name, [None, dimension, None], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
@@ -298,7 +298,7 @@ class Entity(CodeToCADInterface.Entity):
             amount, boundingBox.z)
 
         BlenderActions.translateObject(
-            self.name, [Dimension(0), Dimension(0), dimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
+            self.name, [None, None, dimension], BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE)
 
         return self
 
