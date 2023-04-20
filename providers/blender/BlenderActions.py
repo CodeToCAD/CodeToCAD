@@ -122,7 +122,8 @@ def applySolidifyModifier(
         BlenderDefinitions.BlenderModifiers.SOLIDIFY,
         dict(
             {
-                "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value
+                "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value,
+                "offset": 0
             },
             **keywordArguments
         )
