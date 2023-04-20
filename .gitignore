@@ -8,4 +8,5 @@ CodeToCADBlenderAddon/
 
 *.egg-info
 dist/
+build
 .pypirc
