@@ -72,7 +72,24 @@
             "apply": {
                 "action": "modify",
                 "information": "Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.",
-                "parameters": {}
+                "parameters": {
+                    "rotation": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "scale": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "location": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "modifiers": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    }
+                }
             },
             "getNativeInstance": {
                 "action": "get",

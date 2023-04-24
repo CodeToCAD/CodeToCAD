@@ -58,7 +58,7 @@ class Entity(CodeToCADInterface.Entity):
         return self
         
 
-    def apply(self
+    def apply(self, rotation:bool=True, scale:bool=True, location:bool=False, modifiers:bool=True
     ):
         
         return self

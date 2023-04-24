@@ -171,8 +171,8 @@ def applyBooleanModifier(
             {
                 "operation": blenderBooleanType.name,
                 "object": blenderBooleanObject,
-                # "use_self": True,
-                # "use_hole_tolerant": True,
+                "use_self": True,
+                "use_hole_tolerant": True,
                 # "solver": "EXACT",
                 # "double_threshold": 1e-6
             },
