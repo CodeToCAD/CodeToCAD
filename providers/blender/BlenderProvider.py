@@ -101,20 +101,26 @@ class Entity(CodeToCADInterface.Entity):
 
         return self
 
-    def apply(self
-              ):
+    def apply(self, rotation=True, scale=True, location=False, modifiers=True):
 
         BlenderActions.updateViewLayer()
 
-        BlenderActions.applyDependencyGraph(self.name)
+        if modifiers:
+            BlenderActions.applyDependencyGraph(self.name)
 
-        BlenderActions.removeMesh(self.name)
+            BlenderActions.removeMesh(self.name)
 
-        BlenderActions.updateObjectDataName(self.name, self.name)
+            BlenderActions.updateObjectDataName(self.name, self.name)
 
-        BlenderActions.clearModifiers(self.name)
+            BlenderActions.clearModifiers(self.name)
 
-        BlenderActions.applyObjectRotationAndScale(self.name)
+        if rotation and scale and location:
+            BlenderActions.applyObjectTransformations(self.name)
+        elif rotation and scale:
+            BlenderActions.applyObjectRotationAndScale(self.name)
+        else:
+            raise NotImplementedError(
+                "Applying rotation, scale or location separately is not yet supported.")
 
         return self
 
@@ -538,7 +544,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def createCone(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, draftRadius: DimensionOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
-        return self._createPrimitive("cone", "{},{},{}".format(radius, height, draftRadius), keywordArguments)
+        return self._createPrimitive("cone", "{},{},{}".format(radius, draftRadius, height), keywordArguments)
 
     def createCylinder(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                        ):

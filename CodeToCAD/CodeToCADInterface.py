@@ -99,7 +99,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def apply(self
+    def apply(self, rotation:bool=True, scale:bool=True, location:bool=False, modifiers:bool=True
     ):
         '''
         Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.

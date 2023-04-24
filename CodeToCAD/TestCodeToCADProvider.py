@@ -76,7 +76,7 @@ class TestEntity(TestProviderCase):
     def test_apply(self):
         instance = Part("name","description")
 
-        value = instance.apply("")
+        value = instance.apply("rotation","scale","location","modifiers")
 
         
         assert value, "Modify method failed."
