@@ -33,6 +33,7 @@ jobs:
         with:
           tag_name: v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
           release_name: Release v0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          body: [PYPI Release](https://pypi.org/project/CodeToCAD/0.2.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)
           draft: false
           prerelease: true
       - name: Upload binaries to release
