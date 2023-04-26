@@ -1727,3 +1727,14 @@ class Analytics(metaclass=ABCMeta):
         print("getDimensions is called in an abstract method. Please override this method.")
         raise NotImplementedError()
         
+
+    @abstractmethod
+    def log(self, message:str
+    ):
+        '''
+        Write a message
+        '''
+        
+        print("log is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        

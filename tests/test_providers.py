@@ -1277,3 +1277,11 @@ class TestAnalytics(TestProviderCase):
         value = instance.getDimensions("entityName")
 
         assert value, "Get method failed."
+
+    @unittest.skip
+    def test_log(self):
+        instance = Analytics("")
+
+        value = instance.log("message")
+
+        assert value, "Get method failed."

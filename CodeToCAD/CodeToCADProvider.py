@@ -1009,4 +1009,10 @@ class Analytics(CodeToCADInterface.Analytics):
         
         raise NotImplementedError()
         
+
+    def log(self, message:str
+    ):
+        
+        raise NotImplementedError()
+        
     
