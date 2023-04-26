@@ -1904,6 +1904,15 @@
                         "type": "string,Entity"
                     }
                 }
+            },
+            "log": {
+                "action": "get",
+                "information": "Write a message",
+                "parameters": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
             }
         }
     }
