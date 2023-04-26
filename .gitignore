@@ -10,3 +10,5 @@ CodeToCADBlenderAddon/
 dist/
 build
 .pypirc
+
+version.txt

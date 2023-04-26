@@ -3,8 +3,14 @@ from setuptools import setup
 from pathlib import Path
 long_description = (Path(__file__).parent / "README.md").read_text()
 
-git_commit_epoch = subprocess.check_output(
-    ['git', 'show', '-s', '--format=%ct', 'HEAD']).strip().decode()
+git_commit_epoch = 0
+
+try:
+    git_commit_epoch = subprocess.check_output(
+        ['git', 'show', '-s', '--format=%ct', 'HEAD']).strip().decode()
+    open('version.txt', "w").write(git_commit_epoch)
+except:
+    git_commit_epoch = open('version.txt').read()
 
 setup(
     name='CodeToCAD',
