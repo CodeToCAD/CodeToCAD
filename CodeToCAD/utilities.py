@@ -14,7 +14,7 @@ min = "min"
 max = "max"
 center = "center"
 
-reservedWords = ["min", "max", "center"]
+reservedWords = [min, max, center]
 
 
 def isReservedWordInString(stringToCheck: str) -> bool:
@@ -172,24 +172,29 @@ class Angle():
 
     def __lt__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value < other.value
 
     def __le__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value <= other.value
 
     def __gt__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value > other.value
 
     def __ge__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value >= other.value
 
     def __eq__(self, other):
         if other == None:
             return False
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value == other.value
 
     def __ne__(self, other):
@@ -497,27 +502,27 @@ class Dimension():
 
     def __add__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value + other.value, self.unit)
+        return Dimension(self.value + other.value, self.unit or other.unit)
 
     def __sub__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value - other.value, self.unit)
+        return Dimension(self.value - other.value, self.unit or other.unit)
 
     def __mul__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value * other.value, self.unit)
+        return Dimension(self.value * other.value, self.unit or other.unit)
 
     def __truediv__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value / other.value, self.unit)
+        return Dimension(self.value / other.value, self.unit or other.unit)
 
     def __floordiv__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value // other.value, self.unit)
+        return Dimension(self.value // other.value, self.unit or other.unit)
 
     def __mod__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(self.value % other.value, self.unit)
+        return Dimension(self.value % other.value, self.unit or other.unit)
 
     # def __divmod__(self, other):
     #     other = self.arithmeticPrecheckAndUnitConversion(other)
@@ -525,31 +530,36 @@ class Dimension():
 
     def __pow__(self, other, mod=None):
         other = self.arithmeticPrecheckAndUnitConversion(other)
-        return Dimension(pow(self.value, other.value, mod), self.unit)
+        return Dimension(pow(self.value, other.value, mod), self.unit or other.unit)
 
     def __abs__(self):
         return Dimension(abs(self.value), self.unit)
 
     def __lt__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value < other.value
 
     def __le__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value <= other.value
 
     def __gt__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value > other.value
 
     def __ge__(self, other):
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value >= other.value
 
     def __eq__(self, other):
         if other == None:
             return False
         other = self.arithmeticPrecheckAndUnitConversion(other)
+        assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value == other.value
 
     def __ne__(self, other):
