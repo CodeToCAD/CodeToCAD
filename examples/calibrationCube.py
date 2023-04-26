@@ -18,7 +18,7 @@ def createCube(name, size):
         "size", "min+1mm", "min+2mm", max)
 
     z = Sketch("Z").createText("Z^", "10mm").extrude("1.5mm").rotateXYZ(
-        90, 0, 0).apply()
+        90, 0, 0)
     z_center = z.createLandmark("center", center, center, center)
     Joint(calibrationCube_z, z_center).limitLocationXYZ(0, 0, 0)
     calibrationCube.subtract(z)
