@@ -46,6 +46,10 @@ class Mesh:
             dimensions *= scale
         return dimensions
 
+    def transform(self, matrix: Matrix):
+        self.vertices = [Mesh.MeshVertex(
+            (v.co.to_1x4() @ matrix).to_1x3()) for v in self.vertices]
+
     @property
     def dimensions(self) -> Vector:
         return self.calculateDimensions(None)
@@ -64,28 +68,56 @@ class Object:
         self.children: list['Object'] = []
         self.parent: Optional[Object] = None
         self.matrix_world = Matrix()
-        self.matrix_basis = self.matrix_world
-        self.location = Vector((0, 0, 0))
-        self.scale = Vector((1, 1, 1))
-        self.rotation_euler = Vector((0, 0, 0))
         self.users_collection = [
             default_users_collection] if default_users_collection else []
         self.modifiers = Object.Modifiers()
         self.constraints = Object.Constraints()
 
-    @ property
+    @property
+    def location(self) -> Vector:
+        return self.matrix_world.translation
+
+    @location.setter
+    def location(self, value):
+        pass
+
+    @property
+    def scale(self) -> Vector:
+        return self.matrix_world.scaleVector
+
+    @scale.setter
+    def scale(self, value):
+        pass
+
+    @property
+    def rotation_euler(self) -> Vector:
+        return Vector(self.matrix_world.rotation.to_euler())
+
+    @rotation_euler.setter
+    def rotation_euler(self, value):
+        pass
+
+    @property
+    def matrix_basis(self) -> Matrix:
+        return self.matrix_world
+
+    @matrix_basis.setter
+    def matrix_basis(self, value):
+        pass
+
+    @property
     def matrix_local(self) -> Matrix:
         if self.parent is None:
             return self.matrix_world
         return self.parent.matrix_world @ (1 if self.parent is None else self.parent.location - self.location)
 
-    @ property
+    @property
     def bound_box(self):
         if isinstance(self.data, Mesh):
             return self.data.bound_box
         raise TypeError()
 
-    @ property
+    @property
     def dimensions(self):
 
         if isinstance(self.data, Mesh):
@@ -117,6 +149,13 @@ class Object:
             self.matrix_world.rotateByEulerAngle(
                 __value[0], __value[1], __value[2])
 
+        if __name == "matrix_basis":
+            # [translation, rotation, scale] = __value.to_4x4().decompose()
+            # self.location = translation
+            # self.rotation_euler = rotation.to_euler()
+            # self.scale = scale
+            self.matrix_world = __value
+
         super().__setattr__(__name, __value)
 
     def visible_get(self):
@@ -128,6 +167,9 @@ class Object:
     def select_set(self, isSelected):
         global mockBpy
         mockBpy.data.selectedObject = self if isSelected else None
+
+    def evaluated_get(self, dg):
+        return self
 
     def copy(self) -> 'Object':
         global mockBpy
@@ -156,6 +198,9 @@ class Object:
             for modifier in self.modifiers:
                 if modifier.name == name:
                     return modifier
+
+        def clear(self):
+            self.modifiers = []
 
         class Modifier:
             def __init__(self, name, type) -> None:

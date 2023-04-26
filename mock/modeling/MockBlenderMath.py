@@ -15,7 +15,7 @@ def getNumpyArrayFromVectorOrMatrix(vectorOrMatrix):
 class Vector:
 
     def __init__(self, vector: tuple[float, float, float]) -> None:
-        self.vector = np.array(vector)
+        self.vector = np.array(vector, dtype=float)
 
         self.iteratorIndex = 0
 
@@ -30,6 +30,15 @@ class Vector:
     @property
     def z(self):
         return self.vector[2]
+
+    def to_1x4(self):
+        vector = np.ones((1, 4))
+        vector[0, :self.vector.shape[0]] = self.vector
+        return Vector(vector.tolist())
+
+    def to_1x3(self):
+        self.vector = self.vector[0, :3]
+        return self
 
     def __iter__(self):
         return self
@@ -122,6 +131,64 @@ def createTransformationMatrixFromEulerAngles(xInRadians, yInRadians, zInRadians
     return np.dot(rot_x, np.dot(rot_y, zRotation))
 
 
+class Quaternion:
+    def __init__(self, quat: tuple[float, float, float, float]) -> None:
+        self.q0 = quat[0]
+        self.q1 = quat[1]
+        self.q2 = quat[2]
+        self.q3 = quat[3]
+
+    def to_euler(self):
+        # references https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/
+        q0 = self.q0
+        q1 = self.q1
+        q2 = self.q2
+        q3 = self.q3
+        t0 = +2.0 * (q0 * q1 + q2 * q3)
+        t1 = +1.0 - 2.0 * (q1 * q1 + q2 * q2)
+        x = math.atan2(t0, t1)
+
+        t2 = +2.0 * (q0 * q2 - q3 * q1)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        y = math.asin(t2)
+
+        t3 = +2.0 * (q0 * q3 + q1 * q2)
+        t4 = +1.0 - 2.0 * (q2 * q2 + q3 * q3)
+        z = math.atan2(t3, t4)
+
+        return x, y, z  # in radians
+
+    def to_matrix(self):
+        # references https://automaticaddison.com/how-to-convert-a-quaternion-to-a-rotation-matrix/
+        q0 = self.q0
+        q1 = self.q1
+        q2 = self.q2
+        q3 = self.q3
+
+        # First row of the rotation matrix
+        r00 = 2 * (q0 * q0 + q1 * q1) - 1
+        r01 = 2 * (q1 * q2 - q0 * q3)
+        r02 = 2 * (q1 * q3 + q0 * q2)
+
+        # Second row of the rotation matrix
+        r10 = 2 * (q1 * q2 + q0 * q3)
+        r11 = 2 * (q0 * q0 + q2 * q2) - 1
+        r12 = 2 * (q2 * q3 - q0 * q1)
+
+        # Third row of the rotation matrix
+        r20 = 2 * (q1 * q3 - q0 * q2)
+        r21 = 2 * (q2 * q3 + q0 * q1)
+        r22 = 2 * (q0 * q0 + q3 * q3) - 1
+
+        # 3x3 rotation matrix
+        rot_matrix = np.array([[r00, r01, r02],
+                               [r10, r11, r12],
+                               [r20, r21, r22]])
+
+        return Matrix(rot_matrix)
+
+
 class Matrix:
     def __init__(self, mat: Optional[np.ndarray] = None) -> None:
         self.matrix = np.identity(4) if mat is None else mat
@@ -130,28 +197,97 @@ class Matrix:
     def translation(self):
         return Vector(self.matrix[:3, 3].tolist())
 
+    @property
+    def rotation(self, ):
+        return self.getRotation()
+
+    def getRotation(self):
+        # references https://answers.ros.org/question/388140/converting-a-rotation-matrix-to-quaternions-in-python/?answer=388168#post-id-388168
+        m = self.to_3x3().matrix / self.scaleVector.vector
+        t = m.trace()
+        q = np.asarray([0.0, 0.0, 0.0, 0.0], dtype=np.float64)
+
+        if (t > 0):
+            t = np.sqrt(t + 1)
+            q[3] = 0.5 * t
+            t = 0.5/t
+            q[0] = (m[2, 1] - m[1, 2]) * t
+            q[1] = (m[0, 2] - m[2, 0]) * t
+            q[2] = (m[1, 0] - m[0, 1]) * t
+
+        else:
+            i = 0
+            if (m[1, 1] > m[0, 0]):
+                i = 1
+            if (m[2, 2] > m[i, i]):
+                i = 2
+            j = (i+1) % 3
+            k = (j+1) % 3
+
+            t = np.sqrt(m[i, i] - m[j, j] - m[k, k] + 1)
+            q[i] = 0.5 * t
+            t = 0.5 / t
+            q[3] = (m[k, j] - m[j, k]) * t
+            q[j] = (m[j, i] + m[i, j]) * t
+            q[k] = (m[k, i] + m[i, k]) * t
+
+        return Quaternion(q.tolist())
+
+    @property
+    def scaleVector(self):
+        x: float = np.linalg.norm(self.matrix[:3, 0], ord=1)  # type: ignore
+        y: float = np.linalg.norm(self.matrix[:3, 1], ord=1)  # type: ignore
+        z: float = np.linalg.norm(self.matrix[:3, 2], ord=1)  # type: ignore
+        return Vector((x, y, z))
+
     def to_tuple(self):
         return self.matrix.tolist()
 
-    def translate(self, x, y, z):
+    def decompose(self):
+        return [self.translation, self.getRotation(), self.scaleVector]
+
+    def to_4x4(self):
+        fourByFour = np.identity(4)
+        [rows, cols] = self.matrix.shape
+        maxRow = 4 if rows > 4 else rows
+        maxCol = 4 if cols > 4 else cols
+        fourByFour[:maxRow, :maxCol] = self.matrix
+        return Matrix(fourByFour)
+
+    def to_3x3(self):
+        return Matrix(self.matrix[:3, :3])
+
+    def to_3x1Vector(self):
+        return Vector(self.matrix[:3].tolist())
+
+    @staticmethod
+    def Translation(translation: Vector):
         transformMatrix = np.identity(4)
-        transformMatrix[0, 3] = x
-        transformMatrix[1, 3] = y
-        transformMatrix[2, 3] = z
+
+        transformMatrix[0, 3] = translation.x
+        transformMatrix[1, 3] = translation.y
+        transformMatrix[2, 3] = translation.z
+        return Matrix(transformMatrix)
+
+    def translate(self, x, y, z):
 
         self.matrix = np.matmul(
-            self.matrix, transformMatrix)
+            self.matrix, Matrix.Translation(Vector((x, y, z))).matrix)
 
         return self
 
-    def scale(self, x, y, z):
+    @staticmethod
+    def Diagonal(diagonal: Vector):
         transformMatrix = np.identity(4)
-        transformMatrix[0, 0] = x
-        transformMatrix[1, 1] = y
-        transformMatrix[2, 2] = z
 
+        transformMatrix[0, 0] = diagonal.x
+        transformMatrix[1, 1] = diagonal.y
+        transformMatrix[2, 2] = diagonal.z
+        return Matrix(transformMatrix)
+
+    def scale(self, x, y, z):
         self.matrix = np.matmul(
-            self.matrix, transformMatrix)
+            self.matrix, Matrix.Diagonal(Vector((x, y, z))).matrix)
 
         return self
 

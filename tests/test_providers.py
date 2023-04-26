@@ -106,7 +106,7 @@ class TestEntity(TestProviderCase):
 
         value = instance.getLocationWorld()
 
-        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method failed."
+        assert value.x == "0m" and value.y == "0m" and value.z == "0m", "Get method failed."
 
         # TODO: get location world after translating
 
@@ -115,7 +115,7 @@ class TestEntity(TestProviderCase):
 
         value = instance.getLocationWorld()
 
-        assert value.x == 0 and value.y == 0 and value.z == 0, "Get method failed."
+        assert value.x == "0m" and value.y == "0m" and value.z == "0m", "Get method failed."
 
         # TODO: get location world after translating
 
@@ -201,7 +201,7 @@ class TestEntity(TestProviderCase):
         assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
-            Dimension(5), Dimension(7), Dimension(9)), "Translation is not correct"
+            Dimension(5, "m"), Dimension(7, "m"), Dimension(9, "m")), "Translation is not correct"
 
     def test_translateX(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -211,7 +211,7 @@ class TestEntity(TestProviderCase):
         assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
-            Dimension(5), Dimension(0), Dimension(0)), "Translation is not correct"
+            Dimension(5, "m"), Dimension(0, "m"), Dimension(0, "m")), "Translation is not correct"
 
     def test_translateY(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -221,7 +221,7 @@ class TestEntity(TestProviderCase):
         assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
-            Dimension(0), Dimension(5), Dimension(0)), "Translation is not correct"
+            Dimension(0, "m"), Dimension(5, "m"), Dimension(0, "m")), "Translation is not correct"
 
     def test_translateZ(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -231,7 +231,7 @@ class TestEntity(TestProviderCase):
         assert value, "Modify method failed."
 
         assert instance.getLocationWorld() == Point(
-            Dimension(0), Dimension(0), Dimension(5)), "Translation is not correct"
+            Dimension(0, "m"), Dimension(0, "m"), Dimension(5, "m")), "Translation is not correct"
 
     def test_scaleXYZ(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -383,9 +383,9 @@ class TestEntity(TestProviderCase):
         value = instance.getDimensions()
 
         assert value, "Get method failed."
-        assert value.height == 1
-        assert value.width == 1
-        assert value.length == 1
+        assert value.height == "1m"
+        assert value.width == "1m"
+        assert value.length == "1m"
 
     def test_getLandmark(self):
         instance = Part("name", "description").createCube(1, 1, 1)
@@ -396,9 +396,9 @@ class TestEntity(TestProviderCase):
         valueLocation = value.getLocationWorld()
 
         assert value, "Get method failed."
-        assert valueLocation.x == 0.5
-        assert valueLocation.y == 0.5
-        assert valueLocation.z == 0.5
+        assert valueLocation.x == "0.5m"
+        assert valueLocation.y == "0.5m"
+        assert valueLocation.z == "0.5m"
 
 
 class TestPart(TestProviderCase):

@@ -115,9 +115,9 @@ def reloadCodeToCADModules():
     import BlenderDefinitions
     import BlenderProvider
     import CodeToCADInterface
-    import utilities
+    import CodeToCAD.utilities
 
-    reload(utilities)
+    reload(CodeToCAD.utilities)
     reload(CodeToCADInterface)
     reload(BlenderProvider)
     reload(BlenderDefinitions)
@@ -126,6 +126,8 @@ def reloadCodeToCADModules():
 
     from BlenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
+
+    addCodeToCADToBlenderConsole()
 
 
 class ImportedFileWatcher():
@@ -480,6 +482,10 @@ class CodeToCADPanel(bpy.types.Panel):
                              icon='PREFERENCES', text="Open Preferences")
 
 
+def addCodeToCADToBlenderConsole():
+    console_python.replace_help = addCodeToCADConvenienceWordsToConsole
+
+
 def register():
     print("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
@@ -496,7 +502,7 @@ def register():
 
     bpy.app.timers.register(addCodeToCADToPath)
 
-    console_python.replace_help = addCodeToCADConvenienceWordsToConsole
+    addCodeToCADToBlenderConsole()
 
 
 def unregister():

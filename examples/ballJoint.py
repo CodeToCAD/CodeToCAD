@@ -18,7 +18,7 @@ socket_center = socket.createLandmark("center", center, center, center)
 Joint(ball_bottom, socket_cutoff).translateLandmarkOntoAnother()
 
 socket.subtract(ball, deleteAfterSubtract=False,
-                isTransferLandmarks=False).apply()
+                isTransferLandmarks=False)
 
 Joint(socket_center, ball) \
     .limitRotationX(-30, 30) \

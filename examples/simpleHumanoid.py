@@ -12,7 +12,7 @@ head_bottom = head.createLandmark("bottom", center, center, min)
 eye = Part("eye").createCylinder(0.1, 0.1)
 eye_bottom = eye.createLandmark("bottom", center, center, min)
 
-eye.rotateXYZ(0, 90, 0).apply()
+eye.rotateXYZ(0, 90, 0)
 
 # Mark: Attach head to Body
 Joint(body_top, head_bottom).limitLocationXYZ(

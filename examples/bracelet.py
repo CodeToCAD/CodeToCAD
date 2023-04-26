@@ -36,23 +36,23 @@ buttonInnerYTranslation = (
 
 Part("bracelet") \
     .createTorus(f"{bracelet['innerDiameter']/2}cm", f"{bracelet['outerDiameter']/2}cm") \
-    .scaleZ(f"{bracelet['thickness']}cm").apply()  # Scale x,y by a scale factor of 1, so the number is unitless
+    .scaleZ(f"{bracelet['thickness']}cm")  # Scale x,y by a scale factor of 1, so the number is unitless
 
 Part("button") \
     .createCylinder(f"{button['diameter']/2}cm", f"{button['depth']}cm") \
     .rotateXYZ(90, 0, 0) \
-    .translateXYZ(0, f"{buttonTranslation}cm", 0).apply()
+    .translateXYZ(0, f"{buttonTranslation}cm", 0)
 
 Part("buttonInner") \
     .createCylinder(f"{buttonInner['diameter']/2}cm", f"{buttonInner['depth']}cm") \
     .rotateXYZ(90, 0, 0) \
-    .translateXYZ(0, f"{buttonInnerYTranslation}cm", 0).apply()
+    .translateXYZ(0, f"{buttonInnerYTranslation}cm", 0)
 
 Part("belt") \
-    .createCylinder(f"{belt['outerDiameter']/2}cm", f"{belt['thickness']}cm").apply()
+    .createCylinder(f"{belt['outerDiameter']/2}cm", f"{belt['thickness']}cm")
 
 Part("beltInner") \
-    .createCylinder(f"{belt['innerDiameter']/2}cm", f"{belt['thickness']}cm").apply()
+    .createCylinder(f"{belt['innerDiameter']/2}cm", f"{belt['thickness']}cm")
 
 
 Part("button")\
