@@ -1,14 +1,24 @@
 from typing import Optional, Type
 from . import CodeToCADInterface as CodeToCADInterface
 from . import utilities as Utilities
+from . import extensionsForBuiltinString
 
 # This is the CodeToCAD provider.
 # Use the following import line in your CodeToCAD file:
 # from CodeToCAD import Part, Shape, Sketch, Curve, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, Angle
 
-min: str = Utilities.min
-max: str = Utilities.max
-center: str = Utilities.center
+# MARK: String extensions:
+# extensions are applied by default
+# extensionsForBuiltinString.applyStringExtensions()
+
+# applyStringExtensions = extensionsForBuiltinString.applyStringExtensions
+# removeStringExtensions = extensionsForBuiltinString.removeStringExtensions
+
+# MARK: importable CodeToCAD symbols:
+
+min: str = str(Utilities.min)
+max: str = str(Utilities.max)
+center: str = str(Utilities.center)
 Dimension: Type[Utilities.Dimension] = Utilities.Dimension
 Dimensions: Type[Utilities.Dimensions] = Utilities.Dimensions
 Angle: Type[Utilities.Angle] = Utilities.Angle
@@ -25,6 +35,8 @@ Material: Type[CodeToCADInterface.Material] = CodeToCADInterface.Material
 Animation: Type[CodeToCADInterface.Animation] = CodeToCADInterface.Animation
 Camera: Type[CodeToCADInterface.Camera] = CodeToCADInterface.Camera
 Light: Type[CodeToCADInterface.Light] = CodeToCADInterface.Light
+
+# MARK: injecting providers:
 
 
 def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
