@@ -240,7 +240,11 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyCircularPattern(
             self.name, instanceCount, pivotLandmarkEntityName)
 
-        return self.applyModifiersOnly()
+        self.applyModifiersOnly()
+
+        self.getLandmark(pivotLandmarkName).delete()
+
+        return self
 
     @staticmethod
     def _translationDimensionFromDimensionOrItsFloatOrStringValue(dimensionOrItsFloatOrStringValue: DimensionOrItsFloatOrStringValue, boundaryAxis: BoundaryAxis):
@@ -1267,8 +1271,7 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName = objectToLimitName.name
         elif isinstance(objectToLimitName, Landmark):
             # if a landmark, offset the dimensions relative to the parent object
-            offset = objectToLimitName.getParentEntity().getLocationWorld() - \
-                objectToLimitName.getLocationWorld()
+            offset = objectToLimitName.getLocationLocal() * -1
             if x and x[0]:
                 x[0] += offset.x
             if x and x[1]:
