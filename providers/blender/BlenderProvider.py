@@ -138,18 +138,12 @@ class Entity(CodeToCADInterface.Entity):
     def getLocationWorld(self
                          ) -> 'Point':
         BlenderActions.updateViewLayer()
-        return Utilities.Point.fromList(
-            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
-             for value in BlenderActions.getObjectWorldLocation(self.name)]
-        )
+        return BlenderActions.getObjectWorldLocation(self.name)
 
     def getLocationLocal(self
                          ) -> 'Point':
         BlenderActions.updateViewLayer()
-        return Utilities.Point.fromList(
-            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
-             for value in BlenderActions.getObjectLocalLocation(self.name)]
-        )
+        return BlenderActions.getObjectLocalLocation(self.name)
 
     def select(self):
         BlenderActions.selectObject(self.name)
@@ -1170,19 +1164,13 @@ class Landmark(CodeToCADInterface.Landmark):
                          ) -> 'Point':
 
         BlenderActions.updateViewLayer()
-        return Utilities.Point.fromList(
-            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
-             for value in BlenderActions.getObjectWorldLocation(self.getLandmarkEntityName())]
-        )
+        return BlenderActions.getObjectWorldLocation(self.getLandmarkEntityName())
 
     def getLocationLocal(self
                          ) -> 'Point':
 
         BlenderActions.updateViewLayer()
-        return Utilities.Point.fromList(
-            [Dimension(value, BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)  # type: ignore
-             for value in BlenderActions.getObjectLocalLocation(self.getLandmarkEntityName())]
-        )
+        return BlenderActions.getObjectLocalLocation(self.getLandmarkEntityName())
 
     def select(self
                ):
@@ -1265,13 +1253,26 @@ class Joint(CodeToCADInterface.Joint):
 
     def _limitLocationXYZ(self, x: Optional[list[Optional[Dimension]]], y: Optional[list[Optional[Dimension]]], z: Optional[list[Optional[Dimension]]]):
 
-        objectToLimitName = self.entity2
+        objectToLimitOrItsName = self.entity2
+        objectToLimitName = objectToLimitOrItsName
 
-        if isinstance(objectToLimitName, Entity):
-            objectToLimitName = objectToLimitName.name
-        elif isinstance(objectToLimitName, Landmark):
+        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        if isinstance(objectToLimitOrItsName, Entity):
+            objectToLimitName = objectToLimitOrItsName.name
+        elif isinstance(objectToLimitOrItsName, Landmark):
+
+            landmarkEntityName = objectToLimitOrItsName.getLandmarkEntityName()
+
+            objectToLimitName = objectToLimitOrItsName.getParentEntity().name
+
             # if a landmark, offset the dimensions relative to the parent object
-            offset = objectToLimitName.getLocationLocal() * -1
+            offset = objectToLimitOrItsName.getLocationLocal() * -1
+            # offset = BlenderActions.translationProjectionFromBtoA(
+            #     relativeToObjectName, landmarkEntityName, objectToLimitName)
+            # offset = BlenderActions.getObjectWorldLocation(
+            #     landmarkEntityName) * -1
+            print("offset2", offset)
             if x and x[0]:
                 x[0] += offset.x
             if x and x[1]:
@@ -1284,10 +1285,6 @@ class Joint(CodeToCADInterface.Joint):
                 z[0] += offset.z
             if z and z[1]:
                 z[1] += offset.z
-
-            objectToLimitName = objectToLimitName.getParentEntity().name
-
-        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
         BlenderActions.applyLimitLocationConstraint(
             objectToLimitName, x, y, z, relativeToObjectName)

@@ -430,12 +430,26 @@ def importFile(
 
 # MARK: Transformations
 
-# Apply the object's transformations (under Object Properties tab)
-# This is different from applyDependencyGraph()
-# references https://blender.stackexchange.com/a/159540/138679
+def translationProjectionFromBtoA(objectAName, objectBName, objectToProjectName) -> Utilities.Point:
+
+    updateViewLayer()
+
+    objectA = getObject(objectAName)
+    objectB = getObject(objectBName)
+    objectToProject = getObject(objectToProjectName)
+
+    translation = (objectToProject.matrix_world +
+                   (objectB.matrix_world - objectA.matrix_world)).translation
+
+    translation = ((objectB.matrix_world - objectA.matrix_world)).translation
+
+    return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in translation])
 
 
 def applyObjectTransformations(objectName):
+    # Apply the object's transformations (under Object Properties tab)
+    # This is different from applyDependencyGraph()
+    # references https://blender.stackexchange.com/a/159540/138679
 
     blenderObject = getObject(objectName)
 
@@ -455,6 +469,7 @@ def applyObjectTransformations(objectName):
 
 
 def applyObjectRotationAndScale(objectName):
+    # references https://blender.stackexchange.com/a/159540/138679
     blenderObject = getObject(objectName)
 
     assert blenderObject.data is not None, \
@@ -720,6 +735,8 @@ def applyLimitLocationConstraint(
 
     keywordArguments["space_object"] = relativeToObject
 
+    keywordArguments["use_transform_limit"] = True
+
     if minX:
         keywordArguments["use_min_x"] = True
         keywordArguments["min_x"] = minX.value
@@ -769,6 +786,8 @@ def applyLimitRotationConstraint(
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
     keywordArguments["space_object"] = relativeToObject
+
+    keywordArguments["use_transform_limit"] = True
 
     if minX:
         keywordArguments["use_limit_x"] = True
@@ -1238,14 +1257,14 @@ def getObjectLocalLocation(objectName):
 
     blenderObject = getObject(objectName)
 
-    return blenderObject.location
+    return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
 
 
 def getObjectWorldLocation(objectName):
 
     blenderObject = getObject(objectName)
 
-    return blenderObject.matrix_world.translation
+    return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.matrix_world.translation])
 
 
 def getObjectWorldPose(objectName):
