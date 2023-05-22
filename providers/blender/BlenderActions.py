@@ -462,7 +462,6 @@ def applyObjectTransformations(objectName):
 
     for child in blenderObject.children:
         child.matrix_local = finalPose @ child.matrix_local
-        child.matrix_basis.identity()
 
     # Reset the object's transformations (resets everything in side menu to 0's)
     blenderObject.matrix_basis.identity()
