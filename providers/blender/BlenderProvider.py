@@ -451,7 +451,13 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
                                      "name": "Subdivision", "levels": amount})
-        return self.applyModifiersOnly()
+
+        self.applyModifiersOnly()
+
+        if strategy == "crease":
+            BlenderActions.setEdgesMeanCrease(self.name, 0)
+
+        return self
 
     def createLandmark(self, landmarkName: str, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue
                        ):
@@ -694,9 +700,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         self.applyRotationAndScaleOnly()
 
-        Joint(startAxisLandmark, insidePart_start).limitLocationX(0, 0)
-        Joint(startAxisLandmark, insidePart_start).limitLocationY(0, 0)
-        Joint(startAxisLandmark, insidePart_start).limitLocationZ(0, 0)
+        Joint(startAxisLandmark, insidePart_start).translateLandmarkOntoAnother()
 
         self.subtract(insidePart, isTransferLandmarks=False)
 
@@ -1266,8 +1270,19 @@ class Joint(CodeToCADInterface.Joint):
 
             objectToLimitName = objectToLimitOrItsName.getParentEntity().name
 
+            O = BlenderActions.getObjectWorldLocation(relativeToObjectName)
+
+            B = BlenderActions.getObjectWorldLocation(objectToLimitName)
+            L = BlenderActions.getObjectWorldLocation(landmarkEntityName)
+
+            OB = O - B
+            OL = O - L
+
+            BL = OB - OL
+
             # if a landmark, offset the dimensions relative to the parent object
             offset = objectToLimitOrItsName.getLocationLocal() * -1
+            # offset = BL
             # offset = BlenderActions.translationProjectionFromBtoA(
             #     relativeToObjectName, landmarkEntityName, objectToLimitName)
             # offset = BlenderActions.getObjectWorldLocation(
