@@ -167,13 +167,13 @@ class Quaternion:
         q3 = self.q3
 
         # First row of the rotation matrix
-        r00 = 2 * (q0 * q0 + q1 * q1) - 1
+        r00 = 2 * (q0 * q0 + q1 * q1) + 1
         r01 = 2 * (q1 * q2 - q0 * q3)
         r02 = 2 * (q1 * q3 + q0 * q2)
 
         # Second row of the rotation matrix
         r10 = 2 * (q1 * q2 + q0 * q3)
-        r11 = 2 * (q0 * q0 + q2 * q2) - 1
+        r11 = 2 * (q0 * q0 + q2 * q2) + 1
         r12 = 2 * (q2 * q3 - q0 * q1)
 
         # Third row of the rotation matrix
@@ -271,7 +271,7 @@ class Matrix:
 
     def translate(self, x, y, z):
 
-        self.matrix = np.matmul(
+        self.matrix = np.add(
             self.matrix, Matrix.Translation(Vector((x, y, z))).matrix)
 
         return self
@@ -292,8 +292,13 @@ class Matrix:
         return self
 
     def rotateByEulerAngle(self, xInRadians, yInRadians, zInRadians):
+        currentTranslation = self.translation
+        self.matrix = np.subtract(
+            self.matrix, Matrix.Translation(currentTranslation).matrix)
         self.matrix = np.matmul(
             self.matrix, createTransformationMatrixFromEulerAngles(xInRadians, yInRadians, zInRadians))
+        self.matrix = np.add(
+            self.matrix, Matrix.Translation(currentTranslation).matrix)
         return self
 
     def __add__(self, other):
