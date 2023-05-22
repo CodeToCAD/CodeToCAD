@@ -8,22 +8,14 @@ from providers.blender.BlenderActions import *
 
 class TestBlenderActions(unittest.TestCase):
 
-    def test_translationProjectionFromBtoA(self):
+    def setUp(self) -> None:
         # NOTE: if you're running this test locally, you might need `pip install fake-bpy-module-latest` or Blender API added to python path
         resetMockModelingProvider()
         injectMockModelingProvider(globals())
+        super().setUp()
 
-        a = Part("A").createCube(1, 1, 1)
-        b = Part("B").createCube(1, 1, 1).translateX(10)
-        b_landmark = b.createLandmark("right", max, center, center)
-
-        print(translationProjectionFromBtoA(
-            a.name, b_landmark.getLandmarkEntityName(), b.name))
-
-        b.rotateX(90)
-
-        print("2", translationProjectionFromBtoA(
-            a.name, b_landmark.getLandmarkEntityName(), b.name))
+    def test_todo(self):
+        pass
 
 
 if __name__ == "__main__":

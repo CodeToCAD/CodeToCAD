@@ -662,7 +662,6 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def hollow(self, thicknessX: DimensionOrItsFloatOrStringValue, thicknessY: DimensionOrItsFloatOrStringValue, thicknessZ: DimensionOrItsFloatOrStringValue, startAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False
                ):
-        blenderObject = self.getNativeInstance()
 
         axis = Utilities.Axis.fromString(startAxis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
@@ -683,17 +682,20 @@ class Part(Entity, CodeToCADInterface.Part):
             Utilities.Dimension.fromString(thicknessZ),
         ])]
 
-        dimensions: list[float] = blenderObject.dimensions
+        dimensions = self.getDimensions()
+        currentDimensionX: Dimension = dimensions[0]  # type:ignore
+        currentDimensionY: Dimension = dimensions[1]  # type:ignore
+        currentDimensionZ: Dimension = dimensions[2]  # type:ignore
 
         def scaleValue(mainDimension: float, thickness: float, subtractBothSides: bool) -> float:
             return (mainDimension-thickness * (2 if subtractBothSides else 1)) / mainDimension
 
         scaleX: float = scaleValue(
-            dimensions[0], thicknessXYZ[0].value, axis.value == 0)
+            currentDimensionX.value, thicknessXYZ[0].value, axis.value == 0)
         scaleY = scaleValue(
-            dimensions[1], thicknessXYZ[1].value, axis.value == 1)
+            currentDimensionY.value, thicknessXYZ[1].value, axis.value == 1)
         scaleZ = scaleValue(
-            dimensions[2], thicknessXYZ[2].value, axis.value == 2)
+            currentDimensionZ.value, thicknessXYZ[2].value, axis.value == 2)
 
         BlenderActions.scaleObject(
             insidePart.name, scaleX, scaleY, scaleZ)
@@ -849,8 +851,10 @@ class Part(Entity, CodeToCADInterface.Part):
             blenderPolygon = BlenderActions.getClosestFaceToVertex(
                 self.name, [dimension.value for dimension in landmark.getLocationWorld().toList()])
 
+            faceIndecies: list[int] = blenderPolygon.vertices  # type: ignore
+
             BlenderActions.addVerticiesToVertexGroup(
-                vertexGroupObject, blenderPolygon.vertices)
+                vertexGroupObject, faceIndecies)
 
     def bevel(self,
               radius: DimensionOrItsFloatOrStringValue,
@@ -1027,7 +1031,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
                 curve = Sketch(
                     blenderCurvePrimitiveType.name).rename(self.name)
 
-                curve.getNativeInstance().data.use_path = False
+                BlenderActions.setCurveUsePath(self.name, False)
 
                 return primitiveFunction(*args, **kwargs)
             return wrapper
@@ -1270,24 +1274,18 @@ class Joint(CodeToCADInterface.Joint):
 
             objectToLimitName = objectToLimitOrItsName.getParentEntity().name
 
+            BlenderActions.updateViewLayer()
+
             O = BlenderActions.getObjectWorldLocation(relativeToObjectName)
 
             B = BlenderActions.getObjectWorldLocation(objectToLimitName)
             L = BlenderActions.getObjectWorldLocation(landmarkEntityName)
 
-            OB = O - B
-            OL = O - L
+            OB = B - O
+            OL = L - O
 
-            BL = OB - OL
+            offset = OB - OL
 
-            # if a landmark, offset the dimensions relative to the parent object
-            offset = objectToLimitOrItsName.getLocationLocal() * -1
-            # offset = BL
-            # offset = BlenderActions.translationProjectionFromBtoA(
-            #     relativeToObjectName, landmarkEntityName, objectToLimitName)
-            # offset = BlenderActions.getObjectWorldLocation(
-            #     landmarkEntityName) * -1
-            print("offset2", offset)
             if x and x[0]:
                 x[0] += offset.x
             if x and x[1]:

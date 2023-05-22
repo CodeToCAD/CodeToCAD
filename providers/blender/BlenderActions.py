@@ -2,7 +2,7 @@
 # An implementation of an action should avoid performing any logic
 # An implementation of an action is allowed to perform unit conversions or perform read operations for pre-checks.
 
-from typing import Optional
+from typing import Any, Optional
 from uuid import uuid4
 import bpy
 from CodeToCAD.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
@@ -25,14 +25,14 @@ def applyModifier(
     blenderObject = getObject(entityName)
 
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
-    modifier = blenderObject.modifiers.new(
+    blenderModifier = blenderObject.modifiers.new(
         type=modifier.name,
         name=modifier.name
     )
 
     # Apply every parameter passed in for modifier:
     for key, value in keywordArguments.items():
-        setattr(modifier, key, value)
+        setattr(blenderModifier, key, value)
 
 
 def applyBevelModifier(
@@ -430,22 +430,6 @@ def importFile(
 
 # MARK: Transformations
 
-def translationProjectionFromBtoA(objectAName, objectBName, objectToProjectName) -> Utilities.Point:
-
-    updateViewLayer()
-
-    objectA = getObject(objectAName)
-    objectB = getObject(objectBName)
-    objectToProject = getObject(objectToProjectName)
-
-    translation = (objectToProject.matrix_world +
-                   (objectB.matrix_world - objectA.matrix_world)).translation
-
-    translation = ((objectB.matrix_world - objectA.matrix_world)).translation
-
-    return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in translation])
-
-
 def applyObjectTransformations(objectName):
     # Apply the object's transformations (under Object Properties tab)
     # This is different from applyDependencyGraph()
@@ -458,13 +442,17 @@ def applyObjectTransformations(objectName):
 
     finalPose = blenderObject.matrix_basis
 
-    blenderObject.data.transform(finalPose)
+    mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
+    mesh.transform(finalPose)
 
-    for child in blenderObject.children:
-        child.matrix_local = finalPose @ child.matrix_local
+    blenderObjectChildren: list[bpy.types.Object] = \
+        blenderObject.children  # type: ignore
+
+    for child in blenderObjectChildren:
+        child.matrix_local = finalPose @ child.matrix_local  # type: ignore
 
     # Reset the object's transformations (resets everything in side menu to 0's)
-    blenderObject.matrix_basis.identity()
+    blenderObject.matrix_basis.identity()  # type: ignore
 
 
 def applyObjectRotationAndScale(objectName):
@@ -474,20 +462,26 @@ def applyObjectRotationAndScale(objectName):
     assert blenderObject.data is not None, \
         f"Object {objectName} does not have data to transform."
 
-    translation, rotation, scale = blenderObject.matrix_basis.decompose()
+    decomposedMatrix: list[Any] = \
+        blenderObject.matrix_basis.decompose()  # type: ignore
+    translationVector: mathutils.Vector = decomposedMatrix[0]
+    rotationQuat: mathutils.Quaternion = decomposedMatrix[1]
+    scaleVector: mathutils.Vector = decomposedMatrix[2]
 
-    translation = mathutils.Matrix.Translation(translation)
-    rotation = rotation.to_matrix().to_4x4()
-    scale = mathutils.Matrix.Diagonal(scale).to_4x4()
+    translation: mathutils.Matrix = mathutils.Matrix.Translation(
+        translationVector)
+    rotation: mathutils.Matrix = rotationQuat.to_matrix().to_4x4()
+    scale: mathutils.Matrix = mathutils.Matrix.Diagonal(scaleVector).to_4x4()
 
-    transformation = rotation @ scale
+    transformation: mathutils.Matrix = rotation @ scale  # type: ignore
 
-    blenderObject.data.transform(transformation)
+    mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
+    mesh.transform(transformation)
 
     # Set the object to its world translation
     blenderObject.matrix_basis = translation
 
-    for child in blenderObject.children:
+    for child in blenderObject.children:  # type: ignore
         child.matrix_basis = transformation @ child.matrix_basis
         child.matrix_basis = mathutils.Matrix.Translation(
             child.matrix_basis.translation)
@@ -575,7 +569,7 @@ def scaleObject(
 
     blenderObject = getObject(objectName)
 
-    currentScale = blenderObject.scale
+    currentScale: mathutils.Vector = blenderObject.scale  # type: ignore
 
     blenderObject.scale = (xScaleFactor or currentScale.x,
                            yScaleFactor or currentScale.y, zScaleFactor or currentScale.z)
@@ -649,12 +643,6 @@ def assignObjectToCollection(
 
     blenderObject = getObject(existingObjectName)
 
-    currentCollections = blenderObject.users_collection
-
-    assert \
-        collectionName not in currentCollections, \
-        f"Object {existingObjectName} is already in collection {collectionName}."
-
     collection = bpy.data.collections.get(collectionName)
 
     if collection == None and collectionName == "Scene Collection":
@@ -671,13 +659,15 @@ def assignObjectToCollection(
         f"Collection {collectionName} does not exist"
 
     if removeFromOtherGroups:
+        currentCollections: list[bpy.types.Collection] = \
+            blenderObject.users_collection  # type: ignore
         for currentCollection in currentCollections:
             currentCollection.objects.unlink(blenderObject)
 
     collection.objects.link(blenderObject)
 
     if moveChildren:
-        for child in blenderObject.children:
+        for child in blenderObject.children:  # type: ignore
             assignObjectToCollection(
                 child.name, collectionName, sceneName, True, True)
 
@@ -1015,10 +1005,10 @@ def translateLandmarkOntoAnother(
     translateObject(
         objectToTranslateName,
         [
-            Utilities.Dimension(translation.x, blenderDefaultUnit),
-            Utilities.Dimension(translation.y, blenderDefaultUnit),
-            Utilities.Dimension(translation.z, blenderDefaultUnit)
-        ],
+            Utilities.Dimension(translation.x.value, blenderDefaultUnit),
+            Utilities.Dimension(translation.y.value, blenderDefaultUnit),
+            Utilities.Dimension(translation.z.value, blenderDefaultUnit)
+        ],  # type: ignore
         BlenderDefinitions.BlenderTranslationTypes.ABSOLUTE
     )
 
@@ -1051,7 +1041,8 @@ def getObjectCollectionName(objectName) -> str:
     blenderObject = getObject(objectName)
 
     # Assumes the first collection is the main collection
-    [currentCollection] = blenderObject.users_collection
+    [currentCollection] = \
+        blenderObject.users_collection  # type: ignore
 
     return currentCollection.name
 
@@ -1077,7 +1068,10 @@ def updateObjectLandmarkNames(
 
     blenderObject = getObject(parentObjectName)
 
-    for child in blenderObject.children:
+    blenderObjectChildren: list[bpy.types.Object] = \
+        blenderObject.children  # type: ignore
+
+    for child in blenderObjectChildren:
         if f"{oldNamePrefix}_" in child.name and child.type == "EMPTY":
             updateObjectName(child.name, child.name.replace(
                 f"{oldNamePrefix}_", f"{newNamePrefix}_"))
@@ -1091,7 +1085,9 @@ def removeObject(
     blenderObject = getObject(existingObjectName)
 
     if removeChildren:
-        for child in blenderObject.children:
+        blenderObjectChildren: list[bpy.types.Object] = \
+            blenderObject.children  # type: ignore
+        for child in blenderObjectChildren:
             try:
                 removeObject(child.name, True)
             except:
@@ -1149,8 +1145,10 @@ def createMeshFromCurve(
         newObjectName = existingCurveObjectName
 
     dependencyGraph = bpy.context.evaluated_depsgraph_get()
-    mesh = bpy.data.meshes.new_from_object(
-        existingCurveObject.evaluated_get(dependencyGraph), depsgraph=dependencyGraph)
+    evaluatedObject: bpy.types.Object = existingCurveObject.evaluated_get(
+        dependencyGraph)  # type: ignore
+    mesh: bpy.types.Mesh = bpy.data.meshes.new_from_object(
+        evaluatedObject,  depsgraph=dependencyGraph)
 
     blenderObject = createObject(newObjectName, mesh)
 
@@ -1158,7 +1156,9 @@ def createMeshFromCurve(
 
     assignObjectToCollection(newObjectName)
 
-    for child in existingCurveObject.children:
+    existingCurveObjectChildren: list[bpy.types.Object] = \
+        existingCurveObject.children  # type: ignore
+    for child in existingCurveObjectChildren:
         if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
             child.parent = blenderObject
 
@@ -1198,12 +1198,17 @@ def transferLandmarks(
     fromBlenderObject = getObject(fromObjectName)
     toBlenderObject = getObject(toObjectName)
 
-    translation = getObjectWorldLocation(
-        fromObjectName) - getObjectWorldLocation(toObjectName)
+    translation = (getObjectWorldLocation(
+        fromObjectName) - getObjectWorldLocation(toObjectName)).toList()
+
+    translation = [
+        axisValue.value for axisValue in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit(translation)]
 
     defaultCollection = getObjectCollectionName(toObjectName)
 
-    for child in fromBlenderObject.children:
+    fromBlenderObjectChildren: list[bpy.types.Object] = \
+        fromBlenderObject.children  # type: ignore
+    for child in fromBlenderObjectChildren:
         if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
             child.name = f"{toObjectName}_{child.name}"
             isAlreadyExists = bpy.data.objects.get(child.name) == None
@@ -1211,7 +1216,8 @@ def transferLandmarks(
                 print(f"{child.name} already exists. Skipping landmark transfer.")
                 continue
             child.parent = toBlenderObject
-            child.location = child.location + translation
+            child.location = child.location + \
+                mathutils.Vector(translation)  # type: ignore
             assignObjectToCollection(child.name, defaultCollection)
 
 
@@ -1221,14 +1227,14 @@ def duplicateObject(
     copyLandmarks: bool = True
 ):
 
-    clonedObject = bpy.data.objects.get(newObjectName)
+    clonedObject = bpy.data.objects.get(newObjectName)  # type: ignore
 
     assert clonedObject == None, \
         f"Object with name {newObjectName} already exists."
 
     blenderObject = getObject(existingObjectName)
 
-    clonedObject = blenderObject.copy()
+    clonedObject: bpy.types.Object = blenderObject.copy()  # type: ignore
     clonedObject.name = newObjectName
     clonedObject.data = blenderObject.data.copy()
     clonedObject.data.name = newObjectName
@@ -1239,9 +1245,11 @@ def duplicateObject(
     assignObjectToCollection(newObjectName, defaultCollection)
 
     if copyLandmarks:
-        for child in blenderObject.children:
+        blenderObjectChildren: list[bpy.types.Object] = \
+            blenderObject.children  # type: ignore
+        for child in blenderObjectChildren:
             if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
-                newChild = child.copy()
+                newChild: bpy.types.Object = child.copy()  # type: ignore
                 newChild.name = child.name.replace(
                     existingObjectName, newObjectName)
                 newChild.parent = clonedObject
@@ -1263,17 +1271,27 @@ def getObjectWorldLocation(objectName):
 
     blenderObject = getObject(objectName)
 
-    return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.matrix_world.translation])
+    return Utilities.Point.fromList(
+        [
+            Utilities.Dimension(
+                p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            for p in
+            blenderObject.matrix_world.translation  # type: ignore
+        ]
+    )
 
 
-def getObjectWorldPose(objectName):
+def getObjectWorldPose(objectName) -> list[float]:
 
     blenderObject = getObject(objectName)
 
-    return blenderObject.matrix_world
+    listOfTuples = [v.to_tuple() for v in list(
+        blenderObject.matrix_world)]  # type: ignore
+
+    return [value for values in listOfTuples for value in values]
 
 
-def getObject(objectName):
+def getObject(objectName) -> bpy.types.Object:
 
     blenderObject = bpy.data.objects.get(objectName)
 
@@ -1284,7 +1302,7 @@ def getObject(objectName):
     return blenderObject
 
 
-def getMesh(meshName):
+def getMesh(meshName) -> bpy.types.Mesh:
 
     blenderMesh = bpy.data.meshes.get(meshName)
 
@@ -1303,10 +1321,10 @@ def applyDependencyGraph(
 ):
 
     blenderObject = getObject(existingObjectName)
-
-    blenderObject.data = blenderObject.evaluated_get(
+    blenderObjectEvaluated: bpy.types.Object = blenderObject.evaluated_get(
         bpy.context.evaluated_depsgraph_get()
-    ).data.copy()
+    )  # type: ignore
+    blenderObject.data = blenderObjectEvaluated.data.copy()
 
 
 def clearModifiers(objectName):
@@ -1351,7 +1369,7 @@ def isCollisionBetweenTwoObjects(object1Name, object2Name):
 # References https://docs.blender.org/api/current/mathutils.kdtree.html
 def createKdTreeForObject(objectName):
     blenderObject = getObject(objectName)
-    mesh = blenderObject.data
+    mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
     size = len(mesh.vertices)
     kd = KDTree(size)
 
@@ -1363,7 +1381,7 @@ def createKdTreeForObject(objectName):
 
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
-def getClosestFaceToVertex(objectName, vertex):
+def getClosestFaceToVertex(objectName, vertex) -> bpy.types.MeshPolygon:
 
     blenderObject = getObject(objectName)
 
@@ -1371,7 +1389,7 @@ def getClosestFaceToVertex(objectName, vertex):
         len(vertex) == 3, \
         "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
 
-    matrixWorld = blenderObject.matrix_world
+    matrixWorld: mathutils.Matrix = blenderObject.matrix_world  # type: ignore
     invertedMatrixWorld = matrixWorld.inverted()
 
     # vertex in object space:
@@ -1379,7 +1397,7 @@ def getClosestFaceToVertex(objectName, vertex):
 
     # polygonIndex references an index at blenderObject.data.polygons[polygonIndex], in other words, the face or edge data
     [isFound, closestPoint, normal,
-        polygonIndex] = blenderObject.closest_point_on_mesh(vertexInverted)
+        polygonIndex] = blenderObject.closest_point_on_mesh(vertexInverted)  # type: ignore
 
     assert \
         isFound, \
@@ -1389,7 +1407,8 @@ def getClosestFaceToVertex(objectName, vertex):
         polygonIndex is not None and polygonIndex != -1, \
         f"Could not find a face near {vertex} on {objectName}"
 
-    blenderPolygon = blenderObject.data.polygons[polygonIndex]
+    mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
+    blenderPolygon = mesh.polygons[polygonIndex]
 
     return blenderPolygon
 
@@ -1405,10 +1424,11 @@ def getClosestPointsToVertex(objectName, vertex, numberOfPoints=2, objectKdTree=
         len(vertex) == 3, \
         "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
 
-    matrixWorld = blenderObject.matrix_world
+    matrixWorld: mathutils.Matrix = blenderObject.matrix_world  # type: ignore
     invertedMatrixWorld = matrixWorld.inverted()
 
-    vertexInverted = invertedMatrixWorld @ mathutils.Vector(vertex)
+    vertexInverted: mathutils.Vector = \
+        invertedMatrixWorld @ mathutils.Vector(vertex)  # type: ignore
 
     return kdTree.find_n(vertexInverted, numberOfPoints)
 
@@ -1426,8 +1446,13 @@ def getBoundingBox(objectName):
     om = blenderObject.matrix_basis
 
     # matrix multiple world transform by all the vertices in the boundary
-    coords = [(om @ mathutils.
-               Vector(p[:])).to_tuple() for p in local_coords]
+    coords = [
+        (
+            om @ mathutils.
+            Vector(p[:])  # type: ignore
+        ).to_tuple()
+        for p in local_coords
+    ]
     coords = coords[::-1]
     # Coords should be a 1x8 array containing 1x3 vertices, example:
     # [(1.0, 1.0, -1.0), (1.0, 1.0, 1.0), (1.0, -1.0, 1.0), (1.0, -1.0, -1.0), (-1.0, 1.0, -1.0), (-1.0, 1.0, 1.0), (-1.0, -1.0, 1.0), (-1.0, -1.0, -1.0)]
@@ -1598,9 +1623,11 @@ def addBevelObjectToCurve(
         type(profileCurveObject.data) == bpy.types.Curve, \
         f"Profile Object {profileCurveObjectName} is not a Curve object. Please use a Curve object."
 
-    pathCurveObject.data.bevel_mode = "OBJECT"
-    pathCurveObject.data.bevel_object = profileCurveObject
-    pathCurveObject.data.use_fill_caps = fillCap
+    curve: bpy.types.Curve = pathCurveObject.data  # type: ignore
+
+    curve.bevel_mode = "OBJECT"
+    curve.bevel_object = profileCurveObject
+    curve.use_fill_caps = fillCap
 
 
 def getBlenderCurvePrimitiveFunction(curvePrimitive: BlenderDefinitions.BlenderCurvePrimitiveTypes):
@@ -1883,9 +1910,18 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
                          order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
 
 
+def setCurveUsePath(curveName, isUsePath):
+    curveObject = getObject(curveName)
+
+    curve: bpy.types.Curve = curveObject.data  # type: ignore
+
+    curve.use_path = isUsePath
+
 # MARK: manipulating the Scene
 
 # locks the scene interface
+
+
 def sceneLockInterface(isLocked):
     bpy.context.scene.render.use_lock_interface = isLocked
 
@@ -1978,7 +2014,9 @@ def setMaterialToObject(materialName, objectName):
 
     object = getObject(objectName)
 
-    objectMaterial = object.data.materials
+    mesh: bpy.types.Mesh = object.data  # type: ignore
+
+    objectMaterial = mesh.materials
 
     if len(objectMaterial) == 0:
         objectMaterial.append(material)
