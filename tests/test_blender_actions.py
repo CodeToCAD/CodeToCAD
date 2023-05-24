@@ -1,4 +1,5 @@
 import unittest
+import BlenderActions
 
 from CodeToCAD import *
 
@@ -14,8 +15,19 @@ class TestBlenderActions(unittest.TestCase):
         injectMockModelingProvider(globals())
         super().setUp()
 
-    def test_todo(self):
-        pass
+    def test_getTranslationOfObjectAOntoObjectBOffsetByObjectC(self):
+        objectA = Part("A").createCube(1, 1, 1)
+        objectB = Part("B").createCube(1, 1, 1)
+        objectC = objectB.createLandmark("top", min, center, center)
+
+        objectB.translateZ(5)
+
+        translation = BlenderActions.getTranslationOfObjectAOntoObjectBOffsetByObjectC(
+            objectA.name, objectB.name, objectC.getLandmarkEntityName())
+
+        assert translation.x.value == 0.5
+        assert translation.y.value == 0
+        assert translation.z.value == -5.0
 
 
 if __name__ == "__main__":

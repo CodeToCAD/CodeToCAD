@@ -718,7 +718,7 @@ def applyLimitLocationConstraint(
 
     keywordArguments = keywordArguments or {}
 
-    keywordArguments["name"] = f"loc_{objectName}_{relativeToObjectName}"
+    keywordArguments["name"] = f"lim_loc_{objectName}_{relativeToObjectName}"
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -770,7 +770,7 @@ def applyLimitRotationConstraint(
 
     keywordArguments = keywordArguments or {}
 
-    keywordArguments["name"] = f"rot_{objectName}_{relativeToObjectName}"
+    keywordArguments["name"] = f"lim_rot_{objectName}_{relativeToObjectName}"
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -801,6 +801,63 @@ def applyLimitRotationConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
         keywordArguments
+    )
+
+
+def applyCopyLocationConstraint(
+    objectName,
+    copiedObjectName,
+    copyX: bool,
+    copyY: bool,
+    copyZ: bool,
+    useOffset: bool,
+    keywordArguments={}
+):
+
+    copiedObject = getObject(copiedObjectName)
+
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION,
+        dict(
+            {
+                "name": f"copy_loc_{objectName}_{copiedObjectName}",
+                "target": copiedObject,
+                "use_x": copyX,
+                "use_y": copyY,
+                "use_z": copyZ,
+                "use_offset": useOffset
+            },
+            **keywordArguments
+        )
+    )
+
+
+def applyCopyRotationConstraint(
+    objectName,
+    copiedObjectName,
+    copyX: bool,
+    copyY: bool,
+    copyZ: bool,
+    keywordArguments={}
+):
+
+    copiedObject = getObject(copiedObjectName)
+
+    applyConstraint(
+        objectName,
+        BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION,
+        dict(
+            {
+                "name": f"copy_rot_{objectName}_{copiedObjectName}",
+                "target": copiedObject,
+                "use_x": copyX,
+                "use_y": copyY,
+                "use_z": copyZ,
+                "mix_mode": "BEFORE"
+            },
+            **keywordArguments
+        )
     )
 
 

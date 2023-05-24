@@ -1274,17 +1274,7 @@ class Joint(CodeToCADInterface.Joint):
 
             objectToLimitName = objectToLimitOrItsName.getParentEntity().name
 
-            BlenderActions.updateViewLayer()
-
-            O = BlenderActions.getObjectWorldLocation(relativeToObjectName)
-
-            B = BlenderActions.getObjectWorldLocation(objectToLimitName)
-            L = BlenderActions.getObjectWorldLocation(landmarkEntityName)
-
-            OB = B - O
-            OL = L - O
-
-            offset = OB - OL
+            offset = objectToLimitOrItsName.getLocationLocal() * -1
 
             if x and x[0]:
                 x[0] += offset.x
@@ -1299,8 +1289,11 @@ class Joint(CodeToCADInterface.Joint):
             if z and z[1]:
                 z[1] += offset.z
 
+        # SA: Blender's Limit Location must be paired with Copy Location if we don't want the objectToLimit's rotation and scale to be affected by relativeToObject's transformations.
         BlenderActions.applyLimitLocationConstraint(
-            objectToLimitName, x, y, z, relativeToObjectName)
+            objectToLimitName, x, y, z, None)
+        BlenderActions.applyCopyLocationConstraint(
+            objectToLimitName, relativeToObjectName, True, True, True, True)
 
     def limitLocationXYZ(self, x: Optional[DimensionOrItsFloatOrStringValue] = None, y: Optional[DimensionOrItsFloatOrStringValue] = None, z: Optional[DimensionOrItsFloatOrStringValue] = None
                          ):
@@ -1349,9 +1342,7 @@ class Joint(CodeToCADInterface.Joint):
 
         return rotationPair
 
-    def limitRotationXYZ(self, x: Optional[AngleOrItsFloatOrStringValue] = None, y: Optional[AngleOrItsFloatOrStringValue] = None, z: Optional[AngleOrItsFloatOrStringValue] = None
-                         ):
-
+    def _limitRotationXYZ(self, rotationPairX, rotationPairY, rotationPairZ):
         objectToLimitName = self.entity2
         if isinstance(objectToLimitName, Entity):
             objectToLimitName = objectToLimitName.name
@@ -1359,6 +1350,20 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName = objectToLimitName.getParentEntity().name
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+
+        # BlenderActions.applyLimitRotationConstraint(
+        #     objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
+        BlenderActions.applyLimitRotationConstraint(
+            objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, None)
+        BlenderActions.applyCopyRotationConstraint(
+            objectToLimitName, relativeToObjectName, True, True, True)
+        BlenderActions.applyPivotConstraint(
+            objectToLimitName, relativeToObjectName)
+
+        return self
+
+    def limitRotationXYZ(self, x: Optional[AngleOrItsFloatOrStringValue] = None, y: Optional[AngleOrItsFloatOrStringValue] = None, z: Optional[AngleOrItsFloatOrStringValue] = None
+                         ):
 
         rotationPairX = Joint._getLimitRotationPair(
             x, x) if x is not None else None
@@ -1367,61 +1372,23 @@ class Joint(CodeToCADInterface.Joint):
         rotationPairZ = Joint._getLimitRotationPair(
             z, z) if z is not None else None
 
-        BlenderActions.applyLimitRotationConstraint(
-            objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
-
-        return self
+        return self._limitRotationXYZ(rotationPairX, rotationPairY, rotationPairZ)
 
     def limitRotationX(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = self.entity2
-        if isinstance(objectToLimitName, Entity):
-            objectToLimitName = objectToLimitName.name
-        elif isinstance(objectToLimitName, Landmark):
-            objectToLimitName = objectToLimitName.getParentEntity().name
-
-        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
         rotationPair = Joint._getLimitRotationPair(min, max)
-
-        BlenderActions.applyLimitRotationConstraint(
-            objectToLimitName, rotationPair, None, None, relativeToObjectName)
-
-        return self
+        return self._limitRotationXYZ(rotationPair, None, None)
 
     def limitRotationY(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = self.entity2
-        if isinstance(objectToLimitName, Entity):
-            objectToLimitName = objectToLimitName.name
-        elif isinstance(objectToLimitName, Landmark):
-            objectToLimitName = objectToLimitName.getParentEntity().name
-
-        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
-
         rotationPair = Joint._getLimitRotationPair(min, max)
-
-        BlenderActions.applyLimitRotationConstraint(
-            objectToLimitName, None, rotationPair, None, relativeToObjectName)
-
-        return self
+        return self._limitRotationXYZ(None, rotationPair, None)
 
     def limitRotationZ(self, min: Optional[AngleOrItsFloatOrStringValue] = None, max: Optional[AngleOrItsFloatOrStringValue] = None
                        ):
-        objectToLimitName = self.entity2
-        if isinstance(objectToLimitName, Entity):
-            objectToLimitName = objectToLimitName.name
-        elif isinstance(objectToLimitName, Landmark):
-            objectToLimitName = objectToLimitName.getParentEntity().name
-
-        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
-
         rotationPair = Joint._getLimitRotationPair(min, max)
-
-        BlenderActions.applyLimitRotationConstraint(
-            objectToLimitName, None, None, rotationPair, relativeToObjectName)
-
-        return self
+        return self._limitRotationXYZ(None, None, rotationPair)
 
 
 class Material(CodeToCADInterface.Material):
