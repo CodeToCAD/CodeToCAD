@@ -110,10 +110,11 @@ class BlenderModifiers(Enum):
 
 # This is a list of Blender Constraint types that we have implemented:
 class BlenderConstraintTypes(Utilities.EquittableEnum):
-    LIMIT_LOCATION = Utilities.ConstraintTypes.Translation
-    LIMIT_ROTATION = Utilities.ConstraintTypes.Rotation
+    LIMIT_LOCATION = Utilities.ConstraintTypes.LimitLocation
+    LIMIT_ROTATION = Utilities.ConstraintTypes.LimitRotation
     PIVOT = Utilities.ConstraintTypes.Pivot
-    COPY_ROTATION = Utilities.ConstraintTypes.Gear
+    COPY_ROTATION = Utilities.ConstraintTypes.FixedRotation
+    COPY_LOCATION = Utilities.ConstraintTypes.FixedPosition
 
     def getDefaultBlenderName(self):
         if self == BlenderConstraintTypes.LIMIT_LOCATION:
@@ -124,6 +125,8 @@ class BlenderConstraintTypes(Utilities.EquittableEnum):
             return "Pivot"
         if self == BlenderConstraintTypes.COPY_ROTATION:
             return "Copy Rotation"
+        if self == BlenderConstraintTypes.COPY_LOCATION:
+            return "Copy Location"
 
     # Convert a utilities ConstraintTypes to BlenderConstraintTypes
     @staticmethod

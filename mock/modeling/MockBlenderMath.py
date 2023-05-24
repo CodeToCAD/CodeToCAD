@@ -9,6 +9,8 @@ def getNumpyArrayFromVectorOrMatrix(vectorOrMatrix):
         return vectorOrMatrix.vector
     if isinstance(vectorOrMatrix, Matrix):
         return vectorOrMatrix.matrix
+    if isinstance(vectorOrMatrix, Quaternion):
+        return vectorOrMatrix.to_vector().vector
     return vectorOrMatrix
 
 
@@ -93,6 +95,9 @@ class Vector:
     def __getitem__(self, key):
         return self.vector[key]
 
+    def rotate(self, quat: 'Quaternion'):
+        self.vector = self @ quat.to_matrix()
+
     def __str__(self):
         return \
             f"""x   y   z
@@ -137,6 +142,15 @@ class Quaternion:
         self.q1 = quat[1]
         self.q2 = quat[2]
         self.q3 = quat[3]
+
+    def inverted(self):
+        return Quaternion((self.q0, self.q1*-1, self.q2*-1, self.q3*-1))
+
+    def __mul__(self, other):
+        return Quaternion(np.multiply(self.to_vector().vector, getNumpyArrayFromVectorOrMatrix(other)).tolist())
+
+    def to_vector(self):
+        return Vector((self.q0, self.q1, self.q2, self.q3))
 
     def to_euler(self):
         # references https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/
