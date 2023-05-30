@@ -1270,11 +1270,11 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName = objectToLimitOrItsName.name
         elif isinstance(objectToLimitOrItsName, Landmark):
 
-            landmarkEntityName = objectToLimitOrItsName.getLandmarkEntityName()
+            landmarkEntity = objectToLimitOrItsName
 
             objectToLimitName = objectToLimitOrItsName.getParentEntity().name
 
-            offset = objectToLimitOrItsName.getLocationLocal() * -1
+            offset = landmarkEntity.getLocationLocal() * -1
 
             if x and x[0]:
                 x[0] += offset.x
@@ -1294,6 +1294,22 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName, x, y, z, None)
         BlenderActions.applyCopyLocationConstraint(
             objectToLimitName, relativeToObjectName, True, True, True, True)
+        self._applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(
+            objectToLimitName, relativeToObjectName)
+
+    def _applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(self, objectToLimitName, pivotObjectName):
+
+        BlenderActions.updateViewLayer()
+
+        locationConstraint = BlenderActions.getConstraint(
+            objectToLimitName, BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION.formatConstraintName(objectToLimitName, None))
+
+        rotationConstraint = BlenderActions.getConstraint(
+            objectToLimitName, BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION.formatConstraintName(objectToLimitName, None))
+
+        if locationConstraint and rotationConstraint:
+            BlenderActions.applyPivotConstraint(
+                objectToLimitName, pivotObjectName)
 
     def limitLocationXYZ(self, x: Optional[DimensionOrItsFloatOrStringValue] = None, y: Optional[DimensionOrItsFloatOrStringValue] = None, z: Optional[DimensionOrItsFloatOrStringValue] = None
                          ):
@@ -1357,7 +1373,7 @@ class Joint(CodeToCADInterface.Joint):
             objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, None)
         BlenderActions.applyCopyRotationConstraint(
             objectToLimitName, relativeToObjectName, True, True, True)
-        BlenderActions.applyPivotConstraint(
+        self._applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(
             objectToLimitName, relativeToObjectName)
 
         return self

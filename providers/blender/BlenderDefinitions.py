@@ -128,7 +128,29 @@ class BlenderConstraintTypes(Utilities.EquittableEnum):
         if self == BlenderConstraintTypes.COPY_LOCATION:
             return "Copy Location"
 
+    def formatConstraintName(self, objectName, relativeToObjectName):
+        name = ""
+
+        if self == BlenderConstraintTypes.LIMIT_LOCATION:
+            name = "lim_loc"
+        if self == BlenderConstraintTypes.LIMIT_ROTATION:
+            name = "lim_rot"
+        if self == BlenderConstraintTypes.PIVOT:
+            name = "pivot"
+        if self == BlenderConstraintTypes.COPY_ROTATION:
+            name = "copy_rot"
+        if self == BlenderConstraintTypes.COPY_LOCATION:
+            name = "copy_loc"
+
+        name += f"_{objectName}"
+
+        if relativeToObjectName:
+            name += f"_{relativeToObjectName}"
+
+        return name
+
     # Convert a utilities ConstraintTypes to BlenderConstraintTypes
+
     @staticmethod
     def fromConstraintTypes(constraintType: Utilities.ConstraintTypes):
 

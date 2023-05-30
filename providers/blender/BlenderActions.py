@@ -673,7 +673,7 @@ def assignObjectToCollection(
 
 
 # MARK: Joints
-def getConstraint(objectName, constraintName):
+def getConstraint(objectName, constraintName) -> Optional[bpy.types.Constraint]:
     blenderObject = getObject(objectName)
     return blenderObject.constraints.get(constraintName)
 
@@ -689,7 +689,7 @@ def applyConstraint(
     constraintName = keywordArguments.get(
         "name") or constraintType.getDefaultBlenderName()
 
-    constraint = blenderObject.constraints.get(constraintName)
+    constraint = getConstraint(objectName, constraintName)
 
     # If it doesn't exist, create it:
     if constraint is None:
@@ -718,7 +718,8 @@ def applyLimitLocationConstraint(
 
     keywordArguments = keywordArguments or {}
 
-    keywordArguments["name"] = f"lim_loc_{objectName}_{relativeToObjectName}"
+    keywordArguments["name"] = BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION.formatConstraintName(
+        objectName, relativeToObject)
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -770,7 +771,8 @@ def applyLimitRotationConstraint(
 
     keywordArguments = keywordArguments or {}
 
-    keywordArguments["name"] = f"lim_rot_{objectName}_{relativeToObjectName}"
+    keywordArguments["name"] = BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION.formatConstraintName(
+        objectName, relativeToObject)
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -821,7 +823,7 @@ def applyCopyLocationConstraint(
         BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION,
         dict(
             {
-                "name": f"copy_loc_{objectName}_{copiedObjectName}",
+                "name": BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION.formatConstraintName(objectName, copiedObjectName),
                 "target": copiedObject,
                 "use_x": copyX,
                 "use_y": copyY,
@@ -849,7 +851,7 @@ def applyCopyRotationConstraint(
         BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION,
         dict(
             {
-                "name": f"copy_rot_{objectName}_{copiedObjectName}",
+                "name": BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION.formatConstraintName(objectName, copiedObjectName),
                 "target": copiedObject,
                 "use_x": copyX,
                 "use_y": copyY,
@@ -874,7 +876,7 @@ def applyPivotConstraint(
         BlenderDefinitions.BlenderConstraintTypes.PIVOT,
         dict(
             {
-                "name": f"pivot_{objectName}_{pivotObjectName}",
+                "name": BlenderDefinitions.BlenderConstraintTypes.PIVOT.formatConstraintName(objectName, pivotObjectName),
                 "target": pivotObject,
                 "rotation_range": "ALWAYS_ACTIVE"
             },
