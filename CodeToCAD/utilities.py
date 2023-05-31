@@ -17,6 +17,53 @@ center = "center"
 reservedWords = [min, max, center]
 
 
+class PresetLandmarks(Enum):
+    left = 2
+    right = 4
+    top = 8
+    bottom = 16
+    front = 32
+    back = 64
+    leftTop = left | top
+    leftBottom = left | bottom
+    leftFront = left | front
+    leftBack = left | back
+    rightTop = right | top
+    rightBottom = right | bottom
+    rightFront = right | front
+    rightBack = right | back
+    frontTop = front | top
+    backTop = back | top
+    frontBottom = front | bottom
+    backBottom = back | bottom
+    leftFrontTop = left | front | top
+    leftBackTop = left | back | top
+    leftFrontBottom = left | front | bottom
+    leftBackBottom = left | back | bottom
+    rightFrontTop = right | front | top
+    rightBackTop = right | back | top
+    rightFrontBottom = right | front | bottom
+    rightBackBottom = right | back | bottom
+
+    def __ror__(self, other):
+        return self.value | other.value
+
+    def __and__(self, other):
+        return self.value & other.value
+
+    def contains(self, other):
+        return (self & other == other.value)
+
+    def getXYZ(self):
+        x = min if self.contains(PresetLandmarks.left) else max if self.contains(
+            PresetLandmarks.right) else center
+        y = min if self.contains(PresetLandmarks.front) else max if self.contains(
+            PresetLandmarks.back) else center
+        z = min if self.contains(PresetLandmarks.bottom) else max if self.contains(
+            PresetLandmarks.top) else center
+        return (x, y, z)
+
+
 def isReservedWordInString(stringToCheck: str) -> bool:
     for word in reservedWords:
         if word in stringToCheck:
