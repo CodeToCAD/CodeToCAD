@@ -1,5 +1,4 @@
 {
-    "version": "0.0.1",
     "information": "Capabilities for CodeToCAD.",
     "capabilities": {
         "Entity": {
@@ -94,6 +93,7 @@
             "getNativeInstance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "returnType": "object",
                 "parameters": {}
             },
             "getLocationWorld": {
@@ -749,6 +749,7 @@
             "isCollidingWithPart": {
                 "action": "get",
                 "information": "Check if this part is colliding with another.",
+                "returnType": "boolean",
                 "parameters": {
                     "otherPart": {
                         "type": "string,Part"
@@ -1182,10 +1183,12 @@
                 }
             },
             "getLandmarkEntityName": {
+                "information": "Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.",
                 "action": "get",
                 "returnType": "string"
             },
             "getParentEntity": {
+                "information": "Get the name of the entity this landmark belongs to.",
                 "action": "get",
                 "returnType": "Entity"
             },
@@ -1225,6 +1228,7 @@
             "getNativeInstance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "returnType": "object",
                 "parameters": {}
             },
             "getLocationWorld": {
@@ -1412,6 +1416,7 @@
             },
             "assignToPart": {
                 "action": "modify",
+                "information": "Assigns the material to a part.",
                 "parameters": {
                     "partName": {
                         "type": "string,Part"
@@ -1419,6 +1424,7 @@
                 }
             },
             "setColor": {
+                "information": "Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.",
                 "action": "modify",
                 "parameters": {
                     "rValue": {
@@ -1437,6 +1443,7 @@
                 }
             },
             "addImageTexture": {
+                "information": "Add a texture from an image file.",
                 "action": "modify",
                 "parameters": {
                     "imageFilePath": {
@@ -1449,6 +1456,7 @@
             "information": "Animation related functionality.",
             "constructor": {},
             "default": {
+                "information": "Get an Animation instance for the current scene.",
                 "action": "get",
                 "staticMethod": true,
                 "returnType": "Animation"
@@ -1506,6 +1514,7 @@
             }
         },
         "Light": {
+            "information": "Manipulate a light object.",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1620,6 +1629,7 @@
             "getNativeInstance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "returnType": "object",
                 "parameters": {}
             },
             "getLocationWorld": {
@@ -1641,6 +1651,7 @@
             }
         },
         "Camera": {
+            "information": "Manipulate a camera object.",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1723,6 +1734,7 @@
             "getNativeInstance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "returnType": "object",
                 "parameters": {}
             },
             "getLocationWorld": {
@@ -1758,6 +1770,7 @@
                 }
             },
             "default": {
+                "information": "Get a Scene instance for the current scene.",
                 "action": "get",
                 "staticMethod": true,
                 "returnType": "Scene"
@@ -1791,7 +1804,7 @@
                 }
             },
             "setDefaultUnit": {
-                "action": "update",
+                "action": "modify",
                 "information": "Set the document's default measurements system.",
                 "parameters": {
                     "unit": {
@@ -1833,7 +1846,7 @@
                 }
             },
             "assignToGroup": {
-                "action": "update",
+                "action": "modify",
                 "information": "Assigns an existing entity to a new group",
                 "parameters": {
                     "entities": {
@@ -1850,7 +1863,7 @@
                 }
             },
             "setVisible": {
-                "action": "update",
+                "action": "modify",
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {
                     "entities": {
@@ -1945,7 +1958,7 @@
                 }
             },
             "log": {
-                "action": "get",
+                "action": "modify",
                 "information": "Write a message",
                 "parameters": {
                     "message": {

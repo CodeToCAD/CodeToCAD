@@ -9,6 +9,14 @@
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false
     },
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "capabilities.json"
+            ],
+            "url": "./CodeToCAD/capabilitiesSchema.json"
+        }
+    ],
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.analysis.extraPaths": [
         "CodeToCAD",

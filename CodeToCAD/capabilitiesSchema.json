@@ -1,0 +1,216 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "definitions": {
+        "returnTypeList": {
+            "type": "string",
+            "pattern": "^list\\[((string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene)(,|))*\\]$"
+        },
+        "returnType": {
+            "type": "string",
+            "description": "A value of type: string|boolean|float|int|list[string]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene",
+            "oneOf": [
+                {
+                    "pattern": "^(string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene)$"
+                },
+                {
+                    "$ref": "#/definitions/returnTypeList"
+                }
+            ]
+        },
+        "methodTypes": {
+            "type": "string",
+            "description": "Comma separated values of types: string|boolean|float|int|list[string]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene",
+            "oneOf": [
+                {
+                    "pattern": "^((string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene)(,|))*$"
+                },
+                {
+                    "$ref": "#/definitions/returnTypeList"
+                }
+            ]
+        },
+        "method": {
+            "description": "A method of this class.",
+            "defaultSnippets": [
+                {
+                    "label": "Add a new method:",
+                    "body": {
+                        "information": "$1",
+                        "action": "$2",
+                        "returnType": "$3",
+                        "staticMethod": false,
+                        "parameters": {
+                            "type": "$4"
+                        }
+                    }
+                }
+            ],
+            "type": "object",
+            "required": [
+                "action",
+                "information"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "parameters": {
+                    "description": "Parameters of this method.",
+                    "type": "object",
+                    "patternProperties": {
+                        ".": {
+                            "description": "A parameter of this method.",
+                            "required": [
+                                "type"
+                            ],
+                            "defaultSnippets": [
+                                {
+                                    "label": "Add a new parameter:",
+                                    "body": {
+                                        "information": "$1",
+                                        "type": "$2",
+                                        "defaultValue": "$3",
+                                        "required": false
+                                    }
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                                "information": {
+                                    "description": "Information about this method.",
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/methodTypes"
+                                },
+                                "defaultValue": {
+                                    "description": "The default value for this parameter.",
+                                    "type": [
+                                        "string",
+                                        "boolean",
+                                        "number",
+                                        "null"
+                                    ]
+                                },
+                                "required": {
+                                    "description": "Is this parameter required?",
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "action": {
+                    "description": "Type of action performed by this method. One of get|create|modify|delete|interact.",
+                    "type": "string",
+                    "pattern": "^(get|create|modify|delete|interact)$"
+                },
+                "information": {
+                    "description": "Information about this method.",
+                    "type": "string"
+                },
+                "returnType": {
+                    "$ref": "#/definitions/returnType"
+                },
+                "staticMethod": {
+                    "type": "boolean"
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "action": {
+                                "const": "get"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "returnType"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "required": [
+        "version",
+        "information",
+        "capabilities"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "information": {
+            "description": "Information about this Capabilities.json file.",
+            "type": "string"
+        },
+        "capabilities": {
+            "additionalProperties": false,
+            "description": "Key names denote Class names. Values are methods of the class.",
+            "type": "object",
+            "propertyNames": {
+                "allOf": [
+                    {
+                        "pattern": "[A-Z].+$"
+                    }
+                ]
+            },
+            "patternProperties": {
+                "[A-Z].+$": {
+                    "type": "object",
+                    "propertyNames": {
+                        "allOf": [
+                            {
+                                "pattern": "[a-z].+$"
+                            }
+                        ]
+                    },
+                    "required": [
+                        "information"
+                    ],
+                    "properties": {
+                        "information": {
+                            "description": "Information about this class.",
+                            "type": "string"
+                        },
+                        "constructor": {
+                            "description": "A schema for this class's constructor method.",
+                            "type": "object"
+                        },
+                        "alias": {
+                            "description": "An array of named aliases for this class, for example, if the class name is Part, its aliases could be Object or Thing.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extends": {
+                            "description": "The name of the class that this class extends (polymorphism).",
+                            "type": "string"
+                        }
+                    },
+                    "defaultSnippets": [
+                        {
+                            "label": "Add a new capability class:",
+                            "body": {
+                                "information": "$1",
+                                "alias": [
+                                    "$2"
+                                ],
+                                "extends": "$3",
+                                "constructor": null,
+                                "methodA": null
+                            }
+                        }
+                    ],
+                    "patternProperties": {
+                        ".": {
+                            "$ref": "#/definitions/method"
+                        }
+                    }
+                }
+            },
+            "properties": {}
+        }
+    }
+}
