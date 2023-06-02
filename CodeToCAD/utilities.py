@@ -54,6 +54,13 @@ class PresetLandmarks(Enum):
     def contains(self, other):
         return (self & other == other.value)
 
+    @staticmethod
+    def fromString(landmarkName) -> Optional['PresetLandmarks']:
+        for preset in PresetLandmarks:
+            if preset.name == landmarkName:
+                return preset
+        return None
+
     def getXYZ(self):
         x = min if self.contains(PresetLandmarks.left) else max if self.contains(
             PresetLandmarks.right) else center
