@@ -134,7 +134,6 @@
         }
     },
     "required": [
-        "version",
         "information",
         "capabilities"
     ],
