@@ -1,4 +1,4 @@
-from CodeToCAD.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox, PresetLandmarks, min, max, center
+from CodeToCAD.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox, PresetLandmark, min, max, center
 
 import unittest
 
@@ -135,12 +135,12 @@ class TestUtilities(unittest.TestCase):
         print("test_angles done")
 
     def test_preset_landmarks(self):
-        assert PresetLandmarks.left.getXYZ() == (min, center, center)
-        assert PresetLandmarks.right.getXYZ() == (max, center, center)
-        assert PresetLandmarks.leftTop.getXYZ() == (min, center, max)
-        assert PresetLandmarks.backTop.getXYZ() == (center, max, max)
-        assert PresetLandmarks.rightBackBottom.getXYZ() == (max, max, min)
-        assert PresetLandmarks.leftBackTop.getXYZ() == (min, max, max)
+        assert PresetLandmark.left.getXYZ() == (min, center, center)
+        assert PresetLandmark.right.getXYZ() == (max, center, center)
+        assert PresetLandmark.leftTop.getXYZ() == (min, center, max)
+        assert PresetLandmark.backTop.getXYZ() == (center, max, max)
+        assert PresetLandmark.rightBackBottom.getXYZ() == (max, max, min)
+        assert PresetLandmark.leftBackTop.getXYZ() == (min, max, max)
 
 
 if __name__ == "__main__":

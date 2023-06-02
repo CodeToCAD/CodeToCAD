@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional, TypeAlias, Union
 
-from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point)
+from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point, PresetLandmark)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -19,6 +19,7 @@ AngleOrItsFloatOrStringValue: TypeAlias = Union[str,float, Angle]
 EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
 LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
+PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
 
 class Entity(metaclass=ABCMeta):
     '''Capabilities shared between Parts, Sketches and Landmarks.'''
@@ -429,7 +430,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLandmark(self, landmarkName:str
+    def getLandmark(self, landmarkName:PresetLandmarkOrItsName
     ) -> 'Landmark':
         '''
         Get the landmark by name

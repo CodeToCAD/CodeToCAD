@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional, TypeAlias, Union
 
-from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point)
+from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point, PresetLandmark)
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -19,6 +19,7 @@ AngleOrItsFloatOrStringValue: TypeAlias = Union[str,float, Angle]
 EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
 LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
+PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
 
 {%-set useAbstractMethodDecorator = True%}
 
@@ -29,6 +30,6 @@ class {{className}}({{ methods["extends"]+"," if "extends" in methods}}metaclass
     '''
     {{- methods["information"] -}}
     '''
-{%-endif%}
+    {%-endif%}
 {% include 'capabilitiesToPyClassDefinition.j2' %}
 {% endfor -%}
