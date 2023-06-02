@@ -34,8 +34,7 @@ class Entity(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def createFromFile(self, filePath:str, fileType:Optional[str]=None
-    ):
+    def createFromFile(self, filePath:str, fileType:Optional[str]=None):
         '''
         Adds geometry to a part from a file. If the part does not exist, this will create it.
         '''
@@ -45,8 +44,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isExists(self
-    ) -> bool:
+    def isExists(self) -> bool:
         '''
         Check if an entity exists
         '''
@@ -56,8 +54,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True
-    ):
+    def rename(self, newName:str, renamelinkedEntitiesAndLandmarks:bool=True):
         '''
         Rename the entity, with an option to rename linked landmarks and underlying data.
         '''
@@ -67,8 +64,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self, removeChildren:bool
-    ):
+    def delete(self, removeChildren:bool):
         '''
         Delete the entity from the scene. You may need to delete an associated joint or other features.
         '''
@@ -78,8 +74,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isVisible(self
-    ) -> bool:
+    def isVisible(self) -> bool:
         '''
         Returns whether the entity is visible in the scene.
         '''
@@ -89,8 +84,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setVisible(self, isVisible:bool
-    ):
+    def setVisible(self, isVisible:bool):
         '''
         Toggles visibility of an entity in the scene.
         '''
@@ -100,8 +94,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def apply(self, rotation:bool=True, scale:bool=True, location:bool=False, modifiers:bool=True
-    ):
+    def apply(self, rotation:bool=True, scale:bool=True, location:bool=False, modifiers:bool=True):
         '''
         Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.
         '''
@@ -111,8 +104,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getNativeInstance(self
-    ):
+    def getNativeInstance(self) -> object:
         '''
         Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
         '''
@@ -122,8 +114,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationWorld(self
-    ) -> 'Point':
+    def getLocationWorld(self) -> 'Point':
         '''
         Get the entities XYZ location relative to World Space.
         '''
@@ -133,8 +124,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationLocal(self
-    ) -> 'Point':
+    def getLocationLocal(self) -> 'Point':
         '''
         Get the entities XYZ location relative to Local Space.
         '''
@@ -144,8 +134,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self
-    ):
+    def select(self):
         '''
         Select the entity (in UI).
         '''
@@ -155,8 +144,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def export(self, filePath:str, overwrite:bool=True, scale:float=1.0
-    ):
+    def export(self, filePath:str, overwrite:bool=True, scale:float=1.0):
         '''
         Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'
         '''
@@ -166,8 +154,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None
-    ):
+    def mirror(self, mirrorAcrossEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resultingMirroredEntityName:Optional[str]=None):
         '''
         Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.
         '''
@@ -177,8 +164,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def linearPattern(self, instanceCount:'int', offset:DimensionOrItsFloatOrStringValue, directionAxis:AxisOrItsIndexOrItsName="z"
-    ):
+    def linearPattern(self, instanceCount:'int', offset:DimensionOrItsFloatOrStringValue, directionAxis:AxisOrItsIndexOrItsName="z"):
         '''
         Pattern in a uniform direction.
         '''
@@ -188,8 +174,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def circularPattern(self, instanceCount:'int', separationAngle:AngleOrItsFloatOrStringValue, centerEntityOrLandmark:EntityOrItsNameOrLandmark, normalDirectionAxis:AxisOrItsIndexOrItsName="z"
-    ):
+    def circularPattern(self, instanceCount:'int', separationAngle:AngleOrItsFloatOrStringValue, centerEntityOrLandmark:EntityOrItsNameOrLandmark, normalDirectionAxis:AxisOrItsIndexOrItsName="z"):
         '''
         Pattern in a circular direction.
         '''
@@ -199,8 +184,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -210,8 +194,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateX(self, amount:DimensionOrItsFloatOrStringValue
-    ):
+    def translateX(self, amount:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         '''
@@ -221,8 +204,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateY(self, amount:DimensionOrItsFloatOrStringValue
-    ):
+    def translateY(self, amount:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         '''
@@ -232,8 +214,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateZ(self, amount:DimensionOrItsFloatOrStringValue
-    ):
+    def translateZ(self, amount:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         '''
@@ -243,8 +224,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    def scaleXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
         '''
         Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -254,8 +234,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleX(self, scale:DimensionOrItsFloatOrStringValue
-    ):
+    def scaleX(self, scale:DimensionOrItsFloatOrStringValue):
         '''
         Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -265,8 +244,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleY(self, scale:DimensionOrItsFloatOrStringValue
-    ):
+    def scaleY(self, scale:DimensionOrItsFloatOrStringValue):
         '''
         Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -276,8 +254,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleZ(self, scale:DimensionOrItsFloatOrStringValue
-    ):
+    def scaleZ(self, scale:DimensionOrItsFloatOrStringValue):
         '''
         Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -287,8 +264,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleXByFactor(self, scaleFactor:float
-    ):
+    def scaleXByFactor(self, scaleFactor:float):
         '''
         Scale in the X direction by a multiple.
         '''
@@ -298,8 +274,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleYByFactor(self, scaleFactor:float
-    ):
+    def scaleYByFactor(self, scaleFactor:float):
         '''
         Scale in the Y direction by a multiple.
         '''
@@ -309,8 +284,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleZByFactor(self, scaleFactor:float
-    ):
+    def scaleZByFactor(self, scaleFactor:float):
         '''
         Scale in the X direction by a multiple.
         '''
@@ -320,8 +294,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def scaleKeepAspectRatio(self, scale:DimensionOrItsFloatOrStringValue, axis:AxisOrItsIndexOrItsName
-    ):
+    def scaleKeepAspectRatio(self, scale:DimensionOrItsFloatOrStringValue, axis:AxisOrItsIndexOrItsName):
         '''
         Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -331,8 +304,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
-    ):
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -342,8 +314,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateX(self, rotation:AngleOrItsFloatOrStringValue
-    ):
+    def rotateX(self, rotation:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -353,8 +324,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateY(self, rotation:AngleOrItsFloatOrStringValue
-    ):
+    def rotateY(self, rotation:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -364,8 +334,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateZ(self, rotation:AngleOrItsFloatOrStringValue
-    ):
+    def rotateZ(self, rotation:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -375,8 +344,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def twist(self, angle:AngleOrItsFloatOrStringValue, screwPitch:DimensionOrItsFloatOrStringValue, interations:'int'=1, axis:AxisOrItsIndexOrItsName="z"
-    ):
+    def twist(self, angle:AngleOrItsFloatOrStringValue, screwPitch:DimensionOrItsFloatOrStringValue, interations:'int'=1, axis:AxisOrItsIndexOrItsName="z"):
         '''
         AKA Helix, Screw. Revolve an entity
         '''
@@ -386,8 +354,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def remesh(self, strategy:str, amount:float
-    ):
+    def remesh(self, strategy:str, amount:float):
         '''
         Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).
         '''
@@ -397,8 +364,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ) -> 'Landmark':
+    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'Landmark':
         '''
         Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
         '''
@@ -408,8 +374,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getBoundingBox(self
-    ) -> 'BoundaryBox':
+    def getBoundingBox(self) -> 'BoundaryBox':
         '''
         Get the Boundary Box around the entity.
         '''
@@ -419,8 +384,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getDimensions(self
-    ) -> 'Dimensions':
+    def getDimensions(self) -> 'Dimensions':
         '''
         Get the length span in each coordinate axis (X,Y,Z).
         '''
@@ -430,8 +394,7 @@ class Entity(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLandmark(self, landmarkName:PresetLandmarkOrItsName
-    ) -> 'Landmark':
+    def getLandmark(self, landmarkName:PresetLandmarkOrItsName) -> 'Landmark':
         '''
         Get the landmark by name
         '''
@@ -445,8 +408,7 @@ class Part(Entity,metaclass=ABCMeta):
     
 
     @abstractmethod
-    def createCube(self, width:DimensionOrItsFloatOrStringValue, length:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
-    ):
+    def createCube(self, width:DimensionOrItsFloatOrStringValue, length:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None):
         '''
         Adds cuboid geometry to a part.
         '''
@@ -456,8 +418,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createCone(self, radius:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, draftRadius:DimensionOrItsFloatOrStringValue=0, keywordArguments:Optional[dict]=None
-    ):
+    def createCone(self, radius:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, draftRadius:DimensionOrItsFloatOrStringValue=0, keywordArguments:Optional[dict]=None):
         '''
         Adds cone geometry to a part.
         '''
@@ -467,8 +428,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createCylinder(self, radius:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
-    ):
+    def createCylinder(self, radius:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None):
         '''
         Adds cylinder geometry to a part.
         '''
@@ -478,8 +438,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createTorus(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
-    ):
+    def createTorus(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None):
         '''
         Adds torus geometry to a part.
         '''
@@ -489,8 +448,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createSphere(self, radius:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None
-    ):
+    def createSphere(self, radius:DimensionOrItsFloatOrStringValue, keywordArguments:Optional[dict]=None):
         '''
         Adds sphere geometry to a part.
         '''
@@ -500,8 +458,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createGear(self, outerRadius:DimensionOrItsFloatOrStringValue, addendum:DimensionOrItsFloatOrStringValue, innerRadius:DimensionOrItsFloatOrStringValue, dedendum:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, pressureAngle:AngleOrItsFloatOrStringValue="20d", numberOfTeeth:'int'=12, skewAngle:AngleOrItsFloatOrStringValue=0, conicalAngle:AngleOrItsFloatOrStringValue=0, crownAngle:AngleOrItsFloatOrStringValue=0, keywordArguments:Optional[dict]=None
-    ):
+    def createGear(self, outerRadius:DimensionOrItsFloatOrStringValue, addendum:DimensionOrItsFloatOrStringValue, innerRadius:DimensionOrItsFloatOrStringValue, dedendum:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue, pressureAngle:AngleOrItsFloatOrStringValue="20d", numberOfTeeth:'int'=12, skewAngle:AngleOrItsFloatOrStringValue=0, conicalAngle:AngleOrItsFloatOrStringValue=0, crownAngle:AngleOrItsFloatOrStringValue=0, keywordArguments:Optional[dict]=None):
         '''
         Adds gear geometry to a part.
         '''
@@ -511,8 +468,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def clone(self, newName:str, copyLandmarks:bool=True
-    ) -> 'Part':
+    def clone(self, newName:str, copyLandmarks:bool=True) -> 'Part':
         '''
         Clone an existing Part with its geometry and properties. Returns the new Part.
         '''
@@ -522,8 +478,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def loft(self, Landmark1:'Landmark', Landmark2:'Landmark'
-    ):
+    def loft(self, Landmark1:'Landmark', Landmark2:'Landmark'):
         '''
         Interpolate between two existing parts.
         '''
@@ -533,8 +488,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def union(self, withPart:PartOrItsName, deleteAfterUnion:bool=True, isTransferLandmarks:bool=False
-    ):
+    def union(self, withPart:PartOrItsName, deleteAfterUnion:bool=True, isTransferLandmarks:bool=False):
         '''
         Boolean union
         '''
@@ -544,8 +498,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def subtract(self, withPart:PartOrItsName, deleteAfterSubtract:bool=True, isTransferLandmarks:bool=False
-    ):
+    def subtract(self, withPart:PartOrItsName, deleteAfterSubtract:bool=True, isTransferLandmarks:bool=False):
         '''
         Boolean subtraction
         '''
@@ -555,8 +508,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def intersect(self, withPart:PartOrItsName, deleteAfterIntersect:bool=True, isTransferLandmarks:bool=False
-    ):
+    def intersect(self, withPart:PartOrItsName, deleteAfterIntersect:bool=True, isTransferLandmarks:bool=False):
         '''
         Boolean intersection
         '''
@@ -566,8 +518,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def hollow(self, thicknessX:DimensionOrItsFloatOrStringValue, thicknessY:DimensionOrItsFloatOrStringValue, thicknessZ:DimensionOrItsFloatOrStringValue, startAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False
-    ):
+    def hollow(self, thicknessX:DimensionOrItsFloatOrStringValue, thicknessY:DimensionOrItsFloatOrStringValue, thicknessZ:DimensionOrItsFloatOrStringValue, startAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False):
         '''
         Remove vertices, if necessary, until the part has a specified wall thickness.
         '''
@@ -577,8 +528,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def hole(self, holeLandmark:LandmarkOrItsName, radius:DimensionOrItsFloatOrStringValue, depth:DimensionOrItsFloatOrStringValue, normalAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False, initialRotationX:AngleOrItsFloatOrStringValue=0.0, initialRotationY:AngleOrItsFloatOrStringValue=0.0, initialRotationZ:AngleOrItsFloatOrStringValue=0.0, mirrorAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, mirrorAxis:AxisOrItsIndexOrItsName="x", mirror:bool=False, circularPatternInstanceCount:'int'=1, circularPatternInstanceSeparation:AngleOrItsFloatOrStringValue=0.0, circularPatternInstanceAxis:AxisOrItsIndexOrItsName="z", circularPatternAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, linearPatternInstanceCount:'int'=1, linearPatternInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPatternInstanceAxis:AxisOrItsIndexOrItsName="x"
-    ):
+    def hole(self, holeLandmark:LandmarkOrItsName, radius:DimensionOrItsFloatOrStringValue, depth:DimensionOrItsFloatOrStringValue, normalAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False, initialRotationX:AngleOrItsFloatOrStringValue=0.0, initialRotationY:AngleOrItsFloatOrStringValue=0.0, initialRotationZ:AngleOrItsFloatOrStringValue=0.0, mirrorAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, mirrorAxis:AxisOrItsIndexOrItsName="x", mirror:bool=False, circularPatternInstanceCount:'int'=1, circularPatternInstanceSeparation:AngleOrItsFloatOrStringValue=0.0, circularPatternInstanceAxis:AxisOrItsIndexOrItsName="z", circularPatternAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, linearPatternInstanceCount:'int'=1, linearPatternInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPatternInstanceAxis:AxisOrItsIndexOrItsName="x"):
         '''
         Create a hole.
         '''
@@ -588,8 +538,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setMaterial(self, materialName:MaterialOrItsName
-    ):
+    def setMaterial(self, materialName:MaterialOrItsName):
         '''
         Assign a known material to this part.
         '''
@@ -599,8 +548,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isCollidingWithPart(self, otherPart:PartOrItsName
-    ):
+    def isCollidingWithPart(self, otherPart:PartOrItsName) -> bool:
         '''
         Check if this part is colliding with another.
         '''
@@ -610,8 +558,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def filletAllEdges(self, radius:DimensionOrItsFloatOrStringValue, useWidth:bool=False
-    ):
+    def filletAllEdges(self, radius:DimensionOrItsFloatOrStringValue, useWidth:bool=False):
         '''
         Fillet all edges.
         '''
@@ -621,8 +568,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def filletEdges(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearEdges:list[LandmarkOrItsName], useWidth:bool=False
-    ):
+    def filletEdges(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearEdges:list[LandmarkOrItsName], useWidth:bool=False):
         '''
         Fillet specific edges.
         '''
@@ -632,8 +578,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def filletFaces(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearFaces:list[LandmarkOrItsName], useWidth:bool=False
-    ):
+    def filletFaces(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearFaces:list[LandmarkOrItsName], useWidth:bool=False):
         '''
         Fillet specific faces.
         '''
@@ -643,8 +588,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def chamferAllEdges(self, radius:DimensionOrItsFloatOrStringValue
-    ):
+    def chamferAllEdges(self, radius:DimensionOrItsFloatOrStringValue):
         '''
         Chamfer all edges.
         '''
@@ -654,8 +598,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def chamferEdges(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearEdges:list[LandmarkOrItsName]
-    ):
+    def chamferEdges(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearEdges:list[LandmarkOrItsName]):
         '''
         Chamfer specific edges.
         '''
@@ -665,8 +608,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def chamferFaces(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearFaces:list[LandmarkOrItsName]
-    ):
+    def chamferFaces(self, radius:DimensionOrItsFloatOrStringValue, landmarksNearFaces:list[LandmarkOrItsName]):
         '''
         Chamfer specific faces.
         '''
@@ -676,8 +618,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def selectVertexNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
-    ):
+    def selectVertexNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None):
         '''
         Select the vertex closest to a Landmark on the entity (in UI).
         '''
@@ -687,8 +628,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def selectEdgeNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
-    ):
+    def selectEdgeNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None):
         '''
         Select an edge closest to a landmark on the entity (in UI).
         '''
@@ -698,8 +638,7 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def selectFaceNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None
-    ):
+    def selectFaceNearLandmark(self, landmarkName:Optional[LandmarkOrItsName]=None):
         '''
         Select a face closest to a landmark on the entity (in UI).
         '''
@@ -724,8 +663,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def clone(self, newName:str, copyLandmarks:bool=True
-    ) -> 'Sketch':
+    def clone(self, newName:str, copyLandmarks:bool=True) -> 'Sketch':
         '''
         Clone an existing sketch with its geometry and properties. Returns the new Sketch.
         '''
@@ -735,8 +673,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z"
-    ):
+    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z"):
         '''
         Revolve a Sketch around another Entity or Landmark
         '''
@@ -746,8 +683,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def thicken(self, radius:DimensionOrItsFloatOrStringValue
-    ):
+    def thicken(self, radius:DimensionOrItsFloatOrStringValue):
         '''
         Uniformly add a wall around a sketch.
         '''
@@ -757,8 +693,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def extrude(self, length:DimensionOrItsFloatOrStringValue
-    ) -> 'Part':
+    def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'Part':
         '''
         Extrude a curve by a specified length. Returns a Part type.
         '''
@@ -768,8 +703,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def sweep(self, profileCurveName:str, fillCap:bool=False
-    ):
+    def sweep(self, profileCurveName:str, fillCap:bool=False):
         '''
         Extrude this  curve along the path of another
         '''
@@ -779,8 +713,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def profile(self, profileCurveName:str
-    ):
+    def profile(self, profileCurveName:str):
         '''
         Bend this curve along the path of another
         '''
@@ -790,8 +723,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createText(self, text:str, fontSize:DimensionOrItsFloatOrStringValue=1.0, bold:bool=False, italic:bool=False, underlined:bool=False, characterSpacing:'int'=1, wordSpacing:'int'=1, lineSpacing:'int'=1, fontFilePath:Optional[str]=None
-    ):
+    def createText(self, text:str, fontSize:DimensionOrItsFloatOrStringValue=1.0, bold:bool=False, italic:bool=False, underlined:bool=False, characterSpacing:'int'=1, wordSpacing:'int'=1, lineSpacing:'int'=1, fontFilePath:Optional[str]=None):
         '''
         Adds text to a sketch.
         '''
@@ -801,8 +733,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createFromVertices(self, coordinates:list[PointOrListOfFloatOrItsStringValue], interpolation:'int'=64
-    ):
+    def createFromVertices(self, coordinates:list[PointOrListOfFloatOrItsStringValue], interpolation:'int'=64):
         '''
         Create a curve from 2D/3D points.
         '''
@@ -812,8 +743,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createPoint(self, coordinate:PointOrListOfFloatOrItsStringValue
-    ):
+    def createPoint(self, coordinate:PointOrListOfFloatOrItsStringValue):
         '''
         Create a point
         '''
@@ -823,8 +753,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createLine(self, length:DimensionOrItsFloatOrStringValue, angleX:AngleOrItsFloatOrStringValue=0.0, angleY:AngleOrItsFloatOrStringValue=0.0, symmetric:bool=False
-    ):
+    def createLine(self, length:DimensionOrItsFloatOrStringValue, angleX:AngleOrItsFloatOrStringValue=0.0, angleY:AngleOrItsFloatOrStringValue=0.0, symmetric:bool=False):
         '''
         Create a line
         '''
@@ -834,8 +763,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createLineBetweenPoints(self, endAt:PointOrListOfFloatOrItsStringValue, startAt:Optional[PointOrListOfFloatOrItsStringValue]=None
-    ):
+    def createLineBetweenPoints(self, endAt:PointOrListOfFloatOrItsStringValue, startAt:Optional[PointOrListOfFloatOrItsStringValue]=None):
         '''
         Create a line between two points
         '''
@@ -845,8 +773,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createCircle(self, radius:DimensionOrItsFloatOrStringValue
-    ):
+    def createCircle(self, radius:DimensionOrItsFloatOrStringValue):
         '''
         Create a circle
         '''
@@ -856,8 +783,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createEllipse(self, radiusA:DimensionOrItsFloatOrStringValue, radiusB:DimensionOrItsFloatOrStringValue
-    ):
+    def createEllipse(self, radiusA:DimensionOrItsFloatOrStringValue, radiusB:DimensionOrItsFloatOrStringValue):
         '''
         Create an ellipse
         '''
@@ -867,8 +793,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createArc(self, radius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
-    ):
+    def createArc(self, radius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"):
         '''
         Create an arc
         '''
@@ -878,8 +803,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createArcBetweenThreePoints(self, pointA:'Point', pointB:'Point', centerPoint:'Point'
-    ):
+    def createArcBetweenThreePoints(self, pointA:'Point', pointB:'Point', centerPoint:'Point'):
         '''
         Create a 3-point arc
         '''
@@ -889,8 +813,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createSegment(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"
-    ):
+    def createSegment(self, innerRadius:DimensionOrItsFloatOrStringValue, outerRadius:DimensionOrItsFloatOrStringValue, angle:AngleOrItsFloatOrStringValue="180d"):
         '''
         Create a segment (intersection of two circles)
         '''
@@ -900,8 +823,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createRectangle(self, length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
-    ):
+    def createRectangle(self, length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue):
         '''
         Create a rectangle
         '''
@@ -911,8 +833,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createPolygon(self, numberOfSides:'int', length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue
-    ):
+    def createPolygon(self, numberOfSides:'int', length:DimensionOrItsFloatOrStringValue, width:DimensionOrItsFloatOrStringValue):
         '''
         Create an n-gon
         '''
@@ -922,8 +843,7 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createTrapezoid(self, lengthUpper:DimensionOrItsFloatOrStringValue, lengthLower:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue
-    ):
+    def createTrapezoid(self, lengthUpper:DimensionOrItsFloatOrStringValue, lengthLower:DimensionOrItsFloatOrStringValue, height:DimensionOrItsFloatOrStringValue):
         '''
         Create a trapezoid
         '''
@@ -946,24 +866,27 @@ class Landmark(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def getLandmarkEntityName(self
-    ) -> str:
+    def getLandmarkEntityName(self) -> str:
+        '''
+        Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.
+        '''
         
         print("getLandmarkEntityName is called in an abstract method. Please override this method.")
         raise NotImplementedError()
         
 
     @abstractmethod
-    def getParentEntity(self
-    ) -> 'Entity':
+    def getParentEntity(self) -> 'Entity':
+        '''
+        Get the name of the entity this landmark belongs to.
+        '''
         
         print("getParentEntity is called in an abstract method. Please override this method.")
         raise NotImplementedError()
         
 
     @abstractmethod
-    def isExists(self
-    ) -> bool:
+    def isExists(self) -> bool:
         '''
         Check if an landmark exists
         '''
@@ -973,8 +896,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rename(self, newName:str
-    ):
+    def rename(self, newName:str):
         '''
         Rename the landmark.
         '''
@@ -984,8 +906,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self
-    ):
+    def delete(self):
         '''
         Delete the landmark from the scene.
         '''
@@ -995,8 +916,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isVisible(self
-    ) -> bool:
+    def isVisible(self) -> bool:
         '''
         Returns whether the landmark is visible in the scene.
         '''
@@ -1006,8 +926,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setVisible(self, isVisible:bool
-    ):
+    def setVisible(self, isVisible:bool):
         '''
         Toggles visibility of an landmark in the scene.
         '''
@@ -1017,8 +936,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getNativeInstance(self
-    ):
+    def getNativeInstance(self) -> object:
         '''
         Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
         '''
@@ -1028,8 +946,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationWorld(self
-    ) -> 'Point':
+    def getLocationWorld(self) -> 'Point':
         '''
         Get the landmark XYZ location relative to World Space.
         '''
@@ -1039,8 +956,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationLocal(self
-    ) -> 'Point':
+    def getLocationLocal(self) -> 'Point':
         '''
         Get the landmark XYZ location relative to Local Space.
         '''
@@ -1050,8 +966,7 @@ class Landmark(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self
-    ):
+    def select(self):
         '''
         Select the landmark (in UI).
         '''
@@ -1072,8 +987,7 @@ class Joint(metaclass=ABCMeta):
         self.entity2 = entity2
 
     @abstractmethod
-    def translateLandmarkOntoAnother(self
-    ):
+    def translateLandmarkOntoAnother(self):
         '''
         Transforms one landmark onto another
         '''
@@ -1083,8 +997,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def pivot(self
-    ):
+    def pivot(self):
         '''
         Constraint the rotation origin of entity B to entity A's landmark.
         '''
@@ -1094,8 +1007,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def gearRatio(self, ratio:float
-    ):
+    def gearRatio(self, ratio:float):
         '''
         Constraint the rotation of entity B to be a percentage of entity A's
         '''
@@ -1105,8 +1017,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitLocationXYZ(self, x:Optional[DimensionOrItsFloatOrStringValue]=None, y:Optional[DimensionOrItsFloatOrStringValue]=None, z:Optional[DimensionOrItsFloatOrStringValue]=None
-    ):
+    def limitLocationXYZ(self, x:Optional[DimensionOrItsFloatOrStringValue]=None, y:Optional[DimensionOrItsFloatOrStringValue]=None, z:Optional[DimensionOrItsFloatOrStringValue]=None):
         '''
         Constraint the translation of entity B, relative to entity A's landmark.
         '''
@@ -1116,8 +1027,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitLocationX(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None
-    ):
+    def limitLocationX(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None):
         '''
         Constraint the translation of entity B, relative to entity A's landmark.
         '''
@@ -1127,8 +1037,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitLocationY(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None
-    ):
+    def limitLocationY(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None):
         '''
         Constraint the translation of entity B, relative to entity A's landmark.
         '''
@@ -1138,8 +1047,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitLocationZ(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None
-    ):
+    def limitLocationZ(self, min:Optional[DimensionOrItsFloatOrStringValue]=None, max:Optional[DimensionOrItsFloatOrStringValue]=None):
         '''
         Constraint the translation of entity B, relative to entity A's landmark.
         '''
@@ -1149,8 +1057,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitRotationXYZ(self, x:Optional[AngleOrItsFloatOrStringValue]=None, y:Optional[AngleOrItsFloatOrStringValue]=None, z:Optional[AngleOrItsFloatOrStringValue]=None
-    ):
+    def limitRotationXYZ(self, x:Optional[AngleOrItsFloatOrStringValue]=None, y:Optional[AngleOrItsFloatOrStringValue]=None, z:Optional[AngleOrItsFloatOrStringValue]=None):
         '''
         Constraint the rotation of entity B, relative to entity A's landmark.
         '''
@@ -1160,8 +1067,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitRotationX(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None
-    ):
+    def limitRotationX(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None):
         '''
         Constraint the rotation of entity B, relative to entity A's landmark.
         '''
@@ -1171,8 +1077,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitRotationY(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None
-    ):
+    def limitRotationY(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None):
         '''
         Constraint the rotation of entity B, relative to entity A's landmark.
         '''
@@ -1182,8 +1087,7 @@ class Joint(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def limitRotationZ(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None
-    ):
+    def limitRotationZ(self, min:Optional[AngleOrItsFloatOrStringValue]=None, max:Optional[AngleOrItsFloatOrStringValue]=None):
         '''
         Constraint the rotation of entity B, relative to entity A's landmark.
         '''
@@ -1204,24 +1108,30 @@ class Material(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def assignToPart(self, partName:PartOrItsName
-    ):
+    def assignToPart(self, partName:PartOrItsName):
+        '''
+        Assigns the material to a part.
+        '''
         
         print("assignToPart is called in an abstract method. Please override this method.")
         return self
         
 
     @abstractmethod
-    def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat, aValue:IntOrFloat=1.0
-    ):
+    def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat, aValue:IntOrFloat=1.0):
+        '''
+        Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.
+        '''
         
         print("setColor is called in an abstract method. Please override this method.")
         return self
         
 
     @abstractmethod
-    def addImageTexture(self, imageFilePath:str
-    ):
+    def addImageTexture(self, imageFilePath:str):
+        '''
+        Add a texture from an image file.
+        '''
         
         print("addImageTexture is called in an abstract method. Please override this method.")
         return self
@@ -1236,14 +1146,12 @@ class Animation(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def default(
-    ) -> 'Animation':
+    def default() -> 'Animation':
         raise RuntimeError()
         
 
     @abstractmethod
-    def setFrameStart(self, frameNumber:'int'
-    ):
+    def setFrameStart(self, frameNumber:'int'):
         '''
         Set the start animation frame in the scene.
         '''
@@ -1253,8 +1161,7 @@ class Animation(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setFrameEnd(self, frameNumber:'int'
-    ):
+    def setFrameEnd(self, frameNumber:'int'):
         '''
         Set the end animation frame in the scene.
         '''
@@ -1264,8 +1171,7 @@ class Animation(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setFrameCurrent(self, frameNumber:'int'
-    ):
+    def setFrameCurrent(self, frameNumber:'int'):
         '''
         Set the current animation frame in the scene.
         '''
@@ -1275,8 +1181,7 @@ class Animation(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createKeyFrameLocation(self, entity:EntityOrItsName, frameNumber:'int'
-    ):
+    def createKeyFrameLocation(self, entity:EntityOrItsName, frameNumber:'int'):
         '''
         Create an animation key-frame using the location of the entity.
         '''
@@ -1286,8 +1191,7 @@ class Animation(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createKeyFrameRotation(self, entity:EntityOrItsName, frameNumber:'int'
-    ):
+    def createKeyFrameRotation(self, entity:EntityOrItsName, frameNumber:'int'):
         '''
         Create an animation key-frame using the rotation of the entity.
         '''
@@ -1296,8 +1200,9 @@ class Animation(metaclass=ABCMeta):
         return self
         
 class Light(metaclass=ABCMeta):
-    
+    '''Manipulate a light object.'''
 
+    
     name:str
     description:Optional[str]=None
 
@@ -1307,8 +1212,7 @@ class Light(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat
-    ):
+    def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat):
         '''
         Set the color of an existing light.
         '''
@@ -1318,8 +1222,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createSun(self, energyLevel:float
-    ):
+    def createSun(self, energyLevel:float):
         '''
         Create a Sun-type light.
         '''
@@ -1329,8 +1232,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createSpot(self, energyLevel:float
-    ):
+    def createSpot(self, energyLevel:float):
         '''
         Create a Spot-type light.
         '''
@@ -1340,8 +1242,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createPoint(self, energyLevel:float
-    ):
+    def createPoint(self, energyLevel:float):
         '''
         Create a Point-type light.
         '''
@@ -1351,8 +1252,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createArea(self, energyLevel:float
-    ):
+    def createArea(self, energyLevel:float):
         '''
         Create an Area-type light.
         '''
@@ -1362,8 +1262,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -1373,8 +1272,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
-    ):
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -1384,8 +1282,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isExists(self
-    ) -> bool:
+    def isExists(self) -> bool:
         '''
         Check if an light exists
         '''
@@ -1395,8 +1292,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rename(self, newName:str
-    ):
+    def rename(self, newName:str):
         '''
         Rename the light.
         '''
@@ -1406,8 +1302,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self
-    ):
+    def delete(self):
         '''
         Delete the light from the scene.
         '''
@@ -1417,8 +1312,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getNativeInstance(self
-    ):
+    def getNativeInstance(self) -> object:
         '''
         Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
         '''
@@ -1428,8 +1322,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationWorld(self
-    ) -> 'Point':
+    def getLocationWorld(self) -> 'Point':
         '''
         Get the light XYZ location relative to World Space.
         '''
@@ -1439,8 +1332,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationLocal(self
-    ) -> 'Point':
+    def getLocationLocal(self) -> 'Point':
         '''
         Get the light XYZ location relative to Local Space.
         '''
@@ -1450,8 +1342,7 @@ class Light(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self
-    ):
+    def select(self):
         '''
         Select the light (in UI).
         '''
@@ -1460,8 +1351,9 @@ class Light(metaclass=ABCMeta):
         return self
         
 class Camera(metaclass=ABCMeta):
-    
+    '''Manipulate a camera object.'''
 
+    
     name:str
     description:Optional[str]=None
 
@@ -1471,8 +1363,7 @@ class Camera(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def createPerspective(self
-    ):
+    def createPerspective(self):
         '''
         Create a perspective camera in the scene.
         '''
@@ -1482,8 +1373,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createOrthogonal(self
-    ):
+    def createOrthogonal(self):
         '''
         Create an orthogonal camera in the scene.
         '''
@@ -1493,8 +1383,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setFocalLength(self, length:float
-    ):
+    def setFocalLength(self, length:float):
         '''
         Set the focal length of the camera.
         '''
@@ -1504,8 +1393,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue
-    ):
+    def translateXYZ(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
         '''
         Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         '''
@@ -1515,8 +1403,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue
-    ):
+    def rotateXYZ(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
         '''
         Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         '''
@@ -1526,8 +1413,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def isExists(self
-    ) -> bool:
+    def isExists(self) -> bool:
         '''
         Check if an camera exists
         '''
@@ -1537,8 +1423,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def rename(self, newName:str
-    ):
+    def rename(self, newName:str):
         '''
         Rename the camera.
         '''
@@ -1548,8 +1433,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self
-    ):
+    def delete(self):
         '''
         Delete the camera from the scene.
         '''
@@ -1559,8 +1443,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getNativeInstance(self
-    ):
+    def getNativeInstance(self) -> object:
         '''
         Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
         '''
@@ -1570,8 +1453,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationWorld(self
-    ) -> 'Point':
+    def getLocationWorld(self) -> 'Point':
         '''
         Get the camera XYZ location relative to World Space.
         '''
@@ -1581,8 +1463,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLocationLocal(self
-    ) -> 'Point':
+    def getLocationLocal(self) -> 'Point':
         '''
         Get the camera XYZ location relative to Local Space.
         '''
@@ -1592,8 +1473,7 @@ class Camera(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def select(self
-    ):
+    def select(self):
         '''
         Select the entity (in UI).
         '''
@@ -1614,14 +1494,12 @@ class Scene(metaclass=ABCMeta):
         self.description = description
 
     @staticmethod
-    def default(
-    ) -> 'Scene':
+    def default() -> 'Scene':
         raise RuntimeError()
         
 
     @abstractmethod
-    def create(self
-    ):
+    def create(self):
         '''
         Creates a new scene.
         '''
@@ -1631,8 +1509,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def delete(self
-    ):
+    def delete(self):
         '''
         Deletes a scene.
         '''
@@ -1642,8 +1519,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def export(self, filePath:str, entities:list[EntityOrItsName], overwrite:bool=True, scale:float=1.0
-    ):
+    def export(self, filePath:str, entities:list[EntityOrItsName], overwrite:bool=True, scale:float=1.0):
         '''
         Export the entire scene or specific entities.
         '''
@@ -1653,8 +1529,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setDefaultUnit(self, unit:LengthUnitOrItsName
-    ):
+    def setDefaultUnit(self, unit:LengthUnitOrItsName):
         '''
         Set the document's default measurements system.
         '''
@@ -1664,8 +1539,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createGroup(self, name:str
-    ):
+    def createGroup(self, name:str):
         '''
         Create a new group
         '''
@@ -1675,8 +1549,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def deleteGroup(self, name:str, removeChildren:bool
-    ):
+    def deleteGroup(self, name:str, removeChildren:bool):
         '''
         Delete a new group
         '''
@@ -1686,8 +1559,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def removeFromGroup(self, entityName:str, groupName:str
-    ):
+    def removeFromGroup(self, entityName:str, groupName:str):
         '''
         Removes an existing entity from a group
         '''
@@ -1697,8 +1569,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def assignToGroup(self, entities:list[EntityOrItsName], groupName:str, removeFromOtherGroups:Optional[bool]=True
-    ):
+    def assignToGroup(self, entities:list[EntityOrItsName], groupName:str, removeFromOtherGroups:Optional[bool]=True):
         '''
         Assigns an existing entity to a new group
         '''
@@ -1708,8 +1579,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setVisible(self, entities:list[EntityOrItsName], isVisible:bool
-    ):
+    def setVisible(self, entities:list[EntityOrItsName], isVisible:bool):
         '''
         Change the visibiltiy of the entity.
         '''
@@ -1719,8 +1589,7 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setBackgroundImage(self, filePath:str, locationX:Optional[DimensionOrItsFloatOrStringValue]=0, locationY:Optional[DimensionOrItsFloatOrStringValue]=0
-    ):
+    def setBackgroundImage(self, filePath:str, locationX:Optional[DimensionOrItsFloatOrStringValue]=0, locationY:Optional[DimensionOrItsFloatOrStringValue]=0):
         '''
         Set the scene background image. This can be an image or an HDRI texture.
         '''
@@ -1738,8 +1607,7 @@ class Analytics(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def measureDistance(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark
-    ) -> 'Dimensions':
+    def measureDistance(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark) -> 'Dimensions':
         '''
         The ubiquitous ruler.
         '''
@@ -1749,8 +1617,7 @@ class Analytics(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def measureAngle(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark, pivot:Optional[EntityOrItsNameOrLandmark]=None
-    ) -> 'list[Angle]':
+    def measureAngle(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark, pivot:Optional[EntityOrItsNameOrLandmark]=None) -> 'list[Angle]':
         '''
         The ubiquitous ruler.
         '''
@@ -1760,8 +1627,7 @@ class Analytics(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getWorldPose(self, entity:EntityOrItsName
-    ) -> 'list[float]':
+    def getWorldPose(self, entity:EntityOrItsName) -> 'list[float]':
         '''
         Returns the world pose of an entity.
         '''
@@ -1771,8 +1637,7 @@ class Analytics(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getBoundingBox(self, entityName:EntityOrItsName
-    ) -> 'BoundaryBox':
+    def getBoundingBox(self, entityName:EntityOrItsName) -> 'BoundaryBox':
         '''
         Returns the bounding box of an entity.
         '''
@@ -1782,8 +1647,7 @@ class Analytics(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getDimensions(self, entityName:EntityOrItsName
-    ) -> 'Dimensions':
+    def getDimensions(self, entityName:EntityOrItsName) -> 'Dimensions':
         '''
         Returns the dimensions of an entity.
         '''
@@ -1793,12 +1657,11 @@ class Analytics(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def log(self, message:str
-    ):
+    def log(self, message:str):
         '''
         Write a message
         '''
         
         print("log is called in an abstract method. Please override this method.")
-        raise NotImplementedError()
+        return self
         

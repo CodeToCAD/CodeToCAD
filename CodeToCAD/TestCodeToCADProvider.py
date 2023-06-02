@@ -1012,6 +1012,7 @@ class TestAnimation(TestProviderCase):
         
 class TestLight(TestProviderCase):
     
+    
     @unittest.skip
     def test_setColor(self):
         instance = Light("name","description")
@@ -1135,6 +1136,7 @@ class TestLight(TestProviderCase):
 
         
 class TestCamera(TestProviderCase):
+    
     
     @unittest.skip
     def test_createPerspective(self):
@@ -1274,6 +1276,8 @@ class TestScene(TestProviderCase):
         value = instance.setDefaultUnit("unit")
 
         
+        assert value, "Modify method failed."
+        
     @unittest.skip
     def test_createGroup(self):
         instance = Scene("name","description")
@@ -1304,12 +1308,16 @@ class TestScene(TestProviderCase):
         value = instance.assignToGroup("entities","groupName","removeFromOtherGroups")
 
         
+        assert value, "Modify method failed."
+        
     @unittest.skip
     def test_setVisible(self):
         instance = Scene("name","description")
 
         value = instance.setVisible("entities","isVisible")
 
+        
+        assert value, "Modify method failed."
         
     @unittest.skip
     def test_setBackgroundImage(self):
@@ -1375,5 +1383,5 @@ class TestAnalytics(TestProviderCase):
         value = instance.log("message")
 
         
-        assert value, "Get method failed."
+        assert value, "Modify method failed."
         
