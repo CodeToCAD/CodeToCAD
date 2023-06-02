@@ -1,98 +1,78 @@
-from BlenderProvider import Part, Scene, Analytics
-print("Starting bracelet.py")
+from CodeToCAD import *
+
+Scene.default().setDefaultUnit("cm")
+Scene.default().createGroup("Bracelet")
 
 
-Scene().setDefaultUnit("cm")
-Scene().createGroup("Bracelet")
-# Defining dimensions and calculated properties
+class Bracelet:
+    outerDiameter = "161cm"
+    innerDiameter = "81cm"
+    thickness = "83cm"
 
-# in mm
-bracelet = {
-    "outerDiameter": 161,
-    "innerDiameter": 81,
-    "thickness": 83
-}
-button = {
-    "diameter": 60,
-    "depth": 13.6
-}
-buttonInner = {
-    "diameter": 40,
-    "depth": 5
-}
-belt = {
-    "outerDiameter": 162,
-    "innerDiameter": 150,
-    "thickness": 30
-}
+    def create(self):
+        bracelet = Part("bracelet") \
+            .createTorus(Dimension.fromString(self.innerDiameter)/2, Dimension.fromString(self.outerDiameter)/2)
+        bracelet.scaleZ(self.thickness)
 
-# TODO: translation calculations should be obsolete with the introduction of landmarks and joints
-buttonTranslation = (bracelet["outerDiameter"] - button["depth"]) / 2
-
-buttonInnerYTranslation = (
-    bracelet["outerDiameter"] - buttonInner["depth"]) / 2
-
-# Creating the shapes we will use
-
-Part("bracelet") \
-    .createTorus(f"{bracelet['innerDiameter']/2}cm", f"{bracelet['outerDiameter']/2}cm") \
-    .scaleZ(f"{bracelet['thickness']}cm")  # Scale x,y by a scale factor of 1, so the number is unitless
-
-Part("button") \
-    .createCylinder(f"{button['diameter']/2}cm", f"{button['depth']}cm") \
-    .rotateXYZ(90, 0, 0) \
-    .translateXYZ(0, f"{buttonTranslation}cm", 0)
-
-Part("buttonInner") \
-    .createCylinder(f"{buttonInner['diameter']/2}cm", f"{buttonInner['depth']}cm") \
-    .rotateXYZ(90, 0, 0) \
-    .translateXYZ(0, f"{buttonInnerYTranslation}cm", 0)
-
-Part("belt") \
-    .createCylinder(f"{belt['outerDiameter']/2}cm", f"{belt['thickness']}cm")
-
-Part("beltInner") \
-    .createCylinder(f"{belt['innerDiameter']/2}cm", f"{belt['thickness']}cm")
+        return bracelet
 
 
-Part("button")\
-    .clone("booleanButton")
+class Button:
+    radius = "60/2cm"
+    depth = "13.6cm"
+    insetRadius = "20cm"
+    insetDepth = "3cm"
 
-Part("bracelet")\
-    .clone("booleanBracelet")
+    def create(self):
+        button = Part("button") \
+            .createCylinder(self.radius, self.depth)
+        button_top = button.getLandmark("top")
+        button.filletFaces("5cm", [button_top])
+        button.hole(
+            button_top, self.insetRadius, self.insetDepth)
+        return button
 
-# Grouping
 
-Scene().assignToGroup(["bracelet", "button", "belt"], "Bracelet")
+class Belt:
+    outerRadius = "162/2cm"
+    innerRadius = "150/2cm"
+    thickness = "30cm"
 
-# Modifying the shapes
+    def create(self):
+        belt = Part("belt").createCylinder(
+            self.outerRadius, self.thickness)
+        belt.hole(belt.getLandmark("top"),
+                  self.innerRadius, self.thickness)
+        return belt
 
-Part("button") \
-    .intersect("booleanBracelet")
 
-Part("button") \
-    .subtract("buttonInner")
+# MARK: Create components
+bracelet = Bracelet().create()
+button = Button().create()
+belt = Belt().create()
 
-Part("bracelet") \
-    .subtract("booleanButton")
+# Mark: Joint the button to the front of the bracelet
+Joint(bracelet.getLandmark("front"), button.getLandmark(
+    "top")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(90, 0, 0)
+Joint(bracelet.getLandmark("center"), belt.getLandmark(
+    "center")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
 
-Part("belt") \
-    .subtract("beltInner")
+# Mark: subtract the button and belt from the bracelet:
+bracelet.subtract(belt, deleteAfterSubtract=False)
 
-# Save a copy of the belt to subtract from bracelet later
-Part("belt")\
-    .clone("booleanbelt")
+bracelet.hole(belt.getLandmark("front"),
+              button.getDimensions().x / 2, button.getDimensions().z, normalAxis="y", flipAxis=True)
+belt.hole(belt.getLandmark("front"),
+          button.getDimensions().x / 2, belt.getDimensions().z, normalAxis="y", flipAxis=True)
 
-Part("bracelet")\
-    .clone("booleanBracelet2")
+# Mark: Assign to a group:
 
-Part("belt") \
-    .intersect("booleanBracelet2")
+Scene().assignToGroup([bracelet, button, belt], "Bracelet")
 
-Part("bracelet") \
-    .subtract("booleanbelt")
+# Mark apply materials:
+redMaterial = Material("red").setColor(181, 16, 4)
+blueMaterial = Material("blue").setColor(19, 107, 181)
 
-# Remesh final shapes
-Part("belt").remesh(strategy="edgesplit", amount=2)
-Part("bracelet").remesh(strategy="edgesplit", amount=2)
-Part("button").remesh(strategy="edgesplit", amount=2)
+bracelet.setMaterial(redMaterial)
+button.setMaterial(blueMaterial)
+belt.setMaterial(blueMaterial)
