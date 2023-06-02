@@ -9,6 +9,7 @@ from . import utilities as Utilities
 min: str = Utilities.min
 max: str = Utilities.max
 center: str = Utilities.center
+PresetLandmark: Type[Utilities.PresetLandmark] = Utilities.PresetLandmark
 Dimension: Type[Utilities.Dimension] = Utilities.Dimension
 Dimensions: Type[Utilities.Dimensions] = Utilities.Dimensions
 Angle: Type[Utilities.Angle] = Utilities.Angle
