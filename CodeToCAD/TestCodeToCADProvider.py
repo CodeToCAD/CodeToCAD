@@ -966,11 +966,40 @@ class TestAnimation(TestProviderCase):
     
     
     @unittest.skip
+    def test_setFrameStart(self):
+        instance = Animation("")
+
+        value = instance.setFrameStart("frameNumber")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_setFrameEnd(self):
+        instance = Animation("")
+
+        value = instance.setFrameEnd("frameNumber")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_setFrameCurrent(self):
+        instance = Animation("")
+
+        value = instance.setFrameCurrent("frameNumber")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
     def test_createKeyFrameLocation(self):
         instance = Animation("")
 
         value = instance.createKeyFrameLocation("entity","frameNumber")
 
+        
+        assert value, "Modify method failed."
         
     @unittest.skip
     def test_createKeyFrameRotation(self):
@@ -978,6 +1007,8 @@ class TestAnimation(TestProviderCase):
 
         value = instance.createKeyFrameRotation("entity","frameNumber")
 
+        
+        assert value, "Modify method failed."
         
 class TestLight(TestProviderCase):
     

@@ -712,16 +712,34 @@ class Animation(CodeToCADInterface.Animation):
     ) -> 'Animation':
         return Animation()
 
+    def setFrameStart(self, frameNumber:'int'
+    ):
+        
+        return self
+        
+
+    def setFrameEnd(self, frameNumber:'int'
+    ):
+        
+        return self
+        
+
+    def setFrameCurrent(self, frameNumber:'int'
+    ):
+        
+        return self
+        
+
     def createKeyFrameLocation(self, entity:EntityOrItsName, frameNumber:'int'
     ):
         
-        raise NotImplementedError()
+        return self
         
 
     def createKeyFrameRotation(self, entity:EntityOrItsName, frameNumber:'int'
     ):
         
-        raise NotImplementedError()
+        return self
         
     
 class Light(CodeToCADInterface.Light): 

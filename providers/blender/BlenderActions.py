@@ -2170,6 +2170,21 @@ def addKeyframeToObject(objectName: str, frameNumber: int, dataPath: str):
     blenderObject.keyframe_insert(data_path=dataPath, frame=frameNumber)
 
 
+def setFrameStart(frameNumber: int, sceneName: Optional[str]):
+    scene = getScene(sceneName)
+    scene.frame_start = frameNumber
+
+
+def setFrameEnd(frameNumber: int, sceneName: Optional[str]):
+    scene = getScene(sceneName)
+    scene.frame_end = frameNumber
+
+
+def setFrameCurrent(frameNumber: int, sceneName: Optional[str]):
+    scene = getScene(sceneName)
+    scene.frame_set(frameNumber)
+
+
 # def getTexture(textureName):
 # 	blenderTexture = bpy.data.textures.get(textureName)
 
@@ -2265,7 +2280,8 @@ def setFocalLength(cameraName, length=50.0):
 def addHDRTexture(sceneName, imageFilePath):
     deleteNodes(sceneName)
     nodeBackground = createNodes(sceneName, 'ShaderNodeBackground')
-    nodeEnvironment = createNodes(sceneName, 'ShaderNodeTexEnvironment')
+    nodeEnvironment: bpy.types.ShaderNodeTexEnvironment = createNodes(
+        sceneName, 'ShaderNodeTexEnvironment')  # type: ignore
     nodeEnvironment.image = bpy.data.images.load(imageFilePath)
     nodeEnvironment.location = 0, 0
     nodeOutput = createNodes(sceneName, 'ShaderNodeOutputWorld')
@@ -2276,7 +2292,7 @@ def addHDRTexture(sceneName, imageFilePath):
               nodeOutput.inputs["Surface"])
 
 
-def getNodeTree(sceneName):
+def getNodeTree(sceneName) -> bpy.types.NodeTree:
     scene = getScene(sceneName)
     nodeTree = scene.world.node_tree
     return nodeTree
@@ -2287,16 +2303,18 @@ def deleteNodes(sceneName):
     nodes.clear()
 
 
-def createNodes(sceneName, type):
+def createNodes(sceneName, type) -> bpy.types.Node:
     nodes = getNodeTree(sceneName).nodes.new(type=type)
     return nodes
 
 
 def setBackgroundLocation(sceneName, x, y):
-    getNodeTree(sceneName).nodes.get('Environment Texture').location = x, y
+    envTexture: bpy.types.ShaderNodeTexEnvironment = getNodeTree(
+        sceneName).nodes.get('Environment Texture')  # type: ignore
+    envTexture.location = x, y
 
 
-def getScene(sceneName):
+def getScene(sceneName: Optional[str] = "Scene") -> bpy.types.Scene:
 
     blenderScene = bpy.data.scenes.get(sceneName or "Scene")
 

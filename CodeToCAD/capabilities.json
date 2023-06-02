@@ -1446,14 +1446,43 @@
             }
         },
         "Animation": {
-            "information": "Camera, lighting, rendering, animation related functionality.",
+            "information": "Animation related functionality.",
             "constructor": {},
             "default": {
                 "action": "get",
                 "staticMethod": true,
                 "returnType": "Animation"
             },
+            "setFrameStart": {
+                "information": "Set the start animation frame in the scene.",
+                "action": "modify",
+                "parameters": {
+                    "frameNumber": {
+                        "type": "int"
+                    }
+                }
+            },
+            "setFrameEnd": {
+                "information": "Set the end animation frame in the scene.",
+                "action": "modify",
+                "parameters": {
+                    "frameNumber": {
+                        "type": "int"
+                    }
+                }
+            },
+            "setFrameCurrent": {
+                "information": "Set the current animation frame in the scene.",
+                "action": "modify",
+                "parameters": {
+                    "frameNumber": {
+                        "type": "int"
+                    }
+                }
+            },
             "createKeyFrameLocation": {
+                "information": "Create an animation key-frame using the location of the entity.",
+                "action": "modify",
                 "parameters": {
                     "entity": {
                         "type": "string,Entity"
@@ -1464,6 +1493,8 @@
                 }
             },
             "createKeyFrameRotation": {
+                "information": "Create an animation key-frame using the rotation of the entity.",
+                "action": "modify",
                 "parameters": {
                     "entity": {
                         "type": "string,Entity"
@@ -1487,6 +1518,7 @@
                 }
             },
             "setColor": {
+                "information": "Set the color of an existing light.",
                 "action": "modify",
                 "parameters": {
                     "rValue": {
@@ -1501,6 +1533,7 @@
                 }
             },
             "createSun": {
+                "information": "Create a Sun-type light.",
                 "action": "create",
                 "parameters": {
                     "energyLevel": {
@@ -1509,6 +1542,7 @@
                 }
             },
             "createSpot": {
+                "information": "Create a Spot-type light.",
                 "action": "create",
                 "parameters": {
                     "energyLevel": {
@@ -1517,6 +1551,7 @@
                 }
             },
             "createPoint": {
+                "information": "Create a Point-type light.",
                 "action": "create",
                 "parameters": {
                     "energyLevel": {
@@ -1525,6 +1560,7 @@
                 }
             },
             "createArea": {
+                "information": "Create an Area-type light.",
                 "action": "create",
                 "parameters": {
                     "energyLevel": {
@@ -1617,14 +1653,17 @@
                 }
             },
             "createPerspective": {
+                "information": "Create a perspective camera in the scene.",
                 "action": "create",
                 "parameters": {}
             },
             "createOrthogonal": {
+                "information": "Create an orthogonal camera in the scene.",
                 "action": "create",
                 "parameters": {}
             },
             "setFocalLength": {
+                "information": "Set the focal length of the camera.",
                 "action": "modify",
                 "parameters": {
                     "length": {
@@ -1724,11 +1763,11 @@
                 "returnType": "Scene"
             },
             "create": {
-                "information": "Creates a new scene",
+                "information": "Creates a new scene.",
                 "action": "create"
             },
             "delete": {
-                "information": "Deletes a scene",
+                "information": "Deletes a scene.",
                 "action": "delete"
             },
             "export": {
