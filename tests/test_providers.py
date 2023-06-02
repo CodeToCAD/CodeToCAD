@@ -9,7 +9,7 @@ from CodeToCAD import *
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
 from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, center, createUUIDLikeId,
+                                 Dimensions, Point, PresetLandmarks, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
 
 if __name__ == "__main__":
@@ -389,15 +389,37 @@ class TestEntity(TestProviderCase):
 
     def test_getLandmark(self):
         instance = Part("name", "description").createCube(1, 1, 1)
+
+        # test creating and getting a landmark
         instance.createLandmark("landmarkName", max, max, max)
-
         value = instance.getLandmark("landmarkName")
-
-        valueLocation = value.getLocationWorld()
-
         assert value, "Get method failed."
+        valueLocation = value.getLocationWorld()
         assert valueLocation.x == "0.5m"
         assert valueLocation.y == "0.5m"
+        assert valueLocation.z == "0.5m"
+
+        # test landmark that doesn't exist
+        try:
+            value = instance.getLandmark("landmarkThatDoesNotExist")
+            assert value == None, "Got a ghost landmark."
+        except:
+            pass
+
+        # test preset landmark fromString
+        value = instance.getLandmark("leftTop")
+        assert value, "Get method failed."
+        valueLocation = value.getLocationWorld()
+        assert valueLocation.x == "-0.5m"
+        assert valueLocation.y == "0.0m"
+        assert valueLocation.z == "0.5m"
+
+        # test preset landmark PresetLandmarks
+        value = instance.getLandmark(PresetLandmarks.leftTop)
+        assert value, "Get method failed."
+        valueLocation = value.getLocationWorld()
+        assert valueLocation.x == "-0.5m"
+        assert valueLocation.y == "0.0m"
         assert valueLocation.z == "0.5m"
 
 

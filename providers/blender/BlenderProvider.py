@@ -10,7 +10,7 @@ import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
 from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
 from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, center, createUUIDLikeId,
+                                 Dimensions, Point, PresetLandmarks, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
 
 
@@ -515,10 +515,33 @@ class Entity(CodeToCADInterface.Entity):
         if isinstance(landmarkName, Landmark):
             landmarkName = landmarkName.name
 
+        preset: Optional[PresetLandmarks] = None
+
+        if isinstance(landmarkName, str):
+            try:
+                preset = PresetLandmarks.fromString(landmarkName)
+            except Exception as e:
+                pass
+
+        if isinstance(landmarkName, PresetLandmarks):
+            preset = landmarkName
+            landmarkName = preset.name
+
         landmark = Landmark(landmarkName, self.name)
 
-        assert BlenderActions.getObject(
-            landmark.getLandmarkEntityName()) is not None, f"Landmark {landmarkName} does not exist for {self.name}."
+        if preset != None:
+            # if preset does not exist, create it.
+            try:
+                BlenderActions.getObject(landmark.getLandmarkEntityName())
+            except:
+                presetXYZ = preset.getXYZ()
+                self.createLandmark(
+                    landmarkName, presetXYZ[0], presetXYZ[1], presetXYZ[2])
+
+                return landmark
+
+        assert BlenderActions.getObject(landmark.getLandmarkEntityName(
+        )) is not None, f"Landmark {landmarkName} does not exist for {self.name}."
         return landmark
 
 
