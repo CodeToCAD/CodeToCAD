@@ -35,8 +35,7 @@
 
     {%- elif methodName == "default"%}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}
-    ) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
         {%if useAbstractMethodDecorator-%}
         raise RuntimeError()
         {%else-%}
@@ -45,8 +44,7 @@
 
     {%- else %}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}
-    ) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
         {% if "information" in properties and useAbstractMethodDecorator -%}
         '''
         {{ properties["information"] }}
