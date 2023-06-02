@@ -8,9 +8,9 @@ import BlenderDefinitions
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
-from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName
+from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName, PresetLandmarkOrItsName
 from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, PresetLandmarks, center, createUUIDLikeId,
+                                 Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
 
 
@@ -510,20 +510,20 @@ class Entity(CodeToCADInterface.Entity):
         ]
         return Utilities.Dimensions(dimensions[0], dimensions[1], dimensions[2])
 
-    def getLandmark(self, landmarkName: str
+    def getLandmark(self, landmarkName: PresetLandmarkOrItsName
                     ) -> 'Landmark':
         if isinstance(landmarkName, Landmark):
             landmarkName = landmarkName.name
 
-        preset: Optional[PresetLandmarks] = None
+        preset: Optional[PresetLandmark] = None
 
         if isinstance(landmarkName, str):
             try:
-                preset = PresetLandmarks.fromString(landmarkName)
+                preset = PresetLandmark.fromString(landmarkName)
             except Exception as e:
                 pass
 
-        if isinstance(landmarkName, PresetLandmarks):
+        if isinstance(landmarkName, PresetLandmark):
             preset = landmarkName
             landmarkName = preset.name
 

@@ -7,7 +7,7 @@ from typing import Optional
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
-from CodeToCAD.CodeToCADInterface import (FloatOrItsStringValue,IntOrFloat,MaterialOrItsName,PartOrItsName,EntityOrItsName,LandmarkOrItsName,AxisOrItsIndexOrItsName,DimensionOrItsFloatOrStringValue,AngleOrItsFloatOrStringValue,EntityOrItsNameOrLandmark,PointOrListOfFloatOrItsStringValue,LengthUnitOrItsName)
+from CodeToCAD.CodeToCADInterface import (FloatOrItsStringValue,IntOrFloat,MaterialOrItsName,PartOrItsName,EntityOrItsName,LandmarkOrItsName,AxisOrItsIndexOrItsName,DimensionOrItsFloatOrStringValue,AngleOrItsFloatOrStringValue,EntityOrItsNameOrLandmark,PointOrListOfFloatOrItsStringValue,LengthUnitOrItsName,PresetLandmarkOrItsName)
 from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                             Dimensions, Point, center, createUUIDLikeId,
                             getAbsoluteFilepath, getFilename, max, min)
@@ -238,7 +238,7 @@ class Entity(CodeToCADInterface.Entity):
         raise NotImplementedError()
         
 
-    def getLandmark(self, landmarkName:str
+    def getLandmark(self, landmarkName:PresetLandmarkOrItsName
     ) -> 'Landmark':
         
         raise NotImplementedError()

@@ -17,7 +17,7 @@ center = "center"
 reservedWords = [min, max, center]
 
 
-class PresetLandmarks(Enum):
+class PresetLandmark(Enum):
     left = 2
     right = 4
     top = 8
@@ -55,19 +55,19 @@ class PresetLandmarks(Enum):
         return (self & other == other.value)
 
     @staticmethod
-    def fromString(landmarkName) -> Optional['PresetLandmarks']:
-        for preset in PresetLandmarks:
+    def fromString(landmarkName) -> Optional['PresetLandmark']:
+        for preset in PresetLandmark:
             if preset.name == landmarkName:
                 return preset
         return None
 
     def getXYZ(self):
-        x = min if self.contains(PresetLandmarks.left) else max if self.contains(
-            PresetLandmarks.right) else center
-        y = min if self.contains(PresetLandmarks.front) else max if self.contains(
-            PresetLandmarks.back) else center
-        z = min if self.contains(PresetLandmarks.bottom) else max if self.contains(
-            PresetLandmarks.top) else center
+        x = min if self.contains(PresetLandmark.left) else max if self.contains(
+            PresetLandmark.right) else center
+        y = min if self.contains(PresetLandmark.front) else max if self.contains(
+            PresetLandmark.back) else center
+        z = min if self.contains(PresetLandmark.bottom) else max if self.contains(
+            PresetLandmark.top) else center
         return (x, y, z)
 
 

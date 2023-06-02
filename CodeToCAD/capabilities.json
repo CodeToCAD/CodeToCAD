@@ -415,7 +415,7 @@
                 "information": "Get the landmark by name",
                 "parameters": {
                     "landmarkName": {
-                        "type": "string"
+                        "type": "string,PresetLandmark"
                     }
                 }
             }

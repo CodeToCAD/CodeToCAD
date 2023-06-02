@@ -9,7 +9,7 @@ from CodeToCAD import *
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
 from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, PresetLandmarks, center, createUUIDLikeId,
+                                 Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
 
 if __name__ == "__main__":
@@ -415,7 +415,7 @@ class TestEntity(TestProviderCase):
         assert valueLocation.z == "0.5m"
 
         # test preset landmark PresetLandmarks
-        value = instance.getLandmark(PresetLandmarks.leftTop)
+        value = instance.getLandmark(PresetLandmark.leftTop)
         assert value, "Get method failed."
         valueLocation = value.getLocationWorld()
         assert valueLocation.x == "-0.5m"
