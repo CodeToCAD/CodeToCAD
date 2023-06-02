@@ -1227,7 +1227,7 @@ class Material(metaclass=ABCMeta):
         return self
         
 class Animation(metaclass=ABCMeta):
-    '''Camera, lighting, rendering, animation related functionality.'''
+    '''Animation related functionality.'''
 
     
 
@@ -1242,19 +1242,58 @@ class Animation(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def setFrameStart(self, frameNumber:'int'
+    ):
+        '''
+        Set the start animation frame in the scene.
+        '''
+        
+        print("setFrameStart is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def setFrameEnd(self, frameNumber:'int'
+    ):
+        '''
+        Set the end animation frame in the scene.
+        '''
+        
+        print("setFrameEnd is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def setFrameCurrent(self, frameNumber:'int'
+    ):
+        '''
+        Set the current animation frame in the scene.
+        '''
+        
+        print("setFrameCurrent is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
     def createKeyFrameLocation(self, entity:EntityOrItsName, frameNumber:'int'
     ):
+        '''
+        Create an animation key-frame using the location of the entity.
+        '''
         
         print("createKeyFrameLocation is called in an abstract method. Please override this method.")
-        raise NotImplementedError()
+        return self
         
 
     @abstractmethod
     def createKeyFrameRotation(self, entity:EntityOrItsName, frameNumber:'int'
     ):
+        '''
+        Create an animation key-frame using the rotation of the entity.
+        '''
         
         print("createKeyFrameRotation is called in an abstract method. Please override this method.")
-        raise NotImplementedError()
+        return self
         
 class Light(metaclass=ABCMeta):
     
@@ -1270,6 +1309,9 @@ class Light(metaclass=ABCMeta):
     @abstractmethod
     def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat
     ):
+        '''
+        Set the color of an existing light.
+        '''
         
         print("setColor is called in an abstract method. Please override this method.")
         return self
@@ -1278,6 +1320,9 @@ class Light(metaclass=ABCMeta):
     @abstractmethod
     def createSun(self, energyLevel:float
     ):
+        '''
+        Create a Sun-type light.
+        '''
         
         print("createSun is called in an abstract method. Please override this method.")
         return self
@@ -1286,6 +1331,9 @@ class Light(metaclass=ABCMeta):
     @abstractmethod
     def createSpot(self, energyLevel:float
     ):
+        '''
+        Create a Spot-type light.
+        '''
         
         print("createSpot is called in an abstract method. Please override this method.")
         return self
@@ -1294,6 +1342,9 @@ class Light(metaclass=ABCMeta):
     @abstractmethod
     def createPoint(self, energyLevel:float
     ):
+        '''
+        Create a Point-type light.
+        '''
         
         print("createPoint is called in an abstract method. Please override this method.")
         return self
@@ -1302,6 +1353,9 @@ class Light(metaclass=ABCMeta):
     @abstractmethod
     def createArea(self, energyLevel:float
     ):
+        '''
+        Create an Area-type light.
+        '''
         
         print("createArea is called in an abstract method. Please override this method.")
         return self
@@ -1419,6 +1473,9 @@ class Camera(metaclass=ABCMeta):
     @abstractmethod
     def createPerspective(self
     ):
+        '''
+        Create a perspective camera in the scene.
+        '''
         
         print("createPerspective is called in an abstract method. Please override this method.")
         return self
@@ -1427,6 +1484,9 @@ class Camera(metaclass=ABCMeta):
     @abstractmethod
     def createOrthogonal(self
     ):
+        '''
+        Create an orthogonal camera in the scene.
+        '''
         
         print("createOrthogonal is called in an abstract method. Please override this method.")
         return self
@@ -1435,6 +1495,9 @@ class Camera(metaclass=ABCMeta):
     @abstractmethod
     def setFocalLength(self, length:float
     ):
+        '''
+        Set the focal length of the camera.
+        '''
         
         print("setFocalLength is called in an abstract method. Please override this method.")
         return self
@@ -1560,7 +1623,7 @@ class Scene(metaclass=ABCMeta):
     def create(self
     ):
         '''
-        Creates a new scene
+        Creates a new scene.
         '''
         
         print("create is called in an abstract method. Please override this method.")
@@ -1571,7 +1634,7 @@ class Scene(metaclass=ABCMeta):
     def delete(self
     ):
         '''
-        Deletes a scene
+        Deletes a scene.
         '''
         
         print("delete is called in an abstract method. Please override this method.")
