@@ -141,6 +141,7 @@ class TestUtilities(unittest.TestCase):
         assert PresetLandmark.backTop.getXYZ() == (center, max, max)
         assert PresetLandmark.rightBackBottom.getXYZ() == (max, max, min)
         assert PresetLandmark.leftBackTop.getXYZ() == (min, max, max)
+        assert PresetLandmark.center.getXYZ() == (center, center, center)
 
 
 if __name__ == "__main__":
