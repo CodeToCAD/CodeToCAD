@@ -2,7 +2,7 @@
 
 CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape). 
 
-Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - the [cheat-sheet and documentation](https://codetocad.github.io/CodeToCAD) will help you get started.
+Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - the [documentation](https://codetocad.github.io/CodeToCAD/) will help you get started.
 
 <div align="center">
 <image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/three_axis_mill.gif"/>
@@ -10,7 +10,7 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
 
 ## Documentation
 
-You can find the CodeToCAD documentation here: [https://codetocad.github.io/CodeToCAD](https://codetocad.github.io/CodeToCAD)
+You can find the CodeToCAD documentation here: [https://codetocad.github.io/CodeToCAD](https://codetocad.github.io/CodeToCAD/)
 
 ## Getting Started
 
