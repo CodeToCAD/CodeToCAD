@@ -21,6 +21,10 @@
             margin-bottom: 20px;
         }
 
+        img {
+            width: 50%;
+        }
+
         .grid-container {
             display: grid;
             gap: 2rem;
@@ -163,7 +167,7 @@
 
     <div class="" style="width:50%">
         {% for example in examples -%}
-        <a href='#{{example["name"]}}' class="chip">{{example["name"]}}()</a>
+        <a href='#{{example["name"]}}' class="chip">{{example["name"]}}</a>
         {% endfor -%}
     </div>
 
@@ -182,7 +186,8 @@
             
             <div class="methods">
             {% if "description" in example -%}
-            <div>{{- example["description"] -}}</div>
+            <div style="
+            width: 50%;">{{- example["description"] -}}</div>
             {%-endif%}
             
             {% if "imagePath" in example and example["imagePath"]|length > 0 -%}

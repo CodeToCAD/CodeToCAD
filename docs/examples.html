@@ -21,6 +21,10 @@
             margin-bottom: 20px;
         }
 
+        img {
+            width: 50%;
+        }
+
         .grid-container {
             display: grid;
             gap: 2rem;
@@ -162,17 +166,17 @@
     
 
     <div class="" style="width:50%">
-        <a href='#Fillets and Chamfers' class="chip">Fillets and Chamfers()</a>
-        <a href='#Text' class="chip">Text()</a>
-        <a href='#Calibration Cube' class="chip">Calibration Cube()</a>
-        <a href='#Patterns' class="chip">Patterns()</a>
-        <a href='#Materials' class="chip">Materials()</a>
-        <a href='#Stacking Cubes' class="chip">Stacking Cubes()</a>
-        <a href='#D-Shaft Knob' class="chip">D-Shaft Knob()</a>
-        <a href='#Bracelet' class="chip">Bracelet()</a>
-        <a href='#Ball Joint' class="chip">Ball Joint()</a>
-        <a href='#Simple Humanoid' class="chip">Simple Humanoid()</a>
-        <a href='#Import and Export' class="chip">Import and Export()</a>
+        <a href='#Fillets and Chamfers' class="chip">Fillets and Chamfers</a>
+        <a href='#Text' class="chip">Text</a>
+        <a href='#Calibration Cube' class="chip">Calibration Cube</a>
+        <a href='#Patterns' class="chip">Patterns</a>
+        <a href='#Materials' class="chip">Materials</a>
+        <a href='#Stacking Cubes' class="chip">Stacking Cubes</a>
+        <a href='#D-Shaft Knob' class="chip">D-Shaft Knob</a>
+        <a href='#Bracelet' class="chip">Bracelet</a>
+        <a href='#Ball Joint' class="chip">Ball Joint</a>
+        <a href='#Simple Humanoid' class="chip">Simple Humanoid</a>
+        <a href='#Import and Export' class="chip">Import and Export</a>
         </div>
 
 
@@ -187,7 +191,8 @@
             <div class="className" id='Fillets and Chamfers''>Fillets and Chamfers</div>
             
             <div class="methods">
-            <div>You can apply fillets and chamfers to specific edges or faces, or to all the edges or faces. To target a specific edge or face, create a Landmark near the target.</div>
+            <div style="
+            width: 50%;">You can apply fillets and chamfers to specific edges or faces, or to all the edges or faces. To target a specific edge or face, create a Landmark near the target.</div>
             
             
             <pre>
@@ -277,7 +282,8 @@ chamferTwoFaces.chamferFaces("10cm", [chamferTwoFaces_face1, chamferTwoFaces_fac
             <div class="className" id='Text''>Text</div>
             
             <div class="methods">
-            <div>Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
+            <div style="
+            width: 50%;">Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
             
             
             <pre>
@@ -355,7 +361,8 @@ Curve("multiline").createText(
             <div class="className" id='Calibration Cube''>Calibration Cube</div>
             
             <div class="methods">
-            <div>Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the Text is positioned on the Cube. </div>
+            <div style="
+            width: 50%;">Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the Text is positioned on the Cube. </div>
             
             
             <pre>
@@ -483,7 +490,8 @@ createCube("CalibrationCube20_2", size + tolerance).export(
             <div class="className" id='Patterns''>Patterns</div>
             
             <div class="methods">
-            <div>Use linear and circular patterns to create more of a Part or a Sketch. Note: the Hole method also allows you to pattern holes.</div>
+            <div style="
+            width: 50%;">Use linear and circular patterns to create more of a Part or a Sketch. Note: the Hole method also allows you to pattern holes.</div>
             
             
             <pre>
@@ -511,7 +519,8 @@ Part("Circular spheres").createSphere(1).translateXYZ(0, 5, 0).circularPattern(
             <div class="className" id='Materials''>Materials</div>
             
             <div class="methods">
-            <div>Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
+            <div style="
+            width: 50%;">Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
             
             <img src=' https: //raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/materialCube.png' alt="Image" />
             <pre>
@@ -577,7 +586,8 @@ Joint(a_bottom, c_top)\
             <div class="className" id='Stacking Cubes''>Stacking Cubes</div>
             
             <div class="methods">
-            <div>Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
+            <div style="
+            width: 50%;">Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
             
             <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/stackedCubes.png' alt="Image" />
             <pre>
@@ -643,7 +653,8 @@ Joint(a_bottom, c_top)\
             <div class="className" id='D-Shaft Knob''>D-Shaft Knob</div>
             
             <div class="methods">
-            <div>An example that uses the Hole modifier.</div>
+            <div style="
+            width: 50%;">An example that uses the Hole modifier.</div>
             
             
             <pre>
@@ -769,7 +780,8 @@ sleeve.union(knob).export("./appliance_knob.stl", scale=1000)
             <div class="className" id='Bracelet''>Bracelet</div>
             
             <div class="methods">
-            <div>You can use the boolean modifiers Subtract, Union and Intersect to manipulate parts.</div>
+            <div style="
+            width: 50%;">You can use the boolean modifiers Subtract, Union and Intersect to manipulate parts.</div>
             
             
             <pre>
@@ -939,7 +951,8 @@ belt.setMaterial(blueMaterial)
             <div class="className" id='Ball Joint''>Ball Joint</div>
             
             <div class="methods">
-            <div>Parts can be mated/jointed using Landmarks and Joints.</div>
+            <div style="
+            width: 50%;">Parts can be mated/jointed using Landmarks and Joints.</div>
             
             
             <pre>
@@ -1019,7 +1032,8 @@ socket.setMaterial(greenMaterial)
             <div class="className" id='Simple Humanoid''>Simple Humanoid</div>
             
             <div class="methods">
-            <div></div>
+            <div style="
+            width: 50%;"></div>
             
             
             <pre>
@@ -1087,7 +1101,8 @@ eye.mirror("head", "y", None)
             <div class="className" id='Import and Export''>Import and Export</div>
             
             <div class="methods">
-            <div>You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.</div>
+            <div style="
+            width: 50%;">You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.</div>
             
             
             <pre>
