@@ -22,7 +22,7 @@ LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
 
 class Entity(metaclass=ABCMeta):
-    '''Capabilities shared between Parts, Sketches and Landmarks.'''
+    '''Capabilities shared between Parts and Sketches.'''
 
     
     name:str

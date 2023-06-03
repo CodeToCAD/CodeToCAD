@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .grid-container {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .grid-container-parameters {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 100px auto;
+        }
+
+        .grid-item {
+            padding: 5px;
+        }
+
+        .className {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            font-weight: 700;
+            font-size: 110%;
+            line-height: normal;
+            color: #2980b9;
+            box-sizing: border-box;
+        }
+
+        .methodName {
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            display: table;
+            margin: 6px 0;
+            font-size: 90%;
+            line-height: normal;
+            padding: 6px;
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 6px;
+            border: none;
+            border-left: 3px solid #ccc;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .methods {
+            padding: 6px;
+            margin: 6px 0;
+            font-size: 90%;
+
+        }
+
+        .subHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 16px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .subSubHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 12px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 10px;
+            margin-bottom: 2px;
+            line-height: 25px;
+            border-radius: 25px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #f1f1f1 50%, #2980b9 50%);
+            background-size: 100% 200%;
+            background-position: right top;
+            transition: all 0.5s ease;
+        }
+
+        .chip:hover {
+            background-position: right bottom;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    {# MARK: Methods Chips View macros #}
+
+    {% macro methodsChipsView(className, methods) -%}
+
+    {% for methodName, properties in methods.items() %}
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if methodName == "information" %}
+    {# Do nothing #}
+    {%- elif methodName == "extends"-%}
+    {# Do nothing #}
+    {%- elif methodName == "alias"-%}
+    {# Do nothing #}
+    {%- elif methodName == "constructor"%}
+
+    {%- else %}
+
+    <a href=#{{className}}_{{methodName}} class="chip">{{methodName}}()</a>
+
+    {%-endif-%}
+
+    {% endfor %}
+
+    {%- endmacro %}
+
+    {# MARK: Methods Parameters macros #}
+
+    {% macro methodsParametersView(className, methods) -%}
+
+    {% for methodName, properties in methods.items() %}
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if methodName == "information" %}
+    {# Do nothing #}
+    {%- elif methodName == "extends"-%}
+    {# Do nothing #}
+    {%- elif methodName == "alias"-%}
+    {# Do nothing #}
+    {%- elif methodName == "constructor"%}
+
+    {%- else %}
+
+    {{className}}::<span class="subHeading" id={{className}}_{{methodName}}>{{methodName}}({{ parameters.keys()|join(', ') if "parameters" in properties}})</span>
+
+    {% if "information" in properties -%}
+    <div class="methods">{{- properties["information"] -}}</div>
+    {%-endif%}
+    {% if "returnType" in properties -%}
+    <div><span class="subSubHeading">returnType:</span> {{properties["returnType"] -}}</div>
+    {%-endif%}
+    {% for parameterName, parameter in parameters.items() %}
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">{{parameterName}}</div>
+        <div class="grid-item">
+            {% if "information" in parameter -%}
+            <div><span class="subSubHeading">Information:</span> {{parameter["information"] -}}</div>
+            {%-endif%}
+            {% if "type" in parameter -%}
+            <div><span class="subSubHeading">Type:</span> {{parameter["type"] -}}</div>
+            {%-endif%}
+            {% if "defaultValue" in parameter -%}
+            <div><span class="subSubHeading">Default Value:</span> {{ parameter["defaultValue"] -}}</div>
+            {%-endif%}
+            {% if "required" in parameter -%}
+            <div><span class="subSubHeading">Required:</span> {{ parameter["required"] -}}</div>
+            {%-endif%}
+        </div>
+    </div>
+
+
+    {% endfor %}
+
+    {%-endif-%}
+
+    {% endfor %}
+
+    {%- endmacro %}
+
+    {# MARK: Cheat Sheet grids: #}
+
+    <div class="grid-container">
+        {% for className, methods in capabilities.items() -%}
+        {% if className == "Entity" %}
+
+        {# Do nothing #}
+
+        {%- else %}
+
+        <div class="grid-item">
+            <span class="className">{{className}}</span>
+            {% if "information" in methods -%}
+            <div class="subHeading">{{- methods["information"] -}}</div>
+            {%-endif%}
+
+            {{methodsChipsView(className, methods)}}
+
+
+
+            {% if className == "Part" or className == "Sketch" %}
+
+            {{methodsChipsView(className, capabilities["Entity"])}}
+
+            {%-endif-%}
+
+        </div>
+        {%-endif-%}
+
+        {% endfor -%}
+    </div>
+
+    {# MARK: Methods documentation: #}
+
+    <div>
+        {% for className, methods in capabilities.items() -%}
+        {% if className == "Entity" %}
+
+        {# Do nothing #}
+
+        {%- else %}
+
+        <div>
+            <span class="className">{{className}}</span>
+            {% if "information" in methods -%}
+            <div class="subHeading">{{- methods["information"] -}}</div>
+            {%-endif%}
+
+            <div class="methods">
+
+                {{methodsParametersView(className, methods)}}
+
+                {% if className == "Part" or className == "Sketch" %}
+
+                {{methodsParametersView(className, capabilities["Entity"])}}
+
+                {%-endif-%}
+            </div>
+
+        </div>
+        {%-endif-%}
+
+        {% endfor -%}
+    </div>
+
+</body>
+
+</html>
