@@ -23,7 +23,7 @@ capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
 capabilitiesToPyTestOut = f"{outputDir}/TestCodeToCADProvider.py"
 
 capabilitiesToPythonDocumentationHtml = f"capabilitiesToPythonDocumentationHtml.j2"
-capabilitiesToPythonDocumentationHtmlOut = f"{docs}/index.html"
+capabilitiesToPythonDocumentationHtmlOut = f"{docs}/docs.html"
 
 with open(capabilitiesJson) as f:
     capabilities = json.load(f)
