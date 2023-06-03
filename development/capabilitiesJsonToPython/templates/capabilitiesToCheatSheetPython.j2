@@ -3,16 +3,33 @@
 
 <head>
     <style>
+        @media print {
+            .pagebreak {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color:#555;
+        }
+
+        header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
         .grid-container {
             display: grid;
             gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            {# grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); #}
         }
 
         .grid-container-parameters {
             display: grid;
             gap: 2rem;
-            grid-template-columns: 100px auto;
+            grid-template-columns: 200px auto;
         }
 
         .grid-item {
@@ -20,8 +37,6 @@
         }
 
         .className {
-            -webkit-text-size-adjust: 100%;
-            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
             list-style: none;
             list-style-image: none;
             font-weight: 700;
@@ -153,7 +168,8 @@
 
     {%- else %}
 
-    {{className}}::<span class="subHeading" id={{className}}_{{methodName}}>{{methodName}}({{ parameters.keys()|join(', ') if "parameters" in properties}})</span>
+    {{className}}::<span class="subHeading" id={{className}}_{{methodName}}>{{methodName}}({{ parameters.keys()|join(',
+        ') if "parameters" in properties}})</span>
 
     {% if "information" in properties -%}
     <div class="methods">{{- properties["information"] -}}</div>
@@ -190,6 +206,12 @@
 
     {%- endmacro %}
 
+    {# MARK: Header: #}
+    <header>
+        <h2 style="margin: 0;">CodeToCAD Reference Sheet</h2>
+        <a href="https://github.com/CodeToCAD/CodeToCAD">https://github.com/CodeToCAD/CodeToCAD</a>
+    </header>
+
     {# MARK: Cheat Sheet grids: #}
 
     <div class="grid-container">
@@ -221,8 +243,13 @@
 
         {% endfor -%}
     </div>
+    <div class="pagebreak"> </div>
 
     {# MARK: Methods documentation: #}
+
+    <header>
+        <h2 style="margin: 0;">Documentation</h2>
+    </header>
 
     <div>
         {% for className, methods in capabilities.items() -%}

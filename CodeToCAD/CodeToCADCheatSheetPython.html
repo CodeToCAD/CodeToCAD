@@ -3,16 +3,33 @@
 
 <head>
     <style>
+        @media print {
+            .pagebreak {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color:#555;
+        }
+
+        header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
         .grid-container {
             display: grid;
             gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            
         }
 
         .grid-container-parameters {
             display: grid;
             gap: 2rem;
-            grid-template-columns: 100px auto;
+            grid-template-columns: 200px auto;
         }
 
         .grid-item {
@@ -20,8 +37,6 @@
         }
 
         .className {
-            -webkit-text-size-adjust: 100%;
-            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
             list-style: none;
             list-style-image: none;
             font-weight: 700;
@@ -118,6 +133,12 @@
     
 
     
+
+    
+    <header>
+        <h2 style="margin: 0;">CodeToCAD Reference Sheet</h2>
+        <a href="https://github.com/CodeToCAD/CodeToCAD">https://github.com/CodeToCAD/CodeToCAD</a>
+    </header>
 
     
 
@@ -623,8 +644,13 @@
 
 
             </div></div>
+    <div class="pagebreak"> </div>
 
     
+
+    <header>
+        <h2 style="margin: 0;">Documentation</h2>
+    </header>
 
     <div>
         
@@ -640,7 +666,10 @@
                 
     
 
-    Part::<span class="subHeading" id=Part_createCube>createCube(width, length, height, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createCube>createCube(width,
+        length,
+        height,
+        keywordArguments)</span>
 
     <div class="methods">Adds cuboid geometry to a part.</div>
     
@@ -698,7 +727,10 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createCone>createCone(radius, height, draftRadius, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createCone>createCone(radius,
+        height,
+        draftRadius,
+        keywordArguments)</span>
 
     <div class="methods">Adds cone geometry to a part.</div>
     
@@ -756,7 +788,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createCylinder>createCylinder(radius, height, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createCylinder>createCylinder(radius,
+        height,
+        keywordArguments)</span>
 
     <div class="methods">Adds cylinder geometry to a part.</div>
     
@@ -801,7 +835,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createTorus>createTorus(innerRadius, outerRadius, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createTorus>createTorus(innerRadius,
+        outerRadius,
+        keywordArguments)</span>
 
     <div class="methods">Adds torus geometry to a part.</div>
     
@@ -846,7 +882,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createSphere>createSphere(radius, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createSphere>createSphere(radius,
+        keywordArguments)</span>
 
     <div class="methods">Adds sphere geometry to a part.</div>
     
@@ -878,7 +915,17 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createGear>createGear(outerRadius, addendum, innerRadius, dedendum, height, pressureAngle, numberOfTeeth, skewAngle, conicalAngle, crownAngle, keywordArguments)</span>
+    Part::<span class="subHeading" id=Part_createGear>createGear(outerRadius,
+        addendum,
+        innerRadius,
+        dedendum,
+        height,
+        pressureAngle,
+        numberOfTeeth,
+        skewAngle,
+        conicalAngle,
+        crownAngle,
+        keywordArguments)</span>
 
     <div class="methods">Adds gear geometry to a part.</div>
     
@@ -1027,7 +1074,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_clone>clone(newName, copyLandmarks)</span>
+    Part::<span class="subHeading" id=Part_clone>clone(newName,
+        copyLandmarks)</span>
 
     <div class="methods">Clone an existing Part with its geometry and properties. Returns the new Part.</div>
     <div><span class="subSubHeading">returnType:</span> Part</div>
@@ -1059,7 +1107,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_loft>loft(Landmark1, Landmark2)</span>
+    Part::<span class="subHeading" id=Part_loft>loft(Landmark1,
+        Landmark2)</span>
 
     <div class="methods">Interpolate between two existing parts.</div>
     
@@ -1091,7 +1140,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_union>union(withPart, deleteAfterUnion, isTransferLandmarks)</span>
+    Part::<span class="subHeading" id=Part_union>union(withPart,
+        deleteAfterUnion,
+        isTransferLandmarks)</span>
 
     <div class="methods">Boolean union</div>
     
@@ -1136,7 +1187,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_subtract>subtract(withPart, deleteAfterSubtract, isTransferLandmarks)</span>
+    Part::<span class="subHeading" id=Part_subtract>subtract(withPart,
+        deleteAfterSubtract,
+        isTransferLandmarks)</span>
 
     <div class="methods">Boolean subtraction</div>
     
@@ -1181,7 +1234,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_intersect>intersect(withPart, deleteAfterIntersect, isTransferLandmarks)</span>
+    Part::<span class="subHeading" id=Part_intersect>intersect(withPart,
+        deleteAfterIntersect,
+        isTransferLandmarks)</span>
 
     <div class="methods">Boolean intersection</div>
     
@@ -1226,7 +1281,11 @@
 
     
 
-    Part::<span class="subHeading" id=Part_hollow>hollow(thicknessX, thicknessY, thicknessZ, startAxis, flipAxis)</span>
+    Part::<span class="subHeading" id=Part_hollow>hollow(thicknessX,
+        thicknessY,
+        thicknessZ,
+        startAxis,
+        flipAxis)</span>
 
     <div class="methods">Remove vertices, if necessary, until the part has a specified wall thickness.</div>
     
@@ -1297,7 +1356,24 @@
 
     
 
-    Part::<span class="subHeading" id=Part_hole>hole(holeLandmark, radius, depth, normalAxis, flipAxis, initialRotationX, initialRotationY, initialRotationZ, mirrorAboutEntityOrLandmark, mirrorAxis, mirror, circularPatternInstanceCount, circularPatternInstanceSeparation, circularPatternInstanceAxis, circularPatternAboutEntityOrLandmark, linearPatternInstanceCount, linearPatternInstanceSeparation, linearPatternInstanceAxis)</span>
+    Part::<span class="subHeading" id=Part_hole>hole(holeLandmark,
+        radius,
+        depth,
+        normalAxis,
+        flipAxis,
+        initialRotationX,
+        initialRotationY,
+        initialRotationZ,
+        mirrorAboutEntityOrLandmark,
+        mirrorAxis,
+        mirror,
+        circularPatternInstanceCount,
+        circularPatternInstanceSeparation,
+        circularPatternInstanceAxis,
+        circularPatternAboutEntityOrLandmark,
+        linearPatternInstanceCount,
+        linearPatternInstanceSeparation,
+        linearPatternInstanceAxis)</span>
 
     <div class="methods">Create a hole.</div>
     
@@ -1575,7 +1651,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_filletAllEdges>filletAllEdges(radius, useWidth)</span>
+    Part::<span class="subHeading" id=Part_filletAllEdges>filletAllEdges(radius,
+        useWidth)</span>
 
     <div class="methods">Fillet all edges.</div>
     
@@ -1607,7 +1684,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_filletEdges>filletEdges(radius, landmarksNearEdges, useWidth)</span>
+    Part::<span class="subHeading" id=Part_filletEdges>filletEdges(radius,
+        landmarksNearEdges,
+        useWidth)</span>
 
     <div class="methods">Fillet specific edges.</div>
     
@@ -1652,7 +1731,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_filletFaces>filletFaces(radius, landmarksNearFaces, useWidth)</span>
+    Part::<span class="subHeading" id=Part_filletFaces>filletFaces(radius,
+        landmarksNearFaces,
+        useWidth)</span>
 
     <div class="methods">Fillet specific faces.</div>
     
@@ -1716,7 +1797,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_chamferEdges>chamferEdges(radius, landmarksNearEdges)</span>
+    Part::<span class="subHeading" id=Part_chamferEdges>chamferEdges(radius,
+        landmarksNearEdges)</span>
 
     <div class="methods">Chamfer specific edges.</div>
     
@@ -1748,7 +1830,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_chamferFaces>chamferFaces(radius, landmarksNearFaces)</span>
+    Part::<span class="subHeading" id=Part_chamferFaces>chamferFaces(radius,
+        landmarksNearFaces)</span>
 
     <div class="methods">Chamfer specific faces.</div>
     
@@ -1842,7 +1925,8 @@
                 
     
 
-    Part::<span class="subHeading" id=Part_createFromFile>createFromFile(filePath, fileType)</span>
+    Part::<span class="subHeading" id=Part_createFromFile>createFromFile(filePath,
+        fileType)</span>
 
     <div class="methods">Adds geometry to a part from a file. If the part does not exist, this will create it.</div>
     
@@ -1880,7 +1964,8 @@
     <div><span class="subSubHeading">returnType:</span> boolean</div>
     
 
-    Part::<span class="subHeading" id=Part_rename>rename(newName, renamelinkedEntitiesAndLandmarks)</span>
+    Part::<span class="subHeading" id=Part_rename>rename(newName,
+        renamelinkedEntitiesAndLandmarks)</span>
 
     <div class="methods">Rename the entity, with an option to rename linked landmarks and underlying data.</div>
     
@@ -1956,7 +2041,10 @@
 
     
 
-    Part::<span class="subHeading" id=Part_apply>apply(rotation, scale, location, modifiers)</span>
+    Part::<span class="subHeading" id=Part_apply>apply(rotation,
+        scale,
+        location,
+        modifiers)</span>
 
     <div class="methods">Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.</div>
     
@@ -2038,7 +2126,9 @@
     
     
 
-    Part::<span class="subHeading" id=Part_export>export(filePath, overwrite, scale)</span>
+    Part::<span class="subHeading" id=Part_export>export(filePath,
+        overwrite,
+        scale)</span>
 
     <div class="methods">Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'</div>
     
@@ -2083,7 +2173,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_mirror>mirror(mirrorAcrossEntityOrLandmark, axis, resultingMirroredEntityName)</span>
+    Part::<span class="subHeading" id=Part_mirror>mirror(mirrorAcrossEntityOrLandmark,
+        axis,
+        resultingMirroredEntityName)</span>
 
     <div class="methods">Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.</div>
     
@@ -2128,7 +2220,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_linearPattern>linearPattern(instanceCount, offset, directionAxis)</span>
+    Part::<span class="subHeading" id=Part_linearPattern>linearPattern(instanceCount,
+        offset,
+        directionAxis)</span>
 
     <div class="methods">Pattern in a uniform direction.</div>
     
@@ -2173,7 +2267,10 @@
 
     
 
-    Part::<span class="subHeading" id=Part_circularPattern>circularPattern(instanceCount, separationAngle, centerEntityOrLandmark, normalDirectionAxis)</span>
+    Part::<span class="subHeading" id=Part_circularPattern>circularPattern(instanceCount,
+        separationAngle,
+        centerEntityOrLandmark,
+        normalDirectionAxis)</span>
 
     <div class="methods">Pattern in a circular direction.</div>
     
@@ -2231,7 +2328,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_translateXYZ>translateXYZ(x, y, z)</span>
+    Part::<span class="subHeading" id=Part_translateXYZ>translateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -2333,7 +2432,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_scaleXYZ>scaleXYZ(x, y, z)</span>
+    Part::<span class="subHeading" id=Part_scaleXYZ>scaleXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -2492,7 +2593,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_scaleKeepAspectRatio>scaleKeepAspectRatio(scale, axis)</span>
+    Part::<span class="subHeading" id=Part_scaleKeepAspectRatio>scaleKeepAspectRatio(scale,
+        axis)</span>
 
     <div class="methods">Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -2524,7 +2626,9 @@
 
     
 
-    Part::<span class="subHeading" id=Part_rotateXYZ>rotateXYZ(x, y, z)</span>
+    Part::<span class="subHeading" id=Part_rotateXYZ>rotateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
     
@@ -2626,7 +2730,10 @@
 
     
 
-    Part::<span class="subHeading" id=Part_twist>twist(angle, screwPitch, interations, axis)</span>
+    Part::<span class="subHeading" id=Part_twist>twist(angle,
+        screwPitch,
+        interations,
+        axis)</span>
 
     <div class="methods">AKA Helix, Screw. Revolve an entity</div>
     
@@ -2684,7 +2791,8 @@
 
     
 
-    Part::<span class="subHeading" id=Part_remesh>remesh(strategy, amount)</span>
+    Part::<span class="subHeading" id=Part_remesh>remesh(strategy,
+        amount)</span>
 
     <div class="methods">Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).</div>
     
@@ -2716,7 +2824,10 @@
 
     
 
-    Part::<span class="subHeading" id=Part_createLandmark>createLandmark(landmarkName, x, y, z)</span>
+    Part::<span class="subHeading" id=Part_createLandmark>createLandmark(landmarkName,
+        x,
+        y,
+        z)</span>
 
     <div class="methods">Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.</div>
     <div><span class="subSubHeading">returnType:</span> Landmark</div>
@@ -2816,7 +2927,8 @@
                 
     
 
-    Sketch::<span class="subHeading" id=Sketch_clone>clone(newName, copyLandmarks)</span>
+    Sketch::<span class="subHeading" id=Sketch_clone>clone(newName,
+        copyLandmarks)</span>
 
     <div class="methods">Clone an existing sketch with its geometry and properties. Returns the new Sketch.</div>
     <div><span class="subSubHeading">returnType:</span> Sketch</div>
@@ -2848,7 +2960,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_revolve>revolve(angle, aboutEntityOrLandmark, axis)</span>
+    Sketch::<span class="subHeading" id=Sketch_revolve>revolve(angle,
+        aboutEntityOrLandmark,
+        axis)</span>
 
     <div class="methods">Revolve a Sketch around another Entity or Landmark</div>
     
@@ -2931,7 +3045,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_sweep>sweep(profileCurveName, fillCap)</span>
+    Sketch::<span class="subHeading" id=Sketch_sweep>sweep(profileCurveName,
+        fillCap)</span>
 
     <div class="methods">Extrude this  curve along the path of another</div>
     
@@ -2982,7 +3097,15 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createText>createText(text, fontSize, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath)</span>
+    Sketch::<span class="subHeading" id=Sketch_createText>createText(text,
+        fontSize,
+        bold,
+        italic,
+        underlined,
+        characterSpacing,
+        wordSpacing,
+        lineSpacing,
+        fontFilePath)</span>
 
     <div class="methods">Adds text to a sketch.</div>
     
@@ -3105,7 +3228,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createFromVertices>createFromVertices(coordinates, interpolation)</span>
+    Sketch::<span class="subHeading" id=Sketch_createFromVertices>createFromVertices(coordinates,
+        interpolation)</span>
 
     <div class="methods">Create a curve from 2D/3D points.</div>
     
@@ -3156,7 +3280,10 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createLine>createLine(length, angleX, angleY, symmetric)</span>
+    Sketch::<span class="subHeading" id=Sketch_createLine>createLine(length,
+        angleX,
+        angleY,
+        symmetric)</span>
 
     <div class="methods">Create a line</div>
     
@@ -3214,7 +3341,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createLineBetweenPoints>createLineBetweenPoints(endAt, startAt)</span>
+    Sketch::<span class="subHeading" id=Sketch_createLineBetweenPoints>createLineBetweenPoints(endAt,
+        startAt)</span>
 
     <div class="methods">Create a line between two points</div>
     
@@ -3265,7 +3393,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createEllipse>createEllipse(radiusA, radiusB)</span>
+    Sketch::<span class="subHeading" id=Sketch_createEllipse>createEllipse(radiusA,
+        radiusB)</span>
 
     <div class="methods">Create an ellipse</div>
     
@@ -3297,7 +3426,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createArc>createArc(radius, angle)</span>
+    Sketch::<span class="subHeading" id=Sketch_createArc>createArc(radius,
+        angle)</span>
 
     <div class="methods">Create an arc</div>
     
@@ -3329,7 +3459,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createArcBetweenThreePoints>createArcBetweenThreePoints(pointA, pointB, centerPoint)</span>
+    Sketch::<span class="subHeading" id=Sketch_createArcBetweenThreePoints>createArcBetweenThreePoints(pointA,
+        pointB,
+        centerPoint)</span>
 
     <div class="methods">Create a 3-point arc</div>
     
@@ -3374,7 +3506,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createSegment>createSegment(innerRadius, outerRadius, angle)</span>
+    Sketch::<span class="subHeading" id=Sketch_createSegment>createSegment(innerRadius,
+        outerRadius,
+        angle)</span>
 
     <div class="methods">Create a segment (intersection of two circles)</div>
     
@@ -3419,7 +3553,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createRectangle>createRectangle(length, width)</span>
+    Sketch::<span class="subHeading" id=Sketch_createRectangle>createRectangle(length,
+        width)</span>
 
     <div class="methods">Create a rectangle</div>
     
@@ -3451,7 +3586,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createPolygon>createPolygon(numberOfSides, length, width)</span>
+    Sketch::<span class="subHeading" id=Sketch_createPolygon>createPolygon(numberOfSides,
+        length,
+        width)</span>
 
     <div class="methods">Create an n-gon</div>
     
@@ -3496,7 +3633,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createTrapezoid>createTrapezoid(lengthUpper, lengthLower, height)</span>
+    Sketch::<span class="subHeading" id=Sketch_createTrapezoid>createTrapezoid(lengthUpper,
+        lengthLower,
+        height)</span>
 
     <div class="methods">Create a trapezoid</div>
     
@@ -3546,7 +3685,8 @@
                 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createFromFile>createFromFile(filePath, fileType)</span>
+    Sketch::<span class="subHeading" id=Sketch_createFromFile>createFromFile(filePath,
+        fileType)</span>
 
     <div class="methods">Adds geometry to a part from a file. If the part does not exist, this will create it.</div>
     
@@ -3584,7 +3724,8 @@
     <div><span class="subSubHeading">returnType:</span> boolean</div>
     
 
-    Sketch::<span class="subHeading" id=Sketch_rename>rename(newName, renamelinkedEntitiesAndLandmarks)</span>
+    Sketch::<span class="subHeading" id=Sketch_rename>rename(newName,
+        renamelinkedEntitiesAndLandmarks)</span>
 
     <div class="methods">Rename the entity, with an option to rename linked landmarks and underlying data.</div>
     
@@ -3660,7 +3801,10 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_apply>apply(rotation, scale, location, modifiers)</span>
+    Sketch::<span class="subHeading" id=Sketch_apply>apply(rotation,
+        scale,
+        location,
+        modifiers)</span>
 
     <div class="methods">Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.</div>
     
@@ -3742,7 +3886,9 @@
     
     
 
-    Sketch::<span class="subHeading" id=Sketch_export>export(filePath, overwrite, scale)</span>
+    Sketch::<span class="subHeading" id=Sketch_export>export(filePath,
+        overwrite,
+        scale)</span>
 
     <div class="methods">Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'</div>
     
@@ -3787,7 +3933,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_mirror>mirror(mirrorAcrossEntityOrLandmark, axis, resultingMirroredEntityName)</span>
+    Sketch::<span class="subHeading" id=Sketch_mirror>mirror(mirrorAcrossEntityOrLandmark,
+        axis,
+        resultingMirroredEntityName)</span>
 
     <div class="methods">Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.</div>
     
@@ -3832,7 +3980,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_linearPattern>linearPattern(instanceCount, offset, directionAxis)</span>
+    Sketch::<span class="subHeading" id=Sketch_linearPattern>linearPattern(instanceCount,
+        offset,
+        directionAxis)</span>
 
     <div class="methods">Pattern in a uniform direction.</div>
     
@@ -3877,7 +4027,10 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_circularPattern>circularPattern(instanceCount, separationAngle, centerEntityOrLandmark, normalDirectionAxis)</span>
+    Sketch::<span class="subHeading" id=Sketch_circularPattern>circularPattern(instanceCount,
+        separationAngle,
+        centerEntityOrLandmark,
+        normalDirectionAxis)</span>
 
     <div class="methods">Pattern in a circular direction.</div>
     
@@ -3935,7 +4088,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_translateXYZ>translateXYZ(x, y, z)</span>
+    Sketch::<span class="subHeading" id=Sketch_translateXYZ>translateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -4037,7 +4192,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_scaleXYZ>scaleXYZ(x, y, z)</span>
+    Sketch::<span class="subHeading" id=Sketch_scaleXYZ>scaleXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -4196,7 +4353,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_scaleKeepAspectRatio>scaleKeepAspectRatio(scale, axis)</span>
+    Sketch::<span class="subHeading" id=Sketch_scaleKeepAspectRatio>scaleKeepAspectRatio(scale,
+        axis)</span>
 
     <div class="methods">Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -4228,7 +4386,9 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_rotateXYZ>rotateXYZ(x, y, z)</span>
+    Sketch::<span class="subHeading" id=Sketch_rotateXYZ>rotateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
     
@@ -4330,7 +4490,10 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_twist>twist(angle, screwPitch, interations, axis)</span>
+    Sketch::<span class="subHeading" id=Sketch_twist>twist(angle,
+        screwPitch,
+        interations,
+        axis)</span>
 
     <div class="methods">AKA Helix, Screw. Revolve an entity</div>
     
@@ -4388,7 +4551,8 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_remesh>remesh(strategy, amount)</span>
+    Sketch::<span class="subHeading" id=Sketch_remesh>remesh(strategy,
+        amount)</span>
 
     <div class="methods">Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).</div>
     
@@ -4420,7 +4584,10 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_createLandmark>createLandmark(landmarkName, x, y, z)</span>
+    Sketch::<span class="subHeading" id=Sketch_createLandmark>createLandmark(landmarkName,
+        x,
+        y,
+        z)</span>
 
     <div class="methods">Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.</div>
     <div><span class="subSubHeading">returnType:</span> Landmark</div>
@@ -4656,7 +4823,9 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitLocationXYZ>limitLocationXYZ(x, y, z)</span>
+    Joint::<span class="subHeading" id=Joint_limitLocationXYZ>limitLocationXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
     
@@ -4701,7 +4870,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitLocationX>limitLocationX(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitLocationX>limitLocationX(min,
+        max)</span>
 
     <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
     
@@ -4733,7 +4903,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitLocationY>limitLocationY(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitLocationY>limitLocationY(min,
+        max)</span>
 
     <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
     
@@ -4765,7 +4936,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitLocationZ>limitLocationZ(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitLocationZ>limitLocationZ(min,
+        max)</span>
 
     <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
     
@@ -4797,7 +4969,9 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitRotationXYZ>limitRotationXYZ(x, y, z)</span>
+    Joint::<span class="subHeading" id=Joint_limitRotationXYZ>limitRotationXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
     
@@ -4842,7 +5016,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitRotationX>limitRotationX(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitRotationX>limitRotationX(min,
+        max)</span>
 
     <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
     
@@ -4874,7 +5049,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitRotationY>limitRotationY(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitRotationY>limitRotationY(min,
+        max)</span>
 
     <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
     
@@ -4906,7 +5082,8 @@
 
     
 
-    Joint::<span class="subHeading" id=Joint_limitRotationZ>limitRotationZ(min, max)</span>
+    Joint::<span class="subHeading" id=Joint_limitRotationZ>limitRotationZ(min,
+        max)</span>
 
     <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
     
@@ -4970,7 +5147,10 @@
 
     
 
-    Material::<span class="subHeading" id=Material_setColor>setColor(rValue, gValue, bValue, aValue)</span>
+    Material::<span class="subHeading" id=Material_setColor>setColor(rValue,
+        gValue,
+        bValue,
+        aValue)</span>
 
     <div class="methods">Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.</div>
     
@@ -5123,7 +5303,8 @@
 
     
 
-    Animation::<span class="subHeading" id=Animation_createKeyFrameLocation>createKeyFrameLocation(entity, frameNumber)</span>
+    Animation::<span class="subHeading" id=Animation_createKeyFrameLocation>createKeyFrameLocation(entity,
+        frameNumber)</span>
 
     <div class="methods">Create an animation key-frame using the location of the entity.</div>
     
@@ -5155,7 +5336,8 @@
 
     
 
-    Animation::<span class="subHeading" id=Animation_createKeyFrameRotation>createKeyFrameRotation(entity, frameNumber)</span>
+    Animation::<span class="subHeading" id=Animation_createKeyFrameRotation>createKeyFrameRotation(entity,
+        frameNumber)</span>
 
     <div class="methods">Create an animation key-frame using the rotation of the entity.</div>
     
@@ -5200,7 +5382,9 @@
                 
     
 
-    Light::<span class="subHeading" id=Light_setColor>setColor(rValue, gValue, bValue)</span>
+    Light::<span class="subHeading" id=Light_setColor>setColor(rValue,
+        gValue,
+        bValue)</span>
 
     <div class="methods">Set the color of an existing light.</div>
     
@@ -5321,7 +5505,9 @@
 
     
 
-    Light::<span class="subHeading" id=Light_translateXYZ>translateXYZ(x, y, z)</span>
+    Light::<span class="subHeading" id=Light_translateXYZ>translateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -5366,7 +5552,9 @@
 
     
 
-    Light::<span class="subHeading" id=Light_rotateXYZ>rotateXYZ(x, y, z)</span>
+    Light::<span class="subHeading" id=Light_rotateXYZ>rotateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
     
@@ -5510,7 +5698,9 @@
 
     
 
-    Camera::<span class="subHeading" id=Camera_translateXYZ>translateXYZ(x, y, z)</span>
+    Camera::<span class="subHeading" id=Camera_translateXYZ>translateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
     
@@ -5555,7 +5745,9 @@
 
     
 
-    Camera::<span class="subHeading" id=Camera_rotateXYZ>rotateXYZ(x, y, z)</span>
+    Camera::<span class="subHeading" id=Camera_rotateXYZ>rotateXYZ(x,
+        y,
+        z)</span>
 
     <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
     
@@ -5686,7 +5878,10 @@
     
     
 
-    Scene::<span class="subHeading" id=Scene_export>export(filePath, entities, overwrite, scale)</span>
+    Scene::<span class="subHeading" id=Scene_export>export(filePath,
+        entities,
+        overwrite,
+        scale)</span>
 
     <div class="methods">Export the entire scene or specific entities.</div>
     
@@ -5782,7 +5977,8 @@
 
     
 
-    Scene::<span class="subHeading" id=Scene_deleteGroup>deleteGroup(name, removeChildren)</span>
+    Scene::<span class="subHeading" id=Scene_deleteGroup>deleteGroup(name,
+        removeChildren)</span>
 
     <div class="methods">Delete a new group</div>
     
@@ -5814,7 +6010,8 @@
 
     
 
-    Scene::<span class="subHeading" id=Scene_removeFromGroup>removeFromGroup(entityName, groupName)</span>
+    Scene::<span class="subHeading" id=Scene_removeFromGroup>removeFromGroup(entityName,
+        groupName)</span>
 
     <div class="methods">Removes an existing entity from a group</div>
     
@@ -5846,7 +6043,9 @@
 
     
 
-    Scene::<span class="subHeading" id=Scene_assignToGroup>assignToGroup(entities, groupName, removeFromOtherGroups)</span>
+    Scene::<span class="subHeading" id=Scene_assignToGroup>assignToGroup(entities,
+        groupName,
+        removeFromOtherGroups)</span>
 
     <div class="methods">Assigns an existing entity to a new group</div>
     
@@ -5891,7 +6090,8 @@
 
     
 
-    Scene::<span class="subHeading" id=Scene_setVisible>setVisible(entities, isVisible)</span>
+    Scene::<span class="subHeading" id=Scene_setVisible>setVisible(entities,
+        isVisible)</span>
 
     <div class="methods">Change the visibiltiy of the entity.</div>
     
@@ -5923,7 +6123,9 @@
 
     
 
-    Scene::<span class="subHeading" id=Scene_setBackgroundImage>setBackgroundImage(filePath, locationX, locationY)</span>
+    Scene::<span class="subHeading" id=Scene_setBackgroundImage>setBackgroundImage(filePath,
+        locationX,
+        locationY)</span>
 
     <div class="methods">Set the scene background image. This can be an image or an HDRI texture.</div>
     
@@ -5981,7 +6183,8 @@
                 
     
 
-    Analytics::<span class="subHeading" id=Analytics_measureDistance>measureDistance(entity1, entity2)</span>
+    Analytics::<span class="subHeading" id=Analytics_measureDistance>measureDistance(entity1,
+        entity2)</span>
 
     <div class="methods">The ubiquitous ruler.</div>
     <div><span class="subSubHeading">returnType:</span> Dimensions</div>
@@ -6013,7 +6216,9 @@
 
     
 
-    Analytics::<span class="subHeading" id=Analytics_measureAngle>measureAngle(entity1, entity2, pivot)</span>
+    Analytics::<span class="subHeading" id=Analytics_measureAngle>measureAngle(entity1,
+        entity2,
+        pivot)</span>
 
     <div class="methods">The ubiquitous ruler.</div>
     <div><span class="subSubHeading">returnType:</span> list[Angle]</div>
