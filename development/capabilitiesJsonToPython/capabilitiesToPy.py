@@ -6,6 +6,7 @@ import json
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 outputDir = f"{SCRIPT_DIR}/../../CodeToCAD/"
+docs = f"{SCRIPT_DIR}/../../docs/"
 templatesDir = f"{SCRIPT_DIR}/templates"
 
 capabilitiesJson = f"{SCRIPT_DIR}/../../CodeToCAD/capabilities.json"
@@ -22,7 +23,7 @@ capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
 capabilitiesToPyTestOut = f"{outputDir}/TestCodeToCADProvider.py"
 
 capabilitiesToCheatSheetPython = f"capabilitiesToCheatSheetPython.j2"
-capabilitiesToCheatSheetPythonOut = f"{outputDir}/CodeToCADCheatSheetPython.html"
+capabilitiesToCheatSheetPythonOut = f"{docs}/index.html"
 
 with open(capabilitiesJson) as f:
     capabilities = json.load(f)
