@@ -2,11 +2,15 @@
 
 CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape). 
 
-Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - there will be a cheat-sheet and documentation to help you get started.
+Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - the [cheat-sheet and documentation](https://codetocad.github.io/CodeToCAD) will help you get started.
 
 <div align="center">
-<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/three_axis_mill.gif"/>
+<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/three_axis_mill.gif"/>
 </div>
+
+## Documentation
+
+You can find the CodeToCAD documentation here: [https://codetocad.github.io/CodeToCAD](https://codetocad.github.io/CodeToCAD)
 
 ## Getting Started
 
@@ -28,7 +32,7 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
     Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
     ```
 
-    ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/materialCube.png)
+    ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/materialCube.png)
 
 3. Run your script in your modeling software. If you are using Blender, check out the instructions for installing the [Blender Addon](#blender) addon below.
 
@@ -40,13 +44,13 @@ Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces d
     > If you're a developer, instead of downloading a release, you can clone this repository. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
-    ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/import_file_in_blender.png)
+    ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/import_file_in_blender.png)
 
 ## What do I do next?
 
 - Run or browse the [examples](./examples/)! 
 
-    ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/documentation/stackedCubes.png)
+    ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/stackedCubes.png)
 
 - Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
@@ -109,6 +113,12 @@ Run tests using `sh runTests.sh`.
 Jinja2 templates are used to turn capabilities.json into an interface, as well as templates for CodeToCAD Providers and Tests.
 
 You can generate the Jinja2 templates by running the "Capabilities.json to Python" task in VSCode, or `sh development/capabilitiesJsonToPython/capabilitiesToPy.sh`
+
+### Architecture
+
+CodeToCAD is an automation. Here is the high-level architecture for this tool.
+
+![Architecture](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/CodeToCAD%20architecture%20overview.drawio.png)
 
 ### Contributing
 
