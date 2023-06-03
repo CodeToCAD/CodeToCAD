@@ -1,12 +1,6 @@
 # CodeToCAD - Blender Provider
 
-This is the CodeToCAD Blender Provider repo, that allows CodeToCAD to talk to Blender.
-
-Please refer to the [CodeToCAD repo](https://github.com/CodeToCad/CodeToCAD) for more information about CodeToCAD.
-
-## Cloning
-
-This repository contains a submodule. Clone it using `git clone --recurse-submodules -j8 https://github.com/CodeToCad/CodeToCad-Blender.git`
+This is the CodeToCAD Blender Provider, that allows CodeToCAD to talk to Blender.
 
 ## Setup
 

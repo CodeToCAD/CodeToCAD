@@ -26,7 +26,8 @@
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.analysis.extraPaths": [
         "CodeToCAD",
-        "providers/blender"
+        "providers/blender",
+        "providers/onshape"
     ],
     "python.defaultInterpreterPath": "${workspaceFolder}/development/developmentVirutalEnvironment/bin/python",
     "editor.wordWrap": "on",
@@ -37,10 +38,10 @@
     "python.analysis.inlayHints.variableTypes": true,
     "python.analysis.typeCheckingMode": "basic",
     "terminal.integrated.env.windows": {
-        "PYTHONPATH": "CodeToCAD;providers/blender"
+        "PYTHONPATH": "CodeToCAD;providers/blender;providers/onshape"
     },
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "CodeToCAD:providers/blender"
+        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
     },
     "python.envFile": "${workspaceFolder}/development/.pythonpath.env",
     "python.testing.unittestArgs": [

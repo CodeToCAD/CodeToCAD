@@ -5,3 +5,6 @@ jinja2-cli
 # Blender Development Dependencies:
 fake-bpy-module-latest
 numpy
+
+# Onshape Development Dependencies:
+onshape-client
