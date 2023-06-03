@@ -3,6 +3,7 @@ import unittest
 from OnshapeActions import *
 
 from CodeToCAD import *
+from CodeToCAD.utilities import Point
 
 configPath = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -33,3 +34,27 @@ class TestOnshapeActions(unittest.TestCase):
         assert documentUrl != None
 
         print("documentUrl", documentUrl)
+
+    def testCreatePartStudioTab(self) -> None:
+        documentUrl = getFirstDocumentUrlByName(
+            self.client, onshapeDocumentName)
+
+        partStudioId = createTabPartStudios(
+            self.client, documentUrl, Utilities.createUUIDLikeId())
+
+        assert partStudioId != None
+
+    def testCreatePoint(self) -> None:
+
+        onshapeUrl = getFirstDocumentUrlByName(
+            self.client, onshapeDocumentName)
+
+        partStudioId = createTabPartStudios(
+            self.client, onshapeUrl, Utilities.createUUIDLikeId())
+
+        onshapeUrl.tabId = partStudioId
+
+        pointLocation = Dimension(1.5, "m")
+
+        createPoint(self.client, onshapeUrl, "Test Point", Point(
+            pointLocation, pointLocation, pointLocation))
