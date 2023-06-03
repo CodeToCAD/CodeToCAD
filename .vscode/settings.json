@@ -15,6 +15,12 @@
                 "capabilities.json"
             ],
             "url": "./CodeToCAD/capabilitiesSchema.json"
+        },
+        {
+            "fileMatch": [
+                "examples.json"
+            ],
+            "url": "./examples/examplesSchema.json"
         }
     ],
     "editor.suggest.snippetsPreventQuickSuggestions": false,

@@ -22,14 +22,14 @@ capabilitiesToPyProviderOut = f"{outputDir}/CodeToCADProvider.py"
 capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
 capabilitiesToPyTestOut = f"{outputDir}/TestCodeToCADProvider.py"
 
-capabilitiesToCheatSheetPython = f"capabilitiesToCheatSheetPython.j2"
-capabilitiesToCheatSheetPythonOut = f"{docs}/index.html"
+capabilitiesToPythonDocumentationHtml = f"capabilitiesToPythonDocumentationHtml.j2"
+capabilitiesToPythonDocumentationHtmlOut = f"{docs}/index.html"
 
 with open(capabilitiesJson) as f:
     capabilities = json.load(f)
 
 templatesToGenerate = ((capabilitiesToPyInterface, capabilitiesToPyInterfaceOut), (
-    capabilitiesToPyProvider, capabilitiesToPyProviderOut), (capabilitiesToPyTest, capabilitiesToPyTestOut), (capabilitiesToCheatSheetPython, capabilitiesToCheatSheetPythonOut))
+    capabilitiesToPyProvider, capabilitiesToPyProviderOut), (capabilitiesToPyTest, capabilitiesToPyTestOut), (capabilitiesToPythonDocumentationHtml, capabilitiesToPythonDocumentationHtmlOut))
 
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
 templateEnv = jinja2.Environment(loader=templateLoader)

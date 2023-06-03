@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CodeToCAD Examples</title>
+    <style>
+        @media print {
+            .pagebreak {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #555;
+        }
+
+        header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 2rem;
+
+                {
+                # grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                #
+            }
+        }
+
+        .grid-container-parameters {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 200px auto;
+        }
+
+        .grid-item {
+            padding: 5px;
+        }
+
+        .className {
+            list-style: none;
+            list-style-image: none;
+            font-weight: 700;
+            font-size: 110%;
+            line-height: normal;
+            color: #2980b9;
+            box-sizing: border-box;
+        }
+
+        .methodName {
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            display: table;
+            margin: 6px 0;
+            font-size: 90%;
+            line-height: normal;
+            padding: 6px;
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 6px;
+            border: none;
+            border-left: 3px solid #ccc;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .methods {
+            padding: 6px;
+            margin: 6px 0;
+            font-size: 90%;
+
+        }
+
+        .subHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 16px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .subSubHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 12px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 10px;
+            margin-bottom: 2px;
+            line-height: 25px;
+            border-radius: 25px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #f1f1f1 50%, #2980b9 50%);
+            background-size: 100% 200%;
+            background-position: right top;
+            transition: all 0.5s ease;
+        }
+
+        .chip:hover {
+            background-position: right bottom;
+            text-decoration: underline;
+        }
+
+        pre {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-left: 3px solid #2980b9;
+            color: #555;
+            page-break-inside: avoid;
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 1.6em;
+            max-width: 50%;
+            overflow: auto;
+            padding: 1em 1.5em;
+            display: block;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+
+    {# MARK: Header: #}
+    <header>
+        <h2 style="margin: 0;">CodeToCAD Examples</h2>
+        <a href="https://github.com/CodeToCAD/CodeToCAD">https://github.com/CodeToCAD/CodeToCAD</a>
+    </header>
+
+    {# MARK: Table of Contents: #}
+
+    <div class="" style="width:50%">
+        {% for example in examples -%}
+        <a href='#{{example["name"]}}' class="chip">{{example["name"]}}()</a>
+        {% endfor -%}
+    </div>
+
+
+    {# MARK: Examples documentation: #}
+
+    <header>
+        <h2 style="margin: 0;">Documentation</h2>
+    </header>
+
+    <div class="grid-container">
+        {% for example in examples -%}
+
+        <div class="grid-item">
+            <div class="className" id='{{example["name"]}}''>{{example["name"]}}</div>
+            
+            <div class="methods">
+            {% if "description" in example -%}
+            <div>{{- example["description"] -}}</div>
+            {%-endif%}
+            
+            {% if "imagePath" in example and example["imagePath"]|length > 0 -%}
+            <img src=' {{example["imagePath"]}}' alt="Image" />
+            {%-endif%}
+            <pre>
+            {{example["code"]}}
+            </pre>
+        </div>
+
+    </div>
+
+    {% endfor -%}
+    </div>
+
+</body>
+
+</html>

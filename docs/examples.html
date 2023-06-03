@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CodeToCAD Examples</title>
+    <style>
+        @media print {
+            .pagebreak {
+                page-break-before: always;
+            }
+        }
+
+        body {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #555;
+        }
+
+        header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 2rem;
+
+                {
+                # grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                #
+            }
+        }
+
+        .grid-container-parameters {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 200px auto;
+        }
+
+        .grid-item {
+            padding: 5px;
+        }
+
+        .className {
+            list-style: none;
+            list-style-image: none;
+            font-weight: 700;
+            font-size: 110%;
+            line-height: normal;
+            color: #2980b9;
+            box-sizing: border-box;
+        }
+
+        .methodName {
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            display: table;
+            margin: 6px 0;
+            font-size: 90%;
+            line-height: normal;
+            padding: 6px;
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 6px;
+            border: none;
+            border-left: 3px solid #ccc;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .methods {
+            padding: 6px;
+            margin: 6px 0;
+            font-size: 90%;
+
+        }
+
+        .subHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 16px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .subSubHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 12px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 10px;
+            margin-bottom: 2px;
+            line-height: 25px;
+            border-radius: 25px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #f1f1f1 50%, #2980b9 50%);
+            background-size: 100% 200%;
+            background-position: right top;
+            transition: all 0.5s ease;
+        }
+
+        .chip:hover {
+            background-position: right bottom;
+            text-decoration: underline;
+        }
+
+        pre {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-left: 3px solid #2980b9;
+            color: #555;
+            page-break-inside: avoid;
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 1.6em;
+            max-width: 50%;
+            overflow: auto;
+            padding: 1em 1.5em;
+            display: block;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+
+    
+    <header>
+        <h2 style="margin: 0;">CodeToCAD Examples</h2>
+        <a href="https://github.com/CodeToCAD/CodeToCAD">https://github.com/CodeToCAD/CodeToCAD</a>
+    </header>
+
+    
+
+    <div class="" style="width:50%">
+        <a href='#Fillets and Chamfers' class="chip">Fillets and Chamfers()</a>
+        <a href='#Text' class="chip">Text()</a>
+        <a href='#Calibration Cube' class="chip">Calibration Cube()</a>
+        <a href='#Patterns' class="chip">Patterns()</a>
+        <a href='#Materials' class="chip">Materials()</a>
+        <a href='#Stacking Cubes' class="chip">Stacking Cubes()</a>
+        <a href='#D-Shaft Knob' class="chip">D-Shaft Knob()</a>
+        <a href='#Bracelet' class="chip">Bracelet()</a>
+        <a href='#Ball Joint' class="chip">Ball Joint()</a>
+        <a href='#Simple Humanoid' class="chip">Simple Humanoid()</a>
+        <a href='#Import and Export' class="chip">Import and Export()</a>
+        </div>
+
+
+    
+
+    <header>
+        <h2 style="margin: 0;">Documentation</h2>
+    </header>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="className" id='Fillets and Chamfers''>Fillets and Chamfers</div>
+            
+            <div class="methods">
+            <div>You can apply fillets and chamfers to specific edges or faces, or to all the edges or faces. To target a specific edge or face, create a Landmark near the target.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+blueMaterial = Material("blue").setColor(0, 0.1, 1.0)
+
+redMaterial = Material("red").setColor(1.0, 0.1, 0)
+
+
+
+Part("filletAllEdges").createCube(1, 1, 1).filletAllEdges(
+
+    "10cm").setMaterial(blueMaterial)
+
+Part("chamferAllEdges").createCube(1, 1, 1).translateXYZ(
+
+    1.5, 0, 0).setMaterial(redMaterial).chamferAllEdges("10cm")
+
+
+
+Part("filletAllEdgesCylinder").createCylinder(1/2, 2).translateXYZ(1.5 *
+
+                                                                   2, 0, 0).filletAllEdges("10cm").setMaterial(blueMaterial)
+
+Part("chamferAllEdgesCylinder").createCylinder(1/2, 2).translateXYZ(1.5 *
+
+                                                                    3, 0, 0).chamferAllEdges("10cm").setMaterial(redMaterial)
+
+
+
+filletTwoEdges = Part("filletTwoEdges").createCube(1, 1, 1)
+
+filletTwoEdges_edge1 = filletTwoEdges.createLandmark("edge1", max, 0, max)
+
+filletTwoEdges_edge2 = filletTwoEdges.createLandmark("edge2", min, 0, min)
+
+filletTwoEdges.filletEdges("10cm", [filletTwoEdges_edge1, filletTwoEdges_edge2]).translateXYZ(
+
+    0, 1.5, 0).setMaterial(blueMaterial)
+
+
+
+chamferTwoEdges = Part("chamferTwoEdges").createCube(1, 1, 1)
+
+chamferTwoEdges_edge1 = chamferTwoEdges.createLandmark("edge1", max, 0, max)
+
+chamferTwoEdges_edge2 = chamferTwoEdges.createLandmark("edge2", min, 0, min)
+
+chamferTwoEdges.chamferEdges("10cm", [chamferTwoEdges_edge1, chamferTwoEdges_edge2]).translateXYZ(
+
+    1.5, 1.5, 0).setMaterial(redMaterial)
+
+
+
+filletTwoFaces = Part("filletTwoFaces").createCube(1, 1, 1)
+
+filletTwoFaces_face1 = filletTwoFaces.createLandmark("face1", 0, 0, max)
+
+filletTwoFaces_face2 = filletTwoFaces.createLandmark("face2", min, 0, 0)
+
+filletTwoFaces.filletFaces("10cm", [filletTwoFaces_face1, filletTwoFaces_face2]).translateXYZ(
+
+    1.5*2, 1.5, 0).setMaterial(blueMaterial)
+
+
+
+chamferTwoFaces = Part("chamferTwoFaces").createCube(1, 1, 1)
+
+chamferTwoFaces_face1 = chamferTwoFaces.createLandmark("face1", 0, 0, max)
+
+chamferTwoFaces_face2 = chamferTwoFaces.createLandmark("face2", min, 0, 0)
+
+chamferTwoFaces.chamferFaces("10cm", [chamferTwoFaces_face1, chamferTwoFaces_face2]).translateXYZ(
+
+    1.5*3, 1.5, 0).setMaterial(redMaterial)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Text''>Text</div>
+            
+            <div class="methods">
+            <div>Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
+            
+            
+            <pre>
+            
+from pathlib import Path
+
+from CodeToCAD import *
+
+
+
+redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 1.0)
+
+greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
+
+blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
+
+
+
+Curve("CodeToCAD").createText("Code To CAD",
+
+                              underlined=True).extrude("1cm").setMaterial(greenMaterial)
+
+
+
+Curve("Small text!").createText("Small text!",
+
+                                fontSize="15cm", underlined=True).translateXYZ(0, -2, 0)
+
+
+
+arialFontPath = str(Path(__file__).parent.absolute()) + "/fonts/arial.ttf"
+
+Curve("كود تو كاد").createText("كود تو كاد",
+
+                               fontFilePath=arialFontPath).translateXYZ(-5, 0, 0)
+
+
+
+
+
+yuGothicFontPath = str(Path(__file__).parent.absolute()
+
+                       ) + "/fonts/yu_gothic.ttc"
+
+Curve("curvedTextPath").createCircle(
+
+    "1m").translateXYZ(-5, -5, 0).setVisible(False)
+
+Curve("コオデツカアド").createText("コオデツカアド", fontFilePath=yuGothicFontPath).profile(
+
+    "curvedTextPath").translateXYZ(-5, -5, 0).extrude(.1).setMaterial(redMaterial)
+
+
+
+Curve("multiline").createText(
+
+    """Multiline
+
+    Text
+
+        Is
+
+            Awesome!
+
+"""
+
+).translateXYZ(0, -5, 0).extrude(0.1).setMaterial(blueMaterial)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Calibration Cube''>Calibration Cube</div>
+            
+            <div class="methods">
+            <div>Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the Text is positioned on the Cube. </div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+
+
+material = Material("material").setColor(169, 76, 181, 255)
+
+
+
+
+
+def createCube(name, size):
+
+
+
+    calibrationCube = Part(name).createCube(size, size, size)
+
+
+
+    calibrationCube_x = calibrationCube.createLandmark(
+
+        "x", "min+5mm", "max-7mm", max)
+
+    calibrationCube_y = calibrationCube.createLandmark(
+
+        "y", "max-5mm", "min+5mm", max)
+
+    calibrationCube_z = calibrationCube.createLandmark(
+
+        "z", center, min, center)
+
+    calibrationCube_size = calibrationCube.createLandmark(
+
+        "size", "min+1mm", "min+2mm", max)
+
+
+
+    z = Sketch("Z").createText("Z^", "10mm").extrude("1.5mm").rotateXYZ(
+
+        90, 0, 0)
+
+    z_center = z.createLandmark("center", center, center, center)
+
+    Joint(calibrationCube_z, z_center).limitLocationXYZ(0, 0, 0)
+
+    calibrationCube.subtract(z)
+
+
+
+    y = Sketch("Y").createText("Y^", "8mm").extrude(
+
+        "1.5mm")
+
+    y_center = y.createLandmark("center", center, center, center)
+
+    Joint(calibrationCube_y, y_center).limitLocationXYZ(0, 0, 0)
+
+    calibrationCube.subtract(y)
+
+
+
+    x = Sketch("X").createText("X^", "8mm").extrude("1.5mm").rotateXYZ(
+
+        180, 0, 90)
+
+    x_center = x.createLandmark("center", center, center, center)
+
+    Joint(calibrationCube_x, x_center).limitLocationXYZ(0, 0, 0)
+
+    calibrationCube.subtract(x)
+
+
+
+    size = Sketch("size").createText(str(size.value)+"mm",
+
+                                     "4mm").extrude("1.5mm")
+
+    size_center = size.createLandmark("min", min, center, center)
+
+    Joint(calibrationCube_size, size_center).limitLocationXYZ(0, 0, 0)
+
+    calibrationCube.subtract(size)
+
+
+
+    calibrationCube.setMaterial(material)
+
+
+
+    return calibrationCube
+
+
+
+
+
+tolerance = "0.2mm"
+
+size = Dimension(20, "mm")
+
+
+
+createCube("CalibrationCube19_9", size - tolerance).export(
+
+    "./calibrationCube19_8mm.stl", scale=1000).translateXYZ("-25mm", 0, 0)
+
+createCube("CalibrationCube20mm", size).export(
+
+    "./calibrationCube20mm.stl", scale=1000)
+
+createCube("CalibrationCube20_2", size + tolerance).export(
+
+    "./calibrationCube20_2mm.stl", scale=1000).translateXYZ("25mm", 0, 0)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Patterns''>Patterns</div>
+            
+            <div class="methods">
+            <div>Use linear and circular patterns to create more of a Part or a Sketch. Note: the Hole method also allows you to pattern holes.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+linearCube = Part("Linear Cube").createCube(
+
+    "5cm", "5cm", "5cm").linearPattern(10, "7cm", "x")
+
+
+
+Part("Circular spheres").createSphere(1).translateXYZ(0, 5, 0).circularPattern(
+
+    4, "90d", linearCube, "z").circularPattern(6, f"{360/6}d", linearCube, "x")
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Materials''>Materials</div>
+            
+            <div class="methods">
+            <div>Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
+            
+            <img src=' https: //raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/materialCube.png' alt="Image" />
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 0.8)
+
+blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
+
+greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
+
+
+
+
+
+a = Part("a").createCube(1, 1, 1).setMaterial(blueMaterial)
+
+a_top = a.createLandmark("top", center, center, max)
+
+a_bottom = a.createLandmark("bottom", center, center, min)
+
+
+
+b = Part("b").createCube(1, 1, 1).setMaterial(redMaterial)
+
+b_bottom = b.createLandmark("bottom", center, center, min)
+
+
+
+c = Part("c").createCube(1, 1, 1).setMaterial(greenMaterial)
+
+c_top = c.createLandmark("top", center, center, max)
+
+
+
+# Joint("a","b","top","bottom").translateLandmarkOntoAnother()
+
+
+
+Joint(a_top, b_bottom)\
+
+    .limitLocationXYZ(0, 0, 0)\
+
+    .limitRotationXYZ(0, 0, 0)
+
+
+
+Joint(a_bottom, c_top)\
+
+    .limitLocationXYZ(0, 0, 0)\
+
+    .limitRotationXYZ(0, 0, 0)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Stacking Cubes''>Stacking Cubes</div>
+            
+            <div class="methods">
+            <div>Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
+            
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/stackedCubes.png' alt="Image" />
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 0.8)
+
+blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
+
+greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
+
+
+
+
+
+a = Part("a").createCube(1, 1, 1).setMaterial(blueMaterial)
+
+a_top = a.createLandmark("top", center, center, max)
+
+a_bottom = a.createLandmark("bottom", center, center, min)
+
+
+
+b = Part("b").createCube(1, 1, 1).setMaterial(redMaterial)
+
+b_bottom = b.createLandmark("bottom", center, center, min)
+
+
+
+c = Part("c").createCube(1, 1, 1).setMaterial(greenMaterial)
+
+c_top = c.createLandmark("top", center, center, max)
+
+
+
+# Joint("a","b","top","bottom").translateLandmarkOntoAnother()
+
+
+
+Joint(a_top, b_bottom)\
+
+    .limitLocationXYZ(0, 0, 0)\
+
+    .limitRotationXYZ(0, 0, 0)
+
+
+
+Joint(a_bottom, c_top)\
+
+    .limitLocationXYZ(0, 0, 0)\
+
+    .limitRotationXYZ(0, 0, 0)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='D-Shaft Knob''>D-Shaft Knob</div>
+            
+            <div class="methods">
+            <div>An example that uses the Hole modifier.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import Analytics, Part, Sketch, Scene, Dimension, min, center, max as part_max, Joint, CodeToCADInterface
+
+
+
+Scene.default().setDefaultUnit("mm")
+
+
+
+tolerance = "0.15mm"
+
+
+
+
+
+def createDShaft(shaftLength, radius, dProfileRadius):
+
+    shaftLength = Dimension.fromString(shaftLength) + tolerance
+
+    radius = Dimension.fromString(radius) + tolerance
+
+    dProfileRadius = Dimension.fromString(dProfileRadius) + tolerance
+
+
+
+    dProfileWidth = (radius - dProfileRadius) * 2
+
+
+
+    shaft = Part("shaft").createCylinder(radius, shaftLength)
+
+
+
+    dProfile = Part("dProfile").createCube(
+
+        dProfileWidth, radius * 2, shaftLength)
+
+
+
+    shaftLeftSide = shaft.createLandmark("left", min, center, center)
+
+    dProfileLeftSide = dProfile.createLandmark("left", min, center, center)
+
+
+
+    Joint(shaftLeftSide, dProfileLeftSide).limitLocationXYZ(0, 0, 0)
+
+
+
+    shaft.subtract(dProfile)
+
+
+
+    return shaft
+
+
+
+
+
+def createDShaftSleeve(dShaft: CodeToCADInterface.Part, sleeveThickness):
+
+    dShaftDiameter = dShaft.getDimensions().y
+
+
+
+    sleeve = Part("sleeve").createCylinder(
+
+        dShaftDiameter/2 + sleeveThickness, dShaft.getDimensions().z)
+
+
+
+    sleeve.subtract(dShaft, isTransferLandmarks=True)
+
+
+
+    return sleeve
+
+
+
+
+
+def createKnob(radius):
+
+    knob = Sketch("knob").createPolygon(7, radius, radius).extrude(radius*0.2)
+
+
+
+    return knob
+
+
+
+
+
+dShaft = createDShaft("13.65mm",  "5.9/2mm", "5.3/2mm")
+
+
+
+sleeve = createDShaftSleeve(dShaft, "1.5mm")
+
+
+
+knob = createKnob(sleeve.getDimensions().x)
+
+
+
+Joint(sleeve.createLandmark("top", center, center, part_max), knob.createLandmark(
+
+    "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+
+
+
+sleeve.union(knob).export("./appliance_knob.stl", scale=1000)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Bracelet''>Bracelet</div>
+            
+            <div class="methods">
+            <div>You can use the boolean modifiers Subtract, Union and Intersect to manipulate parts.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+Scene.default().setDefaultUnit("cm")
+
+Scene.default().createGroup("Bracelet")
+
+
+
+
+
+class Bracelet:
+
+    outerDiameter = "161cm"
+
+    innerDiameter = "81cm"
+
+    thickness = "83cm"
+
+
+
+    def create(self):
+
+        bracelet = Part("bracelet") \
+
+            .createTorus(Dimension.fromString(self.innerDiameter)/2, Dimension.fromString(self.outerDiameter)/2)
+
+        bracelet.scaleZ(self.thickness)
+
+
+
+        return bracelet
+
+
+
+
+
+class Button:
+
+    radius = "60/2cm"
+
+    depth = "13.6cm"
+
+    insetRadius = "20cm"
+
+    insetDepth = "3cm"
+
+
+
+    def create(self):
+
+        button = Part("button") \
+
+            .createCylinder(self.radius, self.depth)
+
+        button_top = button.getLandmark("top")
+
+        button.filletFaces("5cm", [button_top])
+
+        button.hole(
+
+            button_top, self.insetRadius, self.insetDepth)
+
+        return button
+
+
+
+
+
+class Belt:
+
+    outerRadius = "162/2cm"
+
+    innerRadius = "150/2cm"
+
+    thickness = "30cm"
+
+
+
+    def create(self):
+
+        belt = Part("belt").createCylinder(
+
+            self.outerRadius, self.thickness)
+
+        belt.hole(belt.getLandmark("top"),
+
+                  self.innerRadius, self.thickness)
+
+        return belt
+
+
+
+
+
+# MARK: Create components
+
+bracelet = Bracelet().create()
+
+button = Button().create()
+
+belt = Belt().create()
+
+
+
+# Mark: Joint the button to the front of the bracelet
+
+Joint(bracelet.getLandmark("front"), button.getLandmark(
+
+    "top")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(90, 0, 0)
+
+Joint(bracelet.getLandmark("center"), belt.getLandmark(
+
+    "center")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
+
+
+
+# Mark: subtract the button and belt from the bracelet:
+
+bracelet.subtract(belt, deleteAfterSubtract=False)
+
+
+
+bracelet.hole(belt.getLandmark("front"),
+
+              button.getDimensions().x / 2, button.getDimensions().z, normalAxis="y", flipAxis=True)
+
+belt.hole(belt.getLandmark("front"),
+
+          button.getDimensions().x / 2, belt.getDimensions().z, normalAxis="y", flipAxis=True)
+
+
+
+# Mark: Assign to a group:
+
+
+
+Scene().assignToGroup([bracelet, button, belt], "Bracelet")
+
+
+
+# Mark apply materials:
+
+redMaterial = Material("red").setColor(181, 16, 4)
+
+blueMaterial = Material("blue").setColor(19, 107, 181)
+
+
+
+bracelet.setMaterial(redMaterial)
+
+button.setMaterial(blueMaterial)
+
+belt.setMaterial(blueMaterial)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Ball Joint''>Ball Joint</div>
+            
+            <div class="methods">
+            <div>Parts can be mated/jointed using Landmarks and Joints.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+ball = Part("ball").createSphere(1)
+
+ball_center = ball.createLandmark("center", center, center, center)
+
+ball_bottom = ball.createLandmark("bottom", center, center, min)
+
+
+
+link = Part("link").createCube(1, 1, 2)
+
+link_top = link.createLandmark("top", center, center, max)
+
+link_bottom = link.createLandmark("bottom", center, center, min)
+
+
+
+Joint(ball_center, link_bottom)\
+
+    .limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
+
+
+
+socket = Part("socket").createSphere(1.2)
+
+socket_cutoff = socket.createLandmark("cutoff", center, center, "min + 0.7")
+
+socket_center = socket.createLandmark("center", center, center, center)
+
+
+
+Joint(ball_bottom, socket_cutoff).translateLandmarkOntoAnother()
+
+
+
+socket.subtract(ball, deleteAfterSubtract=False,
+
+                isTransferLandmarks=False)
+
+
+
+Joint(socket_center, ball) \
+
+    .limitRotationX(-30, 30) \
+
+    .limitRotationY(-30, 30) \
+
+    .limitRotationZ(0, 0)
+
+
+
+
+
+blueMaterial = Material("blue").setColor(0.0826006, 0.214978, 0.406714, 1.0)
+
+greenMaterial = Material("socket").setColor(0.249275, 0.709804, 0.392972, 0.8)
+
+ball.setMaterial(blueMaterial)
+
+link.setMaterial(blueMaterial)
+
+socket.setMaterial(greenMaterial)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Simple Humanoid''>Simple Humanoid</div>
+            
+            <div class="methods">
+            <div></div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+# MARK: Create body
+
+body = Part("body").createCube(1, 2, 3)
+
+body_top = body.createLandmark("top", center, center, max)
+
+
+
+# MARK: Create head
+
+head = Part("head").createSphere(0.5)
+
+head_bottom = head.createLandmark("bottom", center, center, min)
+
+
+
+# Mark: Create Eye
+
+eye = Part("eye").createCylinder(0.1, 0.1)
+
+eye_bottom = eye.createLandmark("bottom", center, center, min)
+
+
+
+eye.rotateXYZ(0, 90, 0)
+
+
+
+# Mark: Attach head to Body
+
+Joint(body_top, head_bottom).limitLocationXYZ(
+
+    0, 0, 0).limitLocationY(-0.3, 0.3).limitRotationX(0, 0).limitRotationY(-20, 90).limitRotationZ(-30, 30)
+
+
+
+# Mark: Attach eye to head:
+
+head_leftEye = head.createLandmark("leftEye", "max-0.1", -0.2, "max/3")
+
+Joint(head_leftEye, eye_bottom).limitLocationXYZ(
+
+    0, 0, 0).limitRotationXYZ(0, 0, 0)
+
+
+
+# Mark: mirror the eyes
+
+eye.mirror("head", "y", None)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Import and Export''>Import and Export</div>
+            
+            <div class="methods">
+            <div>You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+importedCube = Part("Imported Cube").createFromFile("./importableCube.stl")
+
+
+
+Part("ExportedCube").createCube(1, 1, 1)\
+
+    .export("./exportedCube.stl")\
+
+    .export("./exportedCube.obj")
+
+            </pre>
+        </div>
+
+    </div>
+
+    </div>
+
+</body>
+
+</html>
