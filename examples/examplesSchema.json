@@ -1,0 +1,38 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": {
+        "defaultSnippets": [
+            {
+                "label": "Add a new example:",
+                "body": {
+                    "name": "$1",
+                    "description": "$2",
+                    "codeFilepath": "$3",
+                    "imagePath": "$4"
+                }
+            }
+        ],
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "codeFilepath": {
+                "type": "string"
+            },
+            "imagePath": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "name",
+            "description",
+            "codeFilepath",
+            "imagePath"
+        ]
+    }
+}

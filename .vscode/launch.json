@@ -19,6 +19,18 @@
             ],
             "justMyCode": true,
             "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Examples.json to HTML",
+            "type": "python",
+            "request": "launch",
+            "module": "development.examplesJsonToHtml.examplesToHtml",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmCapabilitiesToPython}"
+            ],
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}",
         }
     ]
 }
