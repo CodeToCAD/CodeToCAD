@@ -1,0 +1,6143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .grid-container {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .grid-container-parameters {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 100px auto;
+        }
+
+        .grid-item {
+            padding: 5px;
+        }
+
+        .className {
+            -webkit-text-size-adjust: 100%;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            font-weight: 700;
+            font-size: 110%;
+            line-height: normal;
+            color: #2980b9;
+            box-sizing: border-box;
+        }
+
+        .methodName {
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            display: table;
+            margin: 6px 0;
+            font-size: 90%;
+            line-height: normal;
+            padding: 6px;
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 6px;
+            border: none;
+            border-left: 3px solid #ccc;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .methods {
+            padding: 6px;
+            margin: 6px 0;
+            font-size: 90%;
+
+        }
+
+        .subHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 16px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .subSubHeading {
+            -webkit-text-size-adjust: 100%;
+            font-size: 12px;
+            font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+            color: #404040;
+            line-height: 24px;
+            list-style: none;
+            list-style-image: none;
+            box-sizing: border-box;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 10px;
+            margin-bottom: 2px;
+            line-height: 25px;
+            border-radius: 25px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #f1f1f1 50%, #2980b9 50%);
+            background-size: 100% 200%;
+            background-position: right top;
+            transition: all 0.5s ease;
+        }
+
+        .chip:hover {
+            background-position: right bottom;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="grid-container">
+        
+
+        
+
+        <div class="grid-item">
+            <span class="className">Part</span>
+            <div class="subHeading">Create and manipulate 3D shapes.</div>
+
+            
+    
+
+    <a href=#Part_createCube class="chip">createCube()</a>
+
+    <a href=#Part_createCone class="chip">createCone()</a>
+
+    <a href=#Part_createCylinder class="chip">createCylinder()</a>
+
+    <a href=#Part_createTorus class="chip">createTorus()</a>
+
+    <a href=#Part_createSphere class="chip">createSphere()</a>
+
+    <a href=#Part_createGear class="chip">createGear()</a>
+
+    <a href=#Part_clone class="chip">clone()</a>
+
+    <a href=#Part_loft class="chip">loft()</a>
+
+    <a href=#Part_union class="chip">union()</a>
+
+    <a href=#Part_subtract class="chip">subtract()</a>
+
+    <a href=#Part_intersect class="chip">intersect()</a>
+
+    <a href=#Part_hollow class="chip">hollow()</a>
+
+    <a href=#Part_hole class="chip">hole()</a>
+
+    <a href=#Part_setMaterial class="chip">setMaterial()</a>
+
+    <a href=#Part_isCollidingWithPart class="chip">isCollidingWithPart()</a>
+
+    <a href=#Part_filletAllEdges class="chip">filletAllEdges()</a>
+
+    <a href=#Part_filletEdges class="chip">filletEdges()</a>
+
+    <a href=#Part_filletFaces class="chip">filletFaces()</a>
+
+    <a href=#Part_chamferAllEdges class="chip">chamferAllEdges()</a>
+
+    <a href=#Part_chamferEdges class="chip">chamferEdges()</a>
+
+    <a href=#Part_chamferFaces class="chip">chamferFaces()</a>
+
+    <a href=#Part_selectVertexNearLandmark class="chip">selectVertexNearLandmark()</a>
+
+    <a href=#Part_selectEdgeNearLandmark class="chip">selectEdgeNearLandmark()</a>
+
+    <a href=#Part_selectFaceNearLandmark class="chip">selectFaceNearLandmark()</a>
+
+
+
+            
+
+            
+    
+
+    <a href=#Part_createFromFile class="chip">createFromFile()</a>
+
+    <a href=#Part_isExists class="chip">isExists()</a>
+
+    <a href=#Part_rename class="chip">rename()</a>
+
+    <a href=#Part_delete class="chip">delete()</a>
+
+    <a href=#Part_isVisible class="chip">isVisible()</a>
+
+    <a href=#Part_setVisible class="chip">setVisible()</a>
+
+    <a href=#Part_apply class="chip">apply()</a>
+
+    <a href=#Part_getNativeInstance class="chip">getNativeInstance()</a>
+
+    <a href=#Part_getLocationWorld class="chip">getLocationWorld()</a>
+
+    <a href=#Part_getLocationLocal class="chip">getLocationLocal()</a>
+
+    <a href=#Part_select class="chip">select()</a>
+
+    <a href=#Part_export class="chip">export()</a>
+
+    <a href=#Part_mirror class="chip">mirror()</a>
+
+    <a href=#Part_linearPattern class="chip">linearPattern()</a>
+
+    <a href=#Part_circularPattern class="chip">circularPattern()</a>
+
+    <a href=#Part_translateXYZ class="chip">translateXYZ()</a>
+
+    <a href=#Part_translateX class="chip">translateX()</a>
+
+    <a href=#Part_translateY class="chip">translateY()</a>
+
+    <a href=#Part_translateZ class="chip">translateZ()</a>
+
+    <a href=#Part_scaleXYZ class="chip">scaleXYZ()</a>
+
+    <a href=#Part_scaleX class="chip">scaleX()</a>
+
+    <a href=#Part_scaleY class="chip">scaleY()</a>
+
+    <a href=#Part_scaleZ class="chip">scaleZ()</a>
+
+    <a href=#Part_scaleXByFactor class="chip">scaleXByFactor()</a>
+
+    <a href=#Part_scaleYByFactor class="chip">scaleYByFactor()</a>
+
+    <a href=#Part_scaleZByFactor class="chip">scaleZByFactor()</a>
+
+    <a href=#Part_scaleKeepAspectRatio class="chip">scaleKeepAspectRatio()</a>
+
+    <a href=#Part_rotateXYZ class="chip">rotateXYZ()</a>
+
+    <a href=#Part_rotateX class="chip">rotateX()</a>
+
+    <a href=#Part_rotateY class="chip">rotateY()</a>
+
+    <a href=#Part_rotateZ class="chip">rotateZ()</a>
+
+    <a href=#Part_twist class="chip">twist()</a>
+
+    <a href=#Part_remesh class="chip">remesh()</a>
+
+    <a href=#Part_createLandmark class="chip">createLandmark()</a>
+
+    <a href=#Part_getBoundingBox class="chip">getBoundingBox()</a>
+
+    <a href=#Part_getDimensions class="chip">getDimensions()</a>
+
+    <a href=#Part_getLandmark class="chip">getLandmark()</a></div>
+
+        <div class="grid-item">
+            <span class="className">Sketch</span>
+            <div class="subHeading">Capabilities related to adding, multiplying, and/or modifying a curve.</div>
+
+            
+    
+
+    <a href=#Sketch_clone class="chip">clone()</a>
+
+    <a href=#Sketch_revolve class="chip">revolve()</a>
+
+    <a href=#Sketch_thicken class="chip">thicken()</a>
+
+    <a href=#Sketch_extrude class="chip">extrude()</a>
+
+    <a href=#Sketch_sweep class="chip">sweep()</a>
+
+    <a href=#Sketch_profile class="chip">profile()</a>
+
+    <a href=#Sketch_createText class="chip">createText()</a>
+
+    <a href=#Sketch_createFromVertices class="chip">createFromVertices()</a>
+
+    <a href=#Sketch_createPoint class="chip">createPoint()</a>
+
+    <a href=#Sketch_createLine class="chip">createLine()</a>
+
+    <a href=#Sketch_createLineBetweenPoints class="chip">createLineBetweenPoints()</a>
+
+    <a href=#Sketch_createCircle class="chip">createCircle()</a>
+
+    <a href=#Sketch_createEllipse class="chip">createEllipse()</a>
+
+    <a href=#Sketch_createArc class="chip">createArc()</a>
+
+    <a href=#Sketch_createArcBetweenThreePoints class="chip">createArcBetweenThreePoints()</a>
+
+    <a href=#Sketch_createSegment class="chip">createSegment()</a>
+
+    <a href=#Sketch_createRectangle class="chip">createRectangle()</a>
+
+    <a href=#Sketch_createPolygon class="chip">createPolygon()</a>
+
+    <a href=#Sketch_createTrapezoid class="chip">createTrapezoid()</a>
+
+
+
+            
+
+            
+    
+
+    <a href=#Sketch_createFromFile class="chip">createFromFile()</a>
+
+    <a href=#Sketch_isExists class="chip">isExists()</a>
+
+    <a href=#Sketch_rename class="chip">rename()</a>
+
+    <a href=#Sketch_delete class="chip">delete()</a>
+
+    <a href=#Sketch_isVisible class="chip">isVisible()</a>
+
+    <a href=#Sketch_setVisible class="chip">setVisible()</a>
+
+    <a href=#Sketch_apply class="chip">apply()</a>
+
+    <a href=#Sketch_getNativeInstance class="chip">getNativeInstance()</a>
+
+    <a href=#Sketch_getLocationWorld class="chip">getLocationWorld()</a>
+
+    <a href=#Sketch_getLocationLocal class="chip">getLocationLocal()</a>
+
+    <a href=#Sketch_select class="chip">select()</a>
+
+    <a href=#Sketch_export class="chip">export()</a>
+
+    <a href=#Sketch_mirror class="chip">mirror()</a>
+
+    <a href=#Sketch_linearPattern class="chip">linearPattern()</a>
+
+    <a href=#Sketch_circularPattern class="chip">circularPattern()</a>
+
+    <a href=#Sketch_translateXYZ class="chip">translateXYZ()</a>
+
+    <a href=#Sketch_translateX class="chip">translateX()</a>
+
+    <a href=#Sketch_translateY class="chip">translateY()</a>
+
+    <a href=#Sketch_translateZ class="chip">translateZ()</a>
+
+    <a href=#Sketch_scaleXYZ class="chip">scaleXYZ()</a>
+
+    <a href=#Sketch_scaleX class="chip">scaleX()</a>
+
+    <a href=#Sketch_scaleY class="chip">scaleY()</a>
+
+    <a href=#Sketch_scaleZ class="chip">scaleZ()</a>
+
+    <a href=#Sketch_scaleXByFactor class="chip">scaleXByFactor()</a>
+
+    <a href=#Sketch_scaleYByFactor class="chip">scaleYByFactor()</a>
+
+    <a href=#Sketch_scaleZByFactor class="chip">scaleZByFactor()</a>
+
+    <a href=#Sketch_scaleKeepAspectRatio class="chip">scaleKeepAspectRatio()</a>
+
+    <a href=#Sketch_rotateXYZ class="chip">rotateXYZ()</a>
+
+    <a href=#Sketch_rotateX class="chip">rotateX()</a>
+
+    <a href=#Sketch_rotateY class="chip">rotateY()</a>
+
+    <a href=#Sketch_rotateZ class="chip">rotateZ()</a>
+
+    <a href=#Sketch_twist class="chip">twist()</a>
+
+    <a href=#Sketch_remesh class="chip">remesh()</a>
+
+    <a href=#Sketch_createLandmark class="chip">createLandmark()</a>
+
+    <a href=#Sketch_getBoundingBox class="chip">getBoundingBox()</a>
+
+    <a href=#Sketch_getDimensions class="chip">getDimensions()</a>
+
+    <a href=#Sketch_getLandmark class="chip">getLandmark()</a></div>
+
+        <div class="grid-item">
+            <span class="className">Landmark</span>
+            <div class="subHeading">Landmarks are named positions on an entity.</div>
+
+            
+    
+
+    <a href=#Landmark_getLandmarkEntityName class="chip">getLandmarkEntityName()</a>
+
+    <a href=#Landmark_getParentEntity class="chip">getParentEntity()</a>
+
+    <a href=#Landmark_isExists class="chip">isExists()</a>
+
+    <a href=#Landmark_rename class="chip">rename()</a>
+
+    <a href=#Landmark_delete class="chip">delete()</a>
+
+    <a href=#Landmark_isVisible class="chip">isVisible()</a>
+
+    <a href=#Landmark_setVisible class="chip">setVisible()</a>
+
+    <a href=#Landmark_getNativeInstance class="chip">getNativeInstance()</a>
+
+    <a href=#Landmark_getLocationWorld class="chip">getLocationWorld()</a>
+
+    <a href=#Landmark_getLocationLocal class="chip">getLocationLocal()</a>
+
+    <a href=#Landmark_select class="chip">select()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Joint</span>
+            <div class="subHeading">Joints define the relationships and constraints between entities.</div>
+
+            
+    
+
+    <a href=#Joint_translateLandmarkOntoAnother class="chip">translateLandmarkOntoAnother()</a>
+
+    <a href=#Joint_pivot class="chip">pivot()</a>
+
+    <a href=#Joint_gearRatio class="chip">gearRatio()</a>
+
+    <a href=#Joint_limitLocationXYZ class="chip">limitLocationXYZ()</a>
+
+    <a href=#Joint_limitLocationX class="chip">limitLocationX()</a>
+
+    <a href=#Joint_limitLocationY class="chip">limitLocationY()</a>
+
+    <a href=#Joint_limitLocationZ class="chip">limitLocationZ()</a>
+
+    <a href=#Joint_limitRotationXYZ class="chip">limitRotationXYZ()</a>
+
+    <a href=#Joint_limitRotationX class="chip">limitRotationX()</a>
+
+    <a href=#Joint_limitRotationY class="chip">limitRotationY()</a>
+
+    <a href=#Joint_limitRotationZ class="chip">limitRotationZ()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Material</span>
+            <div class="subHeading">Materials affect the appearance and simulation properties of the parts.</div>
+
+            
+    
+
+    <a href=#Material_assignToPart class="chip">assignToPart()</a>
+
+    <a href=#Material_setColor class="chip">setColor()</a>
+
+    <a href=#Material_addImageTexture class="chip">addImageTexture()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Animation</span>
+            <div class="subHeading">Animation related functionality.</div>
+
+            
+    
+
+    <a href=#Animation_default class="chip">default()</a>
+
+    <a href=#Animation_setFrameStart class="chip">setFrameStart()</a>
+
+    <a href=#Animation_setFrameEnd class="chip">setFrameEnd()</a>
+
+    <a href=#Animation_setFrameCurrent class="chip">setFrameCurrent()</a>
+
+    <a href=#Animation_createKeyFrameLocation class="chip">createKeyFrameLocation()</a>
+
+    <a href=#Animation_createKeyFrameRotation class="chip">createKeyFrameRotation()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Light</span>
+            <div class="subHeading">Manipulate a light object.</div>
+
+            
+    
+
+    <a href=#Light_setColor class="chip">setColor()</a>
+
+    <a href=#Light_createSun class="chip">createSun()</a>
+
+    <a href=#Light_createSpot class="chip">createSpot()</a>
+
+    <a href=#Light_createPoint class="chip">createPoint()</a>
+
+    <a href=#Light_createArea class="chip">createArea()</a>
+
+    <a href=#Light_translateXYZ class="chip">translateXYZ()</a>
+
+    <a href=#Light_rotateXYZ class="chip">rotateXYZ()</a>
+
+    <a href=#Light_isExists class="chip">isExists()</a>
+
+    <a href=#Light_rename class="chip">rename()</a>
+
+    <a href=#Light_delete class="chip">delete()</a>
+
+    <a href=#Light_getNativeInstance class="chip">getNativeInstance()</a>
+
+    <a href=#Light_getLocationWorld class="chip">getLocationWorld()</a>
+
+    <a href=#Light_getLocationLocal class="chip">getLocationLocal()</a>
+
+    <a href=#Light_select class="chip">select()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Camera</span>
+            <div class="subHeading">Manipulate a camera object.</div>
+
+            
+    
+
+    <a href=#Camera_createPerspective class="chip">createPerspective()</a>
+
+    <a href=#Camera_createOrthogonal class="chip">createOrthogonal()</a>
+
+    <a href=#Camera_setFocalLength class="chip">setFocalLength()</a>
+
+    <a href=#Camera_translateXYZ class="chip">translateXYZ()</a>
+
+    <a href=#Camera_rotateXYZ class="chip">rotateXYZ()</a>
+
+    <a href=#Camera_isExists class="chip">isExists()</a>
+
+    <a href=#Camera_rename class="chip">rename()</a>
+
+    <a href=#Camera_delete class="chip">delete()</a>
+
+    <a href=#Camera_getNativeInstance class="chip">getNativeInstance()</a>
+
+    <a href=#Camera_getLocationWorld class="chip">getLocationWorld()</a>
+
+    <a href=#Camera_getLocationLocal class="chip">getLocationLocal()</a>
+
+    <a href=#Camera_select class="chip">select()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Scene</span>
+            <div class="subHeading">Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.</div>
+
+            
+    
+
+    <a href=#Scene_default class="chip">default()</a>
+
+    <a href=#Scene_create class="chip">create()</a>
+
+    <a href=#Scene_delete class="chip">delete()</a>
+
+    <a href=#Scene_export class="chip">export()</a>
+
+    <a href=#Scene_setDefaultUnit class="chip">setDefaultUnit()</a>
+
+    <a href=#Scene_createGroup class="chip">createGroup()</a>
+
+    <a href=#Scene_deleteGroup class="chip">deleteGroup()</a>
+
+    <a href=#Scene_removeFromGroup class="chip">removeFromGroup()</a>
+
+    <a href=#Scene_assignToGroup class="chip">assignToGroup()</a>
+
+    <a href=#Scene_setVisible class="chip">setVisible()</a>
+
+    <a href=#Scene_setBackgroundImage class="chip">setBackgroundImage()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
+            <span class="className">Analytics</span>
+            <div class="subHeading">Tools for collecting data about the entities and scene.</div>
+
+            
+    
+
+    <a href=#Analytics_measureDistance class="chip">measureDistance()</a>
+
+    <a href=#Analytics_measureAngle class="chip">measureAngle()</a>
+
+    <a href=#Analytics_getWorldPose class="chip">getWorldPose()</a>
+
+    <a href=#Analytics_getBoundingBox class="chip">getBoundingBox()</a>
+
+    <a href=#Analytics_getDimensions class="chip">getDimensions()</a>
+
+    <a href=#Analytics_log class="chip">log()</a>
+
+
+
+            </div></div>
+
+    
+
+    <div>
+        
+
+        
+
+        <div>
+            <span class="className">Part</span>
+            <div class="subHeading">Create and manipulate 3D shapes.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Part::<span class="subHeading" id=Part_createCube>createCube(width, length, height, keywordArguments)</span>
+
+    <div class="methods">Adds cuboid geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">width</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">height</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createCone>createCone(radius, height, draftRadius, keywordArguments)</span>
+
+    <div class="methods">Adds cone geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">height</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">draftRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createCylinder>createCylinder(radius, height, keywordArguments)</span>
+
+    <div class="methods">Adds cylinder geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">height</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createTorus>createTorus(innerRadius, outerRadius, keywordArguments)</span>
+
+    <div class="methods">Adds torus geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">innerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createSphere>createSphere(radius, keywordArguments)</span>
+
+    <div class="methods">Adds sphere geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createGear>createGear(outerRadius, addendum, innerRadius, dedendum, height, pressureAngle, numberOfTeeth, skewAngle, conicalAngle, crownAngle, keywordArguments)</span>
+
+    <div class="methods">Adds gear geometry to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">addendum</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">innerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">dedendum</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">height</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">pressureAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 20d</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">numberOfTeeth</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 12</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">skewAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">conicalAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">crownAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">keywordArguments</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> key-value pairs to pass onto the native api</div>
+            <div><span class="subSubHeading">Type:</span> object</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_clone>clone(newName, copyLandmarks)</span>
+
+    <div class="methods">Clone an existing Part with its geometry and properties. Returns the new Part.</div>
+    <div><span class="subSubHeading">returnType:</span> Part</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">copyLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_loft>loft(Landmark1, Landmark2)</span>
+
+    <div class="methods">Interpolate between two existing parts.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">Landmark1</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">Landmark2</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_union>union(withPart, deleteAfterUnion, isTransferLandmarks)</span>
+
+    <div class="methods">Boolean union</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">withPart</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Part</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">deleteAfterUnion</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isTransferLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_subtract>subtract(withPart, deleteAfterSubtract, isTransferLandmarks)</span>
+
+    <div class="methods">Boolean subtraction</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">withPart</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Part</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">deleteAfterSubtract</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isTransferLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_intersect>intersect(withPart, deleteAfterIntersect, isTransferLandmarks)</span>
+
+    <div class="methods">Boolean intersection</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">withPart</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Part</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">deleteAfterIntersect</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isTransferLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_hollow>hollow(thicknessX, thicknessY, thicknessZ, startAxis, flipAxis)</span>
+
+    <div class="methods">Remove vertices, if necessary, until the part has a specified wall thickness.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">thicknessX</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">thicknessY</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">thicknessZ</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">startAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">flipAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_hole>hole(holeLandmark, radius, depth, normalAxis, flipAxis, initialRotationX, initialRotationY, initialRotationZ, mirrorAboutEntityOrLandmark, mirrorAxis, mirror, circularPatternInstanceCount, circularPatternInstanceSeparation, circularPatternInstanceAxis, circularPatternAboutEntityOrLandmark, linearPatternInstanceCount, linearPatternInstanceSeparation, linearPatternInstanceAxis)</span>
+
+    <div class="methods">Create a hole.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">holeLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">depth</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">normalAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">flipAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">initialRotationX</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">initialRotationY</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">initialRotationZ</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">mirrorAboutEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">mirrorAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> x</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">mirror</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">circularPatternInstanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">circularPatternInstanceSeparation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">circularPatternInstanceAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">circularPatternAboutEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">linearPatternInstanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">linearPatternInstanceSeparation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">linearPatternInstanceAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> x</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_setMaterial>setMaterial(materialName)</span>
+
+    <div class="methods">Assign a known material to this part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">materialName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Material</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_isCollidingWithPart>isCollidingWithPart(otherPart)</span>
+
+    <div class="methods">Check if this part is colliding with another.</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">otherPart</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Part</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_filletAllEdges>filletAllEdges(radius, useWidth)</span>
+
+    <div class="methods">Fillet all edges.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">useWidth</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_filletEdges>filletEdges(radius, landmarksNearEdges, useWidth)</span>
+
+    <div class="methods">Fillet specific edges.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarksNearEdges</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Landmark]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">useWidth</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_filletFaces>filletFaces(radius, landmarksNearFaces, useWidth)</span>
+
+    <div class="methods">Fillet specific faces.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarksNearFaces</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Landmark]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">useWidth</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_chamferAllEdges>chamferAllEdges(radius)</span>
+
+    <div class="methods">Chamfer all edges.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_chamferEdges>chamferEdges(radius, landmarksNearEdges)</span>
+
+    <div class="methods">Chamfer specific edges.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarksNearEdges</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Landmark]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_chamferFaces>chamferFaces(radius, landmarksNearFaces)</span>
+
+    <div class="methods">Chamfer specific faces.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarksNearFaces</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Landmark]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_selectVertexNearLandmark>selectVertexNearLandmark(landmarkName)</span>
+
+    <div class="methods">Select the vertex closest to a Landmark on the entity (in UI).</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_selectEdgeNearLandmark>selectEdgeNearLandmark(landmarkName)</span>
+
+    <div class="methods">Select an edge closest to a landmark on the entity (in UI).</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_selectFaceNearLandmark>selectFaceNearLandmark(landmarkName)</span>
+
+    <div class="methods">Select a face closest to a landmark on the entity (in UI).</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+                
+
+                
+    
+
+    Part::<span class="subHeading" id=Part_createFromFile>createFromFile(filePath, fileType)</span>
+
+    <div class="methods">Adds geometry to a part from a file. If the part does not exist, this will create it.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fileType</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_isExists>isExists()</span>
+
+    <div class="methods">Check if an entity exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Part::<span class="subHeading" id=Part_rename>rename(newName, renamelinkedEntitiesAndLandmarks)</span>
+
+    <div class="methods">Rename the entity, with an option to rename linked landmarks and underlying data.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">renamelinkedEntitiesAndLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_delete>delete(removeChildren)</span>
+
+    <div class="methods">Delete the entity from the scene. You may need to delete an associated joint or other features.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">removeChildren</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_isVisible>isVisible()</span>
+
+    <div class="methods">Returns whether the entity is visible in the scene.</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Part::<span class="subHeading" id=Part_setVisible>setVisible(isVisible)</span>
+
+    <div class="methods">Toggles visibility of an entity in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isVisible</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_apply>apply(rotation, scale, location, modifiers)</span>
+
+    <div class="methods">Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">location</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">modifiers</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_getNativeInstance>getNativeInstance()</span>
+
+    <div class="methods">Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.</div>
+    <div><span class="subSubHeading">returnType:</span> any</div>
+    
+
+    Part::<span class="subHeading" id=Part_getLocationWorld>getLocationWorld()</span>
+
+    <div class="methods">Get the entities XYZ location relative to World Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Part::<span class="subHeading" id=Part_getLocationLocal>getLocationLocal()</span>
+
+    <div class="methods">Get the entities XYZ location relative to Local Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Part::<span class="subHeading" id=Part_select>select()</span>
+
+    <div class="methods">Select the entity (in UI).</div>
+    
+    
+
+    Part::<span class="subHeading" id=Part_export>export(filePath, overwrite, scale)</span>
+
+    <div class="methods">Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            <div><span class="subSubHeading">Default Value:</span> 1.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_mirror>mirror(mirrorAcrossEntityOrLandmark, axis, resultingMirroredEntityName)</span>
+
+    <div class="methods">Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">mirrorAcrossEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">resultingMirroredEntityName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_linearPattern>linearPattern(instanceCount, offset, directionAxis)</span>
+
+    <div class="methods">Pattern in a uniform direction.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">instanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">offset</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">directionAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_circularPattern>circularPattern(instanceCount, separationAngle, centerEntityOrLandmark, normalDirectionAxis)</span>
+
+    <div class="methods">Pattern in a circular direction.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">instanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">separationAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">centerEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">normalDirectionAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_translateXYZ>translateXYZ(x, y, z)</span>
+
+    <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_translateX>translateX(amount)</span>
+
+    <div class="methods">Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_translateY>translateY(amount)</span>
+
+    <div class="methods">Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_translateZ>translateZ(amount)</span>
+
+    <div class="methods">Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleXYZ>scaleXYZ(x, y, z)</span>
+
+    <div class="methods">Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleX>scaleX(scale)</span>
+
+    <div class="methods">Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleY>scaleY(scale)</span>
+
+    <div class="methods">Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleZ>scaleZ(scale)</span>
+
+    <div class="methods">Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleXByFactor>scaleXByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the X direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleYByFactor>scaleYByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the Y direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleZByFactor>scaleZByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the X direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_scaleKeepAspectRatio>scaleKeepAspectRatio(scale, axis)</span>
+
+    <div class="methods">Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_rotateXYZ>rotateXYZ(x, y, z)</span>
+
+    <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_rotateX>rotateX(rotation)</span>
+
+    <div class="methods">Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_rotateY>rotateY(rotation)</span>
+
+    <div class="methods">Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_rotateZ>rotateZ(rotation)</span>
+
+    <div class="methods">Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_twist>twist(angle, screwPitch, interations, axis)</span>
+
+    <div class="methods">AKA Helix, Screw. Revolve an entity</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">screwPitch</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">interations</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_remesh>remesh(strategy, amount)</span>
+
+    <div class="methods">Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">strategy</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_createLandmark>createLandmark(landmarkName, x, y, z)</span>
+
+    <div class="methods">Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.</div>
+    <div><span class="subSubHeading">returnType:</span> Landmark</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_getBoundingBox>getBoundingBox()</span>
+
+    <div class="methods">Get the Boundary Box around the entity.</div>
+    <div><span class="subSubHeading">returnType:</span> BoundaryBox</div>
+    
+
+    Part::<span class="subHeading" id=Part_getDimensions>getDimensions()</span>
+
+    <div class="methods">Get the length span in each coordinate axis (X,Y,Z).</div>
+    <div><span class="subSubHeading">returnType:</span> Dimensions</div>
+    
+
+    Part::<span class="subHeading" id=Part_getLandmark>getLandmark(landmarkName)</span>
+
+    <div class="methods">Get the landmark by name</div>
+    <div><span class="subSubHeading">returnType:</span> Landmark</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,PresetLandmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    </div>
+
+        </div>
+
+        <div>
+            <span class="className">Sketch</span>
+            <div class="subHeading">Capabilities related to adding, multiplying, and/or modifying a curve.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Sketch::<span class="subHeading" id=Sketch_clone>clone(newName, copyLandmarks)</span>
+
+    <div class="methods">Clone an existing sketch with its geometry and properties. Returns the new Sketch.</div>
+    <div><span class="subSubHeading">returnType:</span> Sketch</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">copyLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_revolve>revolve(angle, aboutEntityOrLandmark, axis)</span>
+
+    <div class="methods">Revolve a Sketch around another Entity or Landmark</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">aboutEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_thicken>thicken(radius)</span>
+
+    <div class="methods">Uniformly add a wall around a sketch.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_extrude>extrude(length)</span>
+
+    <div class="methods">Extrude a curve by a specified length. Returns a Part type.</div>
+    <div><span class="subSubHeading">returnType:</span> Part</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_sweep>sweep(profileCurveName, fillCap)</span>
+
+    <div class="methods">Extrude this  curve along the path of another</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">profileCurveName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fillCap</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_profile>profile(profileCurveName)</span>
+
+    <div class="methods">Bend this curve along the path of another</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">profileCurveName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createText>createText(text, fontSize, bold, italic, underlined, characterSpacing, wordSpacing, lineSpacing, fontFilePath)</span>
+
+    <div class="methods">Adds text to a sketch.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">text</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fontSize</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            <div><span class="subSubHeading">Default Value:</span> 1.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">bold</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">italic</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">underlined</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">characterSpacing</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">wordSpacing</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">lineSpacing</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fontFilePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            <div><span class="subSubHeading">Default Value:</span> None</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createFromVertices>createFromVertices(coordinates, interpolation)</span>
+
+    <div class="methods">Create a curve from 2D/3D points.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">coordinates</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,list[string],Point]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">interpolation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 64</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createPoint>createPoint(coordinate)</span>
+
+    <div class="methods">Create a point</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">coordinate</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,list[string],Point</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createLine>createLine(length, angleX, angleY, symmetric)</span>
+
+    <div class="methods">Create a line</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angleX</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angleY</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 0.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">symmetric</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createLineBetweenPoints>createLineBetweenPoints(endAt, startAt)</span>
+
+    <div class="methods">Create a line between two points</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">endAt</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,list[string],Point</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">startAt</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,list[string],Point</div>
+            <div><span class="subSubHeading">Default Value:</span> None</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createCircle>createCircle(radius)</span>
+
+    <div class="methods">Create a circle</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createEllipse>createEllipse(radiusA, radiusB)</span>
+
+    <div class="methods">Create an ellipse</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radiusA</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radiusB</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createArc>createArc(radius, angle)</span>
+
+    <div class="methods">Create an arc</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 180d</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createArcBetweenThreePoints>createArcBetweenThreePoints(pointA, pointB, centerPoint)</span>
+
+    <div class="methods">Create a 3-point arc</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">pointA</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> Point</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">pointB</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> Point</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">centerPoint</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> Point</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createSegment>createSegment(innerRadius, outerRadius, angle)</span>
+
+    <div class="methods">Create a segment (intersection of two circles)</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">innerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outerRadius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            <div><span class="subSubHeading">Default Value:</span> 180d</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createRectangle>createRectangle(length, width)</span>
+
+    <div class="methods">Create a rectangle</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">width</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createPolygon>createPolygon(numberOfSides, length, width)</span>
+
+    <div class="methods">Create an n-gon</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">numberOfSides</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">width</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createTrapezoid>createTrapezoid(lengthUpper, lengthLower, height)</span>
+
+    <div class="methods">Create a trapezoid</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">lengthUpper</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">lengthLower</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">height</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+                
+
+                
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createFromFile>createFromFile(filePath, fileType)</span>
+
+    <div class="methods">Adds geometry to a part from a file. If the part does not exist, this will create it.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fileType</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_isExists>isExists()</span>
+
+    <div class="methods">Check if an entity exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_rename>rename(newName, renamelinkedEntitiesAndLandmarks)</span>
+
+    <div class="methods">Rename the entity, with an option to rename linked landmarks and underlying data.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">renamelinkedEntitiesAndLandmarks</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_delete>delete(removeChildren)</span>
+
+    <div class="methods">Delete the entity from the scene. You may need to delete an associated joint or other features.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">removeChildren</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_isVisible>isVisible()</span>
+
+    <div class="methods">Returns whether the entity is visible in the scene.</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_setVisible>setVisible(isVisible)</span>
+
+    <div class="methods">Toggles visibility of an entity in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isVisible</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_apply>apply(rotation, scale, location, modifiers)</span>
+
+    <div class="methods">Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">location</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">modifiers</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getNativeInstance>getNativeInstance()</span>
+
+    <div class="methods">Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.</div>
+    <div><span class="subSubHeading">returnType:</span> any</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getLocationWorld>getLocationWorld()</span>
+
+    <div class="methods">Get the entities XYZ location relative to World Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getLocationLocal>getLocationLocal()</span>
+
+    <div class="methods">Get the entities XYZ location relative to Local Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_select>select()</span>
+
+    <div class="methods">Select the entity (in UI).</div>
+    
+    
+
+    Sketch::<span class="subHeading" id=Sketch_export>export(filePath, overwrite, scale)</span>
+
+    <div class="methods">Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            <div><span class="subSubHeading">Default Value:</span> 1.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_mirror>mirror(mirrorAcrossEntityOrLandmark, axis, resultingMirroredEntityName)</span>
+
+    <div class="methods">Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">mirrorAcrossEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">resultingMirroredEntityName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_linearPattern>linearPattern(instanceCount, offset, directionAxis)</span>
+
+    <div class="methods">Pattern in a uniform direction.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">instanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">offset</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">directionAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_circularPattern>circularPattern(instanceCount, separationAngle, centerEntityOrLandmark, normalDirectionAxis)</span>
+
+    <div class="methods">Pattern in a circular direction.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">instanceCount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">separationAngle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">centerEntityOrLandmark</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">normalDirectionAxis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_translateXYZ>translateXYZ(x, y, z)</span>
+
+    <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_translateX>translateX(amount)</span>
+
+    <div class="methods">Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_translateY>translateY(amount)</span>
+
+    <div class="methods">Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_translateZ>translateZ(amount)</span>
+
+    <div class="methods">Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleXYZ>scaleXYZ(x, y, z)</span>
+
+    <div class="methods">Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleX>scaleX(scale)</span>
+
+    <div class="methods">Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleY>scaleY(scale)</span>
+
+    <div class="methods">Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleZ>scaleZ(scale)</span>
+
+    <div class="methods">Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleXByFactor>scaleXByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the X direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleYByFactor>scaleYByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the Y direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleZByFactor>scaleZByFactor(scaleFactor)</span>
+
+    <div class="methods">Scale in the X direction by a multiple.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scaleFactor</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_scaleKeepAspectRatio>scaleKeepAspectRatio(scale, axis)</span>
+
+    <div class="methods">Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_rotateXYZ>rotateXYZ(x, y, z)</span>
+
+    <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_rotateX>rotateX(rotation)</span>
+
+    <div class="methods">Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_rotateY>rotateY(rotation)</span>
+
+    <div class="methods">Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_rotateZ>rotateZ(rotation)</span>
+
+    <div class="methods">Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rotation</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_twist>twist(angle, screwPitch, interations, axis)</span>
+
+    <div class="methods">AKA Helix, Screw. Revolve an entity</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">angle</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">screwPitch</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">interations</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">axis</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,int,Axis</div>
+            <div><span class="subSubHeading">Default Value:</span> z</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_remesh>remesh(strategy, amount)</span>
+
+    <div class="methods">Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">strategy</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">amount</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_createLandmark>createLandmark(landmarkName, x, y, z)</span>
+
+    <div class="methods">Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.</div>
+    <div><span class="subSubHeading">returnType:</span> Landmark</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getBoundingBox>getBoundingBox()</span>
+
+    <div class="methods">Get the Boundary Box around the entity.</div>
+    <div><span class="subSubHeading">returnType:</span> BoundaryBox</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getDimensions>getDimensions()</span>
+
+    <div class="methods">Get the length span in each coordinate axis (X,Y,Z).</div>
+    <div><span class="subSubHeading">returnType:</span> Dimensions</div>
+    
+
+    Sketch::<span class="subHeading" id=Sketch_getLandmark>getLandmark(landmarkName)</span>
+
+    <div class="methods">Get the landmark by name</div>
+    <div><span class="subSubHeading">returnType:</span> Landmark</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">landmarkName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,PresetLandmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    </div>
+
+        </div>
+
+        <div>
+            <span class="className">Landmark</span>
+            <div class="subHeading">Landmarks are named positions on an entity.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Landmark::<span class="subHeading" id=Landmark_getLandmarkEntityName>getLandmarkEntityName()</span>
+
+    <div class="methods">Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.</div>
+    <div><span class="subSubHeading">returnType:</span> string</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_getParentEntity>getParentEntity()</span>
+
+    <div class="methods">Get the name of the entity this landmark belongs to.</div>
+    <div><span class="subSubHeading">returnType:</span> Entity</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_isExists>isExists()</span>
+
+    <div class="methods">Check if an landmark exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_rename>rename(newName)</span>
+
+    <div class="methods">Rename the landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Landmark::<span class="subHeading" id=Landmark_delete>delete()</span>
+
+    <div class="methods">Delete the landmark from the scene.</div>
+    
+    
+
+    Landmark::<span class="subHeading" id=Landmark_isVisible>isVisible()</span>
+
+    <div class="methods">Returns whether the landmark is visible in the scene.</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_setVisible>setVisible(isVisible)</span>
+
+    <div class="methods">Toggles visibility of an landmark in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isVisible</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Landmark::<span class="subHeading" id=Landmark_getNativeInstance>getNativeInstance()</span>
+
+    <div class="methods">Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.</div>
+    <div><span class="subSubHeading">returnType:</span> any</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_getLocationWorld>getLocationWorld()</span>
+
+    <div class="methods">Get the landmark XYZ location relative to World Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_getLocationLocal>getLocationLocal()</span>
+
+    <div class="methods">Get the landmark XYZ location relative to Local Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Landmark::<span class="subHeading" id=Landmark_select>select()</span>
+
+    <div class="methods">Select the landmark (in UI).</div>
+    
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Joint</span>
+            <div class="subHeading">Joints define the relationships and constraints between entities.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Joint::<span class="subHeading" id=Joint_translateLandmarkOntoAnother>translateLandmarkOntoAnother()</span>
+
+    <div class="methods">Transforms one landmark onto another</div>
+    
+    
+
+    Joint::<span class="subHeading" id=Joint_pivot>pivot()</span>
+
+    <div class="methods">Constraint the rotation origin of entity B to entity A's landmark.</div>
+    
+    
+
+    Joint::<span class="subHeading" id=Joint_gearRatio>gearRatio(ratio)</span>
+
+    <div class="methods">Constraint the rotation of entity B to be a percentage of entity A's</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">ratio</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitLocationXYZ>limitLocationXYZ(x, y, z)</span>
+
+    <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitLocationX>limitLocationX(min, max)</span>
+
+    <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitLocationY>limitLocationY(min, max)</span>
+
+    <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitLocationZ>limitLocationZ(min, max)</span>
+
+    <div class="methods">Constraint the translation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitRotationXYZ>limitRotationXYZ(x, y, z)</span>
+
+    <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitRotationX>limitRotationX(min, max)</span>
+
+    <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitRotationY>limitRotationY(min, max)</span>
+
+    <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Joint::<span class="subHeading" id=Joint_limitRotationZ>limitRotationZ(min, max)</span>
+
+    <div class="methods">Constraint the rotation of entity B, relative to entity A's landmark.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">min</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">max</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Material</span>
+            <div class="subHeading">Materials affect the appearance and simulation properties of the parts.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Material::<span class="subHeading" id=Material_assignToPart>assignToPart(partName)</span>
+
+    <div class="methods">Assigns the material to a part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">partName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Part</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Material::<span class="subHeading" id=Material_setColor>setColor(rValue, gValue, bValue, aValue)</span>
+
+    <div class="methods">Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">gValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">bValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">aValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            <div><span class="subSubHeading">Default Value:</span> 1.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Material::<span class="subHeading" id=Material_addImageTexture>addImageTexture(imageFilePath)</span>
+
+    <div class="methods">Add a texture from an image file.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">imageFilePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Animation</span>
+            <div class="subHeading">Animation related functionality.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Animation::<span class="subHeading" id=Animation_default>default()</span>
+
+    <div class="methods">Get an Animation instance for the current scene.</div>
+    <div><span class="subSubHeading">returnType:</span> Animation</div>
+    
+
+    Animation::<span class="subHeading" id=Animation_setFrameStart>setFrameStart(frameNumber)</span>
+
+    <div class="methods">Set the start animation frame in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Animation::<span class="subHeading" id=Animation_setFrameEnd>setFrameEnd(frameNumber)</span>
+
+    <div class="methods">Set the end animation frame in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Animation::<span class="subHeading" id=Animation_setFrameCurrent>setFrameCurrent(frameNumber)</span>
+
+    <div class="methods">Set the current animation frame in the scene.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Animation::<span class="subHeading" id=Animation_createKeyFrameLocation>createKeyFrameLocation(entity, frameNumber)</span>
+
+    <div class="methods">Create an animation key-frame using the location of the entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Animation::<span class="subHeading" id=Animation_createKeyFrameRotation>createKeyFrameRotation(entity, frameNumber)</span>
+
+    <div class="methods">Create an animation key-frame using the rotation of the entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Light</span>
+            <div class="subHeading">Manipulate a light object.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Light::<span class="subHeading" id=Light_setColor>setColor(rValue, gValue, bValue)</span>
+
+    <div class="methods">Set the color of an existing light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">rValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">gValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">bValue</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int,float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_createSun>createSun(energyLevel)</span>
+
+    <div class="methods">Create a Sun-type light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">energyLevel</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_createSpot>createSpot(energyLevel)</span>
+
+    <div class="methods">Create a Spot-type light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">energyLevel</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_createPoint>createPoint(energyLevel)</span>
+
+    <div class="methods">Create a Point-type light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">energyLevel</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_createArea>createArea(energyLevel)</span>
+
+    <div class="methods">Create an Area-type light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">energyLevel</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_translateXYZ>translateXYZ(x, y, z)</span>
+
+    <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_rotateXYZ>rotateXYZ(x, y, z)</span>
+
+    <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_isExists>isExists()</span>
+
+    <div class="methods">Check if an light exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Light::<span class="subHeading" id=Light_rename>rename(newName)</span>
+
+    <div class="methods">Rename the light.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Light::<span class="subHeading" id=Light_delete>delete()</span>
+
+    <div class="methods">Delete the light from the scene.</div>
+    
+    
+
+    Light::<span class="subHeading" id=Light_getNativeInstance>getNativeInstance()</span>
+
+    <div class="methods">Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.</div>
+    <div><span class="subSubHeading">returnType:</span> any</div>
+    
+
+    Light::<span class="subHeading" id=Light_getLocationWorld>getLocationWorld()</span>
+
+    <div class="methods">Get the light XYZ location relative to World Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Light::<span class="subHeading" id=Light_getLocationLocal>getLocationLocal()</span>
+
+    <div class="methods">Get the light XYZ location relative to Local Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Light::<span class="subHeading" id=Light_select>select()</span>
+
+    <div class="methods">Select the light (in UI).</div>
+    
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Camera</span>
+            <div class="subHeading">Manipulate a camera object.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Camera::<span class="subHeading" id=Camera_createPerspective>createPerspective()</span>
+
+    <div class="methods">Create a perspective camera in the scene.</div>
+    
+    
+
+    Camera::<span class="subHeading" id=Camera_createOrthogonal>createOrthogonal()</span>
+
+    <div class="methods">Create an orthogonal camera in the scene.</div>
+    
+    
+
+    Camera::<span class="subHeading" id=Camera_setFocalLength>setFocalLength(length)</span>
+
+    <div class="methods">Set the focal length of the camera.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">length</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Camera::<span class="subHeading" id=Camera_translateXYZ>translateXYZ(x, y, z)</span>
+
+    <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Camera::<span class="subHeading" id=Camera_rotateXYZ>rotateXYZ(x, y, z)</span>
+
+    <div class="methods">Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">z</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Angle</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Camera::<span class="subHeading" id=Camera_isExists>isExists()</span>
+
+    <div class="methods">Check if an camera exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
+    
+
+    Camera::<span class="subHeading" id=Camera_rename>rename(newName)</span>
+
+    <div class="methods">Rename the camera.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">newName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Camera::<span class="subHeading" id=Camera_delete>delete()</span>
+
+    <div class="methods">Delete the camera from the scene.</div>
+    
+    
+
+    Camera::<span class="subHeading" id=Camera_getNativeInstance>getNativeInstance()</span>
+
+    <div class="methods">Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.</div>
+    <div><span class="subSubHeading">returnType:</span> any</div>
+    
+
+    Camera::<span class="subHeading" id=Camera_getLocationWorld>getLocationWorld()</span>
+
+    <div class="methods">Get the camera XYZ location relative to World Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Camera::<span class="subHeading" id=Camera_getLocationLocal>getLocationLocal()</span>
+
+    <div class="methods">Get the camera XYZ location relative to Local Space.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    Camera::<span class="subHeading" id=Camera_select>select()</span>
+
+    <div class="methods">Select the entity (in UI).</div>
+    
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Scene</span>
+            <div class="subHeading">Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Scene::<span class="subHeading" id=Scene_default>default()</span>
+
+    <div class="methods">Get a Scene instance for the current scene.</div>
+    <div><span class="subSubHeading">returnType:</span> Scene</div>
+    
+
+    Scene::<span class="subHeading" id=Scene_create>create()</span>
+
+    <div class="methods">Creates a new scene.</div>
+    
+    
+
+    Scene::<span class="subHeading" id=Scene_delete>delete()</span>
+
+    <div class="methods">Deletes a scene.</div>
+    
+    
+
+    Scene::<span class="subHeading" id=Scene_export>export(filePath, entities, overwrite, scale)</span>
+
+    <div class="methods">Export the entire scene or specific entities.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entities</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Entity]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">scale</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            <div><span class="subSubHeading">Default Value:</span> 1.0</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_setDefaultUnit>setDefaultUnit(unit)</span>
+
+    <div class="methods">Set the document's default measurements system.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">unit</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,LengthUnit</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_createGroup>createGroup(name)</span>
+
+    <div class="methods">Create a new group</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">name</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_deleteGroup>deleteGroup(name, removeChildren)</span>
+
+    <div class="methods">Delete a new group</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">name</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">removeChildren</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_removeFromGroup>removeFromGroup(entityName, groupName)</span>
+
+    <div class="methods">Removes an existing entity from a group</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entityName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">groupName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_assignToGroup>assignToGroup(entities, groupName, removeFromOtherGroups)</span>
+
+    <div class="methods">Assigns an existing entity to a new group</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entities</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Entity]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">groupName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">removeFromOtherGroups</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_setVisible>setVisible(entities, isVisible)</span>
+
+    <div class="methods">Change the visibiltiy of the entity.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entities</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> list[string,Entity]</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">isVisible</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Scene::<span class="subHeading" id=Scene_setBackgroundImage>setBackgroundImage(filePath, locationX, locationY)</span>
+
+    <div class="methods">Set the scene background image. This can be an image or an HDRI texture.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">filePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">locationX</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">locationY</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            <div><span class="subSubHeading">Default Value:</span> 0</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Analytics</span>
+            <div class="subHeading">Tools for collecting data about the entities and scene.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Analytics::<span class="subHeading" id=Analytics_measureDistance>measureDistance(entity1, entity2)</span>
+
+    <div class="methods">The ubiquitous ruler.</div>
+    <div><span class="subSubHeading">returnType:</span> Dimensions</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity1</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity2</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Analytics::<span class="subHeading" id=Analytics_measureAngle>measureAngle(entity1, entity2, pivot)</span>
+
+    <div class="methods">The ubiquitous ruler.</div>
+    <div><span class="subSubHeading">returnType:</span> list[Angle]</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity1</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity2</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">pivot</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity,Landmark</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Analytics::<span class="subHeading" id=Analytics_getWorldPose>getWorldPose(entity)</span>
+
+    <div class="methods">Returns the world pose of an entity.</div>
+    <div><span class="subSubHeading">returnType:</span> list[float]</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entity</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Analytics::<span class="subHeading" id=Analytics_getBoundingBox>getBoundingBox(entityName)</span>
+
+    <div class="methods">Returns the bounding box of an entity.</div>
+    <div><span class="subSubHeading">returnType:</span> BoundaryBox</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entityName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Analytics::<span class="subHeading" id=Analytics_getDimensions>getDimensions(entityName)</span>
+
+    <div class="methods">Returns the dimensions of an entity.</div>
+    <div><span class="subSubHeading">returnType:</span> Dimensions</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">entityName</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    Analytics::<span class="subHeading" id=Analytics_log>log(message)</span>
+
+    <div class="methods">Write a message</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">message</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+                </div>
+
+        </div></div>
+
+</body>
+
+</html>

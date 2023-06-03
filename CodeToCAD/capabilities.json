@@ -2,7 +2,7 @@
     "information": "Capabilities for CodeToCAD.",
     "capabilities": {
         "Entity": {
-            "information": "Capabilities shared between Parts, Sketches and Landmarks.",
+            "information": "Capabilities shared between Parts and Sketches.",
             "constructor": {
                 "parameters": {
                     "name": {
