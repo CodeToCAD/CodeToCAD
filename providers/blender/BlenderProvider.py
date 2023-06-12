@@ -1707,26 +1707,25 @@ class Render(CodeToCADInterface.Render):
             Utilities.FileFormats.fromString(Utilities.getFileExtension(outputFilePath)))
         BlenderActions.setRenderFileFormat(fileFormat)
 
-    def renderImage(self, outputFilePath: str, overwrite: Optional[bool] = True):
+    def renderImage(self, outputFilePath: str, overwrite: bool = True, fileType: Optional[str] = None):
         Render._setFileFormat(outputFilePath)
 
         BlenderActions.renderImage(outputFilePath, overwrite or True)
 
         return self
 
-    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True):
         Render._setFileFormat(outputFilePath)
 
         BlenderActions.renderAnimation(outputFilePath, overwrite or True)
         return self
 
-    def renderVideoPng(self, outputFilePath: str, fileNamePrefix: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
-        Render._setFileFormat(outputFilePath)
+    def renderVideoFrames(self, outputFolderPath: str, fileNamePrefix: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True, fileType: Optional[str] = None):
 
         raise NotImplementedError()
         return self
 
-    def setFrameRate(self, frameRate: float):
+    def setFrameRate(self, frameRate: int):
 
         BlenderActions.setRenderFrameRate(int(frameRate))
 
@@ -1736,7 +1735,7 @@ class Render(CodeToCADInterface.Render):
         BlenderActions.setRenderResolution(x, y)
         return self
 
-    def setRenderQuality(self, quality: float):
+    def setRenderQuality(self, quality: int):
 
         percentage = quality * 100 if quality < 1.0 else quality
         percentage = int(percentage)

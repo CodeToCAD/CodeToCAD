@@ -1248,7 +1248,7 @@ class TestRender(TestProviderCase):
     def test_renderImage(self):
         instance = Render("")
 
-        value = instance.renderImage("outputFilePath","overwrite")
+        value = instance.renderImage("outputFilePath","overwrite","fileType")
 
         
     @unittest.skip
@@ -1259,10 +1259,10 @@ class TestRender(TestProviderCase):
 
         
     @unittest.skip
-    def test_renderVideoPng(self):
+    def test_renderVideoFrames(self):
         instance = Render("")
 
-        value = instance.renderVideoPng("outputFilePath","fileNamePrefix","startFrameNumber","endFrameNumber","stepFrames","overwrite")
+        value = instance.renderVideoFrames("outputFolderPath","fileNamePrefix","startFrameNumber","endFrameNumber","stepFrames","overwrite","fileType")
 
         
     @unittest.skip

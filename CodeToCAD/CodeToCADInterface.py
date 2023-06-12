@@ -1487,7 +1487,7 @@ class Render(metaclass=ABCMeta):
     
 
     @abstractmethod
-    def renderImage(self, outputFilePath:str, overwrite:Optional[bool]=True):
+    def renderImage(self, outputFilePath:str, overwrite:bool=True, fileType:Optional[str]=None):
         '''
         Render a still image.
         '''
@@ -1497,7 +1497,7 @@ class Render(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def renderVideoMp4(self, outputFilePath:str, startFrameNumber:Optional['int']=1, endFrameNumber:Optional['int']=100, stepFrames:Optional['int']=1, overwrite:Optional[bool]=True):
+    def renderVideoMp4(self, outputFilePath:str, startFrameNumber:'int'=1, endFrameNumber:'int'=100, stepFrames:'int'=1, overwrite:bool=True):
         '''
         Render an MP4 video.
         '''
@@ -1507,17 +1507,17 @@ class Render(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def renderVideoPng(self, outputFilePath:str, fileNamePrefix:str, startFrameNumber:Optional['int']=1, endFrameNumber:Optional['int']=100, stepFrames:Optional['int']=1, overwrite:Optional[bool]=True):
+    def renderVideoFrames(self, outputFolderPath:str, fileNamePrefix:str, startFrameNumber:'int'=1, endFrameNumber:'int'=100, stepFrames:'int'=1, overwrite:bool=True, fileType:Optional[str]=None):
         '''
-        Render a video as PNG stills.
+        Render a video as image frame stills.
         '''
         
-        print("renderVideoPng is called in an abstract method. Please override this method.")
+        print("renderVideoFrames is called in an abstract method. Please override this method.")
         return self
         
 
     @abstractmethod
-    def setFrameRate(self, frameRate:float):
+    def setFrameRate(self, frameRate:'int'):
         '''
         Set rendering framerate.
         '''
@@ -1537,7 +1537,7 @@ class Render(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def setRenderQuality(self, quality:float):
+    def setRenderQuality(self, quality:'int'):
         '''
         Set rendering quality.
         '''
