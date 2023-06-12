@@ -26,6 +26,7 @@ Material: Type[CodeToCADInterface.Material] = CodeToCADInterface.Material
 Animation: Type[CodeToCADInterface.Animation] = CodeToCADInterface.Animation
 Camera: Type[CodeToCADInterface.Camera] = CodeToCADInterface.Camera
 Light: Type[CodeToCADInterface.Light] = CodeToCADInterface.Light
+Render: Type[CodeToCADInterface.Render] = CodeToCADInterface.Render
 
 
 def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
@@ -102,3 +103,10 @@ def setLightProvider(provider, globalContext: Optional[dict]) -> None:
     Light = provider
     if globalContext and "Light" in globalContext:
         globalContext["Light"] = provider
+
+
+def setRenderProvider(provider, globalContext: Optional[dict]) -> None:
+    global Render
+    Render = provider
+    if globalContext and "Render" in globalContext:
+        globalContext["Render"] = provider

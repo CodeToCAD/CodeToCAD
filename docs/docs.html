@@ -596,6 +596,31 @@
             </div>
 
         <div class="grid-item">
+            <span class="className">Render</span>
+            <div class="subHeading">Render the scene and export images or videos.</div>
+
+            
+    
+
+    <a href=#Render_renderImage class="chip">renderImage()</a>
+
+    <a href=#Render_renderVideoMp4 class="chip">renderVideoMp4()</a>
+
+    <a href=#Render_renderVideoPng class="chip">renderVideoPng()</a>
+
+    <a href=#Render_setFrameRate class="chip">setFrameRate()</a>
+
+    <a href=#Render_setResolution class="chip">setResolution()</a>
+
+    <a href=#Render_setRenderQuality class="chip">setRenderQuality()</a>
+
+    <a href=#Render_setRenderEngine class="chip">setRenderEngine()</a>
+
+
+
+            </div>
+
+        <div class="grid-item">
             <span class="className">Scene</span>
             <div class="subHeading">Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.</div>
 
@@ -5853,6 +5878,306 @@
 
     <div class="methods">Select the entity (in UI).</div>
     
+    
+
+                </div>
+
+        </div>
+
+        <div>
+            <span class="className">Render</span>
+            <div class="subHeading">Render the scene and export images or videos.</div>
+
+            <div class="methods">
+
+                
+    
+
+    Render::<span class="subHeading" id=Render_renderImage>renderImage(outputFilePath,
+        overwrite)</span>
+
+    <div class="methods">Render a still image.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outputFilePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_renderVideoMp4>renderVideoMp4(outputFilePath,
+        startFrameNumber,
+        endFrameNumber,
+        stepFrames,
+        overwrite)</span>
+
+    <div class="methods">Render an MP4 video.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outputFilePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">startFrameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">endFrameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 100</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">stepFrames</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_renderVideoPng>renderVideoPng(outputFilePath,
+        fileNamePrefix,
+        startFrameNumber,
+        endFrameNumber,
+        stepFrames,
+        overwrite)</span>
+
+    <div class="methods">Render a video as PNG stills.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">outputFilePath</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fileNamePrefix</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">startFrameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">endFrameNumber</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 100</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">stepFrames</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            <div><span class="subSubHeading">Default Value:</span> 1</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">overwrite</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> True</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_setFrameRate>setFrameRate(frameRate)</span>
+
+    <div class="methods">Set rendering framerate.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">frameRate</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_setResolution>setResolution(x,
+        y)</span>
+
+    <div class="methods">Set rendering resolution</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">x</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">y</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> int</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_setRenderQuality>setRenderQuality(quality)</span>
+
+    <div class="methods">Set rendering quality.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">quality</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> float</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
+    
+
+    Render::<span class="subHeading" id=Render_setRenderEngine>setRenderEngine(name)</span>
+
+    <div class="methods">Set rendering engine name.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">name</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
+        </div>
+    </div>
+
+
     
 
                 </div>

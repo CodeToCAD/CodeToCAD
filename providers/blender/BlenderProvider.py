@@ -20,7 +20,7 @@ if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < B
 
 
 def injectBlenderProvider(globalContext: Optional[dict]) -> None:
-    from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider, setCameraProvider, setLightProvider
+    from CodeToCAD import setPartProvider, setSketchProvider, setMaterialProvider, setLandmarkProvider, setJointProvider, setAnimationProvider, setSceneProvider, setAnalyticsProvider, setCameraProvider, setLightProvider, setRenderProvider
 
     setPartProvider(Part, globalContext)
     setSketchProvider(Sketch, globalContext)
@@ -32,6 +32,7 @@ def injectBlenderProvider(globalContext: Optional[dict]) -> None:
     setAnalyticsProvider(Analytics, globalContext)
     setCameraProvider(Camera, globalContext)
     setLightProvider(Light, globalContext)
+    setRenderProvider(Render, globalContext)
 
 
 class Entity(CodeToCADInterface.Entity):
@@ -1695,6 +1696,44 @@ class Animation(CodeToCADInterface.Animation):
         BlenderActions.addKeyframeToObject(
             partName, frameNumber, BlenderDefinitions.BlenderRotationTypes.EULER.value)
 
+        return self
+
+
+class Render(CodeToCADInterface.Render):
+
+    def renderImage(self, outputFilePath: str, overwrite: Optional[bool] = True):
+
+        raise NotImplementedError()
+        return self
+
+    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+
+        raise NotImplementedError()
+        return self
+
+    def renderVideoPng(self, outputFilePath: str, fileNamePrefix: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+
+        raise NotImplementedError()
+        return self
+
+    def setFrameRate(self, frameRate: float):
+
+        raise NotImplementedError()
+        return self
+
+    def setResolution(self, x: 'int', y: 'int'):
+
+        raise NotImplementedError()
+        return self
+
+    def setRenderQuality(self, quality: float):
+
+        raise NotImplementedError()
+        return self
+
+    def setRenderEngine(self, name: str):
+
+        raise NotImplementedError()
         return self
 
 
