@@ -1708,19 +1708,27 @@ class Render(CodeToCADInterface.Render):
         BlenderActions.setRenderFileFormat(fileFormat)
 
     def renderImage(self, outputFilePath: str, overwrite: bool = True, fileType: Optional[str] = None):
-        Render._setFileFormat(outputFilePath)
 
-        BlenderActions.renderImage(outputFilePath, overwrite or True)
+        absoluteFilePath = getAbsoluteFilepath(outputFilePath)
+
+        Render._setFileFormat(absoluteFilePath)
+
+        BlenderActions.renderImage(absoluteFilePath, overwrite or True)
 
         return self
 
     def renderVideoMp4(self, outputFilePath: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True):
-        Render._setFileFormat(outputFilePath)
 
-        BlenderActions.renderAnimation(outputFilePath, overwrite or True)
+        absoluteFilePath = getAbsoluteFilepath(outputFilePath)
+
+        Render._setFileFormat(absoluteFilePath)
+
+        BlenderActions.renderAnimation(absoluteFilePath, overwrite or True)
         return self
 
     def renderVideoFrames(self, outputFolderPath: str, fileNamePrefix: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True, fileType: Optional[str] = None):
+
+        absoluteFilePath = getAbsoluteFilepath(outputFolderPath)
 
         raise NotImplementedError()
         return self
