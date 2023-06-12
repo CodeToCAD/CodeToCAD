@@ -362,15 +362,18 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleXByFactor(self, scaleFactor: float
                        ):
-        return self.scaleX(scaleFactor)
+        BlenderActions.scaleObject(self.name, scaleFactor, None, None)
+        return self.applyRotationAndScaleOnly()
 
     def scaleYByFactor(self, scaleFactor: float
                        ):
-        return self.scaleY(scaleFactor)
+        BlenderActions.scaleObject(self.name, None, scaleFactor, None)
+        return self.applyRotationAndScaleOnly()
 
     def scaleZByFactor(self, scaleFactor: float
                        ):
-        return self.scaleZ(scaleFactor)
+        BlenderActions.scaleObject(self.name, None, None, scaleFactor)
+        return self.applyRotationAndScaleOnly()
 
     def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                              ):
