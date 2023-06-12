@@ -970,6 +970,8 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
             angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
 
+        BlenderActions.createMeshFromCurve(self.name)
+
         return self
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue
@@ -977,6 +979,8 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         BlenderActions.applySolidifyModifier(
             self.name, Utilities.Dimension.fromString(radius))
+
+        BlenderActions.createMeshFromCurve(self.name)
 
         return self
 
@@ -1007,6 +1011,8 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         BlenderActions.addBevelObjectToCurve(
             self.name, profileCurveName, fillCap)
+
+        BlenderActions.createMeshFromCurve(self.name)
 
         return self
 
