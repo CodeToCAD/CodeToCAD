@@ -1879,6 +1879,16 @@
                         "required": true
                     }
                 }
+            },
+            "setCamera": {
+                "information": "Set the rendering camera.",
+                "action": "modify",
+                "parameters": {
+                    "cameraNameOrInstance": {
+                        "information": "The camera name or Camera class instance.",
+                        "type": "string,Camera"
+                    }
+                }
             }
         },
         "Scene": {

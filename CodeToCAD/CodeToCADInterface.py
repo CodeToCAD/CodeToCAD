@@ -20,6 +20,7 @@ EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
 LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
+CameraOrItsName:TypeAlias = Union[str, 'Camera']
 
 class Entity(metaclass=ABCMeta):
     '''Capabilities shared between Parts and Sketches.'''
@@ -1553,6 +1554,16 @@ class Render(metaclass=ABCMeta):
         '''
         
         print("setRenderEngine is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def setCamera(self, cameraNameOrInstance:CameraOrItsName):
+        '''
+        Set the rendering camera.
+        '''
+        
+        print("setCamera is called in an abstract method. Please override this method.")
         return self
         
 class Scene(metaclass=ABCMeta):

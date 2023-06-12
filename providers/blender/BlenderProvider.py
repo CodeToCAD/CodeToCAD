@@ -8,7 +8,7 @@ import BlenderDefinitions
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
-from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName, PresetLandmarkOrItsName
+from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName, PresetLandmarkOrItsName, CameraOrItsName
 from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
@@ -1755,6 +1755,16 @@ class Render(CodeToCADInterface.Render):
 
         BlenderActions.setRenderEngine(
             BlenderDefinitions.RenderEngines.fromString(name))
+
+        return self
+
+    def setCamera(self, cameraNameOrInstance: CameraOrItsName):
+
+        cameraName: str = cameraNameOrInstance  # type: ignore
+        if isinstance(cameraNameOrInstance, Camera):
+            cameraName = cameraNameOrInstance.name
+
+        BlenderActions.setSceneCamera(cameraName)
 
         return self
 
