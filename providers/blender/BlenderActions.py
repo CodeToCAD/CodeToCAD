@@ -2282,6 +2282,13 @@ def getCamera(cameraName):
     return blenderCamera
 
 
+def setSceneCamera(cameraName: str, sceneName: Optional[str] = None):
+    blenderCamera = getObject(cameraName)
+    scene = getScene(sceneName)
+
+    scene.camera = blenderCamera
+
+
 def setFocalLength(cameraName, length=50.0):
     camera = getCamera(cameraName)
     assert \

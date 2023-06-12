@@ -20,6 +20,7 @@ EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
 LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
+CameraOrItsName:TypeAlias = Union[str, 'Camera']
 
 {%-set useAbstractMethodDecorator = True%}
 

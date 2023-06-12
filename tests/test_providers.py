@@ -1226,7 +1226,7 @@ class TestRender(TestProviderCase):
     def test_renderImage(self):
         instance = Render("")
 
-        value = instance.renderImage("outputFilePath", "overwrite")
+        value = instance.renderImage("outputFilePath", "overwrite", "fileType")
 
     @unittest.skip
     def test_renderVideoMp4(self):
@@ -1236,11 +1236,11 @@ class TestRender(TestProviderCase):
             "outputFilePath", "startFrameNumber", "endFrameNumber", "stepFrames", "overwrite")
 
     @unittest.skip
-    def test_renderVideoPng(self):
+    def test_renderVideoFrames(self):
         instance = Render("")
 
-        value = instance.renderVideoPng(
-            "outputFilePath", "fileNamePrefix", "startFrameNumber", "endFrameNumber", "stepFrames", "overwrite")
+        value = instance.renderVideoFrames("outputFolderPath", "fileNamePrefix",
+                                           "startFrameNumber", "endFrameNumber", "stepFrames", "overwrite", "fileType")
 
     @unittest.skip
     def test_setFrameRate(self):
@@ -1271,6 +1271,14 @@ class TestRender(TestProviderCase):
         instance = Render("")
 
         value = instance.setRenderEngine("name")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
+    def test_setCamera(self):
+        instance = Render("")
+
+        value = instance.setCamera("cameraNameOrInstance")
 
         assert value, "Modify method failed."
 
