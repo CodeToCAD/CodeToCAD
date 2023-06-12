@@ -1755,6 +1755,132 @@
                 "parameters": {}
             }
         },
+        "Render": {
+            "information": "Render the scene and export images or videos.",
+            "renderImage": {
+                "information": "Render a still image.",
+                "action": "interact",
+                "parameters": {
+                    "outputFilePath": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": true
+                    }
+                }
+            },
+            "renderVideoMp4": {
+                "information": "Render an MP4 video.",
+                "action": "interact",
+                "parameters": {
+                    "outputFilePath": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "startFrameNumber": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 1
+                    },
+                    "endFrameNumber": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 100
+                    },
+                    "stepFrames": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 1
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": true
+                    }
+                }
+            },
+            "renderVideoPng": {
+                "information": "Render a video as PNG stills.",
+                "action": "interact",
+                "parameters": {
+                    "outputFilePath": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "fileNamePrefix": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "startFrameNumber": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 1
+                    },
+                    "endFrameNumber": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 100
+                    },
+                    "stepFrames": {
+                        "type": "int",
+                        "required": false,
+                        "defaultValue": 1
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": true
+                    }
+                }
+            },
+            "setFrameRate": {
+                "information": "Set rendering framerate.",
+                "action": "modify",
+                "parameters": {
+                    "frameRate": {
+                        "type": "float",
+                        "required": true
+                    }
+                }
+            },
+            "setResolution": {
+                "information": "Set rendering resolution",
+                "action": "modify",
+                "parameters": {
+                    "x": {
+                        "type": "int",
+                        "required": true
+                    },
+                    "y": {
+                        "type": "int",
+                        "required": true
+                    }
+                }
+            },
+            "setRenderQuality": {
+                "information": "Set rendering quality.",
+                "action": "modify",
+                "parameters": {
+                    "quality": {
+                        "type": "float",
+                        "required": true
+                    }
+                }
+            },
+            "setRenderEngine": {
+                "information": "Set rendering engine name.",
+                "action": "modify",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            }
+        },
         "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
             "constructor": {
