@@ -606,7 +606,7 @@
 
     <a href=#Render_renderVideoMp4 class="chip">renderVideoMp4()</a>
 
-    <a href=#Render_renderVideoPng class="chip">renderVideoPng()</a>
+    <a href=#Render_renderVideoFrames class="chip">renderVideoFrames()</a>
 
     <a href=#Render_setFrameRate class="chip">setFrameRate()</a>
 
@@ -5894,7 +5894,8 @@
     
 
     Render::<span class="subHeading" id=Render_renderImage>renderImage(outputFilePath,
-        overwrite)</span>
+        overwrite,
+        fileType)</span>
 
     <div class="methods">Render a still image.</div>
     
@@ -5919,6 +5920,19 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fileType</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
     </div>
@@ -5955,7 +5969,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 1</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -5968,7 +5982,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 100</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -5981,7 +5995,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 1</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -5994,26 +6008,27 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> True</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
 
     
 
-    Render::<span class="subHeading" id=Render_renderVideoPng>renderVideoPng(outputFilePath,
+    Render::<span class="subHeading" id=Render_renderVideoFrames>renderVideoFrames(outputFolderPath,
         fileNamePrefix,
         startFrameNumber,
         endFrameNumber,
         stepFrames,
-        overwrite)</span>
+        overwrite,
+        fileType)</span>
 
-    <div class="methods">Render a video as PNG stills.</div>
+    <div class="methods">Render a video as image frame stills.</div>
     
     
 
     <div class="methods grid-container-parameters">
-        <div class="methodName grid-item">outputFilePath</div>
+        <div class="methodName grid-item">outputFolderPath</div>
         <div class="grid-item">
             
             <div><span class="subSubHeading">Type:</span> string</div>
@@ -6044,7 +6059,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 1</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -6057,7 +6072,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 100</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -6070,7 +6085,7 @@
             
             <div><span class="subSubHeading">Type:</span> int</div>
             <div><span class="subSubHeading">Default Value:</span> 1</div>
-            <div><span class="subSubHeading">Required:</span> False</div>
+            
         </div>
     </div>
 
@@ -6083,6 +6098,19 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">fileType</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
     </div>
@@ -6100,7 +6128,7 @@
         <div class="methodName grid-item">frameRate</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> float</div>
+            <div><span class="subSubHeading">Type:</span> int</div>
             
             <div><span class="subSubHeading">Required:</span> True</div>
         </div>
@@ -6151,8 +6179,8 @@
     <div class="methods grid-container-parameters">
         <div class="methodName grid-item">quality</div>
         <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> float</div>
+            <div><span class="subSubHeading">Information:</span> A value between 0 and 100</div>
+            <div><span class="subSubHeading">Type:</span> int</div>
             
             <div><span class="subSubHeading">Required:</span> True</div>
         </div>

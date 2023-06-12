@@ -1767,8 +1767,11 @@
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "required": false,
                         "defaultValue": true
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "required": false
                     }
                 }
             },
@@ -1782,31 +1785,27 @@
                     },
                     "startFrameNumber": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 1
                     },
                     "endFrameNumber": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 100
                     },
                     "stepFrames": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 1
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "required": false,
                         "defaultValue": true
                     }
                 }
             },
-            "renderVideoPng": {
-                "information": "Render a video as PNG stills.",
+            "renderVideoFrames": {
+                "information": "Render a video as image frame stills.",
                 "action": "interact",
                 "parameters": {
-                    "outputFilePath": {
+                    "outputFolderPath": {
                         "type": "string",
                         "required": true
                     },
@@ -1816,23 +1815,23 @@
                     },
                     "startFrameNumber": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 1
                     },
                     "endFrameNumber": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 100
                     },
                     "stepFrames": {
                         "type": "int",
-                        "required": false,
                         "defaultValue": 1
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "required": false,
                         "defaultValue": true
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "required": false
                     }
                 }
             },
@@ -1841,7 +1840,7 @@
                 "action": "modify",
                 "parameters": {
                     "frameRate": {
-                        "type": "float",
+                        "type": "int",
                         "required": true
                     }
                 }
@@ -1865,7 +1864,8 @@
                 "action": "modify",
                 "parameters": {
                     "quality": {
-                        "type": "float",
+                        "information": "A value between 0 and 100",
+                        "type": "int",
                         "required": true
                     }
                 }

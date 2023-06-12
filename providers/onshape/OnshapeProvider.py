@@ -670,22 +670,22 @@ class Camera(CodeToCADInterface.Camera):
 
 class Render(CodeToCADInterface.Render):
 
-    def renderImage(self, outputFilePath: str, overwrite: Optional[bool] = True):
+    def renderImage(self, outputFilePath: str, overwrite: bool = True, fileType: Optional[str] = None):
 
         raise NotImplementedError()
         return self
 
-    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True):
 
         raise NotImplementedError()
         return self
 
-    def renderVideoPng(self, outputFilePath: str, fileNamePrefix: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+    def renderVideoFrames(self, outputFolderPath: str, fileNamePrefix: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True, fileType: Optional[str] = None):
 
         raise NotImplementedError()
         return self
 
-    def setFrameRate(self, frameRate: float):
+    def setFrameRate(self, frameRate: int):
 
         raise NotImplementedError()
         return self
@@ -695,7 +695,7 @@ class Render(CodeToCADInterface.Render):
         raise NotImplementedError()
         return self
 
-    def setRenderQuality(self, quality: float):
+    def setRenderQuality(self, quality: int):
 
         raise NotImplementedError()
         return self
