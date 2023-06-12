@@ -1519,6 +1519,16 @@ class Scene(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def getSelectedEntity(self) -> 'Entity':
+        '''
+        Get the selected entity in the Scene.
+        '''
+        
+        print("getSelectedEntity is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+        
+
+    @abstractmethod
     def export(self, filePath:str, entities:list[EntityOrItsName], overwrite:bool=True, scale:float=1.0):
         '''
         Export the entire scene or specific entities.

@@ -805,6 +805,11 @@ class Scene(CodeToCADInterface.Scene):
         return self
         
 
+    def getSelectedEntity(self) -> 'Entity':
+        
+        raise NotImplementedError()
+        
+
     def export(self, filePath:str, entities:list[EntityOrItsName], overwrite:bool=True, scale:float=1.0):
         
         return self
