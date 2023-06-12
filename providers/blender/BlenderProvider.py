@@ -1723,6 +1723,10 @@ class Scene(CodeToCADInterface.Scene):
         raise NotImplementedError()
         return self
 
+    def getSelectedEntity(self) -> 'Entity':
+
+        return Entity(BlenderActions.getSelectedObjectName())
+
     def export(self, filePath: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0
                ):
         for entity in entities:

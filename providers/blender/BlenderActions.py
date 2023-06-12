@@ -2006,6 +2006,15 @@ def selectObject(objectName: str):
     blenderObject.select_set(True)
 
 
+def getSelectedObjectName() -> str:
+
+    selectedObjects = bpy.context.selected_objects
+
+    assert len(selectedObjects) > 0, "There are no selected objects."
+
+    return selectedObjects[0].name
+
+
 def zoomToSelectedObjects():
     # References https://blender.stackexchange.com/a/7419/138679
     for area in bpy.context.screen.areas:

@@ -1263,6 +1263,15 @@ class TestScene(TestProviderCase):
 
         
     @unittest.skip
+    def test_getSelectedEntity(self):
+        instance = Scene("name","description")
+
+        value = instance.getSelectedEntity("")
+
+        
+        assert value, "Get method failed."
+        
+    @unittest.skip
     def test_export(self):
         instance = Scene("name","description")
 

@@ -1783,6 +1783,11 @@
                 "information": "Deletes a scene.",
                 "action": "delete"
             },
+            "getSelectedEntity": {
+                "information": "Get the selected entity in the Scene.",
+                "action": "get",
+                "returnType": "Entity"
+            },
             "export": {
                 "action": "interact",
                 "information": "Export the entire scene or specific entities.",
