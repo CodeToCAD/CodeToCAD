@@ -412,7 +412,7 @@ def importFile(
     assert blenderMesh == None, f"A mesh with name {fileName} already exists."
 
     # Check if this is a file-type we support:
-    fileType = fileType or path.suffix.replace(".", "")
+    fileType = fileType or Utilities.getFileExtension(filePath)
 
     assert \
         fileType in fileImportFunctions, \
@@ -2189,6 +2189,11 @@ def setFrameEnd(frameNumber: int, sceneName: Optional[str]):
     scene.frame_end = frameNumber
 
 
+def setFrameStep(step: int, sceneName: Optional[str]):
+    scene = getScene(sceneName)
+    scene.frame_step = step
+
+
 def setFrameCurrent(frameNumber: int, sceneName: Optional[str]):
     scene = getScene(sceneName)
     scene.frame_set(frameNumber)
@@ -2332,3 +2337,36 @@ def getScene(sceneName: Optional[str] = "Scene") -> bpy.types.Scene:
         f"Scene{sceneName} does not exists"
 
     return blenderScene
+
+
+def renderImage(outputFilepath: str, overwrite: bool):
+    bpy.context.scene.render.use_overwrite = overwrite
+    bpy.context.scene.render.filepath = outputFilepath
+    bpy.ops.render.render(write_still=True)
+
+
+def renderAnimation(outputFilepath: str, overwrite: bool):
+    bpy.context.scene.render.use_overwrite = overwrite
+    bpy.context.scene.render.filepath = outputFilepath
+    bpy.ops.render.render(animation=True)
+
+
+def setRenderFrameRate(rate: int):
+    bpy.context.scene.render.fps = rate
+
+
+def setRenderQuality(percentage: int):
+    bpy.context.scene.render.image_settings.quality = percentage
+
+
+def setRenderFileFormat(format: BlenderDefinitions.FileFormat):
+    bpy.context.scene.render.image_settings.file_format = format.name
+
+
+def setRenderEngine(engine: BlenderDefinitions.RenderEngines):
+    bpy.context.scene.render.engine = engine.name
+
+
+def setRenderResolution(x: int, y: int):
+    bpy.context.scene.render.resolution_x = x
+    bpy.context.scene.render.resolution_y = y

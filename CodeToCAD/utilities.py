@@ -84,12 +84,9 @@ def getFilename(relativeFilePath: str):
     return path.stem
 
 
-def createUUIDLikeId():
-    return str(uuid4()).replace("-", "")[:10]
-
-
-def formatLandmarkEntityName(parentEntityName: str, landmarkName: str):
-    return f"{parentEntityName}_{landmarkName}"
+def getFileExtension(filePath: str):
+    path = Path(filePath)
+    return path.suffix.replace(".", "")
 
 
 def getAbsoluteFilepath(relativeFilePath: str):
@@ -99,6 +96,14 @@ def getAbsoluteFilepath(relativeFilePath: str):
         absoluteFilePath = str(
             Path(sys.argv[0]).parent.joinpath(path).resolve())
     return absoluteFilePath
+
+
+def createUUIDLikeId():
+    return str(uuid4()).replace("-", "")[:10]
+
+
+def formatLandmarkEntityName(parentEntityName: str, landmarkName: str):
+    return f"{parentEntityName}_{landmarkName}"
 
 
 class EquittableEnum(Enum):
@@ -432,6 +437,27 @@ class CurveTypes(EquittableEnum):
     POLY = 0
     NURBS = 1
     BEZIER = 2
+
+
+class FileFormats(EquittableEnum):
+    PNG = 0
+    JPEG = 1
+    OPEN_EXR = 2
+    MP4 = 3
+
+    @staticmethod
+    def fromString(name: str):
+        name = name.lower()
+        if name == "png":
+            return FileFormats.PNG
+        if name == "jpg" or name == "jpeg":
+            return FileFormats.JPEG
+        if name == "exr" or name == "openexr":
+            return FileFormats.OPEN_EXR
+        if name == "mp4" or "ffmpeg":
+            return FileFormats.MP4
+
+        raise TypeError(f"{name} is not a supported file type.")
 
 
 class ScalingMethods(Enum):

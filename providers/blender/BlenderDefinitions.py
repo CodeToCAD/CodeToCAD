@@ -304,3 +304,37 @@ class RepeatMode(Enum):
             return 'CLIP'
         if self == RepeatMode.repeat:
             return 'REPEAT'
+
+
+class FileFormat(Enum):
+    # References https://docs.blender.org/api/current/bpy_types_enum_items/image_type_items.html#rna-enum-image-type-items
+    PNG = Utilities.FileFormats.PNG
+    JPEG = Utilities.FileFormats.JPEG
+    OPEN_EXR = Utilities.FileFormats.OPEN_EXR
+    FFMPEG = Utilities.FileFormats.MP4
+
+    @staticmethod
+    def fromUtilitiesFileFormat(fileformat: Utilities.FileFormats):
+        for format in FileFormat:
+            if format.value == fileformat:
+                return format
+
+        raise NotImplementedError(f"{fileformat} is not implemented")
+
+
+class RenderEngines(Enum):
+    BLENDER_EEVEE = 0
+    CYCLES = 1
+    BLENDER_WORKBENCH = 2
+
+    @staticmethod
+    def fromString(name: str):
+        name = name.lower()
+        if name == "eevee":
+            return RenderEngines.BLENDER_EEVEE
+        if name == "cycle":
+            return RenderEngines.CYCLES
+        if name == "workbench":
+            return RenderEngines.BLENDER_WORKBENCH
+
+        raise TypeError(f"{name} is not a supported type.")

@@ -1701,39 +1701,54 @@ class Animation(CodeToCADInterface.Animation):
 
 class Render(CodeToCADInterface.Render):
 
-    def renderImage(self, outputFilePath: str, overwrite: Optional[bool] = True):
+    @staticmethod
+    def _setFileFormat(outputFilePath: str):
+        fileFormat = BlenderDefinitions.FileFormat.fromUtilitiesFileFormat(
+            Utilities.FileFormats.fromString(Utilities.getFileExtension(outputFilePath)))
+        BlenderActions.setRenderFileFormat(fileFormat)
 
-        raise NotImplementedError()
+    def renderImage(self, outputFilePath: str, overwrite: Optional[bool] = True):
+        Render._setFileFormat(outputFilePath)
+
+        BlenderActions.renderImage(outputFilePath, overwrite or True)
+
         return self
 
     def renderVideoMp4(self, outputFilePath: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+        Render._setFileFormat(outputFilePath)
 
-        raise NotImplementedError()
+        BlenderActions.renderAnimation(outputFilePath, overwrite or True)
         return self
 
     def renderVideoPng(self, outputFilePath: str, fileNamePrefix: str, startFrameNumber: Optional['int'] = 1, endFrameNumber: Optional['int'] = 100, stepFrames: Optional['int'] = 1, overwrite: Optional[bool] = True):
+        Render._setFileFormat(outputFilePath)
 
         raise NotImplementedError()
         return self
 
     def setFrameRate(self, frameRate: float):
 
-        raise NotImplementedError()
+        BlenderActions.setRenderFrameRate(int(frameRate))
+
         return self
 
     def setResolution(self, x: 'int', y: 'int'):
-
-        raise NotImplementedError()
+        BlenderActions.setRenderResolution(x, y)
         return self
 
     def setRenderQuality(self, quality: float):
 
-        raise NotImplementedError()
+        percentage = quality * 100 if quality < 1.0 else quality
+        percentage = int(percentage)
+        BlenderActions.setRenderQuality(percentage)
+
         return self
 
     def setRenderEngine(self, name: str):
 
-        raise NotImplementedError()
+        BlenderActions.setRenderEngine(
+            BlenderDefinitions.RenderEngines.fromString(name))
+
         return self
 
 
