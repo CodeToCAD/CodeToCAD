@@ -1928,6 +1928,8 @@ class BlenderCurvePrimitives():
         heightMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             Dimension.fromString(height)).value
 
+        print("height,", height, "heightMeters", heightMeters)
+
         radiusMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             Dimension.fromString(radius)).value
 
@@ -1943,8 +1945,11 @@ class BlenderCurvePrimitives():
         curveTypeName: str = curveType.name
 
         bpy.ops.curve.spirals(spiral_type='ARCH',  # type: ignore
-                              turns=numberOfTurns, steps=24,
-                              dif_z=heightMeters/numberOfTurns, dif_radius=radiusDiff, curve_type=curveTypeName)
+                              turns=numberOfTurns, steps=24, edit_mode=False,
+                              radius=radiusMeters,
+                              dif_z=heightMeters/numberOfTurns, dif_radius=radiusDiff, curve_type=curveTypeName,
+                              spiral_direction='CLOCKWISE' if isClockwise else 'COUNTER_CLOCKWISE'
+                              )
 
 
 def enableCurveExtraObjectsAddon():
