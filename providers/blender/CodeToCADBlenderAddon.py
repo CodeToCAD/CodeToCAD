@@ -500,7 +500,7 @@ def register():
     bpy.utils.register_class(LogMessage)
     bpy.utils.register_class(ReloadCodeToCADModules)
 
-    bpy.app.timers.register(addCodeToCADToPath)
+    addCodeToCADToPath()
 
     addCodeToCADToBlenderConsole()
 
