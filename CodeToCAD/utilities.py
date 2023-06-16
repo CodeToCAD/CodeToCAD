@@ -431,6 +431,7 @@ class CurvePrimitiveTypes(EquittableEnum):
     Polygon = 11
     Polygon_ab = 12
     Arc = 13
+    Spiral = 14
 
 
 class CurveTypes(EquittableEnum):

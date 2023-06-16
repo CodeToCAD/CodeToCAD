@@ -5,6 +5,7 @@
 from typing import Any, Optional
 from uuid import uuid4
 import bpy
+from CodeToCAD import Dimension
 from CodeToCAD.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
@@ -1718,6 +1719,8 @@ def getBlenderCurvePrimitiveFunction(curvePrimitive: BlenderDefinitions.BlenderC
         return BlenderCurvePrimitives.createPolygon_ab
     elif curvePrimitive == BlenderDefinitions.BlenderCurvePrimitiveTypes.Arc:
         return BlenderCurvePrimitives.createArc
+    elif curvePrimitive == BlenderDefinitions.BlenderCurvePrimitiveTypes.Spiral:
+        return BlenderCurvePrimitives.createSpiral
 
     raise TypeError("Unknown primitive")
 
@@ -1918,16 +1921,33 @@ class BlenderCurvePrimitives():
             )
         )
 
+    @staticmethod
+    def createSpiral(numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None, keywordArguments={}):
+        enableCurveExtraObjectsAddon()
 
-# assumes add_curve_extra_objects is enabled
-# https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
-def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimitiveTypes, keywordArguments={}):
+        heightMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Dimension.fromString(height)).value
 
-    curveType: BlenderDefinitions.BlenderCurveTypes = keywordArguments[
-        "curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else curvePrimitiveType.getDefaultCurveType()
+        radiusMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Dimension.fromString(radius)).value
 
-    keywordArguments.pop("curveType", None)  # remove curveType from kwargs
+        radiusEndMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            Dimension.fromString(radiusEnd)) if radiusEnd else None
 
+        radiusDiff = 0 if radiusEndMeters is None else (
+            radiusEndMeters - radiusMeters).value
+
+        curveType: BlenderDefinitions.BlenderCurveTypes = keywordArguments[
+            "curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else BlenderDefinitions.BlenderCurvePrimitiveTypes.Spiral.getDefaultCurveType()
+
+        curveTypeName: str = curveType.name
+
+        bpy.ops.curve.spirals(spiral_type='ARCH',  # type: ignore
+                              turns=numberOfTurns, steps=24,
+                              dif_z=heightMeters/numberOfTurns, dif_radius=radiusDiff, curve_type=curveTypeName)
+
+
+def enableCurveExtraObjectsAddon():
     addonName = "add_curve_extra_objects"
 
     # check if the addon is enabled, enable it if it is not.
@@ -1939,6 +1959,18 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
     assert \
         addon is not None, \
         f"Could not enable the {addonName} addon to create simple curves"
+
+
+# assumes add_curve_extra_objects is enabled
+# https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
+def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimitiveTypes, keywordArguments={}):
+
+    curveType: BlenderDefinitions.BlenderCurveTypes = keywordArguments[
+        "curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else curvePrimitiveType.getDefaultCurveType()
+
+    keywordArguments.pop("curveType", None)  # remove curveType from kwargs
+
+    enableCurveExtraObjectsAddon()
 
     assert \
         type(curvePrimitiveType) == BlenderDefinitions.BlenderCurvePrimitiveTypes, \

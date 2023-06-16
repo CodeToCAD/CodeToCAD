@@ -246,6 +246,7 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
     Polygon = Utilities.CurvePrimitiveTypes.Polygon
     Polygon_ab = Utilities.CurvePrimitiveTypes.Polygon_ab
     Arc = Utilities.CurvePrimitiveTypes.Arc
+    Spiral = Utilities.CurvePrimitiveTypes.Spiral
 
     # Convert a utilities CurvePrimitiveTypes to BlenderCurvePrimitiveTypes
     @staticmethod
@@ -257,36 +258,7 @@ class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
         return result
 
     def getDefaultCurveType(self):
-        if self == BlenderCurvePrimitiveTypes.Point:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.LineTo:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Distance:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Angle:
-            return BlenderCurveTypes.BEZIER
-        elif self == BlenderCurvePrimitiveTypes.Circle:
-            return BlenderCurveTypes.BEZIER
-        elif self == BlenderCurvePrimitiveTypes.Ellipse:
-            return BlenderCurveTypes.BEZIER
-        elif self == BlenderCurvePrimitiveTypes.Sector:
-            return BlenderCurveTypes.BEZIER
-        elif self == BlenderCurvePrimitiveTypes.Segment:
-            return BlenderCurveTypes.BEZIER
-        elif self == BlenderCurvePrimitiveTypes.Rectangle:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Rhomb:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Trapezoid:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Polygon:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Polygon_ab:
-            return BlenderCurveTypes.NURBS
-        elif self == BlenderCurvePrimitiveTypes.Arc:
-            return BlenderCurveTypes.NURBS
-        else:
-            raise LookupError("Unknown primitive")
+        return BlenderCurveTypes.NURBS
 
 
 class RepeatMode(Enum):

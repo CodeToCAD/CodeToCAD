@@ -381,6 +381,10 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return self
 
+    def createSpiral(self, numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None):
+
+        return self
+
 
 class Landmark(CodeToCADInterface.Landmark):
 

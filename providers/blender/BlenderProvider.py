@@ -1125,6 +1125,11 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
                         ):
         return self
 
+    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Spiral)
+    def createSpiral(self, numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None):
+
+        return self
+
 
 class Landmark(CodeToCADInterface.Landmark):
 
