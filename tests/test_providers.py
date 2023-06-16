@@ -763,6 +763,15 @@ class TestSketch(TestProviderCase):
 
         assert value.isExists(), "Create method failed."
 
+    @unittest.skip
+    def test_createSpiral(self):
+        instance = Sketch("name", "curveType", "description")
+
+        value = instance.createSpiral(
+            "numberOfTurns", "height", "radius", "isClockwise", "radiusEnd")
+
+        assert value.isExists(), "Create method failed."
+
 
 class TestLandmark(TestProviderCase):
 

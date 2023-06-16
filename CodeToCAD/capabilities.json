@@ -1162,6 +1162,30 @@
                         "type": "string,float,Dimension"
                     }
                 }
+            },
+            "createSpiral": {
+                "action": "create",
+                "information": "Create a trapezoid",
+                "parameters": {
+                    "numberOfTurns": {
+                        "type": "int"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "isClockwise": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "radiusEnd": {
+                        "information": "Specify a radiusEnd to make a conical or drafted spiral. Pass None to make a cylindrical spiral.",
+                        "type": "string,float,Dimension",
+                        "required": false
+                    }
+                }
             }
         },
         "Landmark": {

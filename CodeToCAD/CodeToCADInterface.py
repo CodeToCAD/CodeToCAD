@@ -852,6 +852,16 @@ class Sketch(Entity,metaclass=ABCMeta):
         print("createTrapezoid is called in an abstract method. Please override this method.")
         return self
         
+
+    @abstractmethod
+    def createSpiral(self, numberOfTurns:'int', height:DimensionOrItsFloatOrStringValue, radius:DimensionOrItsFloatOrStringValue, isClockwise:bool=True, radiusEnd:Optional[DimensionOrItsFloatOrStringValue]=None):
+        '''
+        Create a trapezoid
+        '''
+        
+        print("createSpiral is called in an abstract method. Please override this method.")
+        return self
+        
 class Landmark(metaclass=ABCMeta):
     '''Landmarks are named positions on an entity.'''
 

@@ -41,7 +41,12 @@
                         "returnType": "$3",
                         "staticMethod": false,
                         "parameters": {
-                            "type": "$4"
+                            "parameter": {
+                                "information": "$4",
+                                "type": "$5",
+                                "defaultValue": "$6",
+                                "required": false
+                            }
                         }
                     }
                 }
