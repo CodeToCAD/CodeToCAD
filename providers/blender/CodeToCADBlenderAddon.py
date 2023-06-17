@@ -1,4 +1,3 @@
-import functools
 import os
 import pkgutil
 import runpy
@@ -17,7 +16,6 @@ from bpy.props import CollectionProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
-
 
 bl_info = {
     "name": "CodeToCAD",
@@ -155,13 +153,7 @@ class ImportedFileWatcher():
     def reloadFile(self, context):
         bpy.ops.wm.revert_mainfile()
 
-        # References https://blender.stackexchange.com/a/28556
-        # This is pretty hacky, but we just need a reference to any area and region, to pass to the temporary context. Otherwise, bpy.ops freaks out.
-        window = context.window_manager.windows[0]
-        area = window.screen.areas[0]
-        region = area.regions[0]
-        with bpy.context.temp_override(window=window, area=area, region=region):
-            importCodeToCADFile(self.filepath, self.directory, False)
+        importCodeToCADFile(self.filepath, self.directory, False)
 
     def stopWatchingFile(self):
         self._isWatching = False
@@ -193,12 +185,12 @@ importedFileWatcher: Optional[ImportedFileWatcher] = None
 
 def importCodeToCADFile(filePath, directory, saveFile):
 
+    reloadCodeToCADModules()
+
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
             tempfile.gettempdir(), str(int(time.time())) + ".blend")
         bpy.ops.wm.save_as_mainfile(filepath=blendFilepath)
-
-    reloadCodeToCADModules()
 
     # Add the directory to python execute path, so that imports work.
     # if there are submodules for the script being imported, the user will have to use:
@@ -207,8 +199,11 @@ def importCodeToCADFile(filePath, directory, saveFile):
     sys.path.append(directory)
 
     print("Running script", filePath)
+
     try:
-        runpy.run_path(filePath, run_name="__main__")
+        from BlenderActions import getContextView3D
+        with getContextView3D():
+            runpy.run_path(filePath, run_name="__main__")
     except Exception as err:
         errorTrace = traceback.format_exc()
         print("Import failed: ", err, errorTrace)
@@ -489,6 +484,29 @@ def addCodeToCADToBlenderConsole():
     console_python.replace_help = addCodeToCADConvenienceWordsToConsole
 
 
+@bpy.app.handlers.persistent  # type: ignore
+def runFromCommandLineArguments(*args):
+    # if --CodeToCAD path/to/file.py is passed in, we should automatically run it
+    for index in range(1, len(sys.argv)):
+        if sys.argv[index].lower() == "--codetocad":
+            from CodeToCAD.utilities import getAbsoluteFilepath
+            filepath = sys.argv[index + 1]
+            filepath = getAbsoluteFilepath(filepath)
+
+            if not Path(filepath).exists():
+                raise Exception(
+                    f"Could not find file {filepath}. If you're using a relative path via command line, consider using `$(pwd)/filename.py`.")
+
+            directory = str(Path(filepath).parent)
+
+            importCodeToCADFile(filepath, directory, directory)
+
+            break
+
+
+blenderLoadPostHandler: list = bpy.app.handlers.load_post  # type: ignore
+
+
 def register():
     print("Registering ", __name__)
     bpy.utils.register_class(CodeToCADAddonPreferences)
@@ -507,6 +525,8 @@ def register():
 
     addCodeToCADToBlenderConsole()
 
+    blenderLoadPostHandler.append(runFromCommandLineArguments)
+
 
 def unregister():
     print("Unregistering ", __name__)
@@ -523,6 +543,8 @@ def unregister():
     bpy.utils.unregister_class(ReloadCodeToCADModules)
 
     console_python.replace_help = replace_help
+
+    blenderLoadPostHandler.remove(runFromCommandLineArguments)
 
 
 if __name__ == "__main__":

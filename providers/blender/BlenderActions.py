@@ -2050,17 +2050,22 @@ def getSelectedObjectName() -> str:
     return selectedObjects[0].name
 
 
-def zoomToSelectedObjects():
-    bpy.context.view_layer.update()
-    # References https://blender.stackexchange.com/a/7419/138679
+def getContextView3D():
     window = bpy.context.window_manager.windows[0]
     for area in window.screen.areas:
         if area.type == 'VIEW_3D':
             for region in area.regions:
                 if region.type == 'WINDOW':
-                    with bpy.context.temp_override(window=window, area=area, region=region):
-                        bpy.ops.view3d.view_selected(use_all_regions=True)
-                        return
+                    return bpy.context.temp_override(window=window, area=area, region=region)
+    raise Exception("Could not find a VIEW_3D region.")
+
+
+def zoomToSelectedObjects():
+    bpy.context.view_layer.update()
+    # References https://blender.stackexchange.com/a/7419/138679
+    with getContextView3D():
+        bpy.ops.view3d.view_selected(use_all_regions=True)
+        return
 
 
 def addDependencyGraphUpdateListener(callback):

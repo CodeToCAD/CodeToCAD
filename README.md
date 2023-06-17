@@ -48,6 +48,8 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
     ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/import_file_in_blender.png)
 
+> Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py`
+
 ## What do I do next?
 
 - Run or browse the [examples](./examples/)! 
@@ -60,12 +62,15 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 ## Integrations
 
 Current integrations:
-- [CodeToCAD-Blender](https://github.com/CodeToCad/CodeToCad-Blender)
+- [CodeToCAD-Blender](#blender)
+- Onshape (Work-in-progress)
 
-Future planned integrations:
-- OnShape
+Future planned integrations (not in any order):
+- KiCAD
+- FreeCAD 
+- Cascade Studio
+- CADQuery
 - ThreeJS
-- Electronic CAD (suggestions welcome)
 
 
 ## Benefits of code-based modeling with CodeToCAD:
