@@ -155,8 +155,13 @@ class ImportedFileWatcher():
     def reloadFile(self, context):
         bpy.ops.wm.revert_mainfile()
 
-        bpy.app.timers.register(functools.partial(
-            importCodeToCADFile, context, self.filepath, self.directory, False))
+        # References https://blender.stackexchange.com/a/28556
+        # This is pretty hacky, but we just need a reference to any area and region, to pass to the temporary context. Otherwise, bpy.ops freaks out.
+        window = context.window_manager.windows[0]
+        area = window.screen.areas[0]
+        region = area.regions[0]
+        with bpy.context.temp_override(window=window, area=area, region=region):
+            importCodeToCADFile(self.filepath, self.directory, False)
 
     def stopWatchingFile(self):
         self._isWatching = False
@@ -186,7 +191,7 @@ class ImportedFileWatcher():
 importedFileWatcher: Optional[ImportedFileWatcher] = None
 
 
-def importCodeToCADFile(context, filePath, directory, saveFile):
+def importCodeToCADFile(filePath, directory, saveFile):
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
@@ -208,8 +213,6 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
         errorTrace = traceback.format_exc()
         print("Import failed: ", err, errorTrace)
 
-        # bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT', # type: ignore
-        #                                 message=f"{err}", isError=True)
         bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT',  # type: ignore
                                         message=f"{errorTrace}", isError=True)
 
@@ -225,7 +228,7 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
             if package_name in sys.modules:
                 del sys.modules[package_name]
 
-        if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(context):
+        if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(bpy.context):
             return
 
         global importedFileWatcher
@@ -233,7 +236,7 @@ def importCodeToCADFile(context, filePath, directory, saveFile):
             if importedFileWatcher:
                 importedFileWatcher.stopWatchingFile()
             importedFileWatcher = ImportedFileWatcher(
-                filePath, directory, context)
+                filePath, directory, bpy.context)
         importedFileWatcher.watchFile()
         importedFileWatcher.registerFileWatcher()
 
@@ -263,7 +266,7 @@ class ImportCodeToCAD(Operator, ImportHelper):
                             for name in self.files]
 
         try:
-            importCodeToCADFile(context, paths[0], self.directory, True)
+            importCodeToCADFile(paths[0], self.directory, True)
         except Exception as err:
             self.report({'ERROR'}, f"Import failed: {err}")
             return {'CANCELLED'}
