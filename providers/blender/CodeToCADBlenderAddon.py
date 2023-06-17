@@ -348,7 +348,7 @@ class CodeToCADAddonPreferences(AddonPreferences):
 
 
 def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
-    print("addCodeToCADToPath called")
+    print("Going to add CodeToCAD files to path.")
 
     codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
         context) or str(Path(__file__).parent.absolute())
@@ -465,7 +465,7 @@ class OpenPreferences(bpy.types.Operator):
 
 
 class CodeToCADPanel(bpy.types.Panel):
-    bl_idname = "code_to_cad.main_panel"
+    bl_idname = "CODETOCAD_PT_main_panel"
     bl_label = "CodeToCAD"
     bl_space_type = "VIEW_3D"
     bl_category = "CodeToCAD"
