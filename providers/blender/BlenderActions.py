@@ -2060,6 +2060,7 @@ def zoomToSelectedObjects():
                 if region.type == 'WINDOW':
                     with bpy.context.temp_override(window=window, area=area, region=region):
                         bpy.ops.view3d.view_selected(use_all_regions=True)
+                        return
 
 
 def addDependencyGraphUpdateListener(callback):
