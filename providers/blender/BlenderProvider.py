@@ -8,7 +8,7 @@ import BlenderDefinitions
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
-from CodeToCAD.CodeToCADInterface import FloatOrItsStringValue, IntOrFloat, MaterialOrItsName, PartOrItsName, EntityOrItsName, LandmarkOrItsName, AxisOrItsIndexOrItsName, DimensionOrItsFloatOrStringValue, AngleOrItsFloatOrStringValue, EntityOrItsNameOrLandmark, PointOrListOfFloatOrItsStringValue, LengthUnitOrItsName, PresetLandmarkOrItsName, CameraOrItsName
+from CodeToCAD.CodeToCADInterface import *
 from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
@@ -1007,13 +1007,12 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return self
 
-    def sweep(self, profileCurveName: str, fillCap: bool = False
-              ):
-        if isinstance(profileCurveName, Entity):
-            profileCurveName = profileCurveName.name
+    def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True):
+        if isinstance(profileNameOrInstance, Sketch):
+            profileCurveName = profileNameOrInstance.name
 
         BlenderActions.addBevelObjectToCurve(
-            self.name, profileCurveName, fillCap)
+            self.name, profileNameOrInstance, fillCap)
 
         BlenderActions.createMeshFromCurve(self.name)
 
