@@ -12,6 +12,7 @@ IntOrFloat: TypeAlias = Union[int, float]
 MaterialOrItsName: TypeAlias = Union[str, 'Material']
 PartOrItsName: TypeAlias = Union[str, 'Part']
 EntityOrItsName: TypeAlias = Union[str, 'Entity']
+SketchOrItsName: TypeAlias = Union[str, 'Sketch']
 LandmarkOrItsName: TypeAlias = Union[str, 'Landmark']
 AxisOrItsIndexOrItsName: TypeAlias = Union[str, int, Axis]
 DimensionOrItsFloatOrStringValue: TypeAlias = Union[str,float, Dimension]
@@ -704,9 +705,9 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def sweep(self, profileCurveName:str, fillCap:bool=False):
+    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True):
         '''
-        Extrude this  curve along the path of another
+        Extrude this Sketch along the path of another Sketch
         '''
         
         print("sweep is called in an abstract method. Please override this method.")

@@ -937,14 +937,14 @@
             },
             "sweep": {
                 "action": "modify",
-                "information": "Extrude this  curve along the path of another",
+                "information": "Extrude this Sketch along the path of another Sketch",
                 "parameters": {
-                    "profileCurveName": {
-                        "type": "string"
+                    "profileNameOrInstance": {
+                        "type": "string,Sketch"
                     },
                     "fillCap": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "defaultValue": true
                     }
                 }
             },

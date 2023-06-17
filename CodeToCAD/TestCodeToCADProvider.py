@@ -602,7 +602,7 @@ class TestSketch(TestProviderCase):
     def test_sweep(self):
         instance = Sketch("name","curveType","description")
 
-        value = instance.sweep("profileCurveName","fillCap")
+        value = instance.sweep("profileNameOrInstance","fillCap")
 
         
         assert value, "Modify method failed."

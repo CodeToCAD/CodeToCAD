@@ -7,10 +7,8 @@ from typing import Optional
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
-from CodeToCAD.CodeToCADInterface import (FloatOrItsStringValue,IntOrFloat,MaterialOrItsName,PartOrItsName,EntityOrItsName,LandmarkOrItsName,AxisOrItsIndexOrItsName,DimensionOrItsFloatOrStringValue,AngleOrItsFloatOrStringValue,EntityOrItsNameOrLandmark,PointOrListOfFloatOrItsStringValue,LengthUnitOrItsName,PresetLandmarkOrItsName,CameraOrItsName)
-from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                            Dimensions, Point, center, createUUIDLikeId,
-                            getAbsoluteFilepath, getFilename, max, min)
+from CodeToCAD.CodeToCADInterface import *
+from CodeToCAD.utilities import *
 
 class Entity(CodeToCADInterface.Entity): 
     
@@ -363,7 +361,7 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         raise NotImplementedError()
         
 
-    def sweep(self, profileCurveName:str, fillCap:bool=False):
+    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True):
         
         return self
         
