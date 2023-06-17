@@ -24,16 +24,22 @@
         "imagePath": ""
     },
     {
+        "name": "Sweeping",
+        "description": "Apply a sweep modifier to a Sketch to make it follow a profile path, to create a new Part. Note: make sure to sweep the profile, for example `myProfile.sweep('mySketch')`; see `grooveSpiral.sweep(groove)` below.",
+        "codeFilepath": "coil.py",
+        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/coil.png"
+    },
+    {
         "name": "Materials",
         "description": "Apply a material to Parts by creating a Material, and then assigning it to a Part.",
         "codeFilepath": "stackingCubes.py",
-        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/materialCube.png"
+        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png"
     },
     {
         "name": "Stacking Cubes",
         "description": "Cubes and other Entities can be positioned relative to one another using Landmarks.",
         "codeFilepath": "stackingCubes.py",
-        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/stackedCubes.png"
+        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png"
     },
     {
         "name": "D-Shaft Knob",
