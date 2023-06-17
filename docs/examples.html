@@ -170,6 +170,7 @@
         <a href='#Text' class="chip">Text</a>
         <a href='#Calibration Cube' class="chip">Calibration Cube</a>
         <a href='#Patterns' class="chip">Patterns</a>
+        <a href='#Sweeping' class="chip">Sweeping</a>
         <a href='#Materials' class="chip">Materials</a>
         <a href='#Stacking Cubes' class="chip">Stacking Cubes</a>
         <a href='#D-Shaft Knob' class="chip">D-Shaft Knob</a>
@@ -516,13 +517,58 @@ Part("Circular spheres").createSphere(1).translateXYZ(0, 5, 0).circularPattern(
     </div>
 
     <div class="grid-item">
+            <div class="className" id='Sweeping''>Sweeping</div>
+            
+            <div class="methods">
+            <div style="
+            width: 50%;">Apply a sweep modifier to a Sketch to make it follow a profile path, to create a new Part. Note: make sure to sweep the profile, for example `myProfile.sweep('mySketch')`; see `grooveSpiral.sweep(groove)` below.</div>
+            
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/coil.png' alt="Image" />
+            <pre>
+            
+from CodeToCAD import *
+
+
+
+
+
+drumRadius = Dimension.fromString("5mm")
+
+drumLength = Dimension.fromString("15.0 mm")
+
+
+
+wireThickness = Dimension.fromString("1mm")
+
+numberOfWindings = 10
+
+
+
+grooveSpiral = Sketch("grooveSpiral").createSpiral(
+
+    numberOfWindings, drumLength, drumRadius)
+
+
+
+groove = Sketch("groove").createCircle(wireThickness/2)
+
+
+
+grooveSpiral.sweep(groove)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
             <div class="className" id='Materials''>Materials</div>
             
             <div class="methods">
             <div style="
             width: 50%;">Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/materialCube.png' alt="Image" />
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png' alt="Image" />
             <pre>
             
 from CodeToCAD import *
@@ -589,7 +635,7 @@ Joint(a_bottom, c_top)\
             <div style="
             width: 50%;">Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/stackedCubes.png' alt="Image" />
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png' alt="Image" />
             <pre>
             
 from CodeToCAD import *
