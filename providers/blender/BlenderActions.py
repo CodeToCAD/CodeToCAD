@@ -1928,8 +1928,6 @@ class BlenderCurvePrimitives():
         heightMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             Dimension.fromString(height)).value
 
-        print("height,", height, "heightMeters", heightMeters)
-
         radiusMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             Dimension.fromString(radius)).value
 
@@ -2053,14 +2051,15 @@ def getSelectedObjectName() -> str:
 
 
 def zoomToSelectedObjects():
+    bpy.context.view_layer.update()
     # References https://blender.stackexchange.com/a/7419/138679
-    for area in bpy.context.screen.areas:
+    window = bpy.context.window_manager.windows[0]
+    for area in window.screen.areas:
         if area.type == 'VIEW_3D':
             for region in area.regions:
                 if region.type == 'WINDOW':
-                    override = {'area': area, 'region': region,
-                                'edit_object': bpy.context.edit_object}
-                    bpy.ops.view3d.view_all(override)
+                    with bpy.context.temp_override(window=window, area=area, region=region):
+                        bpy.ops.view3d.view_selected(use_all_regions=True)
 
 
 def addDependencyGraphUpdateListener(callback):
