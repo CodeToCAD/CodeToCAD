@@ -964,8 +964,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return Sketch(newName, self.curveType, self.description)
 
-    def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z"
-                ):
+    def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z") -> 'Part':
 
         if isinstance(aboutEntityOrLandmark, Entity):
             aboutEntityOrLandmark = aboutEntityOrLandmark.name
@@ -979,22 +978,33 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         BlenderActions.createMeshFromCurve(self.name)
 
-        return self
+        return Part(self.name, self.description).apply()
 
-    def thicken(self, radius: DimensionOrItsFloatOrStringValue
-                ):
+    def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
 
         BlenderActions.applySolidifyModifier(
             self.name, Utilities.Dimension.fromString(radius))
 
         BlenderActions.createMeshFromCurve(self.name)
 
-        return self
+        return Part(self.name, self.description).apply()
 
-    def extrude(self, length: DimensionOrItsFloatOrStringValue):
+    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 
         BlenderActions.extrude(
             self.name, Utilities.Dimension.fromString(length))
+
+        BlenderActions.createMeshFromCurve(self.name)
+
+        return Part(self.name, self.description).apply()
+
+    def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True) -> 'Part':
+        profileCurveName = profileNameOrInstance
+        if isinstance(profileCurveName, CodeToCADInterface.Sketch):
+            profileCurveName = profileCurveName.name
+
+        BlenderActions.addBevelObjectToCurve(
+            self.name, profileCurveName, fillCap)
 
         BlenderActions.createMeshFromCurve(self.name)
 
@@ -1008,18 +1018,6 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             profileCurveName = profileCurveName.name
 
         BlenderActions.applyCurveModifier(self.name, profileCurveName)
-
-        return self
-
-    def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True):
-        profileCurveName = profileNameOrInstance
-        if isinstance(profileCurveName, CodeToCADInterface.Sketch):
-            profileCurveName = profileCurveName.name
-
-        BlenderActions.addBevelObjectToCurve(
-            self.name, profileCurveName, fillCap)
-
-        BlenderActions.createMeshFromCurve(self.name)
 
         return self
 
