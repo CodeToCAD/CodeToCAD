@@ -308,21 +308,21 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         raise NotImplementedError()
 
-    def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z"):
+    def revolve(self, angle: AngleOrItsFloatOrStringValue, aboutEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName = "z") -> 'Part':
 
-        return self
+        raise NotImplementedError()
 
-    def thicken(self, radius: DimensionOrItsFloatOrStringValue):
+    def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
 
-        return self
+        raise NotImplementedError()
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 
         raise NotImplementedError()
 
-    def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True):
+    def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True) -> 'Part':
 
-        return self
+        raise NotImplementedError()
 
     def profile(self, profileCurveName: str):
 

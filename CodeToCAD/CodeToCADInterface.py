@@ -675,23 +675,23 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z"):
+    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z") -> 'Part':
         '''
         Revolve a Sketch around another Entity or Landmark
         '''
         
         print("revolve is called in an abstract method. Please override this method.")
-        return self
+        raise NotImplementedError()
         
 
     @abstractmethod
-    def thicken(self, radius:DimensionOrItsFloatOrStringValue):
+    def thicken(self, radius:DimensionOrItsFloatOrStringValue) -> 'Part':
         '''
         Uniformly add a wall around a sketch.
         '''
         
         print("thicken is called in an abstract method. Please override this method.")
-        return self
+        raise NotImplementedError()
         
 
     @abstractmethod
@@ -705,13 +705,13 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True):
+    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> 'Part':
         '''
         Extrude this Sketch along the path of another Sketch
         '''
         
         print("sweep is called in an abstract method. Please override this method.")
-        return self
+        raise NotImplementedError()
         
 
     @abstractmethod
@@ -1120,7 +1120,7 @@ class Material(metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def assignToPart(self, partName:PartOrItsName):
+    def assignToPart(self, partNameOrInstance:PartOrItsName):
         '''
         Assigns the material to a part.
         '''
