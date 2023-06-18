@@ -200,40 +200,41 @@ def importCodeToCADFile(filePath, directory, saveFile):
 
     print("Running script", filePath)
 
-    try:
-        from BlenderActions import getContextView3D
-        with getContextView3D():
+    from BlenderActions import getContextView3D
+
+    with getContextView3D():
+        try:
             runpy.run_path(filePath, run_name="__main__")
-    except Exception as err:
-        errorTrace = traceback.format_exc()
-        print("Import failed: ", err, errorTrace)
+        except Exception as err:
+            errorTrace = traceback.format_exc()
+            print("Import failed: ", err, errorTrace)
 
-        bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT',  # type: ignore
-                                        message=f"{errorTrace}", isError=True)
+            bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT',  # type: ignore
+                                            message=f"{errorTrace}", isError=True)
 
-        raise err
-    finally:
-        from BlenderActions import zoomToSelectedObjects, selectObject
-        selectObject(bpy.data.objects[-1].name)
-        zoomToSelectedObjects()
+            raise err
+        finally:
+            from BlenderActions import zoomToSelectedObjects, selectObject
+            selectObject(bpy.data.objects[-1].name)
+            zoomToSelectedObjects()
 
-        # Cleanup:
-        sys.path.remove(directory)
-        for _, package_name, _ in pkgutil.iter_modules([directory]):
-            if package_name in sys.modules:
-                del sys.modules[package_name]
+            # Cleanup:
+            sys.path.remove(directory)
+            for _, package_name, _ in pkgutil.iter_modules([directory]):
+                if package_name in sys.modules:
+                    del sys.modules[package_name]
 
-        if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(bpy.context):
-            return
+            if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(bpy.context):
+                return
 
-        global importedFileWatcher
-        if not importedFileWatcher or importedFileWatcher.filepath != filePath:
-            if importedFileWatcher:
-                importedFileWatcher.stopWatchingFile()
-            importedFileWatcher = ImportedFileWatcher(
-                filePath, directory, bpy.context)
-        importedFileWatcher.watchFile()
-        importedFileWatcher.registerFileWatcher()
+            global importedFileWatcher
+            if not importedFileWatcher or importedFileWatcher.filepath != filePath:
+                if importedFileWatcher:
+                    importedFileWatcher.stopWatchingFile()
+                importedFileWatcher = ImportedFileWatcher(
+                    filePath, directory, bpy.context)
+            importedFileWatcher.watchFile()
+            importedFileWatcher.registerFileWatcher()
 
 
 @ orientation_helper(axis_forward='Y', axis_up='Z')  # type: ignore
