@@ -1008,11 +1008,12 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True):
+        profileCurveName: str = profileNameOrInstance  # type: ignore
         if isinstance(profileNameOrInstance, Sketch):
             profileCurveName = profileNameOrInstance.name
 
         BlenderActions.addBevelObjectToCurve(
-            self.name, profileNameOrInstance, fillCap)
+            self.name, profileCurveName, fillCap)
 
         BlenderActions.createMeshFromCurve(self.name)
 
