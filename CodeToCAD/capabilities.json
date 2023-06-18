@@ -901,7 +901,8 @@
                 }
             },
             "revolve": {
-                "action": "modify",
+                "action": "get",
+                "returnType": "Part",
                 "information": "Revolve a Sketch around another Entity or Landmark",
                 "parameters": {
                     "angle": {
@@ -917,7 +918,8 @@
                 }
             },
             "thicken": {
-                "action": "modify",
+                "action": "get",
+                "returnType": "Part",
                 "information": "Uniformly add a wall around a sketch.",
                 "parameters": {
                     "radius": {
@@ -936,7 +938,8 @@
                 }
             },
             "sweep": {
-                "action": "modify",
+                "action": "get",
+                "returnType": "Part",
                 "information": "Extrude this Sketch along the path of another Sketch",
                 "parameters": {
                     "profileNameOrInstance": {
