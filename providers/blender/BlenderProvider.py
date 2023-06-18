@@ -165,10 +165,10 @@ class Entity(CodeToCADInterface.Entity):
             raise NotImplementedError("Not yet supported. COD-113")
 
         mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark
-        if isinstance(mirrorAcrossEntityOrLandmark, Landmark):
-            mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark.getLandmarkEntityName()
-        elif isinstance(mirrorAcrossEntityOrLandmark, Entity):
-            mirrorAcrossEntityName = mirrorAcrossEntityOrLandmark.name
+        if isinstance(mirrorAcrossEntityName, CodeToCADInterface.Landmark):
+            mirrorAcrossEntityName = mirrorAcrossEntityName.getLandmarkEntityName()
+        elif isinstance(mirrorAcrossEntityName, CodeToCADInterface.Entity):
+            mirrorAcrossEntityName = mirrorAcrossEntityName.name
 
         axis = Utilities.Axis.fromString(axis)
 
@@ -200,10 +200,10 @@ class Entity(CodeToCADInterface.Entity):
 
     def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, centerEntityOrLandmark: EntityOrItsNameOrLandmark, normalDirectionAxis: AxisOrItsIndexOrItsName = "z"):
         centerEntityOrLandmarkName = centerEntityOrLandmark
-        if isinstance(centerEntityOrLandmark, Landmark):
-            centerEntityOrLandmarkName = centerEntityOrLandmark.getLandmarkEntityName()
-        elif isinstance(centerEntityOrLandmark, Entity):
-            centerEntityOrLandmarkName = centerEntityOrLandmark.name
+        if isinstance(centerEntityOrLandmarkName, CodeToCADInterface.Landmark):
+            centerEntityOrLandmarkName = centerEntityOrLandmarkName.getLandmarkEntityName()
+        elif isinstance(centerEntityOrLandmarkName, CodeToCADInterface.Entity):
+            centerEntityOrLandmarkName = centerEntityOrLandmarkName.name
 
         pivotLandmarkName = createUUIDLikeId()
 
@@ -627,63 +627,67 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def union(self, withPart: PartOrItsName, deleteAfterUnion: bool = True, isTransferLandmarks: bool = False
               ):
-        if isinstance(withPart, Entity):
-            withPart = withPart.name
+        partName = withPart
+        if isinstance(partName, CodeToCADInterface.Entity):
+            partName = partName.name
 
         BlenderActions.applyBooleanModifier(
             self.name,
             BlenderDefinitions.BlenderBooleanTypes.UNION,
-            withPart
+            partName
         )
 
         if isTransferLandmarks:
-            BlenderActions.transferLandmarks(withPart, self.name)
+            BlenderActions.transferLandmarks(partName, self.name)
 
         self.applyModifiersOnly()
 
         if deleteAfterUnion:
-            BlenderActions.removeObject(withPart, removeChildren=True)
+            BlenderActions.removeObject(partName, removeChildren=True)
 
         return self
 
     def subtract(self, withPart: PartOrItsName, deleteAfterSubtract: bool = True, isTransferLandmarks: bool = False
                  ):
-        if isinstance(withPart, Entity):
-            withPart = withPart.name
+        partName = withPart
+        if isinstance(partName, CodeToCADInterface.Entity):
+            partName = partName.name
 
         BlenderActions.applyBooleanModifier(
             self.name,
             BlenderDefinitions.BlenderBooleanTypes.DIFFERENCE,
-            withPart
+            partName
         )
 
         if isTransferLandmarks:
-            BlenderActions.transferLandmarks(withPart, self.name)
+            BlenderActions.transferLandmarks(partName, self.name)
 
         self.applyModifiersOnly()
 
         if deleteAfterSubtract:
-            BlenderActions.removeObject(withPart, removeChildren=True)
+            BlenderActions.removeObject(partName, removeChildren=True)
         return self
 
     def intersect(self, withPart: PartOrItsName, deleteAfterIntersect: bool = True, isTransferLandmarks: bool = False
                   ):
-        if isinstance(withPart, Entity):
-            withPart = withPart.name
+
+        partName = withPart
+        if isinstance(partName, CodeToCADInterface.Entity):
+            partName = partName.name
 
         BlenderActions.applyBooleanModifier(
             self.name,
             BlenderDefinitions.BlenderBooleanTypes.INTERSECT,
-            withPart
+            partName
         )
 
         if isTransferLandmarks:
-            BlenderActions.transferLandmarks(withPart, self.name)
+            BlenderActions.transferLandmarks(partName, self.name)
 
         self.applyModifiersOnly()
 
         if deleteAfterIntersect:
-            BlenderActions.removeObject(withPart, removeChildren=True)
+            BlenderActions.removeObject(partName, removeChildren=True)
 
         return self
 
@@ -792,8 +796,8 @@ class Part(Entity, CodeToCADInterface.Part):
     def isCollidingWithPart(self, otherPart: PartOrItsName
                             ):
         otherPartName = otherPart
-        if isinstance(otherPart, Part):
-            otherPartName = otherPart.name
+        if isinstance(otherPartName, CodeToCADInterface.Part):
+            otherPartName = otherPartName.name
 
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
@@ -1008,9 +1012,9 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     def sweep(self, profileNameOrInstance: SketchOrItsName, fillCap: bool = True):
-        profileCurveName: str = profileNameOrInstance  # type: ignore
-        if isinstance(profileNameOrInstance, Sketch):
-            profileCurveName = profileNameOrInstance.name
+        profileCurveName = profileNameOrInstance
+        if isinstance(profileCurveName, CodeToCADInterface.Sketch):
+            profileCurveName = profileCurveName.name
 
         BlenderActions.addBevelObjectToCurve(
             self.name, profileCurveName, fillCap)
@@ -1304,13 +1308,13 @@ class Joint(CodeToCADInterface.Joint):
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
 
-        if isinstance(objectToLimitOrItsName, Entity):
-            objectToLimitName = objectToLimitOrItsName.name
-        elif isinstance(objectToLimitOrItsName, Landmark):
+        if isinstance(objectToLimitName, CodeToCADInterface.Entity):
+            objectToLimitName = objectToLimitName.name
+        elif isinstance(objectToLimitName, CodeToCADInterface.Landmark):
 
-            landmarkEntity = objectToLimitOrItsName
+            landmarkEntity = objectToLimitName
 
-            objectToLimitName = objectToLimitOrItsName.getParentEntity().name
+            objectToLimitName = objectToLimitName.getParentEntity().name
 
             offset = landmarkEntity.getLocationLocal() * -1
 
@@ -1398,9 +1402,9 @@ class Joint(CodeToCADInterface.Joint):
 
     def _limitRotationXYZ(self, rotationPairX, rotationPairY, rotationPairZ):
         objectToLimitName = self.entity2
-        if isinstance(objectToLimitName, Entity):
+        if isinstance(objectToLimitName, CodeToCADInterface.Entity):
             objectToLimitName = objectToLimitName.name
-        elif isinstance(objectToLimitName, Landmark):
+        elif isinstance(objectToLimitName, CodeToCADInterface.Landmark):
             objectToLimitName = objectToLimitName.getParentEntity().name
 
         relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
@@ -1461,6 +1465,8 @@ class Material(CodeToCADInterface.Material):
 
     def assignToPart(self, partName: PartOrItsName
                      ):
+        if isinstance(partName, CodeToCADInterface.Part):
+            partName = partName.name
         BlenderActions.setMaterialToObject(self.name, partName)
         return self
 
@@ -1774,9 +1780,9 @@ class Render(CodeToCADInterface.Render):
 
     def setCamera(self, cameraNameOrInstance: CameraOrItsName):
 
-        cameraName: str = cameraNameOrInstance  # type: ignore
-        if isinstance(cameraNameOrInstance, Camera):
-            cameraName = cameraNameOrInstance.name
+        cameraName = cameraNameOrInstance
+        if isinstance(cameraName, CodeToCADInterface.Camera):
+            cameraName = cameraName.name
 
         BlenderActions.setSceneCamera(cameraName)
 
@@ -1853,7 +1859,7 @@ class Scene(CodeToCADInterface.Scene):
                       ):
         for entity in entities:
             entityName = entity
-            if isinstance(entityName, Entity):
+            if isinstance(entityName, CodeToCADInterface.Entity):
                 entityName = entityName.name
 
             BlenderActions.assignObjectToCollection(
@@ -1865,11 +1871,10 @@ class Scene(CodeToCADInterface.Scene):
                    ):
 
         for entity in entities:
-            entityName = entity
-            if isinstance(entityName, Entity):
-                entityName = entityName.name
+            if isinstance(entity, CodeToCADInterface.Entity):
+                entity = entity.name
 
-            BlenderActions.setObjectVisibility(entityName, isVisible)
+            BlenderActions.setObjectVisibility(entity, isVisible)
 
         return self
 
@@ -1913,7 +1918,7 @@ class Analytics(CodeToCADInterface.Analytics):
     def getWorldPose(self, entity: EntityOrItsName
                      ) -> 'list[float]':
         partName = entity
-        if isinstance(partName, Entity):
+        if isinstance(partName, CodeToCADInterface.Entity):
             partName = partName.name
         return BlenderActions.getObjectWorldPose(partName)
 

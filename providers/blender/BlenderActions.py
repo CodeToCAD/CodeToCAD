@@ -2,7 +2,7 @@
 # An implementation of an action should avoid performing any logic
 # An implementation of an action is allowed to perform unit conversions or perform read operations for pre-checks.
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from uuid import uuid4
 import bpy
 from CodeToCAD import Dimension
@@ -37,7 +37,7 @@ def applyModifier(
 
 
 def applyBevelModifier(
-    entityName,
+    entityName: str,
     radius: Utilities.Dimension,
     vertexGroupName=None,
     useEdges=True,
@@ -62,7 +62,7 @@ def applyBevelModifier(
 
 
 def applyLinearPattern(
-    entityName,
+    entityName: str,
     instanceCount,
     direction: Utilities.Axis,
     offset: float,
@@ -89,7 +89,7 @@ def applyLinearPattern(
 
 
 def applyCircularPattern(
-    entityName,
+    entityName: str,
     instanceCount,
     aroundObjectName,
     keywordArguments: dict = {}
@@ -113,7 +113,7 @@ def applyCircularPattern(
 
 
 def applySolidifyModifier(
-    entityName,
+    entityName: str,
     thickness: Utilities.Dimension,
     keywordArguments: dict = {}
 ):
@@ -132,8 +132,8 @@ def applySolidifyModifier(
 
 
 def applyCurveModifier(
-    entityName,
-    curveObjectName,
+    entityName: str,
+    curveObjectName: str,
     keywordArguments: dict = {}
 ):
 
@@ -152,9 +152,9 @@ def applyCurveModifier(
 
 
 def applyBooleanModifier(
-    meshObjectName,
+    meshObjectName: str,
     blenderBooleanType: BlenderDefinitions.BlenderBooleanTypes,
-    withMeshObjectName,
+    withMeshObjectName: str,
     keywordArguments: Optional[dict] = None
 ):
     blenderObject = getObject(meshObjectName)
@@ -183,8 +183,8 @@ def applyBooleanModifier(
 
 
 def applyMirrorModifier(
-    entityName,
-    mirrorAcrossEntityName,
+    entityName: str,
+    mirrorAcrossEntityName: str,
     axis: Utilities.Axis,
     keywordArguments: dict = {}
 ):
@@ -209,7 +209,7 @@ def applyMirrorModifier(
 
 
 def applyScrewModifier(
-    entityName,
+    entityName: str,
     angle: Utilities.Angle,
     axis: Utilities.Axis,
     screwPitch: Utilities.Dimension = Utilities.Dimension(0),
@@ -489,7 +489,7 @@ def applyObjectRotationAndScale(objectName):
 
 
 def rotateObject(
-    objectName,
+    objectName: str,
     rotationAngles: list[Optional[Utilities.Angle]],
     rotationType: BlenderDefinitions.BlenderRotationTypes
 ):
@@ -511,7 +511,7 @@ def rotateObject(
 
 
 def translateObject(
-    objectName,
+    objectName: str,
     translationDimensions: list[Optional[Utilities.Dimension]],
     translationType: BlenderDefinitions.BlenderTranslationTypes
 ):
@@ -537,7 +537,7 @@ def translateObject(
 
 
 def setObjectLocation(
-    objectName,
+    objectName: str,
     locationDimensions: list[Optional[Utilities.Dimension]]
 ):
 
@@ -579,12 +579,12 @@ def scaleObject(
 # MARK: collections and groups:
 
 def createCollection(
-    name,
+    name: str,
     sceneName="Scene"
 ):
 
     assert \
-        name not in bpy.data.collections, \
+        bpy.data.collections.get(name) == None, \
         f"Collection {name} already exists"
 
     assert \
@@ -596,12 +596,12 @@ def createCollection(
 
 
 def removeCollection(
-    name,
+    name: str,
     removeChildren
 ):
 
     assert \
-        name in bpy.data.collections, \
+        bpy.data.collections.get(name) == None, \
         f"Collection {name} does not exist"
 
     if removeChildren:
@@ -615,8 +615,8 @@ def removeCollection(
 
 
 def removeObjectFromCollection(
-    existingObjectName,
-    collectionName
+    existingObjectName: str,
+    collectionName: str
 ):
 
     blenderObject = getObject(existingObjectName)
@@ -635,7 +635,7 @@ def removeObjectFromCollection(
 
 
 def assignObjectToCollection(
-    existingObjectName,
+    existingObjectName: str,
     collectionName="Scene Collection",
     sceneName="Scene",
     removeFromOtherGroups=True,
@@ -674,13 +674,13 @@ def assignObjectToCollection(
 
 
 # MARK: Joints
-def getConstraint(objectName, constraintName) -> Optional[bpy.types.Constraint]:
+def getConstraint(objectName: str, constraintName) -> Optional[bpy.types.Constraint]:
     blenderObject = getObject(objectName)
     return blenderObject.constraints.get(constraintName)
 
 
 def applyConstraint(
-    objectName,
+    objectName: str,
     constraintType: BlenderDefinitions.BlenderConstraintTypes,
     keywordArguments={}
 ):
@@ -702,11 +702,11 @@ def applyConstraint(
 
 
 def applyLimitLocationConstraint(
-    objectName,
+    objectName: str,
     x: Optional[list[Optional[Utilities.Dimension]]],
     y: Optional[list[Optional[Utilities.Dimension]]],
     z: Optional[list[Optional[Utilities.Dimension]]],
-    relativeToObjectName,
+    relativeToObjectName: Optional[str],
     keywordArguments={}
 ):
 
@@ -755,11 +755,11 @@ def applyLimitLocationConstraint(
 
 
 def applyLimitRotationConstraint(
-    objectName,
+    objectName: str,
     x: Optional[list[Optional[Utilities.Angle]]],
     y:  Optional[list[Optional[Utilities.Angle]]],
     z:  Optional[list[Optional[Utilities.Angle]]],
-    relativeToObjectName,
+    relativeToObjectName: Optional[str],
     keywordArguments={}
 ):
 
@@ -808,8 +808,8 @@ def applyLimitRotationConstraint(
 
 
 def applyCopyLocationConstraint(
-    objectName,
-    copiedObjectName,
+    objectName: str,
+    copiedObjectName: str,
     copyX: bool,
     copyY: bool,
     copyZ: bool,
@@ -837,8 +837,8 @@ def applyCopyLocationConstraint(
 
 
 def applyCopyRotationConstraint(
-    objectName,
-    copiedObjectName,
+    objectName: str,
+    copiedObjectName: str,
     copyX: bool,
     copyY: bool,
     copyZ: bool,
@@ -865,8 +865,8 @@ def applyCopyRotationConstraint(
 
 
 def applyPivotConstraint(
-    objectName,
-    pivotObjectName,
+    objectName: str,
+    pivotObjectName: str,
     keywordArguments={}
 ):
 
@@ -887,8 +887,8 @@ def applyPivotConstraint(
 
 
 def applyGearConstraint(
-    objectName,
-    gearObjectName,
+    objectName: str,
+    gearObjectName: str,
     ratio: float = 1,
     keywordArguments={}
 ):
@@ -904,8 +904,8 @@ def applyGearConstraint(
 
 
 def createDriver(
-    objectName,
-    path,
+    objectName: str,
+    path: str,
     index=-1
 ):
 
@@ -915,8 +915,8 @@ def createDriver(
 
 
 def removeDriver(
-    objectName,
-    path,
+    objectName: str,
+    path: str,
     index=-1
 ):
 
@@ -926,8 +926,8 @@ def removeDriver(
 
 
 def getDriver(
-    objectName,
-    path
+    objectName: str,
+    path: str,
 ):
     blenderObject = getObject(objectName)
 
@@ -941,7 +941,7 @@ def getDriver(
 
 
 def setDriver(
-    driver,
+    driver: bpy.types.Driver,
     driverType,  # : BlenderDefinitions.BlenderDriverTypes,
     expression=""
 ):
@@ -952,10 +952,10 @@ def setDriver(
 
 
 def setDriverVariableSingleProp(
-    driver,
-    variableName,
-    targetObjectName,
-    targetDataPath
+    driver: bpy.types.Driver,
+    variableName: str,
+    targetObjectName: str,
+    targetDataPath: str,
 ):
 
     variable = driver.variables.get(variableName)
@@ -974,9 +974,9 @@ def setDriverVariableSingleProp(
 
 
 def setDriverVariableTransforms(
-    driver,
-    variableName,
-    targetObjectName,
+    driver: bpy.types.Driver,
+    variableName: str,
+    targetObjectName: str,
     transform_type,  # : BlenderDefinitions.BlenderDriverVariableTransformTypes,
     transform_space,  # : BlenderDefinitions.BlenderDriverVariableTransformSpaces
 ):
@@ -999,10 +999,10 @@ def setDriverVariableTransforms(
 
 
 def setDriverVariableLocationDifference(
-    driver,
-    variableName,
-    target1ObjectName,
-    target2ObjectName
+    driver: bpy.types.Driver,
+    variableName: str,
+    target1ObjectName: str,
+    target2ObjectName: str,
 ):
 
     variable = driver.variables.get(variableName)
@@ -1023,10 +1023,10 @@ def setDriverVariableLocationDifference(
 
 
 def setDriverVariableRotationDifference(
-    driver,
-    variableName,
-    target1ObjectName,
-    target2ObjectName
+    driver: bpy.types.Driver,
+    variableName: str,
+    target1ObjectName: str,
+    target2ObjectName: str,
 ):
 
     variable = driver.variables.get(variableName)
@@ -1049,9 +1049,9 @@ def setDriverVariableRotationDifference(
 # MARK: Landmarks
 
 def translateLandmarkOntoAnother(
-    objectToTranslateName,
-    object1LandmarkName,
-    object2LandmarkName
+    objectToTranslateName: str,
+    object1LandmarkName: str,
+    object2LandmarkName: str,
 ):
 
     updateViewLayer()
@@ -1076,8 +1076,8 @@ def translateLandmarkOntoAnother(
 
 
 def makeParent(
-    name,
-    parentName
+    name: str,
+    parentName: str,
 ):
 
     blenderObject = getObject(name)
@@ -1087,8 +1087,8 @@ def makeParent(
 
 
 def updateObjectName(
-    oldName,
-    newName
+    oldName: str,
+    newName: str,
 ):
 
     blenderObject = getObject(oldName)
@@ -1096,7 +1096,7 @@ def updateObjectName(
     blenderObject.name = newName
 
 
-def getObjectCollectionName(objectName) -> str:
+def getObjectCollectionName(objectName: str,) -> str:
 
     blenderObject = getObject(objectName)
 
@@ -1108,8 +1108,8 @@ def getObjectCollectionName(objectName) -> str:
 
 
 def updateObjectDataName(
-    parentObjectName,
-    newName
+    parentObjectName: str,
+    newName: str,
 ):
 
     blenderObject = getObject(parentObjectName)
@@ -1121,9 +1121,9 @@ def updateObjectDataName(
 
 # This assumes that landmarks are named with format: `{parentPartName}_{landmarkName}`
 def updateObjectLandmarkNames(
-    parentObjectName,
-    oldNamePrefix,
-    newNamePrefix
+    parentObjectName: str,
+    oldNamePrefix: str,
+    newNamePrefix: str,
 ):
 
     blenderObject = getObject(parentObjectName)
@@ -1138,7 +1138,7 @@ def updateObjectLandmarkNames(
 
 
 def removeObject(
-    existingObjectName,
+    existingObjectName: str,
     removeChildren=False
 ):
 
@@ -1166,8 +1166,8 @@ def removeObject(
 
 
 def createObject(
-    name,
-    data=None
+    name: str,
+    data: Optional[Any] = None
 ):
 
     blenderObject = bpy.data.objects.get(name)
@@ -1179,23 +1179,32 @@ def createObject(
     return bpy.data.objects.new(name, data)
 
 
-def createObjectVertexGroup(objectName, vertexGroupName):
+def createObjectVertexGroup(
+        objectName: str,
+        vertexGroupName: str,
+):
     blenderObject = getObject(objectName)
     return blenderObject.vertex_groups.new(name=vertexGroupName)
 
 
-def getObjectVertexGroup(objectName, vertexGroupName):
+def getObjectVertexGroup(
+    objectName: str,
+    vertexGroupName: str,
+):
     blenderObject = getObject(objectName)
     return blenderObject.vertex_groups.get(vertexGroupName)
 
 
-def addVerticiesToVertexGroup(vertexGroupObject, vertexIndecies: list[int]):
+def addVerticiesToVertexGroup(
+        vertexGroupObject,
+        vertexIndecies: list[int]
+):
     vertexGroupObject.add(vertexIndecies, 1.0, 'ADD')
 
 
 def createMeshFromCurve(
-    existingCurveObjectName,
-    newObjectName=None
+    existingCurveObjectName: str,
+    newObjectName: Optional[str] = None
 ):
 
     existingCurveObject = getObject(existingCurveObjectName)
@@ -1228,7 +1237,7 @@ def createMeshFromCurve(
 
 
 def getObjectVisibility(
-    existingObjectName
+    existingObjectName: str,
 ) -> bool:
 
     blenderObject = getObject(existingObjectName)
@@ -1237,8 +1246,8 @@ def getObjectVisibility(
 
 
 def setObjectVisibility(
-    existingObjectName,
-    isVisible
+    existingObjectName: str,
+    isVisible: bool
 ):
 
     blenderObject = getObject(existingObjectName)
@@ -1249,8 +1258,8 @@ def setObjectVisibility(
 
 
 def transferLandmarks(
-    fromObjectName,
-    toObjectName
+    fromObjectName: str,
+    toObjectName: str,
 ):
 
     updateViewLayer()
@@ -1282,8 +1291,8 @@ def transferLandmarks(
 
 
 def duplicateObject(
-    existingObjectName,
-    newObjectName,
+    existingObjectName: str,
+    newObjectName: str,
     copyLandmarks: bool = True
 ):
 
@@ -1320,14 +1329,14 @@ def updateViewLayer():
     bpy.context.view_layer.update()
 
 
-def getObjectLocalLocation(objectName):
+def getObjectLocalLocation(objectName: str,):
 
     blenderObject = getObject(objectName)
 
     return Utilities.Point.fromList([Utilities.Dimension(p,  BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
 
 
-def getObjectWorldLocation(objectName):
+def getObjectWorldLocation(objectName: str,):
 
     blenderObject = getObject(objectName)
 
@@ -1341,7 +1350,7 @@ def getObjectWorldLocation(objectName):
     )
 
 
-def getObjectWorldPose(objectName) -> list[float]:
+def getObjectWorldPose(objectName: str,) -> list[float]:
 
     blenderObject = getObject(objectName)
 
@@ -1351,7 +1360,7 @@ def getObjectWorldPose(objectName) -> list[float]:
     return [value for values in listOfTuples for value in values]
 
 
-def getObject(objectName) -> bpy.types.Object:
+def getObject(objectName: str,) -> bpy.types.Object:
 
     blenderObject = bpy.data.objects.get(objectName)
 
@@ -1362,7 +1371,7 @@ def getObject(objectName) -> bpy.types.Object:
     return blenderObject
 
 
-def getMesh(meshName) -> bpy.types.Mesh:
+def getMesh(meshName: str,) -> bpy.types.Mesh:
 
     blenderMesh = bpy.data.meshes.get(meshName)
 
@@ -1377,7 +1386,7 @@ def getMesh(meshName) -> bpy.types.Mesh:
 # This allows us to apply modifiers, UV data, etc.. to the mesh.
 # This is different from applyObjectTransformations()
 def applyDependencyGraph(
-    existingObjectName
+    existingObjectName: str,
 ):
 
     blenderObject = getObject(existingObjectName)
@@ -1387,23 +1396,24 @@ def applyDependencyGraph(
     blenderObject.data = blenderObjectEvaluated.data.copy()
 
 
-def clearModifiers(objectName):
+def clearModifiers(objectName: str,):
 
     blenderObject = getObject(objectName)
 
     blenderObject.modifiers.clear()
 
 
-def removeMesh(mesh):
+def removeMesh(meshNameOrInstance: Union[str, bpy.types.Mesh],):
 
+    mesh: bpy.types.Mesh = meshNameOrInstance  # type: ignore
     # if a (str) name is passed in, fetch the mesh object reference
-    if type(mesh) == str:
-        mesh = getMesh(mesh)
+    if isinstance(meshNameOrInstance, str):
+        mesh = getMesh(meshNameOrInstance)
 
     bpy.data.meshes.remove(mesh)
 
 
-def setEdgesMeanCrease(meshName, meanCreaseValue):
+def setEdgesMeanCrease(meshName: str, meanCreaseValue: float):
 
     blenderMesh = getMesh(meshName)
 
@@ -1412,7 +1422,10 @@ def setEdgesMeanCrease(meshName, meanCreaseValue):
 
 
 # Note: transformations have to be applied for this to be reliable.
-def isCollisionBetweenTwoObjects(object1Name, object2Name):
+def isCollisionBetweenTwoObjects(
+        object1Name: str,
+        object2Name: str,
+):
     blenderObject1 = getObject(object1Name)
     blenderObject2 = getObject(object2Name)
 
@@ -1427,7 +1440,7 @@ def isCollisionBetweenTwoObjects(object1Name, object2Name):
 
 
 # References https://docs.blender.org/api/current/mathutils.kdtree.html
-def createKdTreeForObject(objectName):
+def createKdTreeForObject(objectName: str,):
     blenderObject = getObject(objectName)
     mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
     size = len(mesh.vertices)
@@ -1441,7 +1454,7 @@ def createKdTreeForObject(objectName):
 
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
-def getClosestFaceToVertex(objectName, vertex) -> bpy.types.MeshPolygon:
+def getClosestFaceToVertex(objectName: str, vertex) -> bpy.types.MeshPolygon:
 
     blenderObject = getObject(objectName)
 
@@ -1474,7 +1487,7 @@ def getClosestFaceToVertex(objectName, vertex) -> bpy.types.MeshPolygon:
 
 
 # Returns a list of (co, index, dist)
-def getClosestPointsToVertex(objectName, vertex, numberOfPoints=2, objectKdTree=None):
+def getClosestPointsToVertex(objectName: str, vertex, numberOfPoints=2, objectKdTree=None):
 
     blenderObject = getObject(objectName)
 
@@ -1494,7 +1507,7 @@ def getClosestPointsToVertex(objectName, vertex, numberOfPoints=2, objectKdTree=
 
 
 # References https://blender.stackexchange.com/a/32288/138679
-def getBoundingBox(objectName):
+def getBoundingBox(objectName: str,):
 
     updateViewLayer()
 
@@ -1545,7 +1558,7 @@ def getBoundingBox(objectName):
 
 # MARK: ADDONS
 
-def addonSetEnabled(addonName, isEnabled):
+def addonSetEnabled(addonName: str, isEnabled: bool):
     preferences = bpy.ops.preferences
 
     command = preferences.addon_enable if isEnabled else preferences.addon_disable
@@ -1556,7 +1569,7 @@ def addonSetEnabled(addonName, isEnabled):
 # MARK: Curves and Sketches
 
 def extrude(
-    curveObjectName,
+    curveObjectName: str,
     length: Utilities.Dimension
 ):
 
@@ -1571,7 +1584,7 @@ def extrude(
     blenderObject.data.extrude = length.value
 
 
-def createText(curveName, text,
+def createText(curveName: str, text: str,
                size=Utilities.Dimension(1),
                bold=False,
                italic=False,
@@ -1579,7 +1592,7 @@ def createText(curveName, text,
                characterSpacing=1,
                wordSpacing=1,
                lineSpacing=1,
-               fontFilePath=None):
+               fontFilePath: Optional[str] = None):
 
     curveData = bpy.data.curves.new(type="FONT", name=curveName)
     setattr(curveData, "body", text)
@@ -1608,7 +1621,7 @@ def createText(curveName, text,
 
 
 def create3DCurve(
-    curveName,
+    curveName: str,
     curveType: BlenderDefinitions.BlenderCurveTypes,
     coordinates,
     interpolation=64
@@ -1630,7 +1643,7 @@ def create3DCurve(
 # then assigns the coordinates to them.
 # references https://blender.stackexchange.com/a/6751/138679
 def createSpline(
-    blenderCurve,
+    blenderCurve: bpy.types.Curve,
     curveType: BlenderDefinitions.BlenderCurveTypes,
         coordinates
 ):
@@ -1670,8 +1683,8 @@ def createSpline(
 
 
 def addBevelObjectToCurve(
-    pathCurveObjectName,
-    profileCurveObjectName,
+    pathCurveObjectName: str,
+    profileCurveObjectName: str,
     fillCap=False
 ):
 
@@ -2004,7 +2017,7 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
                          order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
 
 
-def setCurveUsePath(curveName, isUsePath):
+def setCurveUsePath(curveName: str, isUsePath: bool):
     curveObject = getObject(curveName)
 
     curve: bpy.types.Curve = curveObject.data  # type: ignore
@@ -2016,7 +2029,7 @@ def setCurveUsePath(curveName, isUsePath):
 # locks the scene interface
 
 
-def sceneLockInterface(isLocked):
+def sceneLockInterface(isLocked: bool):
     bpy.context.scene.render.use_lock_interface = isLocked
 
 
@@ -2076,7 +2089,7 @@ def addTimer(callback):
     bpy.app.timers.register(callback)
 
 
-def getMaterial(materialName):
+def getMaterial(materialName: str,):
     blenderMaterial = bpy.data.materials.get(materialName)
 
     assert \
@@ -2086,7 +2099,7 @@ def getMaterial(materialName):
     return blenderMaterial
 
 
-def createMaterial(newMaterialName):
+def createMaterial(newMaterialName: str,):
     material = bpy.data.materials.get(newMaterialName)
 
     assert \
@@ -2098,7 +2111,7 @@ def createMaterial(newMaterialName):
     return material
 
 
-def setMaterialColor(materialName, rValue, gValue, bValue, aValue=1.0):
+def setMaterialColor(materialName: str, rValue, gValue, bValue, aValue=1.0):
     if type(rValue) == int:
         rValue /= 255.0
 
@@ -2118,7 +2131,7 @@ def setMaterialColor(materialName, rValue, gValue, bValue, aValue=1.0):
     return material
 
 
-def setMaterialToObject(materialName, objectName):
+def setMaterialToObject(materialName: str, objectName: str,):
 
     material = getMaterial(materialName)
 
@@ -2163,8 +2176,8 @@ fileExportFunctions = {
 
 
 def exportObject(
-    objectName,
-    filePath,
+    objectName: str,
+    filePath: str,
     overwrite=True,
     scale=1.0
 ):
@@ -2259,7 +2272,7 @@ def setFrameCurrent(frameNumber: int, sceneName: Optional[str]):
 
 # ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
 
-def addTextureToMaterial(materialName, imageFilePath):
+def addTextureToMaterial(materialName: str, imageFilePath: str,):
     material = getMaterial(materialName)
     material.use_nodes = True
     bsdf = material.node_tree.nodes["Principled BSDF"]
@@ -2270,18 +2283,18 @@ def addTextureToMaterial(materialName, imageFilePath):
         bsdf.inputs['Base Color'], texImage.outputs['Color'])
 
 
-def logMessage(message):
+def logMessage(message: str,):
     bpy.ops.code_to_cad.log_message(message=message)  # type: ignore
 
 
-def createLight(objName, energyLevel, type):
+def createLight(objName: str, energyLevel, type):
     light_data = bpy.data.lights.new(name=objName, type=type)
     setattr(light_data, "energy", energyLevel)
     createObject(objName, data=light_data)
     assignObjectToCollection(objName)
 
 
-def getLight(lightName):
+def getLight(lightName: str,):
     blenderLight = bpy.data.lights.get(lightName)
 
     assert \
@@ -2291,7 +2304,7 @@ def getLight(lightName):
     return blenderLight
 
 
-def setLightColor(lightName, rValue, gValue, bValue):
+def setLightColor(lightName: str, rValue, gValue, bValue):
     if type(rValue) == int:
         rValue /= 255.0
 
@@ -2308,13 +2321,13 @@ def setLightColor(lightName, rValue, gValue, bValue):
     return light
 
 
-def createCamera(objName, type):
+def createCamera(objName: str, type):
     camera_data = bpy.data.cameras.new(name=objName)
     createObject(objName, data=camera_data)
     assignObjectToCollection(objName)
 
 
-def getCamera(cameraName):
+def getCamera(cameraName: str,):
     blenderCamera = bpy.data.cameras.get(cameraName)
 
     assert \
@@ -2331,7 +2344,7 @@ def setSceneCamera(cameraName: str, sceneName: Optional[str] = None):
     scene.camera = blenderCamera
 
 
-def setFocalLength(cameraName, length=50.0):
+def setFocalLength(cameraName: str, length=50.0):
     camera = getCamera(cameraName)
     assert \
         length >= 1, \
@@ -2340,7 +2353,7 @@ def setFocalLength(cameraName, length=50.0):
     camera.lens = length
 
 
-def addHDRTexture(sceneName, imageFilePath):
+def addHDRTexture(sceneName: str, imageFilePath: str,):
     deleteNodes(sceneName)
     nodeBackground = createNodes(sceneName, 'ShaderNodeBackground')
     nodeEnvironment: bpy.types.ShaderNodeTexEnvironment = createNodes(
@@ -2355,23 +2368,23 @@ def addHDRTexture(sceneName, imageFilePath):
               nodeOutput.inputs["Surface"])
 
 
-def getNodeTree(sceneName) -> bpy.types.NodeTree:
+def getNodeTree(sceneName: str,) -> bpy.types.NodeTree:
     scene = getScene(sceneName)
     nodeTree = scene.world.node_tree
     return nodeTree
 
 
-def deleteNodes(sceneName):
+def deleteNodes(sceneName: str,):
     nodes = getNodeTree(sceneName).nodes
     nodes.clear()
 
 
-def createNodes(sceneName, type) -> bpy.types.Node:
+def createNodes(sceneName: str, type) -> bpy.types.Node:
     nodes = getNodeTree(sceneName).nodes.new(type=type)
     return nodes
 
 
-def setBackgroundLocation(sceneName, x, y):
+def setBackgroundLocation(sceneName: str, x, y):
     envTexture: bpy.types.ShaderNodeTexEnvironment = getNodeTree(
         sceneName).nodes.get('Environment Texture')  # type: ignore
     envTexture.location = x, y
