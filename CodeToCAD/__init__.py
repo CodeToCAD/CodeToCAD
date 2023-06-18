@@ -2,31 +2,15 @@ from typing import Optional, Type
 from . import CodeToCADInterface as CodeToCADInterface
 from . import utilities as Utilities
 
+from .utilities import min, max, center, Dimension, Dimensions, PresetLandmark, Angle
+from .CodeToCADInterface import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, Animation, Camera, Light, Render
+
 # This is the CodeToCAD provider.
 # Use the following import line in your CodeToCAD file:
-# from CodeToCAD import Part, Shape, Sketch, Curve, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, Angle
+# from CodeToCAD import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, PresetLandmark, Angle, Camera, Light, Render
 
-min: str = Utilities.min
-max: str = Utilities.max
-center: str = Utilities.center
-PresetLandmark: Type[Utilities.PresetLandmark] = Utilities.PresetLandmark
-Dimension: Type[Utilities.Dimension] = Utilities.Dimension
-Dimensions: Type[Utilities.Dimensions] = Utilities.Dimensions
-Angle: Type[Utilities.Angle] = Utilities.Angle
-
-Part: Type[CodeToCADInterface.Part] = CodeToCADInterface.Part
 Shape: Type[CodeToCADInterface.Part] = CodeToCADInterface.Part
-Sketch: Type[CodeToCADInterface.Sketch] = CodeToCADInterface.Sketch
 Curve: Type[CodeToCADInterface.Sketch] = CodeToCADInterface.Sketch
-Landmark: Type[CodeToCADInterface.Landmark] = CodeToCADInterface.Landmark
-Scene: Type[CodeToCADInterface.Scene] = CodeToCADInterface.Scene
-Analytics: Type[CodeToCADInterface.Analytics] = CodeToCADInterface.Analytics
-Joint: Type[CodeToCADInterface.Joint] = CodeToCADInterface.Joint
-Material: Type[CodeToCADInterface.Material] = CodeToCADInterface.Material
-Animation: Type[CodeToCADInterface.Animation] = CodeToCADInterface.Animation
-Camera: Type[CodeToCADInterface.Camera] = CodeToCADInterface.Camera
-Light: Type[CodeToCADInterface.Light] = CodeToCADInterface.Light
-Render: Type[CodeToCADInterface.Render] = CodeToCADInterface.Render
 
 
 def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
