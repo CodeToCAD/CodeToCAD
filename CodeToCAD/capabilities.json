@@ -1442,7 +1442,7 @@
                 "action": "modify",
                 "information": "Assigns the material to a part.",
                 "parameters": {
-                    "partName": {
+                    "partNameOrInstance": {
                         "type": "string,Part"
                     }
                 }
