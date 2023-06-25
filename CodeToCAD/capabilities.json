@@ -734,6 +734,18 @@
                     "linearPatternInstanceAxis": {
                         "type": "string,int,Axis",
                         "defaultValue": "x"
+                    },
+                    "linearPattern2ndInstanceCount": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "linearPattern2ndInstanceSeparation": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 0.0
+                    },
+                    "linearPattern2ndInstanceAxis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "y"
                     }
                 }
             },
