@@ -215,7 +215,9 @@ def importCodeToCADFile(filePath, directory, saveFile):
             raise err
         finally:
             from BlenderActions import zoomToSelectedObjects, selectObject
-            selectObject(bpy.data.objects[-1].name)
+            objectToZoomOn = bpy.data.objects[-1]
+            objectToZoomOn = objectToZoomOn.parent if objectToZoomOn.parent != None else objectToZoomOn
+            selectObject(objectToZoomOn.name)
             zoomToSelectedObjects()
 
             # Cleanup:

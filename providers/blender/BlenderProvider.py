@@ -741,7 +741,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self.applyModifiersOnly()
 
-    def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x"):
+    def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x", linearPattern2ndInstanceCount: 'int' = 1, linearPattern2ndInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPattern2ndInstanceAxis: AxisOrItsIndexOrItsName = "y"):
 
         axis = Utilities.Axis.fromString(normalAxis)
 
@@ -763,10 +763,6 @@ class Part(Entity, CodeToCADInterface.Part):
         Joint(holeLandmark, hole_head).limitLocationY(0, 0)
         Joint(holeLandmark, hole_head).limitLocationZ(0, 0)
 
-        if mirror and mirrorAboutEntityOrLandmark:
-            hole.mirror(mirrorAboutEntityOrLandmark, mirrorAxis,
-                        resultingMirroredEntityName=None)
-
         if circularPatternInstanceCount > 1:
             circularPatternAboutEntityOrLandmark = circularPatternAboutEntityOrLandmark or self
             instanceSeparation = 360.0 / \
@@ -778,6 +774,14 @@ class Part(Entity, CodeToCADInterface.Part):
         if linearPatternInstanceCount > 1:
             hole.linearPattern(
                 linearPatternInstanceCount, linearPatternInstanceSeparation, linearPatternInstanceAxis)
+
+        if linearPattern2ndInstanceCount > 1:
+            hole.linearPattern(
+                linearPattern2ndInstanceCount, linearPattern2ndInstanceSeparation, linearPattern2ndInstanceAxis)
+
+        if mirror and mirrorAboutEntityOrLandmark:
+            hole.mirror(mirrorAboutEntityOrLandmark, mirrorAxis,
+                        resultingMirroredEntityName=None)
 
         self.subtract(hole, deleteAfterSubtract=True,
                       isTransferLandmarks=False)
