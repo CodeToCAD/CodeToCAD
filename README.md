@@ -73,7 +73,7 @@ Future planned integrations (not in any order):
 - ThreeJS
 
 ## Warning 
-- Since CodeToCad scripts are written in Python, do not run any code you find on the Internet as it may have malicious a intent. If you are unsure about the code that you are running, consider reaching out to an online community like a Discord server or a forum.
+- Since CodeToCad scripts are written in Python, be careful when running code you find on the Internet as it may have malicious a intent. If you are unsure about the code that you are running, consider reaching out to an online community like a Discord server or a forum.
 
 
 ## Benefits of code-based modeling with CodeToCAD:
