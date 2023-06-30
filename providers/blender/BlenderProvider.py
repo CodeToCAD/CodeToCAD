@@ -1415,8 +1415,11 @@ class Joint(CodeToCADInterface.Joint):
         #     objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
         BlenderActions.applyLimitRotationConstraint(
             objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, None)
+        copyX = rotationPairX is not None and all([value is not None for value in rotationPairX])
+        copyY = rotationPairY is not None and all([value is not None for value in rotationPairY])
+        copyZ = rotationPairZ is not None and all([value is not None for value in rotationPairZ])
         BlenderActions.applyCopyRotationConstraint(
-            objectToLimitName, relativeToObjectName, True, True, True)
+            objectToLimitName, relativeToObjectName, copyX, copyY, copyZ)
         self._applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(
             objectToLimitName, relativeToObjectName)
 
