@@ -565,7 +565,7 @@ class Dimension():
     def __repr__(self) -> str:
         return self.__str__()
 
-    def convertToUnit(self, targetUnit: LengthUnit) -> 'Dimension':
+    def convertToUnit(self, targetUnit: Union[str, LengthUnit]) -> 'Dimension':
         assert self.unit is not None, f"Current dimension does not have a unit."
         targetUnit = LengthUnit.fromString(targetUnit) if not isinstance(
             targetUnit, LengthUnit) else targetUnit
