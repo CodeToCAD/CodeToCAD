@@ -1140,6 +1140,26 @@ class Material(metaclass=ABCMeta):
         
 
     @abstractmethod
+    def setReflectivity(self, reflectivity:float):
+        '''
+        Change the surface reflectivity (metallic luster) of the material.
+        '''
+        
+        print("setReflectivity is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
+    def setRoughness(self, roughness:float):
+        '''
+        Change the surface roughness of the material.
+        '''
+        
+        print("setRoughness is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
     def addImageTexture(self, imageFilePath:str):
         '''
         Add a texture from an image file.

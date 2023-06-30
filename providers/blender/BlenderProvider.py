@@ -1478,6 +1478,18 @@ class Material(CodeToCADInterface.Material):
             self.name, rValue, gValue, bValue, aValue)
         return self
 
+    def setReflectivity(self, reflectivity: float):
+
+        BlenderActions.setMaterialMetallicness(self.name, reflectivity)
+
+        return self
+
+    def setRoughness(self, roughness: float):
+
+        BlenderActions.setMaterialRoughness(self.name, roughness)
+
+        return self
+
     def addImageTexture(self, imageFilePath: str
                         ):
         absoluteFilePath = getAbsoluteFilepath(imageFilePath)

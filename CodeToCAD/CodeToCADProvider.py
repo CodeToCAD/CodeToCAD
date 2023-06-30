@@ -593,6 +593,16 @@ class Material(CodeToCADInterface.Material):
         return self
         
 
+    def setReflectivity(self, reflectivity:float):
+        
+        return self
+        
+
+    def setRoughness(self, roughness:float):
+        
+        return self
+        
+
     def addImageTexture(self, imageFilePath:str):
         
         return self

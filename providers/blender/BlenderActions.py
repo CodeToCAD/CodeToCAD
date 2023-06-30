@@ -2089,7 +2089,7 @@ def addTimer(callback):
     bpy.app.timers.register(callback)
 
 
-def getMaterial(materialName: str,):
+def getMaterial(materialName: str,) -> bpy.types.Material:
     blenderMaterial = bpy.data.materials.get(materialName)
 
     assert \
@@ -2129,6 +2129,24 @@ def setMaterialColor(materialName: str, rValue, gValue, bValue, aValue=1.0):
     material.diffuse_color = (rValue, gValue, bValue, aValue)
 
     return material
+
+
+def setMaterialMetallicness(materialName: str, value: float):
+
+    material = getMaterial(materialName)
+    material.metallic = value
+
+
+def setMaterialRoughness(materialName: str, value: float):
+
+    material = getMaterial(materialName)
+    material.roughness = value
+
+
+def setMaterialSpecularness(materialName: str, value: float):
+
+    material = getMaterial(materialName)
+    material.specular_intensity = value
 
 
 def setMaterialToObject(materialName: str, objectName: str,):
@@ -2276,7 +2294,8 @@ def addTextureToMaterial(materialName: str, imageFilePath: str,):
     material = getMaterial(materialName)
     material.use_nodes = True
     bsdf = material.node_tree.nodes["Principled BSDF"]
-    texImage = material.node_tree.nodes.new('ShaderNodeTexImage')
+    texImage: bpy.types.ShaderNodeTexImage = material.node_tree.nodes.new(
+        'ShaderNodeTexImage')  # type: ignore
     image = bpy.data.images.load(imageFilePath)
     texImage.image = image
     material.node_tree.links.new(
