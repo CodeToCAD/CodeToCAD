@@ -962,6 +962,24 @@ class TestMaterial(TestProviderCase):
         assert value, "Modify method failed."
         
     @unittest.skip
+    def test_setReflectivity(self):
+        instance = Material("name","description")
+
+        value = instance.setReflectivity("reflectivity")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
+    def test_setRoughness(self):
+        instance = Material("name","description")
+
+        value = instance.setRoughness("roughness")
+
+        
+        assert value, "Modify method failed."
+        
+    @unittest.skip
     def test_addImageTexture(self):
         instance = Material("name","description")
 

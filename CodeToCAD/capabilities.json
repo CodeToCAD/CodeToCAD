@@ -1481,6 +1481,30 @@
                     }
                 }
             },
+            "setReflectivity": {
+                "information": "Change the surface reflectivity (metallic luster) of the material.",
+                "action": "modify",
+                "staticMethod": false,
+                "parameters": {
+                    "reflectivity": {
+                        "information": "A float value between 0.0-1.0",
+                        "type": "float",
+                        "required": true
+                    }
+                }
+            },
+            "setRoughness": {
+                "information": "Change the surface roughness of the material.",
+                "action": "modify",
+                "staticMethod": false,
+                "parameters": {
+                    "roughness": {
+                        "information": "A float value between 0.0-1.0",
+                        "type": "float",
+                        "required": true
+                    }
+                }
+            },
             "addImageTexture": {
                 "information": "Add a texture from an image file.",
                 "action": "modify",
