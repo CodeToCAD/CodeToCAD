@@ -447,14 +447,17 @@ class Entity(CodeToCADInterface.Entity):
     def remesh(self, strategy: str, amount: float
                ):
 
-        if strategy == "crease":
-            BlenderActions.setEdgesMeanCrease(self.name, 1.0)
-        if strategy == "edgesplit":
-            BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {
-                                         "name": "EdgeDiv", "split_angle": math.radians(30)})
+        if strategy == "decimate":
+            BlenderActions.applyDecimateModifier(self.name, int(amount))
+        else:
+            if strategy == "crease":
+                BlenderActions.setEdgesMeanCrease(self.name, 1.0)
+            if strategy == "edgesplit":
+                BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {
+                    "name": "EdgeDiv", "split_angle": math.radians(30)})
 
-        BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
-                                     "name": "Subdivision", "levels": amount})
+            BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
+                "name": "Subdivision", "levels": amount})
 
         self.applyModifiersOnly()
 
@@ -1415,9 +1418,12 @@ class Joint(CodeToCADInterface.Joint):
         #     objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
         BlenderActions.applyLimitRotationConstraint(
             objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, None)
-        copyX = rotationPairX is not None and all([value is not None for value in rotationPairX])
-        copyY = rotationPairY is not None and all([value is not None for value in rotationPairY])
-        copyZ = rotationPairZ is not None and all([value is not None for value in rotationPairZ])
+        copyX = rotationPairX is not None and all(
+            [value is not None for value in rotationPairX])
+        copyY = rotationPairY is not None and all(
+            [value is not None for value in rotationPairY])
+        copyZ = rotationPairZ is not None and all(
+            [value is not None for value in rotationPairZ])
         BlenderActions.applyCopyRotationConstraint(
             objectToLimitName, relativeToObjectName, copyX, copyY, copyZ)
         self._applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(

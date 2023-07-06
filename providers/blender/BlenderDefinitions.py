@@ -106,6 +106,7 @@ class BlenderModifiers(Enum):
     CURVE = 6
     ARRAY = 7
     BEVEL = 8
+    DECIMATE = 9
 
 
 # This is a list of Blender Constraint types that we have implemented:

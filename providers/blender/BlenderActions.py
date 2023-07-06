@@ -5,6 +5,7 @@
 from typing import Any, Optional, Union
 from uuid import uuid4
 import bpy
+import bmesh
 from CodeToCAD import Dimension
 from CodeToCAD.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import CodeToCAD.utilities as Utilities
@@ -31,9 +32,25 @@ def applyModifier(
         name=modifier.name
     )
 
+    # blenderModifier.show_viewport = False
+
     # Apply every parameter passed in for modifier:
     for key, value in keywordArguments.items():
         setattr(blenderModifier, key, value)
+
+
+def applyDecimateModifier(
+        entityName: str,
+        amount: int
+):
+    applyModifier(
+        entityName,
+        BlenderDefinitions.BlenderModifiers.DECIMATE,
+        {
+            "decimate_type": "UNSUBDIV",
+            "iterations": amount
+        }
+    )
 
 
 def applyBevelModifier(
@@ -1235,6 +1252,9 @@ def createMeshFromCurve(
     if existingCurveObject.name != existingCurveObjectName:
         removeObject(existingCurveObject.name, removeChildren=True)
 
+    # Recalcuate face normals because they're usually really wrong:
+    recalculateNormals(newObjectName)
+
 
 def getObjectVisibility(
     existingObjectName: str,
@@ -1419,6 +1439,20 @@ def setEdgesMeanCrease(meshName: str, meanCreaseValue: float):
 
     for edge in blenderMesh.edges:
         edge.crease = meanCreaseValue
+
+
+def recalculateNormals(meshName: str):
+    # references https://blender.stackexchange.com/a/72687
+
+    mesh = getMesh(meshName)
+
+    bMesh = bmesh.new()
+    bMesh.from_mesh(mesh)
+    bmesh.ops.recalc_face_normals(bMesh, faces=bMesh.faces)  # type: ignore
+    bMesh.to_mesh(mesh)
+    bMesh.clear()
+
+    mesh.update()
 
 
 # Note: transformations have to be applied for this to be reliable.
