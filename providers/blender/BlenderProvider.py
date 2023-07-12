@@ -113,6 +113,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.updateViewLayer()
 
         if modifiers and isinstance(self, Part):
+            # Only apply modifiers for Blender Objects that have meshes
 
             BlenderActions.applyDependencyGraph(self.name)
 

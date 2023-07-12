@@ -595,6 +595,17 @@ def scaleObject(
 
 # MARK: collections and groups:
 
+def getCollection(name: str, sceneName="Scene"):
+
+    collection = bpy.data.scenes[sceneName].collection.get(name)
+
+    assert \
+        collection is not None, \
+        f"Collection {collection} does not exists in scene {sceneName}"
+
+    return collection
+
+
 def createCollection(
     name: str,
     sceneName="Scene"
@@ -618,7 +629,7 @@ def removeCollection(
 ):
 
     assert \
-        bpy.data.collections.get(name) == None, \
+        bpy.data.collections.get(name) != None, \
         f"Collection {name} does not exist"
 
     if removeChildren:
