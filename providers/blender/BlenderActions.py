@@ -595,13 +595,13 @@ def scaleObject(
 
 # MARK: collections and groups:
 
-def getCollection(name: str, sceneName="Scene"):
+def getCollection(name: str, sceneName="Scene") -> bpy.types.Collection:
 
-    collection = bpy.data.scenes[sceneName].collection.get(name)
+    collection = bpy.data.scenes[sceneName].collection.children.get(name)
 
     assert \
         collection is not None, \
-        f"Collection {collection} does not exists in scene {sceneName}"
+        f"Collection {name} does not exists in scene {sceneName}"
 
     return collection
 
@@ -612,7 +612,7 @@ def createCollection(
 ):
 
     assert \
-        bpy.data.collections.get(name) == None, \
+        getCollection(name, sceneName) == None, \
         f"Collection {name} already exists"
 
     assert \
@@ -625,38 +625,34 @@ def createCollection(
 
 def removeCollection(
     name: str,
-    removeChildren
+    sceneName: str,
+    removeChildren: bool
 ):
 
-    assert \
-        bpy.data.collections.get(name) != None, \
-        f"Collection {name} does not exist"
+    collection = getCollection(name, sceneName)
 
     if removeChildren:
-        for obj in bpy.data.collections[name].objects:
+        for obj in collection.objects:
             try:
                 removeObject(obj.name, True)
             except Exception as e:
                 pass
 
-    bpy.data.collections.remove(bpy.data.collections[name])
+    bpy.data.collections.remove(collection)
 
 
 def removeObjectFromCollection(
     existingObjectName: str,
-    collectionName: str
+    collectionName: str,
+    sceneName: str
 ):
 
     blenderObject = getObject(existingObjectName)
 
-    collection = bpy.data.collections.get(collectionName)
+    collection = getCollection(collectionName, sceneName)
 
     assert \
-        collection is not None, \
-        f"Collection {collectionName} does not exist"
-
-    assert \
-        existingObjectName in collection.objects, \
+        collection.objects.get(existingObjectName) is not None, \
         f"Object {existingObjectName} does not exist in collection {collectionName}"
 
     collection.objects.unlink(blenderObject)

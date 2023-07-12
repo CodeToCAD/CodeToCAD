@@ -1868,7 +1868,11 @@ class Scene(CodeToCADInterface.Scene):
 
     def deleteGroup(self, name: str, removeChildren: bool
                     ):
-        BlenderActions.removeCollection(name, removeChildren)
+        BlenderActions.removeCollection(
+            name=name,
+            sceneName=self.name,
+            removeChildren=removeChildren
+        )
         return self
 
     def removeFromGroup(self, entityName: str, groupName: str
@@ -1876,7 +1880,11 @@ class Scene(CodeToCADInterface.Scene):
         if isinstance(entityName, Entity):
             entityName = entityName.name
 
-        BlenderActions.removeObjectFromCollection(entityName, groupName)
+        BlenderActions.removeObjectFromCollection(
+            existingObjectName=entityName,
+            collectionName=groupName,
+            sceneName=self.name
+        )
         return self
 
     def assignToGroup(self, entities: list[EntityOrItsName], groupName: str, removeFromOtherGroups: Optional[bool] = True
