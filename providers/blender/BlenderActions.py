@@ -437,13 +437,26 @@ def importFile(
         f"File type {fileType} is not supported"
 
     # Import the file:
+    old_objs = set(bpy.context.scene.objects)
+
     isSuccess = fileImportFunctions[fileType](filePath) == {'FINISHED'}
 
     assert isSuccess == True, \
         f"Could not import {filePath}"
 
-    # Assume the imported file is 1 part and it's the last added object. Lots of wrong assumptions here.
-    return bpy.data.objects[-1].name
+    imported_objs = list(set(bpy.context.scene.objects) - old_objs)
+    active_object = imported_objs[0]
+
+    # if imported file has multiple parts, collapse them. We really can't handle unknown objects being thrown in at the moment. References https://blender.stackexchange.com/a/108112 and https://blender.stackexchange.com/a/43357
+    with getContextView3D(active_object=active_object, selected_objects=imported_objs):
+        for o in imported_objs:
+            o.select_set(True)
+        bpy.context.view_layer.objects.active = active_object
+        updateViewLayer()
+        bpy.ops.object.join()
+
+    # return the imported objects, assumed to be selected at import
+    return active_object.name
 
 
 # MARK: Transformations
@@ -2104,13 +2117,13 @@ def getSelectedObjectName() -> str:
     return selectedObjects[0].name
 
 
-def getContextView3D():
+def getContextView3D(**kwargs):
     window = bpy.context.window_manager.windows[0]
     for area in window.screen.areas:
         if area.type == 'VIEW_3D':
             for region in area.regions:
                 if region.type == 'WINDOW':
-                    return bpy.context.temp_override(window=window, area=area, region=region)
+                    return bpy.context.temp_override(window=window, area=area, region=region, **kwargs)
     raise Exception("Could not find a VIEW_3D region.")
 
 
