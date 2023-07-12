@@ -84,6 +84,11 @@ def getFilename(relativeFilePath: str):
     return path.stem
 
 
+def getFilenameWithExtension(relativeFilePath: str):
+    path = Path(relativeFilePath)
+    return path.name
+
+
 def getFileExtension(filePath: str):
     path = Path(filePath)
     return path.suffix.replace(".", "")
