@@ -1480,15 +1480,31 @@ def isCollisionBetweenTwoObjects(
         object1Name: str,
         object2Name: str,
 ):
+
+    updateViewLayer()
+
     blenderObject1 = getObject(object1Name)
     blenderObject2 = getObject(object2Name)
 
-    dependencyGraph = bpy.context.evaluated_depsgraph_get()
+    # References https://blender.stackexchange.com/a/144609
+    # create bmesh objects
+    bm1 = bmesh.new()
+    bm2 = bmesh.new()
 
-    bvhTreeObject1 = BVHTree.FromObject(blenderObject1, dependencyGraph)
-    bvhTreeObject2 = BVHTree.FromObject(blenderObject2, dependencyGraph)
+    # fill bmesh data from objects
+    bm1.from_mesh(getMesh(blenderObject1.name))
+    bm2.from_mesh(getMesh(blenderObject2.name))
 
-    uniqueIndecies = bvhTreeObject1.overlap(bvhTreeObject2)  # type: ignore
+    # fixed it here:
+    bm1.transform(blenderObject1.matrix_world)
+    bm2.transform(blenderObject2.matrix_world)
+
+    # make BVH tree from BMesh of objects
+    obj_now_BVHtree = BVHTree.FromBMesh(bm1)
+    obj_next_BVHtree = BVHTree.FromBMesh(bm2)
+
+    # get intersecting pairs
+    uniqueIndecies = obj_now_BVHtree.overlap(obj_next_BVHtree)
 
     return len(uniqueIndecies) > 0
 

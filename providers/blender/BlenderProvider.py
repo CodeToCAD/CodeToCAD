@@ -807,6 +807,10 @@ class Part(Entity, CodeToCADInterface.Part):
         if isinstance(otherPartName, CodeToCADInterface.Part):
             otherPartName = otherPartName.name
 
+        if otherPartName == self.name:
+            raise NameError(
+                "Collision must be checked between different Parts.")
+
         return BlenderActions.isCollisionBetweenTwoObjects(self.name, otherPartName)
 
     def filletAllEdges(self, radius: DimensionOrItsFloatOrStringValue, useWidth: bool = False
