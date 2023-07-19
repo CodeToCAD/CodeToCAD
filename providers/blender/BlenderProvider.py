@@ -988,25 +988,32 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
             angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
 
-        BlenderActions.createMeshFromCurve(self.name)
+        BlenderActions.createMeshFromCurve(
+            self.name, isRecalculateNormals=False)
 
         return Part(self.name, self.description).apply()
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
 
+        radius = Utilities.Dimension.fromString(radius)
+
         BlenderActions.applySolidifyModifier(
-            self.name, Utilities.Dimension.fromString(radius))
+            self.name, radius)
 
-        BlenderActions.createMeshFromCurve(self.name)
+        BlenderActions.createMeshFromCurve(
+            self.name, isRecalculateNormals=False)
 
-        return Part(self.name, self.description).apply()
+        part = Part(self.name, self.description).apply()
+
+        return part
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 
         BlenderActions.extrude(
             self.name, Utilities.Dimension.fromString(length))
 
-        BlenderActions.createMeshFromCurve(self.name)
+        BlenderActions.createMeshFromCurve(
+            self.name, isRecalculateNormals=False)
 
         return Part(self.name, self.description).apply()
 
@@ -1018,7 +1025,8 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         BlenderActions.addBevelObjectToCurve(
             self.name, profileCurveName, fillCap)
 
-        BlenderActions.createMeshFromCurve(self.name)
+        BlenderActions.createMeshFromCurve(
+            self.name, isRecalculateNormals=False)
 
         return Part(self.name, self.description).apply()
 

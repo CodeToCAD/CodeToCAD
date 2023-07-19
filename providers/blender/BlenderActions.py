@@ -1241,7 +1241,8 @@ def addVerticiesToVertexGroup(
 
 def createMeshFromCurve(
     existingCurveObjectName: str,
-    newObjectName: Optional[str] = None
+    isRecalculateNormals: bool,
+    newObjectName: Optional[str] = None,
 ):
 
     existingCurveObject = getObject(existingCurveObjectName)
@@ -1272,8 +1273,8 @@ def createMeshFromCurve(
     if existingCurveObject.name != existingCurveObjectName:
         removeObject(existingCurveObject.name, removeChildren=True)
 
-    # Recalcuate face normals because they're usually really wrong:
-    recalculateNormals(newObjectName)
+    if isRecalculateNormals:
+        recalculateNormals(newObjectName)
 
 
 def getObjectVisibility(
@@ -1487,24 +1488,19 @@ def isCollisionBetweenTwoObjects(
     blenderObject2 = getObject(object2Name)
 
     # References https://blender.stackexchange.com/a/144609
-    # create bmesh objects
     bm1 = bmesh.new()
     bm2 = bmesh.new()
 
-    # fill bmesh data from objects
     bm1.from_mesh(getMesh(blenderObject1.name))
     bm2.from_mesh(getMesh(blenderObject2.name))
 
-    # fixed it here:
-    bm1.transform(blenderObject1.matrix_world)
-    bm2.transform(blenderObject2.matrix_world)
+    bm1.transform(blenderObject1.matrix_world)  # type: ignore
+    bm2.transform(blenderObject2.matrix_world)  # type: ignore
 
-    # make BVH tree from BMesh of objects
     obj_now_BVHtree = BVHTree.FromBMesh(bm1)
     obj_next_BVHtree = BVHTree.FromBMesh(bm2)
 
-    # get intersecting pairs
-    uniqueIndecies = obj_now_BVHtree.overlap(obj_next_BVHtree)
+    uniqueIndecies = obj_now_BVHtree.overlap(obj_next_BVHtree)  # type: ignore
 
     return len(uniqueIndecies) > 0
 
