@@ -1671,6 +1671,26 @@ def offsetCurveGeometry(
     curve.offset = length.value
 
 
+def setCurveResolutionU(
+        curveName: str,
+        resolution: int
+):
+
+    curve = getCurve(curveName)
+
+    curve.resolution_u = resolution
+
+
+def setCurveResolutionV(
+        curveName: str,
+        resolution: int
+):
+
+    curve = getCurve(curveName)
+
+    curve.resolution_v = resolution
+
+
 def createText(curveName: str, text: str,
                size=Utilities.Dimension(1),
                bold=False,
