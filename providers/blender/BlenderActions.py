@@ -461,32 +461,8 @@ def importFile(
 
 # MARK: Transformations
 
-def applyObjectTransformations(objectName):
+def applyObjectTransformations(objectName: str, applyRotation: bool, applyScale: bool, applyLocation: bool, ):
     # Apply the object's transformations (under Object Properties tab)
-    # This is different from applyDependencyGraph()
-    # references https://blender.stackexchange.com/a/159540/138679
-
-    blenderObject = getObject(objectName)
-
-    assert blenderObject.data is not None, \
-        f"Object {objectName} does not have data to transform."
-
-    finalPose = blenderObject.matrix_basis
-
-    mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
-    mesh.transform(finalPose)
-
-    blenderObjectChildren: list[bpy.types.Object] = \
-        blenderObject.children  # type: ignore
-
-    for child in blenderObjectChildren:
-        child.matrix_local = finalPose @ child.matrix_local  # type: ignore
-
-    # Reset the object's transformations (resets everything in side menu to 0's)
-    blenderObject.matrix_basis.identity()  # type: ignore
-
-
-def applyObjectRotationAndScale(objectName):
     # references https://blender.stackexchange.com/a/159540/138679
     blenderObject = getObject(objectName)
 
@@ -504,18 +480,30 @@ def applyObjectRotationAndScale(objectName):
     rotation: mathutils.Matrix = rotationQuat.to_matrix().to_4x4()
     scale: mathutils.Matrix = mathutils.Matrix.Diagonal(scaleVector).to_4x4()
 
-    transformation: mathutils.Matrix = rotation @ scale  # type: ignore
+    transformation: mathutils.Matrix = mathutils.Matrix()
+    basis: mathutils.Matrix = mathutils.Matrix()
+
+    if applyRotation:
+        transformation @= rotation
+    else:
+        basis @= rotation
+    if applyScale:
+        transformation @= scale
+    else:
+        basis @= scale
+    if applyLocation:
+        transformation @= translation
+    else:
+        basis @= translation
 
     mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
     mesh.transform(transformation)
 
     # Set the object to its world translation
-    blenderObject.matrix_basis = translation
+    blenderObject.matrix_basis = basis
 
     for child in blenderObject.children:  # type: ignore
         child.matrix_basis = transformation @ child.matrix_basis
-        child.matrix_basis = mathutils.Matrix.Translation(
-            child.matrix_basis.translation)
 
 
 def rotateObject(
