@@ -102,10 +102,10 @@ class Entity(CodeToCADInterface.Entity):
 
         return self
 
-    def applyModifiersOnly(self):
+    def _applyModifiersOnly(self):
         return self.apply(rotation=False, scale=False, location=False, modifiers=True)
 
-    def applyRotationAndScaleOnly(self):
+    def _applyRotationAndScaleOnly(self):
         return self.apply(rotation=True, scale=True, location=False, modifiers=False)
 
     def apply(self, rotation=True, scale=True, location=False, modifiers=True):
@@ -174,7 +174,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyMirrorModifier(
             self.name, mirrorAcrossEntityName, axis)
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def linearPattern(self, instanceCount: 'int', offset: DimensionOrItsFloatOrStringValue, directionAxis: AxisOrItsIndexOrItsName = "z"):
 
@@ -193,7 +193,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyLinearPattern(
             self.name, instanceCount, axis, offset)
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, centerEntityOrLandmark: EntityOrItsNameOrLandmark, normalDirectionAxis: AxisOrItsIndexOrItsName = "z"):
         centerEntityOrLandmarkName = centerEntityOrLandmark
@@ -232,7 +232,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyCircularPattern(
             self.name, instanceCount, pivotLandmarkEntityName)
 
-        self.applyModifiersOnly()
+        self._applyModifiersOnly()
 
         self.getLandmark(pivotLandmarkName).delete()
 
@@ -334,43 +334,43 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.scaleObject(
             self.name, xScaleFactor, yScaleFactor, zScaleFactor)
 
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleX(self, scale: DimensionOrItsFloatOrStringValue
                ):
         scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
             scale, self.getDimensions().x.value)
         BlenderActions.scaleObject(self.name, scaleFactor, None, None)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleY(self, scale: DimensionOrItsFloatOrStringValue
                ):
         scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
             scale, self.getDimensions().y.value)
         BlenderActions.scaleObject(self.name, None, scaleFactor, None)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleZ(self, scale: DimensionOrItsFloatOrStringValue
                ):
         scaleFactor = Entity._scaleFactorFromDimensionOrItsFloatOrStringValue(
             scale, self.getDimensions().z.value)
         BlenderActions.scaleObject(self.name, None, None, scaleFactor)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleXByFactor(self, scaleFactor: float
                        ):
         BlenderActions.scaleObject(self.name, scaleFactor, None, None)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleYByFactor(self, scaleFactor: float
                        ):
         BlenderActions.scaleObject(self.name, None, scaleFactor, None)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleZByFactor(self, scaleFactor: float
                        ):
         BlenderActions.scaleObject(self.name, None, None, scaleFactor)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                              ):
@@ -386,7 +386,7 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.scaleObject(
             self.name, scaleFactor, scaleFactor, scaleFactor)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                   ):
@@ -398,7 +398,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.rotateObject(
             self.name, [xAngle, yAngle, zAngle], BlenderDefinitions.BlenderRotationTypes.EULER)
 
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def rotateX(self, rotation: AngleOrItsFloatOrStringValue
                 ):
@@ -407,7 +407,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.rotateObject(
             self.name, [angle, None, None], BlenderDefinitions.BlenderRotationTypes.EULER)
 
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def rotateY(self, rotation: AngleOrItsFloatOrStringValue
                 ):
@@ -415,7 +415,7 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.rotateObject(
             self.name, [None, angle, None], BlenderDefinitions.BlenderRotationTypes.EULER)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def rotateZ(self, rotation: AngleOrItsFloatOrStringValue
                 ):
@@ -423,7 +423,7 @@ class Entity(CodeToCADInterface.Entity):
 
         BlenderActions.rotateObject(
             self.name, [None, None, angle], BlenderDefinitions.BlenderRotationTypes.EULER)
-        return self.applyRotationAndScaleOnly()
+        return self._applyRotationAndScaleOnly()
 
     def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"
               ):
@@ -439,7 +439,7 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyScrewModifier(
             self.name, angleParsed.toRadians(), axis, screwPitch=screwPitch, iterations=interations)
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def remesh(self, strategy: str, amount: float
                ):
@@ -456,7 +456,7 @@ class Entity(CodeToCADInterface.Entity):
             BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
                 "name": "Subdivision", "levels": amount})
 
-        self.applyModifiersOnly()
+        self._applyModifiersOnly()
 
         if strategy == "crease":
             BlenderActions.setEdgesMeanCrease(self.name, 0)
@@ -640,7 +640,7 @@ class Part(Entity, CodeToCADInterface.Part):
         if isTransferLandmarks:
             BlenderActions.transferLandmarks(partName, self.name)
 
-        self.applyModifiersOnly()
+        self._applyModifiersOnly()
 
         if deleteAfterUnion:
             BlenderActions.removeObject(partName, removeChildren=True)
@@ -662,7 +662,7 @@ class Part(Entity, CodeToCADInterface.Part):
         if isTransferLandmarks:
             BlenderActions.transferLandmarks(partName, self.name)
 
-        self.applyModifiersOnly()
+        self._applyModifiersOnly()
 
         if deleteAfterSubtract:
             BlenderActions.removeObject(partName, removeChildren=True)
@@ -684,7 +684,7 @@ class Part(Entity, CodeToCADInterface.Part):
         if isTransferLandmarks:
             BlenderActions.transferLandmarks(partName, self.name)
 
-        self.applyModifiersOnly()
+        self._applyModifiersOnly()
 
         if deleteAfterIntersect:
             BlenderActions.removeObject(partName, removeChildren=True)
@@ -731,7 +731,7 @@ class Part(Entity, CodeToCADInterface.Part):
         BlenderActions.scaleObject(
             insidePart.name, scaleX, scaleY, scaleZ)
 
-        self.applyRotationAndScaleOnly()
+        self._applyRotationAndScaleOnly()
 
         Joint(startAxisLandmark, insidePart_start).translateLandmarkOntoAnother()
 
@@ -739,7 +739,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         startAxisLandmark.delete()
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
 
@@ -748,7 +748,7 @@ class Part(Entity, CodeToCADInterface.Part):
         BlenderActions.applySolidifyModifier(
             self.name, radius)
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x", linearPattern2ndInstanceCount: 'int' = 1, linearPattern2ndInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPattern2ndInstanceAxis: AxisOrItsIndexOrItsName = "y"):
 
@@ -794,7 +794,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
         self.subtract(hole, deleteAfterSubtract=True,
                       isTransferLandmarks=False)
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def setMaterial(self, materialName: MaterialOrItsName
                     ):
@@ -939,7 +939,7 @@ class Part(Entity, CodeToCADInterface.Part):
             keywordArguments=keywordArguments or None
         )
 
-        return self.applyModifiersOnly()
+        return self._applyModifiersOnly()
 
     def selectVertexNearLandmark(self, landmarkName: Optional[LandmarkOrItsName] = None
                                  ):
