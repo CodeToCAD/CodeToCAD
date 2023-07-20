@@ -1634,36 +1634,41 @@ def addonSetEnabled(addonName: str, isEnabled: bool):
 
 # MARK: Curves and Sketches
 
-def extrude(
-    curveObjectName: str,
+def getCurve(curveName: str) -> bpy.types.Curve:
+
+    curve = bpy.data.curves.get(curveName)
+
+    assert \
+        curve is not None, \
+        f"Curve {curveName} does not exists"
+
+    return curve
+
+
+def extrudeCurve(
+    curveName: str,
     length: Utilities.Dimension
 ):
 
-    blenderObject = getObject(curveObjectName)
+    curve = getCurve(curveName)
 
     length = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         length)
 
-    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value or type(blenderObject.data) == BlenderDefinitions.BlenderTypes.TEXT.value,\
-        f"Object {curveObjectName} is not a curve or text object type."
-
-    blenderObject.data.extrude = length.value
+    curve.extrude = length.value
 
 
 def offsetCurveGeometry(
-    curveObjectName: str,
+    curveName: str,
     offset: Utilities.Dimension
 ):
 
-    blenderObject = getObject(curveObjectName)
+    curve = getCurve(curveName)
 
     length = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         offset)
 
-    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value or type(blenderObject.data) == BlenderDefinitions.BlenderTypes.TEXT.value,\
-        f"Object {curveObjectName} is not a curve or text object type."
-
-    blenderObject.data.offset = length.value
+    curve.offset = length.value
 
 
 def createText(curveName: str, text: str,
