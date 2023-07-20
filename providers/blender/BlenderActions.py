@@ -1241,7 +1241,6 @@ def addVerticiesToVertexGroup(
 
 def createMeshFromCurve(
     existingCurveObjectName: str,
-    isRecalculateNormals: bool,
     newObjectName: Optional[str] = None,
 ):
 
@@ -1272,9 +1271,6 @@ def createMeshFromCurve(
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
     if existingCurveObject.name != existingCurveObjectName:
         removeObject(existingCurveObject.name, removeChildren=True)
-
-    if isRecalculateNormals:
-        recalculateNormals(newObjectName)
 
 
 def getObjectVisibility(

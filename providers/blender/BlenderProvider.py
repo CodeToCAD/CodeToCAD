@@ -998,7 +998,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
 
         BlenderActions.createMeshFromCurve(
-            self.name, isRecalculateNormals=False)
+            self.name)
 
         return Part(self.name, self.description).apply()
 
@@ -1017,7 +1017,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             self.name, Utilities.Dimension.fromString(length))
 
         BlenderActions.createMeshFromCurve(
-            self.name, isRecalculateNormals=False)
+            self.name)
 
         return Part(self.name, self.description).apply()
 
@@ -1030,7 +1030,10 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             self.name, profileCurveName, fillCap)
 
         BlenderActions.createMeshFromCurve(
-            self.name, isRecalculateNormals=False)
+            self.name)
+
+        # Recalculate normals because they're usually wrong after sweeping.
+        BlenderActions.recalculateNormals(self.name)
 
         return Part(self.name, self.description).apply()
 
