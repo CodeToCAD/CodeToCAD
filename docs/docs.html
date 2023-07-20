@@ -184,6 +184,8 @@
 
     <a href=#Part_hollow class="chip">hollow()</a>
 
+    <a href=#Part_thicken class="chip">thicken()</a>
+
     <a href=#Part_hole class="chip">hole()</a>
 
     <a href=#Part_setMaterial class="chip">setMaterial()</a>
@@ -300,11 +302,11 @@
 
     <a href=#Sketch_revolve class="chip">revolve()</a>
 
-    <a href=#Sketch_thicken class="chip">thicken()</a>
-
     <a href=#Sketch_extrude class="chip">extrude()</a>
 
     <a href=#Sketch_sweep class="chip">sweep()</a>
+
+    <a href=#Sketch_offset class="chip">offset()</a>
 
     <a href=#Sketch_profile class="chip">profile()</a>
 
@@ -1390,6 +1392,25 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> False</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Part::<span class="subHeading" id=Part_thicken>thicken(radius)</span>
+
+    <div class="methods">Uniformly add a wall around a Part.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
             
         </div>
     </div>
@@ -3090,25 +3111,6 @@
 
     
 
-    Sketch::<span class="subHeading" id=Sketch_thicken>thicken(radius)</span>
-
-    <div class="methods">Uniformly add a wall around a sketch.</div>
-    <div><span class="subSubHeading">returnType:</span> Part</div>
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="methodName grid-item">radius</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
-            
-            
-        </div>
-    </div>
-
-
-    
-
     Sketch::<span class="subHeading" id=Sketch_extrude>extrude(length)</span>
 
     <div class="methods">Extrude a curve by a specified length. Returns a Part type.</div>
@@ -3154,6 +3156,25 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> True</div>
+            
+        </div>
+    </div>
+
+
+    
+
+    Sketch::<span class="subHeading" id=Sketch_offset>offset(radius)</span>
+
+    <div class="methods">Uniformly add a wall around a Sketch.</div>
+    
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="methodName grid-item">radius</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
+            
             
         </div>
     </div>

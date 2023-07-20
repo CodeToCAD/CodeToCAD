@@ -269,6 +269,11 @@ class Part(Entity,CodeToCADInterface.Part):
         return self
         
 
+    def thicken(self, radius:DimensionOrItsFloatOrStringValue):
+        
+        return self
+        
+
     def hole(self, holeLandmark:LandmarkOrItsName, radius:DimensionOrItsFloatOrStringValue, depth:DimensionOrItsFloatOrStringValue, normalAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False, initialRotationX:AngleOrItsFloatOrStringValue=0.0, initialRotationY:AngleOrItsFloatOrStringValue=0.0, initialRotationZ:AngleOrItsFloatOrStringValue=0.0, mirrorAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, mirrorAxis:AxisOrItsIndexOrItsName="x", mirror:bool=False, circularPatternInstanceCount:'int'=1, circularPatternInstanceSeparation:AngleOrItsFloatOrStringValue=0.0, circularPatternInstanceAxis:AxisOrItsIndexOrItsName="z", circularPatternAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, linearPatternInstanceCount:'int'=1, linearPatternInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPatternInstanceAxis:AxisOrItsIndexOrItsName="x", linearPattern2ndInstanceCount:'int'=1, linearPattern2ndInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPattern2ndInstanceAxis:AxisOrItsIndexOrItsName="y"):
         
         return self
@@ -351,11 +356,6 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
         raise NotImplementedError()
         
 
-    def thicken(self, radius:DimensionOrItsFloatOrStringValue) -> 'Part':
-        
-        raise NotImplementedError()
-        
-
     def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'Part':
         
         raise NotImplementedError()
@@ -364,6 +364,11 @@ class Sketch(Entity,CodeToCADInterface.Sketch):
     def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> 'Part':
         
         raise NotImplementedError()
+        
+
+    def offset(self, radius:DimensionOrItsFloatOrStringValue):
+        
+        return self
         
 
     def profile(self, profileCurveName:str):

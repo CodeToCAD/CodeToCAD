@@ -745,6 +745,15 @@ class Part(Entity, CodeToCADInterface.Part):
 
         return self.applyModifiersOnly()
 
+    def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
+
+        radius = Utilities.Dimension.fromString(radius)
+
+        BlenderActions.applySolidifyModifier(
+            self.name, radius)
+
+        return self.applyModifiersOnly()
+
     def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x", linearPattern2ndInstanceCount: 'int' = 1, linearPattern2ndInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPattern2ndInstanceAxis: AxisOrItsIndexOrItsName = "y"):
 
         axis = Utilities.Axis.fromString(normalAxis)
@@ -993,19 +1002,14 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
         return Part(self.name, self.description).apply()
 
-    def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
+    def offset(self, radius: DimensionOrItsFloatOrStringValue):
 
         radius = Utilities.Dimension.fromString(radius)
 
-        BlenderActions.applySolidifyModifier(
+        BlenderActions.offsetCurveGeometry(
             self.name, radius)
 
-        BlenderActions.createMeshFromCurve(
-            self.name, isRecalculateNormals=False)
-
-        part = Part(self.name, self.description).apply()
-
-        return part
+        return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 

@@ -530,6 +530,14 @@ class TestPart(TestProviderCase):
         assert value, "Modify method failed."
 
     @unittest.skip
+    def test_thicken(self):
+        instance = Part("")
+
+        value = instance.thicken("radius")
+
+        assert value, "Modify method failed."
+
+    @unittest.skip
     def test_hole(self):
         instance = Part("TestPart")
 
@@ -633,10 +641,10 @@ class TestSketch(TestProviderCase):
         assert value, "Modify method failed."
 
     @unittest.skip
-    def test_thicken(self):
+    def test_offset(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.thicken("radius")
+        value = instance.offset("radius")
 
         assert value, "Modify method failed."
 
