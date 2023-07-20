@@ -1013,7 +1013,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 
-        BlenderActions.extrude(
+        BlenderActions.extrudeCurve(
             self.name, Utilities.Dimension.fromString(length))
 
         BlenderActions.createMeshFromCurve(
