@@ -1650,6 +1650,22 @@ def extrude(
     blenderObject.data.extrude = length.value
 
 
+def offsetCurveGeometry(
+    curveObjectName: str,
+    offset: Utilities.Dimension
+):
+
+    blenderObject = getObject(curveObjectName)
+
+    length = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+        offset)
+
+    assert type(blenderObject.data) == BlenderDefinitions.BlenderTypes.CURVE.value or type(blenderObject.data) == BlenderDefinitions.BlenderTypes.TEXT.value,\
+        f"Object {curveObjectName} is not a curve or text object type."
+
+    blenderObject.data.offset = length.value
+
+
 def createText(curveName: str, text: str,
                size=Utilities.Dimension(1),
                bold=False,

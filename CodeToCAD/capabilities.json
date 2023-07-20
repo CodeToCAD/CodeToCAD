@@ -662,6 +662,15 @@
                     }
                 }
             },
+            "thicken": {
+                "action": "modify",
+                "information": "Uniformly add a wall around a Part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
             "hole": {
                 "action": "modify",
                 "information": "Create a hole.",
@@ -929,16 +938,6 @@
                     }
                 }
             },
-            "thicken": {
-                "action": "get",
-                "returnType": "Part",
-                "information": "Uniformly add a wall around a sketch.",
-                "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
             "extrude": {
                 "action": "get",
                 "returnType": "Part",
@@ -960,6 +959,15 @@
                     "fillCap": {
                         "type": "boolean",
                         "defaultValue": true
+                    }
+                }
+            },
+            "offset": {
+                "action": "modify",
+                "information": "Uniformly add a wall around a Sketch.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },

@@ -530,6 +530,16 @@ class Part(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
+    def thicken(self, radius:DimensionOrItsFloatOrStringValue):
+        '''
+        Uniformly add a wall around a Part.
+        '''
+        
+        print("thicken is called in an abstract method. Please override this method.")
+        return self
+        
+
+    @abstractmethod
     def hole(self, holeLandmark:LandmarkOrItsName, radius:DimensionOrItsFloatOrStringValue, depth:DimensionOrItsFloatOrStringValue, normalAxis:AxisOrItsIndexOrItsName="z", flipAxis:bool=False, initialRotationX:AngleOrItsFloatOrStringValue=0.0, initialRotationY:AngleOrItsFloatOrStringValue=0.0, initialRotationZ:AngleOrItsFloatOrStringValue=0.0, mirrorAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, mirrorAxis:AxisOrItsIndexOrItsName="x", mirror:bool=False, circularPatternInstanceCount:'int'=1, circularPatternInstanceSeparation:AngleOrItsFloatOrStringValue=0.0, circularPatternInstanceAxis:AxisOrItsIndexOrItsName="z", circularPatternAboutEntityOrLandmark:Optional[EntityOrItsNameOrLandmark]=None, linearPatternInstanceCount:'int'=1, linearPatternInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPatternInstanceAxis:AxisOrItsIndexOrItsName="x", linearPattern2ndInstanceCount:'int'=1, linearPattern2ndInstanceSeparation:DimensionOrItsFloatOrStringValue=0.0, linearPattern2ndInstanceAxis:AxisOrItsIndexOrItsName="y"):
         '''
         Create a hole.
@@ -685,16 +695,6 @@ class Sketch(Entity,metaclass=ABCMeta):
         
 
     @abstractmethod
-    def thicken(self, radius:DimensionOrItsFloatOrStringValue) -> 'Part':
-        '''
-        Uniformly add a wall around a sketch.
-        '''
-        
-        print("thicken is called in an abstract method. Please override this method.")
-        raise NotImplementedError()
-        
-
-    @abstractmethod
     def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'Part':
         '''
         Extrude a curve by a specified length. Returns a Part type.
@@ -712,6 +712,16 @@ class Sketch(Entity,metaclass=ABCMeta):
         
         print("sweep is called in an abstract method. Please override this method.")
         raise NotImplementedError()
+        
+
+    @abstractmethod
+    def offset(self, radius:DimensionOrItsFloatOrStringValue):
+        '''
+        Uniformly add a wall around a Sketch.
+        '''
+        
+        print("offset is called in an abstract method. Please override this method.")
+        return self
         
 
     @abstractmethod
