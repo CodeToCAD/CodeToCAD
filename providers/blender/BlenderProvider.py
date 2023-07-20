@@ -123,13 +123,9 @@ class Entity(CodeToCADInterface.Entity):
 
             BlenderActions.clearModifiers(self.name)
 
-        if rotation and scale and location:
-            BlenderActions.applyObjectTransformations(self.name)
-        elif rotation and scale:
-            BlenderActions.applyObjectRotationAndScale(self.name)
-        elif rotation or scale or location:
-            raise NotImplementedError(
-                "Applying rotation, scale or location separately is not yet supported.")
+        if rotation or scale or location:
+            BlenderActions.applyObjectTransformations(
+                self.name, rotation, scale, location)
 
         return self
 
