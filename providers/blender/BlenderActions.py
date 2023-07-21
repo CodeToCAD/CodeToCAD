@@ -1227,6 +1227,19 @@ def addVerticiesToVertexGroup(
     vertexGroupObject.add(vertexIndecies, 1.0, 'ADD')
 
 
+def convertObjectUsingOps(
+        existingObjectName: str,
+        convertToType: BlenderDefinitions.BlenderTypes
+):
+    existingObject = getObject(existingObjectName)
+    with getContextView3D(active_object=existingObject, selected_objects=[existingObject]):
+        existingObject.select_set(True)
+        bpy.context.view_layer.objects.active = existingObject
+        updateViewLayer()
+
+        bpy.ops.object.convert(target=convertToType.name)
+
+
 def createMeshFromCurve(
     existingCurveObjectName: str,
     newObjectName: Optional[str] = None,
@@ -1686,6 +1699,7 @@ def createText(curveName: str, text: str,
                fontFilePath: Optional[str] = None):
 
     curveData = bpy.data.curves.new(type="FONT", name=curveName)
+
     setattr(curveData, "body", text)
     setattr(curveData, "size", BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
         size).value)
@@ -1709,6 +1723,13 @@ def createText(curveName: str, text: str,
     createObject(curveName, curveData)
 
     assignObjectToCollection(curveName)
+
+    # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
+    convertObjectUsingOps(
+        curveName,
+        BlenderDefinitions.BlenderTypes.CURVE)
+
+    curveData.use_path = False
 
 
 def create3DCurve(
