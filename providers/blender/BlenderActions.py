@@ -21,7 +21,7 @@ from mathutils.kdtree import KDTree
 def applyModifier(
     entityName: str,
     modifier: BlenderDefinitions.BlenderModifiers,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     blenderObject = getObject(entityName)
@@ -35,7 +35,7 @@ def applyModifier(
     # blenderModifier.show_viewport = False
 
     # Apply every parameter passed in for modifier:
-    for key, value in keywordArguments.items():
+    for key, value in kwargs.items():
         setattr(blenderModifier, key, value)
 
 
@@ -46,10 +46,8 @@ def applyDecimateModifier(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.DECIMATE,
-        {
-            "decimate_type": "UNSUBDIV",
-            "iterations": amount
-        }
+        decimate_type="UNSUBDIV",
+        iterations=amount
     )
 
 
@@ -60,21 +58,18 @@ def applyBevelModifier(
     useEdges=True,
     useWidth=False,
     chamfer=False,
-    keywordArguments: Optional[dict] = None
+    **kwargs
 ):
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.BEVEL,
-        dict({
-            "affect": "EDGES" if useEdges else "VERTICES",
-            "offset_type": "WIDTH" if useWidth else "OFFSET",
-            "width": radius.value,
-            "segments": 1 if chamfer else 24,
-            "limit_method": "VGROUP" if vertexGroupName else "ANGLE",
-            "vertex_group": vertexGroupName or ""
-        },
-            **(keywordArguments or {})
-        )
+        affect="EDGES" if useEdges else "VERTICES",
+        offset_type="WIDTH" if useWidth else "OFFSET",
+        width=radius.value,
+        segments=1 if chamfer else 24,
+        limit_method="VGROUP" if vertexGroupName else "ANGLE",
+        vertex_group=vertexGroupName or "",
+        **kwargs
     )
 
 
@@ -83,7 +78,7 @@ def applyLinearPattern(
     instanceCount,
     direction: Utilities.Axis,
     offset: float,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     offsetArray = [0.0, 0.0, 0.0]
@@ -93,15 +88,11 @@ def applyLinearPattern(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.ARRAY,
-        dict(
-            {
-                "count": instanceCount,
-                "use_relative_offset": False,
-                "use_constant_offset": True,
-                "constant_offset_displace": offsetArray
-            },
-            **keywordArguments
-        )
+        use_relative_offset=False,
+        count=instanceCount,
+        use_constant_offset=True,
+        constant_offset_displace=offsetArray,
+        **kwargs
     )
 
 
@@ -109,7 +100,7 @@ def applyCircularPattern(
     entityName: str,
     instanceCount,
     aroundObjectName,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     blenderObject = getObject(aroundObjectName)
@@ -117,41 +108,34 @@ def applyCircularPattern(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.ARRAY,
-        dict(
-            {
-                "count": instanceCount,
-                "use_relative_offset": False,
-                "use_object_offset": True,
-                "offset_object": blenderObject
-            },
-            **keywordArguments
-        )
+        count=instanceCount,
+        use_relative_offset=False,
+        use_object_offset=True,
+        offset_object=blenderObject,
+        **kwargs
     )
 
 
 def applySolidifyModifier(
     entityName: str,
     thickness: Utilities.Dimension,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.SOLIDIFY,
-        dict(
-            {
-                "thickness": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(thickness).value,
-                "offset": 0
-            },
-            **keywordArguments
-        )
+        thickness=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+            thickness).value,
+        offset=0,
+        **kwargs
     )
 
 
 def applyCurveModifier(
     entityName: str,
     curveObjectName: str,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     curveObject = getObject(curveObjectName)
@@ -159,12 +143,9 @@ def applyCurveModifier(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.CURVE,
-        dict(
-            {
-                "object": curveObject
-            },
-            **keywordArguments
-        )
+        object=curveObject,
+        **kwargs
+
     )
 
 
@@ -172,7 +153,7 @@ def applyBooleanModifier(
     meshObjectName: str,
     blenderBooleanType: BlenderDefinitions.BlenderBooleanTypes,
     withMeshObjectName: str,
-    keywordArguments: Optional[dict] = None
+    **kwargs
 ):
     blenderObject = getObject(meshObjectName)
     blenderBooleanObject = getObject(withMeshObjectName)
@@ -185,17 +166,13 @@ def applyBooleanModifier(
     applyModifier(
         meshObjectName,
         BlenderDefinitions.BlenderModifiers.BOOLEAN,
-        dict(
-            {
-                "operation": blenderBooleanType.name,
-                "object": blenderBooleanObject,
-                "use_self": True,
-                "use_hole_tolerant": True,
-                # "solver": "EXACT",
-                # "double_threshold": 1e-6
-            },
-            **(keywordArguments or {})
-        )
+        operation=blenderBooleanType.name,
+        object=blenderBooleanObject,
+        use_self=True,
+        use_hole_tolerant=True,
+        # "solver= "EXACT",
+        # "double_threshold= 1e-6,
+        **kwargs
     )
 
 
@@ -203,7 +180,7 @@ def applyMirrorModifier(
     entityName: str,
     mirrorAcrossEntityName: str,
     axis: Utilities.Axis,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     axisList = [False, False, False]
@@ -214,14 +191,10 @@ def applyMirrorModifier(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.MIRROR,
-        dict(
-            {
-                "mirror_object": blenderMirrorAcrossObject,
-                "use_axis": axisList,
-                "use_mirror_merge": False
-            },
-            **keywordArguments
-        )
+        mirror_object=blenderMirrorAcrossObject,
+        use_axis=axisList,
+        use_mirror_merge=False,
+        **kwargs
     )
 
 
@@ -232,7 +205,7 @@ def applyScrewModifier(
     screwPitch: Utilities.Dimension = Utilities.Dimension(0),
     iterations=1,
     entityNameToDetermineAxis=None,
-    keywordArguments: dict = {}
+    **kwargs
 ):
 
     # https://docs.blender.org/api/current/bpy.types.ScrewModifier.html
@@ -255,10 +228,8 @@ def applyScrewModifier(
     applyModifier(
         entityName,
         BlenderDefinitions.BlenderModifiers.SCREW,
-        dict(
-            properties,
-            **keywordArguments
-        )
+        **properties,
+        **kwargs
     )
 
 
@@ -267,41 +238,41 @@ def applyScrewModifier(
 def blenderPrimitiveFunction(
     primitive: BlenderDefinitions.BlenderObjectPrimitiveTypes,
     dimensions,
-    keywordArguments={}
+    **kwargs
 ):
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cube:
-        return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **keywordArguments)
+        return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cone:
-        return bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cylinder:
-        return bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.torus:
-        return bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.sphere:
-        return bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.uvsphere:
-        return bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.circle:
-        return bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.grid:
-        return bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.monkey:
-        return bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **keywordArguments)
+        return bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.empty:
-        return bpy.ops.object.empty_add(radius=dimensions[0].value, **keywordArguments)
+        return bpy.ops.object.empty_add(radius=dimensions[0].value, **kwargs)
 
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.plane:
-        return bpy.ops.mesh.primitive_plane_add(**keywordArguments)
+        return bpy.ops.mesh.primitive_plane_add(**kwargs)
 
     raise Exception(
         f"Primitive with name {primitive.name} is not implemented.")
@@ -311,7 +282,7 @@ def blenderPrimitiveFunction(
 def addPrimitive(
     primitiveType: BlenderDefinitions.BlenderObjectPrimitiveTypes,
     dimensions: str,
-    keywordArguments: Optional[dict]
+    **kwargs
 ):
 
     assert primitiveType is not None, f"Primitive type is required."
@@ -336,7 +307,7 @@ def addPrimitive(
     blenderPrimitiveFunction(
         primitiveType,
         dimensionsList,
-        keywordArguments or {}
+        **kwargs
     )
 
 
@@ -707,12 +678,12 @@ def getConstraint(objectName: str, constraintName) -> Optional[bpy.types.Constra
 def applyConstraint(
     objectName: str,
     constraintType: BlenderDefinitions.BlenderConstraintTypes,
-    keywordArguments={}
+    **kwargs
 ):
 
     blenderObject = getObject(objectName)
 
-    constraintName = keywordArguments.get(
+    constraintName = kwargs.get(
         "name") or constraintType.getDefaultBlenderName()
 
     constraint = getConstraint(objectName, constraintName)
@@ -722,7 +693,7 @@ def applyConstraint(
         constraint = blenderObject.constraints.new(constraintType.name)
 
     # Apply every parameter passed in for modifier:
-    for key, value in keywordArguments.items():
+    for key, value in kwargs.items():
         setattr(constraint, key, value)
 
 
@@ -732,7 +703,7 @@ def applyLimitLocationConstraint(
     y: Optional[list[Optional[Utilities.Dimension]]],
     z: Optional[list[Optional[Utilities.Dimension]]],
     relativeToObjectName: Optional[str],
-    keywordArguments={}
+    **kwargs
 ):
 
     relativeToObject = getObject(
@@ -742,7 +713,7 @@ def applyLimitLocationConstraint(
     [minY, maxY] = y or [None, None]
     [minZ, maxZ] = z or [None, None]
 
-    keywordArguments = keywordArguments or {}
+    keywordArguments = kwargs or {}
 
     keywordArguments["name"] = BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION.formatConstraintName(
         objectName, relativeToObject)
@@ -775,7 +746,7 @@ def applyLimitLocationConstraint(
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_LOCATION,
-        keywordArguments
+        **keywordArguments
     )
 
 
@@ -785,7 +756,7 @@ def applyLimitRotationConstraint(
     y:  Optional[list[Optional[Utilities.Angle]]],
     z:  Optional[list[Optional[Utilities.Angle]]],
     relativeToObjectName: Optional[str],
-    keywordArguments={}
+    **kwargs
 ):
 
     relativeToObject = getObject(
@@ -795,7 +766,7 @@ def applyLimitRotationConstraint(
     [minY, maxY] = y or [None, None]
     [minZ, maxZ] = z or [None, None]
 
-    keywordArguments = keywordArguments or {}
+    keywordArguments = kwargs or {}
 
     keywordArguments["name"] = BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION.formatConstraintName(
         objectName, relativeToObject)
@@ -828,7 +799,7 @@ def applyLimitRotationConstraint(
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.LIMIT_ROTATION,
-        keywordArguments
+        **keywordArguments
     )
 
 
@@ -839,7 +810,7 @@ def applyCopyLocationConstraint(
     copyY: bool,
     copyZ: bool,
     useOffset: bool,
-    keywordArguments={}
+    **kwargs
 ):
 
     copiedObject = getObject(copiedObjectName)
@@ -847,17 +818,14 @@ def applyCopyLocationConstraint(
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION,
-        dict(
-            {
-                "name": BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION.formatConstraintName(objectName, copiedObjectName),
-                "target": copiedObject,
-                "use_x": copyX,
-                "use_y": copyY,
-                "use_z": copyZ,
-                "use_offset": useOffset
-            },
-            **keywordArguments
-        )
+        name=BlenderDefinitions.BlenderConstraintTypes.COPY_LOCATION.formatConstraintName(
+            objectName, copiedObjectName),
+        target=copiedObject,
+        use_x=copyX,
+        use_y=copyY,
+        use_z=copyZ,
+        use_offset=useOffset,
+        **kwargs
     )
 
 
@@ -867,7 +835,7 @@ def applyCopyRotationConstraint(
     copyX: bool,
     copyY: bool,
     copyZ: bool,
-    keywordArguments={}
+    **kwargs
 ):
 
     copiedObject = getObject(copiedObjectName)
@@ -875,24 +843,21 @@ def applyCopyRotationConstraint(
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION,
-        dict(
-            {
-                "name": BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION.formatConstraintName(objectName, copiedObjectName),
-                "target": copiedObject,
-                "use_x": copyX,
-                "use_y": copyY,
-                "use_z": copyZ,
-                "mix_mode": "BEFORE"
-            },
-            **keywordArguments
-        )
+        name=BlenderDefinitions.BlenderConstraintTypes.COPY_ROTATION.formatConstraintName(
+            objectName, copiedObjectName),
+        target=copiedObject,
+        use_x=copyX,
+        use_y=copyY,
+        use_z=copyZ,
+        mix_mode="BEFORE",
+        **kwargs
     )
 
 
 def applyPivotConstraint(
     objectName: str,
     pivotObjectName: str,
-    keywordArguments={}
+    **kwargs
 ):
 
     pivotObject = getObject(pivotObjectName)
@@ -900,14 +865,11 @@ def applyPivotConstraint(
     applyConstraint(
         objectName,
         BlenderDefinitions.BlenderConstraintTypes.PIVOT,
-        dict(
-            {
-                "name": BlenderDefinitions.BlenderConstraintTypes.PIVOT.formatConstraintName(objectName, pivotObjectName),
-                "target": pivotObject,
-                "rotation_range": "ALWAYS_ACTIVE"
-            },
-            **keywordArguments
-        )
+        name=BlenderDefinitions.BlenderConstraintTypes.PIVOT.formatConstraintName(
+            objectName, pivotObjectName),
+        target=pivotObject,
+        rotation_range="ALWAYS_ACTIVE",
+        **kwargs
     )
 
 
@@ -915,7 +877,7 @@ def applyGearConstraint(
     objectName: str,
     gearObjectName: str,
     ratio: float = 1,
-    keywordArguments={}
+    **kwargs
 ):
 
     for axis in Utilities.Axis:
@@ -1316,7 +1278,7 @@ def transferLandmarks(
     fromBlenderObjectChildren: list[bpy.types.Object] = \
         fromBlenderObject.children  # type: ignore
     for child in fromBlenderObjectChildren:
-        if type(child) == BlenderDefinitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+        if isinstance(child, BlenderDefinitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
             child.name = f"{toObjectName}_{child.name}"
             isAlreadyExists = bpy.data.objects.get(child.name) == None
             if isAlreadyExists:
@@ -1852,202 +1814,169 @@ def getBlenderCurvePrimitiveFunction(curvePrimitive: BlenderDefinitions.BlenderC
 
 class BlenderCurvePrimitives():
     @ staticmethod
-    def createPoint(curveType=BlenderDefinitions.BlenderCurveTypes.NURBS, keywordArguments={}):
+    def createPoint(curveType=BlenderDefinitions.BlenderCurveTypes.NURBS, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Point,
-            dict(
-                {
-                    "use_cyclic_u": False
-                },
-                **keywordArguments
-            )
+            use_cyclic_u=False,
+            **kwargs
         )
 
     @ staticmethod
-    def createLineTo(endLocation, keywordArguments={}):
+    def createLineTo(endLocation, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.LineTo,
-            dict(
-                {
-                    "Simple_endlocation": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(endLocation)).value,
-                    "use_cyclic_u": False
-                },
-                **keywordArguments
-            )
+            Simple_endlocation=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(endLocation)).value,
+            use_cyclic_u=False,
+            **kwargs
         )
 
     @ staticmethod
-    def createLine(length, keywordArguments={}):
+    def createLine(length, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Distance,
-            dict(
-                {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
-                    "Simple_center": True,
-                    "use_cyclic_u": False
-                },
-                **keywordArguments
-            )
+            Simple_length=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length)).value,
+            Simple_center=True,
+            use_cyclic_u=False,
+            **kwargs
         )
 
     @ staticmethod
-    def createAngle(length, angle, keywordArguments={}):
+    def createAngle(length, angle, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Angle,
-            dict(
-                {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
-                    "Simple_angle": Utilities.Angle.fromString(angle).toDegrees().value,
-                    "use_cyclic_u": False
-                },
-                **keywordArguments
-            )
+            Simple_length=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length)).value,
+            Simple_angle=Utilities.Angle.fromString(angle).toDegrees().value,
+            use_cyclic_u=False,
+            **kwargs
         )
 
     @ staticmethod
-    def createCircle(radius, keywordArguments={}):
+    def createCircle(radius, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Circle,
-            dict(
-                {
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
-                    "Simple_sides": 64
-                },
-                **keywordArguments
-            )
+            Simple_radius=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius)).value,
+            Simple_sides=64,
+            **kwargs
         )
 
     @ staticmethod
-    def createEllipse(radius_x, radius_y, keywordArguments={}):
+    def createEllipse(radius_x, radius_y, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Ellipse,
-            dict(
-                {
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_x)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_y)).value
-                },
-                **keywordArguments
-            )
+            Simple_a=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius_x)).value,
+            Simple_b=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius_y)).value,
+            **kwargs
         )
 
     @ staticmethod
-    def createArc(radius, angle, keywordArguments={}):
+    def createArc(radius, angle, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Arc,
-            dict(
-                {
-                    "Simple_sides": 64,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
-                    "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value,
-                    "use_cyclic_u": False
-                },
-                **keywordArguments
-            )
+            Simple_sides=64,
+            Simple_radius=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius)).value,
+            Simple_startangle=0,
+            Simple_endangle=Utilities.Angle.fromString(
+                angle).toDegrees().value,
+            use_cyclic_u=False,
+            **kwargs
         )
 
     @ staticmethod
-    def createSector(radius, angle, keywordArguments={}):
+    def createSector(radius, angle, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Sector,
-            dict(
-                {
-                    "Simple_sides": 64,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value,
-                    "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value
-                },
-                **keywordArguments
-            )
+            Simple_sides=64,
+            Simple_radius=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius)).value,
+            Simple_startangle=0,
+            Simple_endangle=Utilities.Angle.fromString(
+                angle).toDegrees().value,
+            **kwargs
         )
 
     @ staticmethod
-    def createSegment(outter_radius, inner_radius, angle, keywordArguments={}):
+    def createSegment(outter_radius, inner_radius, angle, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Segment,
-            dict(
-                {
-                    "Simple_sides": 64,
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(outter_radius)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(inner_radius)).value,
-                    "Simple_startangle": 0,
-                    "Simple_endangle": Utilities.Angle.fromString(angle).toDegrees().value
-                },
-                **keywordArguments
-            )
+            Simple_sides=64,
+            Simple_a=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(outter_radius)).value,
+            Simple_b=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(inner_radius)).value,
+            Simple_startangle=0,
+            Simple_endangle=Utilities.Angle.fromString(
+                angle).toDegrees().value,
+            **kwargs
         )
 
     @ staticmethod
-    def createRectangle(length, width, keywordArguments={}):
+    def createRectangle(length, width, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rectangle,
-            dict(
-                {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
-                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(width)).value,
-                    "Simple_rounded": 0
-                },
-                **keywordArguments
-            )
+            Simple_length=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length)).value,
+            Simple_width=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(width)).value,
+            Simple_rounded=0,
+            **kwargs
         )
 
     @ staticmethod
-    def createRhomb(length, width, keywordArguments={}):
+    def createRhomb(length, width, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Rhomb,
-            dict(
-                {
-                    "Simple_length": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length)).value,
-                    "Simple_width": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(width)).value,
-                    "Simple_center": True
-                },
-                **keywordArguments
-            )
+            Simple_length=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length)).value,
+            Simple_width=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(width)).value,
+            Simple_center=True,
+            **kwargs
         )
 
     @ staticmethod
-    def createPolygon(numberOfSides, radius, keywordArguments={}):
+    def createPolygon(numberOfSides, radius, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon,
-            dict(
-                {
-                    "Simple_sides": numberOfSides,
-                    "Simple_radius": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius)).value
-                },
-                **keywordArguments
-            )
+            Simple_sides=numberOfSides,
+            Simple_radius=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(radius)).value,
+            **kwargs
         )
 
     @ staticmethod
-    def createPolygon_ab(numberOfSides, radius_x, radius_y, keywordArguments={}):
+    def createPolygon_ab(numberOfSides, length, width, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Polygon_ab,
-            dict(
-                {
-                    "Simple_sides": numberOfSides,
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_x)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(radius_y)).value
-                },
-                **keywordArguments
-            )
+            Simple_sides=numberOfSides,
+            Simple_a=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length)).value,
+            Simple_b=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(width)).value,
+            **kwargs
         )
 
     @ staticmethod
-    def createTrapezoid(length_upper, length_lower, height, keywordArguments={}):
+    def createTrapezoid(length_upper, length_lower, height, **kwargs):
         createSimpleCurve(
             BlenderDefinitions.BlenderCurvePrimitiveTypes.Trapezoid,
-            dict(
-                {
-                    "Simple_a": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length_upper)).value,
-                    "Simple_b": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(length_lower)).value,
-                    "Simple_h": BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(Utilities.Dimension.fromString(height)).value
-                },
-                **keywordArguments
-            )
+            Simple_a=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length_upper)).value,
+            Simple_b=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(length_lower)).value,
+            Simple_h=BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
+                Utilities.Dimension.fromString(height)).value,
+            **kwargs
         )
 
     @staticmethod
-    def createSpiral(numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None, keywordArguments={}):
+    def createSpiral(numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None, **kwargs):
         enableCurveExtraObjectsAddon()
 
         heightMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
@@ -2062,8 +1991,8 @@ class BlenderCurvePrimitives():
         radiusDiff = 0 if radiusEndMeters is None else (
             radiusEndMeters - radiusMeters).value
 
-        curveType: BlenderDefinitions.BlenderCurveTypes = keywordArguments[
-            "curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else BlenderDefinitions.BlenderCurvePrimitiveTypes.Spiral.getDefaultCurveType()
+        curveType: BlenderDefinitions.BlenderCurveTypes = kwargs[
+            "curveType"] if "curveType" in kwargs and kwargs["curveType"] else BlenderDefinitions.BlenderCurvePrimitiveTypes.Spiral.getDefaultCurveType()
 
         curveTypeName: str = curveType.name
 
@@ -2091,12 +2020,12 @@ def enableCurveExtraObjectsAddon():
 
 # assumes add_curve_extra_objects is enabled
 # https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
-def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimitiveTypes, keywordArguments={}):
+def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimitiveTypes, **kwargs):
 
-    curveType: BlenderDefinitions.BlenderCurveTypes = keywordArguments[
-        "curveType"] if "curveType" in keywordArguments and keywordArguments["curveType"] else curvePrimitiveType.getDefaultCurveType()
+    curveType: BlenderDefinitions.BlenderCurveTypes = kwargs[
+        "curveType"] if "curveType" in kwargs and kwargs["curveType"] else curvePrimitiveType.getDefaultCurveType()
 
-    keywordArguments.pop("curveType", None)  # remove curveType from kwargs
+    kwargs.pop("curveType", None)  # remove curveType from kwargs
 
     enableCurveExtraObjectsAddon()
 
@@ -2126,7 +2055,7 @@ def createSimpleCurve(curvePrimitiveType: BlenderDefinitions.BlenderCurvePrimiti
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
     bpy.ops.curve.simple(Simple_Type=curvePrimitiveType.name, outputType=curveType.name,  # type: ignore
-                         order_u=2, shape='2D',  edit_mode=False, **keywordArguments)
+                         order_u=2, shape='2D',  edit_mode=False, **kwargs)
 
 
 def setCurveUsePath(curveName: str, isUsePath: bool):
