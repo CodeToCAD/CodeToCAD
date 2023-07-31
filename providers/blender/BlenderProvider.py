@@ -450,11 +450,19 @@ class Entity(CodeToCADInterface.Entity):
             if strategy == "crease":
                 BlenderActions.setEdgesMeanCrease(self.name, 1.0)
             if strategy == "edgesplit":
-                BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.EDGE_SPLIT, {
-                    "name": "EdgeDiv", "split_angle": math.radians(30)})
+                BlenderActions.applyModifier(
+                    self.name,
+                    BlenderDefinitions.BlenderModifiers.EDGE_SPLIT,
+                    name="EdgeDiv",
+                    split_angle=math.radians(30)
+                )
 
-            BlenderActions.applyModifier(self.name, BlenderDefinitions.BlenderModifiers.SUBSURF, {
-                "name": "Subdivision", "levels": amount})
+            BlenderActions.applyModifier(
+                self.name,
+                BlenderDefinitions.BlenderModifiers.SUBSURF,
+                name="Subdivision",
+                levels=amount
+            )
 
         self._applyModifiersOnly()
 
@@ -551,7 +559,7 @@ class Entity(CodeToCADInterface.Entity):
 
 class Part(Entity, CodeToCADInterface.Part):
 
-    def _createPrimitive(self, primitiveName: str, dimensions: str, keywordArguments: Optional[dict] = None
+    def _createPrimitive(self, primitiveName: str, dimensions: str, **kwargs
                          ):
 
         assert self.isExists() == False, f"{self.name} already exists."
@@ -566,7 +574,7 @@ class Part(Entity, CodeToCADInterface.Part):
             f"Primitive type with name {primitiveName} is not supported."
 
         BlenderActions.addPrimitive(
-            primitiveType, dimensions, keywordArguments)
+            primitiveType, dimensions, **kwargs)
 
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
@@ -579,23 +587,23 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def createCube(self, width: DimensionOrItsFloatOrStringValue, length: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                    ):
-        return self._createPrimitive("cube", "{},{},{}".format(width, length, height), keywordArguments)
+        return self._createPrimitive("cube", "{},{},{}".format(width, length, height), **(keywordArguments or {}))
 
     def createCone(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, draftRadius: DimensionOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
-        return self._createPrimitive("cone", "{},{},{}".format(radius, draftRadius, height), keywordArguments)
+        return self._createPrimitive("cone", "{},{},{}".format(radius, draftRadius, height), **(keywordArguments or {}))
 
     def createCylinder(self, radius: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                        ):
-        return self._createPrimitive("cylinder", "{},{}".format(radius, height), keywordArguments)
+        return self._createPrimitive("cylinder", "{},{}".format(radius, height), **(keywordArguments or {}))
 
     def createTorus(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                     ):
-        return self._createPrimitive("torus", "{},{}".format(innerRadius, outerRadius), keywordArguments)
+        return self._createPrimitive("torus", "{},{}".format(innerRadius, outerRadius), **(keywordArguments or {}))
 
     def createSphere(self, radius: DimensionOrItsFloatOrStringValue, keywordArguments: Optional[dict] = None
                      ):
-        return self._createPrimitive("uvsphere", "{}".format(radius), keywordArguments)
+        return self._createPrimitive("uvsphere", "{}".format(radius), **(keywordArguments or {}))
 
     def createGear(self, outerRadius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, innerRadius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressureAngle: AngleOrItsFloatOrStringValue = "20d", numberOfTeeth: 'int' = 12, skewAngle: AngleOrItsFloatOrStringValue = 0, conicalAngle: AngleOrItsFloatOrStringValue = 0, crownAngle: AngleOrItsFloatOrStringValue = 0, keywordArguments: Optional[dict] = None
                    ):
@@ -936,7 +944,7 @@ class Part(Entity, CodeToCADInterface.Part):
             useEdges=True,
             useWidth=useWidth,
             chamfer=chamfer,
-            keywordArguments=keywordArguments or None
+            **(keywordArguments or {})
         )
 
         return self._applyModifiersOnly()
@@ -1080,7 +1088,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
                 blenderPrimitiveFunction(
                     *args[1:],
-                    keywordArguments=keywordArgs
+                    **keywordArgs
                 )
 
                 # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
