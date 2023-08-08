@@ -1,7 +1,5 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "[jinja-html]": {
+    "[jinjahtml]": {
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false
     },
@@ -9,6 +7,10 @@
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false
     },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.wordWrap": "on",
     "json.schemas": [
         {
             "fileMatch": [
@@ -23,34 +25,29 @@
             "url": "./examples/examplesSchema.json"
         }
     ],
-    "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "python.analysis.extraPaths": [
-        "CodeToCAD",
-        "providers/blender",
-        "providers/onshape"
-    ],
-    "python.defaultInterpreterPath": "${workspaceFolder}/development/developmentVirutalEnvironment/bin/python",
-    "editor.wordWrap": "on",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,
-    "python.analysis.autoImportUserSymbols": true,
     "python.analysis.inlayHints.functionReturnTypes": true,
     "python.analysis.inlayHints.variableTypes": true,
     "python.analysis.typeCheckingMode": "basic",
-    "terminal.integrated.env.windows": {
-        "PYTHONPATH": "CodeToCAD;providers/blender;providers/onshape"
-    },
-    "terminal.integrated.env.linux": {
-        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
-    },
+    "python.defaultInterpreterPath": "${workspaceFolder}/development/developmentVirutalEnvironment/bin/python",
     "python.envFile": "${workspaceFolder}/development/.pythonpath.env",
     "python.testing.unittestArgs": [
-        "-v",
-        "-s",
+        "v",
+        "s",
         "./tests",
-        "-p",
+        "p",
         "test_*.py"
     ],
     "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true
+    "python.testing.unittestEnabled": true,
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
+    },
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
+    },
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "CodeToCAD;providers/blender;providers/onshape"
+    },
 }
