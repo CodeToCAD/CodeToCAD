@@ -7,11 +7,10 @@ import BlenderActions
 import BlenderDefinitions
 
 import CodeToCAD.CodeToCADInterface as CodeToCADInterface
-import CodeToCAD.utilities as Utilities
 from CodeToCAD.CodeToCADInterface import *
-from CodeToCAD.utilities import (Angle, BoundaryAxis, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
-                                 getAbsoluteFilepath, getFilename, max, min)
+
+from CodeToCAD.utilities import (Angle, AngleUnit, CurvePrimitiveTypes, BoundaryAxis, BoundaryBox, CurveTypes, Dimension, Dimensions,
+                                 Point, PresetLandmark, center, createUUIDLikeId, getAbsoluteFilepath, formatLandmarkEntityName, FileFormats, getFileExtension, max, min)
 
 
 if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
@@ -167,7 +166,7 @@ class Entity(CodeToCADInterface.Entity):
         elif isinstance(mirrorAcrossEntityName, CodeToCADInterface.Entity):
             mirrorAcrossEntityName = mirrorAcrossEntityName.name
 
-        axis = Utilities.Axis.fromString(axis)
+        axis = Axis.fromString(axis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
@@ -178,14 +177,14 @@ class Entity(CodeToCADInterface.Entity):
 
     def linearPattern(self, instanceCount: 'int', offset: DimensionOrItsFloatOrStringValue, directionAxis: AxisOrItsIndexOrItsName = "z"):
 
-        axis = Utilities.Axis.fromString(directionAxis)
+        axis = Axis.fromString(directionAxis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
         if isinstance(offset, str):
-            offset = Utilities.Dimension.fromString(offset)
+            offset = Dimension.fromString(offset)
 
-        if isinstance(offset, Utilities.Dimension):
+        if isinstance(offset, Dimension):
             offset = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
                 offset)
             offset = offset.value
@@ -212,17 +211,17 @@ class Entity(CodeToCADInterface.Entity):
         BlenderActions.applyPivotConstraint(
             pivotLandmarkEntityName, centerEntityOrLandmarkName)
 
-        axis = Utilities.Axis.fromString(normalDirectionAxis)
+        axis = Axis.fromString(normalDirectionAxis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        angles: list[Optional[Angle]] = [Utilities.Angle(0) for _ in range(3)]
+        angles: list[Optional[Angle]] = [Angle(0) for _ in range(3)]
 
         angle = separationAngle
         if isinstance(angle, str):
-            angle = Utilities.Angle.fromString(angle)
+            angle = Angle.fromString(angle)
         elif isinstance(angle, (float, int)):
-            angle = Utilities.Angle(angle)
+            angle = Angle(angle)
 
         angles[axis.value] = angle
 
@@ -374,13 +373,13 @@ class Entity(CodeToCADInterface.Entity):
 
     def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                              ):
-        scale = Utilities.Dimension.fromDimensionOrItsFloatOrStringValue(
+        scale = Dimension.fromDimensionOrItsFloatOrStringValue(
             scale, None)
         valueInBlenderDefaultLength = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             scale)
 
         dimensionInAxis = self.getDimensions(
-        )[Utilities.Axis.fromString(axis).value]
+        )[Axis.fromString(axis).value]
         scaleFactor: float = (
             valueInBlenderDefaultLength / dimensionInAxis).value
 
@@ -391,9 +390,9 @@ class Entity(CodeToCADInterface.Entity):
     def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                   ):
 
-        xAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(x)
-        yAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(y)
-        zAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(z)
+        xAngle = Angle.fromAngleOrItsFloatOrStringValue(x)
+        yAngle = Angle.fromAngleOrItsFloatOrStringValue(y)
+        zAngle = Angle.fromAngleOrItsFloatOrStringValue(z)
 
         BlenderActions.rotateObject(
             self.name, [xAngle, yAngle, zAngle], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -402,7 +401,7 @@ class Entity(CodeToCADInterface.Entity):
 
     def rotateX(self, rotation: AngleOrItsFloatOrStringValue
                 ):
-        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
 
         BlenderActions.rotateObject(
             self.name, [angle, None, None], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -411,7 +410,7 @@ class Entity(CodeToCADInterface.Entity):
 
     def rotateY(self, rotation: AngleOrItsFloatOrStringValue
                 ):
-        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
 
         BlenderActions.rotateObject(
             self.name, [None, angle, None], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -419,7 +418,7 @@ class Entity(CodeToCADInterface.Entity):
 
     def rotateZ(self, rotation: AngleOrItsFloatOrStringValue
                 ):
-        angle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
 
         BlenderActions.rotateObject(
             self.name, [None, None, angle], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -428,9 +427,9 @@ class Entity(CodeToCADInterface.Entity):
     def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"
               ):
 
-        axis = Utilities.Axis.fromString(axis)
+        axis = Axis.fromString(axis)
 
-        angleParsed = Utilities.Angle.fromString(angle)
+        angleParsed = Angle.fromString(angle)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
@@ -514,13 +513,13 @@ class Entity(CodeToCADInterface.Entity):
                       ) -> 'Dimensions':
         dimensions = BlenderActions.getObject(self.name).dimensions
         dimensions = [
-            Utilities.Dimension.fromString(
+            Dimension.fromString(
                 dimension,
                 BlenderDefinitions.BlenderLength.DEFAULT_BLENDER_UNIT.value  # type: ignore
             )
             for dimension in dimensions
         ]
-        return Utilities.Dimensions(dimensions[0], dimensions[1], dimensions[2])
+        return Dimensions(dimensions[0], dimensions[1], dimensions[2])
 
     def getLandmark(self, landmarkName: PresetLandmarkOrItsName
                     ) -> 'Landmark':
@@ -702,7 +701,7 @@ class Part(Entity, CodeToCADInterface.Part):
     def hollow(self, thicknessX: DimensionOrItsFloatOrStringValue, thicknessY: DimensionOrItsFloatOrStringValue, thicknessZ: DimensionOrItsFloatOrStringValue, startAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False
                ):
 
-        axis = Utilities.Axis.fromString(startAxis)
+        axis = Axis.fromString(startAxis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
         startLandmarkLocation = [center, center, center]
@@ -716,9 +715,9 @@ class Part(Entity, CodeToCADInterface.Part):
             "start", startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
 
         thicknessXYZ: list[Dimension] = [dimension for dimension in BlenderDefinitions.BlenderLength.convertDimensionsToBlenderUnit([
-            Utilities.Dimension.fromString(thicknessX),
-            Utilities.Dimension.fromString(thicknessY),
-            Utilities.Dimension.fromString(thicknessZ),
+            Dimension.fromString(thicknessX),
+            Dimension.fromString(thicknessY),
+            Dimension.fromString(thicknessZ),
         ])]
 
         dimensions = self.getDimensions()
@@ -751,7 +750,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'Part':
 
-        radius = Utilities.Dimension.fromString(radius)
+        radius = Dimension.fromString(radius)
 
         BlenderActions.applySolidifyModifier(
             self.name, radius)
@@ -760,7 +759,7 @@ class Part(Entity, CodeToCADInterface.Part):
 
     def hole(self, holeLandmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normalAxis: AxisOrItsIndexOrItsName = "z", flipAxis: bool = False, initialRotationX: AngleOrItsFloatOrStringValue = 0.0, initialRotationY: AngleOrItsFloatOrStringValue = 0.0, initialRotationZ: AngleOrItsFloatOrStringValue = 0.0, mirrorAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, mirrorAxis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circularPatternInstanceCount: 'int' = 1, circularPatternInstanceSeparation: AngleOrItsFloatOrStringValue = 0.0, circularPatternInstanceAxis: AxisOrItsIndexOrItsName = "z", circularPatternAboutEntityOrLandmark: Optional[EntityOrItsNameOrLandmark] = None, linearPatternInstanceCount: 'int' = 1, linearPatternInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPatternInstanceAxis: AxisOrItsIndexOrItsName = "x", linearPattern2ndInstanceCount: 'int' = 1, linearPattern2ndInstanceSeparation: DimensionOrItsFloatOrStringValue = 0.0, linearPattern2ndInstanceAxis: AxisOrItsIndexOrItsName = "y"):
 
-        axis = Utilities.Axis.fromString(normalAxis)
+        axis = Axis.fromString(normalAxis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
@@ -768,11 +767,11 @@ class Part(Entity, CodeToCADInterface.Part):
         hole_head = hole.createLandmark(
             "hole", center, center, min if flipAxis else max)
 
-        axisRotation = Utilities.Angle(-90, Utilities.AngleUnit.DEGREES)
+        axisRotation = Angle(-90, AngleUnit.DEGREES)
 
-        if axis is Utilities.Axis.X:
+        if axis is Axis.X:
             initialRotationY = (axisRotation+initialRotationY).value
-        elif axis is Utilities.Axis.Y:
+        elif axis is Axis.Y:
             initialRotationX = (axisRotation+initialRotationX).value
         hole.rotateXYZ(initialRotationX, initialRotationY, initialRotationZ)
 
@@ -932,7 +931,7 @@ class Part(Entity, CodeToCADInterface.Part):
             self._addFacesNearLandmarksToVertexGroup(
                 bevelFacesNearlandmarkNames, vertexGroupName)
 
-        radiusDimension = Utilities.Dimension.fromString(radius)
+        radiusDimension = Dimension.fromString(radius)
 
         radiusDimension = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
             radiusDimension)
@@ -994,11 +993,11 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         if isinstance(aboutEntityOrLandmark, Entity):
             aboutEntityOrLandmark = aboutEntityOrLandmark.name
 
-        axis = Utilities.Axis.fromString(axis)
+        axis = Axis.fromString(axis)
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        BlenderActions.applyScrewModifier(self.name, Utilities.Angle.fromString(
+        BlenderActions.applyScrewModifier(self.name, Angle.fromString(
             angle).toRadians(), axis, entityNameToDetermineAxis=aboutEntityOrLandmark)
 
         BlenderActions.createMeshFromCurve(
@@ -1008,7 +1007,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
 
-        radius = Utilities.Dimension.fromString(radius)
+        radius = Dimension.fromString(radius)
 
         BlenderActions.offsetCurveGeometry(
             self.name, radius)
@@ -1018,7 +1017,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> 'Part':
 
         BlenderActions.extrudeCurve(
-            self.name, Utilities.Dimension.fromString(length))
+            self.name, Dimension.fromString(length))
 
         BlenderActions.createMeshFromCurve(
             self.name)
@@ -1054,7 +1053,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
 
     def createText(self, text: str, fontSize: DimensionOrItsFloatOrStringValue = 1.0, bold: bool = False, italic: bool = False, underlined: bool = False, characterSpacing: 'int' = 1, wordSpacing: 'int' = 1, lineSpacing: 'int' = 1, fontFilePath: Optional[str] = None
                    ):
-        size = Utilities.Dimension.fromString(fontSize)
+        size = Dimension.fromString(fontSize)
 
         BlenderActions.createText(self.name, text, size, bold, italic, underlined,
                                   characterSpacing, wordSpacing, lineSpacing, fontFilePath)
@@ -1068,7 +1067,7 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         return self
 
     @staticmethod
-    def _createPrimitiveDecorator(curvePrimitiveType: Utilities.CurvePrimitiveTypes):
+    def _createPrimitiveDecorator(curvePrimitiveType: CurvePrimitiveTypes):
         def decorator(primitiveFunction):
             def wrapper(*args, **kwargs):
 
@@ -1103,32 +1102,32 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
             return wrapper
         return decorator
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Point)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Point)
     def createPoint(self, coordinate: PointOrListOfFloatOrItsStringValue
                     ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Line)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Line)
     def createLine(self, length: DimensionOrItsFloatOrStringValue, angleX: AngleOrItsFloatOrStringValue = 0.0, angleY: AngleOrItsFloatOrStringValue = 0.0, symmetric: bool = False
                    ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.LineTo)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.LineTo)
     def createLineBetweenPoints(self, endAt: PointOrListOfFloatOrItsStringValue, startAt: Optional[PointOrListOfFloatOrItsStringValue] = None
                                 ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Circle)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Circle)
     def createCircle(self, radius: DimensionOrItsFloatOrStringValue
                      ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Ellipse)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Ellipse)
     def createEllipse(self, radiusA: DimensionOrItsFloatOrStringValue, radiusB: DimensionOrItsFloatOrStringValue
                       ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Arc)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Arc)
     def createArc(self, radius: DimensionOrItsFloatOrStringValue, angle: AngleOrItsFloatOrStringValue = "180d"
                   ):
         return self
@@ -1138,27 +1137,27 @@ class Sketch(Entity, CodeToCADInterface.Sketch):
         raise NotImplementedError()
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Segment)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Segment)
     def createSegment(self, innerRadius: DimensionOrItsFloatOrStringValue, outerRadius: DimensionOrItsFloatOrStringValue, angle: AngleOrItsFloatOrStringValue = "180d"
                       ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Rectangle)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Rectangle)
     def createRectangle(self, length: DimensionOrItsFloatOrStringValue, width: DimensionOrItsFloatOrStringValue
                         ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Polygon_ab)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Polygon_ab)
     def createPolygon(self, numberOfSides: 'int', length: DimensionOrItsFloatOrStringValue, width: DimensionOrItsFloatOrStringValue
                       ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Trapezoid)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Trapezoid)
     def createTrapezoid(self, lengthUpper: DimensionOrItsFloatOrStringValue, lengthLower: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue
                         ):
         return self
 
-    @_createPrimitiveDecorator(Utilities.CurvePrimitiveTypes.Spiral)
+    @_createPrimitiveDecorator(CurvePrimitiveTypes.Spiral)
     def createSpiral(self, numberOfTurns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, isClockwise: bool = True, radiusEnd: Optional[DimensionOrItsFloatOrStringValue] = None):
 
         return self
@@ -1182,7 +1181,7 @@ class Landmark(CodeToCADInterface.Landmark):
         if isinstance(parentEntityName, CodeToCADInterface.Entity):
             parentEntityName = parentEntityName.name
 
-        entityName = Utilities.formatLandmarkEntityName(
+        entityName = formatLandmarkEntityName(
             parentEntityName, self.name)
 
         return entityName
@@ -1212,7 +1211,7 @@ class Landmark(CodeToCADInterface.Landmark):
             parentEntityName = parentEntityName.name
 
         BlenderActions.updateObjectName(self.getLandmarkEntityName(
-        ), Utilities.formatLandmarkEntityName(parentEntityName, newName))
+        ), formatLandmarkEntityName(parentEntityName, newName))
 
         self.name = newName
 
@@ -1323,10 +1322,10 @@ class Joint(CodeToCADInterface.Joint):
 
         if min is not None:
             locationPair[0] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-                Utilities.Dimension.fromString(min))
+                Dimension.fromString(min))
         if max is not None:
             locationPair[1] = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-                Utilities.Dimension.fromString(max))
+                Dimension.fromString(max))
 
         return locationPair
 
@@ -1571,9 +1570,9 @@ class Light(CodeToCADInterface.Light):
     def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                   ):
 
-        xAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(x)
-        yAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(y)
-        zAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(z)
+        xAngle = Angle.fromAngleOrItsFloatOrStringValue(x)
+        yAngle = Angle.fromAngleOrItsFloatOrStringValue(y)
+        zAngle = Angle.fromAngleOrItsFloatOrStringValue(z)
 
         BlenderActions.rotateObject(
             self.name, [xAngle, yAngle, zAngle], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -1658,9 +1657,9 @@ class Camera(CodeToCADInterface.Camera):
     def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                   ):
 
-        xAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(x)
-        yAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(y)
-        zAngle = Utilities.Angle.fromAngleOrItsFloatOrStringValue(z)
+        xAngle = Angle.fromAngleOrItsFloatOrStringValue(x)
+        yAngle = Angle.fromAngleOrItsFloatOrStringValue(y)
+        zAngle = Angle.fromAngleOrItsFloatOrStringValue(z)
 
         BlenderActions.rotateObject(
             self.name, [xAngle, yAngle, zAngle], BlenderDefinitions.BlenderRotationTypes.EULER)
@@ -1771,7 +1770,7 @@ class Render(CodeToCADInterface.Render):
     @staticmethod
     def _setFileFormat(outputFilePath: str):
         fileFormat = BlenderDefinitions.FileFormat.fromUtilitiesFileFormat(
-            Utilities.FileFormats.fromString(Utilities.getFileExtension(outputFilePath)))
+            FileFormats.fromString(getFileExtension(outputFilePath)))
         BlenderActions.setRenderFileFormat(fileFormat)
 
     def renderImage(self, outputFilePath: str, overwrite: bool = True, fileType: Optional[str] = None):
@@ -1877,7 +1876,7 @@ class Scene(CodeToCADInterface.Scene):
     def setDefaultUnit(self, unit: LengthUnitOrItsName
                        ):
         if isinstance(unit, str):
-            unit = Utilities.LengthUnit.fromString(unit)
+            unit = LengthUnit.fromString(unit)
 
         blenderUnit = BlenderDefinitions.BlenderLength.fromLengthUnit(unit)
 
