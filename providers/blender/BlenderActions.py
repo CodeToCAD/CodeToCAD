@@ -583,9 +583,13 @@ def createCollection(
     sceneName="Scene"
 ):
 
-    assert \
-        getCollection(name, sceneName) == None, \
-        f"Collection {name} already exists"
+    try:
+        existingCollection = getCollection(name, sceneName)
+        assert \
+            existingCollection == None, \
+            f"Collection {name} already exists"
+    except:
+        pass
 
     assert \
         sceneName in bpy.data.scenes, f"Scene {sceneName} does not exist"  # type: ignore
