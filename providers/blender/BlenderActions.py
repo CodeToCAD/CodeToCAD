@@ -241,6 +241,24 @@ def blenderPrimitiveFunction(
     **kwargs
 ):
 
+    primitiveName = primitive.defaultNameInBlender()
+
+    # Make sure an object or mesh with the same name don't already exist.
+    blenderObject = bpy.data.objects.get(primitiveName)
+    blenderMesh = bpy.data.meshes.get(primitiveName)
+
+    assert blenderObject == None, f"An object with name {primitiveName} already exists."
+
+    orphanMeshMessage = ""
+    if blenderMesh != None and blenderMesh.users == 0:
+        orphanMeshMessage += " Your mesh is an orphan, please delete it."
+
+        # issue-182, add a warning for the Default Cube:
+        if primitiveName == "Cube":
+            orphanMeshMessage += "If you are starting with the Default Cube, please remove both the object and the mesh using Delete Hierarchy (not just Delete), then try again."
+
+    assert blenderMesh == None, f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
+
     if primitive == BlenderDefinitions.BlenderObjectPrimitiveTypes.cube:
         return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs)
 
@@ -286,15 +304,6 @@ def addPrimitive(
 ):
 
     assert primitiveType is not None, f"Primitive type is required."
-
-    primitiveName = primitiveType.defaultNameInBlender()
-
-    # Make sure an object or mesh with the same name don't already exist:
-    blenderObject = bpy.data.objects.get(primitiveName)
-    blenderMesh = bpy.data.meshes.get(primitiveName)
-
-    assert blenderObject == None, f"An object with name {primitiveName} already exists."
-    assert blenderMesh == None, f"A mesh with name {primitiveName} already exists."
 
     # Convert the dimensions:
     dimensionsList: list[Utilities.Dimension] = Utilities.getDimensionListFromStringList(
