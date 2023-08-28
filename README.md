@@ -1,6 +1,6 @@
 # CodeToCAD - Code-based modeling automation
 
-CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape). 
+CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape).
 
 Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - the [documentation](https://codetocad.github.io/CodeToCAD/docs.html) will help you get started.
 
@@ -18,23 +18,24 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 
 [![Release Version and Blender Addon](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml/badge.svg?branch=develop)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml) [![Documentation Pages](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment)
 
-> Pre-requisites: Python 3.10 or newer. 
+> Pre-requisites: Python 3.10 or newer.
 
 1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
 
-    `pip install CodeToCAD`
+   `pip install CodeToCAD`
 
 2. Create your own CodeToCAD python file and save it:
-    ```python
-    # myCodeToCAD.py
-    # This is also the examples/materials.py example
-    from CodeToCAD import *
 
-    myMaterial = Material("material").setColor(169, 76, 181, 0.8)
-    Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
-    ```
+   ```python
+   # myCodeToCAD.py
+   # This is also the examples/materials.py example
+   from CodeToCAD import *
 
-    ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png)
+   myMaterial = Material("material").setColor(169, 76, 181, 0.8)
+   Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
+   ```
+
+   ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png)
 
 3. Run your script in your modeling software. If you are using Blender, check out the instructions for installing the [Blender Addon](#blender) addon below.
 
@@ -43,38 +44,40 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 > Note: Blender 3.1 or newer is required.
 
 1. Download a release and install the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest Release (see the sidebar).
-    > If you're a developer, instead of downloading a release, you can clone this repository. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+
+   > If you're a developer, instead of downloading a release, you can clone this repository. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
-    ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png)
+   ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png)
 
 > Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py`
 
 ## What do I do next?
 
-- Run or browse the [examples](./examples/)! 
+- Run or browse the [examples](./examples/)!
 
-    ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png)
+  ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png)
 
 - Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
-
 
 ## Integrations
 
 Current integrations:
+
 - [CodeToCAD-Blender](#blender)
 - Onshape (Work-in-progress)
 
 Future planned integrations (not in any order):
+
 - KiCAD
-- FreeCAD 
+- FreeCAD
 - Cascade Studio
 - CADQuery
 - ThreeJS
 
-## Warning 
-- Since CodeToCad scripts are written in Python, be careful when running code you find on the Internet as it may have a malicious intent. If you are unsure about the code that you are running, consider reaching out to an online community like a Discord server or a forum.
+## Warning
 
+- Since CodeToCad scripts are written in Python, be careful when running code you find on the Internet as it may have a malicious intent. If you are unsure about the code that you are running, consider reaching out to an online community like a Discord server or a forum.
 
 ## Benefits of code-based modeling with CodeToCAD:
 
@@ -90,19 +93,18 @@ Future planned integrations (not in any order):
 
 💕 Built by people who believe in automation and that modeling workflows should be intuitive, reliable and most importantly free and open source!
 
-
 ## Development & Contributing
 
 ### Setting up development environment.
 
 1. Please install the VSCode python virtual environment using
-`sh development/createPythonVirtualEnvironment.sh` 
-or 
-`sh development/createPythonVirtualEnvironment.sh /path/to/python_binary`.
+   `sh development/createPythonVirtualEnvironment.sh`
+   or
+   `sh development/createPythonVirtualEnvironment.sh /path/to/python_binary`.
 
 > If you are on Windows, please use Git Bash.
 > Note: Python 3.10+ is required.
-> Note 2: It might be a good idea to restart VSCode after installing the virtual environment. 
+> Note 2: It might be a good idea to restart VSCode after installing the virtual environment.
 > Note 3: If VSCode prompts you, please use the interpreter under `development/developmentVirtualEnvironment`.
 
 2. It's good practice to run tests before committing. Please run `sh ./development/installGitHooks.sh` to instll Git Hooks.
@@ -110,7 +112,6 @@ or
 3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
 
 4. Install the Blender Addon at [providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
-
 
 ### Running Tests
 
@@ -128,10 +129,10 @@ You can generate the Jinja2 templates by running the "Capabilities.json to Pytho
 
 CodeToCAD is an automation. Here is the high-level architecture for this tool.
 
-![Architecture](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/CodeToCAD%20architecture%20overview.drawio.png)
+![Architecture](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/CodeToCAD%20architecture%20overview.drawio.png)
 
 ### Contributing
 
-If you would like to contribute to the project, please feel free to submit a PR. 
+If you would like to contribute to the project, please feel free to submit a PR.
 
 Please join the Discord Server if you have any questions or suggestions: [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
