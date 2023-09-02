@@ -1,30 +1,5 @@
-from CodeToCAD import Analytics, Part, Sketch, Scene, Dimension, min, center, max as part_max, Joint, CodeToCADInterface
-
-Scene.default().setDefaultUnit("mm")
-
-tolerance = "0.15mm"
-
-
-def createDShaft(shaftLength, radius, dProfileRadius):
-    shaftLength = Dimension.fromString(shaftLength) + tolerance
-    radius = Dimension.fromString(radius) + tolerance
-    dProfileRadius = Dimension.fromString(dProfileRadius) + tolerance
-
-    dProfileWidth = (radius - dProfileRadius) * 2
-
-    shaft = Part("shaft").createCylinder(radius, shaftLength)
-
-    dProfile = Part("dProfile").createCube(
-        dProfileWidth, radius * 2, shaftLength)
-
-    shaftLeftSide = shaft.createLandmark("left", min, center, center)
-    dProfileLeftSide = dProfile.createLandmark("left", min, center, center)
-
-    Joint(shaftLeftSide, dProfileLeftSide).limitLocationXYZ(0, 0, 0)
-
-    shaft.subtract(dProfile)
-
-    return shaft
+from CodeToCAD import *
+from dShaft import DShaft
 
 
 def createDShaftSleeve(dShaft: CodeToCADInterface.Part, sleeveThickness):
@@ -44,13 +19,25 @@ def createKnob(radius):
     return knob
 
 
-dShaft = createDShaft("13.65mm",  "5.9/2mm", "5.3/2mm")
+if __name__ == "__main__":
 
-sleeve = createDShaftSleeve(dShaft, "1.5mm")
+    Scene.default().setDefaultUnit("mm")
 
-knob = createKnob(sleeve.getDimensions().x)
+    shaftLength = Dimension.fromString("13.65mm")
+    radius = Dimension.fromString("5.9/2mm")
+    dProfileRadius = Dimension.fromString("5.3/2mm")
+    dProfileLength = shaftLength
+    tolerance = Dimension.fromString("0.15mm")
 
-Joint(sleeve.createLandmark("top", center, center, part_max), knob.createLandmark(
-    "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+    dShaft = DShaft(shaftLength=shaftLength, radius=radius,
+                    dProfileRadius=dProfileRadius, dProfileLength=dProfileLength, tolerance=tolerance).create("shaft")
 
-sleeve.union(knob).export("./appliance_knob.stl", scale=1000)
+    sleeve = createDShaftSleeve(dShaft, "1.5mm")
+
+    knob = createKnob(sleeve.getDimensions().x)
+
+    Joint(sleeve.createLandmark("top", center, center, max), knob.createLandmark(
+        "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+
+    sleeve.union(knob)
+    # sleeve.export("./appliance_knob.stl", scale=1000)

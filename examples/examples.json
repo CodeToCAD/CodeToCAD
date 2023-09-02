@@ -42,8 +42,14 @@
         "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png"
     },
     {
+        "name": "D-Shaft",
+        "description": "An example that creates a D-keyed shaft using Landmarks and the Subtract modifier.",
+        "codeFilepath": "dShaft.py",
+        "imagePath": ""
+    },
+    {
         "name": "D-Shaft Knob",
-        "description": "An example that uses the Hole modifier.",
+        "description": "An example that imports another CodeToCAD model and uses the Union modifier.",
         "codeFilepath": "dShaftKnob.py",
         "imagePath": ""
     },
