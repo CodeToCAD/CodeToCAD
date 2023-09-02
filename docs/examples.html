@@ -173,6 +173,7 @@
         <a href='#Sweeping' class="chip">Sweeping</a>
         <a href='#Materials' class="chip">Materials</a>
         <a href='#Stacking Cubes' class="chip">Stacking Cubes</a>
+        <a href='#D-Shaft' class="chip">D-Shaft</a>
         <a href='#D-Shaft Knob' class="chip">D-Shaft Knob</a>
         <a href='#Bracelet' class="chip">Bracelet</a>
         <a href='#Ball Joint' class="chip">Ball Joint</a>
@@ -696,68 +697,131 @@ Joint(a_bottom, c_top)\
     </div>
 
     <div class="grid-item">
-            <div class="className" id='D-Shaft Knob''>D-Shaft Knob</div>
+            <div class="className" id='D-Shaft''>D-Shaft</div>
             
             <div class="methods">
             <div style="
-            width: 50%;">An example that uses the Hole modifier.</div>
+            width: 50%;">An example that creates a D-keyed shaft using Landmarks and the Subtract modifier.</div>
             
             
             <pre>
             
-from CodeToCAD import Analytics, Part, Sketch, Scene, Dimension, min, center, max as part_max, Joint, CodeToCADInterface
+from dataclasses import dataclass
 
-
-
-Scene.default().setDefaultUnit("mm")
-
-
-
-tolerance = "0.15mm"
+from CodeToCAD import *
 
 
 
 
 
-def createDShaft(shaftLength, radius, dProfileRadius):
+@dataclass
 
-    shaftLength = Dimension.fromString(shaftLength) + tolerance
-
-    radius = Dimension.fromString(radius) + tolerance
-
-    dProfileRadius = Dimension.fromString(dProfileRadius) + tolerance
+class DShaft:
 
 
 
-    dProfileWidth = (radius - dProfileRadius) * 2
+    shaftLength: Dimension
+
+    radius: Dimension
+
+    dProfileRadius: Dimension
+
+    dProfileLength: Dimension
+
+    tolerance: Dimension = Dimension(0)
 
 
 
-    shaft = Part("shaft").createCylinder(radius, shaftLength)
+    def create(self, name, isDShaftBothSides=False) -> CodeToCADInterface.Part:
+
+        shaftLength = self.shaftLength
+
+        radius = self.radius - self.tolerance
+
+        dProfileRadius = self.dProfileRadius - self.tolerance
 
 
 
-    dProfile = Part("dProfile").createCube(
-
-        dProfileWidth, radius * 2, shaftLength)
+        dProfileWidth = (radius - dProfileRadius) * 2
 
 
 
-    shaftLeftSide = shaft.createLandmark("left", min, center, center)
-
-    dProfileLeftSide = dProfile.createLandmark("left", min, center, center)
+        shaft = Part(name).createCylinder(radius, shaftLength)
 
 
 
-    Joint(shaftLeftSide, dProfileLeftSide).limitLocationXYZ(0, 0, 0)
+        dProfile = Part("dProfile").createCube(
+
+            dProfileWidth, radius * 2, self.dProfileLength)
 
 
 
-    shaft.subtract(dProfile)
+        shaftLeftSide = shaft.getLandmark(PresetLandmark.leftTop)
+
+        dProfileLeftSide = dProfile.getLandmark(PresetLandmark.leftTop)
 
 
 
-    return shaft
+        Joint(shaftLeftSide, dProfileLeftSide).limitLocationXYZ(0, 0, 0)
+
+
+
+        if isDShaftBothSides:
+
+            dProfile.mirror(shaft, "z", None)
+
+
+
+        shaft.subtract(dProfile)
+
+
+
+        shaft.getLandmark(PresetLandmark.front).delete()
+
+
+
+        return shaft
+
+
+
+
+
+if __name__ == "__main__":
+
+    shaftLength = Dimension.fromString("13.65mm")
+
+    radius = Dimension.fromString("5.9/2mm")
+
+    dProfileRadius = Dimension.fromString("5.3/2mm")
+
+    dProfileLength = shaftLength/2
+
+    tolerance = Dimension.fromString("0.15mm")
+
+
+
+    dShaft = DShaft(shaftLength=shaftLength, radius=radius,
+
+                    dProfileRadius=dProfileRadius, dProfileLength=dProfileLength, tolerance=tolerance).create("shaft")
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='D-Shaft Knob''>D-Shaft Knob</div>
+            
+            <div class="methods">
+            <div style="
+            width: 50%;">An example that imports another CodeToCAD model and uses the Union modifier.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+from dShaft import DShaft
 
 
 
@@ -797,25 +861,49 @@ def createKnob(radius):
 
 
 
-dShaft = createDShaft("13.65mm",  "5.9/2mm", "5.3/2mm")
+if __name__ == "__main__":
 
 
 
-sleeve = createDShaftSleeve(dShaft, "1.5mm")
+    Scene.default().setDefaultUnit("mm")
 
 
 
-knob = createKnob(sleeve.getDimensions().x)
+    shaftLength = Dimension.fromString("13.65mm")
+
+    radius = Dimension.fromString("5.9/2mm")
+
+    dProfileRadius = Dimension.fromString("5.3/2mm")
+
+    dProfileLength = shaftLength
+
+    tolerance = Dimension.fromString("0.15mm")
 
 
 
-Joint(sleeve.createLandmark("top", center, center, part_max), knob.createLandmark(
+    dShaft = DShaft(shaftLength=shaftLength, radius=radius,
 
-    "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+                    dProfileRadius=dProfileRadius, dProfileLength=dProfileLength, tolerance=tolerance).create("shaft")
 
 
 
-sleeve.union(knob).export("./appliance_knob.stl", scale=1000)
+    sleeve = createDShaftSleeve(dShaft, "1.5mm")
+
+
+
+    knob = createKnob(sleeve.getDimensions().x)
+
+
+
+    Joint(sleeve.createLandmark("top", center, center, max), knob.createLandmark(
+
+        "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+
+
+
+    sleeve.union(knob)
+
+    # sleeve.export("./appliance_knob.stl", scale=1000)
 
             </pre>
         </div>
