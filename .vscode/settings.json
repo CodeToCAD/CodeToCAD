@@ -1,4 +1,8 @@
 {
+    "[jinja-html]": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false
+    },
     "[jinjahtml]": {
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false
