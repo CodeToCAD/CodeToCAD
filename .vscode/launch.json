@@ -7,12 +7,36 @@
             "type": "promptString"
         }
     ],
+    "compounds": [
+        {
+            "name": "Generate Jinja2Python, Html Docs, and Example Docs",
+            "configurations": [
+                "Capabilities.json to Python",
+                "Capabilities.json to HTML Docs",
+                "Examples.json to HTML"
+            ],
+            "preLaunchTask": "${defaultBuildTask}",
+            "stopAll": true
+        }
+    ],
     "configurations": [
         {
             "name": "Capabilities.json to Python",
             "type": "python",
             "request": "launch",
             "module": "development.capabilitiesJsonToPython.capabilitiesToPy",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmCapabilitiesToPython}"
+            ],
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Capabilities.json to HTML Docs",
+            "type": "python",
+            "request": "launch",
+            "module": "development.capabilitiesJsonToPython.capabilitiesToHtmlDocs",
             "console": "integratedTerminal",
             "args": [
                 "${input:confirmCapabilitiesToPython}"
