@@ -313,7 +313,7 @@ class CodeToCADAddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="Path to CodeToCAD folder:")
         box.label(
-            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad-Blender", icon="QUESTION")
+            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad#Blender", icon="QUESTION")
         box.prop(self, "codeToCadFilePath")  # type: ignore
 
         box.operator(CodeToCADAddonPreferences.AddCodeToCADToPath.bl_idname,
