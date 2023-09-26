@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class LandmarkInterface(metaclass=ABCMeta):
     '''Landmarks are named positions on an entity.'''
 

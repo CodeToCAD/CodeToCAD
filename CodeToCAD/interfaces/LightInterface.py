@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class LightInterface(metaclass=ABCMeta):
     '''Manipulate a light object.'''
 

@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class PartInterface(Entity,metaclass=ABCMeta):
     '''Create and manipulate 3D shapes.'''
 

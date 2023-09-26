@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class AnalyticsInterface(metaclass=ABCMeta):
     '''Tools for collecting data about the entities and scene.'''
 

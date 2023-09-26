@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class SketchInterface(Entity,metaclass=ABCMeta):
     '''Capabilities related to adding, multiplying, and/or modifying a curve.'''
 

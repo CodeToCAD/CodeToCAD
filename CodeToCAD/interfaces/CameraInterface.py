@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class CameraInterface(metaclass=ABCMeta):
     '''Manipulate a camera object.'''
 

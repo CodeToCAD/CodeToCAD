@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class SceneInterface(metaclass=ABCMeta):
     '''Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.'''
 
