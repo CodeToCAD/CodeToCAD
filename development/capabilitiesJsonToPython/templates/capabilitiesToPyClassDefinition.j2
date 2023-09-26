@@ -1,4 +1,4 @@
-{% from 'capabilitiesToPyUtilities.j2' import typeMapping, generateMethodArguments %}
+{%- from 'capabilitiesToPyUtilities.j2' import typeMapping, generateMethodArguments %}
 
     {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 

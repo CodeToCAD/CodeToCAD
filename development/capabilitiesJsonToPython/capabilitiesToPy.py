@@ -12,34 +12,43 @@ templatesDir = f"{SCRIPT_DIR}/templates"
 capabilitiesJson = f"{SCRIPT_DIR}/../../CodeToCAD/capabilities.json"
 
 capabilitiesToPyInterface = f"capabilitiesToPyInterface.j2"
-capabilitiesToPyInterfaceOut = f"{outputDir}/CodeToCADInterface.py"
+capabilitiesToPyInterfaceOut = f"{outputDir}/interfaces"
 
 
 capabilitiesToPyProvider = f"capabilitiesToPyProvider.j2"
-capabilitiesToPyProviderOut = f"{outputDir}/CodeToCADProvider.py"
+capabilitiesToPyProviderOut = f"{outputDir}/providersSample"
 
 
 capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
-capabilitiesToPyTestOut = f"{outputDir}/TestCodeToCADProvider.py"
-
-capabilitiesToPythonDocumentationHtml = f"capabilitiesToPythonDocumentationHtml.j2"
-capabilitiesToPythonDocumentationHtmlOut = f"{docs}/docs.html"
+capabilitiesToPyTestOut = f"{outputDir}/testsInterfaces"
 
 with open(capabilitiesJson) as f:
-    capabilities = json.load(f)
+    capabilities: dict = json.load(f)
 
-templatesToGenerate = ((capabilitiesToPyInterface, capabilitiesToPyInterfaceOut), (
-    capabilitiesToPyProvider, capabilitiesToPyProviderOut), (capabilitiesToPyTest, capabilitiesToPyTestOut), (capabilitiesToPythonDocumentationHtml, capabilitiesToPythonDocumentationHtmlOut))
+templatesToGenerate = [
+    (capabilitiesToPyInterface, capabilitiesToPyInterfaceOut, "Interface"),
+    # (capabilitiesToPyProvider, capabilitiesToPyProviderOut),
+    # (capabilitiesToPyTest, capabilitiesToPyTestOut)
+]
 
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
 templateEnv = jinja2.Environment(loader=templateLoader)
 
-for template, output in templatesToGenerate:
+for template, output, suffix in templatesToGenerate:
     print("Generating", template)
 
-    template = templateEnv.get_template(template)
-    output_from_parsed_template = template.render(**capabilities)
-    with open(output, "w") as fh:
-        fh.write(output_from_parsed_template)
+    for className, methods in capabilities["capabilities"].items():
+        template = templateEnv.get_template(template)
+        output_from_parsed_template = template.render(
+            dict(
+                {
+                    "className": className+suffix,
+                    "methods": methods
+                },
+                **capabilities
+            )
+        )
+        with open(output + f"/{className}{suffix}.py", "w") as fh:
+            fh.write(output_from_parsed_template)
 
     print("Done")

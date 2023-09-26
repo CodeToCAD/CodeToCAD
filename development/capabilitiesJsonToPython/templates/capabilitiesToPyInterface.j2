@@ -1,31 +1,18 @@
+{#
+This Jinja2 Template requires the following parameters:
+- className
+- methods
+- superParameters, e.g. the ["constructor"]["parameters"] of the class this class extends.
+#}
 # THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, TypeAlias, Union
-
-from CodeToCAD.utilities import (Angle, Axis, BoundaryBox, CurveTypes, Dimension, Dimensions, LengthUnit, Point, PresetLandmark)
-
-FloatOrItsStringValue: TypeAlias = Union[str, float]
-IntOrFloat: TypeAlias = Union[int, float]
-MaterialOrItsName: TypeAlias = Union[str, 'Material']
-PartOrItsName: TypeAlias = Union[str, 'Part']
-EntityOrItsName: TypeAlias = Union[str, 'Entity']
-SketchOrItsName: TypeAlias = Union[str, 'Sketch']
-LandmarkOrItsName: TypeAlias = Union[str, 'Landmark']
-AxisOrItsIndexOrItsName: TypeAlias = Union[str, int, Axis]
-DimensionOrItsFloatOrStringValue: TypeAlias = Union[str,float, Dimension]
-AngleOrItsFloatOrStringValue: TypeAlias = Union[str,float, Angle]
-EntityOrItsNameOrLandmark: TypeAlias = Union[str, 'Entity', 'Landmark']
-PointOrListOfFloatOrItsStringValue: TypeAlias = Union[str, list[FloatOrItsStringValue], Point]
-LengthUnitOrItsName: TypeAlias = Union[str,LengthUnit]
-PresetLandmarkOrItsName: TypeAlias = Union[str,PresetLandmark]
-CameraOrItsName:TypeAlias = Union[str, 'Camera']
+from CodeToCADTypes import *
 
 {%-set useAbstractMethodDecorator = True%}
 
-{% for className, methods in capabilities.items() -%}
 
 class {{className}}({{ methods["extends"]+"," if "extends" in methods}}metaclass=ABCMeta):
     {% if "information" in methods -%}
@@ -34,4 +21,3 @@ class {{className}}({{ methods["extends"]+"," if "extends" in methods}}metaclass
     '''
     {%-endif%}
 {% include 'capabilitiesToPyClassDefinition.j2' %}
-{% endfor -%}
