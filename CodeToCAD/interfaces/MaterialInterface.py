@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class MaterialInterface(metaclass=ABCMeta):
     '''Materials affect the appearance and simulation properties of the parts.'''
 

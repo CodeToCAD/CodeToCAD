@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class AnimationInterface(metaclass=ABCMeta):
     '''Animation related functionality.'''
 

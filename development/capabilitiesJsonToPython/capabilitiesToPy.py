@@ -34,10 +34,24 @@ templatesToGenerate = [
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
 templateEnv = jinja2.Environment(loader=templateLoader)
 
+
+def createInitFile(outputDir: str):
+    with open(outputDir + "/__init__.py", "w") as handler:
+        handler.write(
+            '''# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
+''')
+
+
 for template, output, suffix in templatesToGenerate:
     print("Generating", template)
 
+    createInitFile(output)
+
     for className, methods in capabilities["capabilities"].items():
+
+        with open(output + "/__init__.py", "a") as handler:
+            handler.write(f"from . import {className}{suffix}\n")
+
         template = templateEnv.get_template(template)
         output_from_parsed_template = template.render(
             dict(

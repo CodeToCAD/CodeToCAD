@@ -6,6 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCADTypes import *
 
+
 class EntityInterface(metaclass=ABCMeta):
     '''Capabilities shared between Parts and Sketches.'''
 
