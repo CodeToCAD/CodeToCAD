@@ -19,16 +19,21 @@ capabilitiesToPyProvider = f"capabilitiesToPyProvider.j2"
 capabilitiesToPyProviderOut = f"{outputDir}/providersSample"
 
 
+capabilitiesToPyTestInterface = f"capabilitiesToPyTestInterface.j2"
+capabilitiesToPyTestInterfaceOut = f"{outputDir}/testsInterfaces"
+
+
 capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
-capabilitiesToPyTestOut = f"{outputDir}/testsInterfaces"
+capabilitiesToPyTestOut = f"{outputDir}/testsSample"
 
 with open(capabilitiesJson) as f:
     capabilities: dict = json.load(f)
 
 templatesToGenerate = [
     (capabilitiesToPyInterface, capabilitiesToPyInterfaceOut, "Interface"),
-    # (capabilitiesToPyProvider, capabilitiesToPyProviderOut),
-    # (capabilitiesToPyTest, capabilitiesToPyTestOut)
+    (capabilitiesToPyProvider, capabilitiesToPyProviderOut, ""),
+    (capabilitiesToPyTestInterface, capabilitiesToPyTestInterfaceOut, "TestInterface"),
+    (capabilitiesToPyTest, capabilitiesToPyTestOut, "Test")
 ]
 
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
@@ -50,13 +55,15 @@ for template, output, suffix in templatesToGenerate:
     for className, methods in capabilities["capabilities"].items():
 
         with open(output + "/__init__.py", "a") as handler:
-            handler.write(f"from . import {className}{suffix}\n")
+            handler.write(
+                f"from .{className}{suffix} import {className}{suffix}\n")
 
         template = templateEnv.get_template(template)
         output_from_parsed_template = template.render(
             dict(
                 {
-                    "className": className+suffix,
+                    "className": className,
+                    "classNameSuffix": suffix,
                     "methods": methods
                 },
                 **capabilities

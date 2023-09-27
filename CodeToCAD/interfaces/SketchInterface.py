@@ -4,10 +4,12 @@
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from CodeToCADTypes import *
+from CodeToCAD.CodeToCADTypes import *
+
+from CodeToCAD.interfaces.EntityInterface import EntityInterface
 
 
-class SketchInterface(Entity,metaclass=ABCMeta):
+class SketchInterface(EntityInterface, metaclass=ABCMeta):
     '''Capabilities related to adding, multiplying, and/or modifying a curve.'''
 
     

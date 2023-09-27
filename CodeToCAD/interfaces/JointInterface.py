@@ -4,7 +4,7 @@
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from CodeToCADTypes import *
+from CodeToCAD.CodeToCADTypes import *
 
 
 class JointInterface(metaclass=ABCMeta):
