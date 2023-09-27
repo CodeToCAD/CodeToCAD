@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import {{className}}
-from CodeToCAD.testsInterfaces.{{interfaceName}} import {{interfaceName}}
+from CodeToCAD.testsInterfaces import {{interfaceName}}
 
 class Test{{className}}({{interfaceName}}):    
     {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}

@@ -16,7 +16,7 @@ from CodeToCAD.CodeToCADTypes import *
 {% for extendedClass in extendedClasses.split(",") -%}
 {%set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
 {%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
-from CodeToCAD.interfaces.{{extendedClassWithSuffix}} import {{extendedClassWithSuffix}}
+from CodeToCAD.interfaces import {{extendedClassWithSuffix}}
 {% endfor-%}
 {%-endif%}
 

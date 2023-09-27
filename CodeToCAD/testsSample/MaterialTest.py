@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Material
-from CodeToCAD.testsInterfaces.MaterialTestInterface import MaterialTestInterface
+from CodeToCAD.testsInterfaces import MaterialTestInterface
 
 class TestMaterial(MaterialTestInterface):
     

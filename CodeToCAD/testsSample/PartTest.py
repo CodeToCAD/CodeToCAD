@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Part
-from CodeToCAD.testsInterfaces.PartTestInterface import PartTestInterface
+from CodeToCAD.testsInterfaces import PartTestInterface
 
 class TestPart(PartTestInterface):
     

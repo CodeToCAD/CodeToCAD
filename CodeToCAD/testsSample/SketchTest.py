@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Sketch
-from CodeToCAD.testsInterfaces.SketchTestInterface import SketchTestInterface
+from CodeToCAD.testsInterfaces import SketchTestInterface
 
 class TestSketch(SketchTestInterface):
     

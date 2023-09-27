@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Landmark
-from CodeToCAD.testsInterfaces.LandmarkTestInterface import LandmarkTestInterface
+from CodeToCAD.testsInterfaces import LandmarkTestInterface
 
 class TestLandmark(LandmarkTestInterface):
     

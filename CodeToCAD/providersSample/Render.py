@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.RenderInterface import RenderInterface
+from CodeToCAD.interfaces import RenderInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 

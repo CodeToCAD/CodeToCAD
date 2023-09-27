@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Scene
-from CodeToCAD.testsInterfaces.SceneTestInterface import SceneTestInterface
+from CodeToCAD.testsInterfaces import SceneTestInterface
 
 class TestScene(SceneTestInterface):
     

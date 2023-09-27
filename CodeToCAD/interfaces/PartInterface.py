@@ -6,7 +6,7 @@
 from abc import ABCMeta, abstractmethod
 from CodeToCAD.CodeToCADTypes import *
 
-from CodeToCAD.interfaces.EntityInterface import EntityInterface
+from CodeToCAD.interfaces import EntityInterface
 
 
 class PartInterface(EntityInterface, metaclass=ABCMeta):

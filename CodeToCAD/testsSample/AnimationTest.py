@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Animation
-from CodeToCAD.testsInterfaces.AnimationTestInterface import AnimationTestInterface
+from CodeToCAD.testsInterfaces import AnimationTestInterface
 
 class TestAnimation(AnimationTestInterface):
     

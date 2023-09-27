@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Joint
-from CodeToCAD.testsInterfaces.JointTestInterface import JointTestInterface
+from CodeToCAD.testsInterfaces import JointTestInterface
 
 class TestJoint(JointTestInterface):
     

@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.SceneInterface import SceneInterface
+from CodeToCAD.interfaces import SceneInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 

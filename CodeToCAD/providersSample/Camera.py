@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.CameraInterface import CameraInterface
+from CodeToCAD.interfaces import CameraInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 

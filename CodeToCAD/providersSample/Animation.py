@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.AnimationInterface import AnimationInterface
+from CodeToCAD.interfaces import AnimationInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
