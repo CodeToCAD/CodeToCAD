@@ -10,6 +10,9 @@ from CodeToCAD.providersSample import *
 # Use the following import line in your CodeToCAD file:
 # from CodeToCAD import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, PresetLandmark, Angle, Camera, Light, Render
 
+Shape = Part
+Curve = Sketch
+
 
 def setPartProvider(provider: Type[PartInterface], globalContext: Optional[dict]) -> None:
     if globalContext and "Part" in globalContext:
