@@ -9,7 +9,7 @@ import bmesh
 from CodeToCAD import Dimension
 from CodeToCAD.CodeToCADTypes import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import CodeToCAD.utilities as Utilities
-import BlenderDefinitions
+from . import BlenderDefinitions
 from pathlib import Path
 import mathutils
 from mathutils.bvhtree import BVHTree

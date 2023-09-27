@@ -109,8 +109,8 @@ class StopAutoReload(Operator):
 def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
     import CodeToCAD
-    import BlenderActions
-    import BlenderDefinitions
+    import blenderProvider.BlenderActions
+    import blenderProvider.BlenderDefinitions
     import blender
     import CodeToCAD.interfaces
     import CodeToCAD.utilities
@@ -118,11 +118,11 @@ def reloadCodeToCADModules():
     reload(CodeToCAD.utilities)
     reload(CodeToCAD.interfaces)
     reload(blender)
-    reload(BlenderDefinitions)
-    reload(BlenderActions)
+    reload(blenderProvider.BlenderDefinitions)
+    reload(blenderProvider.BlenderActions)
     reload(CodeToCAD)
 
-    from blender import injectBlenderProvider
+    from .blenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
 
     addCodeToCADToBlenderConsole()
@@ -200,7 +200,7 @@ def importCodeToCADFile(filePath, directory, saveFile):
 
     print("Running script", filePath)
 
-    from BlenderActions import getContextView3D
+    from blenderProvider.BlenderActions import getContextView3D
 
     with getContextView3D():
         try:
@@ -214,7 +214,7 @@ def importCodeToCADFile(filePath, directory, saveFile):
 
             raise err
         finally:
-            from BlenderActions import zoomToSelectedObjects, selectObject
+            from blenderProvider.BlenderActions import zoomToSelectedObjects, selectObject
             objectToZoomOn = bpy.data.objects[-1]
             objectToZoomOn = objectToZoomOn.parent if objectToZoomOn.parent != None else objectToZoomOn
             selectObject(objectToZoomOn.name)
@@ -377,7 +377,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     sys.path.append(str(codeToCADPath))
 
-    from blender import injectBlenderProvider
+    from .blenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
 
     return {'FINISHED'} if returnBlenderOperationStatus else None

@@ -1,5 +1,5 @@
 import unittest
-import BlenderActions
+from . import BlenderActions
 
 from CodeToCAD import *
 

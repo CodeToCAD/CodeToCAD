@@ -5,8 +5,8 @@
 
 from typing import Optional
 
-import BlenderActions
-import BlenderDefinitions
+from . import BlenderActions
+from . import BlenderDefinitions
 
 from CodeToCAD.interfaces import MaterialInterface, PartInterface
 from CodeToCAD.CodeToCADTypes import *

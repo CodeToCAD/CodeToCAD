@@ -5,7 +5,7 @@ from mock.modeling.MockBlender import injectMockBpy, resetMockBpy
 def injectMockModelingProvider(globalContext: Optional[dict]):
 
     # We don't have a mock provider yet, so we'll use the BlenderProvider temporarily.
-    from blender import injectBlenderProvider
+    from blender.blenderProvider import injectBlenderProvider
     injectBlenderProvider(globalContext)
 
     injectMockBpy()
