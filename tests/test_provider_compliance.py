@@ -1,7 +1,7 @@
 import unittest
 
 from CodeToCAD import *
-from providers.blender.BlenderProvider import injectBlenderProvider
+from providers.blender import injectBlenderProvider
 
 
 class TestProviderCompliance(unittest.TestCase):

@@ -2,7 +2,7 @@ from CodeToCAD import *
 from dShaft import DShaft
 
 
-def createDShaftSleeve(dShaft: CodeToCADInterface.Part, sleeveThickness):
+def createDShaftSleeve(dShaft: PartInterface, sleeveThickness):
     dShaftDiameter = dShaft.getDimensions().y
 
     sleeve = Part("sleeve").createCylinder(

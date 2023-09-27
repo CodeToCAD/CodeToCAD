@@ -11,7 +11,7 @@ class DShaft:
     dProfileLength: Dimension
     tolerance: Dimension = Dimension(0)
 
-    def create(self, name, isDShaftBothSides=False) -> CodeToCADInterface.Part:
+    def create(self, name, isDShaftBothSides=False) -> PartInterface:
         shaftLength = self.shaftLength
         radius = self.radius - self.tolerance
         dProfileRadius = self.dProfileRadius - self.tolerance

@@ -9,10 +9,7 @@ from CodeToCAD.interfaces import SketchInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-from . import Entity
-
-
-class Sketch(Entity, SketchInterface): 
+class Sketch(SketchInterface): 
     
     
     name:str
@@ -24,22 +21,22 @@ class Sketch(Entity, SketchInterface):
         self.curveType = curveType
         self.description = description
 
-    def clone(self, newName:str, copyLandmarks:bool=True) -> 'SketchInterface':
+    def clone(self, newName:str, copyLandmarks:bool=True) -> SketchInterface:
         
         raise NotImplementedError()
         
 
-    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z") -> 'PartInterface':
+    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z") -> PartInterface:
         
         raise NotImplementedError()
         
 
-    def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'PartInterface':
+    def extrude(self, length:DimensionOrItsFloatOrStringValue) -> PartInterface:
         
         raise NotImplementedError()
         
 
-    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> 'PartInterface':
+    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> PartInterface:
         
         raise NotImplementedError()
         

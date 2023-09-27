@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import JointInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Joint(JointInterface): 
     
     

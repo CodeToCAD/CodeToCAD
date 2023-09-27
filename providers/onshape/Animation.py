@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import AnimationInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Animation(AnimationInterface): 
     
     
@@ -18,7 +17,7 @@ class Animation(AnimationInterface):
         pass
 
     @staticmethod
-    def default() -> 'AnimationInterface':
+    def default() -> AnimationInterface:
         return Animation()
 
     def setFrameStart(self, frameNumber:'int'):

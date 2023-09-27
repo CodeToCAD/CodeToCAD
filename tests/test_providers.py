@@ -6,7 +6,6 @@ import unittest
 from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
 
 from CodeToCAD import *
-import CodeToCAD.CodeToCADInterface as CodeToCADInterface
 import CodeToCAD.utilities as Utilities
 from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
