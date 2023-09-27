@@ -26,7 +26,7 @@ class SketchInterface(EntityInterface, metaclass=ABCMeta):
         self.description = description
 
     @abstractmethod
-    def clone(self, newName:str, copyLandmarks:bool=True) -> 'Sketch':
+    def clone(self, newName:str, copyLandmarks:bool=True) -> 'SketchInterface':
         '''
         Clone an existing sketch with its geometry and properties. Returns the new Sketch.
         '''
@@ -36,7 +36,7 @@ class SketchInterface(EntityInterface, metaclass=ABCMeta):
         
 
     @abstractmethod
-    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z") -> 'Part':
+    def revolve(self, angle:AngleOrItsFloatOrStringValue, aboutEntityOrLandmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName="z") -> 'PartInterface':
         '''
         Revolve a Sketch around another Entity or Landmark
         '''
@@ -46,7 +46,7 @@ class SketchInterface(EntityInterface, metaclass=ABCMeta):
         
 
     @abstractmethod
-    def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'Part':
+    def extrude(self, length:DimensionOrItsFloatOrStringValue) -> 'PartInterface':
         '''
         Extrude a curve by a specified length. Returns a Part type.
         '''
@@ -56,7 +56,7 @@ class SketchInterface(EntityInterface, metaclass=ABCMeta):
         
 
     @abstractmethod
-    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> 'Part':
+    def sweep(self, profileNameOrInstance:SketchOrItsName, fillCap:bool=True) -> 'PartInterface':
         '''
         Extrude this Sketch along the path of another Sketch
         '''

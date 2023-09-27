@@ -9,6 +9,7 @@ from CodeToCAD.interfaces import EntityInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
+
 class Entity(EntityInterface): 
     
     
@@ -184,7 +185,7 @@ class Entity(EntityInterface):
         return self
         
 
-    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'Landmark':
+    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'LandmarkInterface':
         
         raise NotImplementedError()
         
@@ -199,7 +200,7 @@ class Entity(EntityInterface):
         raise NotImplementedError()
         
 
-    def getLandmark(self, landmarkName:PresetLandmarkOrItsName) -> 'Landmark':
+    def getLandmark(self, landmarkName:PresetLandmarkOrItsName) -> 'LandmarkInterface':
         
         raise NotImplementedError()
         

@@ -111,18 +111,18 @@ def reloadCodeToCADModules():
     import CodeToCAD
     import BlenderActions
     import BlenderDefinitions
-    import BlenderProvider
-    import CodeToCADInterface
+    import blender
+    import CodeToCAD.interfaces
     import CodeToCAD.utilities
 
     reload(CodeToCAD.utilities)
-    reload(CodeToCADInterface)
-    reload(BlenderProvider)
+    reload(CodeToCAD.interfaces)
+    reload(blender)
     reload(BlenderDefinitions)
     reload(BlenderActions)
     reload(CodeToCAD)
 
-    from BlenderProvider import injectBlenderProvider
+    from blender import injectBlenderProvider
     injectBlenderProvider(globals())
 
     addCodeToCADToBlenderConsole()
@@ -377,7 +377,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     sys.path.append(str(codeToCADPath))
 
-    from BlenderProvider import injectBlenderProvider
+    from blender import injectBlenderProvider
     injectBlenderProvider(globals())
 
     return {'FINISHED'} if returnBlenderOperationStatus else None
@@ -389,9 +389,12 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
 
-    from CodeToCAD import (Analytics, Angle, Animation, Curve, Dimension,
-                           Dimensions, Joint, Landmark, Material, Part, Scene,
-                           Shape, Sketch, center, max, min)
+    from CodeToCAD import (
+        Analytics, Angle, Animation,  # type: ignore
+        Curve, Dimension, Dimensions,  # type: ignore
+        Joint, Landmark, Material,  # type: ignore
+        Part, Scene, Shape,  # type: ignore
+        Sketch, center, max, min)  # type: ignore
     from CodeToCAD.utilities import Angle, Dimension, Dimensions, center, max, min
 
     namspace["Part"] = Part

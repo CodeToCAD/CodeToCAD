@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import MaterialInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Material(MaterialInterface): 
     
     

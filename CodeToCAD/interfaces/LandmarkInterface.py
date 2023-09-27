@@ -32,7 +32,7 @@ class LandmarkInterface(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getParentEntity(self) -> 'Entity':
+    def getParentEntity(self) -> 'EntityInterface':
         '''
         Get the name of the entity this landmark belongs to.
         '''

@@ -350,7 +350,7 @@ class EntityInterface(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'Landmark':
+    def createLandmark(self, landmarkName:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'LandmarkInterface':
         '''
         Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
         '''
@@ -380,7 +380,7 @@ class EntityInterface(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getLandmark(self, landmarkName:PresetLandmarkOrItsName) -> 'Landmark':
+    def getLandmark(self, landmarkName:PresetLandmarkOrItsName) -> 'LandmarkInterface':
         '''
         Get the landmark by name
         '''

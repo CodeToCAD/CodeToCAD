@@ -7,7 +7,7 @@ from uuid import uuid4
 import bpy
 import bmesh
 from CodeToCAD import Dimension
-from CodeToCAD.CodeToCADInterface import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
+from CodeToCAD.CodeToCADTypes import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import CodeToCAD.utilities as Utilities
 import BlenderDefinitions
 from pathlib import Path

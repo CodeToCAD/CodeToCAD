@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import AnalyticsInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Analytics(AnalyticsInterface): 
     
     

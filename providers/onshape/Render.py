@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import RenderInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Render(RenderInterface): 
     
     

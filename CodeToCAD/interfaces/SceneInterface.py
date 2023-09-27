@@ -20,7 +20,7 @@ class SceneInterface(metaclass=ABCMeta):
         self.description = description
 
     @staticmethod
-    def default() -> 'Scene':
+    def default() -> 'SceneInterface':
         raise RuntimeError()
         
 
@@ -45,7 +45,7 @@ class SceneInterface(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def getSelectedEntity(self) -> 'Entity':
+    def getSelectedEntity(self) -> 'EntityInterface':
         '''
         Get the selected entity in the Scene.
         '''

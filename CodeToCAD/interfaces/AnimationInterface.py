@@ -17,7 +17,7 @@ class AnimationInterface(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def default() -> 'Animation':
+    def default() -> 'AnimationInterface':
         raise RuntimeError()
         
 

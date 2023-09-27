@@ -5,12 +5,11 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import LightInterface
+from CodeToCAD.interfaces import CameraInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
-class Light(LightInterface): 
+class Camera(CameraInterface): 
     
     
     name:str
@@ -20,27 +19,17 @@ class Light(LightInterface):
         self.name = name
         self.description = description
 
-    def setColor(self, rValue:IntOrFloat, gValue:IntOrFloat, bValue:IntOrFloat):
+    def createPerspective(self):
         
         return self
         
 
-    def createSun(self, energyLevel:float):
+    def createOrthogonal(self):
         
         return self
         
 
-    def createSpot(self, energyLevel:float):
-        
-        return self
-        
-
-    def createPoint(self, energyLevel:float):
-        
-        return self
-        
-
-    def createArea(self, energyLevel:float):
+    def setFocalLength(self, length:float):
         
         return self
         

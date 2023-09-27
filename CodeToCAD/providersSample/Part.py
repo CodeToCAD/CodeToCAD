@@ -9,7 +9,10 @@ from CodeToCAD.interfaces import PartInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-class Part(PartInterface): 
+from . import Entity
+
+
+class Part(Entity, PartInterface): 
     
     
 
@@ -43,12 +46,12 @@ class Part(PartInterface):
         return self
         
 
-    def clone(self, newName:str, copyLandmarks:bool=True) -> 'Part':
+    def clone(self, newName:str, copyLandmarks:bool=True) -> 'PartInterface':
         
         raise NotImplementedError()
         
 
-    def loft(self, Landmark1:'Landmark', Landmark2:'Landmark'):
+    def loft(self, Landmark1:'LandmarkInterface', Landmark2:'LandmarkInterface'):
         
         return self
         

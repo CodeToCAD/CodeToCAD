@@ -8,7 +8,16 @@ from typing import Optional
 from CodeToCAD.interfaces import {{interfaceName}}
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
+{%set extendedClassesWithSuffixes = []-%}
+{% if "extends" in methods%}
+{%set extendedClasses = methods["extends"]-%}
+{% for extendedClass in extendedClasses.split(",") -%}
+{%set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
+{%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
+from . import {{extendedClassWithSuffix}}
+{% endfor-%}
+{%-endif%}
 
-class {{className}}({{interfaceName}}): {# e.g. Part #}
+class {{className}}({{extendedClassesWithSuffixes|join(",") + (", " if extendedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
     {% include 'capabilitiesToPyClassDefinition.j2' %}
     

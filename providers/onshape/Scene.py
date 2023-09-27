@@ -9,7 +9,6 @@ from CodeToCAD.interfaces import SceneInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-
 class Scene(SceneInterface): 
     
     
@@ -21,7 +20,7 @@ class Scene(SceneInterface):
         self.description = description
 
     @staticmethod
-    def default() -> 'SceneInterface':
+    def default() -> SceneInterface:
         return Scene()
 
     def create(self):
@@ -34,7 +33,7 @@ class Scene(SceneInterface):
         return self
         
 
-    def getSelectedEntity(self) -> 'EntityInterface':
+    def getSelectedEntity(self) -> EntityInterface:
         
         raise NotImplementedError()
         
