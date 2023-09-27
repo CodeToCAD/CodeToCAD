@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Camera
-from CodeToCAD.testsInterfaces.CameraTestInterface import CameraTestInterface
+from CodeToCAD.testsInterfaces import CameraTestInterface
 
 class TestCamera(CameraTestInterface):
     

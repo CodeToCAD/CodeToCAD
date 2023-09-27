@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Analytics
-from CodeToCAD.testsInterfaces.AnalyticsTestInterface import AnalyticsTestInterface
+from CodeToCAD.testsInterfaces import AnalyticsTestInterface
 
 class TestAnalytics(AnalyticsTestInterface):
     

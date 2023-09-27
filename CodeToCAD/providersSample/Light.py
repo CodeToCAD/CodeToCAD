@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.LightInterface import LightInterface
+from CodeToCAD.interfaces import LightInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 

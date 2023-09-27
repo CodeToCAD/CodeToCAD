@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces.AnalyticsInterface import AnalyticsInterface
+from CodeToCAD.interfaces import AnalyticsInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 

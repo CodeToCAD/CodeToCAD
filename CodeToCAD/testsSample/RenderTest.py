@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Render
-from CodeToCAD.testsInterfaces.RenderTestInterface import RenderTestInterface
+from CodeToCAD.testsInterfaces import RenderTestInterface
 
 class TestRender(RenderTestInterface):
     

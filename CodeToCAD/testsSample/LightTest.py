@@ -7,7 +7,7 @@
 from unittest import skip
 
 from CodeToCAD import Light
-from CodeToCAD.testsInterfaces.LightTestInterface import LightTestInterface
+from CodeToCAD.testsInterfaces import LightTestInterface
 
 class TestLight(LightTestInterface):
     
