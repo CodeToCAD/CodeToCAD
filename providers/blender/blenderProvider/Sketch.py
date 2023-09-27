@@ -4,8 +4,8 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from typing import Optional
-import BlenderActions
-import BlenderDefinitions
+from . import BlenderActions
+from . import BlenderDefinitions
 
 from CodeToCAD import *
 
