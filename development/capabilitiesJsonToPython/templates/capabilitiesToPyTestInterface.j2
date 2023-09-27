@@ -3,13 +3,13 @@
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-{%set interfaceName = className+"TestInterface"%}
-from unittest import skip
+
+from unittest import TestCase
+from abc import ABCMeta, abstractmethod
 
 from CodeToCAD import {{className}}
-from CodeToCAD.testsInterfaces.{{interfaceName}} import {{interfaceName}}
 
-class Test{{className}}({{interfaceName}}):    
+class {{className}}TestInterface(TestCase, metaclass=ABCMeta):    
     {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}
 
     {%- set className = "Part" if className == "Entity" else className -%}
@@ -34,7 +34,8 @@ class Test{{className}}({{interfaceName}}):
     {%- elif methodName == "default"%}
     {# Do nothing #}
     {%- else %}
-    @skip("TODO")
+    {# @unittest.skip #}
+    @abstractmethod
     def test_{{methodName}}(self):
         instance = {{className}}("{{ classConstructorParameters.keys()|join('","') }}")
 

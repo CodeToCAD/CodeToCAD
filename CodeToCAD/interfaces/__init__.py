@@ -1,14 +1,14 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
-from . import EntityInterface
-from . import PartInterface
-from . import SketchInterface
-from . import LandmarkInterface
-from . import JointInterface
-from . import MaterialInterface
-from . import AnimationInterface
-from . import LightInterface
-from . import CameraInterface
-from . import RenderInterface
-from . import SceneInterface
-from . import AnalyticsInterface
+from .EntityInterface import EntityInterface
+from .PartInterface import PartInterface
+from .SketchInterface import SketchInterface
+from .LandmarkInterface import LandmarkInterface
+from .JointInterface import JointInterface
+from .MaterialInterface import MaterialInterface
+from .AnimationInterface import AnimationInterface
+from .LightInterface import LightInterface
+from .CameraInterface import CameraInterface
+from .RenderInterface import RenderInterface
+from .SceneInterface import SceneInterface
+from .AnalyticsInterface import AnalyticsInterface

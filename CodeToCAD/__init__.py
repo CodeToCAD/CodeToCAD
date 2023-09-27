@@ -1,19 +1,19 @@
 from typing import Optional, Type
-from . import CodeToCADInterface as CodeToCADInterface
 from . import utilities as Utilities
 
 from .utilities import min, max, center, Dimension, Dimensions, PresetLandmark, Angle
-from .CodeToCADInterface import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, Animation, Camera, Light, Render
+from .providersSample import *
+from .interfaces import *
 
 # This is the CodeToCAD provider.
 # Use the following import line in your CodeToCAD file:
 # from CodeToCAD import Part, Sketch, Landmark, Scene, Analytics, Joint, Material, Animation, min, max, center, Dimension, Dimensions, PresetLandmark, Angle, Camera, Light, Render
 
-Shape: Type[CodeToCADInterface.Part] = CodeToCADInterface.Part
-Curve: Type[CodeToCADInterface.Sketch] = CodeToCADInterface.Sketch
+Shape: Type[PartInterface] = Part
+Curve: Type[SketchInterface] = Sketch
 
 
-def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Optional[dict]) -> None:
+def setPartProvider(provider: Type[PartInterface], globalContext: Optional[dict]) -> None:
     global Part, Shape
     Part = provider
     Shape = provider
@@ -23,7 +23,7 @@ def setPartProvider(provider: Type[CodeToCADInterface.Part], globalContext: Opti
         globalContext["Shape"] = provider
 
 
-def setSketchProvider(provider: Type[CodeToCADInterface.Sketch], globalContext: Optional[dict]) -> None:
+def setSketchProvider(provider: Type[SketchInterface], globalContext: Optional[dict]) -> None:
     global Sketch, Curve
     Sketch = provider
     Curve = provider
@@ -33,35 +33,35 @@ def setSketchProvider(provider: Type[CodeToCADInterface.Sketch], globalContext: 
         globalContext["Curve"] = provider
 
 
-def setLandmarkProvider(provider: Type[CodeToCADInterface.Landmark], globalContext: Optional[dict]) -> None:
+def setLandmarkProvider(provider: Type[LandmarkInterface], globalContext: Optional[dict]) -> None:
     global Landmark
     Landmark = provider
     if globalContext and "Landmark" in globalContext:
         globalContext["Landmark"] = provider
 
 
-def setSceneProvider(provider: Type[CodeToCADInterface.Scene], globalContext: Optional[dict]) -> None:
+def setSceneProvider(provider: Type[SceneInterface], globalContext: Optional[dict]) -> None:
     global Scene
     Scene = provider
     if globalContext and "Scene" in globalContext:
         globalContext["Scene"] = provider
 
 
-def setAnalyticsProvider(provider: Type[CodeToCADInterface.Analytics], globalContext: Optional[dict]) -> None:
+def setAnalyticsProvider(provider: Type[AnalyticsInterface], globalContext: Optional[dict]) -> None:
     global Analytics
     Analytics = provider
     if globalContext and "Analytics" in globalContext:
         globalContext["Analytics"] = provider
 
 
-def setJointProvider(provider: Type[CodeToCADInterface.Joint], globalContext: Optional[dict]) -> None:
+def setJointProvider(provider: Type[JointInterface], globalContext: Optional[dict]) -> None:
     global Joint
     Joint = provider
     if globalContext and "Joint" in globalContext:
         globalContext["Joint"] = provider
 
 
-def setMaterialProvider(provider: Type[CodeToCADInterface.Material], globalContext: Optional[dict]) -> None:
+def setMaterialProvider(provider: Type[MaterialInterface], globalContext: Optional[dict]) -> None:
     global Material
     Material = provider
     if globalContext and "Material" in globalContext:
