@@ -109,20 +109,20 @@ class StopAutoReload(Operator):
 def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
     import CodeToCAD
+    import blenderProvider
     import blenderProvider.BlenderActions
     import blenderProvider.BlenderDefinitions
-    import blender
     import CodeToCAD.interfaces
     import CodeToCAD.utilities
 
     reload(CodeToCAD.utilities)
     reload(CodeToCAD.interfaces)
-    reload(blender)
+    reload(blenderProvider)
     reload(blenderProvider.BlenderDefinitions)
     reload(blenderProvider.BlenderActions)
     reload(CodeToCAD)
 
-    from .blenderProvider import injectBlenderProvider
+    from blenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
 
     addCodeToCADToBlenderConsole()
@@ -358,9 +358,9 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     codeToCADPath = Path(codeToCADPath)
 
     corePath = codeToCADPath / "CodeToCAD"
-    blenderProviderPath = codeToCADPath / "providers/blender"
+    blenderProviderPath = codeToCADPath / "blenderProvider"
 
-    if not Path(blenderProviderPath / "BlenderProvider.py").is_file() and not Path(codeToCADPath / "BlenderProvider.py").is_file():
+    if not Path(blenderProviderPath / "BlenderActions.py").is_file() and not Path(codeToCADPath / "BlenderActions.py").is_file():
         print(
             "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon", "Searching in: ", codeToCADPath)
         return {'CANCELLED'} if returnBlenderOperationStatus else None
@@ -377,7 +377,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     sys.path.append(str(codeToCADPath))
 
-    from .blenderProvider import injectBlenderProvider
+    from blenderProvider import injectBlenderProvider
     injectBlenderProvider(globals())
 
     return {'FINISHED'} if returnBlenderOperationStatus else None
@@ -390,12 +390,15 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     replace_help(namspace)
 
     from CodeToCAD import (
-        Analytics, Angle, Animation,  # type: ignore
-        Curve, Dimension, Dimensions,  # type: ignore
-        Joint, Landmark, Material,  # type: ignore
-        Part, Scene, Shape,  # type: ignore
-        Sketch, center, max, min)  # type: ignore
+        Analytics, Angle, Animation,
+        Curve, Dimension, Dimensions,
+        Joint, Landmark, Material,
+        Part, Scene, Shape,
+        Sketch, center, max, min)
     from CodeToCAD.utilities import Angle, Dimension, Dimensions, center, max, min
+
+    from blenderProvider import injectBlenderProvider
+    injectBlenderProvider(globals())
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
