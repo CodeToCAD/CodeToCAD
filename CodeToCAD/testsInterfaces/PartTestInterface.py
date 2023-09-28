@@ -4,12 +4,11 @@
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
-from unittest import TestCase
 from abc import ABCMeta, abstractmethod
 
 from CodeToCAD import Part
 
-class PartTestInterface(TestCase, metaclass=ABCMeta):
+class PartTestInterface(metaclass=ABCMeta):
     
     
     @abstractmethod

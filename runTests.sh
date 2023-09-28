@@ -29,4 +29,4 @@ export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/providers/blender"
 python -m tests.test_provider_compliance
 
 
-python -m tests.test_providers
+python -m tests.test_provider

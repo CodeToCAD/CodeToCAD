@@ -4,12 +4,11 @@
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
-from unittest import TestCase
 from abc import ABCMeta, abstractmethod
 
 from CodeToCAD import {{className}}
 
-class {{className}}TestInterface(TestCase, metaclass=ABCMeta):    
+class {{className}}TestInterface(metaclass=ABCMeta):    
     {%- from 'capabilitiesToPyUtilities.j2' import typeMapping -%}
 
     {%- set className = "Part" if className == "Entity" else className -%}

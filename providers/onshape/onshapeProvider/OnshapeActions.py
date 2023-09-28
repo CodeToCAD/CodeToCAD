@@ -1,5 +1,5 @@
 import CodeToCAD.utilities as Utilities
-import OnshapeDefinitions
+from . import OnshapeDefinitions
 from onshape_client import Client
 from onshape_client.oas import (
     BTMParameterString149,

@@ -1,6 +1,7 @@
 import os
-import unittest
-from OnshapeActions import *
+from providers.onshape import *
+from providers.onshape.onshapeProvider import *
+from providers.onshape.onshapeProvider.OnshapeActions import *
 
 from CodeToCAD import *
 from CodeToCAD.utilities import Point
@@ -14,7 +15,7 @@ configPath = os.path.join(
 onshapeDocumentName = "CodeToCAD-OnshapeActions"
 
 
-class TestOnshapeActions(unittest.TestCase):
+class TestOnshapeActions():
 
     @classmethod
     def setUpClass(cls) -> None:
