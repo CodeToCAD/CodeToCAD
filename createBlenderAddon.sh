@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from https://stackoverflow.com/a/4774063/
 
 cd "$SCRIPT_DIR"
@@ -28,7 +30,9 @@ mkdir $BLENDER_ADDON_PATH/blenderProvider
 cp -r ./providers/blender/blenderProvider $BLENDER_ADDON_PATH
 cp -r ./CodeToCAD $BLENDER_ADDON_PATH/
 cp ./providers/blender/CodeToCADBlenderAddon.py $BLENDER_ADDON_PATH/__init__.py
-cp ./providers/blender/injectBlenderProvider.py $BLENDER_ADDON_PATH/injectBlenderProvider.py
+
+# Make BlenderProvider the main provider in CodeToCAD module
+echo "from blenderProvider import *" >> $BLENDER_ADDON_PATH/CodeToCAD/__init__.py
 
 # Write version string
 echo "Writing version string."
