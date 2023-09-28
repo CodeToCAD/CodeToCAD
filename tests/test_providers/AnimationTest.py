@@ -4,12 +4,12 @@
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
-from unittest import skip, TestCase
+from unittest import skip
 
-from CodeToCAD import Animation
+from .test_helper import *
 from CodeToCAD.testsInterfaces import AnimationTestInterface
 
-class AnimationTest(TestCase, AnimationTestInterface):
+class AnimationTest(TestProviderCase, AnimationTestInterface):
     
     
     
