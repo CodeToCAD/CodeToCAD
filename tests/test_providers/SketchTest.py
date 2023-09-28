@@ -4,12 +4,12 @@
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
-from unittest import skip, TestCase
+from unittest import skip
 
-from CodeToCAD import Sketch
+from .test_helper import *
 from CodeToCAD.testsInterfaces import SketchTestInterface
 
-class SketchTest(TestCase, SketchTestInterface):
+class SketchTest(TestProviderCase, SketchTestInterface):
     
     
     @skip("TODO")
