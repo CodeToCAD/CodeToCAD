@@ -6,7 +6,6 @@ from typing import Any, Optional, Union
 from uuid import uuid4
 import bpy
 import bmesh
-from CodeToCAD import Dimension
 from CodeToCAD.CodeToCADTypes import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
 import CodeToCAD.utilities as Utilities
 from . import BlenderDefinitions
@@ -1993,13 +1992,13 @@ class BlenderCurvePrimitives():
         enableCurveExtraObjectsAddon()
 
         heightMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Dimension.fromString(height)).value
+            Utilities.Dimension.fromString(height)).value
 
         radiusMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Dimension.fromString(radius)).value
+            Utilities.Dimension.fromString(radius)).value
 
         radiusEndMeters = BlenderDefinitions.BlenderLength.convertDimensionToBlenderUnit(
-            Dimension.fromString(radiusEnd)) if radiusEnd else None
+            Utilities.Dimension.fromString(radiusEnd)) if radiusEnd else None
 
         radiusDiff = 0 if radiusEndMeters is None else (
             radiusEndMeters - radiusMeters).value

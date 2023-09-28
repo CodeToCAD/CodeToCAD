@@ -7,12 +7,13 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import PartInterface, LandmarkInterface
+from CodeToCAD.interfaces import PartInterface, LandmarkInterface, EntityInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
-from . import Entity, Joint
 from .Material import Material
+from .Entity import Entity
+from .Joint import Joint
 
 
 class Part(Entity, PartInterface):

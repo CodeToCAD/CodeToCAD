@@ -17,6 +17,7 @@ from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
 
+
 bl_info = {
     "name": "CodeToCAD",
     "author": "CodeToCAD",
@@ -110,20 +111,9 @@ def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
     import CodeToCAD
     import blenderProvider
-    import blenderProvider.BlenderActions
-    import blenderProvider.BlenderDefinitions
-    import CodeToCAD.interfaces
-    import CodeToCAD.utilities
 
-    reload(CodeToCAD.utilities)
-    reload(CodeToCAD.interfaces)
-    reload(blenderProvider)
-    reload(blenderProvider.BlenderDefinitions)
-    reload(blenderProvider.BlenderActions)
     reload(CodeToCAD)
-
-    from blenderProvider import injectBlenderProvider
-    injectBlenderProvider(globals())
+    reload(blenderProvider)
 
     addCodeToCADToBlenderConsole()
 
@@ -377,9 +367,6 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     sys.path.append(str(codeToCADPath))
 
-    from blenderProvider import injectBlenderProvider
-    injectBlenderProvider(globals())
-
     return {'FINISHED'} if returnBlenderOperationStatus else None
 
 
@@ -389,16 +376,12 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 
     replace_help(namspace)
 
-    from CodeToCAD import (
-        Analytics, Angle, Animation,
-        Curve, Dimension, Dimensions,
+    from blenderProvider import (
+        Analytics, Animation,
         Joint, Landmark, Material,
-        Part, Scene, Shape,
-        Sketch, center, max, min)
+        Part, Scene,
+        Sketch)
     from CodeToCAD.utilities import Angle, Dimension, Dimensions, center, max, min
-
-    from blenderProvider import injectBlenderProvider
-    injectBlenderProvider(globals())
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -516,8 +499,17 @@ def runFromCommandLineArguments(*args):
 blenderLoadPostHandler: list = bpy.app.handlers.load_post  # type: ignore
 
 
+def checkVersion():
+    from blenderProvider import BlenderActions, BlenderDefinitions
+
+    if BlenderActions.getBlenderVersion() and BlenderActions.getBlenderVersion() < BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value:
+        print(
+            f"CodeToCAD BlenderProvider only supports Blender versions {'.'.join(tuple, BlenderDefinitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(BlenderActions.getBlenderVersion())}")  # type: ignore
+
+
 def register():
     print("Registering ", __name__)
+
     bpy.utils.register_class(CodeToCADAddonPreferences)
     bpy.utils.register_class(CodeToCADAddonPreferences.AddCodeToCADToPath)
     bpy.utils.register_class(ReloadLastImport)
@@ -533,6 +525,8 @@ def register():
     addCodeToCADToPath()
 
     addCodeToCADToBlenderConsole()
+
+    checkVersion()
 
     blenderLoadPostHandler.append(runFromCommandLineArguments)
 

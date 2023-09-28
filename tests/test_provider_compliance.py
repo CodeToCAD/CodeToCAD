@@ -1,14 +1,13 @@
 import unittest
 
 from CodeToCAD import *
-from providers.blender.blenderProvider import injectBlenderProvider
 
 
 class TestProviderCompliance(unittest.TestCase):
 
-    def test_injectBlenderProvider(self):
+    def test_blenderProvider(self):
         # NOTE: if you're running this test locally, you might need `pip install fake-bpy-module-latest` or Blender API added to python path
-        injectBlenderProvider(globals())
+        from blenderProvider import Part, Sketch, Landmark
         Part("")
         Sketch("")
         Landmark("", "")

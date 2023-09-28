@@ -8,7 +8,12 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD import *
+from . import BlenderActions
+from . import BlenderDefinitions
+
+from CodeToCAD.interfaces import RenderInterface, CameraInterface
+from CodeToCAD.CodeToCADTypes import *
+from CodeToCAD.utilities import *
 
 
 class Render(RenderInterface):

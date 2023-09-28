@@ -7,9 +7,12 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD import *
+from CodeToCAD.interfaces import SketchInterface
+from CodeToCAD.CodeToCADTypes import *
+from CodeToCAD.utilities import *
 
-from . import Entity
+from .Part import Part
+from .Entity import Entity
 
 
 class Sketch(Entity, SketchInterface):
