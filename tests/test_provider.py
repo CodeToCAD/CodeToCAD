@@ -10,13 +10,13 @@ import CodeToCAD.utilities as Utilities
 from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
-from blenderProvider import *
+from providers.blender.blenderProvider import *
 
 if __name__ == "__main__":
     print("Started test_provider")
 
-    import tests.test_providers
-    unittest.main(tests.test_providers)
+    import tests.test_provider
+    unittest.main(tests.test_provider)
 
     print("Completed test_provider")
 

@@ -7,7 +7,7 @@ class TestProviderCompliance(unittest.TestCase):
 
     def test_blenderProvider(self):
         # NOTE: if you're running this test locally, you might need `pip install fake-bpy-module-latest` or Blender API added to python path
-        from blenderProvider import Part, Sketch, Landmark
+        from providers.blender.blenderProvider import Part, Sketch, Landmark
         Part("")
         Sketch("")
         Landmark("", "")

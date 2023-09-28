@@ -1,10 +1,8 @@
 import unittest
-from . import BlenderActions
-
 from CodeToCAD import *
 
 from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
-from providers.blender.BlenderActions import *
+from providers.blender.blenderProvider import *
 
 
 class TestBlenderActions(unittest.TestCase):

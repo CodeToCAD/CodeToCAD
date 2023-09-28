@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import LandmarkInterface
+from CodeToCAD.interfaces import LandmarkInterface, EntityInterface
 from CodeToCAD.CodeToCADTypes import *
 from CodeToCAD.utilities import *
 
