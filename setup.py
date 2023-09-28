@@ -1,5 +1,5 @@
 import subprocess
-from setuptools import setup
+from setuptools import setup, find_packages
 from pathlib import Path
 long_description = (Path(__file__).parent / "README.md").read_text()
 
@@ -22,7 +22,8 @@ setup(
     author='CodeToCAD',
     author_email='shehab@codethatdown.com',
     license='GPL v3',
-    packages=['CodeToCAD'],
+    packages=['CodeToCAD', "CodeToCAD.interfaces",
+              "CodeToCAD.providersSample"],
     install_requires=[],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
