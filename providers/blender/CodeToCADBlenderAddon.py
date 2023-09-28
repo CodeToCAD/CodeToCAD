@@ -117,6 +117,8 @@ def reloadCodeToCADModules():
 
     addCodeToCADToBlenderConsole()
 
+    checkVersion()
+
 
 class ImportedFileWatcher():
     filepath: str
@@ -342,18 +344,25 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
         context) or str(Path(__file__).parent.absolute())
 
     if not codeToCADPath or not os.path.exists(codeToCADPath):
-        print("Could not add BlenderProvider to path. Please make sure you have installed and configured the CodeToCADBlenderAddon first.")
+        print("The CodeToCAD base module path that you provided does not exist.")
         return {'CANCELLED'} if returnBlenderOperationStatus else None
 
     codeToCADPath = Path(codeToCADPath)
 
     corePath = codeToCADPath / "CodeToCAD"
-    blenderProviderPath = codeToCADPath / "blenderProvider"
+    blenderProviderPath = codeToCADPath / "providers/blender/blenderProvider"
 
-    if not Path(blenderProviderPath / "BlenderActions.py").is_file() and not Path(codeToCADPath / "BlenderActions.py").is_file():
-        print(
-            "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon", "Searching in: ", codeToCADPath)
-        return {'CANCELLED'} if returnBlenderOperationStatus else None
+    if not Path(blenderProviderPath / "BlenderActions.py").is_file():
+
+        blenderProviderPath = codeToCADPath / "blenderProvider"
+
+        if not Path(blenderProviderPath / "BlenderActions.py").is_file():
+
+            print(
+                "Could not find BlenderProvider files. Please reconfigure CodeToCADBlenderAddon", "Searching in: ", codeToCADPath)
+            return {'CANCELLED'} if returnBlenderOperationStatus else None
+    else:
+        sys.path.append(str(codeToCADPath / "providers/blender"))
 
     print("Adding {} to path".format(corePath))
 
@@ -525,8 +534,6 @@ def register():
     addCodeToCADToPath()
 
     addCodeToCADToBlenderConsole()
-
-    checkVersion()
 
     blenderLoadPostHandler.append(runFromCommandLineArguments)
 
