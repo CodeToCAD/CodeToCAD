@@ -1,7 +1,6 @@
 import bpy
 
 from enum import Enum
-from CodeToCAD import Dimension
 import CodeToCAD.utilities as Utilities
 
 

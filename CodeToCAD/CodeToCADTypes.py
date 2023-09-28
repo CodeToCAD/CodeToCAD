@@ -2,7 +2,6 @@ from typing import TypeAlias, Union, Optional
 
 from CodeToCAD.utilities import *
 
-Animation: TypeAlias
 EntityInterface: TypeAlias
 PartInterface: TypeAlias
 MaterialInterface: TypeAlias

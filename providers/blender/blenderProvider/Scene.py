@@ -8,7 +8,12 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD import *
+from CodeToCAD.interfaces import SceneInterface, EntityInterface
+from CodeToCAD.CodeToCADTypes import *
+from CodeToCAD.utilities import *
+
+from .Part import Part
+from .Entity import Entity
 
 
 class Scene(SceneInterface):

@@ -1,6 +1,5 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
-from . import BlenderActions, BlenderDefinitions
 from .Entity import Entity
 from .Part import Part
 from .Sketch import Sketch

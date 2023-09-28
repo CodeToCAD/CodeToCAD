@@ -27,7 +27,8 @@ mkdir $BLENDER_ADDON_PATH
 mkdir $BLENDER_ADDON_PATH/blenderProvider
 cp -r ./providers/blender/blenderProvider $BLENDER_ADDON_PATH
 cp -r ./CodeToCAD $BLENDER_ADDON_PATH/
-cp -f ./providers/blender/CodeToCADBlenderAddon.py $BLENDER_ADDON_PATH/__init__.py
+cp ./providers/blender/CodeToCADBlenderAddon.py $BLENDER_ADDON_PATH/__init__.py
+cp ./providers/blender/injectBlenderProvider.py $BLENDER_ADDON_PATH/injectBlenderProvider.py
 
 # Write version string
 echo "Writing version string."
