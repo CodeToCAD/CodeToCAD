@@ -66,6 +66,12 @@
         "imagePath": ""
     },
     {
+        "name": "Universal Joint",
+        "description": "Parts can be mated/jointed using Landmarks and Joints.",
+        "codeFilepath": "universalJoint.py",
+        "imagePath": ""
+    },
+    {
         "name": "Simple Humanoid",
         "description": "",
         "codeFilepath": "simpleHumanoid.py",
