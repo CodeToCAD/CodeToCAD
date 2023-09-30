@@ -246,22 +246,22 @@ def createDoubleUniversalJoint():
     ).create("cross2")
 
     Joint(
-        yokeTop.getLandmark("pinArm_pin"),
         cross1.getLandmark(PresetLandmark.right),
-    ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, None, None)
+        yokeTop.getLandmark("pinArm_pin"),
+    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
 
     Joint(
         cross1.getLandmark(PresetLandmark.front), yokeCenterPinTop
-    ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45)
+    ).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45).limitLocationXYZ(0, 0, 0)
 
     Joint(yokeCenterPinBottom,
           cross2.getLandmark(PresetLandmark.front),
-          ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45)
+          ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
 
     Joint(
         cross2.getLandmark(
             PresetLandmark.right), yokeBottom.getLandmark("pinArm_pin")
-    ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45)
+    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
 
 
 if __name__ == "__main__":
