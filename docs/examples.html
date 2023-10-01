@@ -178,6 +178,7 @@
         <a href='#Bracelet' class="chip">Bracelet</a>
         <a href='#Ball Joint' class="chip">Ball Joint</a>
         <a href='#Universal Joint' class="chip">Universal Joint</a>
+        <a href='#Double Universal Joint' class="chip">Double Universal Joint</a>
         <a href='#Simple Humanoid' class="chip">Simple Humanoid</a>
         <a href='#Import and Export' class="chip">Import and Export</a>
         </div>
@@ -1227,6 +1228,10 @@ class Yoke:
 
 
 
+    isHollowed: bool = True
+
+
+
     def _createHollowRod(self, name: str, length: Dimension) -> Part:
 
         outerRadius = self.shaftRadius + self.wallThickness
@@ -1239,9 +1244,11 @@ class Yoke:
 
 
 
-        rod.hollow(self.wallThickness, self.wallThickness,
+        if self.isHollowed:
 
-                   self.wallThickness/2, flipAxis=True)
+            rod.hollow(self.wallThickness, self.wallThickness,
+
+                       self.wallThickness/2, flipAxis=True)
 
 
 
@@ -1265,9 +1272,11 @@ class Yoke:
 
 
 
-        shaftCoupling.hole(shaftCoupling.getLandmark(PresetLandmark.back),
+        if self.isHollowed:
 
-                           self.setScrewRadius, shaftCoupling.getDimensions().y, normalAxis="y")
+            shaftCoupling.hole(shaftCoupling.getLandmark(PresetLandmark.back),
+
+                               self.setScrewRadius, shaftCoupling.getDimensions().y, normalAxis="y")
 
 
 
@@ -1367,6 +1376,10 @@ class Yoke:
 
 
 
+        shaftCoupling.getLandmark(PresetLandmark.top)
+
+
+
         yoke = shaftCoupling.union(
 
             pinArm,
@@ -1374,6 +1387,12 @@ class Yoke:
             isTransferLandmarks=True
 
         )
+
+
+
+        # shaftCoupling.filletFaces(
+
+        #     "25mm", [shaftCoupling.getLandmark(PresetLandmark.top)])
 
 
 
@@ -1417,9 +1436,15 @@ class Cross:
 
 
 
-        Joint(core.getLandmark(PresetLandmark.top), pin.getLandmark(
+        Joint(
 
-            PresetLandmark.bottom)).limitLocationXYZ(0, 0, 0)
+            core.getLandmark(PresetLandmark.top),
+
+            pin.getLandmark(
+
+                PresetLandmark.bottom)
+
+        ).limitLocationXYZ(0, 0, 0)
 
 
 
@@ -1542,6 +1567,195 @@ if __name__ == "__main__":
 
 
     createUniversalJoint()
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
+            <div class="className" id='Double Universal Joint''>Double Universal Joint</div>
+            
+            <div class="methods">
+            <div style="
+            width: 50%;">Parts can be mated/jointed using Landmarks and Joints.</div>
+            
+            
+            <pre>
+            
+from CodeToCAD import *
+
+from universalJoint import Yoke, Cross
+
+
+
+
+
+def createDoubleUniversalJoint():
+
+
+
+    shaftRadius = Dimension.fromString("5mm")
+
+    wallThickness = Dimension.fromString("3mm")
+
+    shaftLength = Dimension.fromString("15mm")
+
+    centerYolkLength = Dimension.fromString("5mm")
+
+    pinArmLength = Dimension.fromString("13mm")
+
+    pinHoleRadius = Dimension.fromString("2mm")
+
+    setScrewRadius = Dimension.fromString("3mm")
+
+
+
+    yokeCenter = Yoke(
+
+        shaftRadius=shaftRadius,
+
+        wallThickness=wallThickness,
+
+        shaftLength=centerYolkLength,
+
+        pinArmLength=pinArmLength,
+
+        pinHoleRadius=pinHoleRadius,
+
+        setScrewRadius=setScrewRadius,
+
+        isHollowed=False
+
+    ).create("yokeCenter")
+
+    yokeCenterPinTop = yokeCenter.getLandmark("pinArm_pin")
+
+    yokeCenterPinTopLocation = yokeCenterPinTop.getLocationLocal()
+
+    yokeCenterBottomZ = yokeCenter.getLandmark(
+
+        PresetLandmark.bottom).getLocationLocal().z
+
+    yokeCenter.mirror(yokeCenter.getLandmark(
+
+        PresetLandmark.bottom), "z", None)
+
+    yokeCenterPinBottom = yokeCenter.createLandmark(
+
+        "pinBottom", yokeCenterPinTopLocation.x, yokeCenterPinTopLocation.y, yokeCenterPinTopLocation.z * -1 + yokeCenterBottomZ*2)
+
+
+
+    yokeTop = Yoke(
+
+        shaftRadius=shaftRadius,
+
+        wallThickness=wallThickness,
+
+        shaftLength=shaftLength,
+
+        pinArmLength=pinArmLength,
+
+        pinHoleRadius=pinHoleRadius,
+
+        setScrewRadius=setScrewRadius
+
+    ).create("yokeTop")
+
+    yokeTop.rotateY(180)
+
+    yokeTop.rotateZ(90)
+
+
+
+    yokeBottom = Yoke(
+
+        shaftRadius=shaftRadius,
+
+        wallThickness=wallThickness,
+
+        shaftLength=shaftLength,
+
+        pinArmLength=pinArmLength,
+
+        pinHoleRadius=pinHoleRadius,
+
+        setScrewRadius=setScrewRadius
+
+    ).create("yokeBottom")
+
+    yokeBottom.rotateZ(90)
+
+
+
+    cross1 = Cross(
+
+        width=shaftRadius,
+
+        pinRadius=pinHoleRadius,
+
+        pinLength=shaftRadius/2 + wallThickness
+
+    ).create("cross1")
+
+
+
+    cross2 = Cross(
+
+        width=shaftRadius,
+
+        pinRadius=pinHoleRadius,
+
+        pinLength=shaftRadius/2 + wallThickness
+
+    ).create("cross2")
+
+
+
+    Joint(
+
+        cross1.getLandmark(PresetLandmark.right),
+
+        yokeTop.getLandmark("pinArm_pin"),
+
+    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
+
+
+
+    Joint(
+
+        cross1.getLandmark(PresetLandmark.front), yokeCenterPinTop
+
+    ).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45).limitLocationXYZ(0, 0, 0)
+
+
+
+    Joint(yokeCenterPinBottom,
+
+          cross2.getLandmark(PresetLandmark.front),
+
+          ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
+
+
+
+    Joint(
+
+        cross2.getLandmark(
+
+            PresetLandmark.right), yokeBottom.getLandmark("pinArm_pin")
+
+    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
+
+
+
+
+
+if __name__ == "__main__":
+
+
+
+    createDoubleUniversalJoint()
 
             </pre>
         </div>
