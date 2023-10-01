@@ -1394,6 +1394,17 @@ def getMesh(meshName: str,) -> bpy.types.Mesh:
     return blenderMesh
 
 
+def getObjectType(objectName: str) -> BlenderDefinitions.BlenderObjectTypes:
+
+    blenderObject = bpy.data.objects.get(objectName)
+
+    assert \
+        blenderObject is not None, \
+        f"Object {objectName} does not exists"
+
+    return BlenderDefinitions.BlenderObjectTypes[blenderObject.type]
+
+
 # Applies the dependency graph to the object and persists its data using .copy()
 # This allows us to apply modifiers, UV data, etc.. to the mesh.
 # This is different from applyObjectTransformations()
