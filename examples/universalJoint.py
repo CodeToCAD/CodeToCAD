@@ -99,10 +99,15 @@ class Yoke:
 
         pinArm.mirror(shaftCoupling, "y", None)
 
+        shaftCoupling.getLandmark(PresetLandmark.top)
+
         yoke = shaftCoupling.union(
             pinArm,
             isTransferLandmarks=True
         )
+
+        # shaftCoupling.filletFaces(
+        #     "25mm", [shaftCoupling.getLandmark(PresetLandmark.top)])
 
         yoke.rename(name)
 
@@ -124,8 +129,11 @@ class Cross:
 
         pin = Part("pin").createCylinder(self.pinRadius, self.pinLength)
 
-        Joint(core.getLandmark(PresetLandmark.top), pin.getLandmark(
-            PresetLandmark.bottom)).limitLocationXYZ(0, 0, 0)
+        Joint(
+            core.getLandmark(PresetLandmark.top),
+            pin.getLandmark(
+                PresetLandmark.bottom)
+        ).limitLocationXYZ(0, 0, 0)
 
         pin.circularPattern(4, 90, core, normalDirectionAxis="y")
 
