@@ -49,6 +49,17 @@ class Joint(JointInterface):
 
         raise TypeError("Only Entity or Landmark types are allowed.")
 
+    @staticmethod
+    def _getEntityOrLandmarkParentName(entityOrLandmark) -> str:
+        if isinstance(entityOrLandmark, str):
+            return entityOrLandmark
+        elif isinstance(entityOrLandmark, EntityInterface):
+            return entityOrLandmark.name
+        elif isinstance(entityOrLandmark, LandmarkInterface):
+            return entityOrLandmark.getParentEntity().name
+
+        raise TypeError("Only Entity or Landmark types are allowed.")
+
     def pivot(self
               ):
 
@@ -192,7 +203,11 @@ class Joint(JointInterface):
         elif isinstance(objectToLimitName, LandmarkInterface):
             objectToLimitName = objectToLimitName.getParentEntity().name
 
-        relativeToObjectName = Joint._getEntityOrLandmarkName(self.entity1)
+        relativeToObjectName = Joint._getEntityOrLandmarkName(
+            self.entity1)
+
+        relativeToObjectOrParentName = Joint._getEntityOrLandmarkParentName(
+            self.entity1)
 
         # BlenderActions.applyLimitRotationConstraint(
         #     objectToLimitName, rotationPairX, rotationPairY, rotationPairZ, relativeToObjectName)
@@ -205,7 +220,7 @@ class Joint(JointInterface):
         copyZ = rotationPairZ is not None and all(
             [value is not None for value in rotationPairZ])
         BlenderActions.applyCopyRotationConstraint(
-            objectToLimitName, relativeToObjectName, copyX, copyY, copyZ)
+            objectToLimitName, relativeToObjectOrParentName, copyX, copyY, copyZ)
         self._applyPivotConstraintIfLocationAndRotationLimitConstraintsExist(
             objectToLimitName, relativeToObjectName)
 
