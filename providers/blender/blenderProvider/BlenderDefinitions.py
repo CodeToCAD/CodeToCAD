@@ -11,14 +11,23 @@ class BlenderTypes(Enum):
     TEXT = bpy.types.TextCurve
 
 
+class BlenderObjectTypes(Enum):
+    # References https://docs.blender.org/api/current/bpy_types_enum_items/object_type_items.html#rna-enum-object-type-items
+    MESH = "MESH"
+    EMPTY = "EMPTY"
+    CURVE = "CURVE"
+    LIGHT = "LIGHT"
+    CAMERA = "CAMERA"
+    FONT = "FONT"  # aka TEXT
+
+
 class BlenderVersions(Enum):
     TWO_DOT_EIGHTY = (2, 80, 0)
     THREE_DOT_ONE = (3, 1, 0)
 
-# These are the units allowed in a Blender document:
-
 
 class BlenderLength(Utilities.Units):
+    # These are the units allowed in a Blender document:
     # metric
     KILOMETERS = Utilities.LengthUnit.km
     METERS = Utilities.LengthUnit.m
