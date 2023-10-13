@@ -1,13 +1,13 @@
+from functools import wraps
 from typing import Optional
-from . import BlenderActions
-from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import SketchInterface
 from CodeToCAD.CodeToCADTypes import *
+from CodeToCAD.interfaces import SketchInterface
 from CodeToCAD.utilities import *
 
-from .Part import Part
+from . import BlenderActions, BlenderDefinitions
 from .Entity import Entity
+from .Part import Part
 
 
 class Sketch(Entity, SketchInterface):
@@ -112,6 +112,8 @@ class Sketch(Entity, SketchInterface):
     @staticmethod
     def _createPrimitiveDecorator(curvePrimitiveType: CurvePrimitiveTypes):
         def decorator(primitiveFunction):
+
+            @wraps(primitiveFunction)
             def wrapper(*args, **kwargs):
 
                 self = args[0]
