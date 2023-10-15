@@ -14,32 +14,14 @@
                     }
                 }
             },
-            "createFromFile": {
-                "action": "create",
-                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
-                "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
-                    "fileType": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
-            "isExists": {
-                "action": "get",
-                "information": "Check if an entity exists",
-                "returnType": "boolean"
-            },
             "rename": {
                 "action": "modify",
                 "information": "Rename the entity, with an option to rename linked landmarks and underlying data.",
                 "parameters": {
-                    "newName": {
+                    "new_name": {
                         "type": "string"
                     },
-                    "renamelinkedEntitiesAndLandmarks": {
+                    "rename_linked_entities_and_landmarks": {
                         "type": "boolean",
                         "defaultValue": true
                     }
@@ -49,21 +31,7 @@
                 "action": "delete",
                 "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
                 "parameters": {
-                    "removeChildren": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "isVisible": {
-                "action": "get",
-                "information": "Returns whether the entity is visible in the scene.",
-                "returnType": "boolean"
-            },
-            "setVisible": {
-                "action": "interact",
-                "information": "Toggles visibility of an entity in the scene.",
-                "parameters": {
-                    "isVisible": {
+                    "remove_children": {
                         "type": "boolean"
                     }
                 }
@@ -90,24 +58,6 @@
                     }
                 }
             },
-            "getNativeInstance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "returnType": "any",
-                "parameters": {}
-            },
-            "getLocationWorld": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the entities XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "getLocationLocal": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the entities XYZ location relative to Local Space.",
-                "parameters": {}
-            },
             "select": {
                 "action": "interact",
                 "information": "Select the entity (in UI).",
@@ -117,9 +67,6 @@
                 "action": "interact",
                 "information": "Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'",
                 "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
                     "overwrite": {
                         "type": "boolean",
                         "defaultValue": true
@@ -127,6 +74,9 @@
                     "scale": {
                         "type": "float",
                         "defaultValue": 1.0
+                    },
+                    "file_path": {
+                        "type": "string"
                     }
                 }
             },
@@ -134,215 +84,15 @@
                 "action": "create",
                 "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
                 "parameters": {
-                    "mirrorAcrossEntityOrLandmark": {
-                        "type": "string,Entity,Landmark"
-                    },
                     "axis": {
                         "type": "string,int,Axis"
                     },
-                    "resultingMirroredEntityName": {
+                    "mirror_across_entity_or_landmark": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "resulting_mirrored_entity_name": {
                         "type": "string",
                         "required": false
-                    }
-                }
-            },
-            "linearPattern": {
-                "action": "modify",
-                "information": "Pattern in a uniform direction.",
-                "parameters": {
-                    "instanceCount": {
-                        "type": "int"
-                    },
-                    "offset": {
-                        "type": "string,float,Dimension"
-                    },
-                    "directionAxis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
-            },
-            "circularPattern": {
-                "action": "modify",
-                "information": "Pattern in a circular direction.",
-                "parameters": {
-                    "instanceCount": {
-                        "type": "int"
-                    },
-                    "separationAngle": {
-                        "type": "string,float,Angle"
-                    },
-                    "centerEntityOrLandmark": {
-                        "type": "string,Entity,Landmark"
-                    },
-                    "normalDirectionAxis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
-            },
-            "translateXYZ": {
-                "action": "modify",
-                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "translateX": {
-                "action": "modify",
-                "information": "Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
-                "parameters": {
-                    "amount": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "translateY": {
-                "action": "modify",
-                "information": "Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
-                "parameters": {
-                    "amount": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "translateZ": {
-                "action": "modify",
-                "information": "Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
-                "parameters": {
-                    "amount": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scaleXYZ": {
-                "action": "modify",
-                "information": "Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scaleX": {
-                "action": "modify",
-                "information": "Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scaleY": {
-                "action": "modify",
-                "information": "Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scaleZ": {
-                "action": "modify",
-                "information": "Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scaleXByFactor": {
-                "action": "modify",
-                "information": "Scale in the X direction by a multiple.",
-                "parameters": {
-                    "scaleFactor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scaleYByFactor": {
-                "action": "modify",
-                "information": "Scale in the Y direction by a multiple.",
-                "parameters": {
-                    "scaleFactor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scaleZByFactor": {
-                "action": "modify",
-                "information": "Scale in the X direction by a multiple.",
-                "parameters": {
-                    "scaleFactor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scaleKeepAspectRatio": {
-                "action": "modify",
-                "information": "Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    },
-                    "axis": {
-                        "type": "string,int,Axis"
-                    }
-                }
-            },
-            "rotateXYZ": {
-                "action": "modify",
-                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Angle"
-                    },
-                    "y": {
-                        "type": "string,float,Angle"
-                    },
-                    "z": {
-                        "type": "string,float,Angle"
-                    }
-                }
-            },
-            "rotateX": {
-                "action": "modify",
-                "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "rotation": {
-                        "type": "string,float,Angle"
-                    }
-                }
-            },
-            "rotateY": {
-                "action": "modify",
-                "information": "Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "rotation": {
-                        "type": "string,float,Angle"
-                    }
-                }
-            },
-            "rotateZ": {
-                "action": "modify",
-                "information": "Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "rotation": {
-                        "type": "string,float,Angle"
                     }
                 }
             },
@@ -353,9 +103,6 @@
                     "angle": {
                         "type": "string,float,Angle"
                     },
-                    "screwPitch": {
-                        "type": "string,float,Dimension"
-                    },
                     "interations": {
                         "type": "int",
                         "defaultValue": 1
@@ -363,6 +110,9 @@
                     "axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "z"
+                    },
+                    "screw_pitch": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -378,14 +128,95 @@
                     }
                 }
             },
-            "createLandmark": {
-                "action": "get",
-                "returnType": "Landmark",
-                "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
+            "create_from_file": {
+                "action": "create",
+                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
                 "parameters": {
-                    "landmarkName": {
+                    "file_path": {
                         "type": "string"
                     },
+                    "file_type": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            },
+            "is_exists": {
+                "action": "get",
+                "information": "Check if an entity exists",
+                "returnType": "boolean"
+            },
+            "is_visible": {
+                "action": "get",
+                "information": "Returns whether the entity is visible in the scene.",
+                "returnType": "boolean"
+            },
+            "set_visible": {
+                "action": "interact",
+                "information": "Toggles visibility of an entity in the scene.",
+                "parameters": {
+                    "is_visible": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "get_native_instance": {
+                "action": "get",
+                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
+                "returnType": "any",
+                "parameters": {}
+            },
+            "get_location_world": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the entities XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "get_location_local": {
+                "action": "get",
+                "returnType": "Point",
+                "information": "Get the entities XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "linear_pattern": {
+                "action": "modify",
+                "information": "Pattern in a uniform direction.",
+                "parameters": {
+                    "offset": {
+                        "type": "string,float,Dimension"
+                    },
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
+            "circular_pattern": {
+                "action": "modify",
+                "information": "Pattern in a circular direction.",
+                "parameters": {
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "separation_angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "center_entity_or_landmark": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "normal_direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
+            "translate_xyz": {
+                "action": "modify",
+                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
                     "x": {
                         "type": "string,float,Dimension"
                     },
@@ -397,24 +228,193 @@
                     }
                 }
             },
-            "getBoundingBox": {
+            "translate_x": {
+                "action": "modify",
+                "information": "Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "amount": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "translate_y": {
+                "action": "modify",
+                "information": "Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "amount": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "translate_z": {
+                "action": "modify",
+                "information": "Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.",
+                "parameters": {
+                    "amount": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_xyz": {
+                "action": "modify",
+                "information": "Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_x": {
+                "action": "modify",
+                "information": "Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_y": {
+                "action": "modify",
+                "information": "Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_z": {
+                "action": "modify",
+                "information": "Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_x_by_factor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_y_by_factor": {
+                "action": "modify",
+                "information": "Scale in the Y direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_z_by_factor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_keep_aspect_ratio": {
+                "action": "modify",
+                "information": "Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis"
+                    }
+                }
+            },
+            "rotate_xyz": {
+                "action": "modify",
+                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Angle"
+                    },
+                    "y": {
+                        "type": "string,float,Angle"
+                    },
+                    "z": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "rotate_x": {
+                "action": "modify",
+                "information": "Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "rotation": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "rotate_y": {
+                "action": "modify",
+                "information": "Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "rotation": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "rotate_z": {
+                "action": "modify",
+                "information": "Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
+                "parameters": {
+                    "rotation": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "create_landmark": {
+                "action": "get",
+                "returnType": "Landmark",
+                "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    },
+                    "landmark_name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "get_bounding_box": {
                 "action": "get",
                 "returnType": "BoundaryBox",
                 "information": "Get the Boundary Box around the entity.",
                 "parameters": {}
             },
-            "getDimensions": {
+            "get_dimensions": {
                 "action": "get",
                 "returnType": "Dimensions",
                 "information": "Get the length span in each coordinate axis (X,Y,Z).",
                 "parameters": {}
             },
-            "getLandmark": {
+            "get_landmark": {
                 "action": "get",
                 "returnType": "Landmark",
                 "information": "Get the landmark by name",
                 "parameters": {
-                    "landmarkName": {
+                    "landmark_name": {
                         "type": "string,PresetLandmark"
                     }
                 }
@@ -427,150 +427,15 @@
                 "Mesh"
             ],
             "extends": "Entity",
-            "createCube": {
-                "action": "create",
-                "information": "Adds cuboid geometry to a part.",
-                "parameters": {
-                    "width": {
-                        "type": "string,float,Dimension"
-                    },
-                    "length": {
-                        "type": "string,float,Dimension"
-                    },
-                    "height": {
-                        "type": "string,float,Dimension"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createCone": {
-                "action": "create",
-                "information": "Adds cone geometry to a part.",
-                "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "height": {
-                        "type": "string,float,Dimension"
-                    },
-                    "draftRadius": {
-                        "type": "string,float,Dimension",
-                        "defaultValue": 0
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createCylinder": {
-                "action": "create",
-                "information": "Adds cylinder geometry to a part.",
-                "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "height": {
-                        "type": "string,float,Dimension"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createTorus": {
-                "action": "create",
-                "information": "Adds torus geometry to a part.",
-                "parameters": {
-                    "innerRadius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "outerRadius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createSphere": {
-                "action": "create",
-                "information": "Adds sphere geometry to a part.",
-                "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
-            "createGear": {
-                "action": "create",
-                "information": "Adds gear geometry to a part.",
-                "parameters": {
-                    "outerRadius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "addendum": {
-                        "type": "string,float,Dimension"
-                    },
-                    "innerRadius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "dedendum": {
-                        "type": "string,float,Dimension"
-                    },
-                    "height": {
-                        "type": "string,float,Dimension"
-                    },
-                    "pressureAngle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": "20d"
-                    },
-                    "numberOfTeeth": {
-                        "type": "int",
-                        "defaultValue": 12
-                    },
-                    "skewAngle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0
-                    },
-                    "conicalAngle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0
-                    },
-                    "crownAngle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0
-                    },
-                    "keywordArguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
-                    }
-                }
-            },
             "clone": {
                 "action": "get",
                 "returnType": "Part",
                 "information": "Clone an existing Part with its geometry and properties. Returns the new Part.",
                 "parameters": {
-                    "newName": {
+                    "new_name": {
                         "type": "string"
                     },
-                    "copyLandmarks": {
+                    "copy_landmarks": {
                         "type": "boolean",
                         "defaultValue": true
                     }
@@ -580,10 +445,10 @@
                 "action": "create",
                 "information": "Interpolate between two existing parts.",
                 "parameters": {
-                    "Landmark1": {
+                    "landmark1": {
                         "type": "Landmark"
                     },
-                    "Landmark2": {
+                    "landmark2": {
                         "type": "Landmark"
                     }
                 }
@@ -592,14 +457,14 @@
                 "action": "modify",
                 "information": "Boolean union",
                 "parameters": {
-                    "withPart": {
+                    "with_part": {
                         "type": "string,Part"
                     },
-                    "deleteAfterUnion": {
+                    "delete_after_union": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "isTransferLandmarks": {
+                    "is_transfer_landmarks": {
                         "type": "boolean",
                         "defaultValue": false
                     }
@@ -609,14 +474,14 @@
                 "action": "modify",
                 "information": "Boolean subtraction",
                 "parameters": {
-                    "withPart": {
+                    "with_part": {
                         "type": "string,Part"
                     },
-                    "deleteAfterSubtract": {
+                    "delete_after_subtract": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "isTransferLandmarks": {
+                    "is_transfer_landmarks": {
                         "type": "boolean",
                         "defaultValue": false
                     }
@@ -626,14 +491,14 @@
                 "action": "modify",
                 "information": "Boolean intersection",
                 "parameters": {
-                    "withPart": {
+                    "with_part": {
                         "type": "string,Part"
                     },
-                    "deleteAfterIntersect": {
+                    "delete_after_intersect": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "isTransferLandmarks": {
+                    "is_transfer_landmarks": {
                         "type": "boolean",
                         "defaultValue": false
                     }
@@ -643,20 +508,20 @@
                 "action": "modify",
                 "information": "Remove vertices, if necessary, until the part has a specified wall thickness.",
                 "parameters": {
-                    "thicknessX": {
+                    "thickness_x": {
                         "type": "string,float,Dimension"
                     },
-                    "thicknessY": {
+                    "thickness_y": {
                         "type": "string,float,Dimension"
                     },
-                    "thicknessZ": {
+                    "thickness_z": {
                         "type": "string,float,Dimension"
                     },
-                    "startAxis": {
+                    "start_axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "z"
                     },
-                    "flipAxis": {
+                    "flip_axis": {
                         "type": "boolean",
                         "defaultValue": false
                     }
@@ -675,154 +540,289 @@
                 "action": "modify",
                 "information": "Create a hole.",
                 "parameters": {
-                    "holeLandmark": {
-                        "type": "string,Landmark"
-                    },
                     "radius": {
                         "type": "string,float,Dimension"
                     },
                     "depth": {
                         "type": "string,float,Dimension"
                     },
-                    "normalAxis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    },
-                    "flipAxis": {
-                        "type": "boolean",
-                        "defaultValue": false
-                    },
-                    "initialRotationX": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "initialRotationY": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "initialRotationZ": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "mirrorAboutEntityOrLandmark": {
-                        "type": "string,Entity,Landmark",
-                        "required": false
-                    },
-                    "mirrorAxis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "x"
-                    },
                     "mirror": {
                         "type": "boolean",
                         "defaultValue": false
                     },
-                    "circularPatternInstanceCount": {
-                        "type": "int",
-                        "defaultValue": 1
+                    "hole_landmark": {
+                        "type": "string,Landmark"
                     },
-                    "circularPatternInstanceSeparation": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "circularPatternInstanceAxis": {
+                    "normal_axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "z"
                     },
-                    "circularPatternAboutEntityOrLandmark": {
+                    "flip_axis": {
+                        "type": "boolean",
+                        "defaultValue": false
+                    },
+                    "initial_rotation_x": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "initial_rotation_y": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "initial_rotation_z": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "mirror_about_entity_or_landmark": {
                         "type": "string,Entity,Landmark",
                         "required": false
                     },
-                    "linearPatternInstanceCount": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
-                    "linearPatternInstanceSeparation": {
-                        "type": "string,float,Dimension",
-                        "defaultValue": 0.0
-                    },
-                    "linearPatternInstanceAxis": {
+                    "mirror_axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "x"
                     },
-                    "linearPattern2ndInstanceCount": {
+                    "circular_pattern_instance_count": {
                         "type": "int",
                         "defaultValue": 1
                     },
-                    "linearPattern2ndInstanceSeparation": {
+                    "circular_pattern_instance_separation": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "circular_pattern_instance_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    },
+                    "circular_pattern_about_entity_or_landmark": {
+                        "type": "string,Entity,Landmark",
+                        "required": false
+                    },
+                    "linear_pattern_instance_count": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "linear_pattern_instance_separation": {
                         "type": "string,float,Dimension",
                         "defaultValue": 0.0
                     },
-                    "linearPattern2ndInstanceAxis": {
+                    "linear_pattern_instance_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "x"
+                    },
+                    "linear_pattern2nd_instance_count": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "linear_pattern2nd_instance_separation": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 0.0
+                    },
+                    "linear_pattern2nd_instance_axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "y"
                     }
                 }
             },
-            "setMaterial": {
+            "create_cube": {
+                "action": "create",
+                "information": "Adds cuboid geometry to a part.",
+                "parameters": {
+                    "width": {
+                        "type": "string,float,Dimension"
+                    },
+                    "length": {
+                        "type": "string,float,Dimension"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "create_cone": {
+                "action": "create",
+                "information": "Adds cone geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "draft_radius": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 0
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "create_cylinder": {
+                "action": "create",
+                "information": "Adds cylinder geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "create_torus": {
+                "action": "create",
+                "information": "Adds torus geometry to a part.",
+                "parameters": {
+                    "inner_radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "outer_radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "create_sphere": {
+                "action": "create",
+                "information": "Adds sphere geometry to a part.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "create_gear": {
+                "action": "create",
+                "information": "Adds gear geometry to a part.",
+                "parameters": {
+                    "addendum": {
+                        "type": "string,float,Dimension"
+                    },
+                    "dedendum": {
+                        "type": "string,float,Dimension"
+                    },
+                    "height": {
+                        "type": "string,float,Dimension"
+                    },
+                    "outer_radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "inner_radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "pressure_angle": {
+                        "type": "string,float,Angle",
+                        "defaultValue": "20d"
+                    },
+                    "number_of_teeth": {
+                        "type": "int",
+                        "defaultValue": 12
+                    },
+                    "skew_angle": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0
+                    },
+                    "conical_angle": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0
+                    },
+                    "crown_angle": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0
+                    },
+                    "keyword_arguments": {
+                        "type": "object",
+                        "required": false,
+                        "information": "key-value pairs to pass onto the native api"
+                    }
+                }
+            },
+            "set_material": {
                 "action": "modify",
                 "information": "Assign a known material to this part.",
                 "parameters": {
-                    "materialName": {
+                    "material_name": {
                         "type": "string,Material"
                     }
                 }
             },
-            "isCollidingWithPart": {
+            "is_colliding_with_part": {
                 "action": "get",
                 "information": "Check if this part is colliding with another.",
                 "returnType": "boolean",
                 "parameters": {
-                    "otherPart": {
+                    "other_part": {
                         "type": "string,Part"
                     }
                 }
             },
-            "filletAllEdges": {
+            "fillet_all_edges": {
                 "action": "modify",
                 "information": "Fillet all edges.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "useWidth": {
+                    "use_width": {
                         "type": "boolean",
                         "defaultValue": false
                     }
                 }
             },
-            "filletEdges": {
+            "fillet_edges": {
                 "action": "modify",
                 "information": "Fillet specific edges.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "landmarksNearEdges": {
+                    "landmarks_near_edges": {
                         "type": "list[string,Landmark]"
                     },
-                    "useWidth": {
+                    "use_width": {
                         "type": "boolean",
                         "defaultValue": false
                     }
                 }
             },
-            "filletFaces": {
+            "fillet_faces": {
                 "action": "modify",
                 "information": "Fillet specific faces.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "landmarksNearFaces": {
+                    "landmarks_near_faces": {
                         "type": "list[string,Landmark]"
                     },
-                    "useWidth": {
+                    "use_width": {
                         "type": "boolean",
                         "defaultValue": false
                     }
                 }
             },
-            "chamferAllEdges": {
+            "chamfer_all_edges": {
                 "action": "modify",
                 "information": "Chamfer all edges.",
                 "parameters": {
@@ -831,55 +831,55 @@
                     }
                 }
             },
-            "chamferEdges": {
+            "chamfer_edges": {
                 "action": "modify",
                 "information": "Chamfer specific edges.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "landmarksNearEdges": {
+                    "landmarks_near_edges": {
                         "type": "list[string,Landmark]"
                     }
                 }
             },
-            "chamferFaces": {
+            "chamfer_faces": {
                 "action": "modify",
                 "information": "Chamfer specific faces.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "landmarksNearFaces": {
+                    "landmarks_near_faces": {
                         "type": "list[string,Landmark]"
                     }
                 }
             },
-            "selectVertexNearLandmark": {
+            "select_vertex_near_landmark": {
                 "action": "interact",
                 "information": "Select the vertex closest to a Landmark on the entity (in UI).",
                 "parameters": {
-                    "landmarkName": {
+                    "landmark_name": {
                         "required": false,
                         "type": "string,Landmark"
                     }
                 }
             },
-            "selectEdgeNearLandmark": {
+            "select_edge_near_landmark": {
                 "action": "interact",
                 "information": "Select an edge closest to a landmark on the entity (in UI).",
                 "parameters": {
-                    "landmarkName": {
+                    "landmark_name": {
                         "required": false,
                         "type": "string,Landmark"
                     }
                 }
             },
-            "selectFaceNearLandmark": {
+            "select_face_near_landmark": {
                 "action": "interact",
                 "information": "Select a face closest to a landmark on the entity (in UI).",
                 "parameters": {
-                    "landmarkName": {
+                    "landmark_name": {
                         "required": false,
                         "type": "string,Landmark"
                     }
@@ -897,12 +897,12 @@
                     "name": {
                         "type": "string"
                     },
-                    "curveType": {
-                        "type": "CurveTypes",
-                        "required": false
-                    },
                     "description": {
                         "type": "string",
+                        "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
                         "required": false
                     }
                 }
@@ -912,10 +912,10 @@
                 "returnType": "Sketch",
                 "information": "Clone an existing sketch with its geometry and properties. Returns the new Sketch.",
                 "parameters": {
-                    "newName": {
+                    "new_name": {
                         "type": "string"
                     },
-                    "copyLandmarks": {
+                    "copy_landmarks": {
                         "type": "boolean",
                         "defaultValue": true
                     }
@@ -929,12 +929,12 @@
                     "angle": {
                         "type": "string,float,Angle"
                     },
-                    "aboutEntityOrLandmark": {
-                        "type": "string,Entity,Landmark"
-                    },
                     "axis": {
                         "type": "string,int,Axis",
                         "defaultValue": "z"
+                    },
+                    "about_entity_or_landmark": {
+                        "type": "string,Entity,Landmark"
                     }
                 }
             },
@@ -953,10 +953,10 @@
                 "returnType": "Part",
                 "information": "Extrude this Sketch along the path of another Sketch",
                 "parameters": {
-                    "profileNameOrInstance": {
+                    "profile_name_or_instance": {
                         "type": "string,Sketch"
                     },
-                    "fillCap": {
+                    "fill_cap": {
                         "type": "boolean",
                         "defaultValue": true
                     }
@@ -975,21 +975,17 @@
                 "action": "modify",
                 "information": "Bend this curve along the path of another",
                 "parameters": {
-                    "profileCurveName": {
+                    "profile_curve_name": {
                         "type": "string"
                     }
                 }
             },
-            "createText": {
+            "create_text": {
                 "action": "create",
                 "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {
                         "type": "string"
-                    },
-                    "fontSize": {
-                        "type": "string,float,Dimension",
-                        "defaultValue": 1.0
                     },
                     "bold": {
                         "type": "boolean",
@@ -1003,26 +999,30 @@
                         "type": "boolean",
                         "defaultValue": false
                     },
-                    "characterSpacing": {
+                    "font_size": {
+                        "type": "string,float,Dimension",
+                        "defaultValue": 1.0
+                    },
+                    "character_spacing": {
                         "type": "int",
                         "defaultValue": 1
                     },
-                    "wordSpacing": {
+                    "word_spacing": {
                         "type": "int",
                         "defaultValue": 1
                     },
-                    "lineSpacing": {
+                    "line_spacing": {
                         "type": "int",
                         "defaultValue": 1
                     },
-                    "fontFilePath": {
+                    "font_file_path": {
                         "type": "string",
                         "defaultValue": null,
                         "required": false
                     }
                 }
             },
-            "createFromVertices": {
+            "create_from_vertices": {
                 "action": "create",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
@@ -1035,7 +1035,7 @@
                     }
                 }
             },
-            "createPoint": {
+            "create_point": {
                 "action": "create",
                 "information": "Create a point",
                 "parameters": {
@@ -1044,42 +1044,42 @@
                     }
                 }
             },
-            "createLine": {
+            "create_line": {
                 "action": "create",
                 "information": "Create a line",
                 "parameters": {
                     "length": {
                         "type": "string,float,Dimension"
                     },
-                    "angleX": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "angleY": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
                     "symmetric": {
                         "type": "boolean",
                         "defaultValue": false
+                    },
+                    "angle_x": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
+                    },
+                    "angle_y": {
+                        "type": "string,float,Angle",
+                        "defaultValue": 0.0
                     }
                 }
             },
-            "createLineBetweenPoints": {
+            "create_line_between_points": {
                 "action": "create",
                 "information": "Create a line between two points",
                 "parameters": {
-                    "endAt": {
+                    "end_at": {
                         "type": "string,list[string],Point"
                     },
-                    "startAt": {
+                    "start_at": {
                         "type": "string,list[string],Point",
                         "required": false,
                         "defaultValue": null
                     }
                 }
             },
-            "createCircle": {
+            "create_circle": {
                 "action": "create",
                 "information": "Create a circle",
                 "parameters": {
@@ -1088,19 +1088,19 @@
                     }
                 }
             },
-            "createEllipse": {
+            "create_ellipse": {
                 "action": "create",
                 "information": "Create an ellipse",
                 "parameters": {
-                    "radiusA": {
+                    "radius_a": {
                         "type": "string,float,Dimension"
                     },
-                    "radiusB": {
+                    "radius_b": {
                         "type": "string,float,Dimension"
                     }
                 }
             },
-            "createArc": {
+            "create_arc": {
                 "action": "create",
                 "information": "Create an arc",
                 "parameters": {
@@ -1113,38 +1113,38 @@
                     }
                 }
             },
-            "createArcBetweenThreePoints": {
+            "create_arc_between_three_points": {
                 "action": "create",
                 "information": "Create a 3-point arc",
                 "parameters": {
-                    "pointA": {
+                    "point_a": {
                         "type": "Point"
                     },
-                    "pointB": {
+                    "point_b": {
                         "type": "Point"
                     },
-                    "centerPoint": {
+                    "center_point": {
                         "type": "Point"
                     }
                 }
             },
-            "createSegment": {
+            "create_segment": {
                 "action": "create",
                 "information": "Create a segment (intersection of two circles)",
                 "parameters": {
-                    "innerRadius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "outerRadius": {
-                        "type": "string,float,Dimension"
-                    },
                     "angle": {
                         "type": "string,float,Angle",
                         "defaultValue": "180d"
+                    },
+                    "inner_radius": {
+                        "type": "string,float,Dimension"
+                    },
+                    "outer_radius": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
-            "createRectangle": {
+            "create_rectangle": {
                 "action": "create",
                 "information": "Create a rectangle",
                 "parameters": {
@@ -1156,54 +1156,54 @@
                     }
                 }
             },
-            "createPolygon": {
+            "create_polygon": {
                 "action": "create",
                 "information": "Create an n-gon",
                 "parameters": {
-                    "numberOfSides": {
-                        "type": "int"
-                    },
                     "length": {
                         "type": "string,float,Dimension"
                     },
                     "width": {
                         "type": "string,float,Dimension"
+                    },
+                    "number_of_sides": {
+                        "type": "int"
                     }
                 }
             },
-            "createTrapezoid": {
+            "create_trapezoid": {
                 "action": "create",
                 "information": "Create a trapezoid",
                 "parameters": {
-                    "lengthUpper": {
-                        "type": "string,float,Dimension"
-                    },
-                    "lengthLower": {
-                        "type": "string,float,Dimension"
-                    },
                     "height": {
                         "type": "string,float,Dimension"
+                    },
+                    "length_upper": {
+                        "type": "string,float,Dimension"
+                    },
+                    "length_lower": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
-            "createSpiral": {
+            "create_spiral": {
                 "action": "create",
                 "information": "Create a trapezoid",
                 "parameters": {
-                    "numberOfTurns": {
-                        "type": "int"
-                    },
                     "height": {
                         "type": "string,float,Dimension"
                     },
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "isClockwise": {
+                    "number_of_turns": {
+                        "type": "int"
+                    },
+                    "is_clockwise": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "radiusEnd": {
+                    "radius_end": {
                         "information": "Specify a radiusEnd to make a conical or drafted spiral. Pass None to make a cylindrical spiral.",
                         "type": "string,float,Dimension",
                         "required": false
@@ -1219,36 +1219,21 @@
                         "type": "string",
                         "required": true
                     },
-                    "parentEntity": {
-                        "type": "string,Entity",
-                        "required": true
-                    },
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "parent_entity": {
+                        "type": "string,Entity",
+                        "required": true
                     }
                 }
-            },
-            "getLandmarkEntityName": {
-                "information": "Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.",
-                "action": "get",
-                "returnType": "string"
-            },
-            "getParentEntity": {
-                "information": "Get the name of the entity this landmark belongs to.",
-                "action": "get",
-                "returnType": "Entity"
-            },
-            "isExists": {
-                "action": "get",
-                "information": "Check if an landmark exists",
-                "returnType": "boolean"
             },
             "rename": {
                 "action": "modify",
                 "information": "Rename the landmark.",
                 "parameters": {
-                    "newName": {
+                    "new_name": {
                         "type": "string"
                     }
                 }
@@ -1258,41 +1243,56 @@
                 "information": "Delete the landmark from the scene.",
                 "parameters": {}
             },
-            "isVisible": {
+            "select": {
+                "action": "interact",
+                "information": "Select the landmark (in UI).",
+                "parameters": {}
+            },
+            "get_landmark_entity_name": {
+                "information": "Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.",
+                "action": "get",
+                "returnType": "string"
+            },
+            "get_parent_entity": {
+                "information": "Get the name of the entity this landmark belongs to.",
+                "action": "get",
+                "returnType": "Entity"
+            },
+            "is_exists": {
+                "action": "get",
+                "information": "Check if an landmark exists",
+                "returnType": "boolean"
+            },
+            "is_visible": {
                 "action": "get",
                 "information": "Returns whether the landmark is visible in the scene.",
                 "returnType": "boolean"
             },
-            "setVisible": {
+            "set_visible": {
                 "action": "interact",
                 "information": "Toggles visibility of an landmark in the scene.",
                 "parameters": {
-                    "isVisible": {
+                    "is_visible": {
                         "type": "boolean"
                     }
                 }
             },
-            "getNativeInstance": {
+            "get_native_instance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
                 "returnType": "any",
                 "parameters": {}
             },
-            "getLocationWorld": {
+            "get_location_world": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the landmark XYZ location relative to World Space.",
                 "parameters": {}
             },
-            "getLocationLocal": {
+            "get_location_local": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the landmark XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the landmark (in UI).",
                 "parameters": {}
             }
         },
@@ -1308,17 +1308,17 @@
                     }
                 }
             },
-            "translateLandmarkOntoAnother": {
-                "action": "modify",
-                "information": "Transforms one landmark onto another",
-                "parameters": {}
-            },
             "pivot": {
                 "action": "modify",
                 "information": "Constraint the rotation origin of entity B to entity A's landmark.",
                 "parameters": {}
             },
-            "gearRatio": {
+            "translate_landmark_onto_another": {
+                "action": "modify",
+                "information": "Transforms one landmark onto another",
+                "parameters": {}
+            },
+            "gear_ratio": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B to be a percentage of entity A's",
                 "parameters": {
@@ -1327,7 +1327,7 @@
                     }
                 }
             },
-            "limitLocationXYZ": {
+            "limit_location_xyz": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1345,7 +1345,7 @@
                     }
                 }
             },
-            "limitLocationX": {
+            "limit_location_x": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1359,7 +1359,7 @@
                     }
                 }
             },
-            "limitLocationY": {
+            "limit_location_y": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1373,7 +1373,7 @@
                     }
                 }
             },
-            "limitLocationZ": {
+            "limit_location_z": {
                 "action": "modify",
                 "information": "Constraint the translation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1387,7 +1387,7 @@
                     }
                 }
             },
-            "limitRotationXYZ": {
+            "limit_rotation_xyz": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1405,7 +1405,7 @@
                     }
                 }
             },
-            "limitRotationX": {
+            "limit_rotation_x": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1419,7 +1419,7 @@
                     }
                 }
             },
-            "limitRotationY": {
+            "limit_rotation_y": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1433,7 +1433,7 @@
                     }
                 }
             },
-            "limitRotationZ": {
+            "limit_rotation_z": {
                 "action": "modify",
                 "information": "Constraint the rotation of entity B, relative to entity A's landmark.",
                 "parameters": {
@@ -1461,35 +1461,35 @@
                     }
                 }
             },
-            "assignToPart": {
+            "assign_to_part": {
                 "action": "modify",
                 "information": "Assigns the material to a part.",
                 "parameters": {
-                    "partNameOrInstance": {
+                    "part_name_or_instance": {
                         "type": "string,Part"
                     }
                 }
             },
-            "setColor": {
+            "set_color": {
                 "information": "Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.",
                 "action": "modify",
                 "parameters": {
-                    "rValue": {
+                    "r_value": {
                         "type": "int,float"
                     },
-                    "gValue": {
+                    "g_value": {
                         "type": "int,float"
                     },
-                    "bValue": {
+                    "b_value": {
                         "type": "int,float"
                     },
-                    "aValue": {
+                    "a_value": {
                         "type": "int,float",
                         "defaultValue": 1.0
                     }
                 }
             },
-            "setReflectivity": {
+            "set_reflectivity": {
                 "information": "Change the surface reflectivity (metallic luster) of the material.",
                 "action": "modify",
                 "staticMethod": false,
@@ -1501,7 +1501,7 @@
                     }
                 }
             },
-            "setRoughness": {
+            "set_roughness": {
                 "information": "Change the surface roughness of the material.",
                 "action": "modify",
                 "staticMethod": false,
@@ -1513,11 +1513,11 @@
                     }
                 }
             },
-            "addImageTexture": {
+            "add_image_texture": {
                 "information": "Add a texture from an image file.",
                 "action": "modify",
                 "parameters": {
-                    "imageFilePath": {
+                    "image_file_path": {
                         "type": "string"
                     }
                 }
@@ -1532,53 +1532,53 @@
                 "staticMethod": true,
                 "returnType": "Animation"
             },
-            "setFrameStart": {
+            "set_frame_start": {
                 "information": "Set the start animation frame in the scene.",
                 "action": "modify",
                 "parameters": {
-                    "frameNumber": {
+                    "frame_number": {
                         "type": "int"
                     }
                 }
             },
-            "setFrameEnd": {
+            "set_frame_end": {
                 "information": "Set the end animation frame in the scene.",
                 "action": "modify",
                 "parameters": {
-                    "frameNumber": {
+                    "frame_number": {
                         "type": "int"
                     }
                 }
             },
-            "setFrameCurrent": {
+            "set_frame_current": {
                 "information": "Set the current animation frame in the scene.",
                 "action": "modify",
                 "parameters": {
-                    "frameNumber": {
+                    "frame_number": {
                         "type": "int"
                     }
                 }
             },
-            "createKeyFrameLocation": {
+            "create_key_frame_location": {
                 "information": "Create an animation key-frame using the location of the entity.",
                 "action": "modify",
                 "parameters": {
                     "entity": {
                         "type": "string,Entity"
                     },
-                    "frameNumber": {
+                    "frame_number": {
                         "type": "int"
                     }
                 }
             },
-            "createKeyFrameRotation": {
+            "create_key_frame_rotation": {
                 "information": "Create an animation key-frame using the rotation of the entity.",
                 "action": "modify",
                 "parameters": {
                     "entity": {
                         "type": "string,Entity"
                     },
-                    "frameNumber": {
+                    "frame_number": {
                         "type": "int"
                     }
                 }
@@ -1597,58 +1597,77 @@
                     }
                 }
             },
-            "setColor": {
+            "rename": {
+                "action": "modify",
+                "information": "Rename the light.",
+                "parameters": {
+                    "new_name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the light from the scene.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the light (in UI).",
+                "parameters": {}
+            },
+            "set_color": {
                 "information": "Set the color of an existing light.",
                 "action": "modify",
                 "parameters": {
-                    "rValue": {
+                    "r_value": {
                         "type": "int,float"
                     },
-                    "gValue": {
+                    "g_value": {
                         "type": "int,float"
                     },
-                    "bValue": {
+                    "b_value": {
                         "type": "int,float"
                     }
                 }
             },
-            "createSun": {
+            "create_sun": {
                 "information": "Create a Sun-type light.",
                 "action": "create",
                 "parameters": {
-                    "energyLevel": {
+                    "energy_level": {
                         "type": "float"
                     }
                 }
             },
-            "createSpot": {
+            "create_spot": {
                 "information": "Create a Spot-type light.",
                 "action": "create",
                 "parameters": {
-                    "energyLevel": {
+                    "energy_level": {
                         "type": "float"
                     }
                 }
             },
-            "createPoint": {
+            "create_point": {
                 "information": "Create a Point-type light.",
                 "action": "create",
                 "parameters": {
-                    "energyLevel": {
+                    "energy_level": {
                         "type": "float"
                     }
                 }
             },
-            "createArea": {
+            "create_area": {
                 "information": "Create an Area-type light.",
                 "action": "create",
                 "parameters": {
-                    "energyLevel": {
+                    "energy_level": {
                         "type": "float"
                     }
                 }
             },
-            "translateXYZ": {
+            "translate_xyz": {
                 "action": "modify",
                 "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
@@ -1663,7 +1682,7 @@
                     }
                 }
             },
-            "rotateXYZ": {
+            "rotate_xyz": {
                 "action": "modify",
                 "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
                 "parameters": {
@@ -1678,46 +1697,27 @@
                     }
                 }
             },
-            "isExists": {
+            "is_exists": {
                 "action": "get",
                 "information": "Check if an light exists",
                 "returnType": "boolean"
             },
-            "rename": {
-                "action": "modify",
-                "information": "Rename the light.",
-                "parameters": {
-                    "newName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the light from the scene.",
-                "parameters": {}
-            },
-            "getNativeInstance": {
+            "get_native_instance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
                 "returnType": "any",
                 "parameters": {}
             },
-            "getLocationWorld": {
+            "get_location_world": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the light XYZ location relative to World Space.",
                 "parameters": {}
             },
-            "getLocationLocal": {
+            "get_location_local": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the light XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the light (in UI).",
                 "parameters": {}
             }
         },
@@ -1734,17 +1734,36 @@
                     }
                 }
             },
-            "createPerspective": {
+            "rename": {
+                "action": "modify",
+                "information": "Rename the camera.",
+                "parameters": {
+                    "new_name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "delete": {
+                "action": "delete",
+                "information": "Delete the camera from the scene.",
+                "parameters": {}
+            },
+            "select": {
+                "action": "interact",
+                "information": "Select the entity (in UI).",
+                "parameters": {}
+            },
+            "create_perspective": {
                 "information": "Create a perspective camera in the scene.",
                 "action": "create",
                 "parameters": {}
             },
-            "createOrthogonal": {
+            "create_orthogonal": {
                 "information": "Create an orthogonal camera in the scene.",
                 "action": "create",
                 "parameters": {}
             },
-            "setFocalLength": {
+            "set_focal_length": {
                 "information": "Set the focal length of the camera.",
                 "action": "modify",
                 "parameters": {
@@ -1753,7 +1772,7 @@
                     }
                 }
             },
-            "translateXYZ": {
+            "translate_xyz": {
                 "action": "modify",
                 "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
                 "parameters": {
@@ -1768,7 +1787,7 @@
                     }
                 }
             },
-            "rotateXYZ": {
+            "rotate_xyz": {
                 "action": "modify",
                 "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
                 "parameters": {
@@ -1783,140 +1802,121 @@
                     }
                 }
             },
-            "isExists": {
+            "is_exists": {
                 "action": "get",
                 "information": "Check if an camera exists",
                 "returnType": "boolean"
             },
-            "rename": {
-                "action": "modify",
-                "information": "Rename the camera.",
-                "parameters": {
-                    "newName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the camera from the scene.",
-                "parameters": {}
-            },
-            "getNativeInstance": {
+            "get_native_instance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
                 "returnType": "any",
                 "parameters": {}
             },
-            "getLocationWorld": {
+            "get_location_world": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the camera XYZ location relative to World Space.",
                 "parameters": {}
             },
-            "getLocationLocal": {
+            "get_location_local": {
                 "action": "get",
                 "returnType": "Point",
                 "information": "Get the camera XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the entity (in UI).",
                 "parameters": {}
             }
         },
         "Render": {
             "information": "Render the scene and export images or videos.",
-            "renderImage": {
+            "render_image": {
                 "information": "Render a still image.",
                 "action": "interact",
                 "parameters": {
-                    "outputFilePath": {
-                        "type": "string",
-                        "required": true
-                    },
                     "overwrite": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "fileType": {
+                    "output_file_path": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "file_type": {
                         "type": "string",
                         "required": false
                     }
                 }
             },
-            "renderVideoMp4": {
+            "render_video_mp4": {
                 "information": "Render an MP4 video.",
                 "action": "interact",
                 "parameters": {
-                    "outputFilePath": {
-                        "type": "string",
-                        "required": true
-                    },
-                    "startFrameNumber": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
-                    "endFrameNumber": {
-                        "type": "int",
-                        "defaultValue": 100
-                    },
-                    "stepFrames": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
                     "overwrite": {
                         "type": "boolean",
                         "defaultValue": true
+                    },
+                    "output_file_path": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "start_frame_number": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "end_frame_number": {
+                        "type": "int",
+                        "defaultValue": 100
+                    },
+                    "step_frames": {
+                        "type": "int",
+                        "defaultValue": 1
                     }
                 }
             },
-            "renderVideoFrames": {
+            "render_video_frames": {
                 "information": "Render a video as image frame stills.",
                 "action": "interact",
                 "parameters": {
-                    "outputFolderPath": {
-                        "type": "string",
-                        "required": true
-                    },
-                    "fileNamePrefix": {
-                        "type": "string",
-                        "required": true
-                    },
-                    "startFrameNumber": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
-                    "endFrameNumber": {
-                        "type": "int",
-                        "defaultValue": 100
-                    },
-                    "stepFrames": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
                     "overwrite": {
                         "type": "boolean",
                         "defaultValue": true
                     },
-                    "fileType": {
+                    "output_folder_path": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "file_name_prefix": {
+                        "type": "string",
+                        "required": true
+                    },
+                    "start_frame_number": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "end_frame_number": {
+                        "type": "int",
+                        "defaultValue": 100
+                    },
+                    "step_frames": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "file_type": {
                         "type": "string",
                         "required": false
                     }
                 }
             },
-            "setFrameRate": {
+            "set_frame_rate": {
                 "information": "Set rendering framerate.",
                 "action": "modify",
                 "parameters": {
-                    "frameRate": {
+                    "frame_rate": {
                         "type": "int",
                         "required": true
                     }
                 }
             },
-            "setResolution": {
+            "set_resolution": {
                 "information": "Set rendering resolution",
                 "action": "modify",
                 "parameters": {
@@ -1930,7 +1930,7 @@
                     }
                 }
             },
-            "setRenderQuality": {
+            "set_render_quality": {
                 "information": "Set rendering quality.",
                 "action": "modify",
                 "parameters": {
@@ -1941,7 +1941,7 @@
                     }
                 }
             },
-            "setRenderEngine": {
+            "set_render_engine": {
                 "information": "Set rendering engine name.",
                 "action": "modify",
                 "parameters": {
@@ -1951,11 +1951,11 @@
                     }
                 }
             },
-            "setCamera": {
+            "set_camera": {
                 "information": "Set the rendering camera.",
                 "action": "modify",
                 "parameters": {
-                    "cameraNameOrInstance": {
+                    "camera_name_or_instance": {
                         "information": "The camera name or Camera class instance.",
                         "type": "string,Camera"
                     }
@@ -1990,18 +1990,10 @@
                 "information": "Deletes a scene.",
                 "action": "delete"
             },
-            "getSelectedEntity": {
-                "information": "Get the selected entity in the Scene.",
-                "action": "get",
-                "returnType": "Entity"
-            },
             "export": {
                 "action": "interact",
                 "information": "Export the entire scene or specific entities.",
                 "parameters": {
-                    "filePath": {
-                        "type": "string"
-                    },
                     "entities": {
                         "type": "list[string,Entity]"
                     },
@@ -2012,10 +2004,18 @@
                     "scale": {
                         "type": "float",
                         "defaultValue": 1.0
+                    },
+                    "file_path": {
+                        "type": "string"
                     }
                 }
             },
-            "setDefaultUnit": {
+            "get_selected_entity": {
+                "information": "Get the selected entity in the Scene.",
+                "action": "get",
+                "returnType": "Entity"
+            },
+            "set_default_unit": {
                 "action": "modify",
                 "information": "Set the document's default measurements system.",
                 "parameters": {
@@ -2024,7 +2024,7 @@
                     }
                 }
             },
-            "createGroup": {
+            "create_group": {
                 "action": "create",
                 "information": "Create a new group",
                 "parameters": {
@@ -2033,72 +2033,72 @@
                     }
                 }
             },
-            "deleteGroup": {
+            "delete_group": {
                 "action": "delete",
                 "information": "Delete a new group",
                 "parameters": {
                     "name": {
                         "type": "string"
                     },
-                    "removeChildren": {
+                    "remove_children": {
                         "type": "boolean"
                     }
                 }
             },
-            "removeFromGroup": {
+            "remove_from_group": {
                 "action": "delete",
                 "information": "Removes an existing entity from a group",
                 "parameters": {
-                    "entityName": {
+                    "entity_name": {
                         "type": "string"
                     },
-                    "groupName": {
+                    "group_name": {
                         "type": "string"
                     }
                 }
             },
-            "assignToGroup": {
+            "assign_to_group": {
                 "action": "modify",
                 "information": "Assigns an existing entity to a new group",
                 "parameters": {
                     "entities": {
                         "type": "list[string,Entity]"
                     },
-                    "groupName": {
+                    "group_name": {
                         "type": "string"
                     },
-                    "removeFromOtherGroups": {
+                    "remove_from_other_groups": {
                         "type": "boolean",
                         "required": false,
                         "defaultValue": true
                     }
                 }
             },
-            "setVisible": {
+            "set_visible": {
                 "action": "modify",
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {
                     "entities": {
                         "type": "list[string,Entity]"
                     },
-                    "isVisible": {
+                    "is_visible": {
                         "type": "boolean"
                     }
                 }
             },
-            "setBackgroundImage": {
+            "set_background_image": {
                 "action": "modify",
                 "information": "Set the scene background image. This can be an image or an HDRI texture.",
                 "parameters": {
-                    "filePath": {
+                    "file_path": {
                         "type": "string"
                     },
-                    "locationX": {
+                    "location_x": {
                         "type": "string,float,Dimension",
                         "required": false,
                         "defaultValue": 0
                     },
-                    "locationY": {
+                    "location_y": {
                         "type": "string,float,Dimension",
                         "required": false,
                         "defaultValue": 0
@@ -2109,7 +2109,16 @@
         "Analytics": {
             "information": "Tools for collecting data about the entities and scene.",
             "constructor": {},
-            "measureDistance": {
+            "log": {
+                "action": "modify",
+                "information": "Write a message",
+                "parameters": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "measure_distance": {
                 "action": "get",
                 "returnType": "Dimensions",
                 "information": "The ubiquitous ruler.",
@@ -2122,7 +2131,7 @@
                     }
                 }
             },
-            "measureAngle": {
+            "measure_angle": {
                 "action": "get",
                 "returnType": "list[Angle]",
                 "information": "The ubiquitous ruler.",
@@ -2139,7 +2148,7 @@
                     }
                 }
             },
-            "getWorldPose": {
+            "get_world_pose": {
                 "action": "get",
                 "returnType": "list[float]",
                 "information": "Returns the world pose of an entity.",
@@ -2149,32 +2158,23 @@
                     }
                 }
             },
-            "getBoundingBox": {
+            "get_bounding_box": {
                 "action": "get",
                 "returnType": "BoundaryBox",
                 "information": "Returns the bounding box of an entity.",
                 "parameters": {
-                    "entityName": {
+                    "entity_name": {
                         "type": "string,Entity"
                     }
                 }
             },
-            "getDimensions": {
+            "get_dimensions": {
                 "action": "get",
                 "returnType": "Dimensions",
                 "information": "Returns the dimensions of an entity.",
                 "parameters": {
-                    "entityName": {
+                    "entity_name": {
                         "type": "string,Entity"
-                    }
-                }
-            },
-            "log": {
-                "action": "modify",
-                "information": "Write a message",
-                "parameters": {
-                    "message": {
-                        "type": "string"
                     }
                 }
             }
