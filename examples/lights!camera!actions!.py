@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 Part("Cube").createCube(2, 2, 2)
 light = Light("Light").createSun(75)

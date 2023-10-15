@@ -7,7 +7,7 @@
 from unittest import skip
 
 from .test_helper import *
-from CodeToCAD.testsInterfaces import EntityTestInterface
+from codetocad.testsInterfaces import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):

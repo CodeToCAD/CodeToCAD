@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 Scene().setDefaultUnit("mm")
 

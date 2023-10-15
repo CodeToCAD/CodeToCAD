@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 importedCube = Part("Imported Cube").createFromFile("./importableCube.stl")
 

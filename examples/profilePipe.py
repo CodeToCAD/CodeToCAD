@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 # We are trying to draw a bull-horn shapes pipe:
 """

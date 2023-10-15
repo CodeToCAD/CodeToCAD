@@ -3,9 +3,9 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import SceneInterface, EntityInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import SceneInterface, EntityInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 from .Part import Part
 from .Entity import Entity

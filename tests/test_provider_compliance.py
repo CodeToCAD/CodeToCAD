@@ -1,6 +1,6 @@
 import unittest
 
-from CodeToCAD import *
+from codetocad import *
 
 
 class TestProviderCompliance(unittest.TestCase):

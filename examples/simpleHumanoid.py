@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 # MARK: Create body
 body = Part("body").createCube(1, 2, 3)

@@ -2,9 +2,9 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import SketchInterface, PartInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import SketchInterface, PartInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Sketch(SketchInterface):

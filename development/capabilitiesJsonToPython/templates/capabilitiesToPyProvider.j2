@@ -5,9 +5,9 @@
 
 from typing import Optional
 {%set interfaceName = className + "Interface" %}
-from CodeToCAD.interfaces import {{interfaceName}}
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import {{interfaceName}}
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 {%set extendedClassesWithSuffixes = []-%}
 {% if "extends" in methods%}
 {%set extendedClasses = methods["extends"]-%}

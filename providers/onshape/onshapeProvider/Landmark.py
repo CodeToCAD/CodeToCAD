@@ -2,9 +2,9 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import LandmarkInterface, EntityInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import LandmarkInterface, EntityInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Landmark(LandmarkInterface):

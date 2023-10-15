@@ -1,9 +1,9 @@
 from functools import wraps
 from typing import Optional
 
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.interfaces import SketchInterface
-from CodeToCAD.utilities import *
+from codetocad.CodeToCADTypes import *
+from codetocad.interfaces import SketchInterface
+from codetocad.utilities import *
 
 from . import BlenderActions, BlenderDefinitions
 from .Entity import Entity

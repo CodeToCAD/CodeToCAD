@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE. 
+# THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
@@ -7,53 +7,47 @@
 from unittest import skip
 
 from .test_helper import *
-from CodeToCAD.testsInterfaces import MaterialTestInterface
+from codetocad.testsInterfaces import MaterialTestInterface
+
 
 class MaterialTest(TestProviderCase, MaterialTestInterface):
-    
-    
+
     @skip("TODO")
     def test_assignToPart(self):
-        instance = Material("name","description")
+        instance = Material("name", "description")
 
         value = instance.assignToPart("partNameOrInstance")
 
-        
         assert value, "Modify method failed."
-        
+
     @skip("TODO")
     def test_setColor(self):
-        instance = Material("name","description")
+        instance = Material("name", "description")
 
-        value = instance.setColor("rValue","gValue","bValue","aValue")
+        value = instance.setColor("rValue", "gValue", "bValue", "aValue")
 
-        
         assert value, "Modify method failed."
-        
+
     @skip("TODO")
     def test_setReflectivity(self):
-        instance = Material("name","description")
+        instance = Material("name", "description")
 
         value = instance.setReflectivity("reflectivity")
 
-        
         assert value, "Modify method failed."
-        
+
     @skip("TODO")
     def test_setRoughness(self):
-        instance = Material("name","description")
+        instance = Material("name", "description")
 
         value = instance.setRoughness("roughness")
 
-        
         assert value, "Modify method failed."
-        
+
     @skip("TODO")
     def test_addImageTexture(self):
-        instance = Material("name","description")
+        instance = Material("name", "description")
 
         value = instance.addImageTexture("imageFilePath")
 
-        
         assert value, "Modify method failed."
-        
