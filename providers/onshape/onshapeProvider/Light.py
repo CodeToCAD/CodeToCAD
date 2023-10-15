@@ -2,9 +2,9 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import LightInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import LightInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Light(LightInterface):

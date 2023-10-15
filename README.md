@@ -29,7 +29,7 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
    ```python
    # myCodeToCAD.py
    # This is also the examples/materials.py example
-   from CodeToCAD import *
+   from codetocad import *
 
    myMaterial = Material("material").setColor(169, 76, 181, 0.8)
    Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)

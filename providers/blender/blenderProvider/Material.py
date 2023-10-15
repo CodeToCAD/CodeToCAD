@@ -3,9 +3,9 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import MaterialInterface, PartInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import MaterialInterface, PartInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Material(MaterialInterface):

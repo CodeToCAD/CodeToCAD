@@ -1,10 +1,10 @@
-from CodeToCAD.utilities import *
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.interfaces import *
+from codetocad.utilities import *
+from codetocad.CodeToCADTypes import *
+from codetocad.interfaces import *
 
 from importlib import find_loader
 
 if find_loader('blenderProvider'):
     from blenderProvider import *
 else:
-    from CodeToCAD.providersSample import *
+    from codetocad.providersSample import *

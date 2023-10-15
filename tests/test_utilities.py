@@ -1,4 +1,4 @@
-from CodeToCAD.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox, PresetLandmark, min, max, center
+from codetocad.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox, PresetLandmark, min, max, center
 
 import unittest
 

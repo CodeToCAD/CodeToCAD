@@ -6,9 +6,9 @@ from . import BlenderDefinitions
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import RenderInterface, CameraInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import RenderInterface, CameraInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Render(RenderInterface):

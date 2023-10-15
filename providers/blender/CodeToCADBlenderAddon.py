@@ -109,7 +109,7 @@ class StopAutoReload(Operator):
 
 def reloadCodeToCADModules():
     print("Reloading CodeToCAD modules")
-    import CodeToCAD
+    import codetocad
     import blenderProvider
 
     reload(CodeToCAD)
@@ -390,7 +390,7 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
         Joint, Landmark, Material,
         Part, Scene,
         Sketch)
-    from CodeToCAD.utilities import Angle, Dimension, Dimensions, center, max, min
+    from codetocad.utilities import Angle, Dimension, Dimensions, center, max, min
 
     namspace["Part"] = Part
     namspace["Shape"] = Part
@@ -490,7 +490,7 @@ def runFromCommandLineArguments(*args):
     # if --CodeToCAD path/to/file.py is passed in, we should automatically run it
     for index in range(1, len(sys.argv)):
         if sys.argv[index].lower() == "--codetocad":
-            from CodeToCAD.utilities import getAbsoluteFilepath
+            from codetocad.utilities import getAbsoluteFilepath
             filepath = sys.argv[index + 1]
             filepath = getAbsoluteFilepath(filepath)
 

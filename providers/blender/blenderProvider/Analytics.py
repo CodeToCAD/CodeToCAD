@@ -5,9 +5,9 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import AnalyticsInterface, EntityInterface, LandmarkInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import AnalyticsInterface, EntityInterface, LandmarkInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 from . import Entity
 

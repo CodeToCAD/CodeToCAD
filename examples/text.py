@@ -1,5 +1,5 @@
 from pathlib import Path
-from CodeToCAD import *
+from codetocad import *
 
 redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 1.0)
 greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)

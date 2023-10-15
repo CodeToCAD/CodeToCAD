@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 0.8)
 blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)

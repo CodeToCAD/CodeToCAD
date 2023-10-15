@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 ball = Part("ball").createSphere(1)
 ball_center = ball.createLandmark("center", center, center, center)

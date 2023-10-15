@@ -4,74 +4,68 @@
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from CodeToCAD.CodeToCADTypes import *
+from codetocad.CodeToCADTypes import *
 
 
 class AnalyticsInterface(metaclass=ABCMeta):
     '''Tools for collecting data about the entities and scene.'''
-
-    
 
     @abstractmethod
     def __init__(self):
         pass
 
     @abstractmethod
-    def measureDistance(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark) -> 'Dimensions':
+    def measureDistance(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark) -> 'Dimensions':
         '''
         The ubiquitous ruler.
         '''
-        
-        print("measureDistance is called in an abstract method. Please override this method.")
+
+        print(
+            "measureDistance is called in an abstract method. Please override this method.")
         raise NotImplementedError()
-        
 
     @abstractmethod
-    def measureAngle(self, entity1:EntityOrItsNameOrLandmark, entity2:EntityOrItsNameOrLandmark, pivot:Optional[EntityOrItsNameOrLandmark]=None) -> 'list[Angle]':
+    def measureAngle(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark, pivot: Optional[EntityOrItsNameOrLandmark] = None) -> 'list[Angle]':
         '''
         The ubiquitous ruler.
         '''
-        
+
         print("measureAngle is called in an abstract method. Please override this method.")
         raise NotImplementedError()
-        
 
     @abstractmethod
-    def getWorldPose(self, entity:EntityOrItsName) -> 'list[float]':
+    def getWorldPose(self, entity: EntityOrItsName) -> 'list[float]':
         '''
         Returns the world pose of an entity.
         '''
-        
+
         print("getWorldPose is called in an abstract method. Please override this method.")
         raise NotImplementedError()
-        
 
     @abstractmethod
-    def getBoundingBox(self, entityName:EntityOrItsName) -> 'BoundaryBox':
+    def getBoundingBox(self, entityName: EntityOrItsName) -> 'BoundaryBox':
         '''
         Returns the bounding box of an entity.
         '''
-        
-        print("getBoundingBox is called in an abstract method. Please override this method.")
+
+        print(
+            "getBoundingBox is called in an abstract method. Please override this method.")
         raise NotImplementedError()
-        
 
     @abstractmethod
-    def getDimensions(self, entityName:EntityOrItsName) -> 'Dimensions':
+    def getDimensions(self, entityName: EntityOrItsName) -> 'Dimensions':
         '''
         Returns the dimensions of an entity.
         '''
-        
+
         print("getDimensions is called in an abstract method. Please override this method.")
         raise NotImplementedError()
-        
 
     @abstractmethod
-    def log(self, message:str):
+    def log(self, message: str):
         '''
         Write a message
         '''
-        
+
         print("log is called in an abstract method. Please override this method.")
         return self
-        

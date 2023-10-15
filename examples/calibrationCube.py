@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 
 material = Material("material").setColor(169, 76, 181, 255)

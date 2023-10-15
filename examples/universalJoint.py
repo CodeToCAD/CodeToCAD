@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from CodeToCAD import *
+from codetocad import *
 
 blueMetallicMaterial = Material("blue").setColor(
     0.0865257, 0.102776, 0.709804, 0.8).setReflectivity(1.0)

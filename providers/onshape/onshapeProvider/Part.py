@@ -2,9 +2,9 @@
 
 from typing import Optional
 
-from CodeToCAD.interfaces import PartInterface, LandmarkInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import PartInterface, LandmarkInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 
 class Part(PartInterface):

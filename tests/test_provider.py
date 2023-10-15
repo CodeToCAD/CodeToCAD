@@ -1,13 +1,13 @@
-# This file was forked from CodeToCAD/TestCodeToCADProvider.py
+# This file was forked from codetocad/TestCodeToCADProvider.py
 
 from typing import Optional
 import unittest
 
 from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
 
-from CodeToCAD import *
-import CodeToCAD.utilities as Utilities
-from CodeToCAD.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
+from codetocad import *
+import codetocad.utilities as Utilities
+from codetocad.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
 from providers.blender.blenderProvider import *

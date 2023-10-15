@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from CodeToCAD import *
+from codetocad import *
 
 
 @dataclass

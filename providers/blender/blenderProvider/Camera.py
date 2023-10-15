@@ -5,9 +5,9 @@ from typing import Optional
 from . import BlenderActions
 from . import BlenderDefinitions
 
-from CodeToCAD.interfaces import CameraInterface
-from CodeToCAD.CodeToCADTypes import *
-from CodeToCAD.utilities import *
+from codetocad.interfaces import CameraInterface
+from codetocad.CodeToCADTypes import *
+from codetocad.utilities import *
 
 from . import Entity
 

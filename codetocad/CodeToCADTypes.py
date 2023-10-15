@@ -1,6 +1,6 @@
 from typing import TypeAlias, Union, Optional
 
-from CodeToCAD.utilities import *
+from codetocad.utilities import *
 
 EntityInterface: TypeAlias
 PartInterface: TypeAlias

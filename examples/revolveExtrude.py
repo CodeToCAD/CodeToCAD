@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 Sketch("centerline").createLine("1")
 Sketch("half-donut").createCircle("10cm").translateXYZ("-100cm",

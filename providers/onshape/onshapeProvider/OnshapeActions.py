@@ -1,4 +1,4 @@
-import CodeToCAD.utilities as Utilities
+import codetocad.utilities as Utilities
 from . import OnshapeDefinitions
 from onshape_client import Client
 from onshape_client.oas import (

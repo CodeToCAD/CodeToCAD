@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 linearCube = Part("Linear Cube").createCube(
     "5cm", "5cm", "5cm").linearPattern(10, "7cm", "x")

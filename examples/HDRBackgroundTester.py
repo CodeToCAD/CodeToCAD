@@ -1,4 +1,4 @@
-from CodeToCAD import *
+from codetocad import *
 
 Part("Sphere").createSphere(1)
 

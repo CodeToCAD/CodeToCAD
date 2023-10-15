@@ -6,8 +6,8 @@ from typing import Any, Optional, Union
 from uuid import uuid4
 import bpy
 import bmesh
-from CodeToCAD.CodeToCADTypes import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
-import CodeToCAD.utilities as Utilities
+from codetocad.CodeToCADTypes import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
+import codetocad.utilities as Utilities
 from . import BlenderDefinitions
 from pathlib import Path
 import mathutils

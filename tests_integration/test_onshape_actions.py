@@ -3,8 +3,8 @@ from providers.onshape import *
 from providers.onshape.onshapeProvider import *
 from providers.onshape.onshapeProvider.OnshapeActions import *
 
-from CodeToCAD import *
-from CodeToCAD.utilities import Point
+from codetocad import *
+from codetocad.utilities import Point
 
 configPath = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
