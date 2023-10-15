@@ -27,12 +27,12 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 2. Create your own CodeToCAD python file and save it:
 
    ```python
-   # myCodeToCAD.py
+   # my_codetocad_script.py
    # This is also the examples/materials.py example
    from codetocad import *
 
-   myMaterial = Material("material").setColor(169, 76, 181, 0.8)
-   Part("Cube").createCube(1, 1, 1).setMaterial(myMaterial)
+   my_material = Material("material").setColor(169, 76, 181, 0.8)
+   Part("Cube").createCube(1, 1, 1).setMaterial(my_material)
    ```
 
    ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png)

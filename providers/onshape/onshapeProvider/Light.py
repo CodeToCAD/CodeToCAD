@@ -3,7 +3,7 @@
 from typing import Optional
 
 from codetocad.interfaces import LightInterface
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 

@@ -6,7 +6,7 @@ from . import BlenderActions
 from . import BlenderDefinitions
 
 from codetocad.interfaces import CameraInterface
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 from . import Entity

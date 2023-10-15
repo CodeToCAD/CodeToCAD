@@ -5,11 +5,11 @@ import json
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-outputDir = f"{SCRIPT_DIR}/../../CodeToCAD/"
+outputDir = f"{SCRIPT_DIR}/../../codetocad/"
 docs = f"{SCRIPT_DIR}/../../docs/"
 templatesDir = f"{SCRIPT_DIR}/templates"
 
-capabilitiesJson = f"{SCRIPT_DIR}/../../CodeToCAD/capabilities.json"
+capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
 
 capabilitiesToPyInterface = f"capabilitiesToPyInterface.j2"
 capabilitiesToPyInterfaceOut = f"{outputDir}/interfaces"

@@ -12,7 +12,7 @@ OUTPUT_FILE_PATH="./CodeToCADBlenderAddon.zip"
 # Clean up existing files
 echo "Cleaning up existing files."
 
-for  file in $(find ./CodeToCAD -name '*__pycache__') ; do
+for  file in $(find ./codetocad -name '*__pycache__') ; do
 rm -rf $file
 done
 for  file in $(find ./providers/blender/ -name '*__pycache__') ; do
@@ -28,11 +28,11 @@ echo "Copy new files."
 mkdir $BLENDER_ADDON_PATH
 mkdir $BLENDER_ADDON_PATH/blenderProvider
 cp -r ./providers/blender/blenderProvider $BLENDER_ADDON_PATH
-cp -r ./CodeToCAD $BLENDER_ADDON_PATH/
+cp -r ./codetocad $BLENDER_ADDON_PATH/
 cp ./providers/blender/CodeToCADBlenderAddon.py $BLENDER_ADDON_PATH/__init__.py
 
 # Make BlenderProvider the main provider in CodeToCAD module
-echo "from blenderProvider import *" >> $BLENDER_ADDON_PATH/CodeToCAD/__init__.py
+echo "from blenderProvider import *" >> $BLENDER_ADDON_PATH/codetocad/__init__.py
 
 # Write version string
 echo "Writing version string."

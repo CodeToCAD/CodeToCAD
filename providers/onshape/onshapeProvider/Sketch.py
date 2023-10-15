@@ -3,7 +3,7 @@
 from typing import Optional
 
 from codetocad.interfaces import SketchInterface, PartInterface
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 

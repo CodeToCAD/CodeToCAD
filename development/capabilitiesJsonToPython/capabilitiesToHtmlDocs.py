@@ -7,7 +7,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 docs = f"{SCRIPT_DIR}/../../docs/"
 templatesDir = f"{SCRIPT_DIR}/templates"
 
-capabilitiesJson = f"{SCRIPT_DIR}/../../CodeToCAD/capabilities.json"
+capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
 
 capabilitiesToPythonDocumentationHtml = f"capabilitiesToPythonDocumentationHtml.j2"
 capabilitiesToPythonDocumentationHtmlOut = f"{docs}/docs.html"

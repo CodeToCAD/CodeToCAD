@@ -6,7 +6,7 @@
 from typing import Optional
 
 from codetocad.interfaces import PartInterface
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 from . import Entity
