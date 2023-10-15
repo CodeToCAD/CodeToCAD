@@ -20,7 +20,7 @@
             "fileMatch": [
                 "capabilities.json"
             ],
-            "url": "./CodeToCAD/capabilitiesSchema.json"
+            "url": "./codetocad/capabilities_schema.json"
         },
         {
             "fileMatch": [
@@ -45,12 +45,12 @@
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
+        "PYTHONPATH": "codetocad:providers/blender:providers/onshape"
     },
     "terminal.integrated.env.osx": {
-        "PYTHONPATH": "CodeToCAD:providers/blender:providers/onshape"
+        "PYTHONPATH": "codetocad:providers/blender:providers/onshape"
     },
     "terminal.integrated.env.windows": {
-        "PYTHONPATH": "CodeToCAD;providers/blender;providers/onshape"
+        "PYTHONPATH": "codetocad;providers/blender;providers/onshape"
     },
 }

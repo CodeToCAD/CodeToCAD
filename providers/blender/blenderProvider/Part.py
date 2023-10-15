@@ -3,7 +3,7 @@ from . import BlenderActions
 from . import BlenderDefinitions
 
 from codetocad.interfaces import PartInterface, LandmarkInterface, EntityInterface
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 from .Material import Material

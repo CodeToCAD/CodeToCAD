@@ -4,7 +4,7 @@
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 
 
 class LandmarkInterface(metaclass=ABCMeta):

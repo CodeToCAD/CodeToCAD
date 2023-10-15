@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Optional
 
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 from codetocad.interfaces import SketchInterface
 from codetocad.utilities import *
 

@@ -13,7 +13,7 @@ except:
     git_commit_epoch = open('version.txt').read()
 
 setup(
-    name='CodeToCAD',
+    name='codetocad',
     version=f'0.2.{git_commit_epoch}',
     description='3D modeling automation in your favorite modeling software.',
     long_description=long_description,
@@ -22,8 +22,8 @@ setup(
     author='CodeToCAD',
     author_email='shehab@codethatdown.com',
     license='GPL v3',
-    packages=['CodeToCAD', "CodeToCAD.interfaces",
-              "CodeToCAD.providersSample"],
+    packages=['codetocad', "codetocad.interfaces",
+              "codetocad.providersSample"],
     install_requires=[],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
