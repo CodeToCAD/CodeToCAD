@@ -1,6 +1,6 @@
 # THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
-# Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
@@ -19,7 +19,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         value = instance.create_from_file("file_path","file_type")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_is_exists(self):
@@ -119,7 +119,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         value = instance.mirror("mirror_across_entity_or_landmark","axis","resulting_mirrored_entity_name")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_linear_pattern(self):

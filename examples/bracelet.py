@@ -1,18 +1,18 @@
 from codetocad import *
 
-Scene.default().setDefaultUnit("cm")
-Scene.default().createGroup("Bracelet")
+Scene.default().set_default_unit("cm")
+Scene.default().create_group("Bracelet")
 
 
 class Bracelet:
-    outerDiameter = "161cm"
-    innerDiameter = "81cm"
+    outer_diameter = "161cm"
+    inner_diameter = "81cm"
     thickness = "83cm"
 
     def create(self):
         bracelet = Part("bracelet") \
-            .createTorus(Dimension.fromString(self.innerDiameter)/2, Dimension.fromString(self.outerDiameter)/2)
-        bracelet.scaleZ(self.thickness)
+            .create_torus(Dimension.from_string(self.inner_diameter)/2, Dimension.from_string(self.outer_diameter)/2)
+        bracelet.scale_z(self.thickness)
 
         return bracelet
 
@@ -20,29 +20,29 @@ class Bracelet:
 class Button:
     radius = "60/2cm"
     depth = "13.6cm"
-    insetRadius = "20cm"
-    insetDepth = "3cm"
+    inset_radius = "20cm"
+    inset_depth = "3cm"
 
     def create(self):
         button = Part("button") \
-            .createCylinder(self.radius, self.depth)
-        button_top = button.getLandmark("top")
-        button.filletFaces("5cm", [button_top])
+            .create_cylinder(self.radius, self.depth)
+        button_top = button.get_landmark("top")
+        button.fillet_faces("5cm", [button_top])
         button.hole(
-            button_top, self.insetRadius, self.insetDepth)
+            button_top, self.inset_radius, self.inset_depth)
         return button
 
 
 class Belt:
-    outerRadius = "162/2cm"
-    innerRadius = "150/2cm"
+    outer_radius = "162/2cm"
+    inner_radius = "150/2cm"
     thickness = "30cm"
 
     def create(self):
-        belt = Part("belt").createCylinder(
-            self.outerRadius, self.thickness)
-        belt.hole(belt.getLandmark("top"),
-                  self.innerRadius, self.thickness)
+        belt = Part("belt").create_cylinder(
+            self.outer_radius, self.thickness)
+        belt.hole(belt.get_landmark("top"),
+                  self.inner_radius, self.thickness)
         return belt
 
 
@@ -52,27 +52,27 @@ button = Button().create()
 belt = Belt().create()
 
 # Mark: Joint the button to the front of the bracelet
-Joint(bracelet.getLandmark("front"), button.getLandmark(
-    "top")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(90, 0, 0)
-Joint(bracelet.getLandmark("center"), belt.getLandmark(
-    "center")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
+Joint(bracelet.get_landmark("front"), button.get_landmark(
+    "top")).limit_location_xyz(0, 0, 0).limit_rotation_xyz(90, 0, 0)
+Joint(bracelet.get_landmark("center"), belt.get_landmark(
+    "center")).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
 # Mark: subtract the button and belt from the bracelet:
-bracelet.subtract(belt, deleteAfterSubtract=False)
+bracelet.subtract(belt, delete_after_subtract=False)
 
-bracelet.hole(belt.getLandmark("front"),
-              button.getDimensions().x / 2, button.getDimensions().z, normalAxis="y", flipAxis=True)
-belt.hole(belt.getLandmark("front"),
-          button.getDimensions().x / 2, belt.getDimensions().z, normalAxis="y", flipAxis=True)
+bracelet.hole(belt.get_landmark("front"),
+              button.get_dimensions().x / 2, button.get_dimensions().z, normal_axis="y", flip_axis=True)
+belt.hole(belt.get_landmark("front"),
+          button.get_dimensions().x / 2, belt.get_dimensions().z, normal_axis="y", flip_axis=True)
 
 # Mark: Assign to a group:
 
-Scene().assignToGroup([bracelet, button, belt], "Bracelet")
+Scene().assign_to_group([bracelet, button, belt], "Bracelet")
 
 # Mark apply materials:
-redMaterial = Material("red").setColor(181, 16, 4)
-blueMaterial = Material("blue").setColor(19, 107, 181)
+red_material = Material("red").set_color(181, 16, 4)
+blue_material = Material("blue").set_color(19, 107, 181)
 
-bracelet.setMaterial(redMaterial)
-button.setMaterial(blueMaterial)
-belt.setMaterial(blueMaterial)
+bracelet.set_material(red_material)
+button.set_material(blue_material)
+belt.set_material(blue_material)

@@ -1,7 +1,8 @@
 import os
+import unittest
 from providers.onshape import *
-from providers.onshape.onshapeProvider import *
-from providers.onshape.onshapeProvider.OnshapeActions import *
+from providers.onshape.onshape_provider import *
+from providers.onshape.onshape_provider.onshape_actions import *
 
 from codetocad import *
 from codetocad.utilities import Point
@@ -11,51 +12,51 @@ configPath = os.path.join(
     '../providers/onshape/.onshape_client_config.yaml',
 )
 
-# Note: you must create a "CodeToCAD-OnshapeActions" document to run tests that use it.
-onshapeDocumentName = "CodeToCAD-OnshapeActions"
+# Note: you must create a "CodeToCAD-onshape_actions" document to run tests that use it.
+onshape_document_name = "CodeToCAD-onshape_actions"
 
 
-class TestOnshapeActions():
+class TestOnshapeActions(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = getOnshapeClientWithConfigFile(
-            configFilepath=configPath)
+        cls.client = get_onshape_client_with_config_file(
+            config_filepath=configPath)
 
-        # from OnshapeProvider import injectOnshapeProvider
-        # injectOnshapeProvider(globals())
+        # from onshape_provider import injectonshape_provider
+        # injectonshape_provider(globals())
 
     def setUp(self) -> None:
         pass
 
-    def testReadDocumentUrlByName(self) -> None:
-        documentUrl = getFirstDocumentUrlByName(
-            self.client, onshapeDocumentName)
+    def test_read_document_url_by_name(self) -> None:
+        documentUrl = get_first_document_url_by_name(
+            self.client, onshape_document_name)
 
         assert documentUrl != None
 
         print("documentUrl", documentUrl)
 
-    def testCreatePartStudioTab(self) -> None:
-        documentUrl = getFirstDocumentUrlByName(
-            self.client, onshapeDocumentName)
+    def test_create_part_studio_tab(self) -> None:
+        documentUrl = get_first_document_url_by_name(
+            self.client, onshape_document_name)
 
-        partStudioId = createTabPartStudios(
+        partStudioId = create_tab_part_studios(
             self.client, documentUrl, Utilities.createUUIDLikeId())
 
         assert partStudioId != None
 
-    def testCreatePoint(self) -> None:
+    def test_create_point(self) -> None:
 
-        onshapeUrl = getFirstDocumentUrlByName(
-            self.client, onshapeDocumentName)
+        onshapeUrl = get_first_document_url_by_name(
+            self.client, onshape_document_name)
 
-        partStudioId = createTabPartStudios(
+        partStudioId = create_tab_part_studios(
             self.client, onshapeUrl, Utilities.createUUIDLikeId())
 
-        onshapeUrl.tabId = partStudioId
+        onshapeUrl.tab_id = partStudioId
 
         pointLocation = Dimension(1.5, "m")
 
-        createPoint(self.client, onshapeUrl, "Test Point", Point(
+        create_point(self.client, onshapeUrl, "Test Point", Point(
             pointLocation, pointLocation, pointLocation))

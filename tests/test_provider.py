@@ -3,27 +3,19 @@
 from typing import Optional
 import unittest
 
-from mock.modeling.MockModelingProvider import resetMockModelingProvider, injectMockModelingProvider
+from mock.modeling.mock_modeling_provider import reset_mock_modeling_provider, inject_mock_modeling_provider
 
 from codetocad import *
 import codetocad.utilities as Utilities
 from codetocad.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
                                  Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
                                  getAbsoluteFilepath, getFilename, max, min)
-from providers.blender.blenderProvider import *
-
-if __name__ == "__main__":
-    print("Started test_provider")
-
-    import tests.test_provider
-    unittest.main(tests.test_provider)
-
-    print("Completed test_provider")
+from providers.blender.blender_provider import *
 
 
 def injectMockProvider():
-    resetMockModelingProvider()
-    injectMockModelingProvider(globals())
+    reset_mock_modeling_provider()
+    inject_mock_modeling_provider(globals())
 
 
 class TestProviderCase(unittest.TestCase):
@@ -35,15 +27,15 @@ class TestProviderCase(unittest.TestCase):
 
 class TestEntity(TestProviderCase):
 
-    def test_isExists(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_is_exists(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.isExists()
+        value = instance.is_exists()
 
         assert value, "Get method failed."
 
     def test_rename(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
         value = instance.rename("newName", True)
 
@@ -54,37 +46,37 @@ class TestEntity(TestProviderCase):
         # TODO: test for renamelinkedEntitiesAndLandmarks = False. This is blocked by landmarking implementation
 
     def test_delete(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.isExists()
+        value = instance.is_exists()
 
         assert value, "Expected True, got False"
 
         value = instance.delete(False)
 
-        value = instance.isExists()
+        value = instance.is_exists()
 
         assert not value, "Expected False, got True"
 
-        # TODO: test for removeChildren = True
+        # TODO: test for remove_children = True
 
-    def test_isVisible(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_is_visible(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.isVisible()
+        value = instance.is_visible()
 
         assert value, "Get method failed."
 
-    def test_setVisible(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_set_visible(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.setVisible(True)
+        value = instance.set_visible(True)
 
-        assert value.isVisible() == True, "Expected False, got True"
+        assert value.is_visible() == True, "Expected False, got True"
 
-        value = instance.setVisible(False)
+        value = instance.set_visible(False)
 
-        assert value.isVisible() == False, "Expected True, got False"
+        assert value.is_visible() == False, "Expected True, got False"
 
     @unittest.skip("Blocked by understanding the consequences of implementating this capability.")
     def test_apply(self):
@@ -94,26 +86,26 @@ class TestEntity(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    def test_getNativeInstance(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_native_instance(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.getNativeInstance()
+        value = instance.get_native_instance()
 
         assert value, "Get method failed."
 
-    def test_getLocationWorld(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_location_world(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.getLocationWorld()
+        value = instance.get_location_world()
 
         assert value.x == "0m" and value.y == "0m" and value.z == "0m", "Get method failed."
 
         # TODO: get location world after translating
 
-    def test_getLocationLocal(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_location_local(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.getLocationWorld()
+        value = instance.get_location_world()
 
         assert value.x == "0m" and value.y == "0m" and value.z == "0m", "Get method failed."
 
@@ -126,7 +118,7 @@ class TestEntity(TestProviderCase):
         value = instance.select()
 
     def test_export(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
         value = instance.export("filePath.stl", True, 1.0)
 
@@ -143,198 +135,198 @@ class TestEntity(TestProviderCase):
         # TODO: Test overwriting
 
     def test_clone(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
         value = instance.clone("newName", False)
 
-        assert instance.isExists(), "The original object should still exist."
+        assert instance.is_exists(), "The original object should still exist."
 
         assert instance.name != value.name, "Clone should return the cloned Entity."
 
-        assert Part("newName").isExists(), "Clone method failed."
+        assert Part("newName").is_exists(), "Clone method failed."
 
         # TODO: test copyLandmarks parameter
 
     def test_mirror(self):
-        partToMirror = Part("partToMirror", "description").createCube(
-            1, 1, 1).translateX(-5)
+        partToMirror = Part("partToMirror", "description").create_cube(
+            1, 1, 1).translate_x(-5)
         partToMirrorAcross = Part(
-            "partToMirrorAcross", "description").createCube(1, 1, 1)
+            "partToMirrorAcross", "description").create_cube(1, 1, 1)
 
         value = partToMirror.mirror(partToMirrorAcross, "x", None)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
         # TODO: add test for bad mirrorAcrossEntity name
         # TODO: add test for bad axis name
-        # TODO: add test for supplying resultingMirroredEntityName
+        # TODO: add test for supplying resulting_mirrored_entity_name
         # TODO: add test to make sure mirrored object is really mirrored across the intended axis and distance
 
-    def test_linearPattern(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_linear_pattern(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.linearPattern(
+        value = instance.linear_pattern(
             2, "2m")
 
-        assert value.isExists(), "Modify method failed."
+        assert value.is_exists(), "Modify method failed."
 
         # TODO: make sure patterning works on all axes correctly
 
-    def test_circularPattern(self):
+    def test_circular_pattern(self):
         partToPattern = Part(
-            "partToPattern", "description").createCube(1, 1, 1).translateX(-5)
-        centerPart = Part("centerPart", "description").createCube(1, 1, 1)
+            "partToPattern", "description").create_cube(1, 1, 1).translate_x(-5)
+        centerPart = Part("centerPart", "description").create_cube(1, 1, 1)
 
-        value = partToPattern.circularPattern(
+        value = partToPattern.circular_pattern(
             4, 90, centerPart)
 
-        assert value.isExists(), "Modify method failed."
+        assert value.is_exists(), "Modify method failed."
 
         # TODO: make sure Entity, Landmark and string name all work correctly.
         # TODO: make sure patterning works on all axes correctly
 
-    def test_translateXYZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_translate_xyz(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.translateXYZ(5, 7, 9)
+        value = instance.translate_xyz(5, 7, 9)
 
         assert value, "Modify method failed."
 
-        assert instance.getLocationWorld() == Point(
+        assert instance.get_location_world() == Point(
             Dimension(5, "m"), Dimension(7, "m"), Dimension(9, "m")), "Translation is not correct"
 
-    def test_translateX(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_translate_x(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.translateX(5)
+        value = instance.translate_x(5)
 
         assert value, "Modify method failed."
 
-        assert instance.getLocationWorld() == Point(
+        assert instance.get_location_world() == Point(
             Dimension(5, "m"), Dimension(0, "m"), Dimension(0, "m")), "Translation is not correct"
 
-    def test_translateY(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_translate_y(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.translateY(5)
+        value = instance.translate_y(5)
 
         assert value, "Modify method failed."
 
-        assert instance.getLocationWorld() == Point(
+        assert instance.get_location_world() == Point(
             Dimension(0, "m"), Dimension(5, "m"), Dimension(0, "m")), "Translation is not correct"
 
-    def test_translateZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_translate_z(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.translateZ(5)
+        value = instance.translate_z(5)
 
         assert value, "Modify method failed."
 
-        assert instance.getLocationWorld() == Point(
+        assert instance.get_location_world() == Point(
             Dimension(0, "m"), Dimension(0, "m"), Dimension(5, "m")), "Translation is not correct"
 
-    def test_scaleXYZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_scale_xyz(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        instance.scaleXYZ(5, 7, 9)
+        instance.scale_xyz(5, 7, 9)
 
-        dimensions = instance.getDimensions()
+        dimensions = instance.get_dimensions()
 
         assert dimensions.x.value == 5 and dimensions.y.value == 7 and dimensions.z.value == 9, "Modify method failed."
 
-    def test_scaleX(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_scale_x(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        instance.scaleX(5)
+        instance.scale_x(5)
 
-        dimensions = instance.getDimensions()
-
-        assert dimensions.x.value == 5 and dimensions.y.value == 1 and dimensions.z.value == 1, "Modify method failed."
-
-    def test_scaleY(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
-
-        instance.scaleY(5)
-
-        dimensions = instance.getDimensions()
-
-        assert dimensions.x.value == 1 and dimensions.y.value == 5 and dimensions.z.value == 1, "Modify method failed."
-
-    def test_scaleZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
-
-        instance.scaleZ(5)
-
-        dimensions = instance.getDimensions()
-
-        assert dimensions.x.value == 1 and dimensions.y.value == 1 and dimensions.z.value == 5, "Modify method failed."
-
-    def test_scaleXByFactor(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
-
-        instance.scaleXByFactor(5)
-
-        dimensions = instance.getDimensions()
+        dimensions = instance.get_dimensions()
 
         assert dimensions.x.value == 5 and dimensions.y.value == 1 and dimensions.z.value == 1, "Modify method failed."
 
-    def test_scaleYByFactor(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_scale_y(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        instance.scaleYByFactor(5)
+        instance.scale_y(5)
 
-        dimensions = instance.getDimensions()
+        dimensions = instance.get_dimensions()
 
         assert dimensions.x.value == 1 and dimensions.y.value == 5 and dimensions.z.value == 1, "Modify method failed."
 
-    def test_scaleZByFactor(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_scale_z(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        instance.scaleZByFactor(5)
+        instance.scale_z(5)
 
-        dimensions = instance.getDimensions()
+        dimensions = instance.get_dimensions()
 
         assert dimensions.x.value == 1 and dimensions.y.value == 1 and dimensions.z.value == 5, "Modify method failed."
 
-    def test_scaleKeepAspectRatio(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_scale_x_by_factor(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        instance.scaleKeepAspectRatio(5, "x")
+        instance.scale_x_by_factor(5)
 
-        dimensions = instance.getDimensions()
+        dimensions = instance.get_dimensions()
+
+        assert dimensions.x.value == 5 and dimensions.y.value == 1 and dimensions.z.value == 1, "Modify method failed."
+
+    def test_scale_y_by_factor(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
+
+        instance.scale_y_by_factor(5)
+
+        dimensions = instance.get_dimensions()
+
+        assert dimensions.x.value == 1 and dimensions.y.value == 5 and dimensions.z.value == 1, "Modify method failed."
+
+    def test_scale_z_by_factor(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
+
+        instance.scale_z_by_factor(5)
+
+        dimensions = instance.get_dimensions()
+
+        assert dimensions.x.value == 1 and dimensions.y.value == 1 and dimensions.z.value == 5, "Modify method failed."
+
+    def test_scale_keep_aspect_ratio(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
+
+        instance.scale_keep_aspect_ratio(5, "x")
+
+        dimensions = instance.get_dimensions()
 
         assert dimensions.x.value == 5 and dimensions.y.value == 5 and dimensions.z.value == 5, "Modify method failed."
 
-    def test_rotateXYZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_rotate_xyz(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.rotateXYZ(45, 45, 45)
+        value = instance.rotate_xyz(45, 45, 45)
 
         assert value, "Modify method failed."
         # TODO: check the rotation value
 
-    def test_rotateX(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_rotate_x(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.rotateX(45)
-
-        assert value, "Modify method failed."
-
-    def test_rotateY(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
-
-        value = instance.rotateY(45)
+        value = instance.rotate_x(45)
 
         assert value, "Modify method failed."
 
-    def test_rotateZ(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_rotate_y(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.rotateZ(45)
+        value = instance.rotate_y(45)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    def test_rotate_z(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
+
+        value = instance.rotate_z(45)
+
+        assert value, "Modify method failed."
+
+    @unittest.skip("")
     def test_twist(self):
         instance = Part("name", "description")
 
@@ -342,7 +334,7 @@ class TestEntity(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_remesh(self):
         instance = Part("name", "description")
 
@@ -350,21 +342,21 @@ class TestEntity(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    def test_createLandmark(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_create_landmark(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.createLandmark("landmarkName", 0, 0, 0)
+        value = instance.create_landmark("landmarkName", 0, 0, 0)
 
         assert value, "Modify method failed."
 
-        landmark = instance.getLandmark("landmarkName")
+        landmark = instance.get_landmark("landmarkName")
 
-        assert landmark.isExists(), "Landmark was not created."
+        assert landmark.is_exists(), "Landmark was not created."
 
-    def test_getBoundingBox(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_bounding_box(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.getBoundingBox()
+        value = instance.get_bounding_box()
 
         assert value, "Get method failed."
         assert value.x.center == 0.0
@@ -377,47 +369,47 @@ class TestEntity(TestProviderCase):
         assert value.z.min == -0.5
         assert value.z.max == 0.5
 
-    def test_getDimensions(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_dimensions(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
-        value = instance.getDimensions()
+        value = instance.get_dimensions()
 
         assert value, "Get method failed."
         assert value.height == "1m"
         assert value.width == "1m"
         assert value.length == "1m"
 
-    def test_getLandmark(self):
-        instance = Part("name", "description").createCube(1, 1, 1)
+    def test_get_landmark(self):
+        instance = Part("name", "description").create_cube(1, 1, 1)
 
         # test creating and getting a landmark
-        instance.createLandmark("landmarkName", max, max, max)
-        value = instance.getLandmark("landmarkName")
+        instance.create_landmark("landmarkName", max, max, max)
+        value = instance.get_landmark("landmarkName")
         assert value, "Get method failed."
-        valueLocation = value.getLocationWorld()
+        valueLocation = value.get_location_world()
         assert valueLocation.x == "0.5m"
         assert valueLocation.y == "0.5m"
         assert valueLocation.z == "0.5m"
 
         # test landmark that doesn't exist
         try:
-            value = instance.getLandmark("landmarkThatDoesNotExist")
+            value = instance.get_landmark("landmarkThatDoesNotExist")
             assert value == None, "Got a ghost landmark."
         except:
             pass
 
-        # test preset landmark fromString
-        value = instance.getLandmark("leftTop")
+        # test preset landmark from_string
+        value = instance.get_landmark("leftTop")
         assert value, "Get method failed."
-        valueLocation = value.getLocationWorld()
+        valueLocation = value.get_location_world()
         assert valueLocation.x == "-0.5m"
         assert valueLocation.y == "0.0m"
         assert valueLocation.z == "0.5m"
 
         # test preset landmark PresetLandmarks
-        value = instance.getLandmark(PresetLandmark.leftTop)
+        value = instance.get_landmark(PresetLandmark.leftTop)
         assert value, "Get method failed."
-        valueLocation = value.getLocationWorld()
+        valueLocation = value.get_location_world()
         assert valueLocation.x == "-0.5m"
         assert valueLocation.y == "0.0m"
         assert valueLocation.z == "0.5m"
@@ -425,7 +417,7 @@ class TestEntity(TestProviderCase):
 
 class TestPart(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createFromFile(self):
         instance = Part("TestPart")
 
@@ -434,102 +426,102 @@ class TestPart(TestProviderCase):
         value = instance.createFromFile(
             f"{pathlib.Path(__file__).parent}/../examples/importableCube.stl")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    def test_createCube(self):
+    def test_create_cube(self):
         instance = Part("TestPart")
 
-        value = instance.createCube(
+        value = instance.create_cube(
             1, 1, 1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createCone(self):
         instance = Part("TestPart")
 
         value = instance.createCone(
             1, 1, 1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createCylinder(self):
+    @unittest.skip("")
+    def test_create_cylinder(self):
         instance = Part("TestPart")
 
-        value = instance.createCylinder(1, 1)
+        value = instance.create_cylinder(1, 1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createTorus(self):
+    @unittest.skip("")
+    def test_create_torus(self):
         instance = Part("TestPart")
 
-        value = instance.createTorus(
+        value = instance.create_torus(
             0.5, 1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createSphere(self):
+    @unittest.skip("")
+    def test_create_sphere(self):
         instance = Part("TestPart")
 
-        value = instance.createSphere(1)
+        value = instance.create_sphere(1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createGear(self):
+    @unittest.skip("")
+    def test_create_gear(self):
         instance = Part("TestPart")
 
-        value = instance.createGear(1, 1, 1, 1, 1)
+        value = instance.create_gear(1, 1, 1, 1, 1)
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_loft(self):
         instance = Part("TestPart")
 
         value = instance.loft("Landmark1", "Landmark2")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_union(self):
         instance = Part("TestPart")
 
         value = instance.union(
-            "withPart", "deleteAfterUnion", "isTransferLandmarks")
+            "withPart", "delete_after_union", "is_transfer_landmarks")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_subtract(self):
         instance = Part("TestPart")
 
         value = instance.subtract(
-            "withPart", "deleteAfterSubtract", "isTransferLandmarks")
+            "withPart", "delete_after_subtract", "is_transfer_landmarks")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_intersect(self):
         instance = Part("TestPart")
 
         value = instance.intersect(
-            "withPart", "deleteAfterIntersect", "isTransferLandmarks")
+            "withPart", "delete_after_intersect", "is_transfer_landmarks")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_hollow(self):
-        instance = Part("TestPart").createCube(1, 1, 1)
+        instance = Part("TestPart").create_cube(1, 1, 1)
 
         value = instance.hollow("20cm", 0.2, 0.2, "z", False)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_thicken(self):
         instance = Part("")
 
@@ -537,23 +529,23 @@ class TestPart(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_hole(self):
         instance = Part("TestPart")
 
-        value = instance.hole("holeLandmark", "radius", "depth", "normalAxis", False, "initialRotationX", "initialRotationY", "initialRotationZ", "mirrorAboutEntityOrLandmark", "mirrorAxis", False, 1,
-                              "circularPatternInstanceSeparation", "circularPatternInstanceAxis", "circularPatternAboutEntityOrLandmark", 1, "linearPatternInstanceSeparation", "linearPatternInstanceAxis")
+        value = instance.hole("holeLandmark", "radius", "depth", "normal_axis", False, "initialRotationX", "initialRotationY", "initialRotationZ", "mirrorAboutEntityOrLandmark", "mirrorAxis", False, 1,
+                              "circular_patternInstanceSeparation", "circular_patternInstanceAxis", "circular_patternAboutEntityOrLandmark", 1, "linear_patternInstanceSeparation", "linear_patternInstanceAxis")
 
         assert value, "Modify method failed."
 
-    def test_setMaterial(self):
-        instance = Part("TestPart").createCube(1, 1, 1)
+    def test_set_material(self):
+        instance = Part("TestPart").create_cube(1, 1, 1)
 
-        value = instance.setMaterial("materialName")
+        value = instance.set_material("materialName")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_isCollidingWithPart(self):
         instance = Part("TestPart")
 
@@ -561,69 +553,69 @@ class TestPart(TestProviderCase):
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_filletAllEdges(self):
+    @unittest.skip("")
+    def test_fillet_all_edges(self):
         instance = Part("TestPart")
 
-        value = instance.filletAllEdges("radius", "useWidth")
+        value = instance.fillet_all_edges("radius", "useWidth")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_filletEdges(self):
+    @unittest.skip("")
+    def test_fillet_edges(self):
         instance = Part("TestPart")
 
-        value = instance.filletEdges(
+        value = instance.fillet_edges(
             "radius", "landmarksNearEdges", "useWidth")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_filletFaces(self):
+    @unittest.skip("")
+    def test_fillet_faces(self):
         instance = Part("TestPart")
 
-        value = instance.filletFaces(
+        value = instance.fillet_faces(
             "radius", "landmarksNearFaces", "useWidth")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_chamferAllEdges(self):
+    @unittest.skip("")
+    def test_chamfer_all_edges(self):
         instance = Part("TestPart")
 
-        value = instance.chamferAllEdges("radius")
+        value = instance.chamfer_all_edges("radius")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_chamferEdges(self):
+    @unittest.skip("")
+    def test_chamfer_edges(self):
         instance = Part("TestPart")
 
-        value = instance.chamferEdges("radius", "landmarksNearEdges")
+        value = instance.chamfer_edges("radius", "landmarksNearEdges")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_chamferFaces(self):
+    @unittest.skip("")
+    def test_chamfer_faces(self):
         instance = Part("TestPart")
 
-        value = instance.chamferFaces("radius", "landmarksNearFaces")
+        value = instance.chamfer_faces("radius", "landmarksNearFaces")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_selectVertexNearLandmark(self):
         instance = Part("TestPart")
 
         value = instance.selectVertexNearLandmark("landmarkName")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_selectEdgeNearLandmark(self):
         instance = Part("TestPart")
 
         value = instance.selectEdgeNearLandmark("landmarkName")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_selectFaceNearLandmark(self):
         instance = Part("TestPart")
 
@@ -632,7 +624,7 @@ class TestPart(TestProviderCase):
 
 class TestSketch(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_revolve(self):
         instance = Sketch("name", "curveType", "description")
 
@@ -640,7 +632,7 @@ class TestSketch(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_offset(self):
         instance = Sketch("name", "curveType", "description")
 
@@ -648,7 +640,7 @@ class TestSketch(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_extrude(self):
         instance = Sketch("name", "curveType", "description")
 
@@ -656,7 +648,7 @@ class TestSketch(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_sweep(self):
         instance = Sketch("name", "curveType", "description")
 
@@ -664,150 +656,150 @@ class TestSketch(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_createText(self):
+    @unittest.skip("")
+    def test_create_text(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createText("text", "fontSize", "bold", "italic", "underlined",
-                                    "characterSpacing", "wordSpacing", "lineSpacing", "fontFilePath")
+        value = instance.create_text("text", "font_size", "bold", "italic", "underlined",
+                                     "characterSpacing", "wordSpacing", "lineSpacing", "font_file_path")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createFromVertices(self):
+    @unittest.skip("")
+    def test_create_from_vertices(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createFromVertices("coordinates", "interpolation")
+        value = instance.create_from_vertices("coordinates", "interpolation")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createPoint(self):
+    @unittest.skip("")
+    def test_create_point(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createPoint("coordinate")
+        value = instance.create_point("coordinate")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createLine(self):
+    @unittest.skip("")
+    def test_create_line(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createLine("length", "angleX", "angleY", "symmetric")
+        value = instance.create_line("length", "angleX", "angleY", "symmetric")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createLineBetweenPoints(self):
+    @unittest.skip("")
+    def test_create_lineBetweenPoints(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createLineBetweenPoints("endAt", "startAt")
+        value = instance.create_lineBetweenPoints("endAt", "startAt")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createCircle(self):
+    @unittest.skip("")
+    def test_create_circle(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createCircle("radius")
+        value = instance.create_circle("radius")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createEllipse(self):
+    @unittest.skip("")
+    def test_create_ellipse(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createEllipse("radiusA", "radiusB")
+        value = instance.create_ellipse("radiusA", "radiusB")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createArc(self):
+    @unittest.skip("")
+    def test_create_arc(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createArc("radius", "angle")
+        value = instance.create_arc("radius", "angle")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createArcBetweenThreePoints(self):
+    @unittest.skip("")
+    def test_create_arcBetweenThreePoints(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createArcBetweenThreePoints(
+        value = instance.create_arcBetweenThreePoints(
             "pointA", "pointB", "centerPoint")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createSegment(self):
         instance = Sketch("name", "curveType", "description")
 
         value = instance.createSegment("innerRadius", "outerRadius", "angle")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createRectangle(self):
         instance = Sketch("name", "curveType", "description")
 
         value = instance.createRectangle("length", "width")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createPolygon(self):
+    @unittest.skip("")
+    def test_create_polygon(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createPolygon("numberOfSides", "length", "width")
+        value = instance.create_polygon("numberOfSides", "length", "width")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createTrapezoid(self):
         instance = Sketch("name", "curveType", "description")
 
         value = instance.createTrapezoid(
             "lengthUpper", "lengthLower", "height")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createSpiral(self):
+    @unittest.skip("")
+    def test_create_spiral(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createSpiral(
+        value = instance.create_spiral(
             "numberOfTurns", "height", "radius", "isClockwise", "radiusEnd")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
 
 class TestLandmark(TestProviderCase):
 
-    @unittest.skip
-    def test_getLandmarkEntityName(self):
+    @unittest.skip("")
+    def test_get_landmark_entity_name(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.getLandmarkEntityName("")
+        value = instance.get_landmark_entity_name("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getParentEntity(self):
+    @unittest.skip("")
+    def test_get_parent_entity(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.getParentEntity("")
+        value = instance.get_parent_entity("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_isExists(self):
+    @unittest.skip("")
+    def test_is_exists(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.isExists("")
+        value = instance.is_exists("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_rename(self):
         instance = Landmark("name", "parentEntity", "description")
 
@@ -815,51 +807,51 @@ class TestLandmark(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_delete(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.delete("removeChildren")
+        value = instance.delete("remove_children")
 
-    @unittest.skip
-    def test_isVisible(self):
+    @unittest.skip("")
+    def test_is_visible(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.isVisible("")
+        value = instance.is_visible("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_setVisible(self):
+    @unittest.skip("")
+    def test_set_visible(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.setVisible("isVisible")
+        value = instance.set_visible("is_visible")
 
-    @unittest.skip
-    def test_getNativeInstance(self):
+    @unittest.skip("")
+    def test_get_native_instance(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.getNativeInstance("")
+        value = instance.get_native_instance("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationWorld(self):
+    @unittest.skip("")
+    def test_get_location_world(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.getLocationWorld("")
+        value = instance.get_location_world("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationLocal(self):
+    @unittest.skip("")
+    def test_get_location_local(self):
         instance = Landmark("name", "parentEntity", "description")
 
-        value = instance.getLocationLocal("")
+        value = instance.get_location_local("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_select(self):
         instance = Landmark("name", "parentEntity", "description")
 
@@ -868,15 +860,15 @@ class TestLandmark(TestProviderCase):
 
 class TestJoint(TestProviderCase):
 
-    @unittest.skip
-    def test_translateLandmarkOntoAnother(self):
+    @unittest.skip("")
+    def test_translate_landmark_onto_another(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.translateLandmarkOntoAnother("")
+        value = instance.translate_landmark_onto_another("")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_pivot(self):
         instance = Joint("entity1", "entity2")
 
@@ -884,7 +876,7 @@ class TestJoint(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_gearRatio(self):
         instance = Joint("entity1", "entity2")
 
@@ -892,106 +884,106 @@ class TestJoint(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitLocationXYZ(self):
+    @unittest.skip("")
+    def test_limit_location_xyz(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitLocationXYZ("x", "y", "z")
+        value = instance.limit_location_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    def test_limitLocationX(self):
-        partA = Part("A").createCube(1, 1, 1).createLandmark(
+    def test_limit_location_x(self):
+        partA = Part("A").create_cube(1, 1, 1).create_landmark(
             "top", center, center, max)
-        partB = Part("B").createCube(1, 1, 1).createLandmark(
+        partB = Part("B").create_cube(1, 1, 1).create_landmark(
             "bottom", center, center, min)
 
         joint = Joint(partA, partB)
 
-        value = joint.limitLocationX(0, 0)
+        value = joint.limit_location_x(0, 0)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitLocationY(self):
+    @unittest.skip("")
+    def test_limit_location_y(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitLocationY("min", "max")
+        value = instance.limit_location_y("min", "max")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitLocationZ(self):
+    @unittest.skip("")
+    def test_limit_location_z(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitLocationZ("min", "max")
+        value = instance.limit_location_z("min", "max")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitRotationXYZ(self):
+    @unittest.skip("")
+    def test_limit_rotation_xyz(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitRotationXYZ("x", "y", "z")
+        value = instance.limit_rotation_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    def test_limitRotationX(self):
-        partA = Part("A").createCube(1, 1, 1).createLandmark(
+    def test_limit_rotation_x(self):
+        partA = Part("A").create_cube(1, 1, 1).create_landmark(
             "top", center, center, max)
-        partB = Part("B").createCube(1, 1, 1).createLandmark(
+        partB = Part("B").create_cube(1, 1, 1).create_landmark(
             "bottom", center, center, min)
 
         joint = Joint(partA, partB)
 
-        value = joint.limitRotationX(0, 0)
+        value = joint.limit_rotation_x(0, 0)
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitRotationY(self):
+    @unittest.skip("")
+    def test_limit_rotation_y(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitRotationY("min", "max")
+        value = instance.limit_rotation_y("min", "max")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_limitRotationZ(self):
+    @unittest.skip("")
+    def test_limit_rotation_z(self):
         instance = Joint("entity1", "entity2")
 
-        value = instance.limitRotationZ("min", "max")
+        value = instance.limit_rotation_z("min", "max")
 
         assert value, "Modify method failed."
 
 
 class TestMaterial(TestProviderCase):
 
-    @unittest.skip
-    def test_assignToPart(self):
+    @unittest.skip("")
+    def test_assign_to_part(self):
         instance = Material("name", "description")
 
-        value = instance.assignToPart("partName")
+        value = instance.assign_to_part("partName")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_setColor(self):
+    @unittest.skip("")
+    def test_set_color(self):
         instance = Material("name", "description")
 
-        value = instance.setColor("rValue", "gValue", "bValue", "aValue")
+        value = instance.set_color("rValue", "gValue", "bValue", "aValue")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_setReflectivity(self):
+    @unittest.skip("")
+    def test_set_reflectivity(self):
         instance = Material("name", "description")
 
-        value = instance.setReflectivity("reflectivity")
+        value = instance.set_reflectivity("reflectivity")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setRoughness(self):
         instance = Material("name", "description")
 
@@ -999,18 +991,18 @@ class TestMaterial(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_addImageTexture(self):
+    @unittest.skip("")
+    def test_add_image_texture(self):
         instance = Material("name", "description")
 
-        value = instance.addImageTexture("imageFilePath")
+        value = instance.add_image_texture("imageFilePath")
 
         assert value, "Modify method failed."
 
 
 class TestAnimation(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setFrameStart(self):
         instance = Animation("")
 
@@ -1018,7 +1010,7 @@ class TestAnimation(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setFrameEnd(self):
         instance = Animation("")
 
@@ -1026,7 +1018,7 @@ class TestAnimation(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setFrameCurrent(self):
         instance = Animation("")
 
@@ -1034,13 +1026,13 @@ class TestAnimation(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createKeyFrameLocation(self):
         instance = Animation("")
 
         value = instance.createKeyFrameLocation("entity", "frameNumber")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createKeyFrameRotation(self):
         instance = Animation("")
 
@@ -1049,71 +1041,71 @@ class TestAnimation(TestProviderCase):
 
 class TestLight(TestProviderCase):
 
-    @unittest.skip
-    def test_setColor(self):
+    @unittest.skip("")
+    def test_set_color(self):
         instance = Light("name", "description")
 
-        value = instance.setColor("rValue", "gValue", "bValue")
+        value = instance.set_color("rValue", "gValue", "bValue")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_createSun(self):
+    @unittest.skip("")
+    def test_create_sun(self):
         instance = Light("name", "description")
 
-        value = instance.createSun("energyLevel")
+        value = instance.create_sun("energyLevel")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createSpot(self):
         instance = Light("name", "description")
 
         value = instance.createSpot("energyLevel")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_createPoint(self):
+    @unittest.skip("")
+    def test_create_point(self):
         instance = Light("name", "description")
 
-        value = instance.createPoint("energyLevel")
+        value = instance.create_point("energyLevel")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createArea(self):
         instance = Light("name", "description")
 
         value = instance.createArea("energyLevel")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
-    def test_translateXYZ(self):
+    @unittest.skip("")
+    def test_translate_xyz(self):
         instance = Light("name", "description")
 
-        value = instance.translateXYZ("x", "y", "z")
+        value = instance.translate_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_rotateXYZ(self):
+    @unittest.skip("")
+    def test_rotate_xyz(self):
         instance = Light("name", "description")
 
-        value = instance.rotateXYZ("x", "y", "z")
+        value = instance.rotate_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_isExists(self):
+    @unittest.skip("")
+    def test_is_exists(self):
         instance = Light("name", "description")
 
-        value = instance.isExists("")
+        value = instance.is_exists("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_rename(self):
         instance = Light("name", "description")
 
@@ -1121,37 +1113,37 @@ class TestLight(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_delete(self):
         instance = Light("name", "description")
 
-        value = instance.delete("removeChildren")
+        value = instance.delete("remove_children")
 
-    @unittest.skip
-    def test_getNativeInstance(self):
+    @unittest.skip("")
+    def test_get_native_instance(self):
         instance = Light("name", "description")
 
-        value = instance.getNativeInstance("")
+        value = instance.get_native_instance("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationWorld(self):
+    @unittest.skip("")
+    def test_get_location_world(self):
         instance = Light("name", "description")
 
-        value = instance.getLocationWorld("")
+        value = instance.get_location_world("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationLocal(self):
+    @unittest.skip("")
+    def test_get_location_local(self):
         instance = Light("name", "description")
 
-        value = instance.getLocationLocal("")
+        value = instance.get_location_local("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_select(self):
         instance = Light("name", "description")
 
@@ -1160,23 +1152,23 @@ class TestLight(TestProviderCase):
 
 class TestCamera(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createPerspective(self):
         instance = Camera("name", "description")
 
         value = instance.createPerspective("")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_createOrthogonal(self):
         instance = Camera("name", "description")
 
         value = instance.createOrthogonal("")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setFocalLength(self):
         instance = Camera("name", "description")
 
@@ -1184,31 +1176,31 @@ class TestCamera(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_translateXYZ(self):
+    @unittest.skip("")
+    def test_translate_xyz(self):
         instance = Camera("name", "description")
 
-        value = instance.translateXYZ("x", "y", "z")
+        value = instance.translate_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_rotateXYZ(self):
+    @unittest.skip("")
+    def test_rotate_xyz(self):
         instance = Camera("name", "description")
 
-        value = instance.rotateXYZ("x", "y", "z")
+        value = instance.rotate_xyz("x", "y", "z")
 
         assert value, "Modify method failed."
 
-    @unittest.skip
-    def test_isExists(self):
+    @unittest.skip("")
+    def test_is_exists(self):
         instance = Camera("name", "description")
 
-        value = instance.isExists("")
+        value = instance.is_exists("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_rename(self):
         instance = Camera("name", "description")
 
@@ -1216,37 +1208,37 @@ class TestCamera(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_delete(self):
         instance = Camera("name", "description")
 
-        value = instance.delete("removeChildren")
+        value = instance.delete("remove_children")
 
-    @unittest.skip
-    def test_getNativeInstance(self):
+    @unittest.skip("")
+    def test_get_native_instance(self):
         instance = Camera("name", "description")
 
-        value = instance.getNativeInstance("")
+        value = instance.get_native_instance("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationWorld(self):
+    @unittest.skip("")
+    def test_get_location_world(self):
         instance = Camera("name", "description")
 
-        value = instance.getLocationWorld("")
+        value = instance.get_location_world("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getLocationLocal(self):
+    @unittest.skip("")
+    def test_get_location_local(self):
         instance = Camera("name", "description")
 
-        value = instance.getLocationLocal("")
+        value = instance.get_location_local("")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_select(self):
         instance = Camera("name", "description")
 
@@ -1255,27 +1247,27 @@ class TestCamera(TestProviderCase):
 
 class TestRender(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_renderImage(self):
         instance = Render("")
 
         value = instance.renderImage("outputFilePath", "overwrite", "fileType")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_renderVideoMp4(self):
         instance = Render("")
 
         value = instance.renderVideoMp4(
             "outputFilePath", "startFrameNumber", "endFrameNumber", "stepFrames", "overwrite")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_renderVideoFrames(self):
         instance = Render("")
 
         value = instance.renderVideoFrames("outputFolderPath", "fileNamePrefix",
                                            "startFrameNumber", "endFrameNumber", "stepFrames", "overwrite", "fileType")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setFrameRate(self):
         instance = Render("")
 
@@ -1283,7 +1275,7 @@ class TestRender(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setResolution(self):
         instance = Render("")
 
@@ -1291,7 +1283,7 @@ class TestRender(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setRenderQuality(self):
         instance = Render("")
 
@@ -1299,7 +1291,7 @@ class TestRender(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setRenderEngine(self):
         instance = Render("")
 
@@ -1307,7 +1299,7 @@ class TestRender(TestProviderCase):
 
         assert value, "Modify method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_setCamera(self):
         instance = Render("")
 
@@ -1318,21 +1310,21 @@ class TestRender(TestProviderCase):
 
 class TestScene(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_create(self):
         instance = Scene("name", "description")
 
         value = instance.create("")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_delete(self):
         instance = Scene("name", "description")
 
         value = instance.delete("")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_getSelectedEntity(self):
         instance = Scene("name", "description")
 
@@ -1340,55 +1332,55 @@ class TestScene(TestProviderCase):
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_export(self):
         instance = Scene("name", "description")
 
         value = instance.export("filePath", "entities", "overwrite", "scale")
 
-    @unittest.skip
-    def test_setDefaultUnit(self):
+    @unittest.skip("")
+    def test_set_default_unit(self):
         instance = Scene("name", "description")
 
-        value = instance.setDefaultUnit("unit")
+        value = instance.set_default_unit("unit")
 
-    @unittest.skip
-    def test_createGroup(self):
+    @unittest.skip("")
+    def test_create_group(self):
         instance = Scene("name", "description")
 
-        value = instance.createGroup("name")
+        value = instance.create_group("name")
 
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_deleteGroup(self):
         instance = Scene("name", "description")
 
-        value = instance.deleteGroup("name", "removeChildren")
+        value = instance.deleteGroup("name", "remove_children")
 
-    @unittest.skip
+    @unittest.skip("")
     def test_removeFromGroup(self):
         instance = Scene("name", "description")
 
         value = instance.removeFromGroup("entityName", "groupName")
 
-    @unittest.skip
-    def test_assignToGroup(self):
+    @unittest.skip("")
+    def test_assign_to_group(self):
         instance = Scene("name", "description")
 
-        value = instance.assignToGroup(
+        value = instance.assign_to_group(
             "entities", "groupName", "removeFromOtherGroups")
 
-    @unittest.skip
-    def test_setVisible(self):
+    @unittest.skip("")
+    def test_set_visible(self):
         instance = Scene("name", "description")
 
-        value = instance.setVisible("entities", "isVisible")
+        value = instance.set_visible("entities", "is_visible")
 
 
 class TestAnalytics(TestProviderCase):
 
-    @unittest.skip
+    @unittest.skip("")
     def test_measureDistance(self):
         instance = Analytics("")
 
@@ -1396,7 +1388,7 @@ class TestAnalytics(TestProviderCase):
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_measureAngle(self):
         instance = Analytics("")
 
@@ -1404,7 +1396,7 @@ class TestAnalytics(TestProviderCase):
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_getWorldPose(self):
         instance = Analytics("")
 
@@ -1412,23 +1404,23 @@ class TestAnalytics(TestProviderCase):
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getBoundingBox(self):
+    @unittest.skip("")
+    def test_get_bounding_box(self):
         instance = Analytics("")
 
-        value = instance.getBoundingBox("entityName")
+        value = instance.get_bounding_box("entityName")
 
         assert value, "Get method failed."
 
-    @unittest.skip
-    def test_getDimensions(self):
+    @unittest.skip("")
+    def test_get_dimensions(self):
         instance = Analytics("")
 
-        value = instance.getDimensions("entityName")
+        value = instance.get_dimensions("entityName")
 
         assert value, "Get method failed."
 
-    @unittest.skip
+    @unittest.skip("")
     def test_log(self):
         instance = Analytics("")
 

@@ -1,6 +1,6 @@
 # THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
-# Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
@@ -73,7 +73,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_text("text","font_size","bold","italic","underlined","character_spacing","word_spacing","line_spacing","font_file_path")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_from_vertices(self):
@@ -82,7 +82,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_from_vertices("coordinates","interpolation")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_point(self):
@@ -91,7 +91,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_point("coordinate")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_line(self):
@@ -100,7 +100,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_line("length","angle_x","angle_y","symmetric")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_line_between_points(self):
@@ -109,7 +109,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_line_between_points("end_at","start_at")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_circle(self):
@@ -118,7 +118,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_circle("radius")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_ellipse(self):
@@ -127,7 +127,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_ellipse("radius_a","radius_b")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_arc(self):
@@ -136,7 +136,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_arc("radius","angle")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_arc_between_three_points(self):
@@ -145,7 +145,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_arc_between_three_points("point_a","point_b","center_point")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_segment(self):
@@ -154,7 +154,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_segment("inner_radius","outer_radius","angle")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_rectangle(self):
@@ -163,7 +163,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_rectangle("length","width")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_polygon(self):
@@ -172,7 +172,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_polygon("number_of_sides","length","width")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_trapezoid(self):
@@ -181,7 +181,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_trapezoid("length_upper","length_lower","height")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     @skip("TODO")
     def test_create_spiral(self):
@@ -190,5 +190,5 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.create_spiral("number_of_turns","height","radius","is_clockwise","radius_end")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         

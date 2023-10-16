@@ -1,4 +1,4 @@
-developmentVirutalEnvironment/
+dev_virtual_environment/
 
-# this one is automatically linked by createPythonVirtualEnvironment.sh
+# this one is automatically linked by create_python_virtual_environment.sh
 .pythonpath.env

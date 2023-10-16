@@ -1,0 +1,61 @@
+{%- from 'capabilities_to_py_utilities.j2' import typeMapping, generateMethodArguments %}
+
+    {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+
+    {%- set isStaticMethod = "staticMethod" in properties and properties["staticMethod"] -%}
+
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if methodName == "information" %}
+    {# Do nothing #}
+    {%- elif methodName == "extends"-%}
+    {# Do nothing #}
+    {%- elif methodName == "alias"-%}
+    {# Do nothing #}
+    {%- elif methodName == "constructor"%}
+
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
+    {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == false else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == false or "defaultValue" in definition  -}}
+    {%-endfor%}
+
+    {{ generateMethodArguments("__init__", parameters, isStaticMethod, useAbstractMethodDecorator) }}):
+
+    {%-if useAbstractMethodDecorator and "extends" in methods %}
+    {%-set superParameters = capabilities[methods["extends"]]["constructor"]["parameters"]%}
+        super().__init__({{ superParameters.keys()|join(",") }})
+    {%endif%}
+
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        self.{{ parameter }} = {{parameter}}
+    {%- else %}
+        pass
+    {%-endfor%}
+
+    {%- elif methodName == "default"%}
+
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+        {%if useAbstractMethodDecorator-%}
+        raise RuntimeError()
+        {%else-%}
+        return {{className}}()
+        {%-endif-%}
+
+    {%- else %}
+
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+        {% if "information" in properties and useAbstractMethodDecorator -%}
+        '''
+        {{ properties["information"] }}
+        '''
+        {%endif%}
+        {% if useAbstractMethodDecorator -%}
+        print("{{methodName}} is called in an abstract method. Please override this method.")
+        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
+        {%else-%}
+        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
+        {%endif%}
+    
+    {%-endif-%}
+    {%-endfor%}

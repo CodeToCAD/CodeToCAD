@@ -31,11 +31,11 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
    # This is also the examples/materials.py example
    from codetocad import *
 
-   my_material = Material("material").setColor(169, 76, 181, 0.8)
-   Part("Cube").createCube(1, 1, 1).setMaterial(my_material)
+   my_material = Material("material").set_color(169, 76, 181, 0.8)
+   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
    ```
 
-   ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png)
+   ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
 
 3. Run your script in your modeling software. If you are using Blender, check out the instructions for installing the [Blender Addon](#blender) addon below.
 
@@ -56,7 +56,7 @@ You should browse the examples too! [https://codetocad.github.io/CodeToCAD/examp
 
 - Run or browse the [examples](./examples/)!
 
-  ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png)
+  ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stacked_cubes.png)
 
 - Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
@@ -98,16 +98,16 @@ Future planned integrations (not in any order):
 ### Setting up development environment.
 
 1. Please install the VSCode python virtual environment using
-   `sh development/createPythonVirtualEnvironment.sh`
+   `sh development/create_python_virtual_environment.sh`
    or
-   `sh development/createPythonVirtualEnvironment.sh /path/to/python_binary`.
+   `sh development/create_python_virtual_environment.sh /path/to/python_binary`.
 
 > If you are on Windows, please use Git Bash.
 > Note: Python 3.10+ is required.
 > Note 2: It might be a good idea to restart VSCode after installing the virtual environment.
 > Note 3: If VSCode prompts you, please use the interpreter under `development/developmentVirtualEnvironment`.
 
-2. It's good practice to run tests before committing. Please run `sh ./development/installGitHooks.sh` to instll Git Hooks.
+2. It's good practice to run tests before committing. Please run `sh ./development/install_git_hooks.sh` to instll Git Hooks.
 
 3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
 
@@ -115,7 +115,7 @@ Future planned integrations (not in any order):
 
 ### Running Tests
 
-Run tests using `sh runTests.sh`.
+Run tests using `sh run_tests.sh`.
 
 ### Capabilities.json and Jinja2 templates
 
@@ -123,7 +123,7 @@ Run tests using `sh runTests.sh`.
 
 Jinja2 templates are used to turn capabilities.json into an interface, as well as templates for CodeToCAD Providers and Tests.
 
-You can generate the Jinja2 templates by running the "Capabilities.json to Python" task in VSCode, or `sh development/capabilitiesJsonToPython/capabilitiesToPy.sh`
+You can generate the Jinja2 templates by running the "Capabilities.json to Python" task in VSCode, or `sh development/capabilities_json_to_python/capabilities_to_py.sh`
 
 ### Architecture
 

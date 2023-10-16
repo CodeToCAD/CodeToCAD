@@ -1,15 +1,15 @@
 from codetocad import *
 
 
-drumRadius = Dimension.fromString("5mm")
-drumLength = Dimension.fromString("15.0 mm")
+drum_radius = Dimension.from_string("5mm")
+drum_length = Dimension.from_string("15.0 mm")
 
-wireThickness = Dimension.fromString("1mm")
-numberOfWindings = 10
+wire_thickness = Dimension.from_string("1mm")
+number_of_windings = 10
 
-grooveSpiral = Sketch("grooveSpiral").createSpiral(
-    numberOfWindings, drumLength, drumRadius)
+groove_spiral = Sketch("grooveSpiral").create_spiral(
+    number_of_windings, drum_length, drum_radius)
 
-groove = Sketch("groove").createCircle(wireThickness/2)
+groove = Sketch("groove").create_circle(wire_thickness/2)
 
-grooveSpiral.sweep(groove)
+groove_spiral.sweep(groove)

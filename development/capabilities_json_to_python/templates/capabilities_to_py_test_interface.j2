@@ -1,0 +1,53 @@
+# THIS IS AN AUTO-GENERATE FILE. 
+# DO NOT EDIT MANUALLY.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
+
+# testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
+
+from abc import ABCMeta, abstractmethod
+
+from codetocad import {{className}}
+
+class {{className}}TestInterface(metaclass=ABCMeta):    
+    {%- from 'capabilities_to_py_utilities.j2' import typeMapping -%}
+
+    {%- set className = "Part" if className == "Entity" else className -%}
+
+    {%-set classConstructor = methods["constructor"] if "constructor" in methods else {}-%}
+    {%-set classConstructorParameters = classConstructor["parameters"] if "parameters" in classConstructor else {}-%}
+
+    {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+
+    {%- set isStaticMethod = "staticMethod" in properties and properties["staticMethod"] -%}
+
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+
+    {%- if methodName == "information" %}
+    {# Do nothing #}
+    {%- elif methodName == "extends"-%}
+    {# Do nothing #}
+    {%- elif methodName == "alias"-%}
+    {# Do nothing #}
+    {%- elif methodName == "constructor"%}
+    {# Do nothing #}
+    {%- elif methodName == "default"%}
+    {# Do nothing #}
+    {%- else %}
+    {# @unittest.skip #}
+    @abstractmethod
+    def test_{{methodName}}(self):
+        instance = {{className}}("{{ classConstructorParameters.keys()|join('","') }}")
+
+        value = instance.{{methodName}}("{{ properties["parameters"].keys()|join('","') if "parameters" in properties}}")
+
+        {% if properties["action"] == "get" %}
+        assert value, "Get method failed."
+        {%elif properties["action"] == "create"%}
+        assert value.is_exists(), "Create method failed."
+        {%elif properties["action"] == "modify"%}
+        assert value, "Modify method failed."
+        {%endif%}
+        
+    
+    {%-endif-%}
+    {%-endfor%}

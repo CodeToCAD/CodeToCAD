@@ -1,5 +1,6 @@
 from copy import deepcopy
 import re
+import os
 import json
 pattern1 = re.compile(r'(.)([A-Z][a-z]+)')
 pattern2 = re.compile(r'__([A-Z])')
@@ -14,8 +15,10 @@ def to_snake_case(name):
     return name.lower()
 
 
+script_dir, _ = os.path.split(__file__)
+
 capabilities = json.load(
-    open("/Users/shehab/Desktop/projects/CodeToCAD/codetocad/capabilities.json"))
+    open(f"{script_dir}/capabilities.json"))
 
 # capabilities_new = json.loads(json.dumps(capabilities))
 
@@ -53,4 +56,4 @@ for className in capabilities["capabilities"].keys():
 
 
 json.dump(capabilities, open(
-    "/Users/shehab/Desktop/projects/CodeToCAD/codetocad/capabilities_snake.json", "w"))
+    f"{script_dir}/capabilities_snake.json", "w"))

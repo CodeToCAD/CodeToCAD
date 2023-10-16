@@ -1,1 +1,1 @@
-from .blenderProvider import *
+from .blender_provider import *

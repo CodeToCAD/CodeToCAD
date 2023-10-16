@@ -1,6 +1,6 @@
 # THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
-# Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
@@ -18,7 +18,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_cube("width","length","height","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -28,7 +28,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_cone("radius","height","draft_radius","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -38,7 +38,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_cylinder("radius","height","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -48,7 +48,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_torus("inner_radius","outer_radius","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -58,7 +58,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_sphere("radius","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -68,7 +68,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.create_gear("outer_radius","addendum","inner_radius","dedendum","height","pressure_angle","number_of_teeth","skew_angle","conical_angle","crown_angle","keyword_arguments")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -88,7 +88,7 @@ class PartTestInterface(metaclass=ABCMeta):
         value = instance.loft("landmark1","landmark2")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
