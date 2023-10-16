@@ -1,12 +1,12 @@
 import unittest
-from providers.blender.blenderProvider import *
+from providers.blender.blender_provider import *
 
-from mock.modeling.MockModelingProvider import injectMockModelingProvider, resetMockModelingProvider
+from mock.modeling.mock_modeling_provider import inject_mock_modeling_provider, reset_mock_modeling_provider
 
 
 def injectMockProvider():
-    resetMockModelingProvider()
-    injectMockModelingProvider(globals())
+    reset_mock_modeling_provider()
+    inject_mock_modeling_provider(globals())
 
 
 class TestProviderCase(unittest.TestCase):

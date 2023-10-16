@@ -205,77 +205,81 @@ from codetocad import *
 
 
 
-blueMaterial = Material("blue").setColor(0, 0.1, 1.0)
+blue_material = Material("blue").set_color(0, 0.1, 1.0)
 
-redMaterial = Material("red").setColor(1.0, 0.1, 0)
-
-
-
-Part("filletAllEdges").createCube(1, 1, 1).filletAllEdges(
-
-    "10cm").setMaterial(blueMaterial)
-
-Part("chamferAllEdges").createCube(1, 1, 1).translateXYZ(
-
-    1.5, 0, 0).setMaterial(redMaterial).chamferAllEdges("10cm")
+red_material = Material("red").set_color(1.0, 0.1, 0)
 
 
 
-Part("filletAllEdgesCylinder").createCylinder(1/2, 2).translateXYZ(1.5 *
+Part("fillet_all_edges").create_cube(1, 1, 1).fillet_all_edges(
 
-                                                                   2, 0, 0).filletAllEdges("10cm").setMaterial(blueMaterial)
+    "10cm").set_material(blue_material)
 
-Part("chamferAllEdgesCylinder").createCylinder(1/2, 2).translateXYZ(1.5 *
+Part("chamfer_all_edges").create_cube(1, 1, 1).translate_xyz(
 
-                                                                    3, 0, 0).chamferAllEdges("10cm").setMaterial(redMaterial)
-
-
-
-filletTwoEdges = Part("filletTwoEdges").createCube(1, 1, 1)
-
-filletTwoEdges_edge1 = filletTwoEdges.createLandmark("edge1", max, 0, max)
-
-filletTwoEdges_edge2 = filletTwoEdges.createLandmark("edge2", min, 0, min)
-
-filletTwoEdges.filletEdges("10cm", [filletTwoEdges_edge1, filletTwoEdges_edge2]).translateXYZ(
-
-    0, 1.5, 0).setMaterial(blueMaterial)
+    1.5, 0, 0).set_material(red_material).chamfer_all_edges("10cm")
 
 
 
-chamferTwoEdges = Part("chamferTwoEdges").createCube(1, 1, 1)
+Part("fillet_all_edgesCylinder").create_cylinder(1/2, 2).translate_xyz(1.5 *
 
-chamferTwoEdges_edge1 = chamferTwoEdges.createLandmark("edge1", max, 0, max)
+                                                                       2, 0, 0).fillet_all_edges("10cm").set_material(blue_material)
 
-chamferTwoEdges_edge2 = chamferTwoEdges.createLandmark("edge2", min, 0, min)
+Part("chamfer_all_edgesCylinder").create_cylinder(1/2, 2).translate_xyz(1.5 *
 
-chamferTwoEdges.chamferEdges("10cm", [chamferTwoEdges_edge1, chamferTwoEdges_edge2]).translateXYZ(
-
-    1.5, 1.5, 0).setMaterial(redMaterial)
+                                                                        3, 0, 0).chamfer_all_edges("10cm").set_material(red_material)
 
 
 
-filletTwoFaces = Part("filletTwoFaces").createCube(1, 1, 1)
+fillet_two_edges = Part("filletTwoEdges").create_cube(1, 1, 1)
 
-filletTwoFaces_face1 = filletTwoFaces.createLandmark("face1", 0, 0, max)
+fillet_two_edges_edge1 = fillet_two_edges.create_landmark("edge1", max, 0, max)
 
-filletTwoFaces_face2 = filletTwoFaces.createLandmark("face2", min, 0, 0)
+fillet_two_edges_edge2 = fillet_two_edges.create_landmark("edge2", min, 0, min)
 
-filletTwoFaces.filletFaces("10cm", [filletTwoFaces_face1, filletTwoFaces_face2]).translateXYZ(
+fillet_two_edges.fillet_edges("10cm", [fillet_two_edges_edge1, fillet_two_edges_edge2]).translate_xyz(
 
-    1.5*2, 1.5, 0).setMaterial(blueMaterial)
+    0, 1.5, 0).set_material(blue_material)
 
 
 
-chamferTwoFaces = Part("chamferTwoFaces").createCube(1, 1, 1)
+chamfer_two_edges = Part("chamferTwoEdges").create_cube(1, 1, 1)
 
-chamferTwoFaces_face1 = chamferTwoFaces.createLandmark("face1", 0, 0, max)
+chamfer_two_edges_edge1 = chamfer_two_edges.create_landmark(
 
-chamferTwoFaces_face2 = chamferTwoFaces.createLandmark("face2", min, 0, 0)
+    "edge1", max, 0, max)
 
-chamferTwoFaces.chamferFaces("10cm", [chamferTwoFaces_face1, chamferTwoFaces_face2]).translateXYZ(
+chamfer_two_edges_edge2 = chamfer_two_edges.create_landmark(
 
-    1.5*3, 1.5, 0).setMaterial(redMaterial)
+    "edge2", min, 0, min)
+
+chamfer_two_edges.chamfer_edges("10cm", [chamfer_two_edges_edge1, chamfer_two_edges_edge2]).translate_xyz(
+
+    1.5, 1.5, 0).set_material(red_material)
+
+
+
+fillet_two_faces = Part("filletTwoFaces").create_cube(1, 1, 1)
+
+fillet_two_faces_face1 = fillet_two_faces.create_landmark("face1", 0, 0, max)
+
+fillet_two_faces_face2 = fillet_two_faces.create_landmark("face2", min, 0, 0)
+
+fillet_two_faces.fillet_faces("10cm", [fillet_two_faces_face1, fillet_two_faces_face2]).translate_xyz(
+
+    1.5*2, 1.5, 0).set_material(blue_material)
+
+
+
+chamge_two_faces = Part("chamferTwoFaces").create_cube(1, 1, 1)
+
+chamge_two_faces_face1 = chamge_two_faces.create_landmark("face1", 0, 0, max)
+
+chamge_two_faces_face2 = chamge_two_faces.create_landmark("face2", min, 0, 0)
+
+chamge_two_faces.chamfer_faces("10cm", [chamge_two_faces_face1, chamge_two_faces_face2]).translate_xyz(
+
+    1.5*3, 1.5, 0).set_material(red_material)
 
             </pre>
         </div>
@@ -287,7 +291,7 @@ chamferTwoFaces.chamferFaces("10cm", [chamferTwoFaces_face1, chamferTwoFaces_fac
             
             <div class="methods">
             <div style="
-            width: 50%;">Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
+            width: 50%;">Use Sketch('sketchName').create_text() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
             
             
             <pre>
@@ -298,51 +302,51 @@ from codetocad import *
 
 
 
-redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 1.0)
+red_material = Material("red").set_color(0.709804, 0.109394, 0.245126, 1.0)
 
-greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
+green_material = Material("green").set_color(0.118213, 0.709804, 0.109477, 0.8)
 
-blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
-
-
-
-Sketch("CodeToCAD").createText("Code To CAD",
-
-                               underlined=True).extrude("1cm").setMaterial(greenMaterial)
+blue_material = Material("blue").set_color(0.0865257, 0.102776, 0.709804, 0.8)
 
 
 
-Sketch("Small text!").createText("Small text!",
+Sketch("CodeToCAD").create_text("Code To CAD",
 
-                                 fontSize="15cm", underlined=True).translateXYZ(0, -2, 0)
-
-
-
-arialFontPath = str(Path(__file__).parent.absolute()) + "/fonts/arial.ttf"
-
-Sketch("كود تو كاد").createText("كود تو كاد",
-
-                                fontFilePath=arialFontPath).translateXYZ(-5, 0, 0)
+                                underlined=True).extrude("1cm").set_material(green_material)
 
 
 
+Sketch("Small text!").create_text("Small text!",
 
-
-yuGothicFontPath = str(Path(__file__).parent.absolute()
-
-                       ) + "/fonts/yu_gothic.ttc"
-
-Sketch("curvedTextPath").createCircle(
-
-    "1m").translateXYZ(-5, -5, 0).setVisible(False)
-
-Sketch("コオデツカアド").createText("コオデツカアド", fontFilePath=yuGothicFontPath).profile(
-
-    "curvedTextPath").translateXYZ(-5, -5, 0).extrude(.1).setMaterial(redMaterial)
+                                  font_size="15cm", underlined=True).translate_xyz(0, -2, 0)
 
 
 
-Sketch("multiline").createText(
+arial_font_path = str(Path(__file__).parent.absolute()) + "/fonts/arial.ttf"
+
+Sketch("كود تو كاد").create_text("كود تو كاد",
+
+                                 font_file_path=arial_font_path).translate_xyz(-5, 0, 0)
+
+
+
+
+
+yi_gothic_font_path = str(Path(__file__).parent.absolute()
+
+                          ) + "/fonts/yu_gothic.ttc"
+
+Sketch("curvedTextPath").create_circle(
+
+    "1m").translate_xyz(-5, -5, 0).set_visible(False)
+
+Sketch("コオデツカアド").create_text("コオデツカアド", font_file_path=yi_gothic_font_path).profile(
+
+    "curvedTextPath").translate_xyz(-5, -5, 0).extrude(.1).set_material(red_material)
+
+
+
+Sketch("multiline").create_text(
 
     """Multiline
 
@@ -354,7 +358,7 @@ Sketch("multiline").createText(
 
 """
 
-).translateXYZ(0, -5, 0).extrude(0.1).setMaterial(blueMaterial)
+).translate_xyz(0, -5, 0).extrude(0.1).set_material(blue_material)
 
             </pre>
         </div>
@@ -377,91 +381,89 @@ from codetocad import *
 
 
 
-material = Material("material").setColor(169, 76, 181, 255)
+material = Material("material").set_color(169, 76, 181, 255)
 
 
 
 
 
-def createCube(name, size):
+def create_cube(name, size):
 
 
 
-    calibrationCube = Part(name).createCube(size, size, size)
+    calibartion_cube = Part(name).create_cube(size, size, size)
 
 
 
-    calibrationCube_x = calibrationCube.createLandmark(
+    calibration_cube_x = calibartion_cube.create_landmark(
 
         "x", "min+5mm", "max-7mm", max)
 
-    calibrationCube_y = calibrationCube.createLandmark(
+    calibration_cube_y = calibartion_cube.create_landmark(
 
         "y", "max-5mm", "min+5mm", max)
 
-    calibrationCube_z = calibrationCube.createLandmark(
+    calibration_cube_z = calibartion_cube.create_landmark(
 
         "z", center, min, center)
 
-    calibrationCube_size = calibrationCube.createLandmark(
+    calibration_cube_size = calibartion_cube.create_landmark(
 
         "size", "min+1mm", "min+2mm", max)
 
 
 
-    z = Sketch("Z").createText("Z^", "10mm").extrude("1.5mm").rotateXYZ(
+    z = Sketch("Z").create_text("Z^", "10mm").extrude("1.5mm").rotate_xyz(
 
         90, 0, 0)
 
-    z_center = z.createLandmark("center", center, center, center)
+    z_center = z.create_landmark("center", center, center, center)
 
-    Joint(calibrationCube_z, z_center).limitLocationXYZ(0, 0, 0)
+    Joint(calibration_cube_z, z_center).limit_location_xyz(0, 0, 0)
 
-    calibrationCube.subtract(z)
-
-
-
-    y = Sketch("Y").createText("Y^", "8mm").extrude(
-
-        "1.5mm")
-
-    y_center = y.createLandmark("center", center, center, center)
-
-    Joint(calibrationCube_y, y_center).limitLocationXYZ(0, 0, 0)
-
-    calibrationCube.subtract(y)
+    calibartion_cube.subtract(z)
 
 
 
-    x = Sketch("X").createText("X^", "8mm").extrude("1.5mm").rotateXYZ(
+    y = Sketch("Y").create_text("Y^", "8mm").extrude("1.5mm")
+
+    y_center = y.create_landmark("center", center, center, center)
+
+    Joint(calibration_cube_y, y_center).limit_location_xyz(0, 0, 0)
+
+    calibartion_cube.subtract(y)
+
+
+
+    x = Sketch("X").create_text("X^", "8mm").extrude("1.5mm").rotate_xyz(
 
         180, 0, 90)
 
-    x_center = x.createLandmark("center", center, center, center)
+    x_center = x.create_landmark("center", center, center, center)
 
-    Joint(calibrationCube_x, x_center).limitLocationXYZ(0, 0, 0)
+    Joint(calibration_cube_x, x_center).limit_location_xyz(0, 0, 0)
 
-    calibrationCube.subtract(x)
-
-
-
-    size = Sketch("size").createText(str(size.value)+"mm",
-
-                                     "4mm").extrude("1.5mm")
-
-    size_center = size.createLandmark("min", min, center, center)
-
-    Joint(calibrationCube_size, size_center).limitLocationXYZ(0, 0, 0)
-
-    calibrationCube.subtract(size)
+    calibartion_cube.subtract(x)
 
 
 
-    calibrationCube.setMaterial(material)
+    size = Sketch("size").create_text(str(size.value)+"mm",
+
+                                      "4mm").extrude("1.5mm")
+
+    size_center = size.create_landmark("min", min, center, center)
+
+    Joint(calibration_cube_size, size_center).limit_location_xyz(0, 0, 0)
+
+    calibartion_cube.subtract(size)
 
 
 
-    return calibrationCube
+    calibartion_cube.set_material(material)
+
+
+
+    return calibartion_cube
 
 
 
@@ -473,17 +475,17 @@ size = Dimension(20, "mm")
 
 
 
-createCube("CalibrationCube19_9", size - tolerance).export(
+create_cube("calibration_cube19_9", size - tolerance).export(
 
-    "./calibrationCube19_8mm.stl", scale=1000).translateXYZ("-25mm", 0, 0)
+    "./calibration_cube19_8mm.stl", scale=1000).translate_xyz("-25mm", 0, 0)
 
-createCube("CalibrationCube20mm", size).export(
+create_cube("calibration_cube20mm", size).export(
 
-    "./calibrationCube20mm.stl", scale=1000)
+    "./calibration_cube20mm.stl", scale=1000)
 
-createCube("CalibrationCube20_2", size + tolerance).export(
+create_cube("calibration_cube20_2", size + tolerance).export(
 
-    "./calibrationCube20_2mm.stl", scale=1000).translateXYZ("25mm", 0, 0)
+    "./calibration_cube20_2mm.stl", scale=1000).translate_xyz("25mm", 0, 0)
 
             </pre>
         </div>
@@ -504,15 +506,15 @@ from codetocad import *
 
 
 
-linearCube = Part("Linear Cube").createCube(
+linear_cube = Part("Linear Cube").create_cube(
 
-    "5cm", "5cm", "5cm").linearPattern(10, "7cm", "x")
+    "5cm", "5cm", "5cm").linear_pattern(10, "7cm", "x")
 
 
 
-Part("Circular spheres").createSphere(1).translateXYZ(0, 5, 0).circularPattern(
+Part("Circular spheres").create_sphere(1).translate_xyz(0, 5, 0).circular_pattern(
 
-    4, "90d", linearCube, "z").circularPattern(6, f"{360/6}d", linearCube, "x")
+    4, "90d", linear_cube, "z").circular_pattern(6, f"{360/6}d", linear_cube, "x")
 
             </pre>
         </div>
@@ -535,29 +537,29 @@ from codetocad import *
 
 
 
-drumRadius = Dimension.fromString("5mm")
+drum_radius = Dimension.from_string("5mm")
 
-drumLength = Dimension.fromString("15.0 mm")
-
-
-
-wireThickness = Dimension.fromString("1mm")
-
-numberOfWindings = 10
+drum_length = Dimension.from_string("15.0 mm")
 
 
 
-grooveSpiral = Sketch("grooveSpiral").createSpiral(
+wire_thickness = Dimension.from_string("1mm")
 
-    numberOfWindings, drumLength, drumRadius)
-
-
-
-groove = Sketch("groove").createCircle(wireThickness/2)
+number_of_windings = 10
 
 
 
-grooveSpiral.sweep(groove)
+groove_spiral = Sketch("grooveSpiral").create_spiral(
+
+    number_of_windings, drum_length, drum_radius)
+
+
+
+groove = Sketch("groove").create_circle(wire_thickness/2)
+
+
+
+groove_spiral.sweep(groove)
 
             </pre>
         </div>
@@ -571,60 +573,26 @@ grooveSpiral.sweep(groove)
             <div style="
             width: 50%;">Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png' alt="Image" />
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png' alt="Image" />
             <pre>
             
 from codetocad import *
 
 
 
-redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 0.8)
+material = Material("material").set_color(169, 76, 181, 0.8)
 
-blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
-
-greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
+Part("Cube").create_cube(1, 1, 1).set_material(material)
 
 
 
+material_with_texture = Material(
 
+    "materialWithTexture").add_image_texture("./bark.jpg")
 
-a = Part("a").createCube(1, 1, 1).setMaterial(blueMaterial)
+Part("Cylinder").create_cylinder(1, 4).set_material(
 
-a_top = a.createLandmark("top", center, center, max)
-
-a_bottom = a.createLandmark("bottom", center, center, min)
-
-
-
-b = Part("b").createCube(1, 1, 1).setMaterial(redMaterial)
-
-b_bottom = b.createLandmark("bottom", center, center, min)
-
-
-
-c = Part("c").createCube(1, 1, 1).setMaterial(greenMaterial)
-
-c_top = c.createLandmark("top", center, center, max)
-
-
-
-# Joint("a","b","top","bottom").translateLandmarkOntoAnother()
-
-
-
-Joint(a_top, b_bottom)\
-
-    .limitLocationXYZ(0, 0, 0)\
-
-    .limitRotationXYZ(0, 0, 0)
-
-
-
-Joint(a_bottom, c_top)\
-
-    .limitLocationXYZ(0, 0, 0)\
-
-    .limitRotationXYZ(0, 0, 0)
+    material_with_texture).translate_xyz(5, 0, 0)
 
             </pre>
         </div>
@@ -638,60 +606,60 @@ Joint(a_bottom, c_top)\
             <div style="
             width: 50%;">Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png' alt="Image" />
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stacked_cubes.png' alt="Image" />
             <pre>
             
 from codetocad import *
 
 
 
-redMaterial = Material("red").setColor(0.709804, 0.109394, 0.245126, 0.8)
+red_material = Material("red").set_color(0.709804, 0.109394, 0.245126, 0.8)
 
-blueMaterial = Material("blue").setColor(0.0865257, 0.102776, 0.709804, 0.8)
+blue_material = Material("blue").set_color(0.0865257, 0.102776, 0.709804, 0.8)
 
-greenMaterial = Material("green").setColor(0.118213, 0.709804, 0.109477, 0.8)
-
-
+green_material = Material("green").set_color(0.118213, 0.709804, 0.109477, 0.8)
 
 
 
-a = Part("a").createCube(1, 1, 1).setMaterial(blueMaterial)
-
-a_top = a.createLandmark("top", center, center, max)
-
-a_bottom = a.createLandmark("bottom", center, center, min)
 
 
+a = Part("a").create_cube(1, 1, 1).set_material(blue_material)
 
-b = Part("b").createCube(1, 1, 1).setMaterial(redMaterial)
+a_top = a.create_landmark("top", center, center, max)
 
-b_bottom = b.createLandmark("bottom", center, center, min)
+a_bottom = a.create_landmark("bottom", center, center, min)
 
 
 
-c = Part("c").createCube(1, 1, 1).setMaterial(greenMaterial)
+b = Part("b").create_cube(1, 1, 1).set_material(red_material)
 
-c_top = c.createLandmark("top", center, center, max)
+b_bottom = b.create_landmark("bottom", center, center, min)
 
 
 
-# Joint("a","b","top","bottom").translateLandmarkOntoAnother()
+c = Part("c").create_cube(1, 1, 1).set_material(green_material)
+
+c_top = c.create_landmark("top", center, center, max)
+
+
+
+# Joint("a","b","top","bottom").translate_landmark_onto_another()
 
 
 
 Joint(a_top, b_bottom)\
 
-    .limitLocationXYZ(0, 0, 0)\
+    .limit_location_xyz(0, 0, 0)\
 
-    .limitRotationXYZ(0, 0, 0)
+    .limit_rotation_xyz(0, 0, 0)
 
 
 
 Joint(a_bottom, c_top)\
 
-    .limitLocationXYZ(0, 0, 0)\
+    .limit_location_xyz(0, 0, 0)\
 
-    .limitRotationXYZ(0, 0, 0)
+    .limit_rotation_xyz(0, 0, 0)
 
             </pre>
         </div>
@@ -722,63 +690,63 @@ class DShaft:
 
 
 
-    shaftLength: Dimension
+    shaft_length: Dimension
 
     radius: Dimension
 
-    dProfileRadius: Dimension
+    d_profile_radius: Dimension
 
-    dProfileLength: Dimension
+    d_profile_length: Dimension
 
     tolerance: Dimension = Dimension(0)
 
 
 
-    def create(self, name, isDShaftBothSides=False) -> PartInterface:
+    def create(self, name, is_d_shaft_both_sides=False) -> PartInterface:
 
-        shaftLength = self.shaftLength
+        shaft_length = self.shaft_length
 
         radius = self.radius - self.tolerance
 
-        dProfileRadius = self.dProfileRadius - self.tolerance
+        dProfileRadius = self.d_profile_radius - self.tolerance
 
 
 
-        dProfileWidth = (radius - dProfileRadius) * 2
+        d_profile_width = (radius - dProfileRadius) * 2
 
 
 
-        shaft = Part(name).createCylinder(radius, shaftLength)
+        shaft = Part(name).create_cylinder(radius, shaft_length)
 
 
 
-        dProfile = Part("dProfile").createCube(
+        d_profile = Part("dProfile").create_cube(
 
-            dProfileWidth, radius * 2, self.dProfileLength)
-
-
-
-        shaftLeftSide = shaft.getLandmark(PresetLandmark.leftTop)
-
-        dProfileLeftSide = dProfile.getLandmark(PresetLandmark.leftTop)
+            d_profile_width, radius * 2, self.d_profile_length)
 
 
 
-        Joint(shaftLeftSide, dProfileLeftSide).limitLocationXYZ(0, 0, 0)
+        shaft_left_side = shaft.get_landmark(PresetLandmark.leftTop)
+
+        d_profile_left_side = d_profile.get_landmark(PresetLandmark.leftTop)
 
 
 
-        if isDShaftBothSides:
-
-            dProfile.mirror(shaft, "z", None)
+        Joint(shaft_left_side, d_profile_left_side).limit_location_xyz(0, 0, 0)
 
 
 
-        shaft.subtract(dProfile)
+        if is_d_shaft_both_sides:
+
+            d_profile.mirror(shaft, "z", None)
 
 
 
-        shaft.getLandmark(PresetLandmark.front).delete()
+        shaft.subtract(d_profile)
+
+
+
+        shaft.get_landmark(PresetLandmark.front).delete()
 
 
 
@@ -790,21 +758,21 @@ class DShaft:
 
 if __name__ == "__main__":
 
-    shaftLength = Dimension.fromString("13.65mm")
+    shaft_length = Dimension.from_string("13.65mm")
 
-    radius = Dimension.fromString("5.9/2mm")
+    radius = Dimension.from_string("5.9/2mm")
 
-    dProfileRadius = Dimension.fromString("5.3/2mm")
+    d_profile_radius = Dimension.from_string("5.3/2mm")
 
-    dProfileLength = shaftLength/2
+    d_profile_length = shaft_length/2
 
-    tolerance = Dimension.fromString("0.15mm")
+    tolerance = Dimension.from_string("0.15mm")
 
 
 
-    dShaft = DShaft(shaftLength=shaftLength, radius=radius,
+    dShaft = DShaft(shaft_length=shaft_length, radius=radius,
 
-                    dProfileRadius=dProfileRadius, dProfileLength=dProfileLength, tolerance=tolerance).create("shaft")
+                    d_profile_radius=d_profile_radius, d_profile_length=d_profile_length, tolerance=tolerance).create("shaft")
 
             </pre>
         </div>
@@ -823,25 +791,25 @@ if __name__ == "__main__":
             
 from codetocad import *
 
-from dShaft import DShaft
+from examples.d_shaft import DShaft
 
 
 
 
 
-def createDShaftSleeve(dShaft: PartInterface, sleeveThickness):
+def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
 
-    dShaftDiameter = dShaft.getDimensions().y
-
-
-
-    sleeve = Part("sleeve").createCylinder(
-
-        dShaftDiameter/2 + sleeveThickness, dShaft.getDimensions().z)
+    d_shaft_diameter = d_shaft.get_dimensions().y
 
 
 
-    sleeve.subtract(dShaft, istransfer_landmarks(=True)
+    sleeve = Part("sleeve").create_cylinder(
+
+        d_shaft_diameter/2 + sleeve_thickness, d_shaft.get_dimensions().z)
+
+
+
+    sleeve.subtract(d_shaft, is_transfer_landmarks=True)
 
 
 
@@ -851,9 +819,9 @@ def createDShaftSleeve(dShaft: PartInterface, sleeveThickness):
 
 
 
-def createKnob(radius):
+def create_knob(radius):
 
-    knob = Sketch("knob").createPolygon(7, radius, radius).extrude(radius*0.2)
+    knob = Sketch("knob").create_polygon(7, radius, radius).extrude(radius*0.2)
 
 
 
@@ -867,39 +835,39 @@ if __name__ == "__main__":
 
 
 
-    Scene.default().setDefaultUnit("mm")
+    Scene.default().set_default_unit("mm")
 
 
 
-    shaftLength = Dimension.fromString("13.65mm")
+    shaft_length = Dimension.from_string("13.65mm")
 
-    radius = Dimension.fromString("5.9/2mm")
+    radius = Dimension.from_string("5.9/2mm")
 
-    dProfileRadius = Dimension.fromString("5.3/2mm")
+    d_profile_radius = Dimension.from_string("5.3/2mm")
 
-    dProfileLength = shaftLength
+    d_profile_length = shaft_length
 
-    tolerance = Dimension.fromString("0.15mm")
-
-
-
-    dShaft = DShaft(shaftLength=shaftLength, radius=radius,
-
-                    dProfileRadius=dProfileRadius, dProfileLength=dProfileLength, tolerance=tolerance).create("shaft")
+    tolerance = Dimension.from_string("0.15mm")
 
 
 
-    sleeve = createDShaftSleeve(dShaft, "1.5mm")
+    d_shaft = DShaft(shaft_length=shaft_length, radius=radius,
+
+                     d_profile_radius=d_profile_radius, d_profile_length=d_profile_length, tolerance=tolerance).create("shaft")
 
 
 
-    knob = createKnob(sleeve.getDimensions().x)
+    sleeve = create_d_shaft_sleeve(d_shaft, "1.5mm")
 
 
 
-    Joint(sleeve.createLandmark("top", center, center, max), knob.createLandmark(
+    knob = create_knob(sleeve.get_dimensions().x)
 
-        "bottom", center, center, min)).limitLocationXYZ(0, 0, 0)
+
+
+    Joint(sleeve.create_landmark("top", center, center, max), knob.create_landmark(
+
+        "bottom", center, center, min)).limit_location_xyz(0, 0, 0)
 
 
 
@@ -926,9 +894,9 @@ from codetocad import *
 
 
 
-Scene.default().setDefaultUnit("cm")
+Scene.default().set_default_unit("cm")
 
-Scene.default().createGroup("Bracelet")
+Scene.default().create_group("Bracelet")
 
 
 
@@ -936,9 +904,9 @@ Scene.default().createGroup("Bracelet")
 
 class Bracelet:
 
-    outerDiameter = "161cm"
+    outer_diameter = "161cm"
 
-    innerDiameter = "81cm"
+    inner_diameter = "81cm"
 
     thickness = "83cm"
 
@@ -948,9 +916,9 @@ class Bracelet:
 
         bracelet = Part("bracelet") \
 
-            .createTorus(Dimension.fromString(self.innerDiameter)/2, Dimension.fromString(self.outerDiameter)/2)
+            .create_torus(Dimension.from_string(self.inner_diameter)/2, Dimension.from_string(self.outer_diameter)/2)
 
-        bracelet.scaleZ(self.thickness)
+        bracelet.scale_z(self.thickness)
 
 
 
@@ -966,9 +934,9 @@ class Button:
 
     depth = "13.6cm"
 
-    insetRadius = "20cm"
+    inset_radius = "20cm"
 
-    insetDepth = "3cm"
+    inset_depth = "3cm"
 
 
 
@@ -976,15 +944,15 @@ class Button:
 
         button = Part("button") \
 
-            .createCylinder(self.radius, self.depth)
+            .create_cylinder(self.radius, self.depth)
 
-        button_top = button.getLandmark("top")
+        button_top = button.get_landmark("top")
 
-        button.filletFaces("5cm", [button_top])
+        button.fillet_faces("5cm", [button_top])
 
         button.hole(
 
-            button_top, self.insetRadius, self.insetDepth)
+            button_top, self.inset_radius, self.inset_depth)
 
         return button
 
@@ -994,9 +962,9 @@ class Button:
 
 class Belt:
 
-    outerRadius = "162/2cm"
+    outer_radius = "162/2cm"
 
-    innerRadius = "150/2cm"
+    inner_radius = "150/2cm"
 
     thickness = "30cm"
 
@@ -1004,13 +972,13 @@ class Belt:
 
     def create(self):
 
-        belt = Part("belt").createCylinder(
+        belt = Part("belt").create_cylinder(
 
-            self.outerRadius, self.thickness)
+            self.outer_radius, self.thickness)
 
-        belt.hole(belt.getLandmark("top"),
+        belt.hole(belt.get_landmark("top"),
 
-                  self.innerRadius, self.thickness)
+                  self.inner_radius, self.thickness)
 
         return belt
 
@@ -1030,29 +998,29 @@ belt = Belt().create()
 
 # Mark: Joint the button to the front of the bracelet
 
-Joint(bracelet.getLandmark("front"), button.getLandmark(
+Joint(bracelet.get_landmark("front"), button.get_landmark(
 
-    "top")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(90, 0, 0)
+    "top")).limit_location_xyz(0, 0, 0).limit_rotation_xyz(90, 0, 0)
 
-Joint(bracelet.getLandmark("center"), belt.getLandmark(
+Joint(bracelet.get_landmark("center"), belt.get_landmark(
 
-    "center")).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
+    "center")).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
 
 
 # Mark: subtract the button and belt from the bracelet:
 
-bracelet.subtract(belt, deleteAfterSubtract=False)
+bracelet.subtract(belt, delete_after_subtract=False)
 
 
 
-bracelet.hole(belt.getLandmark("front"),
+bracelet.hole(belt.get_landmark("front"),
 
-              button.getDimensions().x / 2, button.getDimensions().z, normalAxis="y", flipAxis=True)
+              button.get_dimensions().x / 2, button.get_dimensions().z, normal_axis="y", flip_axis=True)
 
-belt.hole(belt.getLandmark("front"),
+belt.hole(belt.get_landmark("front"),
 
-          button.getDimensions().x / 2, belt.getDimensions().z, normalAxis="y", flipAxis=True)
+          button.get_dimensions().x / 2, belt.get_dimensions().z, normal_axis="y", flip_axis=True)
 
 
 
@@ -1060,23 +1028,23 @@ belt.hole(belt.getLandmark("front"),
 
 
 
-Scene().assignToGroup([bracelet, button, belt], "Bracelet")
+Scene().assign_to_group([bracelet, button, belt], "Bracelet")
 
 
 
 # Mark apply materials:
 
-redMaterial = Material("red").setColor(181, 16, 4)
+red_material = Material("red").set_color(181, 16, 4)
 
-blueMaterial = Material("blue").setColor(19, 107, 181)
+blue_material = Material("blue").set_color(19, 107, 181)
 
 
 
-bracelet.setMaterial(redMaterial)
+bracelet.set_material(red_material)
 
-button.setMaterial(blueMaterial)
+button.set_material(blue_material)
 
-belt.setMaterial(blueMaterial)
+belt.set_material(blue_material)
 
             </pre>
         </div>
@@ -1097,67 +1065,69 @@ from codetocad import *
 
 
 
-ball = Part("ball").createSphere(1)
+ball = Part("ball").create_sphere(1)
 
-ball_center = ball.createLandmark("center", center, center, center)
+ball_center = ball.create_landmark("center", center, center, center)
 
-ball_bottom = ball.createLandmark("bottom", center, center, min)
+ball_bottom = ball.create_landmark("bottom", center, center, min)
 
 
 
-link = Part("link").createCube(1, 1, 2)
+link = Part("link").create_cube(1, 1, 2)
 
-link_top = link.createLandmark("top", center, center, max)
+link_top = link.create_landmark("top", center, center, max)
 
-link_bottom = link.createLandmark("bottom", center, center, min)
+link_bottom = link.create_landmark("bottom", center, center, min)
 
 
 
 Joint(ball_center, link_bottom)\
 
-    .limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, 0, 0)
+    .limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
 
 
-socket = Part("socket").createSphere(1.2)
+socket = Part("socket").create_sphere(1.2)
 
-socket_cutoff = socket.createLandmark("cutoff", center, center, "min + 0.7")
+socket_cutoff = socket.create_landmark("cutoff", center, center, "min + 0.7")
 
-socket_center = socket.createLandmark("center", center, center, center)
-
-
-
-Joint(ball_bottom, socket_cutoff).translateLandmarkOntoAnother()
+socket_center = socket.create_landmark("center", center, center, center)
 
 
 
-socket.subtract(ball, deleteAfterSubtract=False,
+Joint(ball_bottom, socket_cutoff).translate_landmark_onto_another()
 
-                istransfer_landmarks(=False)
+
+
+socket.subtract(ball, delete_after_subtract=False,
+
+                is_transfer_landmarks=False)
 
 
 
 Joint(socket_center, ball) \
 
-    .limitRotationX(-30, 30) \
+    .limit_rotation_x(-30, 30) \
 
-    .limitRotationY(-30, 30) \
+    .limit_rotation_y(-30, 30) \
 
-    .limitRotationZ(0, 0)
-
-
+    .limit_rotation_z(0, 0)
 
 
 
-blueMaterial = Material("blue").setColor(0.0826006, 0.214978, 0.406714, 1.0)
 
-greenMaterial = Material("socket").setColor(0.249275, 0.709804, 0.392972, 0.8)
 
-ball.setMaterial(blueMaterial)
+blue_material = Material("blue").set_color(0.0826006, 0.214978, 0.406714, 1.0)
 
-link.setMaterial(blueMaterial)
+green_material = Material("socket").set_color(
 
-socket.setMaterial(greenMaterial)
+    0.249275, 0.709804, 0.392972, 0.8)
+
+ball.set_material(blue_material)
+
+link.set_material(blue_material)
+
+socket.set_material(green_material)
 
             </pre>
         </div>
@@ -1180,13 +1150,13 @@ from codetocad import *
 
 
 
-blueMetallicMaterial = Material("blue").setColor(
+blue_metallic_material = Material("blue").set_color(
 
-    0.0865257, 0.102776, 0.709804, 0.8).setReflectivity(1.0)
+    0.0865257, 0.102776, 0.709804, 0.8).set_reflectivity(1.0)
 
-redMetallicMaterial = Material("red").setColor(
+red_metallic_material = Material("red").set_color(
 
-    0.709804, 0.109394, 0.245126, 0.8).setReflectivity(1.0)
+    0.709804, 0.109394, 0.245126, 0.8).set_reflectivity(1.0)
 
 
 
@@ -1212,49 +1182,49 @@ class Yoke:
 
     '''
 
-    shaftRadius: Dimension
+    shaft_radius: Dimension
 
-    wallThickness: Dimension
+    wall_thickness: Dimension
 
-    shaftLength: Dimension
-
-
-
-    pinArmLength: Dimension
-
-    pinHoleRadius: Dimension
-
-    setScrewRadius: Dimension
+    shaft_length: Dimension
 
 
 
-    isHollowed: bool = True
+    pin_arm_length: Dimension
+
+    pin_hole_radius: Dimension
+
+    set_screw_radius: Dimension
+
+
+
+    is_hollowed: bool = True
 
 
 
     def _createHollowRod(self, name: str, length: Dimension) -> Part:
 
-        outerRadius = self.shaftRadius + self.wallThickness
+        outerRadius = self.shaft_radius + self.wall_thickness
 
 
 
-        rod = Part(name).createCylinder(
+        rod = Part(name).create_cylinder(
 
             outerRadius, length)
 
 
 
-        if self.isHollowed:
+        if self.is_hollowed:
 
-            rod.hollow(self.wallThickness, self.wallThickness,
+            rod.hollow(self.wall_thickness, self.wall_thickness,
 
-                       self.wallThickness/2, flipAxis=True)
+                       self.wall_thickness/2, flip_axis=True)
 
 
 
-        _ = rod.createLandmark(
+        _ = rod.create_landmark(
 
-            "wallFront", center, f"min + {self.wallThickness/4}", max)
+            "wallFront", center, f"min + {self.wall_thickness/4}", max)
 
 
 
@@ -1262,89 +1232,89 @@ class Yoke:
 
 
 
-    def _createShaftCoupling(self) -> Part:
+    def _create_shaft_coupling(self) -> Part:
 
 
 
-        shaftCoupling = self._createHollowRod(
+        shaft_coupling = self._createHollowRod(
 
-            "shaftCoupling", self.shaftLength)
-
-
-
-        if self.isHollowed:
-
-            shaftCoupling.hole(shaftCoupling.getLandmark(PresetLandmark.back),
-
-                               self.setScrewRadius, shaftCoupling.getDimensions().y, normalAxis="y")
+            "shaftCoupling", self.shaft_length)
 
 
 
-        return shaftCoupling
+        if self.is_hollowed:
+
+            shaft_coupling.hole(shaft_coupling.get_landmark(PresetLandmark.back),
+
+                                self.set_screw_radius, shaft_coupling.get_dimensions().y, normal_axis="y")
 
 
 
-    def _createPinArm(self) -> Part:
+        return shaft_coupling
 
 
 
-        pinArm = self._createHollowRod("pinArm", self.pinArmLength)
+    def _create_pin_arm(self) -> Part:
 
 
 
-        pinArmSize = pinArm.getDimensions()
+        pin_arm = self._createHollowRod("pinArm", self.pin_arm_length)
 
 
 
-        pinArmDiscardAmount = 1/15
+        pin_arm_size = pin_arm.get_dimensions()
 
 
 
-        pinArm.subtract(
+        pin_arm_discard_Amount = 1/15
 
-            Part("pinArmDiscard").createCube(
 
-                pinArmSize.x,
 
-                pinArmSize.y * (
+        pin_arm.subtract(
 
-                    1-pinArmDiscardAmount),
+            Part("pinArmDiscard").create_cube(
 
-                pinArmSize.z + "1mm"
+                pin_arm_size.x,
 
-            ).translateY(pinArmSize.y * pinArmDiscardAmount)
+                pin_arm_size.y * (
+
+                    1-pin_arm_discard_Amount),
+
+                pin_arm_size.z + "1mm"
+
+            ).translate_y(pin_arm_size.y * pin_arm_discard_Amount)
 
         )
 
 
 
-        pinArm.rotateY(180)
+        pin_arm.rotate_y(180)
 
 
 
-        pinLocation = pinArm.createLandmark(
+        pin_location = pin_arm.create_landmark(
 
             "pin", center, min, "max -  (max-min) * 1/4")
 
 
 
-        pinArm.hole(pinLocation,
+        pin_arm.hole(pin_location,
 
-                    self.pinHoleRadius, pinArmSize.y, normalAxis="y", flipAxis=True)
+                     self.pin_hole_radius, pin_arm_size.y, normal_axis="y", flip_axis=True)
 
 
 
-        # pinArm.filletFaces(
+        # pinArm.fillet_faces(
 
         #     "25mm",
 
-        #     [pinArm.getLandmark(PresetLandmark.top)]
+        #     [pinArm.get_landmark(PresetLandmark.top)]
 
         # )
 
 
 
-        return pinArm
+        return pin_arm
 
 
 
@@ -1352,47 +1322,47 @@ class Yoke:
 
 
 
-        shaftCoupling = self._createShaftCoupling()
+        shaft_coupling = self._create_shaft_coupling()
 
 
 
-        pinArm = self._createPinArm()
+        pin_arm = self._create_pin_arm()
 
 
 
         Joint(
 
-            shaftCoupling.getLandmark("wallFront"),
+            shaft_coupling.get_landmark("wallFront"),
 
-            pinArm.getLandmark(
+            pin_arm.get_landmark(
 
                 "wallFront")
 
-        ).limitLocationXYZ(0, 0, 0)
+        ).limit_location_xyz(0, 0, 0)
 
 
 
-        pinArm.mirror(shaftCoupling, "y", None)
+        pin_arm.mirror(shaft_coupling, "y", None)
 
 
 
-        shaftCoupling.getLandmark(PresetLandmark.top)
+        shaft_coupling.get_landmark(PresetLandmark.top)
 
 
 
-        yoke = shaftCoupling.union(
+        yoke = shaft_coupling.union(
 
-            pinArm,
+            pin_arm,
 
-            istransfer_landmarks(=True
+            is_transfer_landmarks=True
 
         )
 
 
 
-        # shaftCoupling.filletFaces(
+        # shaftCoupling.fillet_faces(
 
-        #     "25mm", [shaftCoupling.getLandmark(PresetLandmark.top)])
+        #     "25mm", [shaftCoupling.get_landmark(PresetLandmark.top)])
 
 
 
@@ -1400,7 +1370,7 @@ class Yoke:
 
 
 
-        yoke.setMaterial(blueMetallicMaterial)
+        yoke.set_material(blue_metallic_material)
 
 
 
@@ -1418,9 +1388,9 @@ class Cross:
 
     width: Dimension
 
-    pinRadius: Dimension
+    pin_radius: Dimension
 
-    pinLength: Dimension
+    pin_length: Dimension
 
 
 
@@ -1428,27 +1398,29 @@ class Cross:
 
 
 
-        core = Part(name).createCube(self.width, self.width, self.width)
+        core = Part(name).create_cube(self.width, self.width, self.width)
 
 
 
-        pin = Part("pin").createCylinder(self.pinRadius, self.pinLength)
+        pin = Part("pin").create_cylinder(self.pin_radius, self.pin_length)
 
 
 
         Joint(
 
-            core.getLandmark(PresetLandmark.top),
+            core.get_landmark(PresetLandmark.top),
 
-            pin.getLandmark(
+            pin.get_landmark(
 
                 PresetLandmark.bottom)
 
-        ).limitLocationXYZ(0, 0, 0)
+        ).limit_location_xyz(0, 0, 0)
 
 
 
-        pin.circularPattern(4, 90, core, normalDirectionAxis="y")
+        pin.circular_pattern(
+
+            4, 90, center_entity_or_landmark=core, normal_direction_axis="y")
 
 
 
@@ -1456,11 +1428,11 @@ class Cross:
 
 
 
-        core.rotateX(90)
+        core.rotate_x(90)
 
 
 
-        core.setMaterial(redMetallicMaterial)
+        core.set_material(red_metallic_material)
 
 
 
@@ -1470,71 +1442,71 @@ class Cross:
 
 
 
-def createUniversalJoint():
+def create_universal_joint():
 
 
 
-    shaftRadius = Dimension.fromString("5mm")
+    shaft_radius = Dimension.from_string("5mm")
 
-    wallThickness = Dimension.fromString("3mm")
+    wall_thickness = Dimension.from_string("3mm")
 
-    shaftLength = Dimension.fromString("15mm")
+    shaft_length = Dimension.from_string("15mm")
 
-    pinArmLength = Dimension.fromString("13mm")
+    pin_arm_length = Dimension.from_string("13mm")
 
-    pinHoleRadius = Dimension.fromString("2mm")
+    pin_hole_radius = Dimension.from_string("2mm")
 
-    setScrewRadius = Dimension.fromString("3mm")
+    set_screw_radius = Dimension.from_string("3mm")
 
 
 
     yokeBottom = Yoke(
 
-        shaftRadius=shaftRadius,
+        shaft_radius=shaft_radius,
 
-        wallThickness=wallThickness,
+        wall_thickness=wall_thickness,
 
-        shaftLength=shaftLength,
+        shaft_length=shaft_length,
 
-        pinArmLength=pinArmLength,
+        pin_arm_length=pin_arm_length,
 
-        pinHoleRadius=pinHoleRadius,
+        pin_hole_radius=pin_hole_radius,
 
-        setScrewRadius=setScrewRadius
+        set_screw_radius=set_screw_radius
 
     ).create("yokeBottom")
 
 
 
-    yokeTop = Yoke(
+    yoke_top = Yoke(
 
-        shaftRadius=shaftRadius,
+        shaft_radius=shaft_radius,
 
-        wallThickness=wallThickness,
+        wall_thickness=wall_thickness,
 
-        shaftLength=shaftLength,
+        shaft_length=shaft_length,
 
-        pinArmLength=pinArmLength,
+        pin_arm_length=pin_arm_length,
 
-        pinHoleRadius=pinHoleRadius,
+        pin_hole_radius=pin_hole_radius,
 
-        setScrewRadius=setScrewRadius
+        set_screw_radius=set_screw_radius
 
     ).create("yokeTop")
 
-    yokeTop.rotateY(180)
+    yoke_top.rotate_y(180)
 
-    yokeTop.rotateZ(90)
+    yoke_top.rotate_z(90)
 
 
 
     cross = Cross(
 
-        width=shaftRadius,
+        width=shaft_radius,
 
-        pinRadius=pinHoleRadius,
+        pin_radius=pin_hole_radius,
 
-        pinLength=shaftRadius/2 + wallThickness
+        pin_length=shaft_radius/2 + wall_thickness
 
     ).create("cross")
 
@@ -1542,21 +1514,21 @@ def createUniversalJoint():
 
     Joint(
 
-        cross.getLandmark(PresetLandmark.front),
+        cross.get_landmark(PresetLandmark.front),
 
-        yokeBottom.getLandmark("pinArm_pin")
+        yokeBottom.get_landmark("pinArm_pin")
 
-    ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45)
+    ).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, None, 0).limit_rotation_y(-45, 45)
 
 
 
     Joint(
 
-        cross.getLandmark(PresetLandmark.right),
+        cross.get_landmark(PresetLandmark.right),
 
-        yokeTop.getLandmark("pinArm_pin")
+        yoke_top.get_landmark("pinArm_pin")
 
-    ).limitLocationXYZ(0, 0, 0).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45)
+    ).limit_location_xyz(0, 0, 0).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45)
 
 
 
@@ -1566,7 +1538,7 @@ if __name__ == "__main__":
 
 
 
-    createUniversalJoint()
+    create_universal_joint()
 
             </pre>
         </div>
@@ -1585,117 +1557,117 @@ if __name__ == "__main__":
             
 from codetocad import *
 
-from universalJoint import Yoke, Cross
+from universal_joint import Yoke, Cross
 
 
 
 
 
-def createDoubleUniversalJoint():
+def createDoubleuniversal_joint():
 
 
 
-    shaftRadius = Dimension.fromString("5mm")
+    shaft_radius = Dimension.from_string("5mm")
 
-    wallThickness = Dimension.fromString("3mm")
+    wall_thickness = Dimension.from_string("3mm")
 
-    shaftLength = Dimension.fromString("15mm")
+    shaft_length = Dimension.from_string("15mm")
 
-    centerYolkLength = Dimension.fromString("5mm")
+    center_yold_length = Dimension.from_string("5mm")
 
-    pinArmLength = Dimension.fromString("13mm")
+    pin_arm_length = Dimension.from_string("13mm")
 
-    pinHoleRadius = Dimension.fromString("2mm")
+    pin_hole_radius = Dimension.from_string("2mm")
 
-    setScrewRadius = Dimension.fromString("3mm")
+    set_screw_radius = Dimension.from_string("3mm")
 
 
 
-    yokeCenter = Yoke(
+    yoke_center = Yoke(
 
-        shaftRadius=shaftRadius,
+        shaft_radius=shaft_radius,
 
-        wallThickness=wallThickness,
+        wall_thickness=wall_thickness,
 
-        shaftLength=centerYolkLength,
+        shaft_length=center_yold_length,
 
-        pinArmLength=pinArmLength,
+        pin_arm_length=pin_arm_length,
 
-        pinHoleRadius=pinHoleRadius,
+        pin_hole_radius=pin_hole_radius,
 
-        setScrewRadius=setScrewRadius,
+        set_screw_radius=set_screw_radius,
 
-        isHollowed=False
+        is_hollowed=False
 
     ).create("yokeCenter")
 
-    yokeCenterPinTop = yokeCenter.getLandmark("pinArm_pin")
+    yoke_center_pin_top = yoke_center.get_landmark("pinArm_pin")
 
-    yokeCenterPinTopLocation = yokeCenterPinTop.getLocationLocal()
+    yoke_center_pin_top_location = yoke_center_pin_top.get_location_local()
 
-    yokeCenterBottomZ = yokeCenter.getLandmark(
+    yoke_center_bottom_z = yoke_center.get_landmark(
 
-        PresetLandmark.bottom).getLocationLocal().z
+        PresetLandmark.bottom).get_location_local().z
 
-    yokeCenter.mirror(yokeCenter.getLandmark(
+    yoke_center.mirror(yoke_center.get_landmark(
 
         PresetLandmark.bottom), "z", None)
 
-    yokeCenterPinBottom = yokeCenter.createLandmark(
+    yoke_center_pin_bottom = yoke_center.create_landmark(
 
-        "pinBottom", yokeCenterPinTopLocation.x, yokeCenterPinTopLocation.y, yokeCenterPinTopLocation.z * -1 + yokeCenterBottomZ*2)
+        "pinBottom", yoke_center_pin_top_location.x, yoke_center_pin_top_location.y, yoke_center_pin_top_location.z * -1 + yoke_center_bottom_z*2)
 
 
 
-    yokeTop = Yoke(
+    yoke_top = Yoke(
 
-        shaftRadius=shaftRadius,
+        shaft_radius=shaft_radius,
 
-        wallThickness=wallThickness,
+        wall_thickness=wall_thickness,
 
-        shaftLength=shaftLength,
+        shaft_length=shaft_length,
 
-        pinArmLength=pinArmLength,
+        pin_arm_length=pin_arm_length,
 
-        pinHoleRadius=pinHoleRadius,
+        pin_hole_radius=pin_hole_radius,
 
-        setScrewRadius=setScrewRadius
+        set_screw_radius=set_screw_radius
 
     ).create("yokeTop")
 
-    yokeTop.rotateY(180)
+    yoke_top.rotate_y(180)
 
-    yokeTop.rotateZ(90)
+    yoke_top.rotate_z(90)
 
 
 
     yokeBottom = Yoke(
 
-        shaftRadius=shaftRadius,
+        shaft_radius=shaft_radius,
 
-        wallThickness=wallThickness,
+        wall_thickness=wall_thickness,
 
-        shaftLength=shaftLength,
+        shaft_length=shaft_length,
 
-        pinArmLength=pinArmLength,
+        pin_arm_length=pin_arm_length,
 
-        pinHoleRadius=pinHoleRadius,
+        pin_hole_radius=pin_hole_radius,
 
-        setScrewRadius=setScrewRadius
+        set_screw_radius=set_screw_radius
 
     ).create("yokeBottom")
 
-    yokeBottom.rotateZ(90)
+    yokeBottom.rotate_z(90)
 
 
 
     cross1 = Cross(
 
-        width=shaftRadius,
+        width=shaft_radius,
 
-        pinRadius=pinHoleRadius,
+        pin_radius=pin_hole_radius,
 
-        pinLength=shaftRadius/2 + wallThickness
+        pin_length=shaft_radius/2 + wall_thickness
 
     ).create("cross1")
 
@@ -1703,11 +1675,11 @@ def createDoubleUniversalJoint():
 
     cross2 = Cross(
 
-        width=shaftRadius,
+        width=shaft_radius,
 
-        pinRadius=pinHoleRadius,
+        pin_radius=pin_hole_radius,
 
-        pinLength=shaftRadius/2 + wallThickness
+        pin_length=shaft_radius/2 + wall_thickness
 
     ).create("cross2")
 
@@ -1715,37 +1687,37 @@ def createDoubleUniversalJoint():
 
     Joint(
 
-        cross1.getLandmark(PresetLandmark.right),
+        cross1.get_landmark(PresetLandmark.right),
 
-        yokeTop.getLandmark("pinArm_pin"),
+        yoke_top.get_landmark("pinArm_pin"),
 
-    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
-
-
-
-    Joint(
-
-        cross1.getLandmark(PresetLandmark.front), yokeCenterPinTop
-
-    ).limitRotationXYZ(0, None, 0).limitRotationY(-45, 45).limitLocationXYZ(0, 0, 0)
-
-
-
-    Joint(yokeCenterPinBottom,
-
-          cross2.getLandmark(PresetLandmark.front),
-
-          ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
+    ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(0, 0, 0)
 
 
 
     Joint(
 
-        cross2.getLandmark(
+        cross1.get_landmark(PresetLandmark.front), yoke_center_pin_top
 
-            PresetLandmark.right), yokeBottom.getLandmark("pinArm_pin")
+    ).limit_rotation_xyz(0, None, 0).limit_rotation_y(-45, 45).limit_location_xyz(0, 0, 0)
 
-    ).limitRotationXYZ(None, 0, 0).limitRotationX(-45, 45).limitLocationXYZ(0, 0, 0)
+
+
+    Joint(yoke_center_pin_bottom,
+
+          cross2.get_landmark(PresetLandmark.front),
+
+          ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(0, 0, 0)
+
+
+
+    Joint(
+
+        cross2.get_landmark(
+
+            PresetLandmark.right), yokeBottom.get_landmark("pinArm_pin")
+
+    ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(0, 0, 0)
 
 
 
@@ -1755,7 +1727,7 @@ if __name__ == "__main__":
 
 
 
-    createDoubleUniversalJoint()
+    createDoubleuniversal_joint()
 
             </pre>
         </div>
@@ -1778,47 +1750,47 @@ from codetocad import *
 
 # MARK: Create body
 
-body = Part("body").createCube(1, 2, 3)
+body = Part("body").create_cube(1, 2, 3)
 
-body_top = body.createLandmark("top", center, center, max)
+body_top = body.create_landmark("top", center, center, max)
 
 
 
 # MARK: Create head
 
-head = Part("head").createSphere(0.5)
+head = Part("head").create_sphere(0.5)
 
-head_bottom = head.createLandmark("bottom", center, center, min)
+head_bottom = head.create_landmark("bottom", center, center, min)
 
 
 
 # Mark: Create Eye
 
-eye = Part("eye").createCylinder(0.1, 0.1)
+eye = Part("eye").create_cylinder(0.1, 0.1)
 
-eye_bottom = eye.createLandmark("bottom", center, center, min)
+eye_bottom = eye.create_landmark("bottom", center, center, min)
 
 
 
-eye.rotateXYZ(0, 90, 0)
+eye.rotate_xyz(0, 90, 0)
 
 
 
 # Mark: Attach head to Body
 
-Joint(body_top, head_bottom).limitLocationXYZ(
+Joint(body_top, head_bottom).limit_location_xyz(
 
-    0, 0, 0).limitLocationY(-0.3, 0.3).limitRotationX(0, 0).limitRotationY(-20, 90).limitRotationZ(-30, 30)
+    0, 0, 0).limit_location_y(-0.3, 0.3).limit_rotation_x(0, 0).limit_rotation_y(-20, 90).limit_rotation_z(-30, 30)
 
 
 
 # Mark: Attach eye to head:
 
-head_leftEye = head.createLandmark("leftEye", "max-0.1", -0.2, "max/3")
+head_leftEye = head.create_landmark("leftEye", "max-0.1", -0.2, "max/3")
 
-Joint(head_leftEye, eye_bottom).limitLocationXYZ(
+Joint(head_leftEye, eye_bottom).limit_location_xyz(
 
-    0, 0, 0).limitRotationXYZ(0, 0, 0)
+    0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
 
 
@@ -1845,11 +1817,11 @@ from codetocad import *
 
 
 
-importedCube = Part("Imported Cube").createFromFile("./importableCube.stl")
+imported_cube = Part("Imported Cube").createFromFile("./importableCube.stl")
 
 
 
-Part("ExportedCube").createCube(1, 1, 1)\
+Part("ExportedCube").create_cube(1, 1, 1)\
 
     .export("./exportedCube.stl")\
 

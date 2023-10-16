@@ -1,6 +1,6 @@
 # THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
-# Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
@@ -29,7 +29,7 @@ class LightTestInterface(metaclass=ABCMeta):
         value = instance.create_sun("energy_level")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -39,7 +39,7 @@ class LightTestInterface(metaclass=ABCMeta):
         value = instance.create_spot("energy_level")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -49,7 +49,7 @@ class LightTestInterface(metaclass=ABCMeta):
         value = instance.create_point("energy_level")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod
@@ -59,7 +59,7 @@ class LightTestInterface(metaclass=ABCMeta):
         value = instance.create_area("energy_level")
 
         
-        assert value.isExists(), "Create method failed."
+        assert value.is_exists(), "Create method failed."
         
     
     @abstractmethod

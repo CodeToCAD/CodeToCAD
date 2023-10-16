@@ -2,19 +2,19 @@
     {
         "name": "Fillets and Chamfers",
         "description": "You can apply fillets and chamfers to specific edges or faces, or to all the edges or faces. To target a specific edge or face, create a Landmark near the target.",
-        "codeFilepath": "filletsAndChamfers.py",
+        "codeFilepath": "fillets_and_chamfers.py",
         "imagePath": ""
     },
     {
         "name": "Text",
-        "description": "Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.",
+        "description": "Use Sketch('sketchName').create_text() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.",
         "codeFilepath": "text.py",
         "imagePath": ""
     },
     {
         "name": "Calibration Cube",
         "description": "Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the Text is positioned on the Cube. ",
-        "codeFilepath": "calibrationCube.py",
+        "codeFilepath": "calibration_cube.py",
         "imagePath": ""
     },
     {
@@ -32,25 +32,25 @@
     {
         "name": "Materials",
         "description": "Apply a material to Parts by creating a Material, and then assigning it to a Part.",
-        "codeFilepath": "stackingCubes.py",
-        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png"
+        "codeFilepath": "materials.py",
+        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png"
     },
     {
         "name": "Stacking Cubes",
         "description": "Cubes and other Entities can be positioned relative to one another using Landmarks.",
-        "codeFilepath": "stackingCubes.py",
-        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png"
+        "codeFilepath": "stacking_cubes.py",
+        "imagePath": "https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stacked_cubes.png"
     },
     {
         "name": "D-Shaft",
         "description": "An example that creates a D-keyed shaft using Landmarks and the Subtract modifier.",
-        "codeFilepath": "dShaft.py",
+        "codeFilepath": "d_shaft.py",
         "imagePath": ""
     },
     {
         "name": "D-Shaft Knob",
         "description": "An example that imports another CodeToCAD model and uses the Union modifier.",
-        "codeFilepath": "dShaftKnob.py",
+        "codeFilepath": "d_shaft_knob.py",
         "imagePath": ""
     },
     {
@@ -62,31 +62,31 @@
     {
         "name": "Ball Joint",
         "description": "Parts can be mated/jointed using Landmarks and Joints.",
-        "codeFilepath": "ballJoint.py",
+        "codeFilepath": "ball_joint.py",
         "imagePath": ""
     },
     {
         "name": "Universal Joint",
         "description": "Parts can be mated/jointed using Landmarks and Joints.",
-        "codeFilepath": "universalJoint.py",
+        "codeFilepath": "universal_joint.py",
         "imagePath": ""
     },
     {
         "name": "Double Universal Joint",
         "description": "Parts can be mated/jointed using Landmarks and Joints.",
-        "codeFilepath": "universalJointDouble.py",
+        "codeFilepath": "universal_joint_double.py",
         "imagePath": ""
     },
     {
         "name": "Simple Humanoid",
         "description": "",
-        "codeFilepath": "simpleHumanoid.py",
+        "codeFilepath": "simple_humanoid.py",
         "imagePath": ""
     },
     {
         "name": "Import and Export",
         "description": "You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.",
-        "codeFilepath": "importExport.py",
+        "codeFilepath": "import_export.py",
         "imagePath": ""
     }
 ]

@@ -1,4 +1,4 @@
-from codetocad.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesFromStringList, getDimensionListFromStringList, BoundaryAxis, BoundaryBox, PresetLandmark, min, max, center
+from codetocad.utilities import Dimension, LengthUnit, AngleUnit, Angle, getAnglesfrom_stringList, getDimensionListfrom_stringList, BoundaryAxis, BoundaryBox, PresetLandmark, min, max, center
 
 import unittest
 
@@ -7,69 +7,69 @@ class TestUtilities(unittest.TestCase):
 
     def test_dimensions(self):
         try:
-            dimension = Dimension.fromString("")
+            dimension = Dimension.from_string("")
             assert False
         except Exception as e:
             assert str(e) == "Dimension value cannot be empty."
 
         try:
-            dimension = Dimension.fromString("50NotAUnit")
+            dimension = Dimension.from_string("50NotAUnit")
             assert False
         except Exception as e:
             assert "Could not parse unit" in str(e)
 
-        dimension = Dimension.fromString("50")
+        dimension = Dimension.from_string("50")
         assert dimension.value == 50
         assert dimension.unit == None
-        dimension = Dimension.fromString("100")
+        dimension = Dimension.from_string("100")
         assert dimension.value == 100
         assert dimension.unit == None
-        dimension = Dimension.fromString("100", LengthUnit.m)
+        dimension = Dimension.from_string("100", LengthUnit.m)
         assert dimension.value == 100
         assert dimension.unit == LengthUnit.m
         dimension = Dimension(99, LengthUnit.m)
         assert dimension.value == 99
         assert dimension.unit == LengthUnit.m
 
-        dimension = Dimension.fromString("100mm")
+        dimension = Dimension.from_string("100mm")
         assert dimension.value == 100
         assert dimension.unit == LengthUnit.mm
-        dimension = Dimension.fromString("1m")
+        dimension = Dimension.from_string("1m")
         assert dimension.value == 1
         assert dimension.unit == LengthUnit.m
 
-        dimension = Dimension.fromString("1/4mm")
+        dimension = Dimension.from_string("1/4mm")
         assert dimension.value == 0.25
         assert dimension.unit == LengthUnit.mm
-        dimension = Dimension.fromString("1-(3/4)")
+        dimension = Dimension.from_string("1-(3/4)")
         assert dimension.value == 0.25
         assert dimension.unit == None
-        dimension = Dimension.fromString("1-(3/4)", LengthUnit.ft)
+        dimension = Dimension.from_string("1-(3/4)", LengthUnit.ft)
         assert dimension.value == 0.25
         assert dimension.unit == LengthUnit.ft
 
-        dimensions = getDimensionListFromStringList("10,1")
+        dimensions = getDimensionListfrom_stringList("10,1")
         assert dimensions[0].value == 10 and dimensions[1].value == 1
         assert dimensions[0].unit == None and dimensions[1].unit == None
-        dimensions = getDimensionListFromStringList("1,2,m")
+        dimensions = getDimensionListfrom_stringList("1,2,m")
         assert dimensions[0].value == 1 and dimensions[1].value == 2
         assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("1,2,3,m")
+        dimensions = getDimensionListfrom_stringList("1,2,3,m")
         assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
         assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("1m,2m,3m")
+        dimensions = getDimensionListfrom_stringList("1m,2m,3m")
         assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
         assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("1m,2in,3m")
+        dimensions = getDimensionListfrom_stringList("1m,2in,3m")
         assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
         assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("1,2,3mm,m")
+        dimensions = getDimensionListfrom_stringList("1,2,3mm,m")
         assert dimensions[0].value == 1 and dimensions[1].value == 2 and dimensions[2].value == 3
         assert dimensions[0].unit == LengthUnit.m and dimensions[1].unit == LengthUnit.m and dimensions[2].unit == LengthUnit.mm
-        dimensions = getDimensionListFromStringList("21,1/8,1/8, in")
+        dimensions = getDimensionListfrom_stringList("21,1/8,1/8, in")
         assert dimensions[0].value == 21 and dimensions[1].value == .125 and dimensions[2].value == .125
         assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.inch and dimensions[2].unit == LengthUnit.inch
-        dimensions = getDimensionListFromStringList("3in,1mm")
+        dimensions = getDimensionListfrom_stringList("3in,1mm")
         assert dimensions[0].value == 3 and dimensions[1].value == 1
         assert dimensions[0].unit == LengthUnit.inch and dimensions[1].unit == LengthUnit.mm
 
@@ -94,41 +94,41 @@ class TestUtilities(unittest.TestCase):
             )
         )
 
-        dimensions = getDimensionListFromStringList("min", boundingBox)
+        dimensions = getDimensionListfrom_stringList("min", boundingBox)
         assert dimensions[0].value == -1
         assert dimensions[0].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("max", boundingBox)
+        dimensions = getDimensionListfrom_stringList("max", boundingBox)
         assert dimensions[0].value == 1
         assert dimensions[0].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("center", boundingBox)
+        dimensions = getDimensionListfrom_stringList("center", boundingBox)
         assert dimensions[0].value == 0
         assert dimensions[0].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("min-2", boundingBox)
+        dimensions = getDimensionListfrom_stringList("min-2", boundingBox)
         assert dimensions[0].value == -3
         assert dimensions[0].unit == LengthUnit.m
-        dimensions = getDimensionListFromStringList("min-2cm", boundingBox)
+        dimensions = getDimensionListfrom_stringList("min-2cm", boundingBox)
         assert dimensions[0].value == -102
         assert dimensions[0].unit == LengthUnit.cm
 
         print("test_minMaxCenter() done.")
 
     def test_angles(self):
-        angles = getAnglesFromStringList("10,1")
+        angles = getAnglesfrom_stringList("10,1")
         assert angles[0].value == 10 and angles[1].value == 1
         assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
-        angles = getAnglesFromStringList("1,2,deg")
+        angles = getAnglesfrom_stringList("1,2,deg")
         assert angles[0].value == 1 and angles[1].value == 2
         assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
-        angles = getAnglesFromStringList("1,2,3,deg")
+        angles = getAnglesfrom_stringList("1,2,3,deg")
         assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
         assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES and angles[2].unit == AngleUnit.DEGREES
-        angles = getAnglesFromStringList("1deg,2rad,3deg")
+        angles = getAnglesfrom_stringList("1deg,2rad,3deg")
         assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
         assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.RADIANS and angles[2].unit == AngleUnit.DEGREES
-        angles = getAnglesFromStringList("1,2,3deg,rad")
+        angles = getAnglesfrom_stringList("1,2,3deg,rad")
         assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
         assert angles[0].unit == AngleUnit.RADIANS and angles[1].unit == AngleUnit.RADIANS and angles[2].unit == AngleUnit.DEGREES
-        angles = getAnglesFromStringList("21,1/8,1/8, degrees")
+        angles = getAnglesfrom_stringList("21,1/8,1/8, degrees")
         assert angles[0].value == 21 and angles[1].value == .125 and angles[2].value == .125
         assert angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES and angles[2].unit == AngleUnit.DEGREES
 
@@ -142,12 +142,3 @@ class TestUtilities(unittest.TestCase):
         assert PresetLandmark.rightBackBottom.getXYZ() == (max, max, min)
         assert PresetLandmark.leftBackTop.getXYZ() == (min, max, max)
         assert PresetLandmark.center.getXYZ() == (center, center, center)
-
-
-if __name__ == "__main__":
-    print("Started test_utilities")
-
-    import tests.test_utilities
-    unittest.main(tests.test_utilities)
-
-    print("Completed test_utilities")

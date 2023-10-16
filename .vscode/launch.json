@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "inputs": [
         {
-            "id": "confirmCapabilitiesToPython",
+            "id": "confirmcapabilities_to_python",
             "description": "Are you sure? This will overwrite existing templates.",
             "type": "promptString"
         }
@@ -15,7 +15,6 @@
                 "Capabilities.json to HTML Docs",
                 "Examples.json to HTML"
             ],
-            "preLaunchTask": "${defaultBuildTask}",
             "stopAll": true
         }
     ],
@@ -24,10 +23,10 @@
             "name": "Capabilities.json to Python",
             "type": "python",
             "request": "launch",
-            "module": "development.capabilitiesJsonToPython.capabilitiesToPy",
+            "module": "development.capabilities_json_to_python.capabilities_to_py",
             "console": "integratedTerminal",
             "args": [
-                "${input:confirmCapabilitiesToPython}"
+                "${input:confirmcapabilities_to_python}"
             ],
             "justMyCode": true,
             "cwd": "${workspaceRoot}",
@@ -36,10 +35,10 @@
             "name": "Capabilities.json to HTML Docs",
             "type": "python",
             "request": "launch",
-            "module": "development.capabilitiesJsonToPython.capabilitiesToHtmlDocs",
+            "module": "development.capabilities_json_to_python.capabilities_to_html_docs",
             "console": "integratedTerminal",
             "args": [
-                "${input:confirmCapabilitiesToPython}"
+                "${input:confirmcapabilities_to_python}"
             ],
             "justMyCode": true,
             "cwd": "${workspaceRoot}",
@@ -48,10 +47,10 @@
             "name": "Examples.json to HTML",
             "type": "python",
             "request": "launch",
-            "module": "development.examplesJsonToHtml.examplesToHtml",
+            "module": "development.examples_json_to_html.examples_to_html",
             "console": "integratedTerminal",
             "args": [
-                "${input:confirmCapabilitiesToPython}"
+                "${input:confirmcapabilities_to_python}"
             ],
             "justMyCode": true,
             "cwd": "${workspaceRoot}",

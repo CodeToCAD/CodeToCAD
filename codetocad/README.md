@@ -6,7 +6,7 @@ The Core module contains the interface (non-implementation) details and enumerat
 
 CodeToCAD interfaces are abstract and must be implemented by Providers to be useable.
 
-For example, if you want to use CodeToCAD's Part class in Blender, you should first implement [BlenderProvider's](../providers/blender/) Part class, implementing PartInterface.
+For example, if you want to use CodeToCAD's Part class in Blender, you should first implement [blender_provider's](../providers/blender/) Part class, implementing PartInterface.
 
 ## Capabilities
 
