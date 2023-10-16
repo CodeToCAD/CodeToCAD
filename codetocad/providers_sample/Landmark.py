@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,57 +10,70 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Landmark(LandmarkInterface):
+class Landmark(LandmarkInterface): 
+    
+    
+    name:str
+    parent_entity:EntityOrItsName
+    description:Optional[str]=None
 
-    name: str
-    parentEntity: EntityOrItsName
-    description: Optional[str] = None
-
-    def __init__(self, name: str, parentEntity: EntityOrItsName, description: Optional[str] = None):
+    def __init__(self, name:str, parent_entity:EntityOrItsName, description:Optional[str]=None):
         self.name = name
-        self.parentEntity = parentEntity
+        self.parent_entity = parent_entity
         self.description = description
 
-    def getLandmarkEntityName(self) -> str:
-
+    def get_landmark_entity_name(self) -> str:
+        
         raise NotImplementedError()
+        
 
-    def getParentEntity(self) -> 'EntityInterface':
-
+    def get_parent_entity(self) -> 'EntityInterface':
+        
         raise NotImplementedError()
+        
 
-    def isExists(self) -> bool:
-
+    def is_exists(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def rename(self, newName: str):
-
+    def rename(self, new_name:str):
+        
         return self
+        
 
     def delete(self):
-
+        
         return self
+        
 
-    def isVisible(self) -> bool:
-
+    def is_visible(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def setVisible(self, isVisible: bool):
-
+    def set_visible(self, is_visible:bool):
+        
         return self
+        
 
-    def getNativeInstance(self) -> object:
-
+    def get_native_instance(self) -> object:
+        
         raise NotImplementedError()
+        
 
-    def getLocationWorld(self) -> 'Point':
-
+    def get_location_world(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
-    def getLocationLocal(self) -> 'Point':
-
+    def get_location_local(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
     def select(self):
-
+        
         return self
+        
+    

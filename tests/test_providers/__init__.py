@@ -1,14 +1,14 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
-from .EntityTest import EntityTest
-from .PartTest import PartTest
-from .SketchTest import SketchTest
-from .LandmarkTest import LandmarkTest
-from .JointTest import JointTest
-from .MaterialTest import MaterialTest
-from .AnimationTest import AnimationTest
-from .LightTest import LightTest
-from .CameraTest import CameraTest
-from .RenderTest import RenderTest
-from .SceneTest import SceneTest
-from .AnalyticsTest import AnalyticsTest
+from .entity_test import EntityTest
+from .part_test import PartTest
+from .sketch_test import SketchTest
+from .landmark_test import LandmarkTest
+from .joint_test import JointTest
+from .material_test import MaterialTest
+from .animation_test import AnimationTest
+from .light_test import LightTest
+from .camera_test import CameraTest
+from .render_test import RenderTest
+from .scene_test import SceneTest
+from .analytics_test import AnalyticsTest

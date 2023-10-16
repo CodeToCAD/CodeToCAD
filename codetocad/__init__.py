@@ -7,4 +7,4 @@ from importlib import find_loader
 if find_loader('blenderProvider'):
     from blenderProvider import *
 else:
-    from codetocad.providersSample import *
+    from codetocad.providers_sample import *

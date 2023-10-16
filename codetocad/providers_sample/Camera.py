@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,59 +10,73 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Camera(CameraInterface):
+class Camera(CameraInterface): 
+    
+    
+    name:str
+    description:Optional[str]=None
 
-    name: str
-    description: Optional[str] = None
-
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
-    def createPerspective(self):
-
+    def create_perspective(self):
+        
         return self
+        
 
-    def createOrthogonal(self):
-
+    def create_orthogonal(self):
+        
         return self
+        
 
-    def setFocalLength(self, length: float):
-
+    def set_focal_length(self, length:float):
+        
         return self
+        
 
-    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue):
-
+    def translate_xyz(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue):
-
+    def rotate_xyz(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def isExists(self) -> bool:
-
+    def is_exists(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def rename(self, newName: str):
-
+    def rename(self, new_name:str):
+        
         return self
+        
 
     def delete(self):
-
+        
         return self
+        
 
-    def getNativeInstance(self) -> object:
-
+    def get_native_instance(self) -> object:
+        
         raise NotImplementedError()
+        
 
-    def getLocationWorld(self) -> 'Point':
-
+    def get_location_world(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
-    def getLocationLocal(self) -> 'Point':
-
+    def get_location_local(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
     def select(self):
-
+        
         return self
+        
+    

@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,67 +10,83 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Light(LightInterface):
+class Light(LightInterface): 
+    
+    
+    name:str
+    description:Optional[str]=None
 
-    name: str
-    description: Optional[str] = None
-
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
-    def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat):
-
+    def set_color(self, r_value:IntOrFloat, g_value:IntOrFloat, b_value:IntOrFloat):
+        
         return self
+        
 
-    def createSun(self, energyLevel: float):
-
+    def create_sun(self, energy_level:float):
+        
         return self
+        
 
-    def createSpot(self, energyLevel: float):
-
+    def create_spot(self, energy_level:float):
+        
         return self
+        
 
-    def createPoint(self, energyLevel: float):
-
+    def create_point(self, energy_level:float):
+        
         return self
+        
 
-    def createArea(self, energyLevel: float):
-
+    def create_area(self, energy_level:float):
+        
         return self
+        
 
-    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue):
-
+    def translate_xyz(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue):
-
+    def rotate_xyz(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def isExists(self) -> bool:
-
+    def is_exists(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def rename(self, newName: str):
-
+    def rename(self, new_name:str):
+        
         return self
+        
 
     def delete(self):
-
+        
         return self
+        
 
-    def getNativeInstance(self) -> object:
-
+    def get_native_instance(self) -> object:
+        
         raise NotImplementedError()
+        
 
-    def getLocationWorld(self) -> 'Point':
-
+    def get_location_world(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
-    def getLocationLocal(self) -> 'Point':
-
+    def get_location_local(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
     def select(self):
-
+        
         return self
+        
+    

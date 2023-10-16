@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,36 +10,47 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Render(RenderInterface):
+class Render(RenderInterface): 
+    
+    
 
-    def renderImage(self, outputFilePath: str, overwrite: bool = True, fileType: Optional[str] = None):
-
+    def render_image(self, output_file_path:str, overwrite:bool=True, file_type:Optional[str]=None):
+        
         return self
+        
 
-    def renderVideoMp4(self, outputFilePath: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True):
-
+    def render_video_mp4(self, output_file_path:str, start_frame_number:'int'=1, end_frame_number:'int'=100, step_frames:'int'=1, overwrite:bool=True):
+        
         return self
+        
 
-    def renderVideoFrames(self, outputFolderPath: str, fileNamePrefix: str, startFrameNumber: 'int' = 1, endFrameNumber: 'int' = 100, stepFrames: 'int' = 1, overwrite: bool = True, fileType: Optional[str] = None):
-
+    def render_video_frames(self, output_folder_path:str, file_name_prefix:str, start_frame_number:'int'=1, end_frame_number:'int'=100, step_frames:'int'=1, overwrite:bool=True, file_type:Optional[str]=None):
+        
         return self
+        
 
-    def setFrameRate(self, frameRate: 'int'):
-
+    def set_frame_rate(self, frame_rate:'int'):
+        
         return self
+        
 
-    def setResolution(self, x: 'int', y: 'int'):
-
+    def set_resolution(self, x:'int', y:'int'):
+        
         return self
+        
 
-    def setRenderQuality(self, quality: 'int'):
-
+    def set_render_quality(self, quality:'int'):
+        
         return self
+        
 
-    def setRenderEngine(self, name: str):
-
+    def set_render_engine(self, name:str):
+        
         return self
+        
 
-    def setCamera(self, cameraNameOrInstance: CameraOrItsName):
-
+    def set_camera(self, camera_name_or_instance:CameraOrItsName):
+        
         return self
+        
+    
