@@ -1,5 +1,5 @@
 import unittest
-from codetocad.providersSample import *
+from CodeToCAD.providersSample import *
 
 from mock.modeling.MockModelingProvider import injectMockModelingProvider, resetMockModelingProvider
 

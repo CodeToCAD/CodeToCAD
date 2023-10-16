@@ -2,6 +2,8 @@ import jinja2
 import os
 import json
 
+from development.utilities import to_snake_case
+
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -16,15 +18,15 @@ capabilitiesToPyInterfaceOut = f"{outputDir}/interfaces"
 
 
 capabilitiesToPyProvider = f"capabilitiesToPyProvider.j2"
-capabilitiesToPyProviderOut = f"{outputDir}/providersSample"
+capabilitiesToPyProviderOut = f"{outputDir}/providers_sample"
 
 
 capabilitiesToPyTestInterface = f"capabilitiesToPyTestInterface.j2"
-capabilitiesToPyTestInterfaceOut = f"{outputDir}/testsInterfaces"
+capabilitiesToPyTestInterfaceOut = f"{outputDir}/tests_interfaces"
 
 
 capabilitiesToPyTest = f"capabilitiesToPyTest.j2"
-capabilitiesToPyTestOut = f"{outputDir}/testsSample"
+capabilitiesToPyTestOut = f"{outputDir}/tests_sample"
 
 with open(capabilitiesJson) as f:
     capabilities: dict = json.load(f)
@@ -54,9 +56,11 @@ for template, output, suffix in templatesToGenerate:
 
     for className, methods in capabilities["capabilities"].items():
 
+        file_name = to_snake_case(f"{className}{suffix}")
+
         with open(output + "/__init__.py", "a") as handler:
             handler.write(
-                f"from .{className}{suffix} import {className}{suffix}\n")
+                f"from .{file_name} import {className}{suffix}\n")
 
         template = templateEnv.get_template(template)
         output_from_parsed_template = template.render(
@@ -69,7 +73,7 @@ for template, output, suffix in templatesToGenerate:
                 **capabilities
             )
         )
-        with open(output + f"/{className}{suffix}.py", "w") as fh:
+        with open(output + f"/{file_name}.py", "w") as fh:
             fh.write(output_from_parsed_template)
 
     print("Done")

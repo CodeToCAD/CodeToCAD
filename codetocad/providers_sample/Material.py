@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,31 +10,38 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Material(MaterialInterface):
+class Material(MaterialInterface): 
+    
+    
+    name:str
+    description:Optional[str]=None
 
-    name: str
-    description: Optional[str] = None
-
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
-    def assignToPart(self, partNameOrInstance: PartOrItsName):
-
+    def assign_to_part(self, part_name_or_instance:PartOrItsName):
+        
         return self
+        
 
-    def setColor(self, rValue: IntOrFloat, gValue: IntOrFloat, bValue: IntOrFloat, aValue: IntOrFloat = 1.0):
-
+    def set_color(self, r_value:IntOrFloat, g_value:IntOrFloat, b_value:IntOrFloat, a_value:IntOrFloat=1.0):
+        
         return self
+        
 
-    def setReflectivity(self, reflectivity: float):
-
+    def set_reflectivity(self, reflectivity:float):
+        
         return self
+        
 
-    def setRoughness(self, roughness: float):
-
+    def set_roughness(self, roughness:float):
+        
         return self
+        
 
-    def addImageTexture(self, imageFilePath: str):
-
+    def add_image_texture(self, image_file_path:str):
+        
         return self
+        
+    

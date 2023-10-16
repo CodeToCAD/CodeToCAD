@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,159 +10,198 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Entity(EntityInterface):
+class Entity(EntityInterface): 
+    
+    
+    name:str
+    description:Optional[str]=None
 
-    name: str
-    description: Optional[str] = None
-
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(self, name:str, description:Optional[str]=None):
         self.name = name
         self.description = description
 
-    def createFromFile(self, filePath: str, fileType: Optional[str] = None):
-
+    def create_from_file(self, file_path:str, file_type:Optional[str]=None):
+        
         return self
+        
 
-    def isExists(self) -> bool:
-
+    def is_exists(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def rename(self, newName: str, renamelinkedEntitiesAndLandmarks: bool = True):
-
+    def rename(self, new_name:str, renamelinked_entities_and_landmarks:bool=True):
+        
         return self
+        
 
-    def delete(self, removeChildren: bool):
-
+    def delete(self, remove_children:bool):
+        
         return self
+        
 
-    def isVisible(self) -> bool:
-
+    def is_visible(self) -> bool:
+        
         raise NotImplementedError()
+        
 
-    def setVisible(self, isVisible: bool):
-
+    def set_visible(self, is_visible:bool):
+        
         return self
+        
 
-    def apply(self, rotation: bool = True, scale: bool = True, location: bool = False, modifiers: bool = True):
-
+    def apply(self, rotation:bool=True, scale:bool=True, location:bool=False, modifiers:bool=True):
+        
         return self
+        
 
-    def getNativeInstance(self) -> object:
-
+    def get_native_instance(self) -> object:
+        
         raise NotImplementedError()
+        
 
-    def getLocationWorld(self) -> 'Point':
-
+    def get_location_world(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
-    def getLocationLocal(self) -> 'Point':
-
+    def get_location_local(self) -> 'Point':
+        
         raise NotImplementedError()
+        
 
     def select(self):
-
+        
         return self
+        
 
-    def export(self, filePath: str, overwrite: bool = True, scale: float = 1.0):
-
+    def export(self, file_path:str, overwrite:bool=True, scale:float=1.0):
+        
         return self
+        
 
-    def mirror(self, mirrorAcrossEntityOrLandmark: EntityOrItsNameOrLandmark, axis: AxisOrItsIndexOrItsName, resultingMirroredEntityName: Optional[str] = None):
-
+    def mirror(self, mirror_across_entity_or_landmark:EntityOrItsNameOrLandmark, axis:AxisOrItsIndexOrItsName, resulting_mirrored_entity_name:Optional[str]=None):
+        
         return self
+        
 
-    def linearPattern(self, instanceCount: 'int', offset: DimensionOrItsFloatOrStringValue, directionAxis: AxisOrItsIndexOrItsName = "z"):
-
+    def linear_pattern(self, instance_count:'int', offset:DimensionOrItsFloatOrStringValue, direction_axis:AxisOrItsIndexOrItsName="z"):
+        
         return self
+        
 
-    def circularPattern(self, instanceCount: 'int', separationAngle: AngleOrItsFloatOrStringValue, centerEntityOrLandmark: EntityOrItsNameOrLandmark, normalDirectionAxis: AxisOrItsIndexOrItsName = "z"):
-
+    def circular_pattern(self, instance_count:'int', separation_angle:AngleOrItsFloatOrStringValue, center_entity_or_landmark:EntityOrItsNameOrLandmark, normal_direction_axis:AxisOrItsIndexOrItsName="z"):
+        
         return self
+        
 
-    def translateXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue):
-
+    def translate_xyz(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def translateX(self, amount: DimensionOrItsFloatOrStringValue):
-
+    def translate_x(self, amount:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def translateY(self, amount: DimensionOrItsFloatOrStringValue):
-
+    def translate_y(self, amount:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def translateZ(self, amount: DimensionOrItsFloatOrStringValue):
-
+    def translate_z(self, amount:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def scaleXYZ(self, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue):
-
+    def scale_xyz(self, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def scaleX(self, scale: DimensionOrItsFloatOrStringValue):
-
+    def scale_x(self, scale:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def scaleY(self, scale: DimensionOrItsFloatOrStringValue):
-
+    def scale_y(self, scale:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def scaleZ(self, scale: DimensionOrItsFloatOrStringValue):
-
+    def scale_z(self, scale:DimensionOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def scaleXByFactor(self, scaleFactor: float):
-
+    def scale_x_by_factor(self, scale_factor:float):
+        
         return self
+        
 
-    def scaleYByFactor(self, scaleFactor: float):
-
+    def scale_y_by_factor(self, scale_factor:float):
+        
         return self
+        
 
-    def scaleZByFactor(self, scaleFactor: float):
-
+    def scale_z_by_factor(self, scale_factor:float):
+        
         return self
+        
 
-    def scaleKeepAspectRatio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName):
-
+    def scale_keep_aspect_ratio(self, scale:DimensionOrItsFloatOrStringValue, axis:AxisOrItsIndexOrItsName):
+        
         return self
+        
 
-    def rotateXYZ(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue):
-
+    def rotate_xyz(self, x:AngleOrItsFloatOrStringValue, y:AngleOrItsFloatOrStringValue, z:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def rotateX(self, rotation: AngleOrItsFloatOrStringValue):
-
+    def rotate_x(self, rotation:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def rotateY(self, rotation: AngleOrItsFloatOrStringValue):
-
+    def rotate_y(self, rotation:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def rotateZ(self, rotation: AngleOrItsFloatOrStringValue):
-
+    def rotate_z(self, rotation:AngleOrItsFloatOrStringValue):
+        
         return self
+        
 
-    def twist(self, angle: AngleOrItsFloatOrStringValue, screwPitch: DimensionOrItsFloatOrStringValue, interations: 'int' = 1, axis: AxisOrItsIndexOrItsName = "z"):
-
+    def twist(self, angle:AngleOrItsFloatOrStringValue, screw_pitch:DimensionOrItsFloatOrStringValue, interations:'int'=1, axis:AxisOrItsIndexOrItsName="z"):
+        
         return self
+        
 
-    def remesh(self, strategy: str, amount: float):
-
+    def remesh(self, strategy:str, amount:float):
+        
         return self
+        
 
-    def createLandmark(self, landmarkName: str, x: DimensionOrItsFloatOrStringValue, y: DimensionOrItsFloatOrStringValue, z: DimensionOrItsFloatOrStringValue) -> 'LandmarkInterface':
-
+    def create_landmark(self, landmark_name:str, x:DimensionOrItsFloatOrStringValue, y:DimensionOrItsFloatOrStringValue, z:DimensionOrItsFloatOrStringValue) -> 'LandmarkInterface':
+        
         raise NotImplementedError()
+        
 
-    def getBoundingBox(self) -> 'BoundaryBox':
-
+    def get_bounding_box(self) -> 'BoundaryBox':
+        
         raise NotImplementedError()
+        
 
-    def getDimensions(self) -> 'Dimensions':
-
+    def get_dimensions(self) -> 'Dimensions':
+        
         raise NotImplementedError()
+        
 
-    def getLandmark(self, landmarkName: PresetLandmarkOrItsName) -> 'LandmarkInterface':
-
+    def get_landmark(self, landmark_name:PresetLandmarkOrItsName) -> 'LandmarkInterface':
+        
         raise NotImplementedError()
+        
+    

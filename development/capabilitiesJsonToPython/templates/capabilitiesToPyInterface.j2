@@ -9,7 +9,7 @@ This Jinja2 Template requires the following parameters:
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 
 from abc import ABCMeta, abstractmethod
-from codetocad.CodeToCADTypes import *
+from codetocad.codetocad_types import *
 {%set extendedClassesWithSuffixes = []-%}
 {% if "extends" in methods%}
 {%set extendedClasses = methods["extends"]-%}

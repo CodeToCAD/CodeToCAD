@@ -1,3 +1,4 @@
+from copy import deepcopy
 import re
 import json
 pattern1 = re.compile(r'(.)([A-Z][a-z]+)')
@@ -25,10 +26,13 @@ for className in capabilities["capabilities"].keys():
 
         method_name_snake = to_snake_case(method)
 
-        if method_name_snake != method:
-            capabilities["capabilities"][className][method_name_snake] = capabilities["capabilities"][className][method]
+        method_copy = deepcopy(
+            capabilities["capabilities"][className][method]
+        )
 
-            del capabilities["capabilities"][className][method]
+        del capabilities["capabilities"][className][method]
+
+        capabilities["capabilities"][className][method_name_snake] = method_copy
 
         if "parameters" in capabilities["capabilities"][className][method_name_snake]:
 
@@ -38,13 +42,14 @@ for className in capabilities["capabilities"].keys():
             for parameter in parameters:
                 parameter_name_snake = to_snake_case(parameter)
 
-                if parameter_name_snake == parameter:
-                    continue
-
-                capabilities["capabilities"][className][method_name_snake]["parameters"][
-                    parameter_name_snake] = capabilities["capabilities"][className][method_name_snake]["parameters"][parameter]
+                parameter_copy = deepcopy(
+                    capabilities["capabilities"][className][method_name_snake]["parameters"][parameter]
+                )
 
                 del capabilities["capabilities"][className][method_name_snake]["parameters"][parameter]
+
+                capabilities["capabilities"][className][method_name_snake]["parameters"][
+                    parameter_name_snake] = parameter_copy
 
 
 json.dump(capabilities, open(

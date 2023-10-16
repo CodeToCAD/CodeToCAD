@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,12 +10,13 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Scene(SceneInterface):
+class Scene(SceneInterface): 
+    
+    
+    name:Optional[str]=None
+    description:Optional[str]=None
 
-    name: Optional[str] = None
-    description: Optional[str] = None
-
-    def __init__(self, name: Optional[str] = None, description: Optional[str] = None):
+    def __init__(self, name:Optional[str]=None, description:Optional[str]=None):
         self.name = name
         self.description = description
 
@@ -24,45 +25,57 @@ class Scene(SceneInterface):
         return Scene()
 
     def create(self):
-
+        
         return self
+        
 
     def delete(self):
-
+        
         return self
+        
 
-    def getSelectedEntity(self) -> 'EntityInterface':
-
+    def get_selected_entity(self) -> 'EntityInterface':
+        
         raise NotImplementedError()
+        
 
-    def export(self, filePath: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0):
-
+    def export(self, file_path:str, entities:list[EntityOrItsName], overwrite:bool=True, scale:float=1.0):
+        
         return self
+        
 
-    def setDefaultUnit(self, unit: LengthUnitOrItsName):
-
+    def set_default_unit(self, unit:LengthUnitOrItsName):
+        
         return self
+        
 
-    def createGroup(self, name: str):
-
+    def create_group(self, name:str):
+        
         return self
+        
 
-    def deleteGroup(self, name: str, removeChildren: bool):
-
+    def delete_group(self, name:str, remove_children:bool):
+        
         return self
+        
 
-    def removeFromGroup(self, entityName: str, groupName: str):
-
+    def remove_from_group(self, entity_name:str, group_name:str):
+        
         return self
+        
 
-    def assignToGroup(self, entities: list[EntityOrItsName], groupName: str, removeFromOtherGroups: Optional[bool] = True):
-
+    def assign_to_group(self, entities:list[EntityOrItsName], group_name:str, remove_from_other_groups:Optional[bool]=True):
+        
         return self
+        
 
-    def setVisible(self, entities: list[EntityOrItsName], isVisible: bool):
-
+    def set_visible(self, entities:list[EntityOrItsName], is_visible:bool):
+        
         return self
+        
 
-    def setBackgroundImage(self, filePath: str, locationX: Optional[DimensionOrItsFloatOrStringValue] = 0, locationY: Optional[DimensionOrItsFloatOrStringValue] = 0):
-
+    def set_background_image(self, file_path:str, location_x:Optional[DimensionOrItsFloatOrStringValue]=0, location_y:Optional[DimensionOrItsFloatOrStringValue]=0):
+        
         return self
+        
+    

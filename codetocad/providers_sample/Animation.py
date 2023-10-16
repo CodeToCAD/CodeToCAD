@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE.
+# THIS IS AN AUTO-GENERATE FILE. 
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilitiesJsonToPython/capabilitiesToPy.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
@@ -10,7 +10,9 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 
 
-class Animation(AnimationInterface):
+class Animation(AnimationInterface): 
+    
+    
 
     def __init__(self):
         pass
@@ -19,22 +21,28 @@ class Animation(AnimationInterface):
     def default() -> 'AnimationInterface':
         return Animation()
 
-    def setFrameStart(self, frameNumber: 'int'):
-
+    def set_frame_start(self, frame_number:'int'):
+        
         return self
+        
 
-    def setFrameEnd(self, frameNumber: 'int'):
-
+    def set_frame_end(self, frame_number:'int'):
+        
         return self
+        
 
-    def setFrameCurrent(self, frameNumber: 'int'):
-
+    def set_frame_current(self, frame_number:'int'):
+        
         return self
+        
 
-    def createKeyFrameLocation(self, entity: EntityOrItsName, frameNumber: 'int'):
-
+    def create_key_frame_location(self, entity:EntityOrItsName, frame_number:'int'):
+        
         return self
+        
 
-    def createKeyFrameRotation(self, entity: EntityOrItsName, frameNumber: 'int'):
-
+    def create_key_frame_rotation(self, entity:EntityOrItsName, frame_number:'int'):
+        
         return self
+        
+    

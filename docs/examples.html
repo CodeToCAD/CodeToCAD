@@ -152,7 +152,7 @@
 
 <body>
 
-
+    
     <header>
         <h2 style="margin: 0;">CodeToCAD Examples</h2>
         <div>
@@ -163,7 +163,7 @@
         </div>
     </header>
 
-
+    
 
     <div class="" style="width:50%">
         <a href='#Fillets and Chamfers' class="chip">Fillets and Chamfers</a>
@@ -181,10 +181,10 @@
         <a href='#Double Universal Joint' class="chip">Double Universal Joint</a>
         <a href='#Simple Humanoid' class="chip">Simple Humanoid</a>
         <a href='#Import and Export' class="chip">Import and Export</a>
-    </div>
+        </div>
 
 
-
+    
 
     <header>
         <h2 style="margin: 0;">Documentation</h2>
@@ -283,17 +283,15 @@ chamferTwoFaces.chamferFaces("10cm", [chamferTwoFaces_face1, chamferTwoFaces_fac
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' Text''>Text</div>
-
+            <div class="className" id='Text''>Text</div>
+            
             <div class="methods">
-                <div style="
-            width: 50%;">Use Sketch('sketchName').createText() to write text. You can apply different text fonts,
-                    decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to
-                    mate/joint text to other landmarks.</div>
-
-
-                <pre>
-
+            <div style="
+            width: 50%;">Use Sketch('sketchName').createText() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.</div>
+            
+            
+            <pre>
+            
 from pathlib import Path
 
 from codetocad import *
@@ -359,21 +357,20 @@ Sketch("multiline").createText(
 ).translateXYZ(0, -5, 0).extrude(0.1).setMaterial(blueMaterial)
 
             </pre>
-            </div>
-
         </div>
 
-        <div class="grid-item">
+    </div>
+
+    <div class="grid-item">
             <div class="className" id='Calibration Cube''>Calibration Cube</div>
             
             <div class="methods">
             <div style="
-            width: 50%;">Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the
-                Text is positioned on the Cube. </div>
-
-
-                <pre>
-
+            width: 50%;">Calibration Cubes uses Landmarks on both the Texts' Sketches and the Cube to define where the Text is positioned on the Cube. </div>
+            
+            
+            <pre>
+            
 from codetocad import *
 
 
@@ -489,11 +486,11 @@ createCube("CalibrationCube20_2", size + tolerance).export(
     "./calibrationCube20_2mm.stl", scale=1000).translateXYZ("25mm", 0, 0)
 
             </pre>
-            </div>
-
         </div>
 
-        <div class="grid-item">
+    </div>
+
+    <div class="grid-item">
             <div class="className" id='Patterns''>Patterns</div>
             
             <div class="methods">
@@ -523,18 +520,15 @@ Part("Circular spheres").createSphere(1).translateXYZ(0, 5, 0).circularPattern(
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' Sweeping''>Sweeping</div>
-
+            <div class="className" id='Sweeping''>Sweeping</div>
+            
             <div class="methods">
-                <div style="
-            width: 50%;">Apply a sweep modifier to a Sketch to make it follow a profile path, to create a new Part.
-                    Note: make sure to sweep the profile, for example `myProfile.sweep('mySketch')`; see
-                    `grooveSpiral.sweep(groove)` below.</div>
-
-                <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/coil.png'
-                    alt="Image" />
-                <pre>
-
+            <div style="
+            width: 50%;">Apply a sweep modifier to a Sketch to make it follow a profile path, to create a new Part. Note: make sure to sweep the profile, for example `myProfile.sweep('mySketch')`; see `grooveSpiral.sweep(groove)` below.</div>
+            
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/coil.png' alt="Image" />
+            <pre>
+            
 from codetocad import *
 
 
@@ -566,21 +560,20 @@ groove = Sketch("groove").createCircle(wireThickness/2)
 grooveSpiral.sweep(groove)
 
             </pre>
-            </div>
-
         </div>
 
-        <div class="grid-item">
+    </div>
+
+    <div class="grid-item">
             <div class="className" id='Materials''>Materials</div>
             
             <div class="methods">
             <div style="
             width: 50%;">Apply a material to Parts by creating a Material, and then assigning it to a Part.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png'
-                alt="Image" />
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/materialCube.png' alt="Image" />
             <pre>
-
+            
 from codetocad import *
 
 
@@ -639,16 +632,15 @@ Joint(a_bottom, c_top)\
     </div>
 
     <div class="grid-item">
-        <div class="className" id='Stacking Cubes''>Stacking Cubes</div>
+            <div class="className" id='Stacking Cubes''>Stacking Cubes</div>
             
             <div class="methods">
             <div style="
             width: 50%;">Cubes and other Entities can be positioned relative to one another using Landmarks.</div>
             
-            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png'
-            alt="Image" />
-        <pre>
-
+            <img src=' https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stackedCubes.png' alt="Image" />
+            <pre>
+            
 from codetocad import *
 
 
@@ -702,12 +694,12 @@ Joint(a_bottom, c_top)\
     .limitRotationXYZ(0, 0, 0)
 
             </pre>
-    </div>
+        </div>
 
     </div>
 
     <div class="grid-item">
-        <div class="className" id='D-Shaft''>D-Shaft</div>
+            <div class="className" id='D-Shaft''>D-Shaft</div>
             
             <div class="methods">
             <div style="
@@ -820,15 +812,15 @@ if __name__ == "__main__":
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' D-Shaft Knob''>D-Shaft Knob</div>
-
-        <div class="methods">
+            <div class="className" id='D-Shaft Knob''>D-Shaft Knob</div>
+            
+            <div class="methods">
             <div style="
             width: 50%;">An example that imports another CodeToCAD model and uses the Union modifier.</div>
-
-
+            
+            
             <pre>
-
+            
 from codetocad import *
 
 from dShaft import DShaft
@@ -849,7 +841,7 @@ def createDShaftSleeve(dShaft: PartInterface, sleeveThickness):
 
 
 
-    sleeve.subtract(dShaft, isTransferLandmarks=True)
+    sleeve.subtract(dShaft, istransfer_landmarks(=True)
 
 
 
@@ -921,7 +913,7 @@ if __name__ == "__main__":
     </div>
 
     <div class="grid-item">
-        <div class="className" id='Bracelet''>Bracelet</div>
+            <div class="className" id='Bracelet''>Bracelet</div>
             
             <div class="methods">
             <div style="
@@ -1092,15 +1084,15 @@ belt.setMaterial(blueMaterial)
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' Ball Joint''>Ball Joint</div>
-
-        <div class="methods">
+            <div class="className" id='Ball Joint''>Ball Joint</div>
+            
+            <div class="methods">
             <div style="
             width: 50%;">Parts can be mated/jointed using Landmarks and Joints.</div>
-
-
+            
+            
             <pre>
-
+            
 from codetocad import *
 
 
@@ -1141,7 +1133,7 @@ Joint(ball_bottom, socket_cutoff).translateLandmarkOntoAnother()
 
 socket.subtract(ball, deleteAfterSubtract=False,
 
-                isTransferLandmarks=False)
+                istransfer_landmarks(=False)
 
 
 
@@ -1173,7 +1165,7 @@ socket.setMaterial(greenMaterial)
     </div>
 
     <div class="grid-item">
-        <div class="className" id='Universal Joint''>Universal Joint</div>
+            <div class="className" id='Universal Joint''>Universal Joint</div>
             
             <div class="methods">
             <div style="
@@ -1204,8 +1196,21 @@ redMetallicMaterial = Material("red").setColor(
 
 class Yoke:
 
-    ''' A class that creates the arm of a universal joint: ___ ____________ __ ( ) ) < hollow rod ⁻⁻⁻ ⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻ ⁻⁻ ^
-            ^ setScrew pinHole '''
+    '''
+
+    A class that creates the arm of a universal joint:
+
+    ___  ____________  __
+
+   ( )                   )  < hollow rod
+
+    ⁻⁻⁻  ⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻⁻  ⁻⁻
+
+        ^             ^
+
+     setScrew       pinHole
+
+    '''
 
     shaftRadius: Dimension
 
@@ -1379,7 +1384,7 @@ class Yoke:
 
             pinArm,
 
-            isTransferLandmarks=True
+            istransfer_landmarks(=True
 
         )
 
@@ -1569,15 +1574,15 @@ if __name__ == "__main__":
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' Double Universal Joint''>Double Universal Joint</div>
-
-        <div class="methods">
+            <div class="className" id='Double Universal Joint''>Double Universal Joint</div>
+            
+            <div class="methods">
             <div style="
             width: 50%;">Parts can be mated/jointed using Landmarks and Joints.</div>
-
-
+            
+            
             <pre>
-
+            
 from codetocad import *
 
 from universalJoint import Yoke, Cross
@@ -1758,7 +1763,7 @@ if __name__ == "__main__":
     </div>
 
     <div class="grid-item">
-        <div class="className" id='Simple Humanoid''>Simple Humanoid</div>
+            <div class="className" id='Simple Humanoid''>Simple Humanoid</div>
             
             <div class="methods">
             <div style="
@@ -1827,17 +1832,15 @@ eye.mirror("head", "y", None)
     </div>
 
     <div class="grid-item">
-            <div class="className" id=' Import and Export''>Import and Export</div>
-
-        <div class="methods">
+            <div class="className" id='Import and Export''>Import and Export</div>
+            
+            <div class="methods">
             <div style="
-            width: 50%;">You can import files by using the createFromFile() method, and export Entities using the
-                export() method. The filename extension will be used to guess the filetype, but you can specify a
-                filetype too.</div>
-
-
+            width: 50%;">You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.</div>
+            
+            
             <pre>
-
+            
 from codetocad import *
 
 
