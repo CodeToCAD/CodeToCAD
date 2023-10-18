@@ -23,7 +23,7 @@ setup(
     author_email='shehab@codethatdown.com',
     license='GPL v3',
     packages=['codetocad', "codetocad.interfaces",
-              "codetocad.providersSample"],
+              "codetocad.providers_sample"],
     install_requires=[],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
