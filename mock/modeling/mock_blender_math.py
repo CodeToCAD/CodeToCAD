@@ -55,7 +55,7 @@ class Vector:
         self.iteratorIndex += 1
         return value
 
-    def to_list(self):
+    def tolist(self):
         return [self.x, self.y, self.z]
 
     def to_tuple(self):

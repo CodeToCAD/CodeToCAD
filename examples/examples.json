@@ -85,7 +85,7 @@
     },
     {
         "name": "Import and Export",
-        "description": "You can import files by using the createFromFile() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.",
+        "description": "You can import files by using the create_from_file() method, and export Entities using the export() method. The filename extension will be used to guess the filetype, but you can specify a filetype too.",
         "codeFilepath": "import_export.py",
         "imagePath": ""
     }

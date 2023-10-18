@@ -3,8 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from typing import Optional
-
 from codetocad.interfaces import AnimationInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *

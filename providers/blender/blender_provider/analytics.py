@@ -3,7 +3,6 @@
 from typing import Optional
 
 from . import blender_actions
-from . import blender_definitions
 
 from codetocad.interfaces import AnalyticsInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
@@ -27,7 +26,7 @@ class Analytics(AnalyticsInterface):
                          ) -> 'Dimensions':
         distance = Analytics._get_entity_from_name_or_landmark(entity2).get_location_world(
         ) - Analytics._get_entity_from_name_or_landmark(entity1).get_location_world()
-        return Dimensions.fromPoint(distance)
+        return Dimensions.from_point(distance)
 
     def measure_angle(self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark, pivot: Optional[EntityOrItsNameOrLandmark] = None
                       ) -> 'list[Angle]':

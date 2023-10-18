@@ -16,7 +16,7 @@ class Part(Entity, PartInterface):
     def _create_primitive(self, primitive_name: str, dimensions: str, **kwargs
                           ):
 
-        assert self.is_exists() == False, f"{self.name} already exists."
+        assert self.is_exists() is False, f"{self.name} already exists."
 
         # TODO: account for blender auto-renaming with sequential numbers
         primitiveType: blender_definitions.BlenderObjectPrimitiveTypes = getattr(
@@ -76,7 +76,7 @@ class Part(Entity, PartInterface):
               ) -> 'PartInterface':
 
         assert Entity(
-            new_name).is_exists() == False, f"{new_name} already exists."
+            new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -102,7 +102,7 @@ class Part(Entity, PartInterface):
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
 
-        self._apply_modifiersOnly()
+        self._apply_modifiers_only()
 
         if delete_after_union:
             blender_actions.remove_object(partName, remove_children=True)
@@ -124,7 +124,7 @@ class Part(Entity, PartInterface):
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
 
-        self._apply_modifiersOnly()
+        self._apply_modifiers_only()
 
         if delete_after_subtract:
             blender_actions.remove_object(partName, remove_children=True)
@@ -146,7 +146,7 @@ class Part(Entity, PartInterface):
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
 
-        self._apply_modifiersOnly()
+        self._apply_modifiers_only()
 
         if delete_after_intersect:
             blender_actions.remove_object(partName, remove_children=True)
@@ -193,7 +193,7 @@ class Part(Entity, PartInterface):
         blender_actions.scale_object(
             insidePart.name, scale_x, scale_y, scale_z)
 
-        self._applyRotationAndScaleOnly()
+        self._apply_rotation_and_scale_only()
 
         Joint(start_axisLandmark, insidePart_start).translate_landmark_onto_another()
 
@@ -201,7 +201,7 @@ class Part(Entity, PartInterface):
 
         start_axisLandmark.delete()
 
-        return self._apply_modifiersOnly()
+        return self._apply_modifiers_only()
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> 'PartInterface':
 
@@ -210,7 +210,7 @@ class Part(Entity, PartInterface):
         blender_actions.apply_solidify_modifier(
             self.name, radius)
 
-        return self._apply_modifiersOnly()
+        return self._apply_modifiers_only()
 
     def hole(self, hole_landmark: LandmarkOrItsName, radius: DimensionOrItsFloatOrStringValue, depth: DimensionOrItsFloatOrStringValue, normal_axis: AxisOrItsIndexOrItsName = "z", flip_axis: bool = False, initial_rotation_x: AngleOrItsFloatOrStringValue = 0.0, initial_rotation_y: AngleOrItsFloatOrStringValue = 0.0, initial_rotation_z: AngleOrItsFloatOrStringValue = 0.0, mirror_about_entity_or_landmark: Optional[EntityOrItsNameOrLandmark] = None, mirror_axis: AxisOrItsIndexOrItsName = "x", mirror: bool = False, circular_pattern_instance_count: 'int' = 1, circular_pattern_instance_separation: AngleOrItsFloatOrStringValue = 0.0, circular_pattern_instance_axis: AxisOrItsIndexOrItsName = "z", circular_pattern_about_entity_or_landmark: Optional[EntityOrItsNameOrLandmark] = None, linear_pattern_instance_count: 'int' = 1, linear_pattern_instance_separation: DimensionOrItsFloatOrStringValue = 0.0, linear_pattern_instance_axis: AxisOrItsIndexOrItsName = "x", linear_pattern2nd_instance_count: 'int' = 1, linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0, linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y"):
 
@@ -257,7 +257,7 @@ class Part(Entity, PartInterface):
 
         self.subtract(hole, delete_after_subtract=True,
                       is_transfer_landmarks=False)
-        return self._apply_modifiersOnly()
+        return self._apply_modifiers_only()
 
     def set_material(self, material_name: MaterialOrItsName
                      ):
@@ -343,7 +343,7 @@ class Part(Entity, PartInterface):
             landmark = self.get_landmark(landmarkOrItsName) if isinstance(
                 landmarkOrItsName, str) else landmarkOrItsName
             vertexIndecies = [index for (_, index, _) in blender_actions.get_closest_points_to_vertex(self.name, [
-                dimension.value for dimension in landmark.get_location_world().toList()], number_of_points=2, object_kd_tree=kdTree)]
+                dimension.value for dimension in landmark.get_location_world().to_list()], number_of_points=2, object_kd_tree=kdTree)]
 
             assert len(
                 vertexIndecies) == 2, f"Could not find edges near landmark {landmark.get_landmark_entity_name()}"
@@ -360,7 +360,7 @@ class Part(Entity, PartInterface):
                 landmarkOrItsName, str) else landmarkOrItsName
 
             blenderPolygon = blender_actions.get_closest_face_to_vertex(
-                self.name, [dimension.value for dimension in landmark.get_location_world().toList()])
+                self.name, [dimension.value for dimension in landmark.get_location_world().to_list()])
 
             faceIndecies: list[int] = blenderPolygon.vertices  # type: ignore
 
@@ -396,13 +396,13 @@ class Part(Entity, PartInterface):
             self.name,
             radiusDimension,
             vertex_group_name=vertex_group_name,
-            useEdges=True,
+            use_edges=True,
             use_width=use_width,
             chamfer=chamfer,
             **(keyword_arguments or {})
         )
 
-        return self._apply_modifiersOnly()
+        return self._apply_modifiers_only()
 
     def select_vertex_near_landmark(self, landmark_name: Optional[LandmarkOrItsName] = None
                                     ):

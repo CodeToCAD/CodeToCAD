@@ -20,7 +20,7 @@ class Entity(EntityInterface):
 
     def create_from_file(self, file_path: str, file_type: Optional[str] = None
                          ):
-        assert self.is_exists() == False, f"{self.name} already exists."
+        assert self.is_exists() is False, f"{self.name} already exists."
 
         absoluteFilePath = get_absolute_filepath(file_path)
 
@@ -47,7 +47,7 @@ class Entity(EntityInterface):
                ):
 
         assert Entity(new_name).is_exists(
-        ) == False, f"{new_name} already exists."
+        ) is False, f"{new_name} already exists."
 
         blender_actions.update_object_name(self.name, new_name)
 
@@ -514,7 +514,7 @@ class Entity(EntityInterface):
         if isinstance(landmark_name, str):
             try:
                 preset = PresetLandmark.from_string(landmark_name)
-            except Exception as e:
+            except:
                 pass
 
         if isinstance(landmark_name, PresetLandmark):

@@ -25,7 +25,7 @@ class Sketch(Entity, SketchInterface):
               ) -> 'Sketch':
 
         assert Entity(
-            new_name).is_exists() == False, f"{new_name} already exists."
+            new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -41,7 +41,7 @@ class Sketch(Entity, SketchInterface):
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
         blender_actions.apply_screw_modifier(self.name, Angle.from_string(
-            angle).to_radians(), axis, entityNameToDetermineAxis=about_entity_or_landmark)
+            angle).to_radians(), axis, entity_nameToDetermineAxis=about_entity_or_landmark)
 
         blender_actions.create_mesh_from_curve(
             self.name)
@@ -138,7 +138,7 @@ class Sketch(Entity, SketchInterface):
                 # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
                 # therefore, we'll use the object's "expected" name and rename it to what it should be
                 # note: this will fail if the "expected" name is incorrect
-                curve = Sketch(
+                _ = Sketch(
                     blenderCurvePrimitiveType.name).rename(self.name)
 
                 blender_actions.set_curve_use_path(self.name, False)

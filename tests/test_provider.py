@@ -74,7 +74,7 @@ class TestEntity(TestProviderCase):
 
         value = instance.set_visible(False)
 
-        assert value.is_visible() == False, "Expected True, got False"
+        assert value.is_visible() is False, "Expected True, got False"
 
     @unittest.skip("Blocked by understanding the consequences of implementating this capability.")
     def test_apply(self):
@@ -416,12 +416,12 @@ class TestEntity(TestProviderCase):
 class TestPart(TestProviderCase):
 
     @unittest.skip("")
-    def test_createFromFile(self):
+    def test_create_from_file(self):
         instance = Part("TestPart")
 
         import pathlib
 
-        value = instance.createFromFile(
+        value = instance.create_from_file(
             f"{pathlib.Path(__file__).parent}/../examples/importableCube.stl")
 
         assert value.is_exists(), "Create method failed."
@@ -1151,10 +1151,10 @@ class TestLight(TestProviderCase):
 class TestCamera(TestProviderCase):
 
     @unittest.skip("")
-    def test_createPerspective(self):
+    def test_create_perspective(self):
         instance = Camera("name", "description")
 
-        value = instance.createPerspective("")
+        value = instance.create_perspective("")
 
         assert value.is_exists(), "Create method failed."
 
@@ -1167,10 +1167,10 @@ class TestCamera(TestProviderCase):
         assert value.is_exists(), "Create method failed."
 
     @unittest.skip("")
-    def test_setFocalLength(self):
+    def test_set_focal_length(self):
         instance = Camera("name", "description")
 
-        value = instance.setFocalLength("length")
+        value = instance.set_focal_length("length")
 
         assert value, "Modify method failed."
 

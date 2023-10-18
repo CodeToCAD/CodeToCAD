@@ -1,4 +1,4 @@
-from typing import TypeAlias, Union, Optional
+from typing import TypeAlias, Union
 
 from codetocad.utilities import *
 
