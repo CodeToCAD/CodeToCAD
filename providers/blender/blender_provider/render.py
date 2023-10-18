@@ -3,9 +3,6 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from . import blender_actions
-from . import blender_definitions
-
 from codetocad.interfaces import RenderInterface, CameraInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *

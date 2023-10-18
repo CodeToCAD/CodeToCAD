@@ -1,7 +1,6 @@
 from typing import Optional
 
 from . import blender_actions
-from . import blender_definitions
 
 from codetocad.interfaces import LandmarkInterface, EntityInterface
 from codetocad.codetocad_types import *
@@ -52,7 +51,7 @@ class Landmark(LandmarkInterface):
                ):
 
         assert Landmark(new_name, self.parent_entity).is_exists(
-        ) == False, f"{new_name} already exists."
+        ) is False, f"{new_name} already exists."
 
         parent_entityName = self.parent_entity
         if isinstance(parent_entityName, EntityInterface):

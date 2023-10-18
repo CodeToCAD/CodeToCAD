@@ -1156,11 +1156,11 @@ def remove_object(
 
     # Not all objects have data, but if they do, then deleting the data
     # deletes the object
-    if blenderObject.data and type(blenderObject.data) == bpy.types.Mesh:
+    if blenderObject.data and isinstance(blenderObject.data, bpy.types.Mesh):
         bpy.data.meshes.remove(blenderObject.data)
-    elif blenderObject.data and type(blenderObject.data) == bpy.types.Curve:
+    elif blenderObject.data and isinstance(blenderObject.data, bpy.types.Curve):
         bpy.data.curves.remove(blenderObject.data)
-    elif blenderObject.data and type(blenderObject.data) == bpy.types.TextCurve:
+    elif blenderObject.data and isinstance(blenderObject.data, bpy.types.TextCurve):
         bpy.data.curves.remove(blenderObject.data)
     else:
         bpy.data.objects.remove(blenderObject)
@@ -1242,7 +1242,7 @@ def create_mesh_from_curve(
     existingCurveObjectChildren: list[bpy.types.Object] = \
         existingCurveObject.children  # type: ignore
     for child in existingCurveObjectChildren:
-        if type(child) == blender_definitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+        if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
             child.parent = blenderObject
 
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
@@ -1282,7 +1282,7 @@ def transfer_landmarks(
     toBlenderObject = get_object(to_object_name)
 
     translation = (get_object_world_location(
-        from_object_name) - get_object_world_location(to_object_name)).toList()
+        from_object_name) - get_object_world_location(to_object_name)).to_list()
 
     translation = [
         axisValue.value for axisValue in blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(translation)]
@@ -1792,7 +1792,7 @@ def add_bevel_object_to_curve(
     profileCurveObject = get_object(profile_curve_object_name)
 
     assert \
-        type(profileCurveObject.data) == bpy.types.Curve, \
+        isinstance(profileCurveObject.data, bpy.types.Curve), \
         f"Profile Object {profile_curve_object_name} is not a Curve object. Please use a Curve object."
 
     curve: bpy.types.Curve = pathCurveObject.data  # type: ignore
@@ -2271,7 +2271,7 @@ def export_object(
     # Check if the file exists:
     if not overwrite:
         assert \
-            not path.is_file(),\
+            not path.is_file(), \
             f"File {file_path} already exists"
 
     bpy.ops.object.select_all(action='DESELECT')

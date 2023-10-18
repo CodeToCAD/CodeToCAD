@@ -1,7 +1,6 @@
 from typing import Optional
 
 from . import blender_actions
-from . import blender_definitions
 
 from codetocad.interfaces import MaterialInterface, PartInterface
 from codetocad.codetocad_types import *

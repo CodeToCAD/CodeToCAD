@@ -1,7 +1,3 @@
-
-
-from typing import Optional
-
 from . import blender_actions
 from . import blender_definitions
 

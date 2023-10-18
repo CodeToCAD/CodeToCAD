@@ -114,7 +114,7 @@ def format_landmark_entity_name(parent_entity_name: str, landmark_name: str):
 class EquittableEnum(Enum):
     # define the == operator, otherwise we can't compare enums, thanks python
     def __eq__(self, other):
-        return type(self) == type(other) and self.value == other.value
+        return isinstance(self, type(other)) and self.value == other.value
 
 
 class Units(EquittableEnum):
@@ -167,10 +167,10 @@ class Angle():
     # Default unit is degrees if unit not passed
     def __init__(self, value: float, default_unit: AngleUnit = AngleUnit.DEGREES) -> None:
 
-        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if type(
-            default_unit) is str else default_unit
+        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if isinstance(
+            default_unit, str) else default_unit
         assert (unit is None and default_unit is None) \
-            or type(unit) is AngleUnit, \
+            or isinstance(unit, AngleUnit), \
             "Could not parse default unit."
 
         self.value = value
@@ -282,22 +282,22 @@ class Angle():
         if isinstance(from_string, Angle):
             return from_string.copy()
 
-        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if type(
-            default_unit) is str else default_unit
+        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if isinstance(
+            default_unit, str) else default_unit
         assert (unit is None and default_unit is None) \
-            or type(unit) is AngleUnit, \
+            or isinstance(unit, AngleUnit), \
             "Could not parse default unit."
 
         if isinstance(from_string, (int, float)):
             return Angle(from_string, unit)
 
-        assert type(from_string) is str, "from_string must be a string."
+        assert isinstance(from_string, str), "from_string must be a string."
 
         from_string = from_string.replace(" ", "").lower()
 
         value = from_string
 
-        assert len(value) > 0, f"Angle value cannot be empty."
+        assert len(value) > 0, "Angle value cannot be empty."
 
         # check if a unit is passed into from_string, e.g. "1rad" -> radians
         unitInString = re.search('[A-Za-z]+$', from_string)
@@ -329,7 +329,7 @@ def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
 
     angleString = anglesList[-1]
 
-    if type(angleString) == str:
+    if isinstance(angleString, str):
         angleString = angleString.replace(" ", "").lower()
         angleString = re.search('[A-Za-z]+$', angleString)
 
@@ -504,9 +504,9 @@ class BoundaryAxis:
             return
 
         unit = LengthUnit.from_string(unit.replace(
-            " ", "").lower()) if type(unit) is str else unit
-        assert type(
-            unit) is LengthUnit, "Dimension unit must be of type LengthUnit or string."
+            " ", "").lower()) if isinstance(unit, str) else unit
+        assert isinstance(
+            unit, LengthUnit), "Dimension unit must be of type LengthUnit or string."
 
         self.unit = unit
 
@@ -548,9 +548,9 @@ class Dimension():
                           ), "Dimension value must be a number."
 
         unit = LengthUnit.from_string(unit.replace(
-            " ", "").lower()) if type(unit) is str else unit
-        assert unit is None or type(
-            unit) is LengthUnit, "Dimension unit must be of type LengthUnit or None."
+            " ", "").lower()) if isinstance(unit, str) else unit
+        assert unit is None or isinstance(
+            unit, LengthUnit), "Dimension unit must be of type LengthUnit or None."
 
         self.value = value
         self.unit = unit
@@ -571,7 +571,7 @@ class Dimension():
         return self.__str__()
 
     def convert_to_unit(self, target_unit: Union[str, LengthUnit]) -> 'Dimension':
-        assert self.unit is not None, f"Current dimension does not have a unit."
+        assert self.unit is not None, "Current dimension does not have a unit."
         target_unit = LengthUnit.from_string(target_unit) if not isinstance(
             target_unit, LengthUnit) else target_unit
         assert isinstance(
@@ -676,16 +676,16 @@ class Dimension():
         if isinstance(from_string, Dimension):
             return from_string.copy()
 
-        unit = LengthUnit.from_string(default_unit.replace(" ", "").lower()) if type(
-            default_unit) is str else default_unit
+        unit = LengthUnit.from_string(default_unit.replace(" ", "").lower()) if isinstance(
+            default_unit, str) else default_unit
         assert (unit is None and default_unit is None) \
-            or type(unit) is LengthUnit, \
+            or isinstance(unit, LengthUnit), \
             "Could not parse default unit."
 
         if isinstance(from_string, (int, float)):
             return Dimension(from_string, unit)
 
-        assert type(from_string) is str, "from_string must be a string."
+        assert isinstance(from_string, str), "from_string must be a string."
 
         from_string = from_string.replace(" ", "").lower()
 
@@ -709,7 +709,7 @@ class Dimension():
             value = replace_min_max_center_with_respective_value(
                 value, boundary_axis, unit)
 
-        assert len(value) > 0, f"Dimension value cannot be empty."
+        assert len(value) > 0, "Dimension value cannot be empty."
 
         # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
         assert re.match(
@@ -1005,7 +1005,7 @@ def replace_min_max_center_with_respective_value(dimension: str, boundary_axis: 
 
 
 def get_unit_in_string(dimension_string):
-    if type(dimension_string) != str:
+    if not isinstance(dimension_string, str):
         return None
 
     dimension_string = dimension_string.replace(" ", "").lower()
@@ -1019,7 +1019,7 @@ def get_unit_in_string(dimension_string):
 
 def get_dimension_list_from_string_list(dimensions: Union[str, list[str]], bounding_box: Optional[BoundaryBox] = None) -> list[Dimension]:
 
-    if type(dimensions) is str:
+    if isinstance(dimensions, str):
         dimensions = dimensions.replace(" ", "").lower().split(",")
 
     assert isinstance(dimensions, (list, tuple)
