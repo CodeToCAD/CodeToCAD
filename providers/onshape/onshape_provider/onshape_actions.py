@@ -1,21 +1,13 @@
-import codetocad.utilities as Utilities
-from . import onshape_definitions
 from onshape_client import Client
 from onshape_client.oas import (
-    BTMParameterString149,
-    BTMSketch151,
-    BTMSketchConstraint2,
-    BTMSketchCurveSegment155,
-    BTMIndividualQuery138,
-    BTMParameterQueryList148,
-    BTMSketchPoint158,
-    BTCurveGeometryLine117,
-    BTMSketchCurve4,
-    BTCurveGeometryCircle115,
-    BTModelElementParams,
     BTFeatureDefinitionCall1406,
-    BTMParameterQuantity147
-)
+    BTMIndividualQuery138, BTModelElementParams,
+    BTMParameterQueryList148,
+    BTMSketch151, BTMSketchPoint158)
+
+import codetocad.utilities as Utilities
+
+from . import onshape_definitions
 
 
 def get_onshape_client(config: dict) -> Client:
@@ -23,7 +15,7 @@ def get_onshape_client(config: dict) -> Client:
 
 
 def get_onshape_client_with_config_file(config_filepath: str) -> Client:
-    configAbsolutePath = Utilities.getAbsoluteFilepath(config_filepath)
+    configAbsolutePath = Utilities.get_absolute_filepath(config_filepath)
     return Client(keys_file=configAbsolutePath).get_client()
 
 

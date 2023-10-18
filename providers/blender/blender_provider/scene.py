@@ -110,7 +110,7 @@ class Scene(SceneInterface):
 
     def set_background_image(self, file_path: str, location_x: Optional[DimensionOrItsFloatOrStringValue] = 0, location_y: Optional[DimensionOrItsFloatOrStringValue] = 0):
 
-        absoluteFilePath = getAbsoluteFilepath(file_path)
+        absoluteFilePath = get_absolute_filepath(file_path)
 
         blender_actions.add_hdr_texture(self.name, absoluteFilePath)
 

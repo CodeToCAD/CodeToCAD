@@ -33,7 +33,7 @@ class TestOnshapeActions(unittest.TestCase):
         documentUrl = get_first_document_url_by_name(
             self.client, onshape_document_name)
 
-        assert documentUrl != None
+        assert documentUrl is not None
 
         print("documentUrl", documentUrl)
 
@@ -42,9 +42,9 @@ class TestOnshapeActions(unittest.TestCase):
             self.client, onshape_document_name)
 
         partStudioId = create_tab_part_studios(
-            self.client, documentUrl, Utilities.createUUIDLikeId())
+            self.client, documentUrl, Utilities.create_uuid_like_id())
 
-        assert partStudioId != None
+        assert partStudioId is not None
 
     def test_create_point(self) -> None:
 
@@ -52,7 +52,7 @@ class TestOnshapeActions(unittest.TestCase):
             self.client, onshape_document_name)
 
         partStudioId = create_tab_part_studios(
-            self.client, onshapeUrl, Utilities.createUUIDLikeId())
+            self.client, onshapeUrl, Utilities.create_uuid_like_id())
 
         onshapeUrl.tab_id = partStudioId
 

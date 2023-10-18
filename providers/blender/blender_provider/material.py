@@ -49,7 +49,7 @@ class Material(MaterialInterface):
 
     def add_image_texture(self, image_file_path: str
                           ):
-        absoluteFilePath = getAbsoluteFilepath(image_file_path)
+        absoluteFilePath = get_absolute_filepath(image_file_path)
 
         blender_actions.add_texture_to_material(self.name, absoluteFilePath)
         return self

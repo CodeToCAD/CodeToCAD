@@ -41,7 +41,7 @@ class Sketch(Entity, SketchInterface):
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
         blender_actions.apply_screw_modifier(self.name, Angle.from_string(
-            angle).toRadians(), axis, entityNameToDetermineAxis=about_entity_or_landmark)
+            angle).to_radians(), axis, entityNameToDetermineAxis=about_entity_or_landmark)
 
         blender_actions.create_mesh_from_curve(
             self.name)
