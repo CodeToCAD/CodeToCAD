@@ -45,9 +45,9 @@ class MaterialTest(TestProviderCase, MaterialTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_add_image_texture(self):
+    def test_set_image_texture(self):
         instance = Material("name", "description")
 
-        value = instance.add_image_texture("image_file_path")
+        value = instance.set_image_texture("image_file_path")
 
         assert value, "Modify method failed."
