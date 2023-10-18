@@ -17,7 +17,7 @@
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
     {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
     {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
-    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required is False else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required is False or "defaultValue" in definition  -}}
+    {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == False else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
     {%-endfor%}
 
     {{ generateMethodArguments("__init__", parameters, isStaticMethod, useAbstractMethodDecorator) }}):
