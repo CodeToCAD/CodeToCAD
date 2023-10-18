@@ -135,7 +135,7 @@ class Object:
                     __value[0], __value[1], __value[2])
 
         if __name == "parent":
-            if __value == None:
+            if __value is None:
                 if hasattr(self, "parent") and self.parent:
                     self.parent.children.remove(self)
             else:

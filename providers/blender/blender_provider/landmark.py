@@ -29,7 +29,7 @@ class Landmark(LandmarkInterface):
         if isinstance(parent_entityName, EntityInterface):
             parent_entityName = parent_entityName.name
 
-        entityName = formatLandmarkEntityName(
+        entityName = format_landmark_entity_name(
             parent_entityName, self.name)
 
         return entityName
@@ -59,7 +59,7 @@ class Landmark(LandmarkInterface):
             parent_entityName = parent_entityName.name
 
         blender_actions.update_object_name(self.get_landmark_entity_name(
-        ), formatLandmarkEntityName(parent_entityName, new_name))
+        ), format_landmark_entity_name(parent_entityName, new_name))
 
         self.name = new_name
 

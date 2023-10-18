@@ -1,15 +1,13 @@
 # This file was forked from codetocad/TestCodeToCADProvider.py
 
-from typing import Optional
 import unittest
 
 from mock.modeling.mock_modeling_provider import reset_mock_modeling_provider, inject_mock_modeling_provider
 
 from codetocad import *
 import codetocad.utilities as Utilities
-from codetocad.utilities import (Angle, BoundaryBox, CurveTypes, Dimension,
-                                 Dimensions, Point, PresetLandmark, center, createUUIDLikeId,
-                                 getAbsoluteFilepath, getFilename, max, min)
+from codetocad.utilities import (
+    Dimension, Point, PresetLandmark, center, max, min)
 from providers.blender.blender_provider import *
 
 
@@ -72,7 +70,7 @@ class TestEntity(TestProviderCase):
 
         value = instance.set_visible(True)
 
-        assert value.is_visible() == True, "Expected False, got True"
+        assert value.is_visible() is True, "Expected False, got True"
 
         value = instance.set_visible(False)
 
@@ -394,7 +392,7 @@ class TestEntity(TestProviderCase):
         # test landmark that doesn't exist
         try:
             value = instance.get_landmark("landmarkThatDoesNotExist")
-            assert value == None, "Got a ghost landmark."
+            assert value is None, "Got a ghost landmark."
         except:
             pass
 

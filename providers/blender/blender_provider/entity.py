@@ -22,7 +22,7 @@ class Entity(EntityInterface):
                          ):
         assert self.is_exists() == False, f"{self.name} already exists."
 
-        absoluteFilePath = getAbsoluteFilepath(file_path)
+        absoluteFilePath = get_absolute_filepath(file_path)
 
         importedFileName = blender_actions.import_file(
             absoluteFilePath, file_type)
@@ -126,7 +126,7 @@ class Entity(EntityInterface):
 
     def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0
                ):
-        absoluteFilePath = getAbsoluteFilepath(file_path)
+        absoluteFilePath = get_absolute_filepath(file_path)
 
         blender_actions.export_object(
             self.name, absoluteFilePath, overwrite, scale)
@@ -179,7 +179,7 @@ class Entity(EntityInterface):
         elif isinstance(center_entity_or_landmark_name, EntityInterface):
             center_entity_or_landmark_name = center_entity_or_landmark_name.name
 
-        pivotLandmarkName = createUUIDLikeId()
+        pivotLandmarkName = create_uuid_like_id()
 
         self.create_landmark(pivotLandmarkName, 0, 0, 0)
 
@@ -218,7 +218,7 @@ class Entity(EntityInterface):
     @staticmethod
     def _translation_dimension_from_dimension_or_its_float_or_string_value(dimension_or_its_float_or_string_value: DimensionOrItsFloatOrStringValue, boundary_axis: BoundaryAxis):
 
-        dimension = Dimension.fromDimensionOrItsFloatOrStringValue(
+        dimension = Dimension.from_dimension_or_its_float_or_string_value(
             dimension_or_its_float_or_string_value, boundary_axis)
 
         return blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
@@ -291,7 +291,7 @@ class Entity(EntityInterface):
     @staticmethod
     def _scale_factor_from_dimension_or_its_float_or_string_value(dimension_or_its_float_or_string_value: DimensionOrItsFloatOrStringValue, current_value_in_blender: float):
 
-        value = Dimension.fromDimensionOrItsFloatOrStringValue(
+        value = Dimension.from_dimension_or_its_float_or_string_value(
             dimension_or_its_float_or_string_value, None)
         valueInBlenderDefaultLength = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
             value)
@@ -351,7 +351,7 @@ class Entity(EntityInterface):
 
     def scale_keep_aspect_ratio(self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
                                 ):
-        scale = Dimension.fromDimensionOrItsFloatOrStringValue(
+        scale = Dimension.from_dimension_or_its_float_or_string_value(
             scale, None)
         valueInBlenderDefaultLength = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
             scale)
@@ -368,9 +368,9 @@ class Entity(EntityInterface):
     def rotate_xyz(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                    ):
 
-        xAngle = Angle.fromAngleOrItsFloatOrStringValue(x)
-        yAngle = Angle.fromAngleOrItsFloatOrStringValue(y)
-        zAngle = Angle.fromAngleOrItsFloatOrStringValue(z)
+        xAngle = Angle.from_angle_or_its_float_or_string_value(x)
+        yAngle = Angle.from_angle_or_its_float_or_string_value(y)
+        zAngle = Angle.from_angle_or_its_float_or_string_value(z)
 
         blender_actions.rotate_object(
             self.name, [xAngle, yAngle, zAngle], blender_definitions.BlenderRotationTypes.EULER)
@@ -379,7 +379,7 @@ class Entity(EntityInterface):
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue
                  ):
-        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
         blender_actions.rotate_object(
             self.name, [angle, None, None], blender_definitions.BlenderRotationTypes.EULER)
@@ -388,7 +388,7 @@ class Entity(EntityInterface):
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue
                  ):
-        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
         blender_actions.rotate_object(
             self.name, [None, angle, None], blender_definitions.BlenderRotationTypes.EULER)
@@ -396,7 +396,7 @@ class Entity(EntityInterface):
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue
                  ):
-        angle = Angle.fromAngleOrItsFloatOrStringValue(rotation)
+        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
         blender_actions.rotate_object(
             self.name, [None, None, angle], blender_definitions.BlenderRotationTypes.EULER)
@@ -414,7 +414,7 @@ class Entity(EntityInterface):
         screw_pitch = Dimension.from_string(screw_pitch)
 
         blender_actions.apply_screw_modifier(
-            self.name, angleParsed.toRadians(), axis, screw_pitch=screw_pitch, iterations=interations)
+            self.name, angleParsed.to_radians(), axis, screw_pitch=screw_pitch, iterations=interations)
 
         return self._apply_modifiers_only()
 
@@ -454,9 +454,12 @@ class Entity(EntityInterface):
         boundingBox = blender_actions.get_bounding_box(self.name)
 
         localPositions = [
-            Dimension.fromDimensionOrItsFloatOrStringValue(x, boundingBox.x),
-            Dimension.fromDimensionOrItsFloatOrStringValue(y, boundingBox.y),
-            Dimension.fromDimensionOrItsFloatOrStringValue(z, boundingBox.z),
+            Dimension.from_dimension_or_its_float_or_string_value(
+                x, boundingBox.x),
+            Dimension.from_dimension_or_its_float_or_string_value(
+                y, boundingBox.y),
+            Dimension.from_dimension_or_its_float_or_string_value(
+                z, boundingBox.z),
         ]
 
         localPositions = blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
@@ -522,12 +525,12 @@ class Entity(EntityInterface):
 
         landmark = Landmark(landmark_name, self.name)
 
-        if preset != None:
+        if preset is not None:
             # if preset does not exist, create it.
             try:
                 blender_actions.get_object(landmark.get_landmark_entity_name())
             except:
-                presetXYZ = preset.getXYZ()
+                presetXYZ = preset.get_xyz()
                 self.create_landmark(
                     landmark_name, presetXYZ[0], presetXYZ[1], presetXYZ[2])
 

@@ -16,12 +16,12 @@ class Render(RenderInterface):
     @staticmethod
     def _set_file_format(output_file_path: str):
         fileFormat = blender_definitions.FileFormat.from_utilities_file_format(
-            FileFormats.from_string(getFileExtension(output_file_path)))
+            FileFormats.from_string(get_file_extension(output_file_path)))
         blender_actions.set_render_file_format(fileFormat)
 
     def render_image(self, output_file_path: str, overwrite: bool = True, file_type: Optional[str] = None):
 
-        absoluteFilePath = getAbsoluteFilepath(output_file_path)
+        absoluteFilePath = get_absolute_filepath(output_file_path)
 
         Render._set_file_format(absoluteFilePath)
 
@@ -31,7 +31,7 @@ class Render(RenderInterface):
 
     def render_video_mp4(self, output_file_path: str, start_frame_number: 'int' = 1, end_frame_number: 'int' = 100, step_frames: 'int' = 1, overwrite: bool = True):
 
-        absoluteFilePath = getAbsoluteFilepath(output_file_path)
+        absoluteFilePath = get_absolute_filepath(output_file_path)
 
         Render._set_file_format(absoluteFilePath)
 
@@ -40,7 +40,7 @@ class Render(RenderInterface):
 
     def render_video_frames(self, output_folder_path: str, file_name_prefix: str, start_frame_number: 'int' = 1, end_frame_number: 'int' = 100, step_frames: 'int' = 1, overwrite: bool = True, file_type: Optional[str] = None):
 
-        absoluteFilePath = getAbsoluteFilepath(output_folder_path)
+        absoluteFilePath = get_absolute_filepath(output_folder_path)
 
         raise NotImplementedError()
         return self

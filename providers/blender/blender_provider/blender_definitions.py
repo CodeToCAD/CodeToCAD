@@ -75,12 +75,12 @@ class BlenderLength(Utilities.Units):
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
     def convert_dimension_to_blender_unit(dimension: Utilities.Dimension):
-        if dimension.value == None or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value:
+        if dimension.value is None or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value:
             return dimension
-        if dimension.unit == None:
+        if dimension.unit is None:
             dimension.unit = BlenderLength.DEFAULT_BLENDER_UNIT.value
             return dimension
-        return dimension.convertToUnit(BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        return dimension.convert_to_unit(BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
 
 # These are the rotation transformations supported by Blender:

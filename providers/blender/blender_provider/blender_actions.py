@@ -157,9 +157,9 @@ def apply_boolean_modifier(
     blenderObject = get_object(mesh_object_name)
     blenderBooleanObject = get_object(with_mesh_object_name)
 
-    assert type(blenderObject.data) == blender_definitions.BlenderTypes.MESH.value, \
+    assert isinstance(blenderObject.data, blender_definitions.BlenderTypes.MESH.value), \
         f"Object {mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderObject.data)} type."
-    assert type(blenderBooleanObject.data) == blender_definitions.BlenderTypes.MESH.value, \
+    assert isinstance(blenderBooleanObject.data, blender_definitions.BlenderTypes.MESH.value), \
         f"Object {with_mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
 
     apply_modifier(
@@ -246,17 +246,17 @@ def blender_primitive_function(
     blenderObject = bpy.data.objects.get(primitiveName)
     blenderMesh = bpy.data.meshes.get(primitiveName)
 
-    assert blenderObject == None, f"An object with name {primitiveName} already exists."
+    assert blenderObject is None, f"An object with name {primitiveName} already exists."
 
     orphanMeshMessage = ""
-    if blenderMesh != None and blenderMesh.users == 0:
+    if blenderMesh is not None and blenderMesh.users == 0:
         orphanMeshMessage += " Your mesh is an orphan, please delete it."
 
         # issue-182, add a warning for the Default Cube:
         if primitiveName == "Cube":
             orphanMeshMessage += "If you are starting with the Default Cube, please remove both the object and the mesh using Delete Hierarchy (not just Delete), then try again."
 
-    assert blenderMesh == None, f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
+    assert blenderMesh is None, f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cube:
         return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs)
@@ -302,10 +302,10 @@ def add_primitive(
     **kwargs
 ):
 
-    assert primitive_type is not None, f"Primitive type is required."
+    assert primitive_type is not None, "Primitive type is required."
 
     # Convert the dimensions:
-    dimensionsList: list[Utilities.Dimension] = Utilities.getDimensionListfrom_stringList(
+    dimensionsList: list[Utilities.Dimension] = Utilities.get_dimension_list_from_string_list(
         dimensions) or []
 
     dimensionsList = blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
@@ -327,7 +327,7 @@ def create_gear(
 
     # check if the addon is enabled, enable it if it is not.
     addon = bpy.context.preferences.addons.get(addon_name)
-    if addon == None:
+    if addon is None:
         addon_set_enabled(addon_name, True)
         addon = bpy.context.preferences.addons.get(addon_name)
 
@@ -354,12 +354,13 @@ def create_gear(
         dedendumDimension = outer_radiusDimension - inner_radiusDimension
 
     pressure_angleValue = Utilities.Angle.from_string(
-        pressure_angle).toRadians().value
-    skew_angleValue = Utilities.Angle.from_string(skew_angle).toRadians().value
+        pressure_angle).to_radians().value
+    skew_angleValue = Utilities.Angle.from_string(
+        skew_angle).to_radians().value
     conical_angleValue = Utilities.Angle.from_string(
-        conical_angle).toRadians().value
+        conical_angle).to_radians().value
     crown_angleValue = Utilities.Angle.from_string(
-        crown_angle).toRadians().value
+        crown_angle).to_radians().value
 
     return bpy.ops.mesh.primitive_gear(  # type: ignore
         name=object_name,
@@ -397,7 +398,7 @@ def import_file(
 
     # Check if the file exists:
     assert \
-        path.is_file(),\
+        path.is_file(), \
         f"File {file_path} does not exist"
 
     fileName = path.stem
@@ -406,11 +407,11 @@ def import_file(
     blenderObject = bpy.data.objects.get(fileName)
     blenderMesh = bpy.data.meshes.get(fileName)
 
-    assert blenderObject == None, f"An object with name {fileName} already exists."
-    assert blenderMesh == None, f"A mesh with name {fileName} already exists."
+    assert blenderObject is None, f"An object with name {fileName} already exists."
+    assert blenderMesh is None, f"A mesh with name {fileName} already exists."
 
     # Check if this is a file-type we support:
-    file_type = file_type or Utilities.getFileExtension(file_path)
+    file_type = file_type or Utilities.get_file_extension(file_path)
 
     assert \
         file_type in fileImportFunctions, \
@@ -421,7 +422,7 @@ def import_file(
 
     isSuccess = fileImportFunctions[file_type](file_path) == {'FINISHED'}
 
-    assert isSuccess == True, \
+    assert isSuccess is True, \
         f"Could not import {file_path}"
 
     imported_objs = list(set(bpy.context.scene.objects) - old_objs)
@@ -502,7 +503,7 @@ def rotate_object(
         angle = currentRotation[index]
         newAngle = rotation_angles[index]
         if newAngle is not None:
-            angle = newAngle.toRadians().value
+            angle = newAngle.to_radians().value
         outputRotation.append(angle)
 
     setattr(blenderObject, rotation_type.value, outputRotation)
@@ -595,7 +596,7 @@ def create_collection(
     try:
         existingCollection = get_collection(name, scene_name)
         assert \
-            existingCollection == None, \
+            existingCollection is None, \
             f"Collection {name} already exists"
     except:
         pass
@@ -655,7 +656,7 @@ def assign_object_to_collection(
 
     collection = bpy.data.collections.get(collection_name)
 
-    if collection == None and collection_name == "Scene Collection":
+    if collection is None and collection_name == "Scene Collection":
         scene = bpy.data.scenes.get(scene_name)
 
         assert \
@@ -792,22 +793,22 @@ def apply_limit_rotation_constraint(
 
     if minX:
         keywordArguments["use_limit_x"] = True
-        keywordArguments["min_x"] = minX.toRadians().value
+        keywordArguments["min_x"] = minX.to_radians().value
     if minY:
         keywordArguments["use_limit_y"] = True
-        keywordArguments["min_y"] = minY.toRadians().value
+        keywordArguments["min_y"] = minY.to_radians().value
     if minZ:
         keywordArguments["use_limit_z"] = True
-        keywordArguments["min_z"] = minZ.toRadians().value
+        keywordArguments["min_z"] = minZ.to_radians().value
     if maxX:
         keywordArguments["use_limit_x"] = True
-        keywordArguments["max_x"] = maxX.toRadians().value
+        keywordArguments["max_x"] = maxX.to_radians().value
     if maxY:
         keywordArguments["use_limit_y"] = True
-        keywordArguments["max_y"] = maxY.toRadians().value
+        keywordArguments["max_y"] = maxY.to_radians().value
     if maxZ:
         keywordArguments["use_limit_z"] = True
-        keywordArguments["max_z"] = maxZ.toRadians().value
+        keywordArguments["max_z"] = maxZ.to_radians().value
 
     apply_constraint(
         object_name,
@@ -1173,7 +1174,7 @@ def create_object(
     blenderObject = bpy.data.objects.get(name)
 
     assert \
-        blenderObject == None, \
+        blenderObject is None, \
         f"Object {name} already exists"
 
     return bpy.data.objects.new(name, data)
@@ -1293,7 +1294,7 @@ def transfer_landmarks(
     for child in fromBlenderObjectChildren:
         if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
             child.name = f"{to_object_name}_{child.name}"
-            isAlreadyExists = bpy.data.objects.get(child.name) == None
+            isAlreadyExists = bpy.data.objects.get(child.name) is None
             if isAlreadyExists:
                 print(f"{child.name} already exists. Skipping landmark transfer.")
                 continue
@@ -1311,7 +1312,7 @@ def duplicate_object(
 
     clonedObject = bpy.data.objects.get(new_object_name)  # type: ignore
 
-    assert clonedObject == None, \
+    assert clonedObject is None, \
         f"Object with name {new_object_name} already exists."
 
     blenderObject = get_object(existing_object_name)
@@ -1330,7 +1331,7 @@ def duplicate_object(
         blenderObjectChildren: list[bpy.types.Object] = \
             blenderObject.children  # type: ignore
         for child in blenderObjectChildren:
-            if type(child) == blender_definitions.BlenderTypes.OBJECT.value and child.type == 'EMPTY':
+            if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
                 newChild: bpy.types.Object = child.copy()  # type: ignore
                 newChild.name = child.name.replace(
                     existing_object_name, new_object_name)
@@ -1346,14 +1347,14 @@ def get_object_local_location(object_name: str,):
 
     blenderObject = get_object(object_name)
 
-    return Utilities.Point.fromList([Utilities.Dimension(p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
+    return Utilities.Point.from_list([Utilities.Dimension(p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
 
 
 def get_object_world_location(object_name: str,):
 
     blenderObject = get_object(object_name)
 
-    return Utilities.Point.fromList(
+    return Utilities.Point.from_list(
         [
             Utilities.Dimension(
                 p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
@@ -1748,7 +1749,7 @@ def create_spline(
 
     coordinates = [
         blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            Utilities.getDimensionListfrom_stringList(coordinate) or []
+            Utilities.get_dimension_list_from_string_list(coordinate) or []
         ) for coordinate in coordinates
     ]
     coordinates = [[dimension.value for dimension in coordinate]
@@ -1872,7 +1873,7 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Angle,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
                 Utilities.Dimension.from_string(length)).value,
-            Simple_angle=Utilities.Angle.from_string(angle).toDegrees().value,
+            Simple_angle=Utilities.Angle.from_string(angle).to_degrees().value,
             use_cyclic_u=False,
             **kwargs
         )
@@ -1907,7 +1908,7 @@ class BlenderCurvePrimitives():
                 Utilities.Dimension.from_string(radius)).value,
             Simple_startangle=0,
             Simple_endangle=Utilities.Angle.from_string(
-                angle).toDegrees().value,
+                angle).to_degrees().value,
             use_cyclic_u=False,
             **kwargs
         )
@@ -1921,7 +1922,7 @@ class BlenderCurvePrimitives():
                 Utilities.Dimension.from_string(radius)).value,
             Simple_startangle=0,
             Simple_endangle=Utilities.Angle.from_string(
-                angle).toDegrees().value,
+                angle).to_degrees().value,
             **kwargs
         )
 
@@ -1936,7 +1937,7 @@ class BlenderCurvePrimitives():
                 Utilities.Dimension.from_string(inner_radius)).value,
             Simple_startangle=0,
             Simple_endangle=Utilities.Angle.from_string(
-                angle).toDegrees().value,
+                angle).to_degrees().value,
             **kwargs
         )
 
@@ -2033,7 +2034,7 @@ def enable_curve_extra_objects_addon():
 
     # check if the addon is enabled, enable it if it is not.
     addon = bpy.context.preferences.addons.get(addon_name)
-    if addon == None:
+    if addon is None:
         addon_set_enabled(addon_name, True)
         addon = bpy.context.preferences.addons.get(addon_name)
 
@@ -2054,7 +2055,7 @@ def create_simple_curve(curve_primitiveType: blender_definitions.BlenderCurvePri
     enable_curve_extra_objects_addon()
 
     assert \
-        type(curve_primitiveType) == blender_definitions.BlenderCurvePrimitiveTypes, \
+        isinstance(curve_primitiveType, blender_definitions.BlenderCurvePrimitiveTypes), \
         "{} is not a known curve primitive. Options: {}" \
         .format(
             curve_primitiveType,
@@ -2062,7 +2063,7 @@ def create_simple_curve(curve_primitiveType: blender_definitions.BlenderCurvePri
         )
 
     assert \
-        type(curve_type) == blender_definitions.BlenderCurveTypes, \
+        isinstance(curve_type, blender_definitions.BlenderCurveTypes), \
         "{} is not a known simple curve type. Options: {}" \
         .format(
             curve_type,
@@ -2073,8 +2074,8 @@ def create_simple_curve(curve_primitiveType: blender_definitions.BlenderCurvePri
     blenderObject = bpy.data.objects.get(curve_primitiveType.name)
     blender_curve = bpy.data.curves.get(curve_primitiveType.name)
 
-    assert blenderObject == None, f"An object with name {curve_primitiveType.name} already exists."
-    assert blender_curve == None, f"A curve with name {curve_primitiveType.name} already exists."
+    assert blenderObject is None, f"An object with name {curve_primitiveType.name} already exists."
+    assert blender_curve is None, f"A curve with name {curve_primitiveType.name} already exists."
 
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
@@ -2168,7 +2169,7 @@ def create_material(new_material_name: str,):
     material = bpy.data.materials.get(new_material_name)
 
     assert \
-        material == None, \
+        material is None, \
         f"Material with name {material} already exists."
 
     material = bpy.data.materials.new(name=new_material_name)
@@ -2177,16 +2178,16 @@ def create_material(new_material_name: str,):
 
 
 def set_material_color(material_name: str, r_value, g_value, b_value, a_value=1.0):
-    if type(r_value) == int:
+    if isinstance(r_value, int):
         r_value /= 255.0
 
-    if type(g_value) == int:
+    if isinstance(g_value, int):
         g_value /= 255.0
 
-    if type(b_value) == int:
+    if isinstance(b_value, int):
         b_value /= 255.0
 
-    if type(a_value) == int:
+    if isinstance(a_value, int):
         a_value /= 255.0
 
     material = get_material(material_name)
@@ -2290,7 +2291,7 @@ def export_object(
     isSuccess = fileExportFunctions[file_type](
         file_path, scale) == {'FINISHED'}
 
-    assert isSuccess == True, \
+    assert isSuccess is True, \
         f"Could not export {file_path}"
 
 
@@ -2305,8 +2306,8 @@ def separate_object(
 
     isSuccess = bpy.ops.mesh.separate(type='LOOSE') == {'FINISHED'}
 
-    assert isSuccess == True, \
-        f"Could not separate object"
+    assert isSuccess is True, \
+        "Could not separate object"
 
 # MARK: Animation
 
@@ -2390,13 +2391,13 @@ def get_light(light_name: str,):
 
 
 def set_light_color(light_name: str, r_value, g_value, b_value):
-    if type(r_value) == int:
+    if isinstance(r_value, int):
         r_value /= 255.0
 
-    if type(g_value) == int:
+    if isinstance(g_value, int):
         g_value /= 255.0
 
-    if type(b_value) == int:
+    if isinstance(b_value, int):
         b_value /= 255.0
 
     light = get_light(light_name)

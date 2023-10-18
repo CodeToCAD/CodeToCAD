@@ -163,9 +163,9 @@ class Part(Entity, PartInterface):
         startLandmarkLocation[axis.value] = min if flip_axis else max
 
         start_axisLandmark = self.create_landmark(
-            createUUIDLikeId(), startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
+            create_uuid_like_id(), startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
 
-        insidePart = self.clone(createUUIDLikeId(), copy_landmarks=False)
+        insidePart = self.clone(create_uuid_like_id(), copy_landmarks=False)
         insidePart_start = insidePart.create_landmark(
             "start", startLandmarkLocation[0], startLandmarkLocation[1], startLandmarkLocation[2])
 
@@ -218,7 +218,7 @@ class Part(Entity, PartInterface):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        hole = Part(createUUIDLikeId()).create_cylinder(radius, depth)
+        hole = Part(create_uuid_like_id()).create_cylinder(radius, depth)
         hole_head = hole.create_landmark(
             "hole", center, center, min if flip_axis else max)
 
@@ -378,12 +378,12 @@ class Part(Entity, PartInterface):
         vertex_group_name = None
 
         if bevel_edges_nearlandmark_names is not None:
-            vertex_group_name = createUUIDLikeId()
+            vertex_group_name = create_uuid_like_id()
             self._add_edges_near_landmarks_to_vertex_group(
                 bevel_edges_nearlandmark_names, vertex_group_name)
 
         if bevel_faces_nearlandmark_names is not None:
-            vertex_group_name = vertex_group_name or createUUIDLikeId()
+            vertex_group_name = vertex_group_name or create_uuid_like_id()
             self._add_faces_near_landmarks_to_vertex_group(
                 bevel_faces_nearlandmark_names, vertex_group_name)
 

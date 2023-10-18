@@ -208,7 +208,7 @@ def importCodeToCADFile(filePath, directory, saveFile):
         finally:
             from blender_provider.blender_actions import zoom_to_selected_objects, select_object
             objectToZoomOn = bpy.data.objects[-1]
-            objectToZoomOn = objectToZoomOn.parent if objectToZoomOn.parent != None else objectToZoomOn
+            objectToZoomOn = objectToZoomOn.parent if objectToZoomOn.parent is not None else objectToZoomOn
             select_object(objectToZoomOn.name)
             zoom_to_selected_objects()
 
@@ -490,9 +490,9 @@ def runFromCommandLineArguments(*args):
     # if --CodeToCAD path/to/file.py is passed in, we should automatically run it
     for index in range(1, len(sys.argv)):
         if sys.argv[index].lower() == "--codetocad":
-            from codetocad.utilities import getAbsoluteFilepath
+            from codetocad.utilities import get_absolute_filepath
             filepath = sys.argv[index + 1]
-            filepath = getAbsoluteFilepath(filepath)
+            filepath = get_absolute_filepath(filepath)
 
             if not Path(filepath).exists():
                 raise Exception(

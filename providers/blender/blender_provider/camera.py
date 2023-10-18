@@ -47,9 +47,9 @@ class Camera(CameraInterface):
     def rotate_xyz(self, x: AngleOrItsFloatOrStringValue, y: AngleOrItsFloatOrStringValue, z: AngleOrItsFloatOrStringValue
                    ):
 
-        xAngle = Angle.fromAngleOrItsFloatOrStringValue(x)
-        yAngle = Angle.fromAngleOrItsFloatOrStringValue(y)
-        zAngle = Angle.fromAngleOrItsFloatOrStringValue(z)
+        xAngle = Angle.from_angle_or_its_float_or_string_value(x)
+        yAngle = Angle.from_angle_or_its_float_or_string_value(y)
+        zAngle = Angle.from_angle_or_its_float_or_string_value(z)
 
         blender_actions.rotate_object(
             self.name, [xAngle, yAngle, zAngle], blender_definitions.BlenderRotationTypes.EULER)

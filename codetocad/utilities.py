@@ -56,13 +56,13 @@ class PresetLandmark(Enum):
         return (self & other == other.value)
 
     @staticmethod
-    def from_string(landmarkName) -> Optional['PresetLandmark']:
+    def from_string(landmark_name) -> Optional['PresetLandmark']:
         for preset in PresetLandmark:
-            if preset.name == landmarkName:
+            if preset.name == landmark_name:
                 return preset
         return None
 
-    def getXYZ(self):
+    def get_xyz(self):
         x = min if self.contains(PresetLandmark.left) else max if self.contains(
             PresetLandmark.right) else center
         y = min if self.contains(PresetLandmark.front) else max if self.contains(
@@ -72,43 +72,43 @@ class PresetLandmark(Enum):
         return (x, y, z)
 
 
-def isReservedWordInString(stringToCheck: str) -> bool:
+def is_reserved_word_in_string(string_to_check: str) -> bool:
     for word in reservedWords:
-        if word in stringToCheck:
+        if word in string_to_check:
             return True
     return False
 
 
-def getFilename(relativeFilePath: str):
-    path = Path(relativeFilePath)
+def get_filename(relative_file_path: str):
+    path = Path(relative_file_path)
     return path.stem
 
 
-def getFilenameWithExtension(relativeFilePath: str):
-    path = Path(relativeFilePath)
+def get_filenameWithExtension(relative_file_path: str):
+    path = Path(relative_file_path)
     return path.name
 
 
-def getFileExtension(filePath: str):
-    path = Path(filePath)
+def get_file_extension(file_path: str):
+    path = Path(file_path)
     return path.suffix.replace(".", "")
 
 
-def getAbsoluteFilepath(relativeFilePath: str):
-    path = Path(relativeFilePath)
-    absoluteFilePath = relativeFilePath
+def get_absolute_filepath(relative_file_path: str):
+    path = Path(relative_file_path)
+    absoluteFilePath = relative_file_path
     if not path.is_absolute():
         absoluteFilePath = str(
             Path(sys.argv[0]).parent.joinpath(path).resolve())
     return absoluteFilePath
 
 
-def createUUIDLikeId():
+def create_uuid_like_id():
     return str(uuid4()).replace("-", "")[:10]
 
 
-def formatLandmarkEntityName(parentEntityName: str, landmarkName: str):
-    return f"{parentEntityName}_{landmarkName}"
+def format_landmark_entity_name(parent_entity_name: str, landmark_name: str):
+    return f"{parent_entity_name}_{landmark_name}"
 
 
 class EquittableEnum(Enum):
@@ -150,14 +150,14 @@ class AngleUnit(Units):
 
 class Angle():
 
-    def toRadians(self) -> 'Angle':
+    def to_radians(self) -> 'Angle':
         return Angle(
             math.radians(
                 self.value) if self.unit == AngleUnit.DEGREES else self.value,
             AngleUnit.RADIANS
         )
 
-    def toDegrees(self) -> 'Angle':
+    def to_degrees(self) -> 'Angle':
         return Angle(
             math.degrees(
                 self.value) if self.unit == AngleUnit.RADIANS else self.value,
@@ -165,11 +165,11 @@ class Angle():
         )
 
     # Default unit is degrees if unit not passed
-    def __init__(self, value: float, defaultUnit: AngleUnit = AngleUnit.DEGREES) -> None:
+    def __init__(self, value: float, default_unit: AngleUnit = AngleUnit.DEGREES) -> None:
 
-        unit = AngleUnit.from_string(defaultUnit.replace(" ", "").lower()) if type(
-            defaultUnit) is str else defaultUnit
-        assert (unit is None and defaultUnit is None) \
+        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if type(
+            default_unit) is str else default_unit
+        assert (unit is None and default_unit is None) \
             or type(unit) is AngleUnit, \
             "Could not parse default unit."
 
@@ -177,12 +177,12 @@ class Angle():
         self.unit = unit or AngleUnit.DEGREES
 
     @staticmethod
-    def fromAngleOrItsFloatOrStringValue(mysteryAngle: Union[str, float, 'Angle']) -> 'Angle':
-        if isinstance(mysteryAngle, Angle):
-            return mysteryAngle
-        if isinstance(mysteryAngle, (int, float)):
-            return Angle(mysteryAngle)
-        return Angle.from_string(mysteryAngle)
+    def from_angle_or_its_float_or_string_value(mystery_angle: Union[str, float, 'Angle']) -> 'Angle':
+        if isinstance(mystery_angle, Angle):
+            return mystery_angle
+        if isinstance(mystery_angle, (int, float)):
+            return Angle(mystery_angle)
+        return Angle.from_string(mystery_angle)
 
     def __str__(self) -> str:
         return f"{self.value}{' '+self.unit.name.lower() if self.unit else ''}"
@@ -190,75 +190,75 @@ class Angle():
     def __repr__(self) -> str:
         return self.__str__()
 
-    def arithmeticPrecheckAndUnitConversion(self, other):
+    def arithmetic_precheck_and_unit_conversion(self, other):
         if not isinstance(other, Angle):
             other = Angle.from_string(other)
         if other.unit != self.unit:
             if self.unit == AngleUnit.DEGREES:
-                other.toDegrees()
+                other.to_degrees()
             else:
-                other.toRadians()
+                other.to_radians()
         return other
 
     def __add__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value + other.value, self.unit)
 
     def __sub__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value - other.value, self.unit)
 
     def __mul__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value * other.value, self.unit)
 
     def __truediv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value / other.value, self.unit)
 
     def __floordiv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value // other.value, self.unit)
 
     def __mod__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(self.value % other.value, self.unit)
 
     # def __divmod__(self, other):
-    #     other = self.arithmeticPrecheckAndUnitConversion(other)
+    #     other = self.arithmetic_precheck_and_unit_conversion(other)
     #     return Angle(divmod(self.value, other.value), self.unit)
 
     def __pow__(self, other, mod=None):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Angle(pow(self.value, other.value, mod), self.unit)
 
     def __abs__(self):
         return Angle(abs(self.value), self.unit)
 
     def __lt__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value < other.value
 
     def __le__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value <= other.value
 
     def __gt__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value > other.value
 
     def __ge__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value >= other.value
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value == other.value
 
@@ -277,14 +277,14 @@ class Angle():
     # from_string: takes a string with a math operation and an optional unit of measurement
     # Default unit is degrees if unit not passed
     @staticmethod
-    def from_string(from_string: Union[str, float, 'Angle'], defaultUnit: Union[str, AngleUnit] = AngleUnit.DEGREES):
+    def from_string(from_string: Union[str, float, 'Angle'], default_unit: Union[str, AngleUnit] = AngleUnit.DEGREES):
 
         if isinstance(from_string, Angle):
             return from_string.copy()
 
-        unit = AngleUnit.from_string(defaultUnit.replace(" ", "").lower()) if type(
-            defaultUnit) is str else defaultUnit
-        assert (unit is None and defaultUnit is None) \
+        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if type(
+            default_unit) is str else default_unit
+        assert (unit is None and default_unit is None) \
             or type(unit) is AngleUnit, \
             "Could not parse default unit."
 
@@ -315,7 +315,7 @@ class Angle():
         return Angle(value, unit)
 
 
-def getAnglesfrom_stringList(angles: Union[str, list[str]]) -> list[Angle]:
+def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
     anglesList: list[str]
     if isinstance(angles, str):
         anglesList = angles.replace(" ", "").lower().split(",")
@@ -325,7 +325,7 @@ def getAnglesfrom_stringList(angles: Union[str, list[str]]) -> list[Angle]:
     assert isinstance(anglesList, (list, tuple)
                       ), "Only a list of strings is allowed."
 
-    defaultUnit: AngleUnit = AngleUnit.DEGREES
+    default_unit: AngleUnit = AngleUnit.DEGREES
 
     angleString = anglesList[-1]
 
@@ -336,13 +336,13 @@ def getAnglesfrom_stringList(angles: Union[str, list[str]]) -> list[Angle]:
         unitInString = AngleUnit.from_string(
             angleString[0]) if angleString else None
         if unitInString is not None and angleString is not None:
-            defaultUnit = unitInString
+            default_unit = unitInString
             if len(angleString[0]) == len(anglesList[-1]):
                 anglesList.pop()
 
     parsedAngles = []
     for angle in anglesList:
-        parsedAngles.append(Angle.from_string(angle, defaultUnit))
+        parsedAngles.append(Angle.from_string(angle, default_unit))
 
     return parsedAngles
 
@@ -500,7 +500,7 @@ class BoundaryAxis:
         self.min = min
         self.max = max
 
-        if (unit == None):
+        if (unit is None):
             return
 
         unit = LengthUnit.from_string(unit.replace(
@@ -556,13 +556,13 @@ class Dimension():
         self.unit = unit
 
     @staticmethod
-    def fromDimensionOrItsFloatOrStringValue(mysteryDimension: Union[str, float, 'Dimension'], boundaryAxis: Optional[BoundaryAxis]) -> 'Dimension':
-        if isinstance(mysteryDimension, Dimension):
-            return mysteryDimension
-        if isinstance(mysteryDimension, (int, float)):
-            return Dimension(mysteryDimension)
+    def from_dimension_or_its_float_or_string_value(mystery_dimension: Union[str, float, 'Dimension'], boundary_axis: Optional[BoundaryAxis]) -> 'Dimension':
+        if isinstance(mystery_dimension, Dimension):
+            return mystery_dimension
+        if isinstance(mystery_dimension, (int, float)):
+            return Dimension(mystery_dimension)
         return Dimension.from_string(
-            mysteryDimension, None, boundaryAxis)
+            mystery_dimension, None, boundary_axis)
 
     def __str__(self) -> str:
         return f"{self.value}{' '+self.unit.name if self.unit else ''}"
@@ -570,86 +570,86 @@ class Dimension():
     def __repr__(self) -> str:
         return self.__str__()
 
-    def convertToUnit(self, targetUnit: Union[str, LengthUnit]) -> 'Dimension':
+    def convert_to_unit(self, target_unit: Union[str, LengthUnit]) -> 'Dimension':
         assert self.unit is not None, f"Current dimension does not have a unit."
-        targetUnit = LengthUnit.from_string(targetUnit) if not isinstance(
-            targetUnit, LengthUnit) else targetUnit
+        target_unit = LengthUnit.from_string(target_unit) if not isinstance(
+            target_unit, LengthUnit) else target_unit
         assert isinstance(
-            targetUnit, LengthUnit), f"Could not convert to unit {targetUnit}"
+            target_unit, LengthUnit), f"Could not convert to unit {target_unit}"
 
         newDimension = Dimension(
-            self.value * (self.unit.value/targetUnit.value),
-            targetUnit
+            self.value * (self.unit.value/target_unit.value),
+            target_unit
         )
         return newDimension
 
-    def arithmeticPrecheckAndUnitConversion(self, other) -> 'Dimension':
+    def arithmetic_precheck_and_unit_conversion(self, other) -> 'Dimension':
         assert other is not None, "Right-hand value cannot be None."
         if not isinstance(other, Dimension):
             other = Dimension.from_string(other)
         if other.unit is not None and self.unit is not None and other.unit != self.unit:
-            other = other.convertToUnit(self.unit)
+            other = other.convert_to_unit(self.unit)
         return other
 
     def __add__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value + other.value, self.unit or other.unit)
 
     def __sub__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value - other.value, self.unit or other.unit)
 
     def __mul__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value * other.value, self.unit or other.unit)
 
     def __truediv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value / other.value, self.unit or other.unit)
 
     def __floordiv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value // other.value, self.unit or other.unit)
 
     def __mod__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(self.value % other.value, self.unit or other.unit)
 
     # def __divmod__(self, other):
-    #     other = self.arithmeticPrecheckAndUnitConversion(other)
+    #     other = self.arithmetic_precheck_and_unit_conversion(other)
     #     return Dimension(divmod(self.value, other.value), self.unit)
 
     def __pow__(self, other, mod=None):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return Dimension(pow(self.value, other.value, mod), self.unit or other.unit)
 
     def __abs__(self):
         return Dimension(abs(self.value), self.unit)
 
     def __lt__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value < other.value
 
     def __le__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value <= other.value
 
     def __gt__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value > other.value
 
     def __ge__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value >= other.value
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
         return self.value == other.value
 
@@ -668,17 +668,17 @@ class Dimension():
     # from_string: takes a string with a math operation and an optional unit of measurement
     # Default unit is None (scale factor) if it's not passed in
     # examples: "1m", "1.5ft", "3/8in", "1", "1-(3/4)cm"
-    # boundaryAxis is required if min,center,max are used
+    # boundary_axis is required if min,center,max are used
 
     @staticmethod
-    def from_string(from_string: Union[str, float, 'Dimension'], defaultUnit: Optional[LengthUnit] = None, boundaryAxis: Optional[BoundaryAxis] = None):
+    def from_string(from_string: Union[str, float, 'Dimension'], default_unit: Optional[LengthUnit] = None, boundary_axis: Optional[BoundaryAxis] = None):
 
         if isinstance(from_string, Dimension):
             return from_string.copy()
 
-        unit = LengthUnit.from_string(defaultUnit.replace(" ", "").lower()) if type(
-            defaultUnit) is str else defaultUnit
-        assert (unit is None and defaultUnit is None) \
+        unit = LengthUnit.from_string(default_unit.replace(" ", "").lower()) if type(
+            default_unit) is str else default_unit
+        assert (unit is None and default_unit is None) \
             or type(unit) is LengthUnit, \
             "Could not parse default unit."
 
@@ -692,22 +692,22 @@ class Dimension():
         value = from_string
 
         # check if a unit is passed into from_string, e.g. "1-(3/4)cm" -> cm
-        unitInString = getUnitInString(from_string)
+        unitInString = get_unit_in_string(from_string)
         if unitInString:
             value = from_string[0:-1*len(unitInString)]
             unitInString = LengthUnit.from_string(unitInString)
             unit = unitInString or unit
 
         # if min,max,center is used, try to parse those words into their respective values.
-        if isReservedWordInString(value):
-            assert boundaryAxis is not None, "min,max,center keywords used, but boundaryAxis is not known."
-            if unit == None:
-                unit = boundaryAxis.unit
+        if is_reserved_word_in_string(value):
+            assert boundary_axis is not None, "min,max,center keywords used, but boundary_axis is not known."
+            if unit is None:
+                unit = boundary_axis.unit
 
             assert unit, "Could not determine the unit to convert the boundary axis."
 
-            value = replaceMinMaxCenterWithRespectiveValue(
-                value, boundaryAxis, unit)
+            value = replace_min_max_center_with_respective_value(
+                value, boundary_axis, unit)
 
         assert len(value) > 0, f"Dimension value cannot be empty."
 
@@ -730,15 +730,15 @@ class Point:
         self.y = y
         self.z = z
 
-    def toList(self):
+    def to_list(self):
         return [self.x, self.y, self.z]
 
     @classmethod
-    def fromList(cls, pointList: list[Dimension]):
-        assert len(pointList) == 3, "Point list must contain three Dimensions."
-        return cls(pointList[0], pointList[1], pointList[2])
+    def from_list(cls, point_list: list[Dimension]):
+        assert len(point_list) == 3, "Point list must contain three Dimensions."
+        return cls(point_list[0], point_list[1], point_list[2])
 
-    def arithmeticPrecheckAndUnitConversion(self, other) -> 'Point':
+    def arithmetic_precheck_and_unit_conversion(self, other) -> 'Point':
         assert other is not None, "Right-hand value cannot be None."
 
         if not isinstance(other, (int, float, str, Dimension, list, Point)):
@@ -753,11 +753,11 @@ class Point:
         z = Dimension(0)
 
         if isinstance(other, list):
-            [x, y, z] = getDimensionListfrom_stringList(other)
+            [x, y, z] = get_dimension_list_from_string_list(other)
 
         if isinstance(other, str):
             if "," in other:
-                [x, y, z] = getDimensionListfrom_stringList(other)
+                [x, y, z] = get_dimension_list_from_string_list(other)
             else:
                 other = Dimension.from_string(other)
 
@@ -772,68 +772,68 @@ class Point:
             z = other.z
 
         if x.unit is not None and self.x.unit is not None and x.unit != self.x.unit:
-            x: Dimension = x.convertToUnit(self.x.unit)
+            x: Dimension = x.convert_to_unit(self.x.unit)
         if y.unit is not None and self.y.unit is not None and y.unit != self.y.unit:
-            y: Dimension = y.convertToUnit(self.y.unit)
+            y: Dimension = y.convert_to_unit(self.y.unit)
         if z.unit is not None and self.z.unit is not None and z.unit != self.z.unit:
-            z: Dimension = z.convertToUnit(self.z.unit)
+            z: Dimension = z.convert_to_unit(self.z.unit)
         return Point(x, y, z)
 
     def __eq__(self, other) -> bool:
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         return self.x == other.x and self.y == other.y and self.z == other.z
 
     def __add__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x + other.x
         y = self.y + other.y
         z = self.z + other.z
         return Point(x, y, z)
 
     def __sub__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x - other.x
         y = self.y - other.y
         z = self.z - other.z
         return Point(x, y, z)
 
     def __mul__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x * other.x
         y = self.y * other.y
         z = self.z * other.z
         return Point(x, y, z)
 
     def __truediv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x / other.x
         y = self.y / other.y
         z = self.z / other.z
         return Point(x, y, z)
 
     def __floordiv__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x // other.x
         y = self.y // other.y
         z = self.z // other.z
         return Point(x, y, z)
 
     def __mod__(self, other):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = self.x % other.x
         y = self.y % other.y
         z = self.z % other.z
         return Point(x, y, z)
 
     # def __divmod__(self, other):
-    #     other = self.arithmeticPrecheckAndUnitConversion(other)
+    #     other = self.arithmetic_precheck_and_unit_conversion(other)
     #     x = divmod(self.x, other.x)
     #     y = divmod(self.y, other.y)
     #     z = divmod(self.z, other.z)
     #     return Point(x, y, z)
 
     def __pow__(self, other, mod=None):
-        other = self.arithmeticPrecheckAndUnitConversion(other)
+        other = self.arithmetic_precheck_and_unit_conversion(other)
         x = pow(self.x, other.x)
         y = pow(self.y, other.y)
         z = pow(self.z, other.z)
@@ -881,18 +881,18 @@ class Dimensions():
                  ) -> None:
         self.point = Point(x, y, z)
 
-    def toList(self):
-        return self.point.toList()
+    def to_list(self):
+        return self.point.to_list()
 
     @staticmethod
-    def fromPoint(point: Point) -> 'Dimensions':
+    def from_point(point: Point) -> 'Dimensions':
         return Dimensions(point.x, point.y, point.z)
 
     @classmethod
-    def fromList(cls, dimensionsList: list[Dimension]):
+    def from_list(cls, dimensions_list: list[Dimension]):
         assert len(
-            dimensionsList) == 3, "Dimensions list must contain three Dimensions."
-        return cls(dimensionsList[0], dimensionsList[1], dimensionsList[2])
+            dimensions_list) == 3, "Dimensions list must contain three Dimensions."
+        return cls(dimensions_list[0], dimensions_list[1], dimensions_list[2])
 
     def __eq__(self, other) -> bool:
         return self.point == other.point
@@ -988,36 +988,36 @@ class Dimensions():
 
 
 # Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
-def replaceMinMaxCenterWithRespectiveValue(dimension: str, boundaryAxis: BoundaryAxis, defaultUnit: LengthUnit):
+def replace_min_max_center_with_respective_value(dimension: str, boundary_axis: BoundaryAxis, default_unit: LengthUnit):
     dimension = dimension.lower()
 
     while "min" in dimension:
         dimension = dimension.replace("min", "({})".format(Dimension(
-            boundaryAxis.min, boundaryAxis.unit).convertToUnit(defaultUnit).value))
+            boundary_axis.min, boundary_axis.unit).convert_to_unit(default_unit).value))
     while "max" in dimension:
         dimension = dimension.replace("max", "({})".format(Dimension(
-            boundaryAxis.max, boundaryAxis.unit).convertToUnit(defaultUnit).value))
+            boundary_axis.max, boundary_axis.unit).convert_to_unit(default_unit).value))
     while "center" in dimension:
         dimension = dimension.replace("center", "({})".format(Dimension(
-            boundaryAxis.center, boundaryAxis.unit).convertToUnit(defaultUnit).value))
+            boundary_axis.center, boundary_axis.unit).convert_to_unit(default_unit).value))
 
     return dimension
 
 
-def getUnitInString(dimensionString):
-    if type(dimensionString) != str:
+def get_unit_in_string(dimension_string):
+    if type(dimension_string) != str:
         return None
 
-    dimensionString = dimensionString.replace(" ", "").lower()
+    dimension_string = dimension_string.replace(" ", "").lower()
 
-    unitSearchResults = re.search('[A-Za-z]+$', dimensionString)
+    unitSearchResults = re.search('[A-Za-z]+$', dimension_string)
 
     unitInString = unitSearchResults[0] if unitSearchResults else None
 
-    return unitInString if unitInString and not isReservedWordInString(unitInString) else None
+    return unitInString if unitInString and not is_reserved_word_in_string(unitInString) else None
 
 
-def getDimensionListfrom_stringList(dimensions: Union[str, list[str]], boundingBox: Optional[BoundaryBox] = None) -> list[Dimension]:
+def get_dimension_list_from_string_list(dimensions: Union[str, list[str]], bounding_box: Optional[BoundaryBox] = None) -> list[Dimension]:
 
     if type(dimensions) is str:
         dimensions = dimensions.replace(" ", "").lower().split(",")
@@ -1027,22 +1027,22 @@ def getDimensionListfrom_stringList(dimensions: Union[str, list[str]], boundingB
 
     parsedDimensions = []
 
-    defaultUnit = None
+    default_unit = None
 
-    unitInString = getUnitInString(dimensions[-1])
+    unitInString = get_unit_in_string(dimensions[-1])
     if unitInString is not None:
-        defaultUnit = LengthUnit.from_string(unitInString)
+        default_unit = LengthUnit.from_string(unitInString)
         if len(unitInString) == len(dimensions[-1].replace(" ", "").lower()):
             dimensions.pop()
 
     for index, dimension in enumerate(dimensions):
-        if boundingBox is not None and index < 3:
-            boundaryAxis = getattr(boundingBox, "xyz"[index])
+        if bounding_box is not None and index < 3:
+            boundary_axis = getattr(bounding_box, "xyz"[index])
             parsedDimensions.append(Dimension.from_string(
-                dimension, defaultUnit, boundaryAxis))
+                dimension, default_unit, boundary_axis))
             continue
 
         parsedDimensions.append(
-            Dimension.from_string(dimension, defaultUnit, None))
+            Dimension.from_string(dimension, default_unit, None))
 
     return parsedDimensions
