@@ -1513,7 +1513,7 @@
                     }
                 }
             },
-            "add_image_texture": {
+            "set_image_texture": {
                 "information": "Add a texture from an image file.",
                 "action": "modify",
                 "parameters": {

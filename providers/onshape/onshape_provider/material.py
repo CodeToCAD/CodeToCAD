@@ -35,6 +35,6 @@ class Material(MaterialInterface):
 
         return self
 
-    def add_image_texture(self, image_file_path: str):
+    def set_image_texture(self, image_file_path: str):
 
         return self

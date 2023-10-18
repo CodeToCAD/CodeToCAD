@@ -990,10 +990,10 @@ class TestMaterial(TestProviderCase):
         assert value, "Modify method failed."
 
     @unittest.skip("")
-    def test_add_image_texture(self):
+    def test_set_image_texture(self):
         instance = Material("name", "description")
 
-        value = instance.add_image_texture("imageFilePath")
+        value = instance.set_image_texture("imageFilePath")
 
         assert value, "Modify method failed."
 

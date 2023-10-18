@@ -60,11 +60,11 @@ class MaterialInterface(metaclass=ABCMeta):
         
 
     @abstractmethod
-    def add_image_texture(self, image_file_path:str):
+    def set_image_texture(self, image_file_path:str):
         '''
         Add a texture from an image file.
         '''
         
-        print("add_image_texture is called in an abstract method. Please override this method.")
+        print("set_image_texture is called in an abstract method. Please override this method.")
         return self
         
