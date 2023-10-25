@@ -118,7 +118,7 @@ class BlenderModifiers(Enum):
 
 
 # This is a list of Blender Constraint types that we have implemented:
-class BlenderConstraintTypes(Utilities.EquittableEnum):
+class BlenderConstraintTypes(Enum):
     LIMIT_LOCATION = Utilities.ConstraintTypes.LimitLocation
     LIMIT_ROTATION = Utilities.ConstraintTypes.LimitRotation
     PIVOT = Utilities.ConstraintTypes.Pivot
@@ -222,7 +222,7 @@ class BlenderObjectPrimitiveTypes(Enum):
 # This is a list of Blender Curve types that we have implemented:
 
 
-class BlenderCurveTypes(Utilities.EquittableEnum):
+class BlenderCurveTypes(Enum):
     POLY = Utilities.CurveTypes.POLY
     NURBS = Utilities.CurveTypes.NURBS
     BEZIER = Utilities.CurveTypes.BEZIER
@@ -239,7 +239,7 @@ class BlenderCurveTypes(Utilities.EquittableEnum):
 
 # assumes add_curve_extra_objects is enabled
 # https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
-class BlenderCurvePrimitiveTypes(Utilities.EquittableEnum):
+class BlenderCurvePrimitiveTypes(Enum):
     # These names should match the names in Blender
     Point = Utilities.CurvePrimitiveTypes.Point
     LineTo = Utilities.CurvePrimitiveTypes.LineTo

@@ -111,13 +111,7 @@ def format_landmark_entity_name(parent_entity_name: str, landmark_name: str):
     return f"{parent_entity_name}_{landmark_name}"
 
 
-class EquittableEnum(Enum):
-    # define the == operator, otherwise we can't compare enums, thanks python
-    def __eq__(self, other):
-        return isinstance(self, type(other)) and self.value == other.value
-
-
-class Units(EquittableEnum):
+class Units(Enum):
     pass
 
 
@@ -401,7 +395,7 @@ class LengthUnit(Units):
         return parsedUnit
 
 
-class Axis(EquittableEnum):
+class Axis(Enum):
     X = 0
     Y = 1
     Z = 2
@@ -421,7 +415,7 @@ class Axis(EquittableEnum):
         assert False, f"Cannot parse axis {axis}"
 
 
-class CurvePrimitiveTypes(EquittableEnum):
+class CurvePrimitiveTypes(Enum):
     Point = 0
     LineTo = 1
     Line = 2
@@ -439,13 +433,13 @@ class CurvePrimitiveTypes(EquittableEnum):
     Spiral = 14
 
 
-class CurveTypes(EquittableEnum):
+class CurveTypes(Enum):
     POLY = 0
     NURBS = 1
     BEZIER = 2
 
 
-class FileFormats(EquittableEnum):
+class FileFormats(Enum):
     PNG = 0
     JPEG = 1
     OPEN_EXR = 2
@@ -472,7 +466,7 @@ class ScalingMethods(Enum):
     lockAspectRatio = 2  # scale one dimension, the others scale with it
 
 
-class ConstraintTypes(EquittableEnum):
+class ConstraintTypes(Enum):
     # Translation locked between specified start and end points in all axes.
     LimitLocation = 0
     # Rotation locked between specified start and end angles in all axes.
