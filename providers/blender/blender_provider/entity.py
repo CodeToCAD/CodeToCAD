@@ -40,7 +40,7 @@ class Entity(EntityInterface):
                   ) -> bool:
         try:
             return blender_actions.get_object(self.name) is not None
-        except:
+        except:  # noqa: E722
             return False
 
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True
@@ -512,10 +512,7 @@ class Entity(EntityInterface):
         preset: Optional[PresetLandmark] = None
 
         if isinstance(landmark_name, str):
-            try:
-                preset = PresetLandmark.from_string(landmark_name)
-            except:
-                pass
+            preset = PresetLandmark.from_string(landmark_name)
 
         if isinstance(landmark_name, PresetLandmark):
             preset = landmark_name
@@ -529,7 +526,7 @@ class Entity(EntityInterface):
             # if preset does not exist, create it.
             try:
                 blender_actions.get_object(landmark.get_landmark_entity_name())
-            except:
+            except:  # noqa: E722
                 presetXYZ = preset.get_xyz()
                 self.create_landmark(
                     landmark_name, presetXYZ[0], presetXYZ[1], presetXYZ[2])

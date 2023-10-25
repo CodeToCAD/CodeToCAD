@@ -483,8 +483,8 @@ def apply_object_transformations(object_name: str, apply_rotation: bool, apply_s
     # Set the object to its world translation
     blenderObject.matrix_basis = basis
 
-    for child in blenderObject.children:  # type: ignore
-        child.matrix_basis = transformation @ child.matrix_basis
+    for child in blenderObject.children:
+        child.matrix_basis = transformation @ child.matrix_basis  # type: ignore
 
 
 def rotate_object(
@@ -593,16 +593,13 @@ def create_collection(
     scene_name="Scene"
 ):
 
-    try:
-        existingCollection = get_collection(name, scene_name)
-        assert \
-            existingCollection is None, \
-            f"Collection {name} already exists"
-    except:
-        pass
-
     assert \
         scene_name in bpy.data.scenes, f"Scene {scene_name} does not exist"  # type: ignore
+
+    existing_collection = bpy.data.scenes[scene_name].collection.children.get(
+        name)
+
+    assert existing_collection is None, f"Collection {name} already exists"
 
     collection = bpy.data.collections.new(name)
 
@@ -622,6 +619,7 @@ def remove_collection(
             try:
                 remove_object(obj.name, True)
             except Exception as e:
+                print(f"Could not remove {obj.name}. {e}")
                 pass
 
     bpy.data.collections.remove(collection)
@@ -1151,7 +1149,8 @@ def remove_object(
         for child in blenderObjectChildren:
             try:
                 remove_object(child.name, True)
-            except:
+            except Exception as e:
+                print(f"Could not remove {child.name}. {e}")
                 pass
 
     # Not all objects have data, but if they do, then deleting the data

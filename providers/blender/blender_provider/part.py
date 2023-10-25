@@ -19,13 +19,10 @@ class Part(Entity, PartInterface):
         assert self.is_exists() is False, f"{self.name} already exists."
 
         # TODO: account for blender auto-renaming with sequential numbers
-        primitiveType: blender_definitions.BlenderObjectPrimitiveTypes = getattr(
-            blender_definitions.BlenderObjectPrimitiveTypes, primitive_name.lower())
-        expectedNameOfObjectInBlender = primitiveType.default_name_in_blender(
-        ) if primitiveType else None
+        primitiveType = blender_definitions.BlenderObjectPrimitiveTypes[primitive_name.lower(
+        )]
 
-        assert expectedNameOfObjectInBlender is not None, \
-            f"Primitive type with name {primitive_name} is not supported."
+        expectedNameOfObjectInBlender = primitiveType.default_name_in_blender()
 
         blender_actions.add_primitive(
             primitiveType, dimensions, **kwargs)
