@@ -1,8 +1,5 @@
-
 from enum import Enum
-from typing import Optional
-
-from codetocad.utilities import center
+from typing import Optional, Tuple
 
 
 class PresetLandmark(Enum):
@@ -41,20 +38,37 @@ class PresetLandmark(Enum):
         return self.value & other.value
 
     def contains(self, other):
-        return (self & other == other.value)
+        return self & other == other.value
 
     @staticmethod
-    def from_string(landmark_name) -> Optional['PresetLandmark']:
+    def from_string(landmark_name) -> Optional["PresetLandmark"]:
         for preset in PresetLandmark:
             if preset.name == landmark_name:
                 return preset
         return None
 
     def get_xyz(self):
-        x = min if self.contains(PresetLandmark.left) else max if self.contains(
-            PresetLandmark.right) else center
-        y = min if self.contains(PresetLandmark.front) else max if self.contains(
-            PresetLandmark.back) else center
-        z = min if self.contains(PresetLandmark.bottom) else max if self.contains(
-            PresetLandmark.top) else center
+        from codetocad.utilities import center, min, max
+
+        x = (
+            min
+            if self.contains(PresetLandmark.left)
+            else max
+            if self.contains(PresetLandmark.right)
+            else center
+        )
+        y = (
+            min
+            if self.contains(PresetLandmark.front)
+            else max
+            if self.contains(PresetLandmark.back)
+            else center
+        )
+        z = (
+            min
+            if self.contains(PresetLandmark.bottom)
+            else max
+            if self.contains(PresetLandmark.top)
+            else center
+        )
         return (x, y, z)

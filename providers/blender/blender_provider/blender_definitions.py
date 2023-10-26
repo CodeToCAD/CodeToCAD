@@ -1,7 +1,14 @@
 import bpy
 
 from enum import Enum
-import codetocad.utilities as Utilities
+from codetocad.core.dimension import Dimension
+from codetocad.enums.constraint_types import ConstraintTypes
+from codetocad.enums.curve_primitive_types import CurvePrimitiveTypes
+from codetocad.enums.curve_types import CurveTypes
+from codetocad.enums.file_formats import FileFormats
+from codetocad.enums.length_unit import LengthUnit
+
+from codetocad.enums.units import Units
 
 
 class BlenderTypes(Enum):
@@ -26,22 +33,22 @@ class BlenderVersions(Enum):
     THREE_DOT_ONE = (3, 1, 0)
 
 
-class BlenderLength(Utilities.Units):
+class BlenderLength(Units):
     # These are the units allowed in a Blender document:
     # metric
-    KILOMETERS = Utilities.LengthUnit.km
-    METERS = Utilities.LengthUnit.m
-    CENTIMETERS = Utilities.LengthUnit.cm
-    MILLIMETERS = Utilities.LengthUnit.mm
-    MICROMETERS = Utilities.LengthUnit.μm
+    KILOMETERS = LengthUnit.km
+    METERS = LengthUnit.m
+    CENTIMETERS = LengthUnit.cm
+    MILLIMETERS = LengthUnit.mm
+    MICROMETERS = LengthUnit.μm
     # imperial
-    MILES = Utilities.LengthUnit.mi
-    FEET = Utilities.LengthUnit.ft
-    INCHES = Utilities.LengthUnit.inch
-    THOU = Utilities.LengthUnit.thou
+    MILES = LengthUnit.mi
+    FEET = LengthUnit.ft
+    INCHES = LengthUnit.inch
+    THOU = LengthUnit.thou
 
     # Blender internally uses this unit for everything:
-    DEFAULT_BLENDER_UNIT: Utilities.LengthUnit = METERS  # type: ignore
+    DEFAULT_BLENDER_UNIT: LengthUnit = METERS  # type: ignore
 
     def get_system(self):
         if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
@@ -52,7 +59,7 @@ class BlenderLength(Utilities.Units):
     # Convert a utilities LengthUnit to BlenderLength
 
     @staticmethod
-    def from_length_unit(unit: Utilities.LengthUnit) -> 'BlenderLength':
+    def from_length_unit(unit: LengthUnit) -> 'BlenderLength':
 
         [result] = list(filter(lambda b: b.value == unit,
                         [b for b in BlenderLength]))
@@ -61,7 +68,7 @@ class BlenderLength(Utilities.Units):
 
     # Takes in a list of Dimension and converts them to the `DEFAULT_BLENDER_UNIT`, which is the unit blender deals with, no matter what we set the document unit to.
     @staticmethod
-    def convert_dimensions_to_blender_unit(dimensions: list) -> list[Utilities.Dimension]:
+    def convert_dimensions_to_blender_unit(dimensions: list) -> list[Dimension]:
         return [
             BlenderLength.convert_dimension_to_blender_unit(dimension)
 
@@ -74,7 +81,7 @@ class BlenderLength(Utilities.Units):
 
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
-    def convert_dimension_to_blender_unit(dimension: Utilities.Dimension):
+    def convert_dimension_to_blender_unit(dimension: Dimension):
         if dimension.value is None or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value:
             return dimension
         if dimension.unit is None:
@@ -119,11 +126,11 @@ class BlenderModifiers(Enum):
 
 # This is a list of Blender Constraint types that we have implemented:
 class BlenderConstraintTypes(Enum):
-    LIMIT_LOCATION = Utilities.ConstraintTypes.LimitLocation
-    LIMIT_ROTATION = Utilities.ConstraintTypes.LimitRotation
-    PIVOT = Utilities.ConstraintTypes.Pivot
-    COPY_ROTATION = Utilities.ConstraintTypes.FixedRotation
-    COPY_LOCATION = Utilities.ConstraintTypes.FixedPosition
+    LIMIT_LOCATION = ConstraintTypes.LimitLocation
+    LIMIT_ROTATION = ConstraintTypes.LimitRotation
+    PIVOT = ConstraintTypes.Pivot
+    COPY_ROTATION = ConstraintTypes.FixedRotation
+    COPY_LOCATION = ConstraintTypes.FixedPosition
 
     def get_default_blender_name(self):
         if self == BlenderConstraintTypes.LIMIT_LOCATION:
@@ -161,7 +168,7 @@ class BlenderConstraintTypes(Enum):
     # Convert a utilities ConstraintTypes to BlenderConstraintTypes
 
     @staticmethod
-    def from_constraint_types(constraint_type: Utilities.ConstraintTypes):
+    def from_constraint_types(constraint_type: ConstraintTypes):
 
         [result] = list(filter(lambda b: b.value == constraint_type, [
                         b for b in BlenderConstraintTypes]))
@@ -223,13 +230,13 @@ class BlenderObjectPrimitiveTypes(Enum):
 
 
 class BlenderCurveTypes(Enum):
-    POLY = Utilities.CurveTypes.POLY
-    NURBS = Utilities.CurveTypes.NURBS
-    BEZIER = Utilities.CurveTypes.BEZIER
+    POLY = CurveTypes.POLY
+    NURBS = CurveTypes.NURBS
+    BEZIER = CurveTypes.BEZIER
 
     # Convert a utilities CurveTypes to BlenderCurveTypes
     @staticmethod
-    def from_curve_types(curve_type: Utilities.CurveTypes):
+    def from_curve_types(curve_type: CurveTypes):
 
         [result] = list(filter(lambda b: b.value == curve_type,
                         [b for b in BlenderCurveTypes]))
@@ -241,25 +248,25 @@ class BlenderCurveTypes(Enum):
 # https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
 class BlenderCurvePrimitiveTypes(Enum):
     # These names should match the names in Blender
-    Point = Utilities.CurvePrimitiveTypes.Point
-    LineTo = Utilities.CurvePrimitiveTypes.LineTo
-    Distance = Utilities.CurvePrimitiveTypes.Line
-    Angle = Utilities.CurvePrimitiveTypes.Angle
-    Circle = Utilities.CurvePrimitiveTypes.Circle
-    Ellipse = Utilities.CurvePrimitiveTypes.Ellipse
-    Sector = Utilities.CurvePrimitiveTypes.Sector
-    Segment = Utilities.CurvePrimitiveTypes.Segment
-    Rectangle = Utilities.CurvePrimitiveTypes.Rectangle
-    Rhomb = Utilities.CurvePrimitiveTypes.Rhomb
-    Trapezoid = Utilities.CurvePrimitiveTypes.Trapezoid
-    Polygon = Utilities.CurvePrimitiveTypes.Polygon
-    Polygon_ab = Utilities.CurvePrimitiveTypes.Polygon_ab
-    Arc = Utilities.CurvePrimitiveTypes.Arc
-    Spiral = Utilities.CurvePrimitiveTypes.Spiral
+    Point = CurvePrimitiveTypes.Point
+    LineTo = CurvePrimitiveTypes.LineTo
+    Distance = CurvePrimitiveTypes.Line
+    Angle = CurvePrimitiveTypes.Angle
+    Circle = CurvePrimitiveTypes.Circle
+    Ellipse = CurvePrimitiveTypes.Ellipse
+    Sector = CurvePrimitiveTypes.Sector
+    Segment = CurvePrimitiveTypes.Segment
+    Rectangle = CurvePrimitiveTypes.Rectangle
+    Rhomb = CurvePrimitiveTypes.Rhomb
+    Trapezoid = CurvePrimitiveTypes.Trapezoid
+    Polygon = CurvePrimitiveTypes.Polygon
+    Polygon_ab = CurvePrimitiveTypes.Polygon_ab
+    Arc = CurvePrimitiveTypes.Arc
+    Spiral = CurvePrimitiveTypes.Spiral
 
     # Convert a utilities CurvePrimitiveTypes to BlenderCurvePrimitiveTypes
     @staticmethod
-    def from_curve_primitive_types(curve_primitive_type: Utilities.CurvePrimitiveTypes):
+    def from_curve_primitive_types(curve_primitive_type: CurvePrimitiveTypes):
 
         [result] = list(filter(lambda b: b.value == curve_primitive_type, [
                         b for b in BlenderCurvePrimitiveTypes]))
@@ -289,13 +296,13 @@ class RepeatMode(Enum):
 
 class FileFormat(Enum):
     # References https://docs.blender.org/api/current/bpy_types_enum_items/image_type_items.html#rna-enum-image-type-items
-    PNG = Utilities.FileFormats.PNG
-    JPEG = Utilities.FileFormats.JPEG
-    OPEN_EXR = Utilities.FileFormats.OPEN_EXR
-    FFMPEG = Utilities.FileFormats.MP4
+    PNG = FileFormats.PNG
+    JPEG = FileFormats.JPEG
+    OPEN_EXR = FileFormats.OPEN_EXR
+    FFMPEG = FileFormats.MP4
 
     @staticmethod
-    def from_utilities_file_format(fileformat: Utilities.FileFormats):
+    def from_utilities_file_format(fileformat: FileFormats):
         for format in FileFormat:
             if format.value == fileformat:
                 return format

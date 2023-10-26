@@ -5,36 +5,39 @@ from typing import Union
 from codetocad.enums.angle_unit import AngleUnit
 
 
-class Angle():
-
-    def to_radians(self) -> 'Angle':
+class Angle:
+    def to_radians(self) -> "Angle":
         return Angle(
-            math.radians(
-                self.value) if self.unit == AngleUnit.DEGREES else self.value,
-            AngleUnit.RADIANS
+            math.radians(self.value) if self.unit == AngleUnit.DEGREES else self.value,
+            AngleUnit.RADIANS,
         )
 
-    def to_degrees(self) -> 'Angle':
+    def to_degrees(self) -> "Angle":
         return Angle(
-            math.degrees(
-                self.value) if self.unit == AngleUnit.RADIANS else self.value,
-            AngleUnit.DEGREES
+            math.degrees(self.value) if self.unit == AngleUnit.RADIANS else self.value,
+            AngleUnit.DEGREES,
         )
 
     # Default unit is degrees if unit not passed
-    def __init__(self, value: float, default_unit: AngleUnit = AngleUnit.DEGREES) -> None:
-
-        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if isinstance(
-            default_unit, str) else default_unit
-        assert (unit is None and default_unit is None) \
-            or isinstance(unit, AngleUnit), \
-            "Could not parse default unit."
+    def __init__(
+        self, value: float, default_unit: AngleUnit = AngleUnit.DEGREES
+    ) -> None:
+        unit = (
+            AngleUnit.from_string(default_unit.replace(" ", "").lower())
+            if isinstance(default_unit, str)
+            else default_unit
+        )
+        assert (unit is None and default_unit is None) or isinstance(
+            unit, AngleUnit
+        ), "Could not parse default unit."
 
         self.value = value
         self.unit = unit or AngleUnit.DEGREES
 
     @staticmethod
-    def from_angle_or_its_float_or_string_value(mystery_angle: Union[str, float, 'Angle']) -> 'Angle':
+    def from_angle_or_its_float_or_string_value(
+        mystery_angle: Union[str, float, "Angle"]
+    ) -> "Angle":
         if isinstance(mystery_angle, Angle):
             return mystery_angle
         if isinstance(mystery_angle, (int, float)):
@@ -134,16 +137,21 @@ class Angle():
     # from_string: takes a string with a math operation and an optional unit of measurement
     # Default unit is degrees if unit not passed
     @staticmethod
-    def from_string(from_string: Union[str, float, 'Angle'], default_unit: Union[str, AngleUnit] = AngleUnit.DEGREES):
-
+    def from_string(
+        from_string: Union[str, float, "Angle"],
+        default_unit: Union[str, AngleUnit] = AngleUnit.DEGREES,
+    ):
         if isinstance(from_string, Angle):
             return from_string.copy()
 
-        unit = AngleUnit.from_string(default_unit.replace(" ", "").lower()) if isinstance(
-            default_unit, str) else default_unit
-        assert (unit is None and default_unit is None) \
-            or isinstance(unit, AngleUnit), \
-            "Could not parse default unit."
+        unit = (
+            AngleUnit.from_string(default_unit.replace(" ", "").lower())
+            if isinstance(default_unit, str)
+            else default_unit
+        )
+        assert (unit is None and default_unit is None) or isinstance(
+            unit, AngleUnit
+        ), "Could not parse default unit."
 
         if isinstance(from_string, (int, float)):
             return Angle(from_string, unit)
@@ -157,15 +165,16 @@ class Angle():
         assert len(value) > 0, "Angle value cannot be empty."
 
         # check if a unit is passed into from_string, e.g. "1rad" -> radians
-        unitInString = re.search('[A-Za-z]+$', from_string)
+        unitInString = re.search("[A-Za-z]+$", from_string)
         if unitInString:
-            value = from_string[0:-1*len(unitInString[0])]
+            value = from_string[0 : -1 * len(unitInString[0])]
             unitInString = AngleUnit.from_string(unitInString[0])
             unit = unitInString or unit or AngleUnit.DEGREES
 
         # Make sure our value only contains math operations and numbers as a weak safety check before passing it to `eval`
         assert re.match(
-            r"[+\-*\/%\d\(\)]+", value), f"Value {value} contains characters that are not allowed."
+            r"[+\-*\/%\d\(\)]+", value
+        ), f"Value {value} contains characters that are not allowed."
 
         value = eval(value)
 

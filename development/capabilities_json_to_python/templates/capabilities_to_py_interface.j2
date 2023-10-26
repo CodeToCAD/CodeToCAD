@@ -8,8 +8,11 @@ This Jinja2 Template requires the following parameters:
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
+from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.core import *
+from codetocad.enums import *
 {%set extendedClassesWithSuffixes = []-%}
 {% if "extends" in methods%}
 {%set extendedClasses = methods["extends"]-%}

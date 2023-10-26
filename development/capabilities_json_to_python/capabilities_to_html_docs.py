@@ -9,7 +9,7 @@ templatesDir = f"{SCRIPT_DIR}/templates"
 
 capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
 
-capabilities_to_python_documentation_html = f"capabilities_to_python_documentation_html.j2"
+capabilities_to_python_documentation_html = "capabilities_to_python_documentation_html.j2"
 capabilities_to_python_documentation_html_out = f"{docs}/docs.html"
 
 with open(capabilitiesJson) as f:

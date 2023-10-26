@@ -1,6 +1,4 @@
-
 from codetocad.core.dimension import Dimension
-from codetocad.utilities import get_dimension_list_from_string_list
 
 
 class Point:
@@ -21,12 +19,13 @@ class Point:
         assert len(point_list) == 3, "Point list must contain three Dimensions."
         return cls(point_list[0], point_list[1], point_list[2])
 
-    def arithmetic_precheck_and_unit_conversion(self, other) -> 'Point':
+    def arithmetic_precheck_and_unit_conversion(self, other) -> "Point":
         assert other is not None, "Right-hand value cannot be None."
 
         if not isinstance(other, (int, float, str, Dimension, list, Point)):
             raise TypeError(
-                "Only int/float, Dimension, or Dimension String, or a list of those types is allowed.")
+                "Only int/float, Dimension, or Dimension String, or a list of those types is allowed."
+            )
 
         if isinstance(other, (int, float)):
             return Point(Dimension(other), Dimension(other), Dimension(other))
@@ -34,6 +33,8 @@ class Point:
         x = Dimension(0)
         y = Dimension(0)
         z = Dimension(0)
+
+        from codetocad.utilities import get_dimension_list_from_string_list
 
         if isinstance(other, list):
             [x, y, z] = get_dimension_list_from_string_list(other)
@@ -138,16 +139,15 @@ class Point:
         return self.__deepcopy__()
 
     def __getitem__(self, key):
-        if (key == 0):
+        if key == 0:
             return self.x
-        if (key == 1):
+        if key == 1:
             return self.y
-        if (key == 2):
+        if key == 2:
             return self.z
 
     def __str__(self):
-        return \
-            f"""x   y   z
+        return f"""x   y   z
 {self.x}  {self.y}  {self.z}
 """
 

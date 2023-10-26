@@ -1,4 +1,3 @@
-
 from enum import Enum
 from typing import Union
 
@@ -9,7 +8,7 @@ class Axis(Enum):
     Z = 2
 
     @staticmethod
-    def from_string(axis: Union[str, float, 'Axis']):
+    def from_string(axis: Union[str, float, "Axis"]):
         if isinstance(axis, Axis):
             return axis
         axis = str(axis).lower()

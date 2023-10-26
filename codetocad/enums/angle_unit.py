@@ -7,7 +7,7 @@ class AngleUnit(Units):
     DEGREES = 1
 
     @staticmethod
-    def from_string(name: str) -> 'AngleUnit':
+    def from_string(name: str) -> "AngleUnit":
         aliases: dict[str, AngleUnit] = {
             "radians": AngleUnit.RADIANS,
             "rad": AngleUnit.RADIANS,
@@ -17,12 +17,14 @@ class AngleUnit(Units):
             "degree": AngleUnit.DEGREES,
             "degs": AngleUnit.DEGREES,
             "deg": AngleUnit.DEGREES,
-            "d": AngleUnit.DEGREES
+            "d": AngleUnit.DEGREES,
         }
 
         from_string: str = name.lower().replace("(s)", "")
 
-        parsedUnit: Optional[AngleUnit] = aliases[from_string] if from_string in aliases else None
+        parsedUnit: Optional[AngleUnit] = (
+            aliases[from_string] if from_string in aliases else None
+        )
 
         assert parsedUnit is not None, f"Could not parse unit {from_string}"
 
