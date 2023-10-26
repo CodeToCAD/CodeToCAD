@@ -4,7 +4,7 @@ set -e
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from https://stackoverflow.com/a/4774063/
 
-cd "$SCRIPT_DIR"
+cd "$SCRIPT_DIR/.."
 
 BLENDER_ADDON_PATH="./CodeToCADBlenderAddon"
 OUTPUT_FILE_PATH="./CodeToCADBlenderAddon.zip"

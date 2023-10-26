@@ -71,7 +71,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build Blender Addon Zip File
-        run: bash ./create_blender_addon.sh
+        run: bash ./development/create_blender_addon.sh
       - run: git checkout -b release/blenderAddonZipFile
       - run: git add .
       - run: git config user.name ${{ vars.COMMIT_BOT_NAME }}
