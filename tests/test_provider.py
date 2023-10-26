@@ -5,9 +5,8 @@ import unittest
 from mock.modeling.mock_modeling_provider import reset_mock_modeling_provider, inject_mock_modeling_provider
 
 from codetocad import *
-import codetocad.utilities as Utilities
 from codetocad.utilities import (
-    Dimension, Point, PresetLandmark, center, max, min)
+    Dimension, center, max, min)
 from providers.blender.blender_provider import *
 
 

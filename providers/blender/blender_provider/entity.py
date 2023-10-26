@@ -1,6 +1,9 @@
 
 
+import math
 from typing import Optional
+
+from codetocad.core.dimensions import Dimensions
 from . import blender_actions
 from . import blender_definitions
 

@@ -4,6 +4,7 @@ from onshape_client.oas import (
     BTMIndividualQuery138, BTModelElementParams,
     BTMParameterQueryList148,
     BTMSketch151, BTMSketchPoint158)
+from codetocad.core.point import Point
 
 import codetocad.utilities as Utilities
 
@@ -82,7 +83,7 @@ def create_sketch(client: Client, onshape_url: onshape_definitions.OnshapeUrl, s
     )
 
 
-def create_point(client: Client, onshape_url: onshape_definitions.OnshapeUrl, sketch_name: str,  point: Utilities.Point):
+def create_point(client: Client, onshape_url: onshape_definitions.OnshapeUrl, sketch_name: str,  point: Point):
     btmPoint = BTMSketchPoint158(
         y=point.y.value, x=point.x.value, is_user_point=True, is_construction=False, parameters=[]
     )

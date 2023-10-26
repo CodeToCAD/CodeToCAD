@@ -1,4 +1,3 @@
-
 from typing import Optional
 from codetocad.enums.length_unit import LengthUnit
 
@@ -16,19 +15,22 @@ class BoundaryAxis:
         self.min = min
         self.max = max
 
-        if (unit is None):
+        if unit is None:
             return
 
-        unit = LengthUnit.from_string(unit.replace(
-            " ", "").lower()) if isinstance(unit, str) else unit
+        unit = (
+            LengthUnit.from_string(unit.replace(" ", "").lower())
+            if isinstance(unit, str)
+            else unit
+        )
         assert isinstance(
-            unit, LengthUnit), "Dimension unit must be of type LengthUnit or string."
+            unit, LengthUnit
+        ), "Dimension unit must be of type LengthUnit or string."
 
         self.unit = unit
 
     def __str__(self):
-        return \
-            f"""    min   max   unit
+        return f"""    min   max   unit
 x   {self.min}  {self.max}  {self.unit.name+'(s)' if self.unit else "No Unit"}
 """
 

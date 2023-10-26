@@ -77,7 +77,7 @@ def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
 
     if isinstance(angleString, str):
         angleString = angleString.replace(" ", "").lower()
-        angleString = re.search('[A-Za-z]+$', angleString)
+        angleString = re.search("[A-Za-z]+$", angleString)
 
         unitInString = AngleUnit.from_string(
             angleString[0]) if angleString else None
@@ -94,18 +94,38 @@ def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
 
 
 # Replace "min|max|center" in "min+0.2" to the value in the bounding box's BoundaryAxis
-def replace_min_max_center_with_respective_value(dimension: str, boundary_axis: BoundaryAxis, default_unit: LengthUnit):
+def replace_min_max_center_with_respective_value(
+    dimension: str, boundary_axis: BoundaryAxis, default_unit: LengthUnit
+):
     dimension = dimension.lower()
 
     while "min" in dimension:
-        dimension = dimension.replace("min", "({})".format(Dimension(
-            boundary_axis.min, boundary_axis.unit).convert_to_unit(default_unit).value))
+        dimension = dimension.replace(
+            "min",
+            "({})".format(
+                Dimension(boundary_axis.min, boundary_axis.unit)
+                .convert_to_unit(default_unit)
+                .value
+            ),
+        )
     while "max" in dimension:
-        dimension = dimension.replace("max", "({})".format(Dimension(
-            boundary_axis.max, boundary_axis.unit).convert_to_unit(default_unit).value))
+        dimension = dimension.replace(
+            "max",
+            "({})".format(
+                Dimension(boundary_axis.max, boundary_axis.unit)
+                .convert_to_unit(default_unit)
+                .value
+            ),
+        )
     while "center" in dimension:
-        dimension = dimension.replace("center", "({})".format(Dimension(
-            boundary_axis.center, boundary_axis.unit).convert_to_unit(default_unit).value))
+        dimension = dimension.replace(
+            "center",
+            "({})".format(
+                Dimension(boundary_axis.center, boundary_axis.unit)
+                .convert_to_unit(default_unit)
+                .value
+            ),
+        )
 
     return dimension
 
@@ -116,15 +136,20 @@ def get_unit_in_string(dimension_string):
 
     dimension_string = dimension_string.replace(" ", "").lower()
 
-    unitSearchResults = re.search('[A-Za-z]+$', dimension_string)
+    unitSearchResults = re.search("[A-Za-z]+$", dimension_string)
 
     unitInString = unitSearchResults[0] if unitSearchResults else None
 
-    return unitInString if unitInString and not is_reserved_word_in_string(unitInString) else None
+    return (
+        unitInString
+        if unitInString and not is_reserved_word_in_string(unitInString)
+        else None
+    )
 
 
-def get_dimension_list_from_string_list(dimensions: Union[str, list[str]], bounding_box: Optional[BoundaryBox] = None) -> list[Dimension]:
-
+def get_dimension_list_from_string_list(
+    dimensions: Union[str, list[str]], bounding_box: Optional[BoundaryBox] = None
+) -> list[Dimension]:
     if isinstance(dimensions, str):
         dimensions = dimensions.replace(" ", "").lower().split(",")
 
@@ -144,11 +169,12 @@ def get_dimension_list_from_string_list(dimensions: Union[str, list[str]], bound
     for index, dimension in enumerate(dimensions):
         if bounding_box is not None and index < 3:
             boundary_axis = getattr(bounding_box, "xyz"[index])
-            parsedDimensions.append(Dimension.from_string(
-                dimension, default_unit, boundary_axis))
+            parsedDimensions.append(
+                Dimension.from_string(dimension, default_unit, boundary_axis)
+            )
             continue
 
-        parsedDimensions.append(
-            Dimension.from_string(dimension, default_unit, None))
+        parsedDimensions.append(Dimension.from_string(
+            dimension, default_unit, None))
 
     return parsedDimensions

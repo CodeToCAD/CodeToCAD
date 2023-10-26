@@ -7,7 +7,13 @@ from uuid import uuid4
 import bpy
 import bmesh
 from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
-import codetocad.utilities as Utilities
+from codetocad.core.angle import Angle
+from codetocad.core.boundary_axis import BoundaryAxis
+from codetocad.core.boundary_box import BoundaryBox
+from codetocad.core.dimension import Dimension
+from codetocad.core.point import Point
+from codetocad.enums.axis import Axis
+from codetocad.utilities import get_dimension_list_from_string_list, get_file_extension
 from . import blender_definitions
 from pathlib import Path
 import mathutils
@@ -52,7 +58,7 @@ def apply_decimate_modifier(
 
 def apply_bevel_modifier(
     entity_name: str,
-    radius: Utilities.Dimension,
+    radius: Dimension,
     vertex_group_name=None,
     use_edges=True,
     use_width=False,
@@ -75,7 +81,7 @@ def apply_bevel_modifier(
 def apply_linear_pattern(
     entity_name: str,
     instance_count,
-    direction: Utilities.Axis,
+    direction: Axis,
     offset: float,
     **kwargs
 ):
@@ -117,7 +123,7 @@ def apply_circular_pattern(
 
 def apply_solidify_modifier(
     entity_name: str,
-    thickness: Utilities.Dimension,
+    thickness: Dimension,
     **kwargs
 ):
 
@@ -178,7 +184,7 @@ def apply_boolean_modifier(
 def apply_mirror_modifier(
     entity_name: str,
     mirror_across_entity_name: str,
-    axis: Utilities.Axis,
+    axis: Axis,
     **kwargs
 ):
 
@@ -199,9 +205,9 @@ def apply_mirror_modifier(
 
 def apply_screw_modifier(
     entity_name: str,
-    angle: Utilities.Angle,
-    axis: Utilities.Axis,
-    screw_pitch: Utilities.Dimension = Utilities.Dimension(0),
+    angle: Angle,
+    axis: Axis,
+    screw_pitch: Dimension = Dimension(0),
     iterations=1,
     entity_nameToDetermineAxis=None,
     **kwargs
@@ -305,7 +311,7 @@ def add_primitive(
     assert primitive_type is not None, "Primitive type is required."
 
     # Convert the dimensions:
-    dimensionsList: list[Utilities.Dimension] = Utilities.get_dimension_list_from_string_list(
+    dimensionsList: list[Dimension] = get_dimension_list_from_string_list(
         dimensions) or []
 
     dimensionsList = blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
@@ -336,15 +342,15 @@ def create_gear(
         f"Could not enable the {addon_name} addon to create extra objects"
 
     outer_radiusDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Utilities.Dimension.from_string(outer_radius)).value
+        Dimension.from_string(outer_radius)).value
     inner_radiusDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Utilities.Dimension.from_string(inner_radius)).value
+        Dimension.from_string(inner_radius)).value
     addendumDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Utilities.Dimension.from_string(addendum)).value
+        Dimension.from_string(addendum)).value
     dedendumDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Utilities.Dimension.from_string(dedendum)).value
+        Dimension.from_string(dedendum)).value
     heightDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Utilities.Dimension.from_string(height)).value
+        Dimension.from_string(height)).value
 
     if addendumDimension > outer_radiusDimension/2:
         addendumDimension = outer_radiusDimension/2
@@ -353,13 +359,13 @@ def create_gear(
     if dedendumDimension + inner_radiusDimension > outer_radiusDimension:
         dedendumDimension = outer_radiusDimension - inner_radiusDimension
 
-    pressure_angleValue = Utilities.Angle.from_string(
+    pressure_angleValue = Angle.from_string(
         pressure_angle).to_radians().value
-    skew_angleValue = Utilities.Angle.from_string(
+    skew_angleValue = Angle.from_string(
         skew_angle).to_radians().value
-    conical_angleValue = Utilities.Angle.from_string(
+    conical_angleValue = Angle.from_string(
         conical_angle).to_radians().value
-    crown_angleValue = Utilities.Angle.from_string(
+    crown_angleValue = Angle.from_string(
         crown_angle).to_radians().value
 
     return bpy.ops.mesh.primitive_gear(  # type: ignore
@@ -411,7 +417,7 @@ def import_file(
     assert blenderMesh is None, f"A mesh with name {fileName} already exists."
 
     # Check if this is a file-type we support:
-    file_type = file_type or Utilities.get_file_extension(file_path)
+    file_type = file_type or get_file_extension(file_path)
 
     assert \
         file_type in fileImportFunctions, \
@@ -489,7 +495,7 @@ def apply_object_transformations(object_name: str, apply_rotation: bool, apply_s
 
 def rotate_object(
     object_name: str,
-    rotation_angles: list[Optional[Utilities.Angle]],
+    rotation_angles: list[Optional[Angle]],
     rotation_type: blender_definitions.BlenderRotationTypes
 ):
 
@@ -511,7 +517,7 @@ def rotate_object(
 
 def translate_object(
     object_name: str,
-    translation_dimensions: list[Optional[Utilities.Dimension]],
+    translation_dimensions: list[Optional[Dimension]],
     translation_type: blender_definitions.BlenderTranslationTypes
 ):
 
@@ -537,7 +543,7 @@ def translate_object(
 
 def set_object_location(
     object_name: str,
-    location_dimensions: list[Optional[Utilities.Dimension]]
+    location_dimensions: list[Optional[Dimension]]
 ):
 
     blenderObject = get_object(object_name)
@@ -711,9 +717,9 @@ def apply_constraint(
 
 def apply_limit_location_constraint(
     object_name: str,
-    x: Optional[list[Optional[Utilities.Dimension]]],
-    y: Optional[list[Optional[Utilities.Dimension]]],
-    z: Optional[list[Optional[Utilities.Dimension]]],
+    x: Optional[list[Optional[Dimension]]],
+    y: Optional[list[Optional[Dimension]]],
+    z: Optional[list[Optional[Dimension]]],
     relative_to_object_name: Optional[str],
     **kwargs
 ):
@@ -764,9 +770,9 @@ def apply_limit_location_constraint(
 
 def apply_limit_rotation_constraint(
     object_name: str,
-    x: Optional[list[Optional[Utilities.Angle]]],
-    y:  Optional[list[Optional[Utilities.Angle]]],
-    z:  Optional[list[Optional[Utilities.Angle]]],
+    x: Optional[list[Optional[Angle]]],
+    y:  Optional[list[Optional[Angle]]],
+    z:  Optional[list[Optional[Angle]]],
     relative_to_object_name: Optional[str],
     **kwargs
 ):
@@ -892,7 +898,7 @@ def apply_gear_constraint(
     **kwargs
 ):
 
-    for axis in Utilities.Axis:
+    for axis in Axis:
         # e.g. constraints["Limit Location"].min_x
         driver = create_driver(object_name, "rotation_euler", axis.value)
         set_driver(driver, "SCRIPTED", f"{-1*ratio} * gearRotation")
@@ -1064,9 +1070,9 @@ def translate_landmark_onto_another(
     translate_object(
         object_to_translate_name,
         [
-            Utilities.Dimension(translation.x.value, blenderDefaultUnit),
-            Utilities.Dimension(translation.y.value, blenderDefaultUnit),
-            Utilities.Dimension(translation.z.value, blenderDefaultUnit)
+            Dimension(translation.x.value, blenderDefaultUnit),
+            Dimension(translation.y.value, blenderDefaultUnit),
+            Dimension(translation.z.value, blenderDefaultUnit)
         ],  # type: ignore
         blender_definitions.BlenderTranslationTypes.ABSOLUTE
     )
@@ -1346,16 +1352,16 @@ def get_object_local_location(object_name: str,):
 
     blenderObject = get_object(object_name)
 
-    return Utilities.Point.from_list([Utilities.Dimension(p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
+    return Point.from_list([Dimension(p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
 
 
 def get_object_world_location(object_name: str,):
 
     blenderObject = get_object(object_name)
 
-    return Utilities.Point.from_list(
+    return Point.from_list(
         [
-            Utilities.Dimension(
+            Dimension(
                 p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for p in
             blenderObject.matrix_world.translation  # type: ignore
@@ -1585,7 +1591,7 @@ def get_bounding_box(object_name: str,):
     # z (-1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0)
     zipped = zip('xyz', zip(*coords))
 
-    boundingBox = Utilities.BoundaryBox(None, None, None)
+    boundingBox = BoundaryBox(None, None, None)
 
     for (axis, _list) in zipped:
 
@@ -1595,7 +1601,7 @@ def get_bounding_box(object_name: str,):
         setattr(
             boundingBox,
             axis,
-            Utilities.BoundaryAxis(
+            BoundaryAxis(
                 minVal,
                 maxVal,
                 "m"
@@ -1630,7 +1636,7 @@ def get_curve(curve_name: str) -> bpy.types.Curve:
 
 def extrude_curve(
     curve_name: str,
-    length: Utilities.Dimension
+    length: Dimension
 ):
 
     curve = get_curve(curve_name)
@@ -1643,7 +1649,7 @@ def extrude_curve(
 
 def offset_curve_geometry(
     curve_name: str,
-    offset: Utilities.Dimension
+    offset: Dimension
 ):
 
     curve = get_curve(curve_name)
@@ -1675,7 +1681,7 @@ def set_curve_resolution_v(
 
 
 def create_text(curve_name: str, text: str,
-                size=Utilities.Dimension(1),
+                size=Dimension(1),
                 bold=False,
                 italic=False,
                 underlined=False,
@@ -1748,7 +1754,7 @@ def create_spline(
 
     coordinates = [
         blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            Utilities.get_dimension_list_from_string_list(coordinate) or []
+            get_dimension_list_from_string_list(coordinate) or []
         ) for coordinate in coordinates
     ]
     coordinates = [[dimension.value for dimension in coordinate]
@@ -1850,7 +1856,7 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.LineTo,
             Simple_endlocation=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(end_location)).value,
+                Dimension.from_string(end_location)).value,
             use_cyclic_u=False,
             **kwargs
         )
@@ -1860,7 +1866,7 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Distance,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length)).value,
+                Dimension.from_string(length)).value,
             Simple_center=True,
             use_cyclic_u=False,
             **kwargs
@@ -1871,8 +1877,8 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Angle,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length)).value,
-            Simple_angle=Utilities.Angle.from_string(angle).to_degrees().value,
+                Dimension.from_string(length)).value,
+            Simple_angle=Angle.from_string(angle).to_degrees().value,
             use_cyclic_u=False,
             **kwargs
         )
@@ -1882,7 +1888,7 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Circle,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)).value,
             Simple_sides=64,
             **kwargs
         )
@@ -1892,9 +1898,9 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Ellipse,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius_x)).value,
+                Dimension.from_string(radius_x)).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius_y)).value,
+                Dimension.from_string(radius_y)).value,
             **kwargs
         )
 
@@ -1904,9 +1910,9 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Arc,
             Simple_sides=64,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)).value,
             Simple_startangle=0,
-            Simple_endangle=Utilities.Angle.from_string(
+            Simple_endangle=Angle.from_string(
                 angle).to_degrees().value,
             use_cyclic_u=False,
             **kwargs
@@ -1918,9 +1924,9 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Sector,
             Simple_sides=64,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)).value,
             Simple_startangle=0,
-            Simple_endangle=Utilities.Angle.from_string(
+            Simple_endangle=Angle.from_string(
                 angle).to_degrees().value,
             **kwargs
         )
@@ -1931,11 +1937,11 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Segment,
             Simple_sides=64,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(outter_radius)).value,
+                Dimension.from_string(outter_radius)).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(inner_radius)).value,
+                Dimension.from_string(inner_radius)).value,
             Simple_startangle=0,
-            Simple_endangle=Utilities.Angle.from_string(
+            Simple_endangle=Angle.from_string(
                 angle).to_degrees().value,
             **kwargs
         )
@@ -1945,9 +1951,9 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Rectangle,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length)).value,
+                Dimension.from_string(length)).value,
             Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(width)).value,
+                Dimension.from_string(width)).value,
             Simple_rounded=0,
             **kwargs
         )
@@ -1957,9 +1963,9 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Rhomb,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length)).value,
+                Dimension.from_string(length)).value,
             Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(width)).value,
+                Dimension.from_string(width)).value,
             Simple_center=True,
             **kwargs
         )
@@ -1970,7 +1976,7 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Polygon,
             Simple_sides=number_of_sides,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)).value,
             **kwargs
         )
 
@@ -1980,9 +1986,9 @@ class BlenderCurvePrimitives():
             blender_definitions.BlenderCurvePrimitiveTypes.Polygon_ab,
             Simple_sides=number_of_sides,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length)).value,
+                Dimension.from_string(length)).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(width)).value,
+                Dimension.from_string(width)).value,
             **kwargs
         )
 
@@ -1991,11 +1997,11 @@ class BlenderCurvePrimitives():
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Trapezoid,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length_upper)).value,
+                Dimension.from_string(length_upper)).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(length_lower)).value,
+                Dimension.from_string(length_lower)).value,
             Simple_h=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Utilities.Dimension.from_string(height)).value,
+                Dimension.from_string(height)).value,
             **kwargs
         )
 
@@ -2004,13 +2010,13 @@ class BlenderCurvePrimitives():
         enable_curve_extra_objects_addon()
 
         heightMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Utilities.Dimension.from_string(height)).value
+            Dimension.from_string(height)).value
 
         radiusMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Utilities.Dimension.from_string(radius)).value
+            Dimension.from_string(radius)).value
 
         radius_endMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Utilities.Dimension.from_string(radius_end)) if radius_end else None
+            Dimension.from_string(radius_end)) if radius_end else None
 
         radiusDiff = 0 if radius_endMeters is None else (
             radius_endMeters - radiusMeters).value

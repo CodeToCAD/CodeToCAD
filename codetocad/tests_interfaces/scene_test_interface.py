@@ -1,4 +1,4 @@
-# THIS IS AN AUTO-GENERATE FILE. 
+# THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
@@ -8,109 +8,86 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad import Scene
 
+
 class SceneTestInterface(metaclass=ABCMeta):
-    
-    
-    
-    
     @abstractmethod
     def test_create(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
         value = instance.create("")
 
-        
         assert value.is_exists(), "Create method failed."
-        
-    
+
     @abstractmethod
     def test_delete(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
         value = instance.delete("")
 
-        
-    
     @abstractmethod
     def test_get_selected_entity(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
         value = instance.get_selected_entity("")
 
-        
         assert value, "Get method failed."
-        
-    
+
     @abstractmethod
     def test_export(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.export("file_path","entities","overwrite","scale")
+        value = instance.export("file_path", "entities", "overwrite", "scale")
 
-        
-    
     @abstractmethod
     def test_set_default_unit(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
         value = instance.set_default_unit("unit")
 
-        
         assert value, "Modify method failed."
-        
-    
+
     @abstractmethod
     def test_create_group(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
         value = instance.create_group("name")
 
-        
         assert value.is_exists(), "Create method failed."
-        
-    
+
     @abstractmethod
     def test_delete_group(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.delete_group("name","remove_children")
+        value = instance.delete_group("name", "remove_children")
 
-        
-    
     @abstractmethod
     def test_remove_from_group(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.remove_from_group("entity_name","group_name")
+        value = instance.remove_from_group("entity_name", "group_name")
 
-        
-    
     @abstractmethod
     def test_assign_to_group(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.assign_to_group("entities","group_name","remove_from_other_groups")
+        value = instance.assign_to_group(
+            "entities", "group_name", "remove_from_other_groups"
+        )
 
-        
         assert value, "Modify method failed."
-        
-    
+
     @abstractmethod
     def test_set_visible(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.set_visible("entities","is_visible")
+        value = instance.set_visible("entities", "is_visible")
 
-        
         assert value, "Modify method failed."
-        
-    
+
     @abstractmethod
     def test_set_background_image(self):
-        instance = Scene("name","description")
+        instance = Scene("name", "description")
 
-        value = instance.set_background_image("file_path","location_x","location_y")
+        value = instance.set_background_image("file_path", "location_x", "location_y")
 
-        
         assert value, "Modify method failed."
-        

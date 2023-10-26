@@ -1,7 +1,10 @@
 import unittest
 from codetocad.providers_sample import *
 
-from mock.modeling.mock_modeling_provider import inject_mock_modeling_provider, reset_mock_modeling_provider
+from mock.modeling.mock_modeling_provider import (
+    inject_mock_modeling_provider,
+    reset_mock_modeling_provider,
+)
 
 
 def injectMockProvider():
@@ -10,7 +13,6 @@ def injectMockProvider():
 
 
 class TestProviderCase(unittest.TestCase):
-
     def setUp(self) -> None:
         injectMockProvider()
         super().setUp()

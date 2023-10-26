@@ -2,6 +2,8 @@ from functools import wraps
 from typing import Optional
 
 from codetocad.codetocad_types import *
+from codetocad.enums.curve_primitive_types import CurvePrimitiveTypes
+from codetocad.enums.curve_types import CurveTypes
 from codetocad.interfaces import SketchInterface
 from codetocad.utilities import *
 
@@ -13,10 +15,10 @@ from .part import Part
 class Sketch(Entity, SketchInterface):
 
     name: str
-    curve_type: Optional['CurveTypes'] = None
+    curve_type: Optional[CurveTypes] = None
     description: Optional[str] = None
 
-    def __init__(self, name: str, curve_type: Optional['CurveTypes'] = None, description: Optional[str] = None):
+    def __init__(self, name: str, curve_type: Optional[CurveTypes] = None, description: Optional[str] = None):
         self.name = name
         self.curve_type = curve_type
         self.description = description

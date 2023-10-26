@@ -16,7 +16,7 @@ class LengthUnit(Units):
     mi = 25.4 * 63360
 
     @staticmethod
-    def from_string(name: str) -> 'LengthUnit':
+    def from_string(name: str) -> "LengthUnit":
         aliases: dict[str, LengthUnit] = {
             # metric
             "micrometer": LengthUnit.μm,
@@ -43,12 +43,14 @@ class LengthUnit(Units):
             "thou": LengthUnit.thou,
             "in": LengthUnit.inch,
             "ft": LengthUnit.ft,
-            "mi": LengthUnit.mi
+            "mi": LengthUnit.mi,
         }
 
         from_string: str = name.lower().replace("(s)", "")
 
-        parsedUnit: LengthUnit | None = aliases[from_string] if from_string in aliases else None
+        parsedUnit: LengthUnit | None = (
+            aliases[from_string] if from_string in aliases else None
+        )
 
         assert parsedUnit is not None, f"Could not parse unit {from_string}"
 
