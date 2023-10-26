@@ -9,14 +9,20 @@ templatesDir = f"{SCRIPT_DIR}/templates"
 
 capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
 
-capabilities_to_python_documentation_html = "capabilities_to_python_documentation_html.j2"
+capabilities_to_python_documentation_html = (
+    "capabilities_to_python_documentation_html.j2"
+)
 capabilities_to_python_documentation_html_out = f"{docs}/docs.html"
 
 with open(capabilitiesJson) as f:
     capabilities = json.load(f)
 
-templatesToGenerate = [(capabilities_to_python_documentation_html,
-                       capabilities_to_python_documentation_html_out)]
+templatesToGenerate = [
+    (
+        capabilities_to_python_documentation_html,
+        capabilities_to_python_documentation_html_out,
+    )
+]
 
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
 templateEnv = jinja2.Environment(loader=templateLoader)

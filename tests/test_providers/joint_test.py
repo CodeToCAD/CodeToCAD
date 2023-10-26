@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import JointTestInterface
 
 
 class JointTest(TestProviderCase, JointTestInterface):
-
     @skip("TODO")
     def test_translate_landmark_onto_another(self):
         instance = Joint("entity1", "entity2")

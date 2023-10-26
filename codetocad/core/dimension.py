@@ -7,8 +7,7 @@ from codetocad.enums.length_unit import LengthUnit
 
 class Dimension:
     def __init__(self, value: float, unit: Optional[Union[str, LengthUnit]] = None):
-        assert isinstance(value, (int, float)
-                          ), "Dimension value must be a number."
+        assert isinstance(value, (int, float)), "Dimension value must be a number."
 
         unit = (
             LengthUnit.from_string(unit.replace(" ", "").lower())
@@ -178,7 +177,7 @@ class Dimension:
         # check if a unit is passed into from_string, e.g. "1-(3/4)cm" -> cm
         unitInString = get_unit_in_string(from_string)
         if unitInString:
-            value = from_string[0: -1 * len(unitInString)]
+            value = from_string[0 : -1 * len(unitInString)]
             unitInString = LengthUnit.from_string(unitInString)
             unit = unitInString or unit
 

@@ -9,7 +9,6 @@ from codetocad.utilities import *
 
 
 class Animation(AnimationInterface):
-
     def __init__(self):
         pass
 
@@ -17,22 +16,17 @@ class Animation(AnimationInterface):
     def default() -> AnimationInterface:
         return Animation()
 
-    def set_frame_start(self, frame_number: 'int'):
-
+    def set_frame_start(self, frame_number: "int"):
         return self
 
-    def set_frame_end(self, frame_number: 'int'):
-
+    def set_frame_end(self, frame_number: "int"):
         return self
 
-    def set_frame_current(self, frame_number: 'int'):
-
+    def set_frame_current(self, frame_number: "int"):
         return self
 
-    def create_key_frame_location(self, entity: EntityOrItsName, frame_number: 'int'):
-
+    def create_key_frame_location(self, entity: EntityOrItsName, frame_number: "int"):
         return self
 
-    def create_key_frame_rotation(self, entity: EntityOrItsName, frame_number: 'int'):
-
+    def create_key_frame_rotation(self, entity: EntityOrItsName, frame_number: "int"):
         return self

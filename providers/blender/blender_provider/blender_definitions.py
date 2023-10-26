@@ -51,18 +51,22 @@ class BlenderLength(Units):
     DEFAULT_BLENDER_UNIT: LengthUnit = METERS  # type: ignore
 
     def get_system(self):
-        if self == self.KILOMETERS or self == self.METERS or self == self.CENTIMETERS or self == self.MILLIMETERS or self == self.MICROMETERS:
-            return 'METRIC'
+        if (
+            self == self.KILOMETERS
+            or self == self.METERS
+            or self == self.CENTIMETERS
+            or self == self.MILLIMETERS
+            or self == self.MICROMETERS
+        ):
+            return "METRIC"
         else:
-            return 'IMPERIAL'
+            return "IMPERIAL"
 
     # Convert a utilities LengthUnit to BlenderLength
 
     @staticmethod
-    def from_length_unit(unit: LengthUnit) -> 'BlenderLength':
-
-        [result] = list(filter(lambda b: b.value == unit,
-                        [b for b in BlenderLength]))
+    def from_length_unit(unit: LengthUnit) -> "BlenderLength":
+        [result] = list(filter(lambda b: b.value == unit, [b for b in BlenderLength]))
 
         return result
 
@@ -71,18 +75,22 @@ class BlenderLength(Units):
     def convert_dimensions_to_blender_unit(dimensions: list) -> list[Dimension]:
         return [
             BlenderLength.convert_dimension_to_blender_unit(dimension)
-
-            if (dimension.value is not None and dimension.unit is not None and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value)
-
+            if (
+                dimension.value is not None
+                and dimension.unit is not None
+                and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value
+            )
             else dimension
-
             for dimension in dimensions
         ]
 
     # Takes in a Dimension object, converts it to the default blender unit, and returns a Dimension object.
     @staticmethod
     def convert_dimension_to_blender_unit(dimension: Dimension):
-        if dimension.value is None or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value:
+        if (
+            dimension.value is None
+            or dimension.unit == BlenderLength.DEFAULT_BLENDER_UNIT.value
+        ):
             return dimension
         if dimension.unit is None:
             dimension.unit = BlenderLength.DEFAULT_BLENDER_UNIT.value
@@ -169,9 +177,12 @@ class BlenderConstraintTypes(Enum):
 
     @staticmethod
     def from_constraint_types(constraint_type: ConstraintTypes):
-
-        [result] = list(filter(lambda b: b.value == constraint_type, [
-                        b for b in BlenderConstraintTypes]))
+        [result] = list(
+            filter(
+                lambda b: b.value == constraint_type,
+                [b for b in BlenderConstraintTypes],
+            )
+        )
 
         return result
 
@@ -189,7 +200,7 @@ class BlenderConstraintTypes(Enum):
 # https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_type
 # [‘LOC_X’, ‘LOC_Y’, ‘LOC_Z’, ‘ROT_X’, ‘ROT_Y’, ‘ROT_Z’, ‘ROT_W’, ‘SCALE_X’, ‘SCALE_Y’, ‘SCALE_Z’, ‘SCALE_AVG’]
 # BlenderDriverVariableTransformTypes = bpy.types.DriverTarget.bl_rna.properties[
-    # 'transform_type'].enum_items
+# 'transform_type'].enum_items
 
 # https://docs.blender.org/api/current/bpy.types.DriverTarget.html?highlight=transform_type#bpy.types.DriverTarget.transform_space
 # [‘WORLD_SPACE’, ‘TRANSFORM_SPACE’, ‘LOCAL_SPACE’]
@@ -226,6 +237,7 @@ class BlenderObjectPrimitiveTypes(Enum):
             return False
         return True
 
+
 # This is a list of Blender Curve types that we have implemented:
 
 
@@ -237,9 +249,9 @@ class BlenderCurveTypes(Enum):
     # Convert a utilities CurveTypes to BlenderCurveTypes
     @staticmethod
     def from_curve_types(curve_type: CurveTypes):
-
-        [result] = list(filter(lambda b: b.value == curve_type,
-                        [b for b in BlenderCurveTypes]))
+        [result] = list(
+            filter(lambda b: b.value == curve_type, [b for b in BlenderCurveTypes])
+        )
 
         return result
 
@@ -267,9 +279,12 @@ class BlenderCurvePrimitiveTypes(Enum):
     # Convert a utilities CurvePrimitiveTypes to BlenderCurvePrimitiveTypes
     @staticmethod
     def from_curve_primitive_types(curve_primitive_type: CurvePrimitiveTypes):
-
-        [result] = list(filter(lambda b: b.value == curve_primitive_type, [
-                        b for b in BlenderCurvePrimitiveTypes]))
+        [result] = list(
+            filter(
+                lambda b: b.value == curve_primitive_type,
+                [b for b in BlenderCurvePrimitiveTypes],
+            )
+        )
 
         return result
 
@@ -278,8 +293,8 @@ class BlenderCurvePrimitiveTypes(Enum):
 
 
 class RepeatMode(Enum):
-    extend = 0,
-    clip = 1,
+    extend = (0,)
+    clip = (1,)
     repeat = 2
 
     # references https://docs.blender.org/api/current/bpy.types.ImageTexture.html#bpy.types.ImageTexture.extension
@@ -287,11 +302,11 @@ class RepeatMode(Enum):
     @property
     def get_blender_name(self):
         if self == RepeatMode.extend:
-            return 'EXTEND'
+            return "EXTEND"
         if self == RepeatMode.clip:
-            return 'CLIP'
+            return "CLIP"
         if self == RepeatMode.repeat:
-            return 'REPEAT'
+            return "REPEAT"
 
 
 class FileFormat(Enum):

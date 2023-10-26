@@ -15,10 +15,12 @@ def get_numpy_array_from_vector_or_matrix(vector_or_matrix):
 
 
 class Vector:
-
     vector: np.ndarray
 
-    def __init__(self, vector: Union[tuple[float, float, float], tuple[float, float, float, float]]) -> None:
+    def __init__(
+        self,
+        vector: Union[tuple[float, float, float], tuple[float, float, float, float]],
+    ) -> None:
         self.vector = np.array(vector, dtype=float)
 
         self.iteratorIndex = 0
@@ -37,7 +39,7 @@ class Vector:
 
     def to_1x4(self):
         vector = np.ones((1, 4))
-        vector[0, :self.vector.shape[0]] = self.vector
+        vector[0, : self.vector.shape[0]] = self.vector
         return Vector(vector.tolist())
 
     def to_1x3(self):
@@ -68,22 +70,38 @@ class Vector:
         return self.__sizeof__()
 
     def __add__(self, other):
-        return Vector(np.add(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Vector(
+            np.add(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist()
+        )
 
     def __sub__(self, other):
-        return Vector(np.subtract(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Vector(
+            np.subtract(
+                self.vector, get_numpy_array_from_vector_or_matrix(other)
+            ).tolist()
+        )
 
     def __mul__(self, other):
-        return Vector(np.multiply(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Vector(
+            np.multiply(
+                self.vector, get_numpy_array_from_vector_or_matrix(other)
+            ).tolist()
+        )
 
     def __pow__(self, other, mod=None):
-        return Vector(np.power(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Vector(
+            np.power(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist()
+        )
 
     def __abs__(self):
         return Vector(np.abs(self.vector).tolist())
 
     def __matmul__(self, other):
-        return Vector(np.matmul(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Vector(
+            np.matmul(
+                self.vector, get_numpy_array_from_vector_or_matrix(other)
+            ).tolist()
+        )
 
     def __copy__(self):
         return self.__deepcopy__()
@@ -97,12 +115,11 @@ class Vector:
     def __getitem__(self, key):
         return self.vector[key]
 
-    def rotate(self, quat: 'Quaternion'):
+    def rotate(self, quat: "Quaternion"):
         self.vector = (self @ quat.to_matrix()).vector
 
     def __str__(self):
-        return \
-            f"""x   y   z
+        return f"""x   y   z
 {self.x}  {self.y}  {self.z}
 """
 
@@ -110,7 +127,9 @@ class Vector:
         return self.__str__()
 
 
-def create_transformation_matrix_from_euler_angles(x_in_radians, y_in_radians, z_in_radians):
+def create_transformation_matrix_from_euler_angles(
+    x_in_radians, y_in_radians, z_in_radians
+):
     # References https://stackoverflow.com/a/66431815/9824103
 
     zRotation = np.identity(4)
@@ -146,10 +165,14 @@ class Quaternion:
         self.q3 = quat[3]
 
     def inverted(self):
-        return Quaternion((self.q0, self.q1*-1, self.q2*-1, self.q3*-1))
+        return Quaternion((self.q0, self.q1 * -1, self.q2 * -1, self.q3 * -1))
 
     def __mul__(self, other):
-        return Quaternion(np.multiply(self.to_vector().vector, get_numpy_array_from_vector_or_matrix(other)).tolist())
+        return Quaternion(
+            np.multiply(
+                self.to_vector().vector, get_numpy_array_from_vector_or_matrix(other)
+            ).tolist()
+        )
 
     def to_vector(self):
         return Vector((self.q0, self.q1, self.q2, self.q3))
@@ -198,9 +221,7 @@ class Quaternion:
         r22 = 2 * (q0 * q0 + q3 * q3) - 1
 
         # 3x3 rotation matrix
-        rot_matrix = np.array([[r00, r01, r02],
-                               [r10, r11, r12],
-                               [r20, r21, r22]])
+        rot_matrix = np.array([[r00, r01, r02], [r10, r11, r12], [r20, r21, r22]])
 
         return Matrix(rot_matrix)
 
@@ -214,7 +235,9 @@ class Matrix:
         return Vector(self.matrix[:3, 3].tolist())
 
     @property
-    def rotation(self, ):
+    def rotation(
+        self,
+    ):
         return self.get_rotation()
 
     def get_rotation(self):
@@ -223,22 +246,22 @@ class Matrix:
         t = m.trace()
         q = np.asarray([0.0, 0.0, 0.0, 0.0], dtype=np.float64)
 
-        if (t > 0):
+        if t > 0:
             t = np.sqrt(t + 1)
             q[3] = 0.5 * t
-            t = 0.5/t
+            t = 0.5 / t
             q[0] = (m[2, 1] - m[1, 2]) * t
             q[1] = (m[0, 2] - m[2, 0]) * t
             q[2] = (m[1, 0] - m[0, 1]) * t
 
         else:
             i = 0
-            if (m[1, 1] > m[0, 0]):
+            if m[1, 1] > m[0, 0]:
                 i = 1
-            if (m[2, 2] > m[i, i]):
+            if m[2, 2] > m[i, i]:
                 i = 2
-            j = (i+1) % 3
-            k = (j+1) % 3
+            j = (i + 1) % 3
+            k = (j + 1) % 3
 
             t = np.sqrt(m[i, i] - m[j, j] - m[k, k] + 1)
             q[i] = 0.5 * t
@@ -286,9 +309,7 @@ class Matrix:
         return Matrix(transformMatrix)
 
     def translate(self, x, y, z):
-
-        self.matrix = np.add(
-            self.matrix, Matrix.Translation(Vector((x, y, z))).matrix)
+        self.matrix = np.add(self.matrix, Matrix.Translation(Vector((x, y, z))).matrix)
 
         return self
 
@@ -302,32 +323,41 @@ class Matrix:
         return Matrix(transformMatrix)
 
     def scale(self, x, y, z):
-        self.matrix = np.matmul(
-            self.matrix, Matrix.Diagonal(Vector((x, y, z))).matrix)
+        self.matrix = np.matmul(self.matrix, Matrix.Diagonal(Vector((x, y, z))).matrix)
 
         return self
 
     def rotate_by_euler_angle(self, x_in_radians, y_in_radians, z_in_radians):
         currenttranslation = self.translation
         self.matrix = np.subtract(
-            self.matrix, Matrix.Translation(currenttranslation).matrix)
+            self.matrix, Matrix.Translation(currenttranslation).matrix
+        )
         self.matrix = np.matmul(
-            self.matrix, create_transformation_matrix_from_euler_angles(x_in_radians, y_in_radians, z_in_radians))
-        self.matrix = np.add(
-            self.matrix, Matrix.Translation(currenttranslation).matrix)
+            self.matrix,
+            create_transformation_matrix_from_euler_angles(
+                x_in_radians, y_in_radians, z_in_radians
+            ),
+        )
+        self.matrix = np.add(self.matrix, Matrix.Translation(currenttranslation).matrix)
         return self
 
     def __add__(self, other):
         return Matrix(np.add(self.matrix, get_numpy_array_from_vector_or_matrix(other)))
 
     def __sub__(self, other):
-        return Matrix(np.subtract(self.matrix, get_numpy_array_from_vector_or_matrix(other)))
+        return Matrix(
+            np.subtract(self.matrix, get_numpy_array_from_vector_or_matrix(other))
+        )
 
     def __mul__(self, other):
-        return Matrix(np.multiply(self.matrix, get_numpy_array_from_vector_or_matrix(other)))
+        return Matrix(
+            np.multiply(self.matrix, get_numpy_array_from_vector_or_matrix(other))
+        )
 
     def __pow__(self, other, mod=None):
-        return Matrix(np.power(self.matrix, get_numpy_array_from_vector_or_matrix(other)))
+        return Matrix(
+            np.power(self.matrix, get_numpy_array_from_vector_or_matrix(other))
+        )
 
     def __abs__(self):
         return Matrix(np.abs(self.matrix))
@@ -336,6 +366,9 @@ class Matrix:
         other = get_numpy_array_from_vector_or_matrix(other)
         shapeDifference = self.matrix.shape[1] - other.shape[0]
         if shapeDifference > 0:
-            other = np.pad(get_numpy_array_from_vector_or_matrix(
-                other), (0, shapeDifference), constant_values=[1])
+            other = np.pad(
+                get_numpy_array_from_vector_or_matrix(other),
+                (0, shapeDifference),
+                constant_values=[1],
+            )
         return Matrix(np.matmul(self.matrix, other))

@@ -48,8 +48,7 @@ def get_absolute_filepath(relative_file_path: str):
     path = Path(relative_file_path)
     absoluteFilePath = relative_file_path
     if not path.is_absolute():
-        absoluteFilePath = str(
-            Path(sys.argv[0]).parent.joinpath(path).resolve())
+        absoluteFilePath = str(Path(sys.argv[0]).parent.joinpath(path).resolve())
     return absoluteFilePath
 
 
@@ -68,8 +67,7 @@ def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
     else:
         anglesList = angles
 
-    assert isinstance(anglesList, (list, tuple)
-                      ), "Only a list of strings is allowed."
+    assert isinstance(anglesList, (list, tuple)), "Only a list of strings is allowed."
 
     default_unit: AngleUnit = AngleUnit.DEGREES
 
@@ -79,8 +77,7 @@ def get_angles_from_string_list(angles: Union[str, list[str]]) -> list[Angle]:
         angleString = angleString.replace(" ", "").lower()
         angleString = re.search("[A-Za-z]+$", angleString)
 
-        unitInString = AngleUnit.from_string(
-            angleString[0]) if angleString else None
+        unitInString = AngleUnit.from_string(angleString[0]) if angleString else None
         if unitInString is not None and angleString is not None:
             default_unit = unitInString
             if len(angleString[0]) == len(anglesList[-1]):
@@ -153,8 +150,7 @@ def get_dimension_list_from_string_list(
     if isinstance(dimensions, str):
         dimensions = dimensions.replace(" ", "").lower().split(",")
 
-    assert isinstance(dimensions, (list, tuple)
-                      ), "Only a list of strings is allowed."
+    assert isinstance(dimensions, (list, tuple)), "Only a list of strings is allowed."
 
     parsedDimensions = []
 
@@ -174,7 +170,6 @@ def get_dimension_list_from_string_list(
             )
             continue
 
-        parsedDimensions.append(Dimension.from_string(
-            dimension, default_unit, None))
+        parsedDimensions.append(Dimension.from_string(dimension, default_unit, None))
 
     return parsedDimensions

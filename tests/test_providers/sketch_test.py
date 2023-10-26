@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import SketchTestInterface
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):
-
     @skip("TODO")
     def test_clone(self):
         instance = Sketch("name", "curve_type", "description")
@@ -64,8 +63,17 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_create_text(self):
         instance = Sketch("name", "curve_type", "description")
 
-        value = instance.create_text("text", "font_size", "bold", "italic", "underlined",
-                                     "character_spacing", "word_spacing", "line_spacing", "font_file_path")
+        value = instance.create_text(
+            "text",
+            "font_size",
+            "bold",
+            "italic",
+            "underlined",
+            "character_spacing",
+            "word_spacing",
+            "line_spacing",
+            "font_file_path",
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -89,8 +97,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_create_line(self):
         instance = Sketch("name", "curve_type", "description")
 
-        value = instance.create_line(
-            "length", "angle_x", "angle_y", "symmetric")
+        value = instance.create_line("length", "angle_x", "angle_y", "symmetric")
 
         assert value.is_exists(), "Create method failed."
 
@@ -131,7 +138,8 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         instance = Sketch("name", "curve_type", "description")
 
         value = instance.create_arc_between_three_points(
-            "point_a", "point_b", "center_point")
+            "point_a", "point_b", "center_point"
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -139,8 +147,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_create_segment(self):
         instance = Sketch("name", "curve_type", "description")
 
-        value = instance.create_segment(
-            "inner_radius", "outer_radius", "angle")
+        value = instance.create_segment("inner_radius", "outer_radius", "angle")
 
         assert value.is_exists(), "Create method failed."
 
@@ -164,8 +171,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_create_trapezoid(self):
         instance = Sketch("name", "curve_type", "description")
 
-        value = instance.create_trapezoid(
-            "length_upper", "length_lower", "height")
+        value = instance.create_trapezoid("length_upper", "length_lower", "height")
 
         assert value.is_exists(), "Create method failed."
 
@@ -174,6 +180,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         instance = Sketch("name", "curve_type", "description")
 
         value = instance.create_spiral(
-            "number_of_turns", "height", "radius", "is_clockwise", "radius_end")
+            "number_of_turns", "height", "radius", "is_clockwise", "radius_end"
+        )
 
         assert value.is_exists(), "Create method failed."

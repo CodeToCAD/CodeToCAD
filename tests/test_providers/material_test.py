@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import MaterialTestInterface
 
 
 class MaterialTest(TestProviderCase, MaterialTestInterface):
-
     @skip("TODO")
     def test_assign_to_part(self):
         instance = Material("name", "description")

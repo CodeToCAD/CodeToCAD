@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import CameraTestInterface
 
 
 class CameraTest(TestProviderCase, CameraTestInterface):
-
     @skip("TODO")
     def test_create_perspective(self):
         instance = Camera("name", "description")

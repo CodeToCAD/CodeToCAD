@@ -17,10 +17,6 @@ c_top = c.create_landmark("top", center, center, max)
 
 # Joint("a","b","top","bottom").translate_landmark_onto_another()
 
-Joint(a_top, b_bottom)\
-    .limit_location_xyz(0, 0, 0)\
-    .limit_rotation_xyz(0, 0, 0)
+Joint(a_top, b_bottom).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
-Joint(a_bottom, c_top)\
-    .limit_location_xyz(0, 0, 0)\
-    .limit_rotation_xyz(0, 0, 0)
+Joint(a_bottom, c_top).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)

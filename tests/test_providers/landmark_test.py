@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import LandmarkTestInterface
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
-
     @skip("TODO")
     def test_get_landmark_entity_name(self):
         instance = Landmark("name", "parent_entity", "description")

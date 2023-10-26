@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import AnalyticsTestInterface
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
-
     @skip("TODO")
     def test_measure_distance(self):
         instance = Analytics("")

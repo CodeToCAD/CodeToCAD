@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):
-
     @skip("TODO")
     def test_create_from_file(self):
         instance = Part("name", "description")
@@ -32,8 +31,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
     def test_rename(self):
         instance = Part("name", "description")
 
-        value = instance.rename(
-            "new_name", "renamelinked_entities_and_landmarks")
+        value = instance.rename("new_name", "renamelinked_entities_and_landmarks")
 
         assert value, "Modify method failed."
 
@@ -106,7 +104,8 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         instance = Part("name", "description")
 
         value = instance.mirror(
-            "mirror_across_entity_or_landmark", "axis", "resulting_mirrored_entity_name")
+            "mirror_across_entity_or_landmark", "axis", "resulting_mirrored_entity_name"
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -114,8 +113,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
     def test_linear_pattern(self):
         instance = Part("name", "description")
 
-        value = instance.linear_pattern(
-            "instance_count", "offset", "direction_axis")
+        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
 
         assert value, "Modify method failed."
 
@@ -124,7 +122,11 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         instance = Part("name", "description")
 
         value = instance.circular_pattern(
-            "instance_count", "separation_angle", "center_entity_or_landmark", "normal_direction_axis")
+            "instance_count",
+            "separation_angle",
+            "center_entity_or_landmark",
+            "normal_direction_axis",
+        )
 
         assert value, "Modify method failed."
 
