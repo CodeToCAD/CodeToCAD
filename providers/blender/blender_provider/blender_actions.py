@@ -6,7 +6,10 @@ from typing import Any, Optional, Union
 from uuid import uuid4
 import bpy
 import bmesh
-from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
+from codetocad.codetocad_types import (
+    AngleOrItsFloatOrStringValue,
+    DimensionOrItsFloatOrStringValue,
+)
 from codetocad.core.angle import Angle
 from codetocad.core.boundary_axis import BoundaryAxis
 from codetocad.core.boundary_box import BoundaryBox
@@ -24,17 +27,13 @@ from mathutils.kdtree import KDTree
 
 
 def apply_modifier(
-    entity_name: str,
-    modifier: blender_definitions.BlenderModifiers,
-    **kwargs
+    entity_name: str, modifier: blender_definitions.BlenderModifiers, **kwargs
 ):
-
     blenderObject = get_object(entity_name)
 
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
     blenderModifier = blenderObject.modifiers.new(
-        type=modifier.name,
-        name=modifier.name
+        type=modifier.name, name=modifier.name
     )
 
     # blenderModifier.show_viewport = False
@@ -44,15 +43,12 @@ def apply_modifier(
         setattr(blenderModifier, key, value)
 
 
-def apply_decimate_modifier(
-        entity_name: str,
-        amount: int
-):
+def apply_decimate_modifier(entity_name: str, amount: int):
     apply_modifier(
         entity_name,
         blender_definitions.BlenderModifiers.DECIMATE,
         decimate_type="UNSUBDIV",
-        iterations=amount
+        iterations=amount,
     )
 
 
@@ -63,7 +59,7 @@ def apply_bevel_modifier(
     use_edges=True,
     use_width=False,
     chamfer=False,
-    **kwargs
+    **kwargs,
 ):
     apply_modifier(
         entity_name,
@@ -74,18 +70,13 @@ def apply_bevel_modifier(
         segments=1 if chamfer else 24,
         limit_method="VGROUP" if vertex_group_name else "ANGLE",
         vertex_group=vertex_group_name or "",
-        **kwargs
+        **kwargs,
     )
 
 
 def apply_linear_pattern(
-    entity_name: str,
-    instance_count,
-    direction: Axis,
-    offset: float,
-    **kwargs
+    entity_name: str, instance_count, direction: Axis, offset: float, **kwargs
 ):
-
     offsetArray = [0.0, 0.0, 0.0]
 
     offsetArray[direction.value] = offset
@@ -97,17 +88,13 @@ def apply_linear_pattern(
         count=instance_count,
         use_constant_offset=True,
         constant_offset_displace=offsetArray,
-        **kwargs
+        **kwargs,
     )
 
 
 def apply_circular_pattern(
-    entity_name: str,
-    instance_count,
-    around_object_name,
-    **kwargs
+    entity_name: str, instance_count, around_object_name, **kwargs
 ):
-
     blenderObject = get_object(around_object_name)
 
     apply_modifier(
@@ -117,40 +104,30 @@ def apply_circular_pattern(
         use_relative_offset=False,
         use_object_offset=True,
         offset_object=blenderObject,
-        **kwargs
+        **kwargs,
     )
 
 
-def apply_solidify_modifier(
-    entity_name: str,
-    thickness: Dimension,
-    **kwargs
-):
-
+def apply_solidify_modifier(entity_name: str, thickness: Dimension, **kwargs):
     apply_modifier(
         entity_name,
         blender_definitions.BlenderModifiers.SOLIDIFY,
         thickness=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            thickness).value,
+            thickness
+        ).value,
         offset=0,
-        **kwargs
+        **kwargs,
     )
 
 
-def apply_curve_modifier(
-    entity_name: str,
-    curve_object_name: str,
-    **kwargs
-):
-
+def apply_curve_modifier(entity_name: str, curve_object_name: str, **kwargs):
     curveObject = get_object(curve_object_name)
 
     apply_modifier(
         entity_name,
         blender_definitions.BlenderModifiers.CURVE,
         object=curveObject,
-        **kwargs
-
+        **kwargs,
     )
 
 
@@ -158,15 +135,17 @@ def apply_boolean_modifier(
     mesh_object_name: str,
     blender_boolean_type: blender_definitions.BlenderBooleanTypes,
     with_mesh_object_name: str,
-    **kwargs
+    **kwargs,
 ):
     blenderObject = get_object(mesh_object_name)
     blenderBooleanObject = get_object(with_mesh_object_name)
 
-    assert isinstance(blenderObject.data, blender_definitions.BlenderTypes.MESH.value), \
-        f"Object {mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderObject.data)} type."
-    assert isinstance(blenderBooleanObject.data, blender_definitions.BlenderTypes.MESH.value), \
-        f"Object {with_mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
+    assert isinstance(
+        blenderObject.data, blender_definitions.BlenderTypes.MESH.value
+    ), f"Object {mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderObject.data)} type."
+    assert isinstance(
+        blenderBooleanObject.data, blender_definitions.BlenderTypes.MESH.value
+    ), f"Object {with_mesh_object_name} is not an Object. Cannot use the Boolean modifier with {type(blenderBooleanObject.data)} type."
 
     apply_modifier(
         mesh_object_name,
@@ -177,17 +156,13 @@ def apply_boolean_modifier(
         use_hole_tolerant=True,
         # "solver= "EXACT",
         # "double_threshold= 1e-6,
-        **kwargs
+        **kwargs,
     )
 
 
 def apply_mirror_modifier(
-    entity_name: str,
-    mirror_across_entity_name: str,
-    axis: Axis,
-    **kwargs
+    entity_name: str, mirror_across_entity_name: str, axis: Axis, **kwargs
 ):
-
     axisList = [False, False, False]
     axisList[axis.value] = True
 
@@ -199,7 +174,7 @@ def apply_mirror_modifier(
         mirror_object=blenderMirrorAcrossObject,
         use_axis=axisList,
         use_mirror_merge=False,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -210,42 +185,37 @@ def apply_screw_modifier(
     screw_pitch: Dimension = Dimension(0),
     iterations=1,
     entity_nameToDetermineAxis=None,
-    **kwargs
+    **kwargs,
 ):
-
     # https://docs.blender.org/api/current/bpy.types.ScrewModifier.html
     properties = {
         "axis": axis.name,
         "angle": angle.value,
-        "screw_offset": blender_definitions.BlenderLength.convert_dimension_to_blender_unit(screw_pitch).value,
+        "screw_offset": blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            screw_pitch
+        ).value,
         "steps": 64,
         "render_steps": 64,
         "use_merge_vertices": True,
-        "iterations": iterations
+        "iterations": iterations,
     }
 
     if entity_nameToDetermineAxis:
-
         blenderMirrorAcrossObject = get_object(entity_nameToDetermineAxis)
 
         properties["object"] = blenderMirrorAcrossObject
 
     apply_modifier(
-        entity_name,
-        blender_definitions.BlenderModifiers.SCREW,
-        **properties,
-        **kwargs
+        entity_name, blender_definitions.BlenderModifiers.SCREW, **properties, **kwargs
     )
 
 
 # MARK: CRUD of Objects (aka Parts)
 
-def blender_primitive_function(
-    primitive: blender_definitions.BlenderObjectPrimitiveTypes,
-    dimensions,
-    **kwargs
-):
 
+def blender_primitive_function(
+    primitive: blender_definitions.BlenderObjectPrimitiveTypes, dimensions, **kwargs
+):
     primitiveName = primitive.default_name_in_blender()
 
     # Make sure an object or mesh with the same name don't already exist.
@@ -262,25 +232,45 @@ def blender_primitive_function(
         if primitiveName == "Cube":
             orphanMeshMessage += "If you are starting with the Default Cube, please remove both the object and the mesh using Delete Hierarchy (not just Delete), then try again."
 
-    assert blenderMesh is None, f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
+    assert (
+        blenderMesh is None
+    ), f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cube:
-        return bpy.ops.mesh.primitive_cube_add(size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs)
+        return bpy.ops.mesh.primitive_cube_add(
+            size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cone:
-        return bpy.ops.mesh.primitive_cone_add(radius1=dimensions[0].value, radius2=dimensions[1].value, depth=dimensions[2].value, **kwargs)
+        return bpy.ops.mesh.primitive_cone_add(
+            radius1=dimensions[0].value,
+            radius2=dimensions[1].value,
+            depth=dimensions[2].value,
+            **kwargs,
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cylinder:
-        return bpy.ops.mesh.primitive_cylinder_add(radius=dimensions[0].value, depth=dimensions[1].value, **kwargs)
+        return bpy.ops.mesh.primitive_cylinder_add(
+            radius=dimensions[0].value, depth=dimensions[1].value, **kwargs
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.torus:
-        return bpy.ops.mesh.primitive_torus_add(mode='EXT_INT', abso_minor_rad=dimensions[0].value, abso_major_rad=dimensions[1].value, **kwargs)
+        return bpy.ops.mesh.primitive_torus_add(
+            mode="EXT_INT",
+            abso_minor_rad=dimensions[0].value,
+            abso_major_rad=dimensions[1].value,
+            **kwargs,
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.sphere:
-        return bpy.ops.mesh.primitive_ico_sphere_add(radius=dimensions[0].value, **kwargs)
+        return bpy.ops.mesh.primitive_ico_sphere_add(
+            radius=dimensions[0].value, **kwargs
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.uvsphere:
-        return bpy.ops.mesh.primitive_uv_sphere_add(radius=dimensions[0].value, **kwargs)
+        return bpy.ops.mesh.primitive_uv_sphere_add(
+            radius=dimensions[0].value, **kwargs
+        )
 
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.circle:
         return bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **kwargs)
@@ -297,37 +287,44 @@ def blender_primitive_function(
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.plane:
         return bpy.ops.mesh.primitive_plane_add(**kwargs)
 
-    raise Exception(
-        f"Primitive with name {primitive.name} is not implemented.")
+    raise Exception(f"Primitive with name {primitive.name} is not implemented.")
 
 
 # Extracts dimensions from a string, then passes them as arguments to the blender_primitive_function
 def add_primitive(
     primitive_type: blender_definitions.BlenderObjectPrimitiveTypes,
     dimensions: str,
-    **kwargs
+    **kwargs,
 ):
-
     assert primitive_type is not None, "Primitive type is required."
 
     # Convert the dimensions:
-    dimensionsList: list[Dimension] = get_dimension_list_from_string_list(
-        dimensions) or []
+    dimensionsList: list[Dimension] = (
+        get_dimension_list_from_string_list(dimensions) or []
+    )
 
-    dimensionsList = blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-        dimensionsList)
+    dimensionsList = (
+        blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
+            dimensionsList
+        )
+    )
 
     # Add the object:
-    blender_primitive_function(
-        primitive_type,
-        dimensionsList,
-        **kwargs
-    )
+    blender_primitive_function(primitive_type, dimensionsList, **kwargs)
 
 
 def create_gear(
     object_name: str,
-    outer_radius: DimensionOrItsFloatOrStringValue, addendum: DimensionOrItsFloatOrStringValue, inner_radius: DimensionOrItsFloatOrStringValue, dedendum: DimensionOrItsFloatOrStringValue, height: DimensionOrItsFloatOrStringValue, pressure_angle: AngleOrItsFloatOrStringValue = "20d", number_of_teeth: 'int' = 12, skew_angle: AngleOrItsFloatOrStringValue = 0, conical_angle: AngleOrItsFloatOrStringValue = 0, crown_angle: AngleOrItsFloatOrStringValue = 0
+    outer_radius: DimensionOrItsFloatOrStringValue,
+    addendum: DimensionOrItsFloatOrStringValue,
+    inner_radius: DimensionOrItsFloatOrStringValue,
+    dedendum: DimensionOrItsFloatOrStringValue,
+    height: DimensionOrItsFloatOrStringValue,
+    pressure_angle: AngleOrItsFloatOrStringValue = "20d",
+    number_of_teeth: "int" = 12,
+    skew_angle: AngleOrItsFloatOrStringValue = 0,
+    conical_angle: AngleOrItsFloatOrStringValue = 0,
+    crown_angle: AngleOrItsFloatOrStringValue = 0,
 ):
     addon_name = "add_mesh_extra_objects"
 
@@ -337,36 +334,47 @@ def create_gear(
         addon_set_enabled(addon_name, True)
         addon = bpy.context.preferences.addons.get(addon_name)
 
-    assert \
-        addon is not None, \
-        f"Could not enable the {addon_name} addon to create extra objects"
+    assert (
+        addon is not None
+    ), f"Could not enable the {addon_name} addon to create extra objects"
 
-    outer_radiusDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Dimension.from_string(outer_radius)).value
-    inner_radiusDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Dimension.from_string(inner_radius)).value
-    addendumDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Dimension.from_string(addendum)).value
-    dedendumDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Dimension.from_string(dedendum)).value
-    heightDimension = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        Dimension.from_string(height)).value
+    outer_radiusDimension = (
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(outer_radius)
+        ).value
+    )
+    inner_radiusDimension = (
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(inner_radius)
+        ).value
+    )
+    addendumDimension = (
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(addendum)
+        ).value
+    )
+    dedendumDimension = (
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(dedendum)
+        ).value
+    )
+    heightDimension = (
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(height)
+        ).value
+    )
 
-    if addendumDimension > outer_radiusDimension/2:
-        addendumDimension = outer_radiusDimension/2
+    if addendumDimension > outer_radiusDimension / 2:
+        addendumDimension = outer_radiusDimension / 2
     if inner_radiusDimension > outer_radiusDimension:
         inner_radiusDimension = outer_radiusDimension
     if dedendumDimension + inner_radiusDimension > outer_radiusDimension:
         dedendumDimension = outer_radiusDimension - inner_radiusDimension
 
-    pressure_angleValue = Angle.from_string(
-        pressure_angle).to_radians().value
-    skew_angleValue = Angle.from_string(
-        skew_angle).to_radians().value
-    conical_angleValue = Angle.from_string(
-        conical_angle).to_radians().value
-    crown_angleValue = Angle.from_string(
-        crown_angle).to_radians().value
+    pressure_angleValue = Angle.from_string(pressure_angle).to_radians().value
+    skew_angleValue = Angle.from_string(skew_angle).to_radians().value
+    conical_angleValue = Angle.from_string(conical_angle).to_radians().value
+    crown_angleValue = Angle.from_string(crown_angle).to_radians().value
 
     return bpy.ops.mesh.primitive_gear(  # type: ignore
         name=object_name,
@@ -379,7 +387,7 @@ def create_gear(
         width=heightDimension,
         skew=skew_angleValue,
         conangle=conical_angleValue,
-        crown=crown_angleValue
+        crown=crown_angleValue,
     )
 
 
@@ -390,22 +398,18 @@ fileImportFunctions = {
     "png": lambda file_path: bpy.ops.image.open(filepath=file_path),
     "fbx": lambda file_path: bpy.ops.import_scene.fbx(filepath=file_path),
     "gltf": lambda file_path: bpy.ops.import_scene.gltf(filepath=file_path),
-    "obj": lambda file_path: bpy.ops.import_scene.obj(filepath=file_path, use_split_objects=False),
-    "x3d": lambda file_path: bpy.ops.import_scene.x3d(filepath=file_path)
+    "obj": lambda file_path: bpy.ops.import_scene.obj(
+        filepath=file_path, use_split_objects=False
+    ),
+    "x3d": lambda file_path: bpy.ops.import_scene.x3d(filepath=file_path),
 }
 
 
-def import_file(
-    file_path: str,
-    file_type: Optional[str] = None
-) -> str:
-
+def import_file(file_path: str, file_type: Optional[str] = None) -> str:
     path = Path(file_path).resolve()
 
     # Check if the file exists:
-    assert \
-        path.is_file(), \
-        f"File {file_path} does not exist"
+    assert path.is_file(), f"File {file_path} does not exist"
 
     fileName = path.stem
 
@@ -419,23 +423,22 @@ def import_file(
     # Check if this is a file-type we support:
     file_type = file_type or get_file_extension(file_path)
 
-    assert \
-        file_type in fileImportFunctions, \
-        f"File type {file_type} is not supported"
+    assert file_type in fileImportFunctions, f"File type {file_type} is not supported"
 
     # Import the file:
     old_objs = set(bpy.context.scene.objects)
 
-    isSuccess = fileImportFunctions[file_type](file_path) == {'FINISHED'}
+    isSuccess = fileImportFunctions[file_type](file_path) == {"FINISHED"}
 
-    assert isSuccess is True, \
-        f"Could not import {file_path}"
+    assert isSuccess is True, f"Could not import {file_path}"
 
     imported_objs = list(set(bpy.context.scene.objects) - old_objs)
     active_object = imported_objs[0]
 
     # if imported file has multiple parts, collapse them. We really can't handle unknown objects being thrown in at the moment. References https://blender.stackexchange.com/a/108112 and https://blender.stackexchange.com/a/43357
-    with get_context_view_3d(active_object=active_object, selected_objects=imported_objs):
+    with get_context_view_3d(
+        active_object=active_object, selected_objects=imported_objs
+    ):
         for o in imported_objs:
             o.select_set(True)
         bpy.context.view_layer.objects.active = active_object
@@ -448,22 +451,27 @@ def import_file(
 
 # MARK: Transformations
 
-def apply_object_transformations(object_name: str, apply_rotation: bool, apply_scale: bool, apply_location: bool, ):
+
+def apply_object_transformations(
+    object_name: str,
+    apply_rotation: bool,
+    apply_scale: bool,
+    apply_location: bool,
+):
     # Apply the object's transformations (under Object Properties tab)
     # references https://blender.stackexchange.com/a/159540/138679
     blenderObject = get_object(object_name)
 
-    assert blenderObject.data is not None, \
-        f"Object {object_name} does not have data to transform."
+    assert (
+        blenderObject.data is not None
+    ), f"Object {object_name} does not have data to transform."
 
-    decomposedMatrix: list[Any] = \
-        blenderObject.matrix_basis.decompose()  # type: ignore
+    decomposedMatrix: list[Any] = blenderObject.matrix_basis.decompose()  # type: ignore
     translationVector: mathutils.Vector = decomposedMatrix[0]
     rotationQuat: mathutils.Quaternion = decomposedMatrix[1]
     scaleVector: mathutils.Vector = decomposedMatrix[2]
 
-    translation: mathutils.Matrix = mathutils.Matrix.Translation(
-        translationVector)
+    translation: mathutils.Matrix = mathutils.Matrix.Translation(translationVector)
     rotation: mathutils.Matrix = rotationQuat.to_matrix().to_4x4()
     scale: mathutils.Matrix = mathutils.Matrix.Diagonal(scaleVector).to_4x4()
 
@@ -496,9 +504,8 @@ def apply_object_transformations(object_name: str, apply_rotation: bool, apply_s
 def rotate_object(
     object_name: str,
     rotation_angles: list[Optional[Angle]],
-    rotation_type: blender_definitions.BlenderRotationTypes
+    rotation_type: blender_definitions.BlenderRotationTypes,
 ):
-
     blenderObject = get_object(object_name)
 
     currentRotation = getattr(blenderObject, rotation_type.value)
@@ -518,14 +525,11 @@ def rotate_object(
 def translate_object(
     object_name: str,
     translation_dimensions: list[Optional[Dimension]],
-    translation_type: blender_definitions.BlenderTranslationTypes
+    translation_type: blender_definitions.BlenderTranslationTypes,
 ):
-
     blenderObject = get_object(object_name)
 
-    assert \
-        len(translation_dimensions) == 3, \
-        "translation_dimensions must be length 3"
+    assert len(translation_dimensions) == 3, "translation_dimensions must be length 3"
 
     currentLocation = blenderObject.location
 
@@ -542,15 +546,11 @@ def translate_object(
 
 
 def set_object_location(
-    object_name: str,
-    location_dimensions: list[Optional[Dimension]]
+    object_name: str, location_dimensions: list[Optional[Dimension]]
 ):
-
     blenderObject = get_object(object_name)
 
-    assert \
-        len(location_dimensions) == 3, \
-        "location_dimensions must be length 3"
+    assert len(location_dimensions) == 3, "location_dimensions must be length 3"
 
     currentLocation = blenderObject.location
 
@@ -570,40 +570,38 @@ def scale_object(
     object_name: str,
     x_scale_factor: Optional[float],
     y_scale_factor: Optional[float],
-    z_scale_factor: Optional[float]
+    z_scale_factor: Optional[float],
 ):
-
     blenderObject = get_object(object_name)
 
     currentScale: mathutils.Vector = blenderObject.scale  # type: ignore
 
-    blenderObject.scale = (x_scale_factor or currentScale.x,
-                           y_scale_factor or currentScale.y, z_scale_factor or currentScale.z)
+    blenderObject.scale = (
+        x_scale_factor or currentScale.x,
+        y_scale_factor or currentScale.y,
+        z_scale_factor or currentScale.z,
+    )
 
 
 # MARK: collections and groups:
 
-def get_collection(name: str, scene_name="Scene") -> bpy.types.Collection:
 
+def get_collection(name: str, scene_name="Scene") -> bpy.types.Collection:
     collection = bpy.data.scenes[scene_name].collection.children.get(name)
 
-    assert \
-        collection is not None, \
-        f"Collection {name} does not exists in scene {scene_name}"
+    assert (
+        collection is not None
+    ), f"Collection {name} does not exists in scene {scene_name}"
 
     return collection
 
 
-def create_collection(
-    name: str,
-    scene_name="Scene"
-):
+def create_collection(name: str, scene_name="Scene"):
+    assert (
+        scene_name in bpy.data.scenes
+    ), f"Scene {scene_name} does not exist"  # type: ignore
 
-    assert \
-        scene_name in bpy.data.scenes, f"Scene {scene_name} does not exist"  # type: ignore
-
-    existing_collection = bpy.data.scenes[scene_name].collection.children.get(
-        name)
+    existing_collection = bpy.data.scenes[scene_name].collection.children.get(name)
 
     assert existing_collection is None, f"Collection {name} already exists"
 
@@ -612,12 +610,7 @@ def create_collection(
     bpy.data.scenes[scene_name].collection.children.link(collection)
 
 
-def remove_collection(
-    name: str,
-    scene_name: str,
-    remove_children: bool
-):
-
+def remove_collection(name: str, scene_name: str, remove_children: bool):
     collection = get_collection(name, scene_name)
 
     if remove_children:
@@ -632,18 +625,15 @@ def remove_collection(
 
 
 def remove_object_from_collection(
-    existing_object_name: str,
-    collection_name: str,
-    scene_name: str
+    existing_object_name: str, collection_name: str, scene_name: str
 ):
-
     blenderObject = get_object(existing_object_name)
 
     collection = get_collection(collection_name, scene_name)
 
-    assert \
-        collection.objects.get(existing_object_name) is not None, \
-        f"Object {existing_object_name} does not exist in collection {collection_name}"
+    assert (
+        collection.objects.get(existing_object_name) is not None
+    ), f"Object {existing_object_name} does not exist in collection {collection_name}"
 
     collection.objects.unlink(blenderObject)
 
@@ -653,9 +643,8 @@ def assign_object_to_collection(
     collection_name="Scene Collection",
     scene_name="Scene",
     remove_from_other_groups=True,
-    move_children=True
+    move_children=True,
 ):
-
     blenderObject = get_object(existing_object_name)
 
     collection = bpy.data.collections.get(collection_name)
@@ -663,19 +652,16 @@ def assign_object_to_collection(
     if collection is None and collection_name == "Scene Collection":
         scene = bpy.data.scenes.get(scene_name)
 
-        assert \
-            scene is not None, \
-            f"Scene {scene_name} does not exist"
+        assert scene is not None, f"Scene {scene_name} does not exist"
 
         collection = scene.collection
 
-    assert \
-        collection is not None, \
-        f"Collection {collection_name} does not exist"
+    assert collection is not None, f"Collection {collection_name} does not exist"
 
     if remove_from_other_groups:
-        currentCollections: list[bpy.types.Collection] = \
-            blenderObject.users_collection  # type: ignore
+        currentCollections: list[
+            bpy.types.Collection
+        ] = blenderObject.users_collection  # type: ignore
         for currentCollection in currentCollections:
             currentCollection.objects.unlink(blenderObject)
 
@@ -684,7 +670,8 @@ def assign_object_to_collection(
     if move_children:
         for child in blenderObject.children:  # type: ignore
             assign_object_to_collection(
-                child.name, collection_name, scene_name, True, True)
+                child.name, collection_name, scene_name, True, True
+            )
 
 
 # MARK: Joints
@@ -696,13 +683,11 @@ def get_constraint(object_name: str, constraint_name) -> Optional[bpy.types.Cons
 def apply_constraint(
     object_name: str,
     constraint_type: blender_definitions.BlenderConstraintTypes,
-    **kwargs
+    **kwargs,
 ):
-
     blenderObject = get_object(object_name)
 
-    constraint_name = kwargs.get(
-        "name") or constraint_type.get_default_blender_name()
+    constraint_name = kwargs.get("name") or constraint_type.get_default_blender_name()
 
     constraint = get_constraint(object_name, constraint_name)
 
@@ -721,11 +706,11 @@ def apply_limit_location_constraint(
     y: Optional[list[Optional[Dimension]]],
     z: Optional[list[Optional[Dimension]]],
     relative_to_object_name: Optional[str],
-    **kwargs
+    **kwargs,
 ):
-
-    relativeToObject = get_object(
-        relative_to_object_name) if relative_to_object_name else None
+    relativeToObject = (
+        get_object(relative_to_object_name) if relative_to_object_name else None
+    )
 
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
@@ -733,8 +718,11 @@ def apply_limit_location_constraint(
 
     keywordArguments = kwargs or {}
 
-    keywordArguments["name"] = blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
-        object_name, relativeToObject)
+    keywordArguments[
+        "name"
+    ] = blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
+        object_name, relativeToObject
+    )
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -764,21 +752,21 @@ def apply_limit_location_constraint(
     apply_constraint(
         object_name,
         blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION,
-        **keywordArguments
+        **keywordArguments,
     )
 
 
 def apply_limit_rotation_constraint(
     object_name: str,
     x: Optional[list[Optional[Angle]]],
-    y:  Optional[list[Optional[Angle]]],
-    z:  Optional[list[Optional[Angle]]],
+    y: Optional[list[Optional[Angle]]],
+    z: Optional[list[Optional[Angle]]],
     relative_to_object_name: Optional[str],
-    **kwargs
+    **kwargs,
 ):
-
-    relativeToObject = get_object(
-        relative_to_object_name) if relative_to_object_name else None
+    relativeToObject = (
+        get_object(relative_to_object_name) if relative_to_object_name else None
+    )
 
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
@@ -786,8 +774,11 @@ def apply_limit_rotation_constraint(
 
     keywordArguments = kwargs or {}
 
-    keywordArguments["name"] = blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
-        object_name, relativeToObject)
+    keywordArguments[
+        "name"
+    ] = blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
+        object_name, relativeToObject
+    )
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
 
@@ -817,7 +808,7 @@ def apply_limit_rotation_constraint(
     apply_constraint(
         object_name,
         blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION,
-        **keywordArguments
+        **keywordArguments,
     )
 
 
@@ -828,22 +819,22 @@ def apply_copy_location_constraint(
     copy_y: bool,
     copy_z: bool,
     use_offset: bool,
-    **kwargs
+    **kwargs,
 ):
-
     copiedObject = get_object(copied_object_name)
 
     apply_constraint(
         object_name,
         blender_definitions.BlenderConstraintTypes.COPY_LOCATION,
         name=blender_definitions.BlenderConstraintTypes.COPY_LOCATION.format_constraint_name(
-            object_name, copied_object_name),
+            object_name, copied_object_name
+        ),
         target=copiedObject,
         use_x=copy_x,
         use_y=copy_y,
         use_z=copy_z,
         use_offset=use_offset,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -853,78 +844,62 @@ def apply_copy_rotation_constraint(
     copy_x: bool,
     copy_y: bool,
     copy_z: bool,
-    **kwargs
+    **kwargs,
 ):
-
     copiedObject = get_object(copied_object_name)
 
     apply_constraint(
         object_name,
         blender_definitions.BlenderConstraintTypes.COPY_ROTATION,
         name=blender_definitions.BlenderConstraintTypes.COPY_ROTATION.format_constraint_name(
-            object_name, copied_object_name),
+            object_name, copied_object_name
+        ),
         target=copiedObject,
         use_x=copy_x,
         use_y=copy_y,
         use_z=copy_z,
         mix_mode="BEFORE",
-        **kwargs
+        **kwargs,
     )
 
 
-def apply_pivot_constraint(
-    object_name: str,
-    pivot_object_name: str,
-    **kwargs
-):
-
+def apply_pivot_constraint(object_name: str, pivot_object_name: str, **kwargs):
     pivotObject = get_object(pivot_object_name)
 
     apply_constraint(
         object_name,
         blender_definitions.BlenderConstraintTypes.PIVOT,
         name=blender_definitions.BlenderConstraintTypes.PIVOT.format_constraint_name(
-            object_name, pivot_object_name),
+            object_name, pivot_object_name
+        ),
         target=pivotObject,
         rotation_range="ALWAYS_ACTIVE",
-        **kwargs
+        **kwargs,
     )
 
 
 def apply_gear_constraint(
-    object_name: str,
-    gear_object_name: str,
-    ratio: float = 1,
-    **kwargs
+    object_name: str, gear_object_name: str, ratio: float = 1, **kwargs
 ):
-
     for axis in Axis:
         # e.g. constraints["Limit Location"].min_x
         driver = create_driver(object_name, "rotation_euler", axis.value)
         set_driver(driver, "SCRIPTED", f"{-1*ratio} * gearRotation")
         set_driverVariableSingleProp(
-            driver, "gearRotation", gear_object_name, f"rotation_euler[{axis.value}]")
+            driver, "gearRotation", gear_object_name, f"rotation_euler[{axis.value}]"
+        )
+
 
 # MARK: Drivers / Computed variables
 
 
-def create_driver(
-    object_name: str,
-    path: str,
-    index=-1
-):
-
+def create_driver(object_name: str, path: str, index=-1):
     blenderObject = get_object(object_name)
 
     return blenderObject.driver_add(path, index).driver
 
 
-def remove_driver(
-    object_name: str,
-    path: str,
-    index=-1
-):
-
+def remove_driver(object_name: str, path: str, index=-1):
     blenderObject = get_object(object_name)
 
     blenderObject.driver_remove(path, index)
@@ -948,9 +923,8 @@ def get_driver(
 def set_driver(
     driver: bpy.types.Driver,
     driver_type,  # : blender_definitions.BlenderDriverTypes,
-    expression=""
+    expression="",
 ):
-
     driver.type = driver_type
 
     driver.expression = expression if expression else ""
@@ -962,7 +936,6 @@ def set_driverVariableSingleProp(
     target_object_name: str,
     target_data_path: str,
 ):
-
     variable = driver.variables.get(variable_name)
 
     if variable is None:
@@ -985,7 +958,6 @@ def set_driverVariableTransforms(
     transform_type,  # : blender_definitions.BlenderDriverVariableTransformTypes,
     transform_space,  # : blender_definitions.BlenderDriverVariableTransformSpaces
 ):
-
     variable = driver.variables.get(variable_name)
 
     if variable is None:
@@ -1009,7 +981,6 @@ def set_driverVariableLocationDifference(
     target1_object_name: str,
     target2_object_name: str,
 ):
-
     variable = driver.variables.get(variable_name)
 
     if variable is None:
@@ -1033,7 +1004,6 @@ def set_driverVariableRotationDifference(
     target1_object_name: str,
     target2_object_name: str,
 ):
-
     variable = driver.variables.get(variable_name)
 
     if variable is None:
@@ -1053,17 +1023,17 @@ def set_driverVariableRotationDifference(
 
 # MARK: Landmarks
 
+
 def translate_landmark_onto_another(
     object_to_translate_name: str,
     object1_landmark_name: str,
     object2_landmark_name: str,
 ):
-
     update_view_layer()
     object1LandmarkLocation = get_object_world_location(object1_landmark_name)
     object2LandmarkLocation = get_object_world_location(object2_landmark_name)
 
-    translation = (object1LandmarkLocation)-(object2LandmarkLocation)
+    translation = (object1LandmarkLocation) - (object2LandmarkLocation)
 
     blenderDefaultUnit = blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
 
@@ -1072,10 +1042,11 @@ def translate_landmark_onto_another(
         [
             Dimension(translation.x.value, blenderDefaultUnit),
             Dimension(translation.y.value, blenderDefaultUnit),
-            Dimension(translation.z.value, blenderDefaultUnit)
+            Dimension(translation.z.value, blenderDefaultUnit),
         ],  # type: ignore
-        blender_definitions.BlenderTranslationTypes.ABSOLUTE
+        blender_definitions.BlenderTranslationTypes.ABSOLUTE,
     )
+
 
 # MARK: creating and manipulating objects
 
@@ -1084,7 +1055,6 @@ def make_parent(
     name: str,
     parent_name: str,
 ):
-
     blenderObject = get_object(name)
     blenderParentObject = get_object(parent_name)
 
@@ -1095,19 +1065,18 @@ def update_object_name(
     old_name: str,
     new_name: str,
 ):
-
     blenderObject = get_object(old_name)
 
     blenderObject.name = new_name
 
 
-def get_object_collection_name(object_name: str,) -> str:
-
+def get_object_collection_name(
+    object_name: str,
+) -> str:
     blenderObject = get_object(object_name)
 
     # Assumes the first collection is the main collection
-    [currentCollection] = \
-        blenderObject.users_collection  # type: ignore
+    [currentCollection] = blenderObject.users_collection  # type: ignore
 
     return currentCollection.name
 
@@ -1116,10 +1085,11 @@ def update_object_data_name(
     parent_object_name: str,
     new_name: str,
 ):
-
     blenderObject = get_object(parent_object_name)
 
-    assert blenderObject.data is not None, f"Object {parent_object_name} does not have data to name."
+    assert (
+        blenderObject.data is not None
+    ), f"Object {parent_object_name} does not have data to name."
 
     blenderObject.data.name = new_name
 
@@ -1130,28 +1100,27 @@ def update_object_landmark_names(
     old_namePrefix: str,
     new_namePrefix: str,
 ):
-
     blenderObject = get_object(parent_object_name)
 
-    blenderObjectChildren: list[bpy.types.Object] = \
-        blenderObject.children  # type: ignore
+    blenderObjectChildren: list[
+        bpy.types.Object
+    ] = blenderObject.children  # type: ignore
 
     for child in blenderObjectChildren:
         if f"{old_namePrefix}_" in child.name and child.type == "EMPTY":
-            update_object_name(child.name, child.name.replace(
-                f"{old_namePrefix}_", f"{new_namePrefix}_"))
+            update_object_name(
+                child.name,
+                child.name.replace(f"{old_namePrefix}_", f"{new_namePrefix}_"),
+            )
 
 
-def remove_object(
-    existing_object_name: str,
-    remove_children=False
-):
-
+def remove_object(existing_object_name: str, remove_children=False):
     blenderObject = get_object(existing_object_name)
 
     if remove_children:
-        blenderObjectChildren: list[bpy.types.Object] = \
-            blenderObject.children  # type: ignore
+        blenderObjectChildren: list[
+            bpy.types.Object
+        ] = blenderObject.children  # type: ignore
         for child in blenderObjectChildren:
             try:
                 remove_object(child.name, True)
@@ -1171,23 +1140,17 @@ def remove_object(
         bpy.data.objects.remove(blenderObject)
 
 
-def create_object(
-    name: str,
-    data: Optional[Any] = None
-):
-
+def create_object(name: str, data: Optional[Any] = None):
     blenderObject = bpy.data.objects.get(name)
 
-    assert \
-        blenderObject is None, \
-        f"Object {name} already exists"
+    assert blenderObject is None, f"Object {name} already exists"
 
     return bpy.data.objects.new(name, data)
 
 
 def create_object_vertex_group(
-        object_name: str,
-        vertex_group_name: str,
+    object_name: str,
+    vertex_group_name: str,
 ):
     blenderObject = get_object(object_name)
     return blenderObject.vertex_groups.new(name=vertex_group_name)
@@ -1201,19 +1164,17 @@ def get_object_vertex_group(
     return blenderObject.vertex_groups.get(vertex_group_name)
 
 
-def add_verticies_to_vertex_group(
-        vertex_group_object,
-        vertex_indecies: list[int]
-):
-    vertex_group_object.add(vertex_indecies, 1.0, 'ADD')
+def add_verticies_to_vertex_group(vertex_group_object, vertex_indecies: list[int]):
+    vertex_group_object.add(vertex_indecies, 1.0, "ADD")
 
 
 def convert_object_using_ops(
-        existing_object_name: str,
-        convert_to_type: blender_definitions.BlenderTypes
+    existing_object_name: str, convert_to_type: blender_definitions.BlenderTypes
 ):
     existingObject = get_object(existing_object_name)
-    with get_context_view_3d(active_object=existingObject, selected_objects=[existingObject]):
+    with get_context_view_3d(
+        active_object=existingObject, selected_objects=[existingObject]
+    ):
         existingObject.select_set(True)
         bpy.context.view_layer.objects.active = existingObject
         update_view_layer()
@@ -1225,7 +1186,6 @@ def create_mesh_from_curve(
     existing_curve_object_name: str,
     new_object_name: Optional[str] = None,
 ):
-
     existingCurveObject = get_object(existing_curve_object_name)
 
     if new_object_name is None:
@@ -1234,9 +1194,11 @@ def create_mesh_from_curve(
 
     dependencyGraph = bpy.context.evaluated_depsgraph_get()
     evaluatedObject: bpy.types.Object = existingCurveObject.evaluated_get(
-        dependencyGraph)  # type: ignore
+        dependencyGraph
+    )  # type: ignore
     mesh: bpy.types.Mesh = bpy.data.meshes.new_from_object(
-        evaluatedObject,  depsgraph=dependencyGraph)
+        evaluatedObject, depsgraph=dependencyGraph
+    )
 
     blenderObject = create_object(new_object_name, mesh)
 
@@ -1244,10 +1206,14 @@ def create_mesh_from_curve(
 
     assign_object_to_collection(new_object_name)
 
-    existingCurveObjectChildren: list[bpy.types.Object] = \
-        existingCurveObject.children  # type: ignore
+    existingCurveObjectChildren: list[
+        bpy.types.Object
+    ] = existingCurveObject.children  # type: ignore
     for child in existingCurveObjectChildren:
-        if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
+        if (
+            isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
+            and child.type == "EMPTY"
+        ):
             child.parent = blenderObject
 
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
@@ -1258,17 +1224,12 @@ def create_mesh_from_curve(
 def get_object_visibility(
     existing_object_name: str,
 ) -> bool:
-
     blenderObject = get_object(existing_object_name)
 
     return blenderObject.visible_get()
 
 
-def set_object_visibility(
-    existing_object_name: str,
-    is_visible: bool
-):
-
+def set_object_visibility(existing_object_name: str, is_visible: bool):
     blenderObject = get_object(existing_object_name)
 
     # blenderObject.hide_viewport = not is_visible
@@ -1280,45 +1241,51 @@ def transfer_landmarks(
     from_object_name: str,
     to_object_name: str,
 ):
-
     update_view_layer()
 
     fromBlenderObject = get_object(from_object_name)
     toBlenderObject = get_object(to_object_name)
 
-    translation = (get_object_world_location(
-        from_object_name) - get_object_world_location(to_object_name)).to_list()
+    translation = (
+        get_object_world_location(from_object_name)
+        - get_object_world_location(to_object_name)
+    ).to_list()
 
     translation = [
-        axisValue.value for axisValue in blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(translation)]
+        axisValue.value
+        for axisValue in blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
+            translation
+        )
+    ]
 
     defaultCollection = get_object_collection_name(to_object_name)
 
-    fromBlenderObjectChildren: list[bpy.types.Object] = \
-        fromBlenderObject.children  # type: ignore
+    fromBlenderObjectChildren: list[
+        bpy.types.Object
+    ] = fromBlenderObject.children  # type: ignore
     for child in fromBlenderObjectChildren:
-        if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
+        if (
+            isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
+            and child.type == "EMPTY"
+        ):
             child.name = f"{to_object_name}_{child.name}"
             isAlreadyExists = bpy.data.objects.get(child.name) is None
             if isAlreadyExists:
                 print(f"{child.name} already exists. Skipping landmark transfer.")
                 continue
             child.parent = toBlenderObject
-            child.location = child.location + \
-                mathutils.Vector(translation)  # type: ignore
+            child.location = child.location + mathutils.Vector(
+                translation
+            )  # type: ignore
             assign_object_to_collection(child.name, defaultCollection)
 
 
 def duplicate_object(
-    existing_object_name: str,
-    new_object_name: str,
-    copy_landmarks: bool = True
+    existing_object_name: str, new_object_name: str, copy_landmarks: bool = True
 ):
-
     clonedObject = bpy.data.objects.get(new_object_name)  # type: ignore
 
-    assert clonedObject is None, \
-        f"Object with name {new_object_name} already exists."
+    assert clonedObject is None, f"Object with name {new_object_name} already exists."
 
     blenderObject = get_object(existing_object_name)
 
@@ -1333,13 +1300,18 @@ def duplicate_object(
     assign_object_to_collection(new_object_name, defaultCollection)
 
     if copy_landmarks:
-        blenderObjectChildren: list[bpy.types.Object] = \
-            blenderObject.children  # type: ignore
+        blenderObjectChildren: list[
+            bpy.types.Object
+        ] = blenderObject.children  # type: ignore
         for child in blenderObjectChildren:
-            if isinstance(child, blender_definitions.BlenderTypes.OBJECT.value) and child.type == 'EMPTY':
+            if (
+                isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
+                and child.type == "EMPTY"
+            ):
                 newChild: bpy.types.Object = child.copy()  # type: ignore
                 newChild.name = child.name.replace(
-                    existing_object_name, new_object_name)
+                    existing_object_name, new_object_name
+                )
                 newChild.parent = clonedObject
                 assign_object_to_collection(newChild.name, defaultCollection)
 
@@ -1348,66 +1320,68 @@ def update_view_layer():
     bpy.context.view_layer.update()
 
 
-def get_object_local_location(object_name: str,):
-
-    blenderObject = get_object(object_name)
-
-    return Point.from_list([Dimension(p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in blenderObject.location])
-
-
-def get_object_world_location(object_name: str,):
-
+def get_object_local_location(
+    object_name: str,
+):
     blenderObject = get_object(object_name)
 
     return Point.from_list(
         [
-            Dimension(
-                p,  blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
-            for p in
-            blenderObject.matrix_world.translation  # type: ignore
+            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            for p in blenderObject.location
         ]
     )
 
 
-def get_object_world_pose(object_name: str,) -> list[float]:
-
+def get_object_world_location(
+    object_name: str,
+):
     blenderObject = get_object(object_name)
 
-    listOfTuples = [v.to_tuple() for v in list(
-        blenderObject.matrix_world)]  # type: ignore
+    return Point.from_list(
+        [
+            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            for p in blenderObject.matrix_world.translation  # type: ignore
+        ]
+    )
+
+
+def get_object_world_pose(
+    object_name: str,
+) -> list[float]:
+    blenderObject = get_object(object_name)
+
+    listOfTuples = [
+        v.to_tuple() for v in list(blenderObject.matrix_world)
+    ]  # type: ignore
 
     return [value for values in listOfTuples for value in values]
 
 
-def get_object(object_name: str,) -> bpy.types.Object:
-
+def get_object(
+    object_name: str,
+) -> bpy.types.Object:
     blenderObject = bpy.data.objects.get(object_name)
 
-    assert \
-        blenderObject is not None, \
-        f"Object {object_name} does not exists"
+    assert blenderObject is not None, f"Object {object_name} does not exists"
 
     return blenderObject
 
 
-def get_mesh(mesh_name: str,) -> bpy.types.Mesh:
-
+def get_mesh(
+    mesh_name: str,
+) -> bpy.types.Mesh:
     blenderMesh = bpy.data.meshes.get(mesh_name)
 
-    assert \
-        blenderMesh is not None, \
-        f"Mesh {mesh_name} does not exists"
+    assert blenderMesh is not None, f"Mesh {mesh_name} does not exists"
 
     return blenderMesh
 
 
 def get_objectType(object_name: str) -> blender_definitions.BlenderObjectTypes:
-
     blenderObject = bpy.data.objects.get(object_name)
 
-    assert \
-        blenderObject is not None, \
-        f"Object {object_name} does not exists"
+    assert blenderObject is not None, f"Object {object_name} does not exists"
 
     return blender_definitions.BlenderObjectTypes[blenderObject.type]
 
@@ -1418,7 +1392,6 @@ def get_objectType(object_name: str) -> blender_definitions.BlenderObjectTypes:
 def apply_dependency_graph(
     existing_object_name: str,
 ):
-
     blenderObject = get_object(existing_object_name)
     blenderObjectEvaluated: bpy.types.Object = blenderObject.evaluated_get(
         bpy.context.evaluated_depsgraph_get()
@@ -1426,15 +1399,17 @@ def apply_dependency_graph(
     blenderObject.data = blenderObjectEvaluated.data.copy()
 
 
-def clear_modifiers(object_name: str,):
-
+def clear_modifiers(
+    object_name: str,
+):
     blenderObject = get_object(object_name)
 
     blenderObject.modifiers.clear()
 
 
-def remove_mesh(mesh_nameOrInstance: Union[str, bpy.types.Mesh],):
-
+def remove_mesh(
+    mesh_nameOrInstance: Union[str, bpy.types.Mesh],
+):
     mesh: bpy.types.Mesh = mesh_nameOrInstance  # type: ignore
     # if a (str) name is passed in, fetch the mesh object reference
     if isinstance(mesh_nameOrInstance, str):
@@ -1444,7 +1419,6 @@ def remove_mesh(mesh_nameOrInstance: Union[str, bpy.types.Mesh],):
 
 
 def set_edges_mean_crease(mesh_name: str, mean_crease_value: float):
-
     blenderMesh = get_mesh(mesh_name)
 
     for edge in blenderMesh.edges:
@@ -1467,10 +1441,9 @@ def recalculate_normals(mesh_name: str):
 
 # Note: transformations have to be applied for this to be reliable.
 def is_collision_between_two_objects(
-        object1_name: str,
-        object2_name: str,
+    object1_name: str,
+    object2_name: str,
 ):
-
     update_view_layer()
 
     blenderObject1 = get_object(object1_name)
@@ -1495,7 +1468,9 @@ def is_collision_between_two_objects(
 
 
 # References https://docs.blender.org/api/current/mathutils.kdtree.html
-def create_kd_tree_for_object(object_name: str,):
+def create_kd_tree_for_object(
+    object_name: str,
+):
     blenderObject = get_object(object_name)
     mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
     size = len(mesh.vertices)
@@ -1510,12 +1485,11 @@ def create_kd_tree_for_object(object_name: str,):
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
 def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygon:
-
     blenderObject = get_object(object_name)
 
-    assert \
-        len(vertex) == 3, \
-        "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
+    assert (
+        len(vertex) == 3
+    ), "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
 
     matrixWorld: mathutils.Matrix = blenderObject.matrix_world  # type: ignore
     invertedMatrixWorld = matrixWorld.inverted()
@@ -1524,16 +1498,15 @@ def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygo
     vertexInverted = invertedMatrixWorld @ mathutils.Vector(vertex)
 
     # polygonIndex references an index at blenderObject.data.polygons[polygonIndex], in other words, the face or edge data
-    [isFound, closestPoint, normal,
-        polygonIndex] = blenderObject.closest_point_on_mesh(vertexInverted)  # type: ignore
+    [isFound, closestPoint, normal, polygonIndex] = blenderObject.closest_point_on_mesh(
+        vertexInverted
+    )  # type: ignore
 
-    assert \
-        isFound, \
-        f"Could not find a point close to {vertex} on {object_name}"
+    assert isFound, f"Could not find a point close to {vertex} on {object_name}"
 
-    assert \
-        polygonIndex is not None and polygonIndex != -1, \
-        f"Could not find a face near {vertex} on {object_name}"
+    assert (
+        polygonIndex is not None and polygonIndex != -1
+    ), f"Could not find a face near {vertex} on {object_name}"
 
     mesh: bpy.types.Mesh = blenderObject.data  # type: ignore
     blenderPolygon = mesh.polygons[polygonIndex]
@@ -1542,28 +1515,31 @@ def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygo
 
 
 # Returns a list of (co, index, dist)
-def get_closest_points_to_vertex(object_name: str, vertex, number_of_points=2, object_kd_tree=None):
-
+def get_closest_points_to_vertex(
+    object_name: str, vertex, number_of_points=2, object_kd_tree=None
+):
     blenderObject = get_object(object_name)
 
     kdTree = object_kd_tree or create_kd_tree_for_object(object_name)
 
-    assert \
-        len(vertex) == 3, \
-        "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
+    assert (
+        len(vertex) == 3
+    ), "Vertex is not length 3. Please provide a proper vertex (x,y,z)"
 
     matrixWorld: mathutils.Matrix = blenderObject.matrix_world  # type: ignore
     invertedMatrixWorld = matrixWorld.inverted()
 
-    vertexInverted: mathutils.Vector = \
-        invertedMatrixWorld @ mathutils.Vector(vertex)  # type: ignore
+    vertexInverted: mathutils.Vector = invertedMatrixWorld @ mathutils.Vector(
+        vertex
+    )  # type: ignore
 
     return kdTree.find_n(vertexInverted, number_of_points)
 
 
 # References https://blender.stackexchange.com/a/32288/138679
-def get_bounding_box(object_name: str,):
-
+def get_bounding_box(
+    object_name: str,
+):
     update_view_layer()
 
     blenderObject = get_object(object_name)
@@ -1575,11 +1551,7 @@ def get_bounding_box(object_name: str,):
 
     # matrix multiple world transform by all the vertices in the boundary
     coords = [
-        (
-            om @ mathutils.
-            Vector(p[:])  # type: ignore
-        ).to_tuple()
-        for p in local_coords
+        (om @ mathutils.Vector(p[:])).to_tuple() for p in local_coords  # type: ignore
     ]
     coords = coords[::-1]
     # Coords should be a 1x8 array containing 1x3 vertices, example:
@@ -1589,29 +1561,21 @@ def get_bounding_box(object_name: str,):
     # x (1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0)
     # y (1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0)
     # z (-1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0)
-    zipped = zip('xyz', zip(*coords))
+    zipped = zip("xyz", zip(*coords))
 
     boundingBox = BoundaryBox(None, None, None)
 
-    for (axis, _list) in zipped:
-
+    for axis, _list in zipped:
         minVal = min(_list)
         maxVal = max(_list)
 
-        setattr(
-            boundingBox,
-            axis,
-            BoundaryAxis(
-                minVal,
-                maxVal,
-                "m"
-            )
-        )
+        setattr(boundingBox, axis, BoundaryAxis(minVal, maxVal, "m"))
 
     return boundingBox
 
 
 # MARK: ADDONS
+
 
 def addon_set_enabled(addon_name: str, is_enabled: bool):
     preferences = bpy.ops.preferences
@@ -1623,78 +1587,63 @@ def addon_set_enabled(addon_name: str, is_enabled: bool):
 
 # MARK: Curves and Sketches
 
-def get_curve(curve_name: str) -> bpy.types.Curve:
 
+def get_curve(curve_name: str) -> bpy.types.Curve:
     curve = bpy.data.curves.get(curve_name)
 
-    assert \
-        curve is not None, \
-        f"Curve {curve_name} does not exists"
+    assert curve is not None, f"Curve {curve_name} does not exists"
 
     return curve
 
 
-def extrude_curve(
-    curve_name: str,
-    length: Dimension
-):
-
+def extrude_curve(curve_name: str, length: Dimension):
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
 
-def offset_curve_geometry(
-    curve_name: str,
-    offset: Dimension
-):
-
+def offset_curve_geometry(curve_name: str, offset: Dimension):
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
 
-def set_curve_resolution_u(
-        curve_name: str,
-        resolution: int
-):
-
+def set_curve_resolution_u(curve_name: str, resolution: int):
     curve = get_curve(curve_name)
 
     curve.resolution_u = resolution
 
 
-def set_curve_resolution_v(
-        curve_name: str,
-        resolution: int
-):
-
+def set_curve_resolution_v(curve_name: str, resolution: int):
     curve = get_curve(curve_name)
 
     curve.resolution_v = resolution
 
 
-def create_text(curve_name: str, text: str,
-                size=Dimension(1),
-                bold=False,
-                italic=False,
-                underlined=False,
-                character_spacing=1,
-                word_spacing=1,
-                line_spacing=1,
-                font_file_path: Optional[str] = None):
-
+def create_text(
+    curve_name: str,
+    text: str,
+    size=Dimension(1),
+    bold=False,
+    italic=False,
+    underlined=False,
+    character_spacing=1,
+    word_spacing=1,
+    line_spacing=1,
+    font_file_path: Optional[str] = None,
+):
     curveData = bpy.data.curves.new(type="FONT", name=curve_name)
 
     setattr(curveData, "body", text)
-    setattr(curveData, "size", blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        size).value)
+    setattr(
+        curveData,
+        "size",
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
+    )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
     setattr(curveData, "space_line", line_spacing)
@@ -1717,9 +1666,7 @@ def create_text(curve_name: str, text: str,
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(
-        curve_name,
-        blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
@@ -1728,11 +1675,10 @@ def create_3d_curve(
     curve_name: str,
     curve_type: blender_definitions.BlenderCurveTypes,
     coordinates,
-    interpolation=64
+    interpolation=64,
 ):
-
-    curveData = bpy.data.curves.new(curve_name, type='CURVE')
-    curveData.dimensions = '3D'
+    curveData = bpy.data.curves.new(curve_name, type="CURVE")
+    curveData.dimensions = "3D"
     curveData.resolution_u = interpolation
     curveData.use_path = False
 
@@ -1749,25 +1695,25 @@ def create_3d_curve(
 def create_spline(
     blender_curve: bpy.types.Curve,
     curve_type: blender_definitions.BlenderCurveTypes,
-        coordinates
+    coordinates,
 ):
-
     coordinates = [
         blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
             get_dimension_list_from_string_list(coordinate) or []
-        ) for coordinate in coordinates
+        )
+        for coordinate in coordinates
     ]
-    coordinates = [[dimension.value for dimension in coordinate]
-                   for coordinate in coordinates]
+    coordinates = [
+        [dimension.value for dimension in coordinate] for coordinate in coordinates
+    ]
 
     spline = blender_curve.splines.new(curve_type.name)
     spline.order_u = 2
 
     # subtract 1 so the end and origin points are not connected
-    number_of_points = len(coordinates)-1
+    number_of_points = len(coordinates) - 1
 
     if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
-
         # subtract 1 so the end and origin points are not connected
         spline.bezier_points.add(number_of_points)
         for i, coord in enumerate(coordinates):
@@ -1777,7 +1723,6 @@ def create_spline(
             spline.bezier_points[i].handle_right = (x, y, z)
 
     else:
-
         # subtract 1 so the end and origin points are not connected
         spline.points.add(number_of_points)
 
@@ -1787,18 +1732,15 @@ def create_spline(
 
 
 def add_bevel_object_to_curve(
-    path_curve_object_name: str,
-    profile_curve_object_name: str,
-    fill_cap=False
+    path_curve_object_name: str, profile_curve_object_name: str, fill_cap=False
 ):
-
     pathCurveObject = get_object(path_curve_object_name)
 
     profileCurveObject = get_object(profile_curve_object_name)
 
-    assert \
-        isinstance(profileCurveObject.data, bpy.types.Curve), \
-        f"Profile Object {profile_curve_object_name} is not a Curve object. Please use a Curve object."
+    assert isinstance(
+        profileCurveObject.data, bpy.types.Curve
+    ), f"Profile Object {profile_curve_object_name} is not a Curve object. Please use a Curve object."
 
     curve: bpy.types.Curve = pathCurveObject.data  # type: ignore
 
@@ -1807,7 +1749,9 @@ def add_bevel_object_to_curve(
     curve.use_fill_caps = fill_cap
 
 
-def get_blender_curve_primitive_function(curve_primitive: blender_definitions.BlenderCurvePrimitiveTypes):
+def get_blender_curve_primitive_function(
+    curve_primitive: blender_definitions.BlenderCurvePrimitiveTypes,
+):
     if curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Point:
         return BlenderCurvePrimitives.create_point
     elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.LineTo:
@@ -1842,196 +1786,240 @@ def get_blender_curve_primitive_function(curve_primitive: blender_definitions.Bl
     raise TypeError("Unknown primitive")
 
 
-class BlenderCurvePrimitives():
-    @ staticmethod
+class BlenderCurvePrimitives:
+    @staticmethod
     def create_point(curve_type=blender_definitions.BlenderCurveTypes.NURBS, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Point,
             use_cyclic_u=False,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_line_to(end_location, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.LineTo,
             Simple_endlocation=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(end_location)).value,
+                Dimension.from_string(end_location)
+            ).value,
             use_cyclic_u=False,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_line(length, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Distance,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length)).value,
+                Dimension.from_string(length)
+            ).value,
             Simple_center=True,
             use_cyclic_u=False,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_angle(length, angle, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Angle,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length)).value,
+                Dimension.from_string(length)
+            ).value,
             Simple_angle=Angle.from_string(angle).to_degrees().value,
             use_cyclic_u=False,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_circle(radius, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Circle,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)
+            ).value,
             Simple_sides=64,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_ellipse(radius_x, radius_y, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Ellipse,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius_x)).value,
+                Dimension.from_string(radius_x)
+            ).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius_y)).value,
-            **kwargs
+                Dimension.from_string(radius_y)
+            ).value,
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_arc(radius, angle, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Arc,
             Simple_sides=64,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)
+            ).value,
             Simple_startangle=0,
-            Simple_endangle=Angle.from_string(
-                angle).to_degrees().value,
+            Simple_endangle=Angle.from_string(angle).to_degrees().value,
             use_cyclic_u=False,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_sector(radius, angle, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Sector,
             Simple_sides=64,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius)).value,
+                Dimension.from_string(radius)
+            ).value,
             Simple_startangle=0,
-            Simple_endangle=Angle.from_string(
-                angle).to_degrees().value,
-            **kwargs
+            Simple_endangle=Angle.from_string(angle).to_degrees().value,
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_segment(outter_radius, inner_radius, angle, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Segment,
             Simple_sides=64,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(outter_radius)).value,
+                Dimension.from_string(outter_radius)
+            ).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(inner_radius)).value,
+                Dimension.from_string(inner_radius)
+            ).value,
             Simple_startangle=0,
-            Simple_endangle=Angle.from_string(
-                angle).to_degrees().value,
-            **kwargs
+            Simple_endangle=Angle.from_string(angle).to_degrees().value,
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_rectangle(length, width, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Rectangle,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length)).value,
+                Dimension.from_string(length)
+            ).value,
             Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(width)).value,
+                Dimension.from_string(width)
+            ).value,
             Simple_rounded=0,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_rhomb(length, width, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Rhomb,
             Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length)).value,
+                Dimension.from_string(length)
+            ).value,
             Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(width)).value,
+                Dimension.from_string(width)
+            ).value,
             Simple_center=True,
-            **kwargs
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_polygon(number_of_sides, radius, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Polygon,
             Simple_sides=number_of_sides,
             Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius)).value,
-            **kwargs
+                Dimension.from_string(radius)
+            ).value,
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_polygon_ab(number_of_sides, length, width, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Polygon_ab,
             Simple_sides=number_of_sides,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length)).value,
+                Dimension.from_string(length)
+            ).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(width)).value,
-            **kwargs
+                Dimension.from_string(width)
+            ).value,
+            **kwargs,
         )
 
-    @ staticmethod
+    @staticmethod
     def create_trapezoid(length_upper, length_lower, height, **kwargs):
         create_simple_curve(
             blender_definitions.BlenderCurvePrimitiveTypes.Trapezoid,
             Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length_upper)).value,
+                Dimension.from_string(length_upper)
+            ).value,
             Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(length_lower)).value,
+                Dimension.from_string(length_lower)
+            ).value,
             Simple_h=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(height)).value,
-            **kwargs
+                Dimension.from_string(height)
+            ).value,
+            **kwargs,
         )
 
     @staticmethod
-    def create_spiral(number_of_turns: 'int', height: DimensionOrItsFloatOrStringValue, radius: DimensionOrItsFloatOrStringValue, is_clockwise: bool = True, radius_end: Optional[DimensionOrItsFloatOrStringValue] = None, **kwargs):
+    def create_spiral(
+        number_of_turns: "int",
+        height: DimensionOrItsFloatOrStringValue,
+        radius: DimensionOrItsFloatOrStringValue,
+        is_clockwise: bool = True,
+        radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
+        **kwargs,
+    ):
         enable_curve_extra_objects_addon()
 
-        heightMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(height)).value
+        heightMeters = (
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                Dimension.from_string(height)
+            ).value
+        )
 
-        radiusMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(radius)).value
+        radiusMeters = (
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                Dimension.from_string(radius)
+            ).value
+        )
 
-        radius_endMeters = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(radius_end)) if radius_end else None
+        radius_endMeters = (
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                Dimension.from_string(radius_end)
+            )
+            if radius_end
+            else None
+        )
 
-        radiusDiff = 0 if radius_endMeters is None else (
-            radius_endMeters - radiusMeters).value
+        radiusDiff = (
+            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
+        )
 
-        curve_type: blender_definitions.BlenderCurveTypes = kwargs[
-            "curve_type"] if "curve_type" in kwargs and kwargs["curve_type"] else blender_definitions.BlenderCurvePrimitiveTypes.Spiral.get_default_curve_type()
+        curve_type: blender_definitions.BlenderCurveTypes = (
+            kwargs["curve_type"]
+            if "curve_type" in kwargs and kwargs["curve_type"]
+            else blender_definitions.BlenderCurvePrimitiveTypes.Spiral.get_default_curve_type()
+        )
 
         curve_typeName: str = curve_type.name
 
-        bpy.ops.curve.spirals(spiral_type='ARCH',  # type: ignore
-                              turns=number_of_turns, steps=24, edit_mode=False,
-                              radius=radiusMeters,
-                              dif_z=heightMeters/number_of_turns, dif_radius=radiusDiff, curve_type=curve_typeName,
-                              spiral_direction='CLOCKWISE' if is_clockwise else 'COUNTER_CLOCKWISE'
-                              )
+        bpy.ops.curve.spirals(
+            spiral_type="ARCH",  # type: ignore
+            turns=number_of_turns,
+            steps=24,
+            edit_mode=False,
+            radius=radiusMeters,
+            dif_z=heightMeters / number_of_turns,
+            dif_radius=radiusDiff,
+            curve_type=curve_typeName,
+            spiral_direction="CLOCKWISE" if is_clockwise else "COUNTER_CLOCKWISE",
+        )
 
 
 def enable_curve_extra_objects_addon():
@@ -2043,49 +2031,60 @@ def enable_curve_extra_objects_addon():
         addon_set_enabled(addon_name, True)
         addon = bpy.context.preferences.addons.get(addon_name)
 
-    assert \
-        addon is not None, \
-        f"Could not enable the {addon_name} addon to create simple curves"
+    assert (
+        addon is not None
+    ), f"Could not enable the {addon_name} addon to create simple curves"
 
 
 # assumes add_curve_extra_objects is enabled
 # https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
-def create_simple_curve(curve_primitiveType: blender_definitions.BlenderCurvePrimitiveTypes, **kwargs):
-
-    curve_type: blender_definitions.BlenderCurveTypes = kwargs[
-        "curve_type"] if "curve_type" in kwargs and kwargs["curve_type"] else curve_primitiveType.get_default_curve_type()
+def create_simple_curve(
+    curve_primitiveType: blender_definitions.BlenderCurvePrimitiveTypes, **kwargs
+):
+    curve_type: blender_definitions.BlenderCurveTypes = (
+        kwargs["curve_type"]
+        if "curve_type" in kwargs and kwargs["curve_type"]
+        else curve_primitiveType.get_default_curve_type()
+    )
 
     kwargs.pop("curve_type", None)  # remove curve_type from kwargs
 
     enable_curve_extra_objects_addon()
 
-    assert \
-        isinstance(curve_primitiveType, blender_definitions.BlenderCurvePrimitiveTypes), \
-        "{} is not a known curve primitive. Options: {}" \
-        .format(
-            curve_primitiveType,
-            [b.name for b in blender_definitions.BlenderCurvePrimitiveTypes]
-        )
+    assert isinstance(
+        curve_primitiveType, blender_definitions.BlenderCurvePrimitiveTypes
+    ), "{} is not a known curve primitive. Options: {}".format(
+        curve_primitiveType,
+        [b.name for b in blender_definitions.BlenderCurvePrimitiveTypes],
+    )
 
-    assert \
-        isinstance(curve_type, blender_definitions.BlenderCurveTypes), \
-        "{} is not a known simple curve type. Options: {}" \
-        .format(
-            curve_type,
-            [b.name for b in blender_definitions.BlenderCurveTypes]
-        )
+    assert isinstance(
+        curve_type, blender_definitions.BlenderCurveTypes
+    ), "{} is not a known simple curve type. Options: {}".format(
+        curve_type, [b.name for b in blender_definitions.BlenderCurveTypes]
+    )
 
     # Make sure an object or curve with the same name don't already exist:
     blenderObject = bpy.data.objects.get(curve_primitiveType.name)
     blender_curve = bpy.data.curves.get(curve_primitiveType.name)
 
-    assert blenderObject is None, f"An object with name {curve_primitiveType.name} already exists."
-    assert blender_curve is None, f"A curve with name {curve_primitiveType.name} already exists."
+    assert (
+        blenderObject is None
+    ), f"An object with name {curve_primitiveType.name} already exists."
+    assert (
+        blender_curve is None
+    ), f"A curve with name {curve_primitiveType.name} already exists."
 
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
-    bpy.ops.curve.simple(Simple_Type=curve_primitiveType.name, outputType=curve_type.name,  # type: ignore
-                         order_u=2, shape='2D',  edit_mode=False, **kwargs)
+    bpy.ops.curve.simple(
+        Simple_Type=curve_primitiveType.name,
+        outputType=curve_type.name,  # type: ignore
+        order_u=2,
+        shape="2D",
+        edit_mode=False,
+        **kwargs,
+    )
 
 
 def set_curve_use_path(curve_name: str, is_use_path: bool):
@@ -2094,6 +2093,7 @@ def set_curve_use_path(curve_name: str, is_use_path: bool):
     curve: bpy.types.Curve = curveObject.data  # type: ignore
 
     curve.use_path = is_use_path
+
 
 # MARK: manipulating the Scene
 
@@ -2105,15 +2105,11 @@ def scene_lock_interface(is_locked: bool):
 
 
 def set_default_unit(
-    blender_unit: blender_definitions.BlenderLength,
-    scene_name="Scene"
+    blender_unit: blender_definitions.BlenderLength, scene_name="Scene"
 ):
-
     blenderScene = bpy.data.scenes.get(scene_name)
 
-    assert \
-        blenderScene is not None, \
-        f"Scene {scene_name} does not exist"
+    assert blenderScene is not None, f"Scene {scene_name} does not exist"
 
     blenderScene.unit_settings.system = blender_unit.get_system()
     blenderScene.unit_settings.length_unit = blender_unit.name
@@ -2126,7 +2122,6 @@ def select_object(object_name: str):
 
 
 def get_selected_object_name() -> str:
-
     selectedObjects = bpy.context.selected_objects
 
     assert len(selectedObjects) > 0, "There are no selected objects."
@@ -2137,10 +2132,12 @@ def get_selected_object_name() -> str:
 def get_context_view_3d(**kwargs):
     window = bpy.context.window_manager.windows[0]
     for area in window.screen.areas:
-        if area.type == 'VIEW_3D':
+        if area.type == "VIEW_3D":
             for region in area.regions:
-                if region.type == 'WINDOW':
-                    return bpy.context.temp_override(window=window, area=area, region=region, **kwargs)
+                if region.type == "WINDOW":
+                    return bpy.context.temp_override(
+                        window=window, area=area, region=region, **kwargs
+                    )
     raise Exception("Could not find a VIEW_3D region.")
 
 
@@ -2160,22 +2157,22 @@ def add_timer(callback):
     bpy.app.timers.register(callback)
 
 
-def get_material(material_name: str,) -> bpy.types.Material:
+def get_material(
+    material_name: str,
+) -> bpy.types.Material:
     blenderMaterial = bpy.data.materials.get(material_name)
 
-    assert \
-        blenderMaterial is not None, \
-        f"Material {material_name} does not exist."
+    assert blenderMaterial is not None, f"Material {material_name} does not exist."
 
     return blenderMaterial
 
 
-def create_material(new_material_name: str,):
+def create_material(
+    new_material_name: str,
+):
     material = bpy.data.materials.get(new_material_name)
 
-    assert \
-        material is None, \
-        f"Material with name {material} already exists."
+    assert material is None, f"Material with name {material} already exists."
 
     material = bpy.data.materials.new(name=new_material_name)
 
@@ -2203,25 +2200,24 @@ def set_material_color(material_name: str, r_value, g_value, b_value, a_value=1.
 
 
 def set_material_metallicness(material_name: str, value: float):
-
     material = get_material(material_name)
     material.metallic = value
 
 
 def set_material_roughness(material_name: str, value: float):
-
     material = get_material(material_name)
     material.roughness = value
 
 
 def set_material_specularness(material_name: str, value: float):
-
     material = get_material(material_name)
     material.specular_intensity = value
 
 
-def set_material_to_object(material_name: str, object_name: str,):
-
+def set_material_to_object(
+    material_name: str,
+    object_name: str,
+):
     material = get_material(material_name)
 
     object = get_object(object_name)
@@ -2244,42 +2240,26 @@ def get_blender_version() -> tuple:
 
 fileExportFunctions = {
     "stl": lambda file_path, scale: bpy.ops.export_mesh.stl(
-        filepath=file_path,
-        use_selection=True,
-        global_scale=scale
+        filepath=file_path, use_selection=True, global_scale=scale
     ),
-    "obj": lambda file_path, scale:
-    bpy.ops.wm.obj_export(
-        filepath=file_path,
-        export_selected_objects=True,
-        global_scale=scale
+    "obj": lambda file_path, scale: bpy.ops.wm.obj_export(
+        filepath=file_path, export_selected_objects=True, global_scale=scale
     )
-        if get_blender_version() >= blender_definitions.BlenderVersions.THREE_DOT_ONE.value else
-    bpy.ops.export_scene.obj(
-        filepath=file_path,
-        use_selection=True,
-        global_scale=scale
+    if get_blender_version() >= blender_definitions.BlenderVersions.THREE_DOT_ONE.value
+    else bpy.ops.export_scene.obj(
+        filepath=file_path, use_selection=True, global_scale=scale
     ),
-
 }
 
 
-def export_object(
-    object_name: str,
-    file_path: str,
-    overwrite=True,
-    scale=1.0
-):
-
+def export_object(object_name: str, file_path: str, overwrite=True, scale=1.0):
     path = Path(file_path).resolve()
 
     # Check if the file exists:
     if not overwrite:
-        assert \
-            not path.is_file(), \
-            f"File {file_path} already exists"
+        assert not path.is_file(), f"File {file_path} already exists"
 
-    bpy.ops.object.select_all(action='DESELECT')
+    bpy.ops.object.select_all(action="DESELECT")
 
     blenderObject = get_object(object_name)
 
@@ -2288,31 +2268,26 @@ def export_object(
     # Check if this is a file-type we support:
     file_type = path.suffix.replace(".", "")
 
-    assert \
-        file_type in fileImportFunctions, \
-        f"File type {file_type} is not supported"
+    assert file_type in fileImportFunctions, f"File type {file_type} is not supported"
 
     # export the file:
-    isSuccess = fileExportFunctions[file_type](
-        file_path, scale) == {'FINISHED'}
+    isSuccess = fileExportFunctions[file_type](file_path, scale) == {"FINISHED"}
 
-    assert isSuccess is True, \
-        f"Could not export {file_path}"
+    assert isSuccess is True, f"Could not export {file_path}"
 
 
 # TODO: bind this to blender_provider
-def separate_object(
-        object_name):
-    bpy.ops.object.select_all(action='DESELECT')
+def separate_object(object_name):
+    bpy.ops.object.select_all(action="DESELECT")
 
     blenderObject = get_object(object_name)
 
     blenderObject.select_set(True)
 
-    isSuccess = bpy.ops.mesh.separate(type='LOOSE') == {'FINISHED'}
+    isSuccess = bpy.ops.mesh.separate(type="LOOSE") == {"FINISHED"}
 
-    assert isSuccess is True, \
-        "Could not separate object"
+    assert isSuccess is True, "Could not separate object"
+
 
 # MARK: Animation
 
@@ -2362,19 +2337,25 @@ def set_frame_current(frame_number: int, scene_name: Optional[str]):
 
 # ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
 
-def add_texture_to_material(material_name: str, image_file_path: str,):
+
+def add_texture_to_material(
+    material_name: str,
+    image_file_path: str,
+):
     material = get_material(material_name)
     material.use_nodes = True
     bsdf = material.node_tree.nodes["Principled BSDF"]
     texImage: bpy.types.ShaderNodeTexImage = material.node_tree.nodes.new(
-        'ShaderNodeTexImage')  # type: ignore
+        "ShaderNodeTexImage"
+    )  # type: ignore
     image = bpy.data.images.load(image_file_path)
     texImage.image = image
-    material.node_tree.links.new(
-        bsdf.inputs['Base Color'], texImage.outputs['Color'])
+    material.node_tree.links.new(bsdf.inputs["Base Color"], texImage.outputs["Color"])
 
 
-def log_message(message: str,):
+def log_message(
+    message: str,
+):
     bpy.ops.code_to_cad.log_message(message=message)  # type: ignore
 
 
@@ -2385,12 +2366,12 @@ def create_light(obj_name: str, energy_level, type):
     assign_object_to_collection(obj_name)
 
 
-def get_light(light_name: str,):
+def get_light(
+    light_name: str,
+):
     blenderLight = bpy.data.lights.get(light_name)
 
-    assert \
-        blenderLight is not None, \
-        f"Light {light_name} does not exist."
+    assert blenderLight is not None, f"Light {light_name} does not exist."
 
     return blenderLight
 
@@ -2418,12 +2399,12 @@ def create_camera(obj_name: str, type):
     assign_object_to_collection(obj_name)
 
 
-def get_camera(camera_name: str,):
+def get_camera(
+    camera_name: str,
+):
     blenderCamera = bpy.data.cameras.get(camera_name)
 
-    assert \
-        blenderCamera is not None, \
-        f"Camera {camera_name} does not exist."
+    assert blenderCamera is not None, f"Camera {camera_name} does not exist."
 
     return blenderCamera
 
@@ -2437,35 +2418,40 @@ def set_scene_camera(camera_name: str, scene_name: Optional[str] = None):
 
 def set_focal_length(camera_name: str, length=50.0):
     camera = get_camera(camera_name)
-    assert \
-        length >= 1, \
-        "Length needs to be greater than or equal to 1."
+    assert length >= 1, "Length needs to be greater than or equal to 1."
 
     camera.lens = length
 
 
-def add_hdr_texture(scene_name: str, image_file_path: str,):
+def add_hdr_texture(
+    scene_name: str,
+    image_file_path: str,
+):
     delete_nodes(scene_name)
-    nodeBackground = create_nodes(scene_name, 'ShaderNodeBackground')
+    nodeBackground = create_nodes(scene_name, "ShaderNodeBackground")
     nodeEnvironment: bpy.types.ShaderNodeTexEnvironment = create_nodes(
-        scene_name, 'ShaderNodeTexEnvironment')  # type: ignore
+        scene_name, "ShaderNodeTexEnvironment"
+    )  # type: ignore
     nodeEnvironment.image = bpy.data.images.load(image_file_path)
     nodeEnvironment.location = 0, 0
-    nodeOutput = create_nodes(scene_name, 'ShaderNodeOutputWorld')
+    nodeOutput = create_nodes(scene_name, "ShaderNodeOutputWorld")
     nodeOutput.location = 0, 0
     links = get_node_tree(scene_name).links
     links.new(nodeEnvironment.outputs["Color"], nodeBackground.inputs["Color"])
-    links.new(nodeBackground.outputs["Background"],
-              nodeOutput.inputs["Surface"])
+    links.new(nodeBackground.outputs["Background"], nodeOutput.inputs["Surface"])
 
 
-def get_node_tree(scene_name: str,) -> bpy.types.NodeTree:
+def get_node_tree(
+    scene_name: str,
+) -> bpy.types.NodeTree:
     scene = get_scene(scene_name)
     nodeTree = scene.world.node_tree
     return nodeTree
 
 
-def delete_nodes(scene_name: str,):
+def delete_nodes(
+    scene_name: str,
+):
     nodes = get_node_tree(scene_name).nodes
     nodes.clear()
 
@@ -2477,17 +2463,17 @@ def create_nodes(scene_name: str, type) -> bpy.types.Node:
 
 def set_background_location(scene_name: str, x, y):
     envTexture: bpy.types.ShaderNodeTexEnvironment = get_node_tree(
-        scene_name).nodes.get('Environment Texture')  # type: ignore
+        scene_name
+    ).nodes.get(
+        "Environment Texture"
+    )  # type: ignore
     envTexture.location = x, y
 
 
 def get_scene(scene_name: Optional[str] = "Scene") -> bpy.types.Scene:
-
     blenderScene = bpy.data.scenes.get(scene_name or "Scene")
 
-    assert \
-        blenderScene is not None, \
-        f"Scene{scene_name} does not exists"
+    assert blenderScene is not None, f"Scene{scene_name} does not exists"
 
     return blenderScene
 

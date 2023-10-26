@@ -1,5 +1,3 @@
-
-
 from typing import Optional
 
 from codetocad.interfaces import SceneInterface, EntityInterface
@@ -8,7 +6,6 @@ from codetocad.utilities import *
 
 
 class Scene(SceneInterface):
-
     name: Optional[str] = None
     description: Optional[str] = None
 
@@ -21,45 +18,50 @@ class Scene(SceneInterface):
         return Scene()
 
     def create(self):
-
         return self
 
     def delete(self):
-
         return self
 
     def get_selected_entity(self) -> EntityInterface:
-
         raise NotImplementedError()
 
-    def export(self, file_path: str, entities: list[EntityOrItsName], overwrite: bool = True, scale: float = 1.0):
-
+    def export(
+        self,
+        file_path: str,
+        entities: list[EntityOrItsName],
+        overwrite: bool = True,
+        scale: float = 1.0,
+    ):
         return self
 
     def set_default_unit(self, unit: LengthUnitOrItsName):
-
         return self
 
     def create_group(self, name: str):
-
         return self
 
     def delete_group(self, name: str, remove_children: bool):
-
         return self
 
     def remove_from_group(self, entity_name: str, group_name: str):
-
         return self
 
-    def assign_to_group(self, entities: list[EntityOrItsName], group_name: str, remove_from_other_groups: Optional[bool] = True):
-
+    def assign_to_group(
+        self,
+        entities: list[EntityOrItsName],
+        group_name: str,
+        remove_from_other_groups: Optional[bool] = True,
+    ):
         return self
 
     def set_visible(self, entities: list[EntityOrItsName], is_visible: bool):
-
         return self
 
-    def set_background_image(self, file_path: str, location_x: Optional[DimensionOrItsFloatOrStringValue] = 0, location_y: Optional[DimensionOrItsFloatOrStringValue] = 0):
-
+    def set_background_image(
+        self,
+        file_path: str,
+        location_x: Optional[DimensionOrItsFloatOrStringValue] = 0,
+        location_y: Optional[DimensionOrItsFloatOrStringValue] = 0,
+    ):
         return self

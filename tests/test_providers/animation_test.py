@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import AnimationTestInterface
 
 
 class AnimationTest(TestProviderCase, AnimationTestInterface):
-
     @skip("TODO")
     def test_set_frame_start(self):
         instance = Animation("")

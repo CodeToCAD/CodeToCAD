@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import SceneTestInterface
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):
-
     @skip("TODO")
     def test_create(self):
         instance = Scene("name", "description")
@@ -73,7 +72,8 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         instance = Scene("name", "description")
 
         value = instance.assign_to_group(
-            "entities", "group_name", "remove_from_other_groups")
+            "entities", "group_name", "remove_from_other_groups"
+        )
 
         assert value, "Modify method failed."
 
@@ -89,7 +89,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
     def test_set_background_image(self):
         instance = Scene("name", "description")
 
-        value = instance.set_background_image(
-            "file_path", "location_x", "location_y")
+        value = instance.set_background_image("file_path", "location_x", "location_y")
 
         assert value, "Modify method failed."

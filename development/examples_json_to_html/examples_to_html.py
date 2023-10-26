@@ -28,8 +28,7 @@ for template, output in templatesToGenerate:
     print("Generating", template)
 
     template = templateEnv.get_template(template)
-    output_from_parsed_template = template.render(
-        **{"examples": examplesList})
+    output_from_parsed_template = template.render(**{"examples": examplesList})
     with open(output, "w") as fh:
         fh.write(output_from_parsed_template)
 

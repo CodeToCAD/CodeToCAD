@@ -11,7 +11,6 @@ from codetocad.tests_interfaces import LightTestInterface
 
 
 class LightTest(TestProviderCase, LightTestInterface):
-
     @skip("TODO")
     def test_set_color(self):
         instance = Light("name", "description")

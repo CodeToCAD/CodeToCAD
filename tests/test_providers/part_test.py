@@ -11,13 +11,11 @@ from codetocad.tests_interfaces import PartTestInterface
 
 
 class PartTest(TestProviderCase, PartTestInterface):
-
     @skip("TODO")
     def test_create_cube(self):
         instance = Part("")
 
-        value = instance.create_cube(
-            "width", "length", "height", "keyword_arguments")
+        value = instance.create_cube("width", "length", "height", "keyword_arguments")
 
         assert value.is_exists(), "Create method failed."
 
@@ -26,7 +24,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.create_cone(
-            "radius", "height", "draft_radius", "keyword_arguments")
+            "radius", "height", "draft_radius", "keyword_arguments"
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -34,8 +33,7 @@ class PartTest(TestProviderCase, PartTestInterface):
     def test_create_cylinder(self):
         instance = Part("")
 
-        value = instance.create_cylinder(
-            "radius", "height", "keyword_arguments")
+        value = instance.create_cylinder("radius", "height", "keyword_arguments")
 
         assert value.is_exists(), "Create method failed."
 
@@ -44,7 +42,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.create_torus(
-            "inner_radius", "outer_radius", "keyword_arguments")
+            "inner_radius", "outer_radius", "keyword_arguments"
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -60,8 +59,19 @@ class PartTest(TestProviderCase, PartTestInterface):
     def test_create_gear(self):
         instance = Part("")
 
-        value = instance.create_gear("outer_radius", "addendum", "inner_radius", "dedendum", "height",
-                                     "pressure_angle", "number_of_teeth", "skew_angle", "conical_angle", "crown_angle", "keyword_arguments")
+        value = instance.create_gear(
+            "outer_radius",
+            "addendum",
+            "inner_radius",
+            "dedendum",
+            "height",
+            "pressure_angle",
+            "number_of_teeth",
+            "skew_angle",
+            "conical_angle",
+            "crown_angle",
+            "keyword_arguments",
+        )
 
         assert value.is_exists(), "Create method failed."
 
@@ -86,7 +96,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.union(
-            "with_part", "delete_after_union", "is_transfer_landmarks")
+            "with_part", "delete_after_union", "is_transfer_landmarks"
+        )
 
         assert value, "Modify method failed."
 
@@ -95,7 +106,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.subtract(
-            "with_part", "delete_after_subtract", "is_transfer_landmarks")
+            "with_part", "delete_after_subtract", "is_transfer_landmarks"
+        )
 
         assert value, "Modify method failed."
 
@@ -104,7 +116,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.intersect(
-            "with_part", "delete_after_intersect", "is_transfer_landmarks")
+            "with_part", "delete_after_intersect", "is_transfer_landmarks"
+        )
 
         assert value, "Modify method failed."
 
@@ -113,7 +126,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part("")
 
         value = instance.hollow(
-            "thickness_x", "thickness_y", "thickness_z", "start_axis", "flip_axis")
+            "thickness_x", "thickness_y", "thickness_z", "start_axis", "flip_axis"
+        )
 
         assert value, "Modify method failed."
 
@@ -129,8 +143,29 @@ class PartTest(TestProviderCase, PartTestInterface):
     def test_hole(self):
         instance = Part("")
 
-        value = instance.hole("hole_landmark", "radius", "depth", "normal_axis", "flip_axis", "initial_rotation_x", "initial_rotation_y", "initial_rotation_z", "mirror_about_entity_or_landmark", "mirror_axis", "mirror", "circular_pattern_instance_count", "circular_pattern_instance_separation",
-                              "circular_pattern_instance_axis", "circular_pattern_about_entity_or_landmark", "linear_pattern_instance_count", "linear_pattern_instance_separation", "linear_pattern_instance_axis", "linear_pattern2nd_instance_count", "linear_pattern2nd_instance_separation", "linear_pattern2nd_instance_axis")
+        value = instance.hole(
+            "hole_landmark",
+            "radius",
+            "depth",
+            "normal_axis",
+            "flip_axis",
+            "initial_rotation_x",
+            "initial_rotation_y",
+            "initial_rotation_z",
+            "mirror_about_entity_or_landmark",
+            "mirror_axis",
+            "mirror",
+            "circular_pattern_instance_count",
+            "circular_pattern_instance_separation",
+            "circular_pattern_instance_axis",
+            "circular_pattern_about_entity_or_landmark",
+            "linear_pattern_instance_count",
+            "linear_pattern_instance_separation",
+            "linear_pattern_instance_axis",
+            "linear_pattern2nd_instance_count",
+            "linear_pattern2nd_instance_separation",
+            "linear_pattern2nd_instance_axis",
+        )
 
         assert value, "Modify method failed."
 
@@ -162,8 +197,7 @@ class PartTest(TestProviderCase, PartTestInterface):
     def test_fillet_edges(self):
         instance = Part("")
 
-        value = instance.fillet_edges(
-            "radius", "landmarks_near_edges", "use_width")
+        value = instance.fillet_edges("radius", "landmarks_near_edges", "use_width")
 
         assert value, "Modify method failed."
 
@@ -171,8 +205,7 @@ class PartTest(TestProviderCase, PartTestInterface):
     def test_fillet_faces(self):
         instance = Part("")
 
-        value = instance.fillet_faces(
-            "radius", "landmarks_near_faces", "use_width")
+        value = instance.fillet_faces("radius", "landmarks_near_faces", "use_width")
 
         assert value, "Modify method failed."
 

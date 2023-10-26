@@ -45,66 +45,63 @@ operatorIds = {
 class ReloadCodeToCADModules(Operator):
     bl_idname = operatorIds["ReloadCodeToCADModules"]
     bl_label = "Reload CodeToCAD Modules"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
 
     def execute(self, context):
         reloadCodeToCADModules()
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 class ReloadLastImport(Operator):
     bl_idname = operatorIds["ReloadLastImport"]
     bl_label = "Reload last import"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
 
     def execute(self, context):
-
         global importedFileWatcher
         if not importedFileWatcher:
-            self.report({'ERROR'}, "No CodeToCAD file imported")
-            return {'CANCELLED'}
+            self.report({"ERROR"}, "No CodeToCAD file imported")
+            return {"CANCELLED"}
 
         importedFileWatcher.reloadFile(context)
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 class LogMessage(Operator):
     bl_idname = operatorIds["LogMessage"]
     bl_label = "Log Message"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
     message: bpy.props.StringProperty(
-        name="Message", default="Reporting : Base message")  # type: ignore
-    isError: bpy.props.BoolProperty(
-        name="isError", default=False)  # type: ignore
+        name="Message", default="Reporting : Base message"
+    )  # type: ignore
+    isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
 
     def execute(self, context):
-
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
 
         logType = {"ERROR"} if self.isError else {"INFO"}
         self.report(logType, self.message)
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 class StopAutoReload(Operator):
     bl_idname = operatorIds["StopAutoReload"]
     bl_label = "Stop auto-reloading last import"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
 
     def execute(self, context):
-
         # https://docs.blender.org/api/current/bpy.types.Operator.html#bpy.types.Operator.report
 
         global importedFileWatcher
         if not importedFileWatcher:
-            self.report({'ERROR'}, "No CodeToCAD file imported")
-            return {'CANCELLED'}
+            self.report({"ERROR"}, "No CodeToCAD file imported")
+            return {"CANCELLED"}
 
         importedFileWatcher.stopWatchingFile()
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
 
 def reloadCodeToCADModules():
@@ -120,7 +117,7 @@ def reloadCodeToCADModules():
     checkVersion()
 
 
-class ImportedFileWatcher():
+class ImportedFileWatcher:
     filepath: str
     directory: str
     lastTimestamp: float = 0
@@ -130,8 +127,9 @@ class ImportedFileWatcher():
     def __init__(self, path: str, directory: str, context) -> None:
         self.filepath = path
         self.directory = directory
-        self.isAskBeforeReloading = CodeToCADAddonPreferences.getIsAskBeforeReloadingFromPreferences(
-            context)
+        self.isAskBeforeReloading = (
+            CodeToCADAddonPreferences.getIsAskBeforeReloadingFromPreferences(context)
+        )
 
     def checkFileChanged(self) -> bool:
         stamp: float = os.stat(self.filepath).st_mtime
@@ -165,7 +163,8 @@ class ImportedFileWatcher():
             print("Import auto-reload: file has changed.")
             if self.isAskBeforeReloading:
                 bpy.ops.code_to_cad.confirm_imported_file_reload(  # type: ignore
-                    'INVOKE_DEFAULT')
+                    "INVOKE_DEFAULT"
+                )
             else:
                 self.reloadFile(bpy.context)
         # number of seconds before re-checking (courtesy of bpy.app.timers)
@@ -176,12 +175,12 @@ importedFileWatcher: Optional[ImportedFileWatcher] = None
 
 
 def importCodeToCADFile(filePath, directory, saveFile):
-
     reloadCodeToCADModules()
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
-            tempfile.gettempdir(), str(int(time.time())) + ".blend")
+            tempfile.gettempdir(), str(int(time.time())) + ".blend"
+        )
         bpy.ops.wm.save_as_mainfile(filepath=blendFilepath)
 
     # Add the directory to python execute path, so that imports work.
@@ -201,14 +200,23 @@ def importCodeToCADFile(filePath, directory, saveFile):
             errorTrace = traceback.format_exc()
             print("Import failed: ", err, errorTrace)
 
-            bpy.ops.code_to_cad.log_message('INVOKE_DEFAULT',  # type: ignore
-                                            message=f"{errorTrace}", isError=True)
+            bpy.ops.code_to_cad.log_message(
+                "INVOKE_DEFAULT", message=f"{errorTrace}", isError=True  # type: ignore
+            )
 
             raise err
         finally:
-            from blender_provider.blender_actions import zoom_to_selected_objects, select_object
+            from blender_provider.blender_actions import (
+                zoom_to_selected_objects,
+                select_object,
+            )
+
             objectToZoomOn = bpy.data.objects[-1]
-            objectToZoomOn = objectToZoomOn.parent if objectToZoomOn.parent is not None else objectToZoomOn
+            objectToZoomOn = (
+                objectToZoomOn.parent
+                if objectToZoomOn.parent is not None
+                else objectToZoomOn
+            )
             select_object(objectToZoomOn.name)
             zoom_to_selected_objects()
 
@@ -218,7 +226,9 @@ def importCodeToCADFile(filePath, directory, saveFile):
                 if package_name in sys.modules:
                     del sys.modules[package_name]
 
-            if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(bpy.context):
+            if not CodeToCADAddonPreferences.getisAutoReloadImportsFromPreferences(
+                bpy.context
+            ):
                 return
 
             global importedFileWatcher
@@ -226,51 +236,51 @@ def importCodeToCADFile(filePath, directory, saveFile):
                 if importedFileWatcher:
                     importedFileWatcher.stopWatchingFile()
                 importedFileWatcher = ImportedFileWatcher(
-                    filePath, directory, bpy.context)
+                    filePath, directory, bpy.context
+                )
             importedFileWatcher.watchFile()
             importedFileWatcher.registerFileWatcher()
 
 
-@ orientation_helper(axis_forward='Y', axis_up='Z')  # type: ignore
+@orientation_helper(axis_forward="Y", axis_up="Z")  # type: ignore
 class ImportCodeToCAD(Operator, ImportHelper):
     bl_idname = operatorIds["ImportCodeToCAD"]
     bl_label = "Import CodeToCAD"
     bl_description = "Load a CodeToCAD file"
-    bl_options = {'UNDO'}
+    bl_options = {"UNDO"}
 
     filter_glob: StringProperty(
         default="*.codetocad;*.py",
-        options={'HIDDEN'},
+        options={"HIDDEN"},
     )  # type: ignore
     files: CollectionProperty(
         name="File Path",
         type=OperatorFileListElement,
     )  # type: ignore
     directory: StringProperty(
-        subtype='DIR_PATH',
+        subtype="DIR_PATH",
     )  # type: ignore
 
     def execute(self, context):
-
-        paths: list[str] = [os.path.join(self.directory, name.name)
-                            for name in self.files]
+        paths: list[str] = [
+            os.path.join(self.directory, name.name) for name in self.files
+        ]
 
         try:
             importCodeToCADFile(paths[0], self.directory, True)
         except Exception as err:
-            self.report({'ERROR'}, f"Import failed: {err}")
-            return {'CANCELLED'}
+            self.report({"ERROR"}, f"Import failed: {err}")
+            return {"CANCELLED"}
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
     def draw(self, context):
         pass
 
 
 def menu_import(self, context):
-    self.layout.operator_context = 'INVOKE_DEFAULT'
-    self.layout.operator(ImportCodeToCAD.bl_idname,
-                         text="CodeToCAD (.codetocad)")
+    self.layout.operator_context = "INVOKE_DEFAULT"
+    self.layout.operator(ImportCodeToCAD.bl_idname, text="CodeToCAD (.codetocad)")
 
 
 class CodeToCADAddonPreferences(AddonPreferences):
@@ -279,23 +289,27 @@ class CodeToCADAddonPreferences(AddonPreferences):
 
     codeToCadFilePath: StringProperty(
         name="CodeToCAD Folder",
-        subtype='FILE_PATH',
-        default=str(Path(__file__).parent.absolute())
+        subtype="FILE_PATH",
+        default=str(Path(__file__).parent.absolute()),
     )  # type: ignore
     isAutoReloadImports: bpy.props.BoolProperty(
-        name="Auto Reload", default=False)  # type: ignore
+        name="Auto Reload", default=False
+    )  # type: ignore
     isAskBeforeReloading: bpy.props.BoolProperty(
-        name="Ask before auto-reload", default=False)  # type: ignore
+        name="Ask before auto-reload", default=False
+    )  # type: ignore
 
     class AddCodeToCADToPath(Operator):
         """Print object name in Console"""
+
         bl_idname = operatorIds["AddCodeToCADToPath"]
         bl_label = "Add CodeToCAD To Path"
-        bl_options = {'REGISTER'}
+        bl_options = {"REGISTER"}
 
         def execute(self, context):
-
-            return addCodeToCADToPath(context=context, returnBlenderOperationStatus=True)
+            return addCodeToCADToPath(
+                context=context, returnBlenderOperationStatus=True
+            )
 
     def draw(self, context):
         layout = self.layout
@@ -305,11 +319,16 @@ class CodeToCADAddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="Path to CodeToCAD folder:")
         box.label(
-            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad#Blender", icon="QUESTION")
+            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad#Blender",
+            icon="QUESTION",
+        )
         box.prop(self, "codeToCadFilePath")  # type: ignore
 
-        box.operator(CodeToCADAddonPreferences.AddCodeToCADToPath.bl_idname,
-                     text="Refresh blender_provider", icon="CONSOLE")
+        box.operator(
+            CodeToCADAddonPreferences.AddCodeToCADToPath.bl_idname,
+            text="Refresh blender_provider",
+            icon="CONSOLE",
+        )
 
         layout.separator()
         box = layout.box()
@@ -324,16 +343,23 @@ class CodeToCADAddonPreferences(AddonPreferences):
 
     @staticmethod
     def getisAutoReloadImportsFromPreferences(context):
-        return CodeToCADAddonPreferences.getPreferenceKey("isAutoReloadImports", context) or False
+        return (
+            CodeToCADAddonPreferences.getPreferenceKey("isAutoReloadImports", context)
+            or False
+        )
 
     @staticmethod
     def getIsAskBeforeReloadingFromPreferences(context):
-        return CodeToCADAddonPreferences.getPreferenceKey("isAskBeforeReloading", context) or False
+        return (
+            CodeToCADAddonPreferences.getPreferenceKey("isAskBeforeReloading", context)
+            or False
+        )
 
     @staticmethod
     def getCodeToCadFilePathFromPreferences(context) -> str:
         value: str = CodeToCADAddonPreferences.getPreferenceKey(
-            "codeToCadFilePath", context)  # type: ignore
+            "codeToCadFilePath", context
+        )  # type: ignore
         return value
 
 
@@ -341,11 +367,12 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     print("Going to add CodeToCAD files to path.")
 
     codeToCADPath = CodeToCADAddonPreferences.getCodeToCadFilePathFromPreferences(
-        context) or str(Path(__file__).parent.absolute())
+        context
+    ) or str(Path(__file__).parent.absolute())
 
     if not codeToCADPath or not os.path.exists(codeToCADPath):
         print("The CodeToCAD base module path that you provided does not exist.")
-        return {'CANCELLED'} if returnBlenderOperationStatus else None
+        return {"CANCELLED"} if returnBlenderOperationStatus else None
 
     codeToCADPath = Path(codeToCADPath)
 
@@ -353,14 +380,15 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
     blender_providerPath = codeToCADPath / "providers/blender/blender_provider"
 
     if not Path(blender_providerPath / "blender_actions.py").is_file():
-
         blender_providerPath = codeToCADPath / "blender_provider"
 
         if not Path(blender_providerPath / "blender_actions.py").is_file():
-
             print(
-                "Could not find blender_provider files. Please reconfigure CodeToCADBlenderAddon", "Searching in: ", codeToCADPath)
-            return {'CANCELLED'} if returnBlenderOperationStatus else None
+                "Could not find blender_provider files. Please reconfigure CodeToCADBlenderAddon",
+                "Searching in: ",
+                codeToCADPath,
+            )
+            return {"CANCELLED"} if returnBlenderOperationStatus else None
     else:
         sys.path.append(str(codeToCADPath / "providers/blender"))
 
@@ -376,7 +404,7 @@ def addCodeToCADToPath(context=bpy.context, returnBlenderOperationStatus=False):
 
     sys.path.append(str(codeToCADPath))
 
-    return {'FINISHED'} if returnBlenderOperationStatus else None
+    return {"FINISHED"} if returnBlenderOperationStatus else None
 
 
 @wraps(replace_help)
@@ -386,10 +414,15 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
     replace_help(namspace)
 
     from blender_provider import (
-        Analytics, Animation,
-        Joint, Landmark, Material,
-        Part, Scene,
-        Sketch)
+        Analytics,
+        Animation,
+        Joint,
+        Landmark,
+        Material,
+        Part,
+        Scene,
+        Sketch,
+    )
     from codetocad.utilities import Angle, Dimension, Dimensions, center, max, min
 
     namspace["Part"] = Part
@@ -413,17 +446,17 @@ def addCodeToCADConvenienceWordsToConsole(namspace):
 class ConfirmImportedFileReload(bpy.types.Operator):
     bl_idname = operatorIds["ConfirmImportedFileReload"]
     bl_label = "Imported file has changed. Reload?"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
 
     reload: bpy.props.BoolProperty(name="Reload", default=True)  # type: ignore
     stopWatching: bpy.props.BoolProperty(name="Stop Watching")  # type: ignore
 
-    @ classmethod
+    @classmethod
     def poll(cls, context):
         return True
 
     def execute(self, context):
-        self.report({'INFO'}, "Reload imported file? {self.reload}")
+        self.report({"INFO"}, "Reload imported file? {self.reload}")
         print(context.area, context.window)
         global importedFileWatcher
         if importedFileWatcher and self.reload:
@@ -432,7 +465,7 @@ class ConfirmImportedFileReload(bpy.types.Operator):
         if importedFileWatcher and self.stopWatching:
             importedFileWatcher.stopWatchingFile()
 
-        return {'FINISHED'}
+        return {"FINISHED"}
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -440,19 +473,20 @@ class ConfirmImportedFileReload(bpy.types.Operator):
     def draw(self, context):
         row = self.layout
         row.prop(self, "reload", text="Reload")  # type: ignore
-        row.prop(self, "stopWatching",  # type: ignore
-                 text="Stop watching file changes.")
+        row.prop(
+            self, "stopWatching", text="Stop watching file changes."  # type: ignore
+        )
 
 
 class OpenPreferences(bpy.types.Operator):
     bl_idname = operatorIds["OpenPreferences"]
     bl_label = "Open Preferences"
-    bl_options = {'REGISTER'}
+    bl_options = {"REGISTER"}
 
     @staticmethod
     def openPreferences():
         bpy.ops.screen.userpref_show()
-        bpy.context.preferences.active_section = 'ADDONS'
+        bpy.context.preferences.active_section = "ADDONS"
         bpy.data.window_managers["WinMan"].addon_search = bl_info["name"]
 
     def execute(self, context):
@@ -468,17 +502,24 @@ class CodeToCADPanel(bpy.types.Panel):
     bl_region_type = "UI"
 
     def draw(self, context):
-        self.layout.operator(ImportCodeToCAD.bl_idname,
-                             icon='IMPORT', text="Import CodeToCAD")
-        self.layout.operator(ReloadLastImport.bl_idname,
-                             icon='FILE_REFRESH', text="Reload imported file")
-        self.layout.operator(StopAutoReload.bl_idname,
-                             icon='REMOVE', text="Stop auto-reload")
+        self.layout.operator(
+            ImportCodeToCAD.bl_idname, icon="IMPORT", text="Import CodeToCAD"
+        )
+        self.layout.operator(
+            ReloadLastImport.bl_idname, icon="FILE_REFRESH", text="Reload imported file"
+        )
+        self.layout.operator(
+            StopAutoReload.bl_idname, icon="REMOVE", text="Stop auto-reload"
+        )
         self.layout.separator()
-        self.layout.operator(ReloadCodeToCADModules.bl_idname,
-                             icon='FILE_REFRESH', text="Reload CodeToCAD Modules")
-        self.layout.operator(OpenPreferences.bl_idname,
-                             icon='PREFERENCES', text="Open Preferences")
+        self.layout.operator(
+            ReloadCodeToCADModules.bl_idname,
+            icon="FILE_REFRESH",
+            text="Reload CodeToCAD Modules",
+        )
+        self.layout.operator(
+            OpenPreferences.bl_idname, icon="PREFERENCES", text="Open Preferences"
+        )
 
 
 def addCodeToCADToBlenderConsole():
@@ -491,12 +532,14 @@ def runFromCommandLineArguments(*args):
     for index in range(1, len(sys.argv)):
         if sys.argv[index].lower() == "--codetocad":
             from codetocad.utilities import get_absolute_filepath
+
             filepath = sys.argv[index + 1]
             filepath = get_absolute_filepath(filepath)
 
             if not Path(filepath).exists():
                 raise Exception(
-                    f"Could not find file {filepath}. If you're using a relative path via command line, consider using `$(pwd)/filename.py`.")
+                    f"Could not find file {filepath}. If you're using a relative path via command line, consider using `$(pwd)/filename.py`."
+                )
 
             directory = str(Path(filepath).parent)
 
@@ -511,9 +554,14 @@ blenderLoadPostHandler: list = bpy.app.handlers.load_post  # type: ignore
 def checkVersion():
     from blender_provider import blender_actions, blender_definitions
 
-    if blender_actions.get_blender_version() and blender_actions.get_blender_version() < blender_definitions.BlenderVersions.TWO_DOT_EIGHTY.value:
+    if (
+        blender_actions.get_blender_version()
+        and blender_actions.get_blender_version()
+        < blender_definitions.BlenderVersions.TWO_DOT_EIGHTY.value
+    ):
         print(
-            f"CodeToCAD blender_provider only supports Blender versions {'.'.join(tuple, blender_definitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(blender_actions.getBlenderVersion())}")  # type: ignore
+            f"CodeToCAD blender_provider only supports Blender versions {'.'.join(tuple, blender_definitions.BlenderVersions.TWO_DOT_EIGHTY.value)}+. You are running version {'.'.join(blender_actions.getBlenderVersion())}"
+        )  # type: ignore
 
 
 def register():

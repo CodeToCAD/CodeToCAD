@@ -1,9 +1,12 @@
 from onshape_client import Client
 from onshape_client.oas import (
     BTFeatureDefinitionCall1406,
-    BTMIndividualQuery138, BTModelElementParams,
+    BTMIndividualQuery138,
+    BTModelElementParams,
     BTMParameterQueryList148,
-    BTMSketch151, BTMSketchPoint158)
+    BTMSketch151,
+    BTMSketchPoint158,
+)
 from codetocad.core.point import Point
 
 import codetocad.utilities as Utilities
@@ -32,38 +35,57 @@ def get_first_document_workspace_by_id(client: Client, document_id: str) -> dict
     return get_document_workspaces_by_id(client, document_id)[0]
 
 
-def get_document_tabs_by_id(client: Client, document_id: str, workspace_id: str) -> list[dict]:
-    return client.documents_api.get_elements_in_document(did=document_id, wvmid=workspace_id, wvm="w")
+def get_document_tabs_by_id(
+    client: Client, document_id: str, workspace_id: str
+) -> list[dict]:
+    return client.documents_api.get_elements_in_document(
+        did=document_id, wvmid=workspace_id, wvm="w"
+    )
 
 
-def get_first_document_tabs_by_id(client: Client, document_id: str, workspace_id: str) -> dict:
+def get_first_document_tabs_by_id(
+    client: Client, document_id: str, workspace_id: str
+) -> dict:
     return get_document_tabs_by_id(client, document_id, workspace_id)[0]
 
 
-def get_first_document_url_by_id(client: Client, document_id: str) -> onshape_definitions.OnshapeUrl:
-    workspace_id: str = get_first_document_workspace_by_id(client, document_id)[
-        "id"]
-    tab_id: str = get_first_document_tabs_by_id(
-        client, document_id, workspace_id)["id"]
-    return onshape_definitions.OnshapeUrl(document_id=document_id, workspace_id=workspace_id, tab_id=tab_id)
+def get_first_document_url_by_id(
+    client: Client, document_id: str
+) -> onshape_definitions.OnshapeUrl:
+    workspace_id: str = get_first_document_workspace_by_id(client, document_id)["id"]
+    tab_id: str = get_first_document_tabs_by_id(client, document_id, workspace_id)["id"]
+    return onshape_definitions.OnshapeUrl(
+        document_id=document_id, workspace_id=workspace_id, tab_id=tab_id
+    )
 
 
-def get_first_document_url_by_name(client: Client, document_name: str) -> onshape_definitions.OnshapeUrl:
+def get_first_document_url_by_name(
+    client: Client, document_name: str
+) -> onshape_definitions.OnshapeUrl:
     document_id = get_document_by_name(client, document_name)["id"]
     return get_first_document_url_by_id(client, document_id)
 
 
-def create_tab_part_studios(client: Client, onshape_url: onshape_definitions.OnshapeUrl, tab_name: str) -> str:
-    '''
+def create_tab_part_studios(
+    client: Client, onshape_url: onshape_definitions.OnshapeUrl, tab_name: str
+) -> str:
+    """
     Create a Part Studio tab and return the newly created tab id
-    '''
+    """
 
     partStudio = client.part_studios_api.create_part_studio(
-        **onshape_url.dict_document_and_workspace, bt_model_element_params=BTModelElementParams(name=tab_name))
+        **onshape_url.dict_document_and_workspace,
+        bt_model_element_params=BTModelElementParams(name=tab_name),
+    )
     return partStudio["id"]
 
 
-def create_sketch(client: Client, onshape_url: onshape_definitions.OnshapeUrl, sketch_name: str, btm_entities: list):
+def create_sketch(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    sketch_name: str,
+    btm_entities: list,
+):
     # References https://github.com/onshape-public/onshape-clients/blob/master/python/test/test_part_studios_api.py
     PLANE_ID = "JDC"  # The plane deterministic ID for the sketch
     plane_query = BTMParameterQueryList148(
@@ -83,9 +105,20 @@ def create_sketch(client: Client, onshape_url: onshape_definitions.OnshapeUrl, s
     )
 
 
-def create_point(client: Client, onshape_url: onshape_definitions.OnshapeUrl, sketch_name: str,  point: Point):
+def create_point(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    sketch_name: str,
+    point: Point,
+):
     btmPoint = BTMSketchPoint158(
-        y=point.y.value, x=point.x.value, is_user_point=True, is_construction=False, parameters=[]
+        y=point.y.value,
+        x=point.x.value,
+        is_user_point=True,
+        is_construction=False,
+        parameters=[],
     )
 
-    return create_sketch(client, onshape_url, sketch_name=sketch_name, btm_entities=[btmPoint])
+    return create_sketch(
+        client, onshape_url, sketch_name=sketch_name, btm_entities=[btmPoint]
+    )

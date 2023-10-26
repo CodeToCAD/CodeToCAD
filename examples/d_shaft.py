@@ -4,7 +4,6 @@ from codetocad import *
 
 @dataclass
 class DShaft:
-
     shaft_length: Dimension
     radius: Dimension
     d_profile_radius: Dimension
@@ -21,7 +20,8 @@ class DShaft:
         shaft = Part(name).create_cylinder(radius, shaft_length)
 
         d_profile = Part("dProfile").create_cube(
-            d_profile_width, radius * 2, self.d_profile_length)
+            d_profile_width, radius * 2, self.d_profile_length
+        )
 
         shaft_left_side = shaft.get_landmark(PresetLandmark.leftTop)
         d_profile_left_side = d_profile.get_landmark(PresetLandmark.leftTop)
@@ -42,8 +42,13 @@ if __name__ == "__main__":
     shaft_length = Dimension.from_string("13.65mm")
     radius = Dimension.from_string("5.9/2mm")
     d_profile_radius = Dimension.from_string("5.3/2mm")
-    d_profile_length = shaft_length/2
+    d_profile_length = shaft_length / 2
     tolerance = Dimension.from_string("0.15mm")
 
-    dShaft = DShaft(shaft_length=shaft_length, radius=radius,
-                    d_profile_radius=d_profile_radius, d_profile_length=d_profile_length, tolerance=tolerance).create("shaft")
+    dShaft = DShaft(
+        shaft_length=shaft_length,
+        radius=radius,
+        d_profile_radius=d_profile_radius,
+        d_profile_length=d_profile_length,
+        tolerance=tolerance,
+    ).create("shaft")

@@ -8,8 +8,9 @@ wire_thickness = Dimension.from_string("1mm")
 number_of_windings = 10
 
 groove_spiral = Sketch("grooveSpiral").create_spiral(
-    number_of_windings, drum_length, drum_radius)
+    number_of_windings, drum_length, drum_radius
+)
 
-groove = Sketch("groove").create_circle(wire_thickness/2)
+groove = Sketch("groove").create_circle(wire_thickness / 2)
 
 groove_spiral.sweep(groove)

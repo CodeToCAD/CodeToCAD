@@ -34,9 +34,12 @@ with open(capabilitiesJson) as f:
 templatesToGenerate = [
     (capabilities_to_py_interface, capabilities_to_py_interface_out, "Interface"),
     (capabilities_to_py_provider, capabilities_to_py_provider_out, ""),
-    (capabilities_to_py_test_interface,
-     capabilities_to_py_test_interface_out, "TestInterface"),
-    (capabilities_to_py_test, capabilities_to_py_test_out, "Test")
+    (
+        capabilities_to_py_test_interface,
+        capabilities_to_py_test_interface_out,
+        "TestInterface",
+    ),
+    (capabilities_to_py_test, capabilities_to_py_test_out, "Test"),
 ]
 
 templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
@@ -46,8 +49,9 @@ templateEnv = jinja2.Environment(loader=templateLoader)
 def createInitFile(outputDir: str):
     with open(outputDir + "/__init__.py", "w") as handler:
         handler.write(
-            '''# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
-''')
+            """# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
+"""
+        )
 
 
 for template, output, suffix in templatesToGenerate:
@@ -56,22 +60,16 @@ for template, output, suffix in templatesToGenerate:
     createInitFile(output)
 
     for className, methods in capabilities["capabilities"].items():
-
         file_name = to_snake_case(f"{className}{suffix}")
 
         with open(output + "/__init__.py", "a") as handler:
-            handler.write(
-                f"from .{file_name} import {className}{suffix}\n")
+            handler.write(f"from .{file_name} import {className}{suffix}\n")
 
         template = templateEnv.get_template(template)
         output_from_parsed_template = template.render(
             dict(
-                {
-                    "className": className,
-                    "classNameSuffix": suffix,
-                    "methods": methods
-                },
-                **capabilities
+                {"className": className, "classNameSuffix": suffix, "methods": methods},
+                **capabilities,
             )
         )
         with open(output + f"/{file_name}.py", "w") as fh:

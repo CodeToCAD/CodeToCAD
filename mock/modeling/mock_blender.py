@@ -11,13 +11,12 @@ class Material:
 
 
 class Mesh:
-    def __init__(self, name: str, verticies: list[
-            'Mesh.MeshVertex']) -> None:
+    def __init__(self, name: str, verticies: list["Mesh.MeshVertex"]) -> None:
         self.name = name
         self.vertices: list[Mesh.MeshVertex] = verticies
         self.materials: list[Material] = []
 
-    def copy(self) -> 'Mesh':
+    def copy(self) -> "Mesh":
         copy = Mesh(self.name, self.vertices)
 
         global mockBpy
@@ -29,26 +28,47 @@ class Mesh:
         self.vertices = [Mesh.MeshVertex(vector) for vector in vectors]
 
     @property
-    def bound_box(self) -> tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]:
-        minX, minY, minZ = np.min(
-            [v.co.vector for v in self.vertices], axis=0).tolist()
-        maxX, maxY, maxZ = np.max(
-            [v.co.vector for v in self.vertices], axis=0).tolist()
+    def bound_box(
+        self,
+    ) -> tuple[
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+    ]:
+        minX, minY, minZ = np.min([v.co.vector for v in self.vertices], axis=0).tolist()
+        maxX, maxY, maxZ = np.max([v.co.vector for v in self.vertices], axis=0).tolist()
 
-        return ((minX, minY, minZ), (minX, minY, maxZ),  (minX, maxY, maxZ), (minX, maxY, minZ), (maxX, minY, minZ), (maxX, minY, maxZ), (maxX, maxY, maxZ),  (maxX, maxY, minZ))
+        return (
+            (minX, minY, minZ),
+            (minX, minY, maxZ),
+            (minX, maxY, maxZ),
+            (minX, maxY, minZ),
+            (maxX, minY, minZ),
+            (maxX, minY, maxZ),
+            (maxX, maxY, maxZ),
+            (maxX, maxY, minZ),
+        )
 
     def calculate_dimensions(self, scale: Optional[Vector]) -> Vector:
-        dimensions = Vector((
-            np.max(
-                [v.co.vector for v in self.vertices], axis=0) - np.min([v.co.vector for v in self.vertices], axis=0)
-        ).tolist())
+        dimensions = Vector(
+            (
+                np.max([v.co.vector for v in self.vertices], axis=0)
+                - np.min([v.co.vector for v in self.vertices], axis=0)
+            ).tolist()
+        )
         if scale:
             dimensions *= scale
         return dimensions
 
     def transform(self, matrix: Matrix):
-        self.vertices = [Mesh.MeshVertex(
-            (v.co.to_1x4() @ matrix).to_1x3()) for v in self.vertices]
+        self.vertices = [
+            Mesh.MeshVertex((v.co.to_1x4() @ matrix).to_1x3()) for v in self.vertices
+        ]
 
     @property
     def dimensions(self) -> Vector:
@@ -62,14 +82,15 @@ class Mesh:
 class Object:
     is_hide = False
 
-    def __init__(self, name, default_users_collection: Optional['Collection']) -> None:
+    def __init__(self, name, default_users_collection: Optional["Collection"]) -> None:
         self.name = name
         self.data: Optional[Any] = None
-        self.children: list['Object'] = []
+        self.children: list["Object"] = []
         self.parent: Optional[Object] = None
         self.matrix_world = Matrix()
-        self.users_collection = [
-            default_users_collection] if default_users_collection else []
+        self.users_collection = (
+            [default_users_collection] if default_users_collection else []
+        )
         self.modifiers = Object.Modifiers()
         self.constraints = Object.Constraints()
 
@@ -109,7 +130,9 @@ class Object:
     def matrix_local(self) -> Matrix:
         if self.parent is None:
             return self.matrix_world
-        return self.parent.matrix_world @ (1 if self.parent is None else self.parent.location - self.location)
+        return self.parent.matrix_world @ (
+            1 if self.parent is None else self.parent.location - self.location
+        )
 
     @property
     def bound_box(self):
@@ -119,7 +142,6 @@ class Object:
 
     @property
     def dimensions(self):
-
         if isinstance(self.data, Mesh):
             return self.data.calculate_dimensions(self.scale)
 
@@ -127,12 +149,10 @@ class Object:
 
     def __setattr__(self, __name: str, __value: Any) -> None:
         if __name == "location":
-            self.matrix_world.translate(
-                __value[0], __value[1], __value[2])
+            self.matrix_world.translate(__value[0], __value[1], __value[2])
 
             for child in self.children:
-                child.matrix_world.translate(
-                    __value[0], __value[1], __value[2])
+                child.matrix_world.translate(__value[0], __value[1], __value[2])
 
         if __name == "parent":
             if __value is None:
@@ -142,12 +162,10 @@ class Object:
                 __value.children.append(self)
 
         if __name == "scale":
-            self.matrix_world.scale(
-                __value[0], __value[1], __value[2])
+            self.matrix_world.scale(__value[0], __value[1], __value[2])
 
         if __name == "rotation_euler":
-            self.matrix_world.rotate_by_euler_angle(
-                __value[0], __value[1], __value[2])
+            self.matrix_world.rotate_by_euler_angle(__value[0], __value[1], __value[2])
 
         if __name == "matrix_basis":
             # [translation, rotation, scale] = __value.to_4x4().decompose()
@@ -171,7 +189,7 @@ class Object:
     def evaluated_get(self, dg):
         return self
 
-    def copy(self) -> 'Object':
+    def copy(self) -> "Object":
         global mockBpy
         copy = Object(self.name, mockBpy.context.default_user_collection)
         copy.data = self.data
@@ -235,13 +253,14 @@ class Collection:
         global mockBpy
         return self in object.users_collection
 
-    @ property
+    @property
     def linked_objects(self):
-        return list(filter(self.object_belongs_to_collection, mockBpy.data.objects.objects))
+        return list(
+            filter(self.object_belongs_to_collection, mockBpy.data.objects.objects)
+        )
 
     class CollectionObjects:
-
-        def __init__(self, collection: 'Collection') -> None:
+        def __init__(self, collection: "Collection") -> None:
             self.collection = collection
 
         def unlink(self, object: Object):
@@ -317,7 +336,6 @@ class Materials:
 
 
 class Data:
-
     def __init__(self) -> None:
         self.objects = Objects()
         self.meshes = Meshes()
@@ -327,7 +345,9 @@ class Data:
 
         self.selectedObject: Optional[Object] = None
 
-    def create_mesh_object(self, object_name, mesh_name, verticies: list[Mesh.MeshVertex]):
+    def create_mesh_object(
+        self, object_name, mesh_name, verticies: list[Mesh.MeshVertex]
+    ):
         global mockBpy
 
         mesh = Mesh(mesh_name, verticies)
@@ -347,85 +367,141 @@ class Ops:
         self.wm = Ops.OpsWM()
 
     class OpsExportMesh:
-        @ staticmethod
+        @staticmethod
         def stl(
-                filepath: Union[str, Any] = "",
-                use_selection: Union[bool, Any] = False,
-                global_scale: Optional[Any] = 1.0
+            filepath: Union[str, Any] = "",
+            use_selection: Union[bool, Any] = False,
+            global_scale: Optional[Any] = 1.0,
         ):
-            return {'FINISHED'}
+            return {"FINISHED"}
 
     class OpsExportScene:
-        @ staticmethod
+        @staticmethod
         def obj(
-                filepath: Union[str, Any] = "",
-                use_selection: Union[bool, Any] = False,
-                global_scale: Optional[Any] = 1.0
+            filepath: Union[str, Any] = "",
+            use_selection: Union[bool, Any] = False,
+            global_scale: Optional[Any] = 1.0,
         ):
-            return {'FINISHED'}
+            return {"FINISHED"}
 
     class OpsWM:
-        @ staticmethod
+        @staticmethod
         def obj_export(
-                filepath: Union[str, Any] = "",
-                export_selected_objects: Union[bool,
-                                               Any] = False,
-                global_scale: Optional[Any] = 1.0
+            filepath: Union[str, Any] = "",
+            export_selected_objects: Union[bool, Any] = False,
+            global_scale: Optional[Any] = 1.0,
         ):
-            return {'FINISHED'}
+            return {"FINISHED"}
 
     class OpsObject:
-        @ staticmethod
+        @staticmethod
         def empty_add(radius, **keywordArguments):
             global mockBpy
             mockBpy.data.objects.objects.append(
-                Object("Empty", mockBpy.context.default_user_collection))
+                Object("Empty", mockBpy.context.default_user_collection)
+            )
 
-        @ staticmethod
-        def select_all(action: Optional[Any] = 'TOGGLE'):
+        @staticmethod
+        def select_all(action: Optional[Any] = "TOGGLE"):
             pass
 
     class OpsCurve:
         @staticmethod
-        def simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), simple=True, simple_Change=False, simple_Delete="", simple_Type='Point', simple_endlocation=(2, 2, 2), simple_a=2, simple_b=1, simple_h=1, simple_angle=45, simple_startangle=0, simple_endangle=45,
-                   simple_sides=3, simple_radius=1, simple_center=True, simple_degrees_or_radians='Degrees', simple_width=2, simple_length=2, simple_rounded=0, shape='2D', output_type='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handle_type='VECTOR', edit_mode=True):
+        def simple(
+            align="WORLD",
+            location=(0, 0, 0),
+            rotation=(0, 0, 0),
+            simple=True,
+            simple_Change=False,
+            simple_Delete="",
+            simple_Type="Point",
+            simple_endlocation=(2, 2, 2),
+            simple_a=2,
+            simple_b=1,
+            simple_h=1,
+            simple_angle=45,
+            simple_startangle=0,
+            simple_endangle=45,
+            simple_sides=3,
+            simple_radius=1,
+            simple_center=True,
+            simple_degrees_or_radians="Degrees",
+            simple_width=2,
+            simple_length=2,
+            simple_rounded=0,
+            shape="2D",
+            output_type="BEZIER",
+            use_cyclic_u=True,
+            endp_u=True,
+            order_u=4,
+            handle_type="VECTOR",
+            edit_mode=True,
+        ):
             raise NotImplementedError()
 
     class OpsMesh:
-
         @staticmethod
         def primitive_gear(
-                name,
-                number_of_teeth,
-                radius,
-                addendum,
-                dedendum,
-                angle,
-                base,
-                width,
-                skew,
-                conangle,
-                crown):
+            name,
+            number_of_teeth,
+            radius,
+            addendum,
+            dedendum,
+            angle,
+            base,
+            width,
+            skew,
+            conangle,
+            crown,
+        ):
             global mockBpy
-            mockBpy.data.create_mesh_object("Gear", "Gear", [Mesh.MeshVertex(v * 0.5 * radius * Vector((1, 1, 1))) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
-                (-1.0, 1.0, 1.0)), Vector((1.0, -1.0, -1.0)), Vector((1.0, -1.0, 1.0)), Vector((1.0, 1.0, -1.0)), Vector((1.0, 1.0, 1.0))]])
+            mockBpy.data.create_mesh_object(
+                "Gear",
+                "Gear",
+                [
+                    Mesh.MeshVertex(v * 0.5 * radius * Vector((1, 1, 1)))
+                    for v in [
+                        Vector((-1.0, -1.0, -1.0)),
+                        Vector((-1.0, -1.0, 1.0)),
+                        Vector((-1.0, 1.0, -1.0)),
+                        Vector((-1.0, 1.0, 1.0)),
+                        Vector((1.0, -1.0, -1.0)),
+                        Vector((1.0, -1.0, 1.0)),
+                        Vector((1.0, 1.0, -1.0)),
+                        Vector((1.0, 1.0, 1.0)),
+                    ]
+                ],
+            )
 
-        @ staticmethod
+        @staticmethod
         def primitive_cube_add(
-                size: Optional[Any] = 2.0,
-                location: Optional[Any] = (
-                    0.0, 0.0, 0.0),
-                rotation: Optional[Any] = (
-                    0.0, 0.0, 0.0),
-                scale: Optional[Any] = (0.0, 0.0, 0.0)):
+            size: Optional[Any] = 2.0,
+            location: Optional[Any] = (0.0, 0.0, 0.0),
+            rotation: Optional[Any] = (0.0, 0.0, 0.0),
+            scale: Optional[Any] = (0.0, 0.0, 0.0),
+        ):
             global mockBpy
-            mockBpy.data.create_mesh_object("Cube", "Cube", [Mesh.MeshVertex(v * 0.5 * size * Vector(scale or (1, 1, 1))) for v in [Vector((-1.0, -1.0, -1.0)), Vector((-1.0, -1.0, 1.0)), Vector((-1.0, 1.0, -1.0)), Vector(
-                (-1.0, 1.0, 1.0)), Vector((1.0, -1.0, -1.0)), Vector((1.0, -1.0, 1.0)), Vector((1.0, 1.0, -1.0)), Vector((1.0, 1.0, 1.0))]])
+            mockBpy.data.create_mesh_object(
+                "Cube",
+                "Cube",
+                [
+                    Mesh.MeshVertex(v * 0.5 * size * Vector(scale or (1, 1, 1)))
+                    for v in [
+                        Vector((-1.0, -1.0, -1.0)),
+                        Vector((-1.0, -1.0, 1.0)),
+                        Vector((-1.0, 1.0, -1.0)),
+                        Vector((-1.0, 1.0, 1.0)),
+                        Vector((1.0, -1.0, -1.0)),
+                        Vector((1.0, -1.0, 1.0)),
+                        Vector((1.0, 1.0, -1.0)),
+                        Vector((1.0, 1.0, 1.0)),
+                    ]
+                ],
+            )
 
 
 class Context:
-
-    @ property
+    @property
     def default_user_collection(self):
         global mockBpy
         return mockBpy.data.collections.collections[0]
@@ -455,11 +531,13 @@ def inject_mock_bpy():
     global mockBpy
 
     import bpy
+
     setattr(bpy, "data", mockBpy.data)
     setattr(bpy, "ops", mockBpy.ops)
     setattr(bpy, "context", mockBpy.context)
 
     import mathutils
+
     setattr(mathutils, "Matrix", Matrix)
     setattr(mathutils, "Vector", Vector)
 
