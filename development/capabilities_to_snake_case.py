@@ -18,7 +18,7 @@ def to_snake_case(name):
 
 script_dir, _ = os.path.split(__file__)
 
-capabilities = json.load(open(f"{script_dir}/capabilities.json"))
+capabilities = json.load(open(f"{script_dir}/../codetocad/capabilities.json"))
 
 # capabilities_new = json.loads(json.dumps(capabilities))
 
