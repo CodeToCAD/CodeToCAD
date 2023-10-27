@@ -1,15 +1,12 @@
+from dataclasses import dataclass
 from codetocad.core.dimension import Dimension
 
 
+@dataclass
 class Point:
     x: Dimension
     y: Dimension
     z: Dimension
-
-    def __init__(self, x: Dimension, y: Dimension, z: Dimension) -> None:
-        self.x = x
-        self.y = y
-        self.z = z
 
     def to_list(self):
         return [self.x, self.y, self.z]
