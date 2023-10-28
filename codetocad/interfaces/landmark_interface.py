@@ -8,8 +8,10 @@ from codetocad.codetocad_types import *
 from codetocad.core import *
 from codetocad.enums import *
 
+from codetocad.interfaces import EntityInterface
 
-class LandmarkInterface(metaclass=ABCMeta):
+
+class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
     """Landmarks are named positions on an entity."""
 
     name: str
@@ -22,10 +24,13 @@ class LandmarkInterface(metaclass=ABCMeta):
         name: str,
         parent_entity: EntityOrItsName,
         description: Optional[str] = None,
+        native_instance=None,
     ):
+        super().__init__(name, description, native_instance)
         self.name = name
         self.parent_entity = parent_entity
         self.description = description
+        self.native_instance = native_instance
 
     @abstractmethod
     def get_landmark_entity_name(self) -> str:
@@ -48,94 +53,3 @@ class LandmarkInterface(metaclass=ABCMeta):
             "get_parent_entity is called in an abstract method. Please override this method."
         )
         raise NotImplementedError()
-
-    @abstractmethod
-    def is_exists(self) -> bool:
-        """
-        Check if an landmark exists
-        """
-
-        print("is_exists is called in an abstract method. Please override this method.")
-        raise NotImplementedError()
-
-    @abstractmethod
-    def rename(self, new_name: str):
-        """
-        Rename the landmark.
-        """
-
-        print("rename is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def delete(self):
-        """
-        Delete the landmark from the scene.
-        """
-
-        print("delete is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def is_visible(self) -> bool:
-        """
-        Returns whether the landmark is visible in the scene.
-        """
-
-        print(
-            "is_visible is called in an abstract method. Please override this method."
-        )
-        raise NotImplementedError()
-
-    @abstractmethod
-    def set_visible(self, is_visible: bool):
-        """
-        Toggles visibility of an landmark in the scene.
-        """
-
-        print(
-            "set_visible is called in an abstract method. Please override this method."
-        )
-        return self
-
-    @abstractmethod
-    def get_native_instance(self) -> object:
-        """
-        Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.
-        """
-
-        print(
-            "get_native_instance is called in an abstract method. Please override this method."
-        )
-        raise NotImplementedError()
-
-    @abstractmethod
-    def get_location_world(self) -> "Point":
-        """
-        Get the landmark XYZ location relative to World Space.
-        """
-
-        print(
-            "get_location_world is called in an abstract method. Please override this method."
-        )
-        raise NotImplementedError()
-
-    @abstractmethod
-    def get_location_local(self) -> "Point":
-        """
-        Get the landmark XYZ location relative to Local Space.
-        """
-
-        print(
-            "get_location_local is called in an abstract method. Please override this method."
-        )
-        raise NotImplementedError()
-
-    @abstractmethod
-    def select(self):
-        """
-        Select the landmark (in UI).
-        """
-
-        print("select is called in an abstract method. Please override this method.")
-        return self

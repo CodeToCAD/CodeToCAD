@@ -181,15 +181,8 @@
                             "description": "A schema for this class's constructor method.",
                             "type": "object"
                         },
-                        "alias": {
-                            "description": "An array of named aliases for this class, for example, if the class name is Part, its aliases could be Object or Thing.",
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extends": {
-                            "description": "The name of the class that this class extends (polymorphism).",
+                        "implements": {
+                            "description": "The name of the class that this class implements (polymorphism).",
                             "type": "string"
                         }
                     },
@@ -201,7 +194,7 @@
                                 "alias": [
                                     "$2"
                                 ],
-                                "extends": "$3",
+                                "implements": "$3",
                                 "constructor": null,
                                 "methodA": null
                             }

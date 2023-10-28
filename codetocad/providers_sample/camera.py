@@ -11,14 +11,20 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
+from . import Entity
 
-class Camera(CameraInterface):
+
+class Camera(Entity, CameraInterface):
     name: str
     description: Optional[str] = None
+    native_instance = None
 
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(
+        self, name: str, description: Optional[str] = None, native_instance=None
+    ):
         self.name = name
         self.description = description
+        self.native_instance = native_instance
 
     def create_perspective(self):
         return self
@@ -27,41 +33,4 @@ class Camera(CameraInterface):
         return self
 
     def set_focal_length(self, length: float):
-        return self
-
-    def translate_xyz(
-        self,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
-
-    def rotate_xyz(
-        self,
-        x: AngleOrItsFloatOrStringValue,
-        y: AngleOrItsFloatOrStringValue,
-        z: AngleOrItsFloatOrStringValue,
-    ):
-        return self
-
-    def is_exists(self) -> bool:
-        raise NotImplementedError()
-
-    def rename(self, new_name: str):
-        return self
-
-    def delete(self):
-        return self
-
-    def get_native_instance(self) -> object:
-        raise NotImplementedError()
-
-    def get_location_world(self) -> "Point":
-        raise NotImplementedError()
-
-    def get_location_local(self) -> "Point":
-        raise NotImplementedError()
-
-    def select(self):
         return self

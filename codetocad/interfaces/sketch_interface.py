@@ -9,9 +9,18 @@ from codetocad.core import *
 from codetocad.enums import *
 
 from codetocad.interfaces import EntityInterface
+from codetocad.interfaces import MirrorableInterface
+from codetocad.interfaces import PatternableInterface
+from codetocad.interfaces import ImportableInterface
 
 
-class SketchInterface(EntityInterface, metaclass=ABCMeta):
+class SketchInterface(
+    EntityInterface,
+    MirrorableInterface,
+    PatternableInterface,
+    ImportableInterface,
+    metaclass=ABCMeta,
+):
     """Capabilities related to adding, multiplying, and/or modifying a curve."""
 
     name: str
@@ -24,12 +33,13 @@ class SketchInterface(EntityInterface, metaclass=ABCMeta):
         name: str,
         curve_type: Optional["CurveTypes"] = None,
         description: Optional[str] = None,
+        native_instance=None,
     ):
-        super().__init__(name, description)
-
+        super().__init__(name, description, native_instance)
         self.name = name
         self.curve_type = curve_type
         self.description = description
+        self.native_instance = native_instance
 
     @abstractmethod
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "SketchInterface":

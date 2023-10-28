@@ -2,6 +2,7 @@
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
+from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 from codetocad.core import *
