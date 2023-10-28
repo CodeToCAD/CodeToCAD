@@ -2,7 +2,7 @@
 This Jinja2 Template requires the following parameters:
 - className
 - methods
-- superParameters, e.g. the ["constructor"]["parameters"] of the class this class extends.
+- superParameters, e.g. the ["constructor"]["parameters"] of the class this class implements.
 #}
 # THIS IS AN AUTO-GENERATE FILE.
 # DO NOT EDIT MANUALLY.
@@ -13,19 +13,19 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 from codetocad.core import *
 from codetocad.enums import *
-{%set extendedClassesWithSuffixes = []-%}
-{% if "extends" in methods%}
-{%set extendedClasses = methods["extends"]-%}
-{% for extendedClass in extendedClasses.split(",") -%}
-{%set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
-{%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
-from codetocad.interfaces import {{extendedClassWithSuffix}}
+{%set implementedClassesWithSuffixes = []-%}
+{% if "implements" in methods%}
+{%set implementedClasses = methods["implements"]-%}
+{% for implementedClass in implementedClasses.split(",") -%}
+{%set implementedClassWithSuffix = implementedClass + classNameSuffix-%}
+{%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
+from codetocad.interfaces import {{implementedClassWithSuffix}}
 {% endfor-%}
 {%-endif%}
 
 {%-set useAbstractMethodDecorator = True%}
 
-class {{className+classNameSuffix}}({{extendedClassesWithSuffixes|join(",") + (", " if extendedClassesWithSuffixes|length > 0 else "")-}}metaclass=ABCMeta):
+class {{className+classNameSuffix}}({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}metaclass=ABCMeta):
     {% if "information" in methods -%}
     '''
     {{- methods["information"] -}}

@@ -11,18 +11,10 @@
                     "description": {
                         "type": "string",
                         "required": false
-                    }
-                }
-            },
-            "create_from_file": {
-                "action": "create",
-                "information": "Adds geometry to a part from a file. If the part does not exist, this will create it.",
-                "parameters": {
-                    "file_path": {
-                        "type": "string"
                     },
-                    "file_type": {
-                        "type": "string",
+                    "native_instance": {
+                        "information": "A cached instance of the native object. This may become stale.",
+                        "type": "any",
                         "required": false
                     }
                 }
@@ -127,57 +119,6 @@
                     "scale": {
                         "type": "float",
                         "defaultValue": 1.0
-                    }
-                }
-            },
-            "mirror": {
-                "action": "create",
-                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
-                "parameters": {
-                    "mirror_across_entity_or_landmark": {
-                        "type": "string,Entity,Landmark"
-                    },
-                    "axis": {
-                        "type": "string,int,Axis"
-                    },
-                    "resulting_mirrored_entity_name": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
-            "linear_pattern": {
-                "action": "modify",
-                "information": "Pattern in a uniform direction.",
-                "parameters": {
-                    "instance_count": {
-                        "type": "int"
-                    },
-                    "offset": {
-                        "type": "string,float,Dimension"
-                    },
-                    "direction_axis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
-            },
-            "circular_pattern": {
-                "action": "modify",
-                "information": "Pattern in a circular direction.",
-                "parameters": {
-                    "instance_count": {
-                        "type": "int"
-                    },
-                    "separation_angle": {
-                        "type": "string,float,Angle"
-                    },
-                    "center_entity_or_landmark": {
-                        "type": "string,Entity,Landmark"
-                    },
-                    "normal_direction_axis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
                     }
                 }
             },
@@ -346,37 +287,17 @@
                     }
                 }
             },
-            "twist": {
-                "action": "modify",
-                "information": "AKA Helix, Screw. Revolve an entity",
-                "parameters": {
-                    "angle": {
-                        "type": "string,float,Angle"
-                    },
-                    "screw_pitch": {
-                        "type": "string,float,Dimension"
-                    },
-                    "interations": {
-                        "type": "int",
-                        "defaultValue": 1
-                    },
-                    "axis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
+            "get_bounding_box": {
+                "action": "get",
+                "returnType": "BoundaryBox",
+                "information": "Get the Boundary Box around the entity.",
+                "parameters": {}
             },
-            "remesh": {
-                "action": "modify",
-                "information": "Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).",
-                "parameters": {
-                    "strategy": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "float"
-                    }
-                }
+            "get_dimensions": {
+                "action": "get",
+                "returnType": "Dimensions",
+                "information": "Get the length span in each coordinate axis (X,Y,Z).",
+                "parameters": {}
             },
             "create_landmark": {
                 "action": "get",
@@ -397,18 +318,6 @@
                     }
                 }
             },
-            "get_bounding_box": {
-                "action": "get",
-                "returnType": "BoundaryBox",
-                "information": "Get the Boundary Box around the entity.",
-                "parameters": {}
-            },
-            "get_dimensions": {
-                "action": "get",
-                "returnType": "Dimensions",
-                "information": "Get the length span in each coordinate axis (X,Y,Z).",
-                "parameters": {}
-            },
             "get_landmark": {
                 "action": "get",
                 "returnType": "Landmark",
@@ -420,13 +329,130 @@
                 }
             }
         },
+        "Mirrorable": {
+            "information": "An entity that can be mirrored.",
+            "mirror": {
+                "action": "create",
+                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
+                "parameters": {
+                    "mirror_across_entity_or_landmark": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis"
+                    },
+                    "resulting_mirrored_entity_name": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "Patternable": {
+            "information": "An entity that can be patterned.",
+            "linear_pattern": {
+                "action": "modify",
+                "information": "Pattern in a uniform direction.",
+                "parameters": {
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "offset": {
+                        "type": "string,float,Dimension"
+                    },
+                    "direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
+            "circular_pattern": {
+                "action": "modify",
+                "information": "Pattern in a circular direction.",
+                "parameters": {
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "separation_angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "center_entity_or_landmark": {
+                        "type": "string,Entity,Landmark"
+                    },
+                    "normal_direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            }
+        },
+        "Subdividable": {
+            "information": "An entity that can be broken down or scaled up into more components.",
+            "remesh": {
+                "action": "modify",
+                "information": "Remeshing changes the shape of an entity.",
+                "parameters": {
+                    "strategy": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            },
+            "subdivide": {
+                "action": "modify",
+                "information": "Subdivide an entity into more components.",
+                "parameters": {
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            },
+            "decimate": {
+                "action": "modify",
+                "information": "Decimate an entity into less components.",
+                "parameters": {
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            }
+        },
+        "Importable": {
+            "information": "An entity that can be imported from a file.",
+            "create_from_file": {
+                "action": "create",
+                "information": "Imports geometry from a file.",
+                "parameters": {
+                    "file_path": {
+                        "type": "string"
+                    },
+                    "file_type": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "Projectable": {
+            "information": "This entity can be projected onto a surface",
+            "project": {
+                "information": "Project this entity onto another",
+                "action": "get",
+                "returnType": "Projectable",
+                "parameters": {
+                    "project_onto": {
+                        "information": "Sketch to project onto",
+                        "type": "Sketch",
+                        "required": true
+                    }
+                }
+            }
+        },
         "Part": {
             "information": "Create and manipulate 3D shapes.",
-            "alias": [
-                "Shape",
-                "Mesh"
-            ],
-            "extends": "Entity",
+            "implements": "Entity,Mirrorable,Patternable,Subdividable,Importable",
             "create_cube": {
                 "action": "create",
                 "information": "Adds cuboid geometry to a part.",
@@ -758,6 +784,26 @@
                     }
                 }
             },
+            "twist": {
+                "action": "modify",
+                "information": "AKA Helix, Screw. Revolve an entity",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "screw_pitch": {
+                        "type": "string,float,Dimension"
+                    },
+                    "interations": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
             "set_material": {
                 "action": "modify",
                 "information": "Assign a known material to this part.",
@@ -888,10 +934,7 @@
         },
         "Sketch": {
             "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
-            "alias": [
-                "Curve"
-            ],
-            "extends": "Entity",
+            "implements": "Entity,Mirrorable,Patternable,Importable",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1211,8 +1254,114 @@
                 }
             }
         },
+        "Vertex": {
+            "information": "A single point in space, or a control point.",
+            "implements": "Entity,Projectable",
+            "constructor": {
+                "parameters": {
+                    "location": {
+                        "information": "Comma separated x,y,z location or [x,y,z] or Point",
+                        "type": "string,list[string],Point"
+                    },
+                    "parent_sketch": {
+                        "type": "string,Sketch",
+                        "required": false
+                    }
+                }
+            },
+            "get_control_points": {
+                "information": "",
+                "action": "get",
+                "returnType": "list[Entity]",
+                "staticMethod": false,
+                "parameters": {
+                    "parameter": {
+                        "information": "",
+                        "type": "",
+                        "defaultValue": "",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "Edge": {
+            "information": "A curve bounded by two Vertices.",
+            "implements": "Entity,Mirrorable,Patternable,Subdividable,Projectable",
+            "constructor": {
+                "parameters": {
+                    "v1": {
+                        "type": "Vertex"
+                    },
+                    "v2": {
+                        "type": "Vertex"
+                    },
+                    "parent_sketch": {
+                        "type": "string,Sketch",
+                        "required": false
+                    }
+                }
+            },
+            "offset": {
+                "information": "Clone and offset this edge a distance away from this one.",
+                "action": "get",
+                "returnType": "Edge",
+                "parameters": {
+                    "distance": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "fillet": {
+                "information": "Fillet this and another edge.",
+                "action": "modify",
+                "parameters": {
+                    "other_edge": {
+                        "type": "Edge"
+                    },
+                    "amount": {
+                        "type": "string,float,Angle"
+                    }
+                }
+            },
+            "set_is_construction": {
+                "information": "Mark this edge for construction only.",
+                "action": "modify",
+                "parameters": {
+                    "is_construction": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "get_is_construction": {
+                "information": "Check if this edge is for construction only.",
+                "action": "get",
+                "returnType": "boolean"
+            }
+        },
+        "Wire": {
+            "information": "A collection of connected edges.",
+            "implements": "Entity,Mirrorable,Patternable,Projectable",
+            "constructor": {
+                "parameters": {
+                    "edges": {
+                        "information": "A collection of edges",
+                        "type": "list[Edge]"
+                    },
+                    "parent_sketch": {
+                        "type": "string,Sketch",
+                        "required": false
+                    }
+                }
+            },
+            "is_closed": {
+                "information": "A closed wire is a Face.",
+                "action": "get",
+                "returnType": "boolean"
+            }
+        },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
+            "implements": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1238,62 +1387,6 @@
                 "information": "Get the name of the entity this landmark belongs to.",
                 "action": "get",
                 "returnType": "Entity"
-            },
-            "is_exists": {
-                "action": "get",
-                "information": "Check if an landmark exists",
-                "returnType": "boolean"
-            },
-            "rename": {
-                "action": "modify",
-                "information": "Rename the landmark.",
-                "parameters": {
-                    "new_name": {
-                        "type": "string"
-                    }
-                }
-            },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the landmark from the scene.",
-                "parameters": {}
-            },
-            "is_visible": {
-                "action": "get",
-                "information": "Returns whether the landmark is visible in the scene.",
-                "returnType": "boolean"
-            },
-            "set_visible": {
-                "action": "interact",
-                "information": "Toggles visibility of an landmark in the scene.",
-                "parameters": {
-                    "is_visible": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "get_native_instance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "returnType": "any",
-                "parameters": {}
-            },
-            "get_location_world": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the landmark XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "get_location_local": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the landmark XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the landmark (in UI).",
-                "parameters": {}
             }
         },
         "Joint": {
@@ -1586,6 +1679,7 @@
         },
         "Light": {
             "information": "Manipulate a light object.",
+            "implements": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1647,82 +1741,11 @@
                         "type": "float"
                     }
                 }
-            },
-            "translate_xyz": {
-                "action": "modify",
-                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "rotate_xyz": {
-                "action": "modify",
-                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Angle"
-                    },
-                    "y": {
-                        "type": "string,float,Angle"
-                    },
-                    "z": {
-                        "type": "string,float,Angle"
-                    }
-                }
-            },
-            "is_exists": {
-                "action": "get",
-                "information": "Check if an light exists",
-                "returnType": "boolean"
-            },
-            "rename": {
-                "action": "modify",
-                "information": "Rename the light.",
-                "parameters": {
-                    "new_name": {
-                        "type": "string"
-                    }
-                }
-            },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the light from the scene.",
-                "parameters": {}
-            },
-            "get_native_instance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "returnType": "any",
-                "parameters": {}
-            },
-            "get_location_world": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the light XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "get_location_local": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the light XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the light (in UI).",
-                "parameters": {}
             }
         },
         "Camera": {
             "information": "Manipulate a camera object.",
+            "implements": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1752,78 +1775,6 @@
                         "type": "float"
                     }
                 }
-            },
-            "translate_xyz": {
-                "action": "modify",
-                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "rotate_xyz": {
-                "action": "modify",
-                "information": "Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Angle"
-                    },
-                    "y": {
-                        "type": "string,float,Angle"
-                    },
-                    "z": {
-                        "type": "string,float,Angle"
-                    }
-                }
-            },
-            "is_exists": {
-                "action": "get",
-                "information": "Check if an camera exists",
-                "returnType": "boolean"
-            },
-            "rename": {
-                "action": "modify",
-                "information": "Rename the camera.",
-                "parameters": {
-                    "new_name": {
-                        "type": "string"
-                    }
-                }
-            },
-            "delete": {
-                "action": "delete",
-                "information": "Delete the camera from the scene.",
-                "parameters": {}
-            },
-            "get_native_instance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "returnType": "any",
-                "parameters": {}
-            },
-            "get_location_world": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the camera XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "get_location_local": {
-                "action": "get",
-                "returnType": "Point",
-                "information": "Get the camera XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "select": {
-                "action": "interact",
-                "information": "Select the entity (in UI).",
-                "parameters": {}
             }
         },
         "Render": {

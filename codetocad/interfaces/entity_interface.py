@@ -14,22 +14,15 @@ class EntityInterface(metaclass=ABCMeta):
 
     name: str
     description: Optional[str] = None
+    native_instance = None
 
     @abstractmethod
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(
+        self, name: str, description: Optional[str] = None, native_instance=None
+    ):
         self.name = name
         self.description = description
-
-    @abstractmethod
-    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
-        """
-        Adds geometry to a part from a file. If the part does not exist, this will create it.
-        """
-
-        print(
-            "create_from_file is called in an abstract method. Please override this method."
-        )
-        return self
+        self.native_instance = native_instance
 
     @abstractmethod
     def is_exists(self) -> bool:
@@ -144,53 +137,6 @@ class EntityInterface(metaclass=ABCMeta):
         """
 
         print("export is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def mirror(
-        self,
-        mirror_across_entity_or_landmark: EntityOrItsNameOrLandmark,
-        axis: AxisOrItsIndexOrItsName,
-        resulting_mirrored_entity_name: Optional[str] = None,
-    ):
-        """
-        Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.
-        """
-
-        print("mirror is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def linear_pattern(
-        self,
-        instance_count: "int",
-        offset: DimensionOrItsFloatOrStringValue,
-        direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        """
-        Pattern in a uniform direction.
-        """
-
-        print(
-            "linear_pattern is called in an abstract method. Please override this method."
-        )
-        return self
-
-    @abstractmethod
-    def circular_pattern(
-        self,
-        instance_count: "int",
-        separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
-        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        """
-        Pattern in a circular direction.
-        """
-
-        print(
-            "circular_pattern is called in an abstract method. Please override this method."
-        )
         return self
 
     @abstractmethod
@@ -373,47 +319,6 @@ class EntityInterface(metaclass=ABCMeta):
         return self
 
     @abstractmethod
-    def twist(
-        self,
-        angle: AngleOrItsFloatOrStringValue,
-        screw_pitch: DimensionOrItsFloatOrStringValue,
-        interations: "int" = 1,
-        axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        """
-        AKA Helix, Screw. Revolve an entity
-        """
-
-        print("twist is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def remesh(self, strategy: str, amount: float):
-        """
-        Remeshing should be capable of voxel or vertex based reconstruction, including decimating unnecessary vertices (if applicable).
-        """
-
-        print("remesh is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
-    def create_landmark(
-        self,
-        landmark_name: str,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
-    ) -> "LandmarkInterface":
-        """
-        Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
-        """
-
-        print(
-            "create_landmark is called in an abstract method. Please override this method."
-        )
-        raise NotImplementedError()
-
-    @abstractmethod
     def get_bounding_box(self) -> "BoundaryBox":
         """
         Get the Boundary Box around the entity.
@@ -432,6 +337,23 @@ class EntityInterface(metaclass=ABCMeta):
 
         print(
             "get_dimensions is called in an abstract method. Please override this method."
+        )
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_landmark(
+        self,
+        landmark_name: str,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ) -> "LandmarkInterface":
+        """
+        Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
+        """
+
+        print(
+            "create_landmark is called in an abstract method. Please override this method."
         )
         raise NotImplementedError()
 

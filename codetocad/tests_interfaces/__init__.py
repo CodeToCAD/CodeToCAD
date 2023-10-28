@@ -1,8 +1,16 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
 from .entity_test_interface import EntityTestInterface
+from .mirrorable_test_interface import MirrorableTestInterface
+from .patternable_test_interface import PatternableTestInterface
+from .subdividable_test_interface import SubdividableTestInterface
+from .importable_test_interface import ImportableTestInterface
+from .projectable_test_interface import ProjectableTestInterface
 from .part_test_interface import PartTestInterface
 from .sketch_test_interface import SketchTestInterface
+from .vertex_test_interface import VertexTestInterface
+from .edge_test_interface import EdgeTestInterface
+from .wire_test_interface import WireTestInterface
 from .landmark_test_interface import LandmarkTestInterface
 from .joint_test_interface import JointTestInterface
 from .material_test_interface import MaterialTestInterface

@@ -12,22 +12,28 @@ from codetocad.core import *
 from codetocad.enums import *
 
 from . import Entity
+from . import Mirrorable
+from . import Patternable
+from . import Importable
 
 
-class Sketch(Entity, SketchInterface):
+class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
     name: str
     curve_type: Optional["CurveTypes"] = None
     description: Optional[str] = None
+    native_instance = None
 
     def __init__(
         self,
         name: str,
         curve_type: Optional["CurveTypes"] = None,
         description: Optional[str] = None,
+        native_instance=None,
     ):
         self.name = name
         self.curve_type = curve_type
         self.description = description
+        self.native_instance = native_instance
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "SketchInterface":
         raise NotImplementedError()

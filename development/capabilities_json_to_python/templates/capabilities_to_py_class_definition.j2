@@ -8,9 +8,7 @@
 
     {%- if methodName == "information" %}
     {# Do nothing #}
-    {%- elif methodName == "extends"-%}
-    {# Do nothing #}
-    {%- elif methodName == "alias"-%}
+    {%- elif methodName == "implements"-%}
     {# Do nothing #}
     {%- elif methodName == "constructor"%}
 
@@ -20,12 +18,25 @@
     {{ parameter }} {{-":" + ("Optional["+typeMapping(definition.type)+"]" if definition.required == False else typeMapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
     {%-endfor%}
 
-    {{ generateMethodArguments("__init__", parameters, isStaticMethod, useAbstractMethodDecorator) }}):
+    {%-set init_parameters = parameters-%}
+    {%-set superParameters = []-%}
 
-    {%-if useAbstractMethodDecorator and "extends" in methods %}
-    {%-set superParameters = capabilities[methods["extends"]]["constructor"]["parameters"]%}
-        super().__init__({{ superParameters.keys()|join(",") }})
-    {%endif%}
+    {%-if useAbstractMethodDecorator and "implements" in methods %}
+        {%- for implementedClass in  methods["implements"].split(",") -%}
+            {%- if "constructor" in capabilities[implementedClass]%}
+                {%-set implementedClassParameters = capabilities[implementedClass]["constructor"]["parameters"] -%}
+                {%- for parameterName in implementedClassParameters.keys() -%}
+                    {%- set superParameters = superParameters.append(parameterName)-%}
+                    {%- set _ = init_parameters.update({parameterName: implementedClassParameters[parameterName]}) -%}
+                {%- endfor-%}
+            {%-endif%}
+        {%-endfor%}
+    {%-endif%}
+
+    {{ generateMethodArguments("__init__", init_parameters, isStaticMethod, useAbstractMethodDecorator) }}):
+        {%-if useAbstractMethodDecorator  and "implements" in methods %}
+        super().__init__({{ superParameters|join(", ") }})
+        {%-endif%}
 
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
         self.{{ parameter }} = {{parameter}}

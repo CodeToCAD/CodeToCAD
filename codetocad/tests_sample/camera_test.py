@@ -13,7 +13,7 @@ from codetocad.tests_interfaces import CameraTestInterface
 class CameraTest(TestProviderCase, CameraTestInterface):
     @skip("TODO")
     def test_create_perspective(self):
-        instance = Camera("name", "description")
+        instance = Camera("name", "description", "native_instance")
 
         value = instance.create_perspective("")
 
@@ -21,7 +21,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
 
     @skip("TODO")
     def test_create_orthogonal(self):
-        instance = Camera("name", "description")
+        instance = Camera("name", "description", "native_instance")
 
         value = instance.create_orthogonal("")
 
@@ -29,76 +29,8 @@ class CameraTest(TestProviderCase, CameraTestInterface):
 
     @skip("TODO")
     def test_set_focal_length(self):
-        instance = Camera("name", "description")
+        instance = Camera("name", "description", "native_instance")
 
         value = instance.set_focal_length("length")
 
         assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_translate_xyz(self):
-        instance = Camera("name", "description")
-
-        value = instance.translate_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_rotate_xyz(self):
-        instance = Camera("name", "description")
-
-        value = instance.rotate_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_is_exists(self):
-        instance = Camera("name", "description")
-
-        value = instance.is_exists("")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_rename(self):
-        instance = Camera("name", "description")
-
-        value = instance.rename("new_name")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_delete(self):
-        instance = Camera("name", "description")
-
-        value = instance.delete("")
-
-    @skip("TODO")
-    def test_get_native_instance(self):
-        instance = Camera("name", "description")
-
-        value = instance.get_native_instance("")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_get_location_world(self):
-        instance = Camera("name", "description")
-
-        value = instance.get_location_world("")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_get_location_local(self):
-        instance = Camera("name", "description")
-
-        value = instance.get_location_local("")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_select(self):
-        instance = Camera("name", "description")
-
-        value = instance.select("")

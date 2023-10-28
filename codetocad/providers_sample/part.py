@@ -12,9 +12,13 @@ from codetocad.core import *
 from codetocad.enums import *
 
 from . import Entity
+from . import Mirrorable
+from . import Patternable
+from . import Subdividable
+from . import Importable
 
 
-class Part(Entity, PartInterface):
+class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
     def create_cube(
         self,
         width: DimensionOrItsFloatOrStringValue,
@@ -140,6 +144,15 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
+    ):
+        return self
+
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
     ):
         return self
 

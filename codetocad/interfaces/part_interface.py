@@ -9,9 +9,20 @@ from codetocad.core import *
 from codetocad.enums import *
 
 from codetocad.interfaces import EntityInterface
+from codetocad.interfaces import MirrorableInterface
+from codetocad.interfaces import PatternableInterface
+from codetocad.interfaces import SubdividableInterface
+from codetocad.interfaces import ImportableInterface
 
 
-class PartInterface(EntityInterface, metaclass=ABCMeta):
+class PartInterface(
+    EntityInterface,
+    MirrorableInterface,
+    PatternableInterface,
+    SubdividableInterface,
+    ImportableInterface,
+    metaclass=ABCMeta,
+):
     """Create and manipulate 3D shapes."""
 
     @abstractmethod
@@ -236,6 +247,21 @@ class PartInterface(EntityInterface, metaclass=ABCMeta):
         """
 
         print("hole is called in an abstract method. Please override this method.")
+        return self
+
+    @abstractmethod
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        """
+        AKA Helix, Screw. Revolve an entity
+        """
+
+        print("twist is called in an abstract method. Please override this method.")
         return self
 
     @abstractmethod

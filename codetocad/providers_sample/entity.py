@@ -15,13 +15,14 @@ from codetocad.enums import *
 class Entity(EntityInterface):
     name: str
     description: Optional[str] = None
+    native_instance = None
 
-    def __init__(self, name: str, description: Optional[str] = None):
+    def __init__(
+        self, name: str, description: Optional[str] = None, native_instance=None
+    ):
         self.name = name
         self.description = description
-
-    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
-        return self
+        self.native_instance = native_instance
 
     def is_exists(self) -> bool:
         raise NotImplementedError()
@@ -60,31 +61,6 @@ class Entity(EntityInterface):
         return self
 
     def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
-        return self
-
-    def mirror(
-        self,
-        mirror_across_entity_or_landmark: EntityOrItsNameOrLandmark,
-        axis: AxisOrItsIndexOrItsName,
-        resulting_mirrored_entity_name: Optional[str] = None,
-    ):
-        return self
-
-    def linear_pattern(
-        self,
-        instance_count: "int",
-        offset: DimensionOrItsFloatOrStringValue,
-        direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        return self
-
-    def circular_pattern(
-        self,
-        instance_count: "int",
-        separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
-        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
         return self
 
     def translate_xyz(
@@ -152,17 +128,11 @@ class Entity(EntityInterface):
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
         return self
 
-    def twist(
-        self,
-        angle: AngleOrItsFloatOrStringValue,
-        screw_pitch: DimensionOrItsFloatOrStringValue,
-        interations: "int" = 1,
-        axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        return self
+    def get_bounding_box(self) -> "BoundaryBox":
+        raise NotImplementedError()
 
-    def remesh(self, strategy: str, amount: float):
-        return self
+    def get_dimensions(self) -> "Dimensions":
+        raise NotImplementedError()
 
     def create_landmark(
         self,
@@ -171,12 +141,6 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "LandmarkInterface":
-        raise NotImplementedError()
-
-    def get_bounding_box(self) -> "BoundaryBox":
-        raise NotImplementedError()
-
-    def get_dimensions(self) -> "Dimensions":
         raise NotImplementedError()
 
     def get_landmark(
