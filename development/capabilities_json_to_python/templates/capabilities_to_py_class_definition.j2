@@ -26,14 +26,32 @@
             {%- if "constructor" in capabilities[implementedClass]%}
                 {%-set implementedClassParameters = capabilities[implementedClass]["constructor"]["parameters"] -%}
                 {%- for parameterName in implementedClassParameters.keys() -%}
-                    {%- set superParameters = superParameters.append(parameterName)-%}
+                    {%- set superParameters = superParameters.append(parameterName + "="+parameterName)-%}
                     {%- set _ = init_parameters.update({parameterName: implementedClassParameters[parameterName]}) -%}
                 {%- endfor-%}
             {%-endif%}
         {%-endfor%}
     {%-endif%}
 
-    {{ generateMethodArguments("__init__", init_parameters, isStaticMethod, useAbstractMethodDecorator) }}):
+    {%-set new_init_params = {} -%}
+    {%-set no_default_params = []-%}
+    {%-set default_params = []-%}
+    {%-for parameterName in init_parameters.keys()-%}
+    {# Rearrange parameters to make sure default and not-required parameters are placed last #}
+    {%-if "defaultValue" in init_parameters[parameterName] or ("required" in  init_parameters[parameterName] and init_parameters[parameterName]["required"] == false)-%}
+    {%- set default_params = default_params.append(parameterName)-%}
+    {%else%}
+    {%- set no_default_params = no_default_params.append(parameterName)-%}
+    {%-endif-%}
+    {%-endfor-%}
+    {%-for parameterName in no_default_params-%}
+    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
+    {%-endfor-%}
+    {%-for parameterName in default_params-%}
+    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
+    {%-endfor%}
+
+    {{ generateMethodArguments("__init__", new_init_params, isStaticMethod, useAbstractMethodDecorator) }}):
         {%-if useAbstractMethodDecorator  and "implements" in methods %}
         super().__init__({{ superParameters|join(", ") }})
         {%-endif%}
