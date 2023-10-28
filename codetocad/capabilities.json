@@ -981,6 +981,26 @@
                     }
                 }
             },
+            "twist": {
+                "action": "modify",
+                "information": "AKA Helix, Screw.",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "screw_pitch": {
+                        "type": "string,float,Dimension"
+                    },
+                    "interations": {
+                        "type": "int",
+                        "defaultValue": 1
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
             "extrude": {
                 "action": "get",
                 "returnType": "Part",
