@@ -1,8 +1,18 @@
 
-{% set types = {"string":"str", "array": "list", "object": "dict", "any": "object", "number":"int", "float":"float", "boolean":"bool","Entity":"'EntityInterface'","Part":"'PartInterface'", "Sketch":"'SketchInterface'", "Landmark":"'LandmarkInterface'", "Scene":"'SceneInterface'", "Analytics":"'AnalyticsInterface'", "Joint":"'JointInterface'", "Material":"'MaterialInterface'", "Animation":"'AnimationInterface'", "Camera":"'CameraInterface'", "Light":"'LightInterface'", "Render":"'RenderInterface'", "string,float":"FloatOrItsStringValue","int,float":"IntOrFloat", "string,Part":"PartOrItsName", "string,Entity":"EntityOrItsName","string,Sketch":"SketchOrItsName", "list[string,Entity]":"list[EntityOrItsName]", "string,Landmark":"LandmarkOrItsName","list[string,Landmark]":"list[LandmarkOrItsName]", "string,Material":"MaterialOrItsName", "string,int,Axis":"AxisOrItsIndexOrItsName", "string,float,Dimension":"DimensionOrItsFloatOrStringValue","string,float,Angle":"AngleOrItsFloatOrStringValue", "string,Entity,Landmark": "EntityOrItsNameOrLandmark", "string,list[string],Point": "PointOrListOfFloatOrItsStringValue", "list[string,list[string],Point]": "list[PointOrListOfFloatOrItsStringValue]", "string,LengthUnit": "LengthUnitOrItsName", "string,PresetLandmark": "PresetLandmarkOrItsName","string,Camera": "CameraOrItsName" } -%}
+{% set types = {"string":"str", "array": "list", "object": "dict", "any": "object", "number":"int", "float":"float", "boolean":"bool","Entity":"'Entity'","Part":"'Part'", "Sketch":"'Sketch'", "Landmark":"'Landmark'", "Scene":"'Scene'", "Analytics":"'Analytics'", "Joint":"'Joint'", "Material":"'Material'", "Animation":"'Animation'", "Camera":"'Camera'", "Light":"'Light'", "Render":"'Render'", "string,float":"FloatOrItsStringValue","int,float":"IntOrFloat", "string,Part":"PartOrItsName", "string,Entity":"EntityOrItsName","string,Sketch":"SketchOrItsName", "list[string,Entity]":"list[EntityOrItsName]", "string,Landmark":"LandmarkOrItsName","list[string,Landmark]":"list[LandmarkOrItsName]", "string,Material":"MaterialOrItsName", "string,int,Axis":"AxisOrItsIndexOrItsName", "string,float,Dimension":"DimensionOrItsFloatOrStringValue","string,float,Angle":"AngleOrItsFloatOrStringValue", "string,Entity,Landmark": "EntityOrItsNameOrLandmark", "string,list[string],Point": "PointOrListOfFloatOrItsStringValue", "list[string,list[string],Point]": "list[PointOrListOfFloatOrItsStringValue]", "string,LengthUnit": "LengthUnitOrItsName", "string,PresetLandmark": "PresetLandmarkOrItsName","string,Camera": "CameraOrItsName" } -%}
 
 {% macro typeMapping(typeName) -%}
     {{types[typeName] if typeName in types else "'"+typeName+"'"}}
+{%- endmacro %}
+
+{% macro typeMappingWithClassNameSuffix(typeName, classNameSuffix, allCodeToCADClassNames) -%}
+    {%-set returnType = {"value":typeMapping(typeName)}-%}
+    {%-for codeToCADClassName in allCodeToCADClassNames-%}
+    {%-if codeToCADClassName in returnType["value"] -%}
+    {%-set _ = returnType.update({"value": returnType["value"]|replace(codeToCADClassName, codeToCADClassName + classNameSuffix)})-%}
+    {%-endif-%}
+    {%-endfor-%}
+    {{returnType["value"]}}
 {%- endmacro %}
 
 {%macro generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) -%}

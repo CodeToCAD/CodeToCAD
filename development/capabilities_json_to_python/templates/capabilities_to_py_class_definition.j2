@@ -1,4 +1,4 @@
-{%- from 'capabilities_to_py_utilities.j2' import typeMapping, generateMethodArguments %}
+{%- from 'capabilities_to_py_utilities.j2' import typeMapping, typeMappingWithClassNameSuffix, generateMethodArguments %}
 
     {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 
@@ -64,7 +64,7 @@
 
     {%- elif methodName == "default"%}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
         {%if useAbstractMethodDecorator-%}
         raise RuntimeError()
         {%else-%}
@@ -73,7 +73,7 @@
 
     {%- else %}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMapping(properties["returnType"]) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
         {% if "information" in properties and useAbstractMethodDecorator -%}
         '''
         {{ properties["information"] }}
