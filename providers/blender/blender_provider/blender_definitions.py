@@ -32,6 +32,10 @@ class BlenderVersions(Enum):
     TWO_DOT_EIGHTY = (2, 80, 0)
     THREE_DOT_ONE = (3, 1, 0)
 
+    @property
+    def version(self):
+        return ".".join([str(ver) for ver in self.value])
+
 
 class BlenderLength(Units):
     # These are the units allowed in a Blender document:
@@ -66,7 +70,8 @@ class BlenderLength(Units):
 
     @staticmethod
     def from_length_unit(unit: LengthUnit) -> "BlenderLength":
-        [result] = list(filter(lambda b: b.value == unit, [b for b in BlenderLength]))
+        [result] = list(filter(lambda b: b.value == unit,
+                        [b for b in BlenderLength]))
 
         return result
 
@@ -250,7 +255,8 @@ class BlenderCurveTypes(Enum):
     @staticmethod
     def from_curve_types(curve_type: CurveTypes):
         [result] = list(
-            filter(lambda b: b.value == curve_type, [b for b in BlenderCurveTypes])
+            filter(lambda b: b.value == curve_type,
+                   [b for b in BlenderCurveTypes])
         )
 
         return result
