@@ -20,6 +20,23 @@ from . import {{implementedClassWithSuffix}}
 {% endfor-%}
 {%-endif%}
 
+{%-set methodReturnTypes = []-%}
+{%- from 'capabilities_to_py_utilities.j2' import typeMapping %}
+{%-for methodName, properties in methods.items()-%}
+{%-if "returnType" in properties -%}
+{%-set returnType = typeMapping(properties["returnType"]) %}
+{%-for codeToCADClassName in allCodeToCADClassNames-%}
+{%-if codeToCADClassName in returnType and not codeToCADClassName == className and not codeToCADClassName + classNameSuffix in implementedClassesWithSuffixes -%}
+{%-set methodReturnTypes = methodReturnTypes.append(codeToCADClassName)-%}
+{%-endif%}
+{%-endfor-%}
+{%-endif%}
+{%-endfor-%}
+{%-for method in methodReturnTypes|unique%}
+from . import {{method+classNameSuffix}}
+{%endfor-%}
+
+
 class {{className}}({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
     {% include 'capabilities_to_py_class_definition.j2' %}
     

@@ -59,6 +59,7 @@ for template, output, suffix in templatesToGenerate:
 
     createInitFile(output)
 
+    all_class_names = capabilities["capabilities"].keys()
     for className, methods in capabilities["capabilities"].items():
         file_name = to_snake_case(f"{className}{suffix}")
 
@@ -68,7 +69,12 @@ for template, output, suffix in templatesToGenerate:
         template = templateEnv.get_template(template)
         output_from_parsed_template = template.render(
             dict(
-                {"className": className, "classNameSuffix": suffix, "methods": methods},
+                {
+                    "className": className,
+                    "classNameSuffix": suffix,
+                    "methods": methods,
+                    "allCodeToCADClassNames": all_class_names,
+                },
                 **capabilities,
             )
         )
