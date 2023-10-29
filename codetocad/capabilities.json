@@ -335,8 +335,8 @@
                 "action": "create",
                 "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
                 "parameters": {
-                    "mirror_across_entity_or_landmark": {
-                        "type": "string,Entity,Landmark"
+                    "mirror_across_entity": {
+                        "type": "string,Entity"
                     },
                     "axis": {
                         "type": "string,int,Axis"
@@ -377,7 +377,7 @@
                         "type": "string,float,Angle"
                     },
                     "center_entity_or_landmark": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "normal_direction_axis": {
                         "type": "string,int,Axis",
@@ -731,7 +731,7 @@
                         "defaultValue": 0.0
                     },
                     "mirror_about_entity_or_landmark": {
-                        "type": "string,Entity,Landmark",
+                        "type": "string,Entity",
                         "required": false
                     },
                     "mirror_axis": {
@@ -755,7 +755,7 @@
                         "defaultValue": "z"
                     },
                     "circular_pattern_about_entity_or_landmark": {
-                        "type": "string,Entity,Landmark",
+                        "type": "string,Entity",
                         "required": false
                     },
                     "linear_pattern_instance_count": {
@@ -973,7 +973,7 @@
                         "type": "string,float,Angle"
                     },
                     "about_entity_or_landmark": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "axis": {
                         "type": "string,int,Axis",
@@ -1290,7 +1290,7 @@
                 }
             },
             "get_control_points": {
-                "information": "",
+                "information": "Get a vertex's curve control points. This may not be applicable in several situations.",
                 "action": "get",
                 "returnType": "list[Entity]",
                 "staticMethod": false,
@@ -1414,10 +1414,10 @@
             "constructor": {
                 "parameters": {
                     "entity1": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "entity2": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     }
                 }
             },
@@ -2086,10 +2086,10 @@
                 "information": "The ubiquitous ruler.",
                 "parameters": {
                     "entity1": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "entity2": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     }
                 }
             },
@@ -2099,13 +2099,13 @@
                 "information": "The ubiquitous ruler.",
                 "parameters": {
                     "entity1": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "entity2": {
-                        "type": "string,Entity,Landmark"
+                        "type": "string,Entity"
                     },
                     "pivot": {
-                        "type": "string,Entity,Landmark",
+                        "type": "string,Entity",
                         "required": false
                     }
                 }

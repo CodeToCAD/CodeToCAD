@@ -51,7 +51,7 @@
     {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
     {%-endfor%}
 
-    {{ generateMethodArguments("__init__", new_init_params, isStaticMethod, useAbstractMethodDecorator) }}):
+    {{ generateMethodArguments("__init__", new_init_params, isStaticMethod, useAbstractMethodDecorator, classNameSuffix, allCodeToCADClassNames) }}):
         {%-if useAbstractMethodDecorator  and "implements" in methods %}
         super().__init__({{ superParameters|join(", ") }})
         {%-endif%}
@@ -64,7 +64,7 @@
 
     {%- elif methodName == "default"%}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator, classNameSuffix, allCodeToCADClassNames) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
         {%if useAbstractMethodDecorator-%}
         raise RuntimeError()
         {%else-%}
@@ -73,7 +73,7 @@
 
     {%- else %}
 
-    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
+    {{ generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator, classNameSuffix, allCodeToCADClassNames) }}) {{-  " -> " + typeMappingWithClassNameSuffix(properties["returnType"], classNameSuffix, allCodeToCADClassNames) if "returnType" in properties}}:
         {% if "information" in properties and useAbstractMethodDecorator -%}
         '''
         {{ properties["information"] }}

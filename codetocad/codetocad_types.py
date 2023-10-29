@@ -3,13 +3,10 @@ from typing import TypeAlias, Union
 from codetocad.core import Dimension, Angle, Point
 from codetocad.enums import Axis, LengthUnit, PresetLandmark
 
-EntityInterface: TypeAlias
-PartInterface: TypeAlias
-MaterialInterface: TypeAlias
-SketchInterface: TypeAlias
-LandmarkInterface: TypeAlias
-CameraInterface: TypeAlias
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from codetocad.interfaces import MaterialInterface, PartInterface, EntityInterface, SketchInterface, LandmarkInterface, CameraInterface
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]
@@ -21,9 +18,6 @@ LandmarkOrItsName: TypeAlias = Union[str, "LandmarkInterface"]
 AxisOrItsIndexOrItsName: TypeAlias = Union[str, int, Axis]
 DimensionOrItsFloatOrStringValue: TypeAlias = Union[str, float, Dimension]
 AngleOrItsFloatOrStringValue: TypeAlias = Union[str, float, Angle]
-EntityOrItsNameOrLandmark: TypeAlias = Union[
-    str, "EntityInterface", "LandmarkInterface"
-]
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[
     str, list[FloatOrItsStringValue], Point
 ]

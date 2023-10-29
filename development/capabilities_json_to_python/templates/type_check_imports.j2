@@ -1,0 +1,28 @@
+{%-set methodReturnTypes = []-%}
+{%- from 'capabilities_to_py_utilities.j2' import typeMapping -%}
+{%-for methodName, properties in methods.items()-%}
+    {%-if "returnType" in properties -%}
+        {%-set returnType = typeMapping(properties["returnType"]) -%}
+        {%-for codeToCADClassName in allCodeToCADClassNames-%}
+            {%-if codeToCADClassName in returnType and not codeToCADClassName == className and not codeToCADClassName + classNameSuffix in implementedClassesWithSuffixes -%}
+                {%-set methodReturnTypes = methodReturnTypes.append(codeToCADClassName)-%}
+            {%-endif-%}
+        {%-endfor-%}
+    {%-endif-%}
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+    {%-for parameter, definition in parameters.items() -%}
+        {%-for codeToCADClassName in allCodeToCADClassNames-%}
+            {%-if codeToCADClassName in definition.type and not codeToCADClassName == className and not codeToCADClassName + classNameSuffix in implementedClassesWithSuffixes -%}
+                {%-set methodReturnTypes = methodReturnTypes.append(codeToCADClassName)-%}
+            {%-endif-%}
+        {%-endfor-%}
+    {%-endfor-%}
+{%-endfor-%}
+{%-set methodReturnTypes = methodReturnTypes|unique|list-%}
+{%-if methodReturnTypes|length > 0-%}
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+{%-for method in methodReturnTypes%}
+    from . import {{method+classNameSuffix}}
+{%-endfor-%}
+{%-endif-%}
