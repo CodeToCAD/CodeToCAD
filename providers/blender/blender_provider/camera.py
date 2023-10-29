@@ -6,11 +6,14 @@ from . import blender_definitions
 from codetocad.interfaces import CameraInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
-from .entity import Entity
+
+from . import Entity
 
 
-class Camera(CameraInterface):
+class Camera(Entity, CameraInterface):
     name: str
     description: Optional[str] = None
 

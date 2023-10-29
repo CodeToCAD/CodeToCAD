@@ -1,26 +1,44 @@
+# THIS IS AN AUTO-GENERATE FILE.
+# DO NOT EDIT MANUALLY.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
+# Copy this file and remove this header to create a new CodeToCAD Provider.
+
 from typing import Optional
 
-from codetocad.interfaces import SketchInterface, PartInterface
+from codetocad.interfaces import SketchInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
 
-class Sketch(SketchInterface):
+from . import Entity, Mirrorable, Patternable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Part
+
+
+class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
     name: str
     curve_type: Optional["CurveTypes"] = None
     description: Optional[str] = None
+    native_instance = None
 
     def __init__(
         self,
         name: str,
         curve_type: Optional["CurveTypes"] = None,
         description: Optional[str] = None,
+        native_instance=None,
     ):
         self.name = name
         self.curve_type = curve_type
         self.description = description
+        self.native_instance = native_instance
 
-    def clone(self, new_name: str, copy_landmarks: bool = True) -> SketchInterface:
+    def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
 
     def revolve(
@@ -28,15 +46,24 @@ class Sketch(SketchInterface):
         angle: AngleOrItsFloatOrStringValue,
         about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
-    ) -> PartInterface:
+    ) -> "Part":
         raise NotImplementedError()
 
-    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> PartInterface:
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         raise NotImplementedError()
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
-    ) -> PartInterface:
+    ) -> "Part":
         raise NotImplementedError()
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
@@ -78,7 +105,7 @@ class Sketch(SketchInterface):
     ):
         return self
 
-    def create_lineBetweenPoints(
+    def create_line_between_points(
         self,
         end_at: PointOrListOfFloatOrItsStringValue,
         start_at: Optional[PointOrListOfFloatOrItsStringValue] = None,
@@ -102,7 +129,7 @@ class Sketch(SketchInterface):
     ):
         return self
 
-    def create_arcBetweenThreePoints(
+    def create_arc_between_three_points(
         self, point_a: "Point", point_b: "Point", center_point: "Point"
     ):
         return self

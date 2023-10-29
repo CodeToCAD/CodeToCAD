@@ -2,11 +2,17 @@ from typing import Optional
 
 from . import blender_actions
 
-from codetocad.interfaces import AnalyticsInterface, EntityInterface, LandmarkInterface
+from codetocad.interfaces import AnalyticsInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
-from .entity import Entity
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
 
 
 class Analytics(AnalyticsInterface):
@@ -16,7 +22,7 @@ class Analytics(AnalyticsInterface):
     @staticmethod
     def _get_entity_from_name_or_landmark(
         entity_or_landmark: EntityOrItsName,
-    ) -> Union[EntityInterface, LandmarkInterface]:
+    ) -> EntityInterface:
         if isinstance(entity_or_landmark, str):
             return Entity(entity_or_landmark)
         return entity_or_landmark

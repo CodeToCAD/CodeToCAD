@@ -3,9 +3,17 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from codetocad.interfaces import RenderInterface, CameraInterface
+from codetocad.interfaces import RenderInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Camera
 
 
 class Render(RenderInterface):

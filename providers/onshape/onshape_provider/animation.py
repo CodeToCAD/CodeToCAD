@@ -3,9 +3,19 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
+from typing import Optional
+
 from codetocad.interfaces import AnimationInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
 
 
 class Animation(AnimationInterface):
@@ -13,7 +23,7 @@ class Animation(AnimationInterface):
         pass
 
     @staticmethod
-    def default() -> AnimationInterface:
+    def default() -> "Animation":
         return Animation()
 
     def set_frame_start(self, frame_number: "int"):

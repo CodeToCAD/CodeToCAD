@@ -8,6 +8,14 @@ from typing import Optional
 from codetocad.interfaces import RenderInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Camera
 
 
 class Render(RenderInterface):

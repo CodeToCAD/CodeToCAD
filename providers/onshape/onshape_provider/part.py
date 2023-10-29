@@ -1,11 +1,27 @@
+# THIS IS AN AUTO-GENERATE FILE.
+# DO NOT EDIT MANUALLY.
+# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
+# Copy this file and remove this header to create a new CodeToCAD Provider.
+
 from typing import Optional
 
-from codetocad.interfaces import PartInterface, LandmarkInterface
+from codetocad.interfaces import PartInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
 
-class Part(PartInterface):
+from . import Entity, Mirrorable, Patternable, Subdividable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Landmark
+    from . import Material
+
+
+class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
     def create_cube(
         self,
         width: DimensionOrItsFloatOrStringValue,
@@ -63,10 +79,10 @@ class Part(PartInterface):
     ):
         return self
 
-    def clone(self, new_name: str, copy_landmarks: bool = True) -> PartInterface:
+    def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
         raise NotImplementedError()
 
-    def loft(self, landmark1: LandmarkInterface, landmark2: LandmarkInterface):
+    def loft(self, landmark1: "Landmark", landmark2: "Landmark"):
         return self
 
     def union(
@@ -129,6 +145,15 @@ class Part(PartInterface):
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
+    ):
+        return self
+
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
     ):
         return self
 

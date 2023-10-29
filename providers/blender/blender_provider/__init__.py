@@ -1,9 +1,18 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
 from . import blender_actions, blender_definitions
+
 from .entity import Entity
+from .mirrorable import Mirrorable
+from .patternable import Patternable
+from .subdividable import Subdividable
+from .importable import Importable
+from .projectable import Projectable
 from .part import Part
 from .sketch import Sketch
+from .vertex import Vertex
+from .edge import Edge
+from .wire import Wire
 from .landmark import Landmark
 from .joint import Joint
 from .material import Material
