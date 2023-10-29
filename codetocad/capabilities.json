@@ -42,7 +42,8 @@
                 "information": "Delete the entity from the scene. You may need to delete an associated joint or other features.",
                 "parameters": {
                     "remove_children": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "defaultValue": true
                     }
                 }
             },

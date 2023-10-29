@@ -15,13 +15,17 @@ if TYPE_CHECKING:
         CameraInterface,
     )
 
-FloatOrItsStringValue: TypeAlias = Union[str, float]
-IntOrFloat: TypeAlias = Union[int, float]
 MaterialOrItsName: TypeAlias = Union[str, "MaterialInterface"]
 PartOrItsName: TypeAlias = Union[str, "PartInterface"]
 EntityOrItsName: TypeAlias = Union[str, "EntityInterface"]
 SketchOrItsName: TypeAlias = Union[str, "SketchInterface"]
 LandmarkOrItsName: TypeAlias = Union[str, "LandmarkInterface"]
+CameraOrItsName: TypeAlias = Union[str, "CameraInterface"]
+
+
+FloatOrItsStringValue: TypeAlias = Union[str, float]
+IntOrFloat: TypeAlias = Union[int, float]
+
 AxisOrItsIndexOrItsName: TypeAlias = Union[str, int, Axis]
 DimensionOrItsFloatOrStringValue: TypeAlias = Union[str, float, Dimension]
 AngleOrItsFloatOrStringValue: TypeAlias = Union[str, float, Angle]
@@ -30,4 +34,3 @@ PointOrListOfFloatOrItsStringValue: TypeAlias = Union[
 ]
 LengthUnitOrItsName: TypeAlias = Union[str, LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str, PresetLandmark]
-CameraOrItsName: TypeAlias = Union[str, "CameraInterface"]
