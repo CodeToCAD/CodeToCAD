@@ -36,7 +36,7 @@ class Entity(EntityInterface):
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True):
         return self
 
-    def delete(self, remove_children: bool):
+    def delete(self, remove_children: bool = True):
         return self
 
     def is_visible(self) -> bool:

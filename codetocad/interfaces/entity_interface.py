@@ -50,7 +50,7 @@ class EntityInterface(metaclass=ABCMeta):
         return self
 
     @abstractmethod
-    def delete(self, remove_children: bool):
+    def delete(self, remove_children: bool = True):
         """
         Delete the entity from the scene. You may need to delete an associated joint or other features.
         """
