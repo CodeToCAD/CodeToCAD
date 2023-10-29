@@ -6,36 +6,18 @@
 from typing import Optional
 {%set interfaceName = className + "Interface" %}
 from codetocad.interfaces import {{interfaceName}}
-from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-{%set implementedClassesWithSuffixes = []-%}
-{% if "implements" in methods%}
-{%set implementedClasses = methods["implements"]-%}
-{% for implementedClass in implementedClasses.split(",") -%}
-{%set implementedClassWithSuffix = implementedClass + classNameSuffix-%}
+
+{%-set implementedClassesWithSuffixes = []-%}
+{%- if "implements" in methods-%}
+{%-set implementedClasses = methods["implements"]-%}
+{%-for implementedClass in implementedClasses.split(",") -%}
+{%-set implementedClassWithSuffix = implementedClass + classNameSuffix-%}
 {%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
-from . import {{implementedClassWithSuffix}}
-{% endfor-%}
-{%-endif%}
-
-{%-set methodReturnTypes = []-%}
-{%- from 'capabilities_to_py_utilities.j2' import typeMapping %}
-{%-for methodName, properties in methods.items()-%}
-{%-if "returnType" in properties -%}
-{%-set returnType = typeMapping(properties["returnType"]) %}
-{%-for codeToCADClassName in allCodeToCADClassNames-%}
-{%-if codeToCADClassName in returnType and not codeToCADClassName == className and not codeToCADClassName + classNameSuffix in implementedClassesWithSuffixes -%}
-{%-set methodReturnTypes = methodReturnTypes.append(codeToCADClassName)-%}
-{%-endif%}
 {%-endfor-%}
 {%-endif%}
-{%-endfor-%}
-{%-for method in methodReturnTypes|unique%}
-from . import {{method+classNameSuffix}}
-{%endfor-%}
+{% include 'common_imports.j2' -%}
 
+{% include 'type_check_imports.j2' %}
 
 class {{className}}({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
     {% include 'capabilities_to_py_class_definition.j2' %}
