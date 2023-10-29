@@ -15,14 +15,14 @@ class Analytics(AnalyticsInterface):
 
     @staticmethod
     def _get_entity_from_name_or_landmark(
-        entity_or_landmark: EntityOrItsNameOrLandmark,
+        entity_or_landmark: EntityOrItsName,
     ) -> Union[EntityInterface, LandmarkInterface]:
         if isinstance(entity_or_landmark, str):
             return Entity(entity_or_landmark)
         return entity_or_landmark
 
     def measure_distance(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
+        self, entity1: EntityOrItsName, entity2: EntityOrItsName
     ) -> "Dimensions":
         distance = (
             Analytics._get_entity_from_name_or_landmark(entity2).get_location_world()
@@ -32,9 +32,9 @@ class Analytics(AnalyticsInterface):
 
     def measure_angle(
         self,
-        entity1: EntityOrItsNameOrLandmark,
-        entity2: EntityOrItsNameOrLandmark,
-        pivot: Optional[EntityOrItsNameOrLandmark] = None,
+        entity1: EntityOrItsName,
+        entity2: EntityOrItsName,
+        pivot: Optional[EntityOrItsName] = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 

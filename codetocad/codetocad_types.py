@@ -6,7 +6,14 @@ from codetocad.enums import Axis, LengthUnit, PresetLandmark
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from codetocad.interfaces import MaterialInterface, PartInterface, EntityInterface, SketchInterface, LandmarkInterface, CameraInterface
+    from codetocad.interfaces import (
+        MaterialInterface,
+        PartInterface,
+        EntityInterface,
+        SketchInterface,
+        LandmarkInterface,
+        CameraInterface,
+    )
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
 IntOrFloat: TypeAlias = Union[int, float]

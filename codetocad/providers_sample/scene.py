@@ -12,6 +12,12 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
+
+
 class Scene(SceneInterface):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -21,7 +27,7 @@ class Scene(SceneInterface):
         self.description = description
 
     @staticmethod
-    def default() -> "SceneInterface":
+    def default() -> "Scene":
         return Scene()
 
     def create(self):
@@ -30,7 +36,7 @@ class Scene(SceneInterface):
     def delete(self):
         return self
 
-    def get_selected_entity(self) -> "EntityInterface":
+    def get_selected_entity(self) -> "Entity":
         raise NotImplementedError()
 
     def export(

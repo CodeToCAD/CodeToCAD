@@ -28,6 +28,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     @skip("TODO")
+    def test_twist(self):
+        instance = Sketch("name", "curve_type", "description", "native_instance")
+
+        value = instance.twist("angle", "screw_pitch", "interations", "axis")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
     def test_extrude(self):
         instance = Sketch("name", "curve_type", "description")
 

@@ -11,6 +11,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
+
 from . import Entity
 
 
@@ -35,5 +36,5 @@ class Landmark(Entity, LandmarkInterface):
     def get_landmark_entity_name(self) -> str:
         raise NotImplementedError()
 
-    def get_parent_entity(self) -> "EntityInterface":
+    def get_parent_entity(self) -> "Entity":
         raise NotImplementedError()

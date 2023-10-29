@@ -16,7 +16,7 @@ class MirrorableTest(TestProviderCase, MirrorableTestInterface):
         instance = Mirrorable("")
 
         value = instance.mirror(
-            "mirror_across_entity_or_landmark", "axis", "resulting_mirrored_entity_name"
+            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
         )
 
         assert value.is_exists(), "Create method failed."

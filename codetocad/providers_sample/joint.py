@@ -12,13 +12,17 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-class Joint(JointInterface):
-    entity1: EntityOrItsNameOrLandmark
-    entity2: EntityOrItsNameOrLandmark
+from typing import TYPE_CHECKING
 
-    def __init__(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
-    ):
+if TYPE_CHECKING:
+    from . import Entity
+
+
+class Joint(JointInterface):
+    entity1: EntityOrItsName
+    entity2: EntityOrItsName
+
+    def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
         self.entity1 = entity1
         self.entity2 = entity2
 

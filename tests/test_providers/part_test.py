@@ -170,6 +170,14 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
+    def test_twist(self):
+        instance = Part("")
+
+        value = instance.twist("angle", "screw_pitch", "interations", "axis")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
     def test_set_material(self):
         instance = Part("")
 

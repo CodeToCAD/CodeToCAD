@@ -119,14 +119,14 @@ class Entity(EntityInterface):
 
     def mirror(
         self,
-        mirror_across_entity_or_landmark: EntityOrItsNameOrLandmark,
+        mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str],
     ):
         if resulting_mirrored_entity_name is not None:
             raise NotImplementedError("Not yet supported. COD-113")
 
-        mirrorAcrossEntityName = mirror_across_entity_or_landmark
+        mirrorAcrossEntityName = mirror_across_entity
         if isinstance(mirrorAcrossEntityName, LandmarkInterface):
             mirrorAcrossEntityName = mirrorAcrossEntityName.get_landmark_entity_name()
         elif isinstance(mirrorAcrossEntityName, EntityInterface):
@@ -169,7 +169,7 @@ class Entity(EntityInterface):
         self,
         instance_count: "int",
         separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
+        center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         center_entity_or_landmark_name = center_entity_or_landmark

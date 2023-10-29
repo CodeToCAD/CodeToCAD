@@ -12,6 +12,12 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
+
+
 class Patternable(PatternableInterface):
     def linear_pattern(
         self,
@@ -25,7 +31,7 @@ class Patternable(PatternableInterface):
         self,
         instance_count: "int",
         separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
+        center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         return self

@@ -12,10 +12,16 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
+
+
 class Mirrorable(MirrorableInterface):
     def mirror(
         self,
-        mirror_across_entity_or_landmark: EntityOrItsNameOrLandmark,
+        mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):

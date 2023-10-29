@@ -5,8 +5,15 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import EntityInterface
 
 
 class AnalyticsInterface(metaclass=ABCMeta):
@@ -18,7 +25,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def measure_distance(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
+        self, entity1: EntityOrItsName, entity2: EntityOrItsName
     ) -> "Dimensions":
         """
         The ubiquitous ruler.
@@ -32,9 +39,9 @@ class AnalyticsInterface(metaclass=ABCMeta):
     @abstractmethod
     def measure_angle(
         self,
-        entity1: EntityOrItsNameOrLandmark,
-        entity2: EntityOrItsNameOrLandmark,
-        pivot: Optional[EntityOrItsNameOrLandmark] = None,
+        entity1: EntityOrItsName,
+        entity2: EntityOrItsName,
+        pivot: Optional[EntityOrItsName] = None,
     ) -> "list[Angle]":
         """
         The ubiquitous ruler.

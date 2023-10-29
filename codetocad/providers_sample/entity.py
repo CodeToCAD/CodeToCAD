@@ -12,6 +12,12 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Landmark
+
+
 class Entity(EntityInterface):
     name: str
     description: Optional[str] = None
@@ -140,10 +146,8 @@ class Entity(EntityInterface):
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
-    ) -> "LandmarkInterface":
+    ) -> "Landmark":
         raise NotImplementedError()
 
-    def get_landmark(
-        self, landmark_name: PresetLandmarkOrItsName
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
         raise NotImplementedError()

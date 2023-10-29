@@ -5,10 +5,12 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from codetocad.interfaces import EntityInterface
+
+from . import EntityInterface
 
 
 class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
@@ -26,7 +28,9 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
         description: Optional[str] = None,
         native_instance=None,
     ):
-        super().__init__(name, description, native_instance)
+        super().__init__(
+            name=name, description=description, native_instance=native_instance
+        )
         self.name = name
         self.parent_entity = parent_entity
         self.description = description

@@ -11,12 +11,10 @@ from codetocad.utilities import *
 
 
 class Joint(JointInterface):
-    entity1: EntityOrItsNameOrLandmark
-    entity2: EntityOrItsNameOrLandmark
+    entity1: EntityOrItsName
+    entity2: EntityOrItsName
 
-    def __init__(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
-    ):
+    def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
         self.entity1 = entity1
         self.entity2 = entity2
 

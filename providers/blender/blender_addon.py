@@ -75,8 +75,7 @@ class LogMessage(Operator):
     message: bpy.props.StringProperty(
         name="Message", default="Reporting : Base message"
     )  # type: ignore
-    isError: bpy.props.BoolProperty(
-        name="isError", default=False)  # type: ignore
+    isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
 
     def execute(self, context):
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
@@ -130,7 +129,8 @@ class ImportedFileWatcher:
         self.directory = directory
         self.is_ask_before_reloading = (
             CodeToCADAddonPreferences.get_is_ask_before_reloading_from_preferences(
-                context)
+                context
+            )
         )
 
     def check_file_changed(self) -> bool:
@@ -165,9 +165,7 @@ class ImportedFileWatcher:
             print("Import auto-reload: file has changed.")
             if self.is_ask_before_reloading:
                 codetocad_ops = getattr(bpy.ops, namespace)
-                codetocad_ops.confirm_imported_file_reload(
-                    "INVOKE_DEFAULT"
-                )
+                codetocad_ops.confirm_imported_file_reload("INVOKE_DEFAULT")
             else:
                 self.reload_file(bpy.context)
         # number of seconds before re-checking (courtesy of bpy.app.timers)
@@ -197,7 +195,6 @@ def import_codetocad_file(filePath, directory, saveFile):
     from blender_provider.blender_actions import get_context_view_3d
 
     with get_context_view_3d():
-
         global imported_file_watcher
         if not imported_file_watcher or imported_file_watcher.filepath != filePath:
             if imported_file_watcher:
@@ -220,7 +217,9 @@ def import_codetocad_file(filePath, directory, saveFile):
             codetocad_ops = getattr(bpy.ops, namespace)
             codetocad_ops.log_message(
                 # type: ignore
-                "INVOKE_DEFAULT", message=f"{errorTrace}", isError=True
+                "INVOKE_DEFAULT",
+                message=f"{errorTrace}",
+                isError=True,
             )
 
             raise err
@@ -284,8 +283,7 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
 def menu_import(self, context):
     self.layout.operator_context = "INVOKE_DEFAULT"
-    self.layout.operator(ImportCodeToCAD.bl_idname,
-                         text="CodeToCAD (.codetocad)")
+    self.layout.operator(ImportCodeToCAD.bl_idname, text="CodeToCAD (.codetocad)")
 
 
 class CodeToCADAddonPreferences(AddonPreferences):
@@ -350,7 +348,8 @@ class CodeToCADAddonPreferences(AddonPreferences):
     def get_is_auto_reload_imports_from_preferences(context):
         return (
             CodeToCADAddonPreferences.get_preference_key(
-                "is_auto_reload_imports", context)
+                "is_auto_reload_imports", context
+            )
             or True
         )
 
@@ -358,7 +357,8 @@ class CodeToCADAddonPreferences(AddonPreferences):
     def get_is_ask_before_reloading_from_preferences(context):
         return (
             CodeToCADAddonPreferences.get_preference_key(
-                "is_ask_before_reloading", context)
+                "is_ask_before_reloading", context
+            )
             or False
         )
 

@@ -116,15 +116,13 @@ class Part(PartInterface):
         initial_rotation_x: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_y: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_z: AngleOrItsFloatOrStringValue = 0.0,
-        mirror_about_entity_or_landmark: Optional[EntityOrItsNameOrLandmark] = None,
+        mirror_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         mirror_axis: AxisOrItsIndexOrItsName = "x",
         mirror: bool = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: AngleOrItsFloatOrStringValue = 0.0,
         circular_pattern_instance_axis: AxisOrItsIndexOrItsName = "z",
-        circular_pattern_about_entity_or_landmark: Optional[
-            EntityOrItsNameOrLandmark
-        ] = None,
+        circular_pattern_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern_instance_axis: AxisOrItsIndexOrItsName = "x",

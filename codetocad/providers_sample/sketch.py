@@ -11,10 +11,13 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from . import Entity
-from . import Mirrorable
-from . import Patternable
-from . import Importable
+
+from . import Entity, Mirrorable, Patternable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Part
 
 
 class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
@@ -35,23 +38,32 @@ class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
         self.description = description
         self.native_instance = native_instance
 
-    def clone(self, new_name: str, copy_landmarks: bool = True) -> "SketchInterface":
+    def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
 
     def revolve(
         self,
         angle: AngleOrItsFloatOrStringValue,
-        about_entity_or_landmark: EntityOrItsNameOrLandmark,
+        about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
-    ) -> "PartInterface":
+    ) -> "Part":
         raise NotImplementedError()
 
-    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         raise NotImplementedError()
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
-    ) -> "PartInterface":
+    ) -> "Part":
         raise NotImplementedError()
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):

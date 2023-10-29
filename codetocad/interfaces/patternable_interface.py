@@ -5,8 +5,15 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import EntityInterface
 
 
 class PatternableInterface(metaclass=ABCMeta):
@@ -33,7 +40,7 @@ class PatternableInterface(metaclass=ABCMeta):
         self,
         instance_count: "int",
         separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
+        center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         """
