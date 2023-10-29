@@ -2,16 +2,24 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from codetocad.interfaces import PartInterface, LandmarkInterface, EntityInterface
+from codetocad.interfaces import PartInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
-
-from .material import Material
-from .entity import Entity
-from .joint import Joint
+from codetocad.core import *
+from codetocad.enums import *
 
 
-class Part(Entity, PartInterface):
+from . import Entity, Mirrorable, Patternable, Subdividable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Landmark
+    from . import Material
+    from . import Joint
+
+
+class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
     def _create_primitive(self, primitive_name: str, dimensions: str, **kwargs):
         assert self.is_exists() is False, f"{self.name} already exists."
 
@@ -378,6 +386,8 @@ class Part(Entity, PartInterface):
         material = material_name
 
         if isinstance(material, str):
+            from . import Material
+
             material = Material(material)
 
         material.assign_to_part(self.name)

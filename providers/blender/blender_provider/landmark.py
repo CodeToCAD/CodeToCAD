@@ -5,12 +5,14 @@ from . import blender_actions
 from codetocad.interfaces import LandmarkInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
 
-from .entity import Entity
+from . import Entity
 
 
-class Landmark(LandmarkInterface):
+class Landmark(Entity, LandmarkInterface):
     name: str
     parent_entity: EntityOrItsName
     description: Optional[str] = None
@@ -46,7 +48,7 @@ class Landmark(LandmarkInterface):
             return (
                 blender_actions.get_object(self.get_landmark_entity_name()) is not None
             )
-        except:
+        except:  # noqa E722
             return False
 
     def rename(self, new_name: str):

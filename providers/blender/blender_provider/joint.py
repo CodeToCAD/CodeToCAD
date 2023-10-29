@@ -6,6 +6,14 @@ from . import blender_definitions
 from codetocad.interfaces import JointInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
 
 
 class Joint(JointInterface):
@@ -36,10 +44,10 @@ class Joint(JointInterface):
     def _get_entity_or_landmark_name(entity_or_landmark) -> str:
         if isinstance(entity_or_landmark, str):
             return entity_or_landmark
-        elif isinstance(entity_or_landmark, EntityInterface):
-            return entity_or_landmark.name
         elif isinstance(entity_or_landmark, LandmarkInterface):
             return entity_or_landmark.get_landmark_entity_name()
+        elif isinstance(entity_or_landmark, EntityInterface):
+            return entity_or_landmark.name
 
         raise TypeError("Only Entity or Landmark types are allowed.")
 
@@ -47,10 +55,10 @@ class Joint(JointInterface):
     def _get_entity_or_landmark_parent_name(entity_or_landmark) -> str:
         if isinstance(entity_or_landmark, str):
             return entity_or_landmark
-        elif isinstance(entity_or_landmark, EntityInterface):
-            return entity_or_landmark.name
         elif isinstance(entity_or_landmark, LandmarkInterface):
             return entity_or_landmark.get_parent_entity().name
+        elif isinstance(entity_or_landmark, EntityInterface):
+            return entity_or_landmark.name
 
         raise TypeError("Only Entity or Landmark types are allowed.")
 
@@ -104,9 +112,7 @@ class Joint(JointInterface):
 
         relativeToObjectName = Joint._get_entity_or_landmark_name(self.entity1)
 
-        if isinstance(object_to_limit_name, EntityInterface):
-            object_to_limit_name = object_to_limit_name.name
-        elif isinstance(object_to_limit_name, LandmarkInterface):
+        if isinstance(object_to_limit_name, LandmarkInterface):
             landmarkEntity = object_to_limit_name
 
             object_to_limit_name = object_to_limit_name.get_parent_entity().name
@@ -125,6 +131,8 @@ class Joint(JointInterface):
                 z[0] += offset.z
             if z and z[1]:
                 z[1] += offset.z
+        elif isinstance(object_to_limit_name, EntityInterface):
+            object_to_limit_name = object_to_limit_name.name
 
         # SA: Blender's Limit Location must be paired with Copy Location if we don't want the objectToLimit's rotation and scale to be affected by relativeToObject's transformations.
         blender_actions.apply_limit_location_constraint(
@@ -218,10 +226,10 @@ class Joint(JointInterface):
 
     def _limit_rotation_xyz(self, rotation_pair_x, rotation_pair_y, rotation_pair_z):
         object_to_limit_name = self.entity2
-        if isinstance(object_to_limit_name, EntityInterface):
-            object_to_limit_name = object_to_limit_name.name
-        elif isinstance(object_to_limit_name, LandmarkInterface):
+        if isinstance(object_to_limit_name, LandmarkInterface):
             object_to_limit_name = object_to_limit_name.get_parent_entity().name
+        elif isinstance(object_to_limit_name, EntityInterface):
+            object_to_limit_name = object_to_limit_name.name
 
         relativeToObjectName = Joint._get_entity_or_landmark_name(self.entity1)
 

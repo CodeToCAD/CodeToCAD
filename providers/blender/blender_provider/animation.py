@@ -4,6 +4,8 @@ from . import blender_definitions
 from codetocad.interfaces import AnimationInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
 
 class Animation(AnimationInterface):

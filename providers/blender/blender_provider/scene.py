@@ -3,12 +3,18 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from codetocad.interfaces import SceneInterface, EntityInterface
+from codetocad.interfaces import SceneInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
 
-from .part import Part
-from .entity import Entity
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
+    from . import Part
 
 
 class Scene(SceneInterface):

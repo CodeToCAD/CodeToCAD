@@ -1,18 +1,28 @@
 from functools import wraps
 from typing import Optional
 
-from codetocad.codetocad_types import *
-from codetocad.enums.curve_primitive_types import CurvePrimitiveTypes
-from codetocad.enums.curve_types import CurveTypes
-from codetocad.interfaces import SketchInterface
-from codetocad.utilities import *
 
 from . import blender_actions, blender_definitions
 from .entity import Entity
 from .part import Part
 
 
-class Sketch(Entity, SketchInterface):
+from codetocad.interfaces import SketchInterface
+from codetocad.codetocad_types import *
+from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from . import Entity, Mirrorable, Patternable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Part
+
+
+class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
     name: str
     curve_type: Optional[CurveTypes] = None
     description: Optional[str] = None

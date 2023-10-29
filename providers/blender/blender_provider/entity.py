@@ -1,13 +1,21 @@
 import math
 from typing import Optional
 
-from codetocad.core.dimensions import Dimensions
 from . import blender_actions
 from . import blender_definitions
 
 from codetocad.interfaces import EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.core import *
+from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Landmark  # noqa: F401
+    from . import Part  # noqa: F401
 
 
 class Entity(EntityInterface):
@@ -29,7 +37,7 @@ class Entity(EntityInterface):
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
         if self.name != importedFileName:
-            from . import Part
+            from . import Part  # noqa: F811
 
             Part(importedFileName).rename(self.name)
 
@@ -55,7 +63,7 @@ class Entity(EntityInterface):
 
         return self
 
-    def delete(self, remove_children: bool):
+    def delete(self, remove_children: bool = True):
         blender_actions.remove_object(self.name, remove_children)
         return self
 
@@ -76,7 +84,7 @@ class Entity(EntityInterface):
     def apply(self, rotation=True, scale=True, location=False, modifiers=True):
         blender_actions.update_view_layer()
 
-        from . import Part
+        from . import Part  # noqa: F811
 
         if modifiers and isinstance(self, Part):
             # Only apply modifiers for Blender Objects that have meshes
@@ -542,7 +550,8 @@ class Entity(EntityInterface):
             )
         )
 
-        from . import Part, Landmark
+        from . import Landmark  # noqa: F811
+        from . import Part  # noqa: F811
 
         landmark = Landmark(landmark_name, self.name)
         landmarkObjectName = landmark.get_landmark_entity_name()
@@ -598,7 +607,7 @@ class Entity(EntityInterface):
             preset = landmark_name
             landmark_name = preset.name
 
-        from . import Landmark
+        from . import Landmark  # noqa: F811
 
         landmark = Landmark(landmark_name, self.name)
 
