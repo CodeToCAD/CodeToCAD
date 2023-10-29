@@ -70,8 +70,7 @@ class BlenderLength(Units):
 
     @staticmethod
     def from_length_unit(unit: LengthUnit) -> "BlenderLength":
-        [result] = list(filter(lambda b: b.value == unit,
-                        [b for b in BlenderLength]))
+        [result] = list(filter(lambda b: b.value == unit, [b for b in BlenderLength]))
 
         return result
 
@@ -255,8 +254,7 @@ class BlenderCurveTypes(Enum):
     @staticmethod
     def from_curve_types(curve_type: CurveTypes):
         [result] = list(
-            filter(lambda b: b.value == curve_type,
-                   [b for b in BlenderCurveTypes])
+            filter(lambda b: b.value == curve_type, [b for b in BlenderCurveTypes])
         )
 
         return result

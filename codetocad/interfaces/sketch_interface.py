@@ -5,13 +5,22 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from codetocad.interfaces import EntityInterface
-from codetocad.interfaces import MirrorableInterface
-from codetocad.interfaces import PatternableInterface
-from codetocad.interfaces import ImportableInterface
+
+from . import (
+    EntityInterface,
+    MirrorableInterface,
+    PatternableInterface,
+    ImportableInterface,
+)
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import PartInterface
 
 
 class SketchInterface(
@@ -35,7 +44,9 @@ class SketchInterface(
         description: Optional[str] = None,
         native_instance=None,
     ):
-        super().__init__(name, description, native_instance)
+        super().__init__(
+            name=name, description=description, native_instance=native_instance
+        )
         self.name = name
         self.curve_type = curve_type
         self.description = description
@@ -54,7 +65,7 @@ class SketchInterface(
     def revolve(
         self,
         angle: AngleOrItsFloatOrStringValue,
-        about_entity_or_landmark: EntityOrItsNameOrLandmark,
+        about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "PartInterface":
         """
@@ -63,6 +74,21 @@ class SketchInterface(
 
         print("revolve is called in an abstract method. Please override this method.")
         raise NotImplementedError()
+
+    @abstractmethod
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        interations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        """
+        AKA Helix, Screw.
+        """
+
+        print("twist is called in an abstract method. Please override this method.")
+        return self
 
     @abstractmethod
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":

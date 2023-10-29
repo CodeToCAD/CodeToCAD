@@ -12,6 +12,12 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Sketch
+
+
 class Projectable(ProjectableInterface):
-    def project(self, project_onto: "SketchInterface") -> "Projectable":
+    def project(self, project_onto: "Sketch") -> "Projectable":
         raise NotImplementedError()

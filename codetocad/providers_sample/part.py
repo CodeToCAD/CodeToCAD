@@ -11,11 +11,14 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from . import Entity
-from . import Mirrorable
-from . import Patternable
-from . import Subdividable
-from . import Importable
+
+from . import Entity, Mirrorable, Patternable, Subdividable, Importable
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Landmark
+    from . import Material
 
 
 class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
@@ -76,10 +79,10 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
     ):
         return self
 
-    def clone(self, new_name: str, copy_landmarks: bool = True) -> "PartInterface":
+    def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
         raise NotImplementedError()
 
-    def loft(self, landmark1: "LandmarkInterface", landmark2: "LandmarkInterface"):
+    def loft(self, landmark1: "Landmark", landmark2: "Landmark"):
         return self
 
     def union(
@@ -129,15 +132,13 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
         initial_rotation_x: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_y: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_z: AngleOrItsFloatOrStringValue = 0.0,
-        mirror_about_entity_or_landmark: Optional[EntityOrItsNameOrLandmark] = None,
+        mirror_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         mirror_axis: AxisOrItsIndexOrItsName = "x",
         mirror: bool = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: AngleOrItsFloatOrStringValue = 0.0,
         circular_pattern_instance_axis: AxisOrItsIndexOrItsName = "z",
-        circular_pattern_about_entity_or_landmark: Optional[
-            EntityOrItsNameOrLandmark
-        ] = None,
+        circular_pattern_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern_instance_axis: AxisOrItsIndexOrItsName = "x",

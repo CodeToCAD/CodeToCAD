@@ -27,6 +27,14 @@ class SketchTestInterface(metaclass=ABCMeta):
         assert value, "Get method failed."
 
     @abstractmethod
+    def test_twist(self):
+        instance = Sketch("name", "curve_type", "description", "native_instance")
+
+        value = instance.twist("angle", "screw_pitch", "interations", "axis")
+
+        assert value, "Modify method failed."
+
+    @abstractmethod
     def test_extrude(self):
         instance = Sketch("name", "curve_type", "description", "native_instance")
 

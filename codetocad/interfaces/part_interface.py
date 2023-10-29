@@ -5,14 +5,24 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from codetocad.interfaces import EntityInterface
-from codetocad.interfaces import MirrorableInterface
-from codetocad.interfaces import PatternableInterface
-from codetocad.interfaces import SubdividableInterface
-from codetocad.interfaces import ImportableInterface
+
+from . import (
+    EntityInterface,
+    MirrorableInterface,
+    PatternableInterface,
+    SubdividableInterface,
+    ImportableInterface,
+)
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import LandmarkInterface
+    from . import MaterialInterface
 
 
 class PartInterface(
@@ -226,15 +236,13 @@ class PartInterface(
         initial_rotation_x: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_y: AngleOrItsFloatOrStringValue = 0.0,
         initial_rotation_z: AngleOrItsFloatOrStringValue = 0.0,
-        mirror_about_entity_or_landmark: Optional[EntityOrItsNameOrLandmark] = None,
+        mirror_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         mirror_axis: AxisOrItsIndexOrItsName = "x",
         mirror: bool = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: AngleOrItsFloatOrStringValue = 0.0,
         circular_pattern_instance_axis: AxisOrItsIndexOrItsName = "z",
-        circular_pattern_about_entity_or_landmark: Optional[
-            EntityOrItsNameOrLandmark
-        ] = None,
+        circular_pattern_about_entity_or_landmark: Optional[EntityOrItsName] = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern_instance_axis: AxisOrItsIndexOrItsName = "x",

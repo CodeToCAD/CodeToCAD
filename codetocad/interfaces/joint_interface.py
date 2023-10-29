@@ -5,20 +5,25 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import EntityInterface
 
 
 class JointInterface(metaclass=ABCMeta):
     """Joints define the relationships and constraints between entities."""
 
-    entity1: EntityOrItsNameOrLandmark
-    entity2: EntityOrItsNameOrLandmark
+    entity1: EntityOrItsName
+    entity2: EntityOrItsName
 
     @abstractmethod
-    def __init__(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
-    ):
+    def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
         self.entity1 = entity1
         self.entity2 = entity2
 

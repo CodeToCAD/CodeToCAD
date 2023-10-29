@@ -5,10 +5,12 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from codetocad.interfaces import EntityInterface
+
+from . import EntityInterface
 
 
 class CameraInterface(EntityInterface, metaclass=ABCMeta):
@@ -21,7 +23,9 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
     def __init__(
         self, name: str, description: Optional[str] = None, native_instance=None
     ):
-        super().__init__(name, description, native_instance)
+        super().__init__(
+            name=name, description=description, native_instance=native_instance
+        )
         self.name = name
         self.description = description
         self.native_instance = native_instance

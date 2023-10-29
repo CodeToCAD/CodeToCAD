@@ -57,7 +57,7 @@ class Entity(EntityInterface):
 
     def mirror(
         self,
-        mirror_across_entity_or_landmark: EntityOrItsNameOrLandmark,
+        mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
@@ -75,7 +75,7 @@ class Entity(EntityInterface):
         self,
         instance_count: "int",
         separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsNameOrLandmark,
+        center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         return self

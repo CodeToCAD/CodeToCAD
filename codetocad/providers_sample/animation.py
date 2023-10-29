@@ -12,12 +12,18 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
+
+
 class Animation(AnimationInterface):
     def __init__(self):
         pass
 
     @staticmethod
-    def default() -> "AnimationInterface":
+    def default() -> "Animation":
         return Animation()
 
     def set_frame_start(self, frame_number: "int"):

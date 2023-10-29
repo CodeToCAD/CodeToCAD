@@ -5,15 +5,22 @@
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
+from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import SketchInterface
 
 
 class ProjectableInterface(metaclass=ABCMeta):
     """This entity can be projected onto a surface"""
 
     @abstractmethod
-    def project(self, project_onto: "SketchInterface") -> "Projectable":
+    def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
         """
         Project this entity onto another
         """

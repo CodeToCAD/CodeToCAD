@@ -37,7 +37,7 @@ class Sketch(Entity, SketchInterface):
     def revolve(
         self,
         angle: AngleOrItsFloatOrStringValue,
-        about_entity_or_landmark: EntityOrItsNameOrLandmark,
+        about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "PartInterface":
         if isinstance(about_entity_or_landmark, Entity):

@@ -15,15 +15,15 @@ class Analytics(AnalyticsInterface):
         pass
 
     def measure_distance(
-        self, entity1: EntityOrItsNameOrLandmark, entity2: EntityOrItsNameOrLandmark
+        self, entity1: EntityOrItsName, entity2: EntityOrItsName
     ) -> "Dimensions":
         raise NotImplementedError()
 
     def measure_angle(
         self,
-        entity1: EntityOrItsNameOrLandmark,
-        entity2: EntityOrItsNameOrLandmark,
-        pivot: Optional[EntityOrItsNameOrLandmark] = None,
+        entity1: EntityOrItsName,
+        entity2: EntityOrItsName,
+        pivot: Optional[EntityOrItsName] = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 
