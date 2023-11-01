@@ -7,73 +7,112 @@ from development.utilities import to_snake_case
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-outputDir = f"{SCRIPT_DIR}/../../codetocad/"
+output_dir = f"{SCRIPT_DIR}/../../codetocad/"
 docs = f"{SCRIPT_DIR}/../../docs/"
-templatesDir = f"{SCRIPT_DIR}/templates"
+templates_dir = f"{SCRIPT_DIR}/templates"
 
-capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
+capabilities_json = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
 
 capabilities_to_py_interface = "capabilities_to_py_interface.j2"
-capabilities_to_py_interface_out = f"{outputDir}/interfaces"
+capabilities_to_py_interface_out = f"{output_dir}/interfaces"
 
 
 capabilities_to_py_provider = "capabilities_to_py_provider.j2"
-capabilities_to_py_provider_out = f"{outputDir}/providers_sample"
+capabilities_to_py_provider_out = f"{output_dir}/providers_sample"
 
 
 capabilities_to_py_test_interface = "capabilities_to_py_test_interface.j2"
-capabilities_to_py_test_interface_out = f"{outputDir}/tests_interfaces"
+capabilities_to_py_test_interface_out = f"{output_dir}/tests_interfaces"
 
 
 capabilities_to_py_test = "capabilities_to_py_test.j2"
-capabilities_to_py_test_out = f"{outputDir}/tests_sample"
+capabilities_to_py_test_out = f"{output_dir}/tests_sample"
 
-with open(capabilitiesJson) as f:
+with open(capabilities_json) as f:
     capabilities: dict = json.load(f)
 
-templatesToGenerate = [
-    (capabilities_to_py_interface, capabilities_to_py_interface_out, "Interface"),
-    (capabilities_to_py_provider, capabilities_to_py_provider_out, ""),
-    (
+
+def make_template_args(
+    template_path: str,
+    output_path: str,
+    suffix: str,
+    generate_interface_only_capabilities_in_a_separate_file: bool,
+):
+    return (
+        template_path,
+        output_path,
+        suffix,
+        generate_interface_only_capabilities_in_a_separate_file,
+    )
+
+
+templates_to_generate = [
+    make_template_args(
+        capabilities_to_py_interface,
+        capabilities_to_py_interface_out,
+        "Interface",
+        True,
+    ),
+    make_template_args(
+        capabilities_to_py_provider, capabilities_to_py_provider_out, "", False
+    ),
+    make_template_args(
         capabilities_to_py_test_interface,
         capabilities_to_py_test_interface_out,
         "TestInterface",
+        True,
     ),
-    (capabilities_to_py_test, capabilities_to_py_test_out, "Test"),
+    make_template_args(
+        capabilities_to_py_test, capabilities_to_py_test_out, "Test", False
+    ),
 ]
 
-templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
-templateEnv = jinja2.Environment(loader=templateLoader)
+template_loader = jinja2.FileSystemLoader(searchpath=templates_dir)
+template_env = jinja2.Environment(loader=template_loader)
 
 
-def createInitFile(outputDir: str):
-    with open(outputDir + "/__init__.py", "w") as handler:
+def create_init_file(outpit_dir: str):
+    with open(outpit_dir + "/__init__.py", "w") as handler:
         handler.write(
             """# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
 """
         )
 
 
-for template, output, suffix in templatesToGenerate:
+for (
+    template,
+    output,
+    suffix,
+    generate_interface_only_capabilities_in_a_separate_file,
+) in templates_to_generate:
     print("Generating", template)
 
-    createInitFile(output)
+    create_init_file(output)
 
-    all_class_names = capabilities["capabilities"].keys()
-    for className, methods in capabilities["capabilities"].items():
-        file_name = to_snake_case(f"{className}{suffix}")
+    all_classes: dict[str, dict] = capabilities["capabilities"]
+    all_class_names = all_classes.keys()
+    for class_name, methods in all_classes.items():
+        file_name = to_snake_case(f"{class_name}{suffix}")
+
+        if (
+            not generate_interface_only_capabilities_in_a_separate_file
+            and methods.get("is_interface_only", False) is True
+        ):
+            continue
 
         with open(output + "/__init__.py", "a") as handler:
-            handler.write(f"from .{file_name} import {className}{suffix}\n")
+            handler.write(f"from .{file_name} import {class_name}{suffix}\n")
 
-        template = templateEnv.get_template(template)
+        template = template_env.get_template(template)
         output_from_parsed_template = template.render(
             dict(
                 {
-                    "className": className,
+                    "className": class_name,
                     "classNameSuffix": suffix,
                     "methods": methods,
-                    "allCodeToCADClassNames": all_class_names,
+                    "generate_interface_only_capabilities_in_a_separate_file": generate_interface_only_capabilities_in_a_separate_file,
+                    "all_codetocad_class_names": all_class_names,
+                    "all_classes": all_classes,
                 },
                 **capabilities,
             )

@@ -7,18 +7,33 @@ from typing import Optional
 {%set interfaceName = className + "Interface" %}
 from codetocad.interfaces import {{interfaceName}}
 
+{%-set extendedClassesWithSuffixes = []-%}
+{%- if "extends" in methods-%}
+{%-set extendedClasses = methods["extends"]-%}
+{%-for extendedClass in extendedClasses.split(",") -%}
+{%-set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
+{%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
+{%-endfor-%}
+{%-endif%}
+
+
 {%-set implementedClassesWithSuffixes = []-%}
 {%- if "implements" in methods-%}
 {%-set implementedClasses = methods["implements"]-%}
 {%-for implementedClass in implementedClasses.split(",") -%}
-{%-set implementedClassWithSuffix = implementedClass + classNameSuffix-%}
+{%-set implementedClassWithSuffix = implementedClass + "Interface"-%}
 {%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
 {%-endfor-%}
 {%-endif%}
-{% include 'common_imports.j2' -%}
+
+{% include 'common_imports.j2' %}
+
+{% if extendedClassesWithSuffixes|length > 0%}
+from . import ({{extendedClassesWithSuffixes|join(", ")}})
+{%-endif%}
 
 {% include 'type_check_imports.j2' %}
 
-class {{className}}({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
+class {{className}}({{extendedClassesWithSuffixes|join(",") + (", " if extendedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
     {% include 'capabilities_to_py_class_definition.j2' %}
     

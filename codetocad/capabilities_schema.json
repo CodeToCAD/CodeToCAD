@@ -177,12 +177,20 @@
                             "description": "Information about this class.",
                             "type": "string"
                         },
+                        "is_interface_only": {
+                            "information": "This capability only generates an interface, no providers. This is meant to be used when a capability should be implemented by other classes.",
+                            "type": "boolean"
+                        },
                         "constructor": {
                             "description": "A schema for this class's constructor method.",
                             "type": "object"
                         },
+                        "extends": {
+                            "description": "The names of super class(es) that this class extends (polymorphism).",
+                            "type": "string"
+                        },
                         "implements": {
-                            "description": "The name of the class that this class implements (polymorphism).",
+                            "description": "The names of classes that this class implements (polymorphism).",
                             "type": "string"
                         }
                     },
@@ -191,10 +199,9 @@
                             "label": "Add a new capability class:",
                             "body": {
                                 "information": "$1",
-                                "alias": [
-                                    "$2"
-                                ],
-                                "implements": "$3",
+                                "extends": "$3",
+                                "implements": "$4",
+                                "is_interface_only": false,
                                 "constructor": null,
                                 "methodA": null
                             }

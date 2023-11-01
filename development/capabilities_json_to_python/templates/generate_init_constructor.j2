@@ -1,0 +1,55 @@
+{%- from 'capabilities_to_py_utilities.j2' import type_mapping, type_mapping_with_class_name_suffix, generate_method_arguments -%}
+
+{%- macro generate_init_constructor(parameters, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names, methods, all_classes) -%}
+
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+    {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
+    {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
+    {{ parameter }} {{-":" + ("Optional["+type_mapping(definition.type)+"]" if definition.required == False else type_mapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
+    {%-endfor%}
+
+    {%-set init_parameters = parameters-%}
+    {%-set superParameters = []-%}
+
+    {%-if use_abstract_method_decorator and "extends" in methods %}
+        {%- for extendedClass in methods["extends"].split(",") -%}
+            {%- if "constructor" in all_classes[extendedClass]%}
+                {%-set extendedClassParameters = all_classes[extendedClass]["constructor"]["parameters"] -%}
+                {%- for parameterName in extendedClassParameters.keys() -%}
+                    {%- set superParameters = superParameters.append(parameterName + "="+parameterName)-%}
+                    {%- set _ = init_parameters.update({parameterName: extendedClassParameters[parameterName]}) -%}
+                {%- endfor-%}
+            {%-endif%}
+        {%-endfor%}
+    {%-endif%}
+
+    {%-set new_init_params = {} -%}
+    {%-set no_default_params = []-%}
+    {%-set default_params = []-%}
+    {%-for parameterName in init_parameters.keys()-%}
+    {# Rearrange parameters to make sure default and not-required parameters are placed last #}
+    {%-if "defaultValue" in init_parameters[parameterName] or ("required" in  init_parameters[parameterName] and init_parameters[parameterName]["required"] == false)-%}
+    {%- set default_params = default_params.append(parameterName)-%}
+    {%else%}
+    {%- set no_default_params = no_default_params.append(parameterName)-%}
+    {%-endif-%}
+    {%-endfor-%}
+    {%-for parameterName in no_default_params-%}
+    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
+    {%-endfor-%}
+    {%-for parameterName in default_params-%}
+    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
+    {%-endfor%}
+
+    {{ generate_method_arguments("__init__", new_init_params, false, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}):
+        {%-if use_abstract_method_decorator and "extends" in methods %}
+        super().__init__({{ superParameters|join(", ") }})
+        {%-endif%}
+
+    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
+        self.{{ parameter }} = {{parameter}}
+    {%- else %}
+        pass
+    {%-endfor%}
+
+{%- endmacro %}

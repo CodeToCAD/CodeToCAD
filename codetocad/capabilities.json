@@ -1,6 +1,238 @@
 {
     "information": "Capabilities for CodeToCAD.",
     "capabilities": {
+        "Scalable": {
+            "information": "An entity that can be transformed by a scale.",
+            "is_interface_only": true,
+            "scale_xyz": {
+                "action": "modify",
+                "information": "Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_x": {
+                "action": "modify",
+                "information": "Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_y": {
+                "action": "modify",
+                "information": "Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_z": {
+                "action": "modify",
+                "information": "Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "scale_x_by_factor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_y_by_factor": {
+                "action": "modify",
+                "information": "Scale in the Y direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_z_by_factor": {
+                "action": "modify",
+                "information": "Scale in the X direction by a multiple.",
+                "parameters": {
+                    "scale_factor": {
+                        "type": "float"
+                    }
+                }
+            },
+            "scale_keep_aspect_ratio": {
+                "action": "modify",
+                "information": "Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "scale": {
+                        "type": "string,float,Dimension"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis"
+                    }
+                }
+            }
+        },
+        "Mirrorable": {
+            "information": "An entity that can be mirrored.",
+            "is_interface_only": true,
+            "mirror": {
+                "action": "create",
+                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
+                "parameters": {
+                    "mirror_across_entity": {
+                        "type": "string,Entity"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis"
+                    },
+                    "resulting_mirrored_entity_name": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "Patternable": {
+            "information": "An entity that can be patterned.",
+            "is_interface_only": true,
+            "linear_pattern": {
+                "action": "modify",
+                "information": "Pattern in a uniform direction.",
+                "parameters": {
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "offset": {
+                        "type": "string,float,Dimension"
+                    },
+                    "direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            },
+            "circular_pattern": {
+                "action": "modify",
+                "information": "Pattern in a circular direction.",
+                "parameters": {
+                    "instance_count": {
+                        "type": "int"
+                    },
+                    "separation_angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "center_entity_or_landmark": {
+                        "type": "string,Entity"
+                    },
+                    "normal_direction_axis": {
+                        "type": "string,int,Axis",
+                        "defaultValue": "z"
+                    }
+                }
+            }
+        },
+        "Subdividable": {
+            "information": "An entity that can be broken down or scaled up into more components.",
+            "is_interface_only": true,
+            "remesh": {
+                "action": "modify",
+                "information": "Remeshing changes the shape of an entity.",
+                "parameters": {
+                    "strategy": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            },
+            "subdivide": {
+                "action": "modify",
+                "information": "Subdivide an entity into more components.",
+                "parameters": {
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            },
+            "decimate": {
+                "action": "modify",
+                "information": "Decimate an entity into less components.",
+                "parameters": {
+                    "amount": {
+                        "type": "float"
+                    }
+                }
+            }
+        },
+        "Importable": {
+            "information": "An entity that can be imported from a file.",
+            "is_interface_only": true,
+            "create_from_file": {
+                "action": "create",
+                "information": "Imports geometry from a file.",
+                "parameters": {
+                    "file_path": {
+                        "type": "string"
+                    },
+                    "file_type": {
+                        "type": "string",
+                        "required": false
+                    }
+                }
+            }
+        },
+        "Exportable": {
+            "information": "An enttiy that can be exported.",
+            "is_interface_only": true,
+            "export": {
+                "action": "interact",
+                "information": "Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'",
+                "parameters": {
+                    "file_path": {
+                        "type": "string"
+                    },
+                    "overwrite": {
+                        "type": "boolean",
+                        "defaultValue": true
+                    },
+                    "scale": {
+                        "type": "float",
+                        "defaultValue": 1.0
+                    }
+                }
+            }
+        },
+        "Projectable": {
+            "information": "This entity can be projected onto a surface",
+            "is_interface_only": true,
+            "project": {
+                "information": "Project this entity onto another",
+                "action": "get",
+                "returnType": "Projectable",
+                "parameters": {
+                    "project_onto": {
+                        "information": "Sketch to project onto",
+                        "type": "Sketch",
+                        "required": true
+                    }
+                }
+            }
+        },
         "Entity": {
             "information": "Capabilities shared between Parts and Sketches.",
             "constructor": {
@@ -106,23 +338,6 @@
                 "information": "Select the entity (in UI).",
                 "parameters": {}
             },
-            "export": {
-                "action": "interact",
-                "information": "Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'",
-                "parameters": {
-                    "file_path": {
-                        "type": "string"
-                    },
-                    "overwrite": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    },
-                    "scale": {
-                        "type": "float",
-                        "defaultValue": 1.0
-                    }
-                }
-            },
             "translate_xyz": {
                 "action": "modify",
                 "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
@@ -162,87 +377,6 @@
                 "parameters": {
                     "amount": {
                         "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scale_xyz": {
-                "action": "modify",
-                "information": "Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scale_x": {
-                "action": "modify",
-                "information": "Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scale_y": {
-                "action": "modify",
-                "information": "Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scale_z": {
-                "action": "modify",
-                "information": "Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "scale_x_by_factor": {
-                "action": "modify",
-                "information": "Scale in the X direction by a multiple.",
-                "parameters": {
-                    "scale_factor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scale_y_by_factor": {
-                "action": "modify",
-                "information": "Scale in the Y direction by a multiple.",
-                "parameters": {
-                    "scale_factor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scale_z_by_factor": {
-                "action": "modify",
-                "information": "Scale in the X direction by a multiple.",
-                "parameters": {
-                    "scale_factor": {
-                        "type": "float"
-                    }
-                }
-            },
-            "scale_keep_aspect_ratio": {
-                "action": "modify",
-                "information": "Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "scale": {
-                        "type": "string,float,Dimension"
-                    },
-                    "axis": {
-                        "type": "string,int,Axis"
                     }
                 }
             },
@@ -330,130 +464,10 @@
                 }
             }
         },
-        "Mirrorable": {
-            "information": "An entity that can be mirrored.",
-            "mirror": {
-                "action": "create",
-                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
-                "parameters": {
-                    "mirror_across_entity": {
-                        "type": "string,Entity"
-                    },
-                    "axis": {
-                        "type": "string,int,Axis"
-                    },
-                    "resulting_mirrored_entity_name": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            }
-        },
-        "Patternable": {
-            "information": "An entity that can be patterned.",
-            "linear_pattern": {
-                "action": "modify",
-                "information": "Pattern in a uniform direction.",
-                "parameters": {
-                    "instance_count": {
-                        "type": "int"
-                    },
-                    "offset": {
-                        "type": "string,float,Dimension"
-                    },
-                    "direction_axis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
-            },
-            "circular_pattern": {
-                "action": "modify",
-                "information": "Pattern in a circular direction.",
-                "parameters": {
-                    "instance_count": {
-                        "type": "int"
-                    },
-                    "separation_angle": {
-                        "type": "string,float,Angle"
-                    },
-                    "center_entity_or_landmark": {
-                        "type": "string,Entity"
-                    },
-                    "normal_direction_axis": {
-                        "type": "string,int,Axis",
-                        "defaultValue": "z"
-                    }
-                }
-            }
-        },
-        "Subdividable": {
-            "information": "An entity that can be broken down or scaled up into more components.",
-            "remesh": {
-                "action": "modify",
-                "information": "Remeshing changes the shape of an entity.",
-                "parameters": {
-                    "strategy": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "float"
-                    }
-                }
-            },
-            "subdivide": {
-                "action": "modify",
-                "information": "Subdivide an entity into more components.",
-                "parameters": {
-                    "amount": {
-                        "type": "float"
-                    }
-                }
-            },
-            "decimate": {
-                "action": "modify",
-                "information": "Decimate an entity into less components.",
-                "parameters": {
-                    "amount": {
-                        "type": "float"
-                    }
-                }
-            }
-        },
-        "Importable": {
-            "information": "An entity that can be imported from a file.",
-            "create_from_file": {
-                "action": "create",
-                "information": "Imports geometry from a file.",
-                "parameters": {
-                    "file_path": {
-                        "type": "string"
-                    },
-                    "file_type": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            }
-        },
-        "Projectable": {
-            "information": "This entity can be projected onto a surface",
-            "project": {
-                "information": "Project this entity onto another",
-                "action": "get",
-                "returnType": "Projectable",
-                "parameters": {
-                    "project_onto": {
-                        "information": "Sketch to project onto",
-                        "type": "Sketch",
-                        "required": true
-                    }
-                }
-            }
-        },
         "Part": {
             "information": "Create and manipulate 3D shapes.",
-            "implements": "Entity,Mirrorable,Patternable,Subdividable,Importable",
+            "extends": "Entity",
+            "implements": "Mirrorable,Patternable,Subdividable,Importable,Exportable,Scalable",
             "create_cube": {
                 "action": "create",
                 "information": "Adds cuboid geometry to a part.",
@@ -935,7 +949,8 @@
         },
         "Sketch": {
             "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
-            "implements": "Entity,Mirrorable,Patternable,Importable",
+            "extends": "Entity",
+            "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1277,7 +1292,8 @@
         },
         "Vertex": {
             "information": "A single point in space, or a control point.",
-            "implements": "Entity,Projectable",
+            "extends": "Entity",
+            "implements": "Projectable",
             "constructor": {
                 "parameters": {
                     "location": {
@@ -1307,7 +1323,8 @@
         },
         "Edge": {
             "information": "A curve bounded by two Vertices.",
-            "implements": "Entity,Mirrorable,Patternable,Subdividable,Projectable",
+            "extends": "Entity",
+            "implements": "Mirrorable,Patternable,Subdividable,Projectable",
             "constructor": {
                 "parameters": {
                     "v1": {
@@ -1361,7 +1378,8 @@
         },
         "Wire": {
             "information": "A collection of connected edges.",
-            "implements": "Entity,Mirrorable,Patternable,Projectable",
+            "extends": "Entity",
+            "implements": "Mirrorable,Patternable,Projectable",
             "constructor": {
                 "parameters": {
                     "edges": {
@@ -1382,7 +1400,7 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
-            "implements": "Entity",
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1700,7 +1718,7 @@
         },
         "Light": {
             "information": "Manipulate a light object.",
-            "implements": "Entity",
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1766,7 +1784,7 @@
         },
         "Camera": {
             "information": "Manipulate a camera object.",
-            "implements": "Entity",
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
