@@ -1,14 +1,16 @@
 
 {% set types = {"string":"str", "array": "list", "object": "dict", "any": "object", "number":"int", "float":"float", "boolean":"bool", "string,float":"FloatOrItsStringValue","int,float":"IntOrFloat", "string,Part":"PartOrItsName", "string,Entity":"EntityOrItsName","string,Sketch":"SketchOrItsName", "list[string,Entity]":"list[EntityOrItsName]", "string,Landmark":"LandmarkOrItsName","list[string,Landmark]":"list[LandmarkOrItsName]", "string,Material":"MaterialOrItsName", "string,int,Axis":"AxisOrItsIndexOrItsName", "string,float,Dimension":"DimensionOrItsFloatOrStringValue","string,float,Angle":"AngleOrItsFloatOrStringValue", "string,Entity": "EntityOrItsName", "string,list[string],Point": "PointOrListOfFloatOrItsStringValue", "list[string,list[string],Point]": "list[PointOrListOfFloatOrItsStringValue]", "string,LengthUnit": "LengthUnitOrItsName", "string,PresetLandmark": "PresetLandmarkOrItsName","string,Camera": "CameraOrItsName" } -%}
 
-{% macro typeMapping(typeName) -%}
+{%- set ignore_method_names = ["information", "is_interface_only", "extends", "implements"] -%}
+
+{% macro type_mapping(typeName) -%}
     {{types[typeName] if typeName in types else "'"+typeName+"'"}}
 {%- endmacro %}
 
-{% macro typeMappingWithClassNameSuffix(typeName, classNameSuffix, allCodeToCADClassNames) -%}
-    {%-set returnType = {"value":typeMapping(typeName)}-%}
+{% macro type_mapping_with_class_name_suffix(typeName, classNameSuffix, all_codetocad_class_names) -%}
+    {%-set returnType = {"value":type_mapping(typeName)}-%}
     {%-if typeName not in types-%}
-        {%-for codeToCADClassName in allCodeToCADClassNames-%}
+        {%-for codeToCADClassName in all_codetocad_class_names-%}
             {%-if codeToCADClassName in returnType["value"] -%}
                 {%-set _ = returnType.update({"value": returnType["value"]|replace(codeToCADClassName, codeToCADClassName + classNameSuffix)})-%}
             {%-endif-%}
@@ -17,14 +19,14 @@
     {{returnType["value"]}}
 {%- endmacro %}
 
-{%macro generateMethodArguments(methodName, parameters, isStaticMethod, useAbstractMethodDecorator, classNameSuffix, allCodeToCADClassNames) -%}
-    {{"@abstractmethod\n    " if useAbstractMethodDecorator and not isStaticMethod-}}
+{%macro generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) -%}
+    {{"@abstractmethod\n    " if use_abstract_method_decorator and not isStaticMethod-}}
     {{"@staticmethod\n    " if isStaticMethod-}}
-    def {{methodName}}({{"self" if not isStaticMethod}}{%- if parameters.keys()|length > 0 -%}
+    def {{method_name}}({{"self" if not isStaticMethod}}{%- if parameters.keys()|length > 0 -%}
     {{"," if not isStaticMethod}} {%for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
         {%-set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
         {%-set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
-        {{ parameter }} {{-": " + ("Optional["+typeMappingWithClassNameSuffix(definition.type, classNameSuffix, allCodeToCADClassNames)+"]" if definition.required == False else typeMappingWithClassNameSuffix(definition.type, classNameSuffix, allCodeToCADClassNames)) if definition.type and definition.type != "any" }} {{- (" = "+defaultValue if "defaultValue" in definition  else " = None") if definition.required == False or "defaultValue" in definition -}} {{-", " if not loop.last}} 
+        {{ parameter }} {{-": " + ("Optional["+type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)+"]" if definition.required == False else type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)) if definition.type and definition.type != "any" }} {{- (" = "+defaultValue if "defaultValue" in definition  else " = None") if definition.required == False or "defaultValue" in definition -}} {{-", " if not loop.last}} 
     {%-endfor%}
 {%-endif%}
 {%- endmacro %}

@@ -11,21 +11,39 @@ This Jinja2 Template requires the following parameters:
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 
+{%-set extendedClassesWithSuffixes = []-%}
+{%- if "extends" in methods-%}
+{%-set extendedClasses = methods["extends"]-%}
+{%-for extendedClass in extendedClasses.split(",") -%}
+{%-set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
+{%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
+{%-endfor-%}
+{%-endif%}
+
+
 {%-set implementedClassesWithSuffixes = []-%}
 {%- if "implements" in methods-%}
 {%-set implementedClasses = methods["implements"]-%}
 {%-for implementedClass in implementedClasses.split(",") -%}
-{%-set implementedClassWithSuffix = implementedClass + classNameSuffix-%}
+{%-set implementedClassWithSuffix = implementedClass + "Interface"-%}
 {%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
 {%-endfor-%}
 {%-endif%}
+
 {% include 'common_imports.j2' %}
 
-{%- include 'type_check_imports.j2' %}
+{% if implementedClassesWithSuffixes|length > 0%}
+from codetocad.interfaces import ({{implementedClassesWithSuffixes|join(", ")}})
+{%-endif%} 
+{% if extendedClassesWithSuffixes|length > 0%}
+from . import ({{extendedClassesWithSuffixes|join(", ")}})
+{%-endif%}
 
-{%-set useAbstractMethodDecorator = True%}
+{% include 'type_check_imports.j2' %}
 
-class {{className+classNameSuffix}}({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}metaclass=ABCMeta):
+{%set use_abstract_method_decorator = True%}
+
+class {{className+classNameSuffix}}({{extendedClassesWithSuffixes|join(",") + (", " if extendedClassesWithSuffixes|length > 0 else "") + implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")-}}metaclass=ABCMeta):
     {% if "information" in methods -%}
     '''
     {{- methods["information"] -}}

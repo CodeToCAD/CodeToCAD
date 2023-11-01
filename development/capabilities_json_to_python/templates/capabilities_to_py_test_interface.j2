@@ -8,44 +8,28 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad import {{className}}
 
-class {{className}}TestInterface(metaclass=ABCMeta):    
-    {%- from 'capabilities_to_py_utilities.j2' import typeMapping -%}
+{%-set implementedClassesWithSuffixes = []-%}
+{%- if "implements" in methods-%}
+{%-set implementedClasses = methods["implements"]-%}
+{%-for implementedClass in implementedClasses.split(",") -%}
+{%-set implementedClassWithSuffix = implementedClass + "TestInterface"-%}
+{%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
+{%-endfor-%}
+{%-endif%}
 
-    {%- set className = "Part" if className == "Entity" else className -%}
+{% if implementedClassesWithSuffixes|length > 0%}
+from codetocad.tests_interfaces import ({{implementedClassesWithSuffixes|join(", ")}})
+{%-endif%} 
 
-    {%-set classConstructor = methods["constructor"] if "constructor" in methods else {}-%}
-    {%-set classConstructorParameters = classConstructor["parameters"] if "parameters" in classConstructor else {}-%}
+{%set use_abstract_method_decorator = True%}
 
-    {%-for methodName, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+class {{className}}TestInterface({{implementedClassesWithSuffixes|join(",") + (", " if implementedClassesWithSuffixes|length > 0 else "")}}metaclass=ABCMeta):    
+    {%- from 'generate_test_method.j2' import generate_test_method -%}
+    {%- from 'capabilities_to_py_utilities.j2' import type_mapping -%}
 
-    {%- set isStaticMethod = "staticMethod" in properties and properties["staticMethod"] -%}
+    {%-for method_name, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 
-    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+    {{- generate_test_method(method_name, properties, methods,use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_codetocad_class_names, all_classes)}}
 
-    {%- if methodName == "information" %}
-    {# Do nothing #}
-    {%- elif methodName == "implements"-%}
-    {# Do nothing #}
-    {%- elif methodName == "constructor"%}
-    {# Do nothing #}
-    {%- elif methodName == "default"%}
-    {# Do nothing #}
-    {%- else %}
-    {# @unittest.skip #}
-    @abstractmethod
-    def test_{{methodName}}(self):
-        instance = {{className}}("{{ classConstructorParameters.keys()|join('","') }}")
 
-        value = instance.{{methodName}}("{{ properties["parameters"].keys()|join('","') if "parameters" in properties}}")
-
-        {% if properties["action"] == "get" %}
-        assert value, "Get method failed."
-        {%elif properties["action"] == "create"%}
-        assert value.is_exists(), "Create method failed."
-        {%elif properties["action"] == "modify"%}
-        assert value, "Modify method failed."
-        {%endif%}
-        
-    
-    {%-endif-%}
     {%-endfor%}

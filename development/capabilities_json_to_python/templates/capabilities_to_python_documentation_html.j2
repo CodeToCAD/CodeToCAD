@@ -47,7 +47,7 @@
             box-sizing: border-box;
         }
 
-        .methodName {
+        .method_name {
             font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
             list-style: none;
             list-style-image: none;
@@ -131,18 +131,18 @@
 
     {% macro methodsChipsView(className, methods) -%}
 
-    {% for methodName, properties in methods.items() %}
+    {% for method_name, properties in methods.items() %}
     {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
-    {%- if methodName == "information" %}
+    {%- if method_name == "information" %}
     {# Do nothing #}
-    {%- elif methodName == "implements"-%}
+    {%- elif method_name == "implements"-%}
     {# Do nothing #}
-    {%- elif methodName == "constructor"%}
+    {%- elif method_name == "constructor"%}
 
     {%- else %}
 
-    <a href=#{{className}}_{{methodName}} class="chip">{{methodName}}()</a>
+    <a href=#{{className}}_{{method_name}} class="chip">{{method_name}}()</a>
 
     {%-endif-%}
 
@@ -154,18 +154,18 @@
 
     {% macro methodsParametersView(className, methods) -%}
 
-    {% for methodName, properties in methods.items() %}
+    {% for method_name, properties in methods.items() %}
     {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
-    {%- if methodName == "information" %}
+    {%- if method_name == "information" %}
     {# Do nothing #}
-    {%- elif methodName == "implements"-%}
+    {%- elif method_name == "implements"-%}
     {# Do nothing #}
-    {%- elif methodName == "constructor"%}
+    {%- elif method_name == "constructor"%}
 
     {%- else %}
 
-    {{className}}::<span class="subHeading" id={{className}}_{{methodName}}>{{methodName}}({{ parameters.keys()|join(',
+    {{className}}::<span class="subHeading" id={{className}}_{{method_name}}>{{method_name}}({{ parameters.keys()|join(',
         ') if "parameters" in properties}})</span>
 
     {% if "information" in properties -%}
@@ -177,7 +177,7 @@
     {% for parameterName, parameter in parameters.items() %}
 
     <div class="methods grid-container-parameters">
-        <div class="methodName grid-item">{{parameterName}}</div>
+        <div class="method_name grid-item">{{parameterName}}</div>
         <div class="grid-item">
             {% if "information" in parameter -%}
             <div><span class="subSubHeading">Information:</span> {{parameter["information"] -}}</div>
