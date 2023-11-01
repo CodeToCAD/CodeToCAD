@@ -3,7 +3,7 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from codetocad.interfaces import SceneInterface
+from codetocad.interfaces import SceneInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

@@ -9,12 +9,6 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Part
-
-
 class Material(MaterialInterface):
     name: str
     description: Optional[str] = None
@@ -25,7 +19,7 @@ class Material(MaterialInterface):
 
         try:
             blender_actions.get_material(self.name)
-        except:
+        except:  # noqa: E722
             blender_actions.create_material(self.name)
 
     def assign_to_part(self, part_name: PartOrItsName):

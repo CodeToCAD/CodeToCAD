@@ -10,12 +10,6 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Camera
-
-
 class Render(RenderInterface):
     @staticmethod
     def _set_file_format(output_file_path: str):

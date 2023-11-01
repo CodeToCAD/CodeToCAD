@@ -8,11 +8,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity
+from . import Entity
 
 
 class Analytics(AnalyticsInterface):

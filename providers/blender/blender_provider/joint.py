@@ -13,7 +13,7 @@ from codetocad.enums import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Entity
+    from . import Entity  # noqa: 401
 
 
 class Joint(JointInterface):
@@ -36,7 +36,8 @@ class Joint(JointInterface):
 
         translation = landmark1.get_location_world() - landmark2.get_location_world()
 
-        entityForLandmark2.translate_xyz(translation.x, translation.y, translation.z)
+        entityForLandmark2.translate_xyz(
+            translation.x, translation.y, translation.z)
 
         return self
 
@@ -65,7 +66,8 @@ class Joint(JointInterface):
     def pivot(self):
         objectToPivotName = Joint._get_entity_or_landmark_name(self.entity2)
 
-        objectToPivotAboutName = Joint._get_entity_or_landmark_name(self.entity1)
+        objectToPivotAboutName = Joint._get_entity_or_landmark_name(
+            self.entity1)
 
         blender_actions.apply_pivot_constraint(
             objectToPivotName, objectToPivotAboutName
@@ -175,9 +177,12 @@ class Joint(JointInterface):
         y: Optional[DimensionOrItsFloatOrStringValue] = None,
         z: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
-        dimensionsX = Joint._get_limit_location_pair(x, x) if x is not None else None
-        dimensionsY = Joint._get_limit_location_pair(y, y) if y is not None else None
-        dimensionsZ = Joint._get_limit_location_pair(z, z) if y is not None else None
+        dimensionsX = Joint._get_limit_location_pair(
+            x, x) if x is not None else None
+        dimensionsY = Joint._get_limit_location_pair(
+            y, y) if y is not None else None
+        dimensionsZ = Joint._get_limit_location_pair(
+            z, z) if y is not None else None
 
         self._limit_location_xyz(dimensionsX, dimensionsY, dimensionsZ)
 
