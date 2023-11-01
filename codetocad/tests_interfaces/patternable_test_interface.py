@@ -12,7 +12,7 @@ from codetocad import Patternable
 class PatternableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_linear_pattern(self):
-        instance = Patternable("")
+        instance = Patternable()
 
         value = instance.linear_pattern("instance_count", "offset", "direction_axis")
 
@@ -20,7 +20,7 @@ class PatternableTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_circular_pattern(self):
-        instance = Patternable("")
+        instance = Patternable()
 
         value = instance.circular_pattern(
             "instance_count",

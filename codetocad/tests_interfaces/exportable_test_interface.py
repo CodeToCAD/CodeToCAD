@@ -6,14 +6,12 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Projectable
+from codetocad import Exportable
 
 
-class ProjectableTestInterface(metaclass=ABCMeta):
+class ExportableTestInterface(metaclass=ABCMeta):
     @abstractmethod
-    def test_project(self):
-        instance = Projectable()
+    def test_export(self):
+        instance = Exportable()
 
-        value = instance.project("project_onto")
-
-        assert value, "Get method failed."
+        value = instance.export("file_path", "overwrite", "scale")

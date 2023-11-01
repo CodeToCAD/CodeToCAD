@@ -9,12 +9,22 @@ from abc import ABCMeta, abstractmethod
 from codetocad import Wire
 
 
-class WireTestInterface(metaclass=ABCMeta):
+from codetocad.tests_interfaces import (
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    ProjectableTestInterface,
+)
+
+
+class WireTestInterface(
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    ProjectableTestInterface,
+    metaclass=ABCMeta,
+):
     @abstractmethod
     def test_is_closed(self):
-        instance = Wire(
-            "edges", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Wire()
 
         value = instance.is_closed("")
 

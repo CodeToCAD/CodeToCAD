@@ -11,16 +11,14 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-class ImportableInterface(metaclass=ABCMeta):
-    """An entity that can be imported from a file."""
+class ExportableInterface(metaclass=ABCMeta):
+    """An enttiy that can be exported."""
 
     @abstractmethod
-    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
         """
-        Imports geometry from a file.
+        Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'
         """
 
-        print(
-            "create_from_file is called in an abstract method. Please override this method."
-        )
+        print("export is called in an abstract method. Please override this method.")
         return self

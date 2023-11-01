@@ -9,10 +9,28 @@ from abc import ABCMeta, abstractmethod
 from codetocad import Part
 
 
-class PartTestInterface(metaclass=ABCMeta):
+from codetocad.tests_interfaces import (
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    SubdividableTestInterface,
+    ImportableTestInterface,
+    ExportableTestInterface,
+    ScalableTestInterface,
+)
+
+
+class PartTestInterface(
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    SubdividableTestInterface,
+    ImportableTestInterface,
+    ExportableTestInterface,
+    ScalableTestInterface,
+    metaclass=ABCMeta,
+):
     @abstractmethod
     def test_create_cube(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_cube("width", "length", "height", "keyword_arguments")
 
@@ -20,7 +38,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_cone(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_cone(
             "radius", "height", "draft_radius", "keyword_arguments"
@@ -30,7 +48,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_cylinder(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_cylinder("radius", "height", "keyword_arguments")
 
@@ -38,7 +56,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_torus(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_torus(
             "inner_radius", "outer_radius", "keyword_arguments"
@@ -48,7 +66,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_sphere(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_sphere("radius", "keyword_arguments")
 
@@ -56,7 +74,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_gear(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.create_gear(
             "outer_radius",
@@ -76,7 +94,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_clone(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.clone("new_name", "copy_landmarks")
 
@@ -84,7 +102,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_loft(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.loft("landmark1", "landmark2")
 
@@ -92,7 +110,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_union(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.union(
             "with_part", "delete_after_union", "is_transfer_landmarks"
@@ -102,7 +120,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_subtract(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.subtract(
             "with_part", "delete_after_subtract", "is_transfer_landmarks"
@@ -112,7 +130,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_intersect(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.intersect(
             "with_part", "delete_after_intersect", "is_transfer_landmarks"
@@ -122,7 +140,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_hollow(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.hollow(
             "thickness_x", "thickness_y", "thickness_z", "start_axis", "flip_axis"
@@ -132,7 +150,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_thicken(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.thicken("radius")
 
@@ -140,7 +158,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_hole(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.hole(
             "hole_landmark",
@@ -170,7 +188,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_twist(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.twist("angle", "screw_pitch", "interations", "axis")
 
@@ -178,7 +196,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_set_material(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.set_material("material_name")
 
@@ -186,7 +204,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_is_colliding_with_part(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.is_colliding_with_part("other_part")
 
@@ -194,7 +212,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_fillet_all_edges(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.fillet_all_edges("radius", "use_width")
 
@@ -202,7 +220,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_fillet_edges(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.fillet_edges("radius", "landmarks_near_edges", "use_width")
 
@@ -210,7 +228,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_fillet_faces(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.fillet_faces("radius", "landmarks_near_faces", "use_width")
 
@@ -218,7 +236,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_chamfer_all_edges(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.chamfer_all_edges("radius")
 
@@ -226,7 +244,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_chamfer_edges(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.chamfer_edges("radius", "landmarks_near_edges")
 
@@ -234,7 +252,7 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_chamfer_faces(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.chamfer_faces("radius", "landmarks_near_faces")
 
@@ -242,18 +260,18 @@ class PartTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_select_vertex_near_landmark(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.select_vertex_near_landmark("landmark_name")
 
     @abstractmethod
     def test_select_edge_near_landmark(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.select_edge_near_landmark("landmark_name")
 
     @abstractmethod
     def test_select_face_near_landmark(self):
-        instance = Part("")
+        instance = Part()
 
         value = instance.select_face_near_landmark("landmark_name")

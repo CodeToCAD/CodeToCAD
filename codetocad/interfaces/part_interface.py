@@ -4,24 +4,29 @@
 
 from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import (
-    EntityInterface,
+from codetocad.interfaces import (
     MirrorableInterface,
     PatternableInterface,
     SubdividableInterface,
     ImportableInterface,
+    ExportableInterface,
+    ScalableInterface,
 )
+
+from . import EntityInterface
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import LandmarkInterface
+    from . import EntityInterface
     from . import MaterialInterface
 
 
@@ -31,6 +36,8 @@ class PartInterface(
     PatternableInterface,
     SubdividableInterface,
     ImportableInterface,
+    ExportableInterface,
+    ScalableInterface,
     metaclass=ABCMeta,
 ):
     """Create and manipulate 3D shapes."""

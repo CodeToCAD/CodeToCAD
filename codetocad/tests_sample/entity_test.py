@@ -3,7 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-
 from unittest import skip
 
 from .test_helper import *
@@ -13,7 +12,7 @@ from codetocad.tests_interfaces import EntityTestInterface
 class EntityTest(TestProviderCase, EntityTestInterface):
     @skip("TODO")
     def test_is_exists(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.is_exists("")
 
@@ -21,7 +20,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_rename(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.rename("new_name", "renamelinked_entities_and_landmarks")
 
@@ -29,13 +28,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_delete(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.delete("remove_children")
 
     @skip("TODO")
     def test_is_visible(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.is_visible("")
 
@@ -43,13 +42,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_set_visible(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.set_visible("is_visible")
 
     @skip("TODO")
     def test_apply(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.apply("rotation", "scale", "location", "modifiers")
 
@@ -57,7 +56,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_native_instance(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_native_instance("")
 
@@ -65,7 +64,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_location_world(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_location_world("")
 
@@ -73,7 +72,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_location_local(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_location_local("")
 
@@ -81,19 +80,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_select(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.select("")
 
     @skip("TODO")
-    def test_export(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.export("file_path", "overwrite", "scale")
-
-    @skip("TODO")
     def test_translate_xyz(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.translate_xyz("x", "y", "z")
 
@@ -101,7 +94,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_translate_x(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.translate_x("amount")
 
@@ -109,7 +102,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_translate_y(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.translate_y("amount")
 
@@ -117,79 +110,15 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_translate_z(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.translate_z("amount")
 
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_scale_xyz(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_x(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_x("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_y(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_y("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_z(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_z("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_x_by_factor(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_x_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_y_by_factor(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_y_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_z_by_factor(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_z_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_keep_aspect_ratio(self):
-        instance = Part("name", "description", "native_instance")
-
-        value = instance.scale_keep_aspect_ratio("scale", "axis")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
     def test_rotate_xyz(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.rotate_xyz("x", "y", "z")
 
@@ -197,7 +126,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_rotate_x(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.rotate_x("rotation")
 
@@ -205,7 +134,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_rotate_y(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.rotate_y("rotation")
 
@@ -213,7 +142,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_rotate_z(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.rotate_z("rotation")
 
@@ -221,7 +150,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_bounding_box(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_bounding_box("")
 
@@ -229,7 +158,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_dimensions(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_dimensions("")
 
@@ -237,7 +166,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_create_landmark(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.create_landmark("landmark_name", "x", "y", "z")
 
@@ -245,7 +174,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
     @skip("TODO")
     def test_get_landmark(self):
-        instance = Part("name", "description", "native_instance")
+        instance = Entity()
 
         value = instance.get_landmark("landmark_name")
 

@@ -12,7 +12,7 @@ from codetocad import Mirrorable
 class MirrorableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_mirror(self):
-        instance = Mirrorable("")
+        instance = Mirrorable()
 
         value = instance.mirror(
             "mirror_across_entity", "axis", "resulting_mirrored_entity_name"

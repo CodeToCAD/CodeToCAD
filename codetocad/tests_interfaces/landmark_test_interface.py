@@ -12,7 +12,7 @@ from codetocad import Landmark
 class LandmarkTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_get_landmark_entity_name(self):
-        instance = Landmark("name", "parent_entity", "description", "native_instance")
+        instance = Landmark()
 
         value = instance.get_landmark_entity_name("")
 
@@ -20,7 +20,7 @@ class LandmarkTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_get_parent_entity(self):
-        instance = Landmark("name", "parent_entity", "description", "native_instance")
+        instance = Landmark()
 
         value = instance.get_parent_entity("")
 

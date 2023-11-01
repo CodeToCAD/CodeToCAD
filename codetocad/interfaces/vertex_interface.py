@@ -4,18 +4,22 @@
 
 from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import EntityInterface, ProjectableInterface
+from codetocad.interfaces import ProjectableInterface
+
+from . import EntityInterface
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import SketchInterface
+    from . import EntityInterface
 
 
 class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):

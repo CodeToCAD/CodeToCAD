@@ -6,6 +6,7 @@
 from typing import Optional
 
 from codetocad.interfaces import EntityInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -66,9 +67,6 @@ class Entity(EntityInterface):
     def select(self):
         return self
 
-    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
-        return self
-
     def translate_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
@@ -84,37 +82,6 @@ class Entity(EntityInterface):
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        return self
-
-    def scale_xyz(
-        self,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
-
-    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        return self
-
-    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        return self
-
-    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        return self
-
-    def scale_x_by_factor(self, scale_factor: float):
-        return self
-
-    def scale_y_by_factor(self, scale_factor: float):
-        return self
-
-    def scale_z_by_factor(self, scale_factor: float):
-        return self
-
-    def scale_keep_aspect_ratio(
-        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-    ):
         return self
 
     def rotate_xyz(

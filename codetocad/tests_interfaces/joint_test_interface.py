@@ -12,7 +12,7 @@ from codetocad import Joint
 class JointTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_translate_landmark_onto_another(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.translate_landmark_onto_another("")
 
@@ -20,7 +20,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_pivot(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.pivot("")
 
@@ -28,7 +28,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_gear_ratio(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.gear_ratio("ratio")
 
@@ -36,7 +36,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_location_xyz(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_location_xyz("x", "y", "z")
 
@@ -44,7 +44,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_location_x(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_location_x("min", "max")
 
@@ -52,7 +52,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_location_y(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_location_y("min", "max")
 
@@ -60,7 +60,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_location_z(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_location_z("min", "max")
 
@@ -68,7 +68,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_rotation_xyz(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_rotation_xyz("x", "y", "z")
 
@@ -76,7 +76,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_rotation_x(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_rotation_x("min", "max")
 
@@ -84,7 +84,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_rotation_y(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_rotation_y("min", "max")
 
@@ -92,7 +92,7 @@ class JointTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_limit_rotation_z(self):
-        instance = Joint("entity1", "entity2")
+        instance = Joint()
 
         value = instance.limit_rotation_z("min", "max")
 

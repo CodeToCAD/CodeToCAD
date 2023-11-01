@@ -6,21 +6,85 @@
 from typing import Optional
 
 from codetocad.interfaces import SketchInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Importable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Part
+    from . import Entity
 
 
-class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
+class Sketch(Entity, SketchInterface):
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+        return self
+
+    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
+        return self
+
+    def scale_xyz(
+        self,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ):
+        return self
+
+    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_x_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_y_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_z_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_keep_aspect_ratio(
+        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+    ):
+        return self
+
     name: str
     curve_type: Optional["CurveTypes"] = None
     description: Optional[str] = None
