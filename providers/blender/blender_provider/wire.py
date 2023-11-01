@@ -1,8 +1,3 @@
-# THIS IS AN AUTO-GENERATE FILE.
-# DO NOT EDIT MANUALLY.
-# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
-# Copy this file and remove this header to create a new CodeToCAD Provider.
-
 from typing import Optional
 
 from codetocad.interfaces import WireInterface
@@ -12,16 +7,15 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Projectable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Edge
-    from . import Sketch
 
 
-class Wire(Entity, Mirrorable, Patternable, Projectable, WireInterface):
+class Wire(Entity, WireInterface):
     edges: "list[Edge]"
     parent_sketch: Optional[SketchOrItsName] = None
     name: str

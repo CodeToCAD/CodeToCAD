@@ -11,13 +11,6 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Landmark  # noqa: F401
-    from . import Part  # noqa: F401
-
-
 class Entity(EntityInterface):
     name: str
     description: Optional[str] = None
@@ -25,23 +18,6 @@ class Entity(EntityInterface):
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
-
-    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
-        assert self.is_exists() is False, f"{self.name} already exists."
-
-        absoluteFilePath = get_absolute_filepath(file_path)
-
-        importedFileName = blender_actions.import_file(absoluteFilePath, file_type)
-
-        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-        # therefore, we'll use the object's "expected" name and rename it to what it should be
-        # note: this will fail if the "expected" name is incorrect
-        if self.name != importedFileName:
-            from . import Part  # noqa: F811
-
-            Part(importedFileName).rename(self.name)
-
-        return self
 
     def is_exists(self) -> bool:
         try:
@@ -572,9 +548,9 @@ class Entity(EntityInterface):
 
         blender_actions.translate_object(
             landmarkObjectName,
-            localPositions,
+            localPositions,  # type: ignore
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
-        )  # type: ignore
+        )
 
         return landmark
 

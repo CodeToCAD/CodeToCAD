@@ -3,26 +3,19 @@ from typing import Optional
 
 
 from . import blender_actions, blender_definitions
-from .entity import Entity
-from .part import Part
 
 
-from codetocad.interfaces import SketchInterface
+from codetocad.interfaces import SketchInterface, PartInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Importable
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Part
+from . import Entity, Part
 
 
-class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
+class Sketch(Entity, SketchInterface):
     name: str
     curve_type: Optional[CurveTypes] = None
     description: Optional[str] = None
@@ -38,11 +31,16 @@ class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists(
+        ) is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
         return Sketch(new_name, self.curve_type, self.description)
+
+    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+        raise NotImplementedError()
+        return self
 
     def revolve(
         self,
@@ -143,7 +141,8 @@ class Sketch(Entity, Mirrorable, Patternable, Importable, SketchInterface):
     ):
         blender_actions.create_3d_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(
+                self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             coordinates,

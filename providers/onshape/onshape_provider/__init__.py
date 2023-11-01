@@ -1,11 +1,8 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
+from . import onshape_actions, onshape_definitions
+
 from .entity import Entity
-from .mirrorable import Mirrorable
-from .patternable import Patternable
-from .subdividable import Subdividable
-from .importable import Importable
-from .projectable import Projectable
 from .part import Part
 from .sketch import Sketch
 from .vertex import Vertex

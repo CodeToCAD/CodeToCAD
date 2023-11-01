@@ -6,22 +6,95 @@
 from typing import Optional
 
 from codetocad.interfaces import PartInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Subdividable, Importable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Landmark
+    from . import Entity
     from . import Material
 
 
-class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
+class Part(Entity, PartInterface):
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def remesh(self, strategy: str, amount: float):
+        return self
+
+    def subdivide(self, amount: float):
+        return self
+
+    def decimate(self, amount: float):
+        return self
+
+    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+        return self
+
+    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
+        return self
+
+    def scale_xyz(
+        self,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ):
+        return self
+
+    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
+        return self
+
+    def scale_x_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_y_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_z_by_factor(self, scale_factor: float):
+        return self
+
+    def scale_keep_aspect_ratio(
+        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+    ):
+        return self
+
     def create_cube(
         self,
         width: DimensionOrItsFloatOrStringValue,

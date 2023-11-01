@@ -6,6 +6,7 @@
 from typing import Optional
 
 from codetocad.interfaces import LandmarkInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -13,6 +14,11 @@ from codetocad.enums import *
 
 
 from . import Entity
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Entity
 
 
 class Landmark(Entity, LandmarkInterface):

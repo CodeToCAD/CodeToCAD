@@ -6,22 +6,22 @@
 from unittest import skip
 
 from .test_helper import *
-from codetocad.tests_interfaces import LandmarkTestInterface
+from codetocad.tests_interfaces import VertexTestInterface
 
 
-class LandmarkTest(TestProviderCase, LandmarkTestInterface):
+class VertexTest(TestProviderCase, VertexTestInterface):
     @skip("TODO")
-    def test_get_landmark_entity_name(self):
-        instance = Landmark()
+    def test_project(self):
+        instance = Vertex()
 
-        value = instance.get_landmark_entity_name("")
+        value = instance.project("project_onto")
 
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_get_parent_entity(self):
-        instance = Landmark()
+    def test_get_control_points(self):
+        instance = Vertex()
 
-        value = instance.get_parent_entity("")
+        value = instance.get_control_points("parameter")
 
         assert value, "Get method failed."

@@ -2,24 +2,22 @@ from typing import Optional
 from . import blender_actions
 from . import blender_definitions
 
-from codetocad.interfaces import PartInterface
+from codetocad.interfaces import PartInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Subdividable, Importable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Landmark
-    from . import Material
-    from . import Joint
+    from . import Joint  # noqa: F401
 
 
-class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterface):
+class Part(Entity, PartInterface):
     def _create_primitive(self, primitive_name: str, dimensions: str, **kwargs):
         assert self.is_exists() is False, f"{self.name} already exists."
 
@@ -39,6 +37,24 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
             Part(expectedNameOfObjectInBlender).rename(
                 self.name, primitiveType.has_data()
             )
+
+        return self
+
+    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+        assert self.is_exists() is False, f"{self.name} already exists."
+
+        absoluteFilePath = get_absolute_filepath(file_path)
+
+        importedFileName = blender_actions.import_file(
+            absoluteFilePath, file_type)
+
+        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
+        # therefore, we'll use the object's "expected" name and rename it to what it should be
+        # note: this will fail if the "expected" name is incorrect
+        if self.name != importedFileName:
+            from . import Part  # noqa: F811
+
+            Part(importedFileName).rename(self.name)
 
         return self
 
@@ -135,7 +151,8 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
         return self
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "PartInterface":
-        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists(
+        ) is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -278,9 +295,12 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
             currentDimensionZ.value, thickness_xYZ[2].value, axis.value == 2
         )
 
-        blender_actions.scale_object(insidePart.name, scale_x, scale_y, scale_z)
+        blender_actions.scale_object(
+            insidePart.name, scale_x, scale_y, scale_z)
 
         self._apply_rotation_and_scale_only()
+
+        from . import Joint   # noqa: F811
 
         Joint(start_axisLandmark, insidePart_start).translate_landmark_onto_another()
 
@@ -336,7 +356,10 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
             initial_rotation_y = (axisRotation + initial_rotation_y).value
         elif axis is Axis.Y:
             initial_rotation_x = (axisRotation + initial_rotation_x).value
-        hole.rotate_xyz(initial_rotation_x, initial_rotation_y, initial_rotation_z)
+        hole.rotate_xyz(initial_rotation_x,
+                        initial_rotation_y, initial_rotation_z)
+
+        from . import Joint  # noqa: F811
 
         Joint(hole_landmark, hole_head).limit_location_x(0, 0)
         Joint(hole_landmark, hole_head).limit_location_y(0, 0)
@@ -379,7 +402,8 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
                 resulting_mirrored_entity_name=None,
             )
 
-        self.subtract(hole, delete_after_subtract=True, is_transfer_landmarks=False)
+        self.subtract(hole, delete_after_subtract=True,
+                      is_transfer_landmarks=False)
         return self._apply_modifiers_only()
 
     def set_material(self, material_name: MaterialOrItsName):
@@ -399,7 +423,8 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
             other_partName = other_partName.name
 
         if other_partName == self.name:
-            raise NameError("Collision must be checked between different Parts.")
+            raise NameError(
+                "Collision must be checked between different Parts.")
 
         return blender_actions.is_collision_between_two_objects(
             self.name, other_partName
@@ -584,5 +609,13 @@ class Part(Entity, Mirrorable, Patternable, Subdividable, Importable, PartInterf
     def select_face_near_landmark(
         self, landmark_name: Optional[LandmarkOrItsName] = None
     ):
+        raise NotImplementedError()
+        return self
+
+    def subdivide(self, amount: float):
+        raise NotImplementedError()
+        return self
+
+    def decimate(self, amount: float):
         raise NotImplementedError()
         return self

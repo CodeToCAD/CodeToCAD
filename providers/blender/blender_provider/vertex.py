@@ -1,8 +1,3 @@
-# THIS IS AN AUTO-GENERATE FILE.
-# DO NOT EDIT MANUALLY.
-# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
-# Copy this file and remove this header to create a new CodeToCAD Provider.
-
 from typing import Optional
 
 from codetocad.interfaces import VertexInterface
@@ -12,15 +7,10 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Projectable
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Sketch
+from . import Entity
 
 
-class Vertex(Entity, Projectable, VertexInterface):
+class Vertex(Entity, VertexInterface):
     location: PointOrListOfFloatOrItsStringValue
     parent_sketch: Optional[SketchOrItsName] = None
     name: str

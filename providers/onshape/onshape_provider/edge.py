@@ -6,13 +6,14 @@
 from typing import Optional
 
 from codetocad.interfaces import EdgeInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Mirrorable, Patternable, Subdividable, Projectable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
@@ -21,7 +22,44 @@ if TYPE_CHECKING:
     from . import Sketch
 
 
-class Edge(Entity, Mirrorable, Patternable, Subdividable, Projectable, EdgeInterface):
+class Edge(Entity, EdgeInterface):
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        return self
+
+    def remesh(self, strategy: str, amount: float):
+        return self
+
+    def subdivide(self, amount: float):
+        return self
+
+    def decimate(self, amount: float):
+        return self
+
+    def project(self, project_onto: "Sketch") -> "Projectable":
+        raise NotImplementedError()
+
     v1: "Vertex"
     v2: "Vertex"
     parent_sketch: Optional[SketchOrItsName] = None
