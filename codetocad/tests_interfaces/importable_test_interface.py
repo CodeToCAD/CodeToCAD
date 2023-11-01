@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Importable
-
 
 class ImportableTestInterface(metaclass=ABCMeta):
     @abstractmethod

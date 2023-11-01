@@ -6,7 +6,10 @@
 
 from abc import ABCMeta, abstractmethod
 
+{%if not ("is_interface_only" in methods and methods["is_interface_only"] is true)%}
 from codetocad import {{className}}
+{%-endif%}
+
 
 {%-set implementedClassesWithSuffixes = []-%}
 {%- if "implements" in methods-%}

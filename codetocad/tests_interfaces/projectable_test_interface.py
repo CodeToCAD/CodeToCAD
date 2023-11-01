@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Projectable
-
 
 class ProjectableTestInterface(metaclass=ABCMeta):
     @abstractmethod

@@ -6,6 +6,7 @@
 
 from abc import ABCMeta, abstractmethod
 
+
 from codetocad import Animation
 
 
