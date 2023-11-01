@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Mirrorable
-
 
 class MirrorableTestInterface(metaclass=ABCMeta):
     @abstractmethod

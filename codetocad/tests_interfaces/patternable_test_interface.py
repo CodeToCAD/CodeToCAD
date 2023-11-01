@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Patternable
-
 
 class PatternableTestInterface(metaclass=ABCMeta):
     @abstractmethod

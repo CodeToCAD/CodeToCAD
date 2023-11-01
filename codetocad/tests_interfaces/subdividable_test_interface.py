@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Subdividable
-
 
 class SubdividableTestInterface(metaclass=ABCMeta):
     @abstractmethod

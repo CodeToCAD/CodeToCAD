@@ -6,8 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from codetocad import Scalable
-
 
 class ScalableTestInterface(metaclass=ABCMeta):
     @abstractmethod
