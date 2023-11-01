@@ -12,7 +12,7 @@ from codetocad import Analytics
 class AnalyticsTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_measure_distance(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.measure_distance("entity1", "entity2")
 
@@ -20,7 +20,7 @@ class AnalyticsTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_measure_angle(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.measure_angle("entity1", "entity2", "pivot")
 
@@ -28,7 +28,7 @@ class AnalyticsTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_get_world_pose(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.get_world_pose("entity")
 
@@ -36,7 +36,7 @@ class AnalyticsTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_get_bounding_box(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.get_bounding_box("entity_name")
 
@@ -44,7 +44,7 @@ class AnalyticsTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_get_dimensions(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.get_dimensions("entity_name")
 
@@ -52,7 +52,7 @@ class AnalyticsTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_log(self):
-        instance = Analytics("")
+        instance = Analytics()
 
         value = instance.log("message")
 

@@ -12,7 +12,7 @@ from codetocad import Camera
 class CameraTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_create_perspective(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.create_perspective("")
 
@@ -20,7 +20,7 @@ class CameraTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_orthogonal(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.create_orthogonal("")
 
@@ -28,7 +28,7 @@ class CameraTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_set_focal_length(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.set_focal_length("length")
 

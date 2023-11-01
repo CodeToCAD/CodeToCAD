@@ -9,12 +9,24 @@ from abc import ABCMeta, abstractmethod
 from codetocad import Edge
 
 
-class EdgeTestInterface(metaclass=ABCMeta):
+from codetocad.tests_interfaces import (
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    SubdividableTestInterface,
+    ProjectableTestInterface,
+)
+
+
+class EdgeTestInterface(
+    MirrorableTestInterface,
+    PatternableTestInterface,
+    SubdividableTestInterface,
+    ProjectableTestInterface,
+    metaclass=ABCMeta,
+):
     @abstractmethod
     def test_offset(self):
-        instance = Edge(
-            "v1", "v2", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Edge()
 
         value = instance.offset("distance")
 
@@ -22,9 +34,7 @@ class EdgeTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_fillet(self):
-        instance = Edge(
-            "v1", "v2", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Edge()
 
         value = instance.fillet("other_edge", "amount")
 
@@ -32,9 +42,7 @@ class EdgeTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_set_is_construction(self):
-        instance = Edge(
-            "v1", "v2", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Edge()
 
         value = instance.set_is_construction("is_construction")
 
@@ -42,9 +50,7 @@ class EdgeTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_get_is_construction(self):
-        instance = Edge(
-            "v1", "v2", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Edge()
 
         value = instance.get_is_construction("")
 

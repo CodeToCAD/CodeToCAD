@@ -9,12 +9,13 @@ from abc import ABCMeta, abstractmethod
 from codetocad import Vertex
 
 
-class VertexTestInterface(metaclass=ABCMeta):
+from codetocad.tests_interfaces import ProjectableTestInterface
+
+
+class VertexTestInterface(ProjectableTestInterface, metaclass=ABCMeta):
     @abstractmethod
     def test_get_control_points(self):
-        instance = Vertex(
-            "location", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Vertex()
 
         value = instance.get_control_points("parameter")
 

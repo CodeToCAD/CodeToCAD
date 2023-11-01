@@ -12,7 +12,7 @@ from codetocad import Scene
 class SceneTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_create(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.create("")
 
@@ -20,13 +20,13 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_delete(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.delete("")
 
     @abstractmethod
     def test_get_selected_entity(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.get_selected_entity("")
 
@@ -34,13 +34,13 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_export(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.export("file_path", "entities", "overwrite", "scale")
 
     @abstractmethod
     def test_set_default_unit(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.set_default_unit("unit")
 
@@ -48,7 +48,7 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_create_group(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.create_group("name")
 
@@ -56,19 +56,19 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_delete_group(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.delete_group("name", "remove_children")
 
     @abstractmethod
     def test_remove_from_group(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.remove_from_group("entity_name", "group_name")
 
     @abstractmethod
     def test_assign_to_group(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.assign_to_group(
             "entities", "group_name", "remove_from_other_groups"
@@ -78,7 +78,7 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_set_visible(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.set_visible("entities", "is_visible")
 
@@ -86,7 +86,7 @@ class SceneTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_set_background_image(self):
-        instance = Scene("name", "description")
+        instance = Scene()
 
         value = instance.set_background_image("file_path", "location_x", "location_y")
 

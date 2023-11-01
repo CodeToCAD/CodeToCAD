@@ -1,11 +1,13 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
-from .entity_interface import EntityInterface
+from .scalable_interface import ScalableInterface
 from .mirrorable_interface import MirrorableInterface
 from .patternable_interface import PatternableInterface
 from .subdividable_interface import SubdividableInterface
 from .importable_interface import ImportableInterface
+from .exportable_interface import ExportableInterface
 from .projectable_interface import ProjectableInterface
+from .entity_interface import EntityInterface
 from .part_interface import PartInterface
 from .sketch_interface import SketchInterface
 from .vertex_interface import VertexInterface

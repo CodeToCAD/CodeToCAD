@@ -6,21 +6,26 @@
 from typing import Optional
 
 from codetocad.interfaces import VertexInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Projectable
+from . import Entity
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Sketch
+    from . import Entity
 
 
-class Vertex(Entity, Projectable, VertexInterface):
+class Vertex(Entity, VertexInterface):
+    def project(self, project_onto: "Sketch") -> "Projectable":
+        raise NotImplementedError()
+
     location: PointOrListOfFloatOrItsStringValue
     parent_sketch: Optional[SketchOrItsName] = None
     name: str

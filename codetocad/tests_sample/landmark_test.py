@@ -3,7 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-
 from unittest import skip
 
 from .test_helper import *
@@ -13,7 +12,7 @@ from codetocad.tests_interfaces import LandmarkTestInterface
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
     @skip("TODO")
     def test_get_landmark_entity_name(self):
-        instance = Landmark("name", "parent_entity", "description", "native_instance")
+        instance = Landmark()
 
         value = instance.get_landmark_entity_name("")
 
@@ -21,7 +20,7 @@ class LandmarkTest(TestProviderCase, LandmarkTestInterface):
 
     @skip("TODO")
     def test_get_parent_entity(self):
-        instance = Landmark("name", "parent_entity", "description", "native_instance")
+        instance = Landmark()
 
         value = instance.get_parent_entity("")
 

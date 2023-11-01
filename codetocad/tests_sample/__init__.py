@@ -1,11 +1,6 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
 from .entity_test import EntityTest
-from .mirrorable_test import MirrorableTest
-from .patternable_test import PatternableTest
-from .subdividable_test import SubdividableTest
-from .importable_test import ImportableTest
-from .projectable_test import ProjectableTest
 from .part_test import PartTest
 from .sketch_test import SketchTest
 from .vertex_test import VertexTest

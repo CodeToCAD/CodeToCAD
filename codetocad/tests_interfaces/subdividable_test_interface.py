@@ -12,7 +12,7 @@ from codetocad import Subdividable
 class SubdividableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_remesh(self):
-        instance = Subdividable("")
+        instance = Subdividable()
 
         value = instance.remesh("strategy", "amount")
 
@@ -20,7 +20,7 @@ class SubdividableTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_subdivide(self):
-        instance = Subdividable("")
+        instance = Subdividable()
 
         value = instance.subdivide("amount")
 
@@ -28,7 +28,7 @@ class SubdividableTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def test_decimate(self):
-        instance = Subdividable("")
+        instance = Subdividable()
 
         value = instance.decimate("amount")
 

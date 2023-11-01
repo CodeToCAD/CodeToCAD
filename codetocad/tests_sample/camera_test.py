@@ -3,7 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-
 from unittest import skip
 
 from .test_helper import *
@@ -13,7 +12,7 @@ from codetocad.tests_interfaces import CameraTestInterface
 class CameraTest(TestProviderCase, CameraTestInterface):
     @skip("TODO")
     def test_create_perspective(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.create_perspective("")
 
@@ -21,7 +20,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
 
     @skip("TODO")
     def test_create_orthogonal(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.create_orthogonal("")
 
@@ -29,7 +28,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
 
     @skip("TODO")
     def test_set_focal_length(self):
-        instance = Camera("name", "description", "native_instance")
+        instance = Camera()
 
         value = instance.set_focal_length("length")
 

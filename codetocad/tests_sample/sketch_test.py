@@ -3,7 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-
 from unittest import skip
 
 from .test_helper import *
@@ -12,8 +11,117 @@ from codetocad.tests_interfaces import SketchTestInterface
 
 class SketchTest(TestProviderCase, SketchTestInterface):
     @skip("TODO")
+    def test_mirror(self):
+        instance = Sketch()
+
+        value = instance.mirror(
+            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+        )
+
+        assert value.is_exists(), "Create method failed."
+
+    @skip("TODO")
+    def test_linear_pattern(self):
+        instance = Sketch()
+
+        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_circular_pattern(self):
+        instance = Sketch()
+
+        value = instance.circular_pattern(
+            "instance_count",
+            "separation_angle",
+            "center_entity_or_landmark",
+            "normal_direction_axis",
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_create_from_file(self):
+        instance = Sketch()
+
+        value = instance.create_from_file("file_path", "file_type")
+
+        assert value.is_exists(), "Create method failed."
+
+    @skip("TODO")
+    def test_export(self):
+        instance = Sketch()
+
+        value = instance.export("file_path", "overwrite", "scale")
+
+    @skip("TODO")
+    def test_scale_xyz(self):
+        instance = Sketch()
+
+        value = instance.scale_xyz("x", "y", "z")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_x(self):
+        instance = Sketch()
+
+        value = instance.scale_x("scale")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_y(self):
+        instance = Sketch()
+
+        value = instance.scale_y("scale")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_z(self):
+        instance = Sketch()
+
+        value = instance.scale_z("scale")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_x_by_factor(self):
+        instance = Sketch()
+
+        value = instance.scale_x_by_factor("scale_factor")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_y_by_factor(self):
+        instance = Sketch()
+
+        value = instance.scale_y_by_factor("scale_factor")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_z_by_factor(self):
+        instance = Sketch()
+
+        value = instance.scale_z_by_factor("scale_factor")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_keep_aspect_ratio(self):
+        instance = Sketch()
+
+        value = instance.scale_keep_aspect_ratio("scale", "axis")
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
     def test_clone(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.clone("new_name", "copy_landmarks")
 
@@ -21,7 +129,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_revolve(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.revolve("angle", "about_entity_or_landmark", "axis")
 
@@ -29,7 +137,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_twist(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.twist("angle", "screw_pitch", "interations", "axis")
 
@@ -37,7 +145,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_extrude(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.extrude("length")
 
@@ -45,7 +153,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_sweep(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.sweep("profile_name_or_instance", "fill_cap")
 
@@ -53,7 +161,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_offset(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.offset("radius")
 
@@ -61,7 +169,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_profile(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.profile("profile_curve_name")
 
@@ -69,7 +177,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_text(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_text(
             "text",
@@ -87,7 +195,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_from_vertices(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_from_vertices("coordinates", "interpolation")
 
@@ -95,7 +203,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_point(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_point("coordinate")
 
@@ -103,7 +211,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_line(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_line("length", "angle_x", "angle_y", "symmetric")
 
@@ -111,7 +219,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_line_between_points(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_line_between_points("end_at", "start_at")
 
@@ -119,7 +227,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_circle(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_circle("radius")
 
@@ -127,7 +235,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_ellipse(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_ellipse("radius_a", "radius_b")
 
@@ -135,7 +243,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_arc(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_arc("radius", "angle")
 
@@ -143,7 +251,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_arc_between_three_points(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_arc_between_three_points(
             "point_a", "point_b", "center_point"
@@ -153,7 +261,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_segment(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_segment("inner_radius", "outer_radius", "angle")
 
@@ -161,7 +269,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_rectangle(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_rectangle("length", "width")
 
@@ -169,7 +277,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_polygon(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_polygon("number_of_sides", "length", "width")
 
@@ -177,7 +285,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_trapezoid(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_trapezoid("length_upper", "length_lower", "height")
 
@@ -185,7 +293,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_spiral(self):
-        instance = Sketch("name", "curve_type", "description", "native_instance")
+        instance = Sketch()
 
         value = instance.create_spiral(
             "number_of_turns", "height", "radius", "is_clockwise", "radius_end"

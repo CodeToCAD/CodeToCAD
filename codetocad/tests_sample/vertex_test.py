@@ -3,7 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-
 from unittest import skip
 
 from .test_helper import *
@@ -12,10 +11,16 @@ from codetocad.tests_interfaces import VertexTestInterface
 
 class VertexTest(TestProviderCase, VertexTestInterface):
     @skip("TODO")
+    def test_project(self):
+        instance = Vertex()
+
+        value = instance.project("project_onto")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_get_control_points(self):
-        instance = Vertex(
-            "location", "parent_sketch", "name", "description", "native_instance"
-        )
+        instance = Vertex()
 
         value = instance.get_control_points("parameter")
 
