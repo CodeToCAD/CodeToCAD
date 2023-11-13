@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import Part
     from . import Entity
+    from . import Wire
+    from . import Vertex
 
 
 class Sketch(Entity, SketchInterface):
@@ -151,83 +153,60 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def create_from_vertices(
-        self,
-        coordinates: list[PointOrListOfFloatOrItsStringValue],
-        interpolation: "int" = 64,
-    ):
-        return self
+        self, coordinates: list[PointOrListOfFloatOrItsStringValueOrVertex]
+    ) -> "Wire":
+        raise NotImplementedError()
 
-    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue):
-        return self
-
-    def create_line(
-        self,
-        length: DimensionOrItsFloatOrStringValue,
-        angle_x: AngleOrItsFloatOrStringValue = 0.0,
-        angle_y: AngleOrItsFloatOrStringValue = 0.0,
-        symmetric: bool = False,
-    ):
-        return self
+    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+        raise NotImplementedError()
 
     def create_line_between_points(
         self,
-        end_at: PointOrListOfFloatOrItsStringValue,
-        start_at: Optional[PointOrListOfFloatOrItsStringValue] = None,
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ):
         return self
 
-    def create_circle(self, radius: DimensionOrItsFloatOrStringValue):
-        return self
+    def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
+        raise NotImplementedError()
 
     def create_ellipse(
         self,
-        radius_a: DimensionOrItsFloatOrStringValue,
-        radius_b: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+        radius_minor: DimensionOrItsFloatOrStringValue,
+        radius_major: DimensionOrItsFloatOrStringValue,
+    ) -> "Wire":
+        raise NotImplementedError()
 
     def create_arc(
         self,
-        radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
-        return self
-
-    def create_arc_between_three_points(
-        self, point_a: "Point", point_b: "Point", center_point: "Point"
-    ):
-        return self
-
-    def create_segment(
-        self,
-        inner_radius: DimensionOrItsFloatOrStringValue,
-        outer_radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
-        return self
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        center_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+    ) -> "Wire":
+        raise NotImplementedError()
 
     def create_rectangle(
         self,
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
     def create_polygon(
         self,
         number_of_sides: "int",
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
     def create_trapezoid(
         self,
         length_upper: DimensionOrItsFloatOrStringValue,
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
     def create_spiral(
         self,
@@ -236,5 +215,5 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()

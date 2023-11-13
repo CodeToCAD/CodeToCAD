@@ -13,6 +13,7 @@ if TYPE_CHECKING:
         SketchInterface,
         LandmarkInterface,
         CameraInterface,
+        VertexInterface,
     )
 
 MaterialOrItsName: TypeAlias = Union[str, "MaterialInterface"]
@@ -31,6 +32,9 @@ DimensionOrItsFloatOrStringValue: TypeAlias = Union[str, float, Dimension]
 AngleOrItsFloatOrStringValue: TypeAlias = Union[str, float, Angle]
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[
     str, list[FloatOrItsStringValue], Point
+]
+PointOrListOfFloatOrItsStringValueOrVertex: TypeAlias = Union[
+    str, list[FloatOrItsStringValue], Point, "VertexInterface"
 ]
 LengthUnitOrItsName: TypeAlias = Union[str, LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str, PresetLandmark]

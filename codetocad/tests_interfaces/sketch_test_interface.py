@@ -105,9 +105,9 @@ class SketchTestInterface(
     def test_create_from_vertices(self):
         instance = Sketch()
 
-        value = instance.create_from_vertices("coordinates", "interpolation")
+        value = instance.create_from_vertices("coordinates")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_point(self):
@@ -115,21 +115,13 @@ class SketchTestInterface(
 
         value = instance.create_point("coordinate")
 
-        assert value.is_exists(), "Create method failed."
-
-    @abstractmethod
-    def test_create_line(self):
-        instance = Sketch()
-
-        value = instance.create_line("length", "angle_x", "angle_y", "symmetric")
-
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_line_between_points(self):
         instance = Sketch()
 
-        value = instance.create_line_between_points("end_at", "start_at")
+        value = instance.create_line_between_points("start_at", "end_at")
 
         assert value.is_exists(), "Create method failed."
 
@@ -139,41 +131,23 @@ class SketchTestInterface(
 
         value = instance.create_circle("radius")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_ellipse(self):
         instance = Sketch()
 
-        value = instance.create_ellipse("radius_a", "radius_b")
+        value = instance.create_ellipse("radius_minor", "radius_major")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_arc(self):
         instance = Sketch()
 
-        value = instance.create_arc("radius", "angle")
+        value = instance.create_arc("start_at", "center_at", "end_at")
 
-        assert value.is_exists(), "Create method failed."
-
-    @abstractmethod
-    def test_create_arc_between_three_points(self):
-        instance = Sketch()
-
-        value = instance.create_arc_between_three_points(
-            "point_a", "point_b", "center_point"
-        )
-
-        assert value.is_exists(), "Create method failed."
-
-    @abstractmethod
-    def test_create_segment(self):
-        instance = Sketch()
-
-        value = instance.create_segment("inner_radius", "outer_radius", "angle")
-
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_rectangle(self):
@@ -181,7 +155,7 @@ class SketchTestInterface(
 
         value = instance.create_rectangle("length", "width")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_polygon(self):
@@ -189,7 +163,7 @@ class SketchTestInterface(
 
         value = instance.create_polygon("number_of_sides", "length", "width")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_trapezoid(self):
@@ -197,7 +171,7 @@ class SketchTestInterface(
 
         value = instance.create_trapezoid("length_upper", "length_lower", "height")
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     @abstractmethod
     def test_create_spiral(self):
@@ -207,4 +181,4 @@ class SketchTestInterface(
             "number_of_turns", "height", "radius", "is_clockwise", "radius_end"
         )
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."

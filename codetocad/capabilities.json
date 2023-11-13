@@ -465,7 +465,7 @@
             }
         },
         "Part": {
-            "information": "Create and manipulate 3D shapes.",
+            "information": "Capabilities related to creating and manipulating 3D shapes.",
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Subdividable,Importable,Exportable,Scalable",
             "create_cube": {
@@ -948,7 +948,7 @@
             }
         },
         "Sketch": {
-            "information": "Capabilities related to adding, multiplying, and/or modifying a curve.",
+            "information": "Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.",
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable",
             "constructor": {
@@ -1102,20 +1102,18 @@
                 }
             },
             "create_from_vertices": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
                     "coordinates": {
-                        "type": "list[string,list[string],Point]"
-                    },
-                    "interpolation": {
-                        "type": "int",
-                        "defaultValue": 64
+                        "type": "list[string,list[string],Point,Vertex]"
                     }
                 }
             },
             "create_point": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Vertex",
                 "information": "Create a point",
                 "parameters": {
                     "coordinate": {
@@ -1123,43 +1121,21 @@
                     }
                 }
             },
-            "create_line": {
-                "action": "create",
-                "information": "Create a line",
-                "parameters": {
-                    "length": {
-                        "type": "string,float,Dimension"
-                    },
-                    "angle_x": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "angle_y": {
-                        "type": "string,float,Angle",
-                        "defaultValue": 0.0
-                    },
-                    "symmetric": {
-                        "type": "boolean",
-                        "defaultValue": false
-                    }
-                }
-            },
             "create_line_between_points": {
                 "action": "create",
                 "information": "Create a line between two points",
                 "parameters": {
-                    "end_at": {
-                        "type": "string,list[string],Point"
-                    },
                     "start_at": {
-                        "type": "string,list[string],Point",
-                        "required": false,
-                        "defaultValue": null
+                        "type": "string,list[string],Point,Vertex"
+                    },
+                    "end_at": {
+                        "type": "string,list[string],Point,Vertex"
                     }
                 }
             },
             "create_circle": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create a circle",
                 "parameters": {
                     "radius": {
@@ -1168,63 +1144,37 @@
                 }
             },
             "create_ellipse": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create an ellipse",
                 "parameters": {
-                    "radius_a": {
+                    "radius_minor": {
                         "type": "string,float,Dimension"
                     },
-                    "radius_b": {
+                    "radius_major": {
                         "type": "string,float,Dimension"
                     }
                 }
             },
             "create_arc": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create an arc",
                 "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
+                    "start_at": {
+                        "type": "string,list[string],Point,Vertex"
                     },
-                    "angle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": "180d"
-                    }
-                }
-            },
-            "create_arc_between_three_points": {
-                "action": "create",
-                "information": "Create a 3-point arc",
-                "parameters": {
-                    "point_a": {
-                        "type": "Point"
+                    "center_at": {
+                        "type": "string,list[string],Point,Vertex"
                     },
-                    "point_b": {
-                        "type": "Point"
-                    },
-                    "center_point": {
-                        "type": "Point"
-                    }
-                }
-            },
-            "create_segment": {
-                "action": "create",
-                "information": "Create a segment (intersection of two circles)",
-                "parameters": {
-                    "inner_radius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "outer_radius": {
-                        "type": "string,float,Dimension"
-                    },
-                    "angle": {
-                        "type": "string,float,Angle",
-                        "defaultValue": "180d"
+                    "end_at": {
+                        "type": "string,list[string],Point,Vertex"
                     }
                 }
             },
             "create_rectangle": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create a rectangle",
                 "parameters": {
                     "length": {
@@ -1236,7 +1186,8 @@
                 }
             },
             "create_polygon": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create an n-gon",
                 "parameters": {
                     "number_of_sides": {
@@ -1251,7 +1202,8 @@
                 }
             },
             "create_trapezoid": {
-                "action": "create",
+                "action": "get",
+                "returnType": "Wire",
                 "information": "Create a trapezoid",
                 "parameters": {
                     "length_upper": {
@@ -1266,8 +1218,9 @@
                 }
             },
             "create_spiral": {
-                "action": "create",
-                "information": "Create a trapezoid",
+                "action": "get",
+                "returnType": "Wire",
+                "information": "Create a spiral or helix",
                 "parameters": {
                     "number_of_turns": {
                         "type": "int"
