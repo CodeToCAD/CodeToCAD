@@ -40,7 +40,7 @@ class PartInterface(
     ScalableInterface,
     metaclass=ABCMeta,
 ):
-    """Create and manipulate 3D shapes."""
+    """Capabilities related to creating and manipulating 3D shapes."""
 
     @abstractmethod
     def create_cube(

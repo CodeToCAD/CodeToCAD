@@ -26,6 +26,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import PartInterface
     from . import EntityInterface
+    from . import WireInterface
+    from . import VertexInterface
 
 
 class SketchInterface(
@@ -37,7 +39,7 @@ class SketchInterface(
     ScalableInterface,
     metaclass=ABCMeta,
 ):
-    """Capabilities related to adding, multiplying, and/or modifying a curve."""
+    """Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires."""
 
     name: str
     curve_type: Optional["CurveTypes"] = None
@@ -159,10 +161,8 @@ class SketchInterface(
 
     @abstractmethod
     def create_from_vertices(
-        self,
-        coordinates: list[PointOrListOfFloatOrItsStringValue],
-        interpolation: "int" = 64,
-    ):
+        self, coordinates: list[PointOrListOfFloatOrItsStringValueOrVertex]
+    ) -> "WireInterface":
         """
         Create a curve from 2D/3D points.
         """
@@ -170,10 +170,12 @@ class SketchInterface(
         print(
             "create_from_vertices is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue):
+    def create_point(
+        self, coordinate: PointOrListOfFloatOrItsStringValue
+    ) -> "VertexInterface":
         """
         Create a point
         """
@@ -181,30 +183,13 @@ class SketchInterface(
         print(
             "create_point is called in an abstract method. Please override this method."
         )
-        return self
-
-    @abstractmethod
-    def create_line(
-        self,
-        length: DimensionOrItsFloatOrStringValue,
-        angle_x: AngleOrItsFloatOrStringValue = 0.0,
-        angle_y: AngleOrItsFloatOrStringValue = 0.0,
-        symmetric: bool = False,
-    ):
-        """
-        Create a line
-        """
-
-        print(
-            "create_line is called in an abstract method. Please override this method."
-        )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_line_between_points(
         self,
-        end_at: PointOrListOfFloatOrItsStringValue,
-        start_at: Optional[PointOrListOfFloatOrItsStringValue] = None,
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ):
         """
         Create a line between two points
@@ -216,7 +201,9 @@ class SketchInterface(
         return self
 
     @abstractmethod
-    def create_circle(self, radius: DimensionOrItsFloatOrStringValue):
+    def create_circle(
+        self, radius: DimensionOrItsFloatOrStringValue
+    ) -> "WireInterface":
         """
         Create a circle
         """
@@ -224,14 +211,14 @@ class SketchInterface(
         print(
             "create_circle is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_ellipse(
         self,
-        radius_a: DimensionOrItsFloatOrStringValue,
-        radius_b: DimensionOrItsFloatOrStringValue,
-    ):
+        radius_minor: DimensionOrItsFloatOrStringValue,
+        radius_major: DimensionOrItsFloatOrStringValue,
+    ) -> "WireInterface":
         """
         Create an ellipse
         """
@@ -239,14 +226,15 @@ class SketchInterface(
         print(
             "create_ellipse is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_arc(
         self,
-        radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        center_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+    ) -> "WireInterface":
         """
         Create an arc
         """
@@ -254,43 +242,14 @@ class SketchInterface(
         print(
             "create_arc is called in an abstract method. Please override this method."
         )
-        return self
-
-    @abstractmethod
-    def create_arc_between_three_points(
-        self, point_a: "Point", point_b: "Point", center_point: "Point"
-    ):
-        """
-        Create a 3-point arc
-        """
-
-        print(
-            "create_arc_between_three_points is called in an abstract method. Please override this method."
-        )
-        return self
-
-    @abstractmethod
-    def create_segment(
-        self,
-        inner_radius: DimensionOrItsFloatOrStringValue,
-        outer_radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
-        """
-        Create a segment (intersection of two circles)
-        """
-
-        print(
-            "create_segment is called in an abstract method. Please override this method."
-        )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_rectangle(
         self,
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
+    ) -> "WireInterface":
         """
         Create a rectangle
         """
@@ -298,7 +257,7 @@ class SketchInterface(
         print(
             "create_rectangle is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_polygon(
@@ -306,7 +265,7 @@ class SketchInterface(
         number_of_sides: "int",
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
+    ) -> "WireInterface":
         """
         Create an n-gon
         """
@@ -314,7 +273,7 @@ class SketchInterface(
         print(
             "create_polygon is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_trapezoid(
@@ -322,7 +281,7 @@ class SketchInterface(
         length_upper: DimensionOrItsFloatOrStringValue,
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
-    ):
+    ) -> "WireInterface":
         """
         Create a trapezoid
         """
@@ -330,7 +289,7 @@ class SketchInterface(
         print(
             "create_trapezoid is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_spiral(
@@ -340,12 +299,12 @@ class SketchInterface(
         radius: DimensionOrItsFloatOrStringValue,
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
-    ):
+    ) -> "WireInterface":
         """
-        Create a trapezoid
+        Create a spiral or helix
         """
 
         print(
             "create_spiral is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
