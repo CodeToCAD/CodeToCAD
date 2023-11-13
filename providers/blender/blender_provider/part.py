@@ -45,8 +45,7 @@ class Part(Entity, PartInterface):
 
         absoluteFilePath = get_absolute_filepath(file_path)
 
-        importedFileName = blender_actions.import_file(
-            absoluteFilePath, file_type)
+        importedFileName = blender_actions.import_file(absoluteFilePath, file_type)
 
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
@@ -151,8 +150,7 @@ class Part(Entity, PartInterface):
         return self
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "PartInterface":
-        assert Entity(new_name).is_exists(
-        ) is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -295,12 +293,11 @@ class Part(Entity, PartInterface):
             currentDimensionZ.value, thickness_xYZ[2].value, axis.value == 2
         )
 
-        blender_actions.scale_object(
-            insidePart.name, scale_x, scale_y, scale_z)
+        blender_actions.scale_object(insidePart.name, scale_x, scale_y, scale_z)
 
         self._apply_rotation_and_scale_only()
 
-        from . import Joint   # noqa: F811
+        from . import Joint  # noqa: F811
 
         Joint(start_axisLandmark, insidePart_start).translate_landmark_onto_another()
 
@@ -356,8 +353,7 @@ class Part(Entity, PartInterface):
             initial_rotation_y = (axisRotation + initial_rotation_y).value
         elif axis is Axis.Y:
             initial_rotation_x = (axisRotation + initial_rotation_x).value
-        hole.rotate_xyz(initial_rotation_x,
-                        initial_rotation_y, initial_rotation_z)
+        hole.rotate_xyz(initial_rotation_x, initial_rotation_y, initial_rotation_z)
 
         from . import Joint  # noqa: F811
 
@@ -402,8 +398,7 @@ class Part(Entity, PartInterface):
                 resulting_mirrored_entity_name=None,
             )
 
-        self.subtract(hole, delete_after_subtract=True,
-                      is_transfer_landmarks=False)
+        self.subtract(hole, delete_after_subtract=True, is_transfer_landmarks=False)
         return self._apply_modifiers_only()
 
     def set_material(self, material_name: MaterialOrItsName):
@@ -423,8 +418,7 @@ class Part(Entity, PartInterface):
             other_partName = other_partName.name
 
         if other_partName == self.name:
-            raise NameError(
-                "Collision must be checked between different Parts.")
+            raise NameError("Collision must be checked between different Parts.")
 
         return blender_actions.is_collision_between_two_objects(
             self.name, other_partName
@@ -545,7 +539,7 @@ class Part(Entity, PartInterface):
                 ],
             )
 
-            faceIndecies: list[int] = blenderPolygon.vertices  # type: ignore
+            faceIndecies: list[int] = blenderPolygon.vertices
 
             blender_actions.add_verticies_to_vertex_group(
                 vertexGroupObject, faceIndecies

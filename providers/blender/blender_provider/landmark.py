@@ -46,8 +46,7 @@ class Landmark(Entity, LandmarkInterface):
     def is_exists(self) -> bool:
         try:
             return (
-                blender_actions.get_object(
-                    self.get_landmark_entity_name()) is not None
+                blender_actions.get_object(self.get_landmark_entity_name()) is not None
             )
         except:  # noqa E722
             return False

@@ -194,7 +194,7 @@ class Object:
         copy = Object(self.name, mockBpy.context.default_user_collection)
         copy.data = self.data
         copy.children = self.children
-        copy.location = self.location  # type: ignore
+        copy.location = self.location
         copy.parent = self.parent
         copy.matrix_world = self.matrix_world
         copy.users_collection = self.users_collection

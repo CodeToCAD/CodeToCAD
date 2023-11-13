@@ -52,7 +52,7 @@ class BlenderLength(Units):
     THOU = LengthUnit.thou
 
     # Blender internally uses this unit for everything:
-    DEFAULT_BLENDER_UNIT: LengthUnit = METERS  # type: ignore
+    DEFAULT_BLENDER_UNIT: LengthUnit = METERS
 
     def get_system(self):
         if (
