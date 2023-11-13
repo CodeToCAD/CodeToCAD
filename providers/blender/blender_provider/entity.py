@@ -548,7 +548,7 @@ class Entity(EntityInterface):
 
         blender_actions.translate_object(
             landmarkObjectName,
-            localPositions,  # type: ignore
+            localPositions,
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
         )
 
@@ -562,7 +562,7 @@ class Entity(EntityInterface):
         dimensions = [
             Dimension.from_string(
                 dimension,
-                blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value,  # type: ignore
+                blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value,
             )
             for dimension in dimensions
         ]

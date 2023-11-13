@@ -31,8 +31,7 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists(
-        ) is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -141,12 +140,12 @@ class Sketch(Entity, SketchInterface):
     ):
         blender_actions.create_3d_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             coordinates,
             interpolation,
+            is_3d=True,
         )
 
         return self

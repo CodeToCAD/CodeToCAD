@@ -274,9 +274,9 @@ class Matrix:
 
     @property
     def scale_vector(self):
-        x: float = np.linalg.norm(self.matrix[:3, 0], ord=1)  # type: ignore
-        y: float = np.linalg.norm(self.matrix[:3, 1], ord=1)  # type: ignore
-        z: float = np.linalg.norm(self.matrix[:3, 2], ord=1)  # type: ignore
+        x: float = np.linalg.norm(self.matrix[:3, 0], ord=1)
+        y: float = np.linalg.norm(self.matrix[:3, 1], ord=1)
+        z: float = np.linalg.norm(self.matrix[:3, 2], ord=1)
         return Vector((x, y, z))
 
     def to_tuple(self):
