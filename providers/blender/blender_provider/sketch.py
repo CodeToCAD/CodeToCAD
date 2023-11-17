@@ -31,7 +31,8 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists(
+        ) is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -68,12 +69,13 @@ class Sketch(Entity, SketchInterface):
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
         radius = Dimension.from_string(radius)
 
-        blender_actions.offset_curve_geometry(self.name, radius)
+        blender_actions.set_curve_offset_geometry(self.name, radius)
 
         return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":
-        blender_actions.extrude_curve(self.name, Dimension.from_string(length))
+        blender_actions.set_curve_extrude_property(
+            self.name, Dimension.from_string(length))
 
         blender_actions.create_mesh_from_curve(self.name)
 
@@ -140,7 +142,8 @@ class Sketch(Entity, SketchInterface):
     ):
         blender_actions.create_3d_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(
+                self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             coordinates,

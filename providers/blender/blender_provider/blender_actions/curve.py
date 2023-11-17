@@ -1,10 +1,10 @@
 from typing import Optional
 import bpy
-from codetocad.codetocad_types import (
-    DimensionOrItsFloatOrStringValue,
-)
+
+from codetocad.codetocad_types import DimensionOrItsFloatOrStringValue
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
+
 from .. import blender_definitions
 
 from . import get_object, create_object, convert_object_using_ops, assign_object_to_collection, enable_curve_extra_objects_addon
@@ -13,6 +13,9 @@ from codetocad import get_dimension_list_from_string_list
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
+    '''
+    Get a curve in Blender. Throws if the curve does not exist.
+    '''
     curve = bpy.data.curves.get(curve_name)
 
     assert curve is not None, f"Curve {curve_name} does not exists"
@@ -20,7 +23,10 @@ def get_curve(curve_name: str) -> bpy.types.Curve:
     return curve
 
 
-def extrude_curve(curve_name: str, length: Dimension):
+def set_curve_extrude_property(curve_name: str, length: Dimension):
+    '''
+    Changes a curve's Geometry -> Extrude property.
+    '''
     curve = get_curve(curve_name)
 
     length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
@@ -29,13 +35,24 @@ def extrude_curve(curve_name: str, length: Dimension):
     curve.extrude = length.value
 
 
-def offset_curve_geometry(curve_name: str, offset: Dimension):
+def set_curve_offset_geometry(curve_name: str, offset: Dimension):
+    '''
+    Changes a curve's Geometry -> Offset property.
+    '''
     curve = get_curve(curve_name)
 
     length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
         offset)
 
     curve.offset = length.value
+
+
+def set_curve_use_path(curve_name: str, is_use_path: bool):
+    curveObject = get_object(curve_name)
+
+    curve: bpy.types.Curve = curveObject.data
+
+    curve.use_path = is_use_path
 
 
 def set_curve_resolution_u(curve_name: str, resolution: int):
@@ -455,11 +472,13 @@ class BlenderCurvePrimitives:
         )
 
 
-# assumes add_curve_extra_objects is enabled
-# https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
 def create_simple_curve(
     curve_primitiveType: blender_definitions.BlenderCurvePrimitiveTypes, **kwargs
 ):
+    '''
+    assumes add_curve_extra_objects is enabled
+    https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
+    '''
     curve_type: blender_definitions.BlenderCurveTypes = (
         kwargs["curve_type"]
         if "curve_type" in kwargs and kwargs["curve_type"]
@@ -504,11 +523,3 @@ def create_simple_curve(
         edit_mode=False,
         **kwargs,
     )
-
-
-def set_curve_use_path(curve_name: str, is_use_path: bool):
-    curveObject = get_object(curve_name)
-
-    curve: bpy.types.Curve = curveObject.data
-
-    curve.use_path = is_use_path
