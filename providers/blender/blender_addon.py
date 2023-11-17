@@ -75,7 +75,8 @@ class LogMessage(Operator):
     message: bpy.props.StringProperty(
         name="Message", default="Reporting : Base message"
     )  # type: ignore
-    isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
+    isError: bpy.props.BoolProperty(
+        name="isError", default=False)  # type: ignore
 
     def execute(self, context):
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
@@ -283,7 +284,8 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
 def menu_import(self, context):
     self.layout.operator_context = "INVOKE_DEFAULT"
-    self.layout.operator(ImportCodeToCAD.bl_idname, text="CodeToCAD (.codetocad)")
+    self.layout.operator(ImportCodeToCAD.bl_idname,
+                         text="CodeToCAD (.codetocad)")
 
 
 class CodeToCADAddonPreferences(AddonPreferences):
@@ -386,10 +388,10 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
     core_path = codetocad_path / "CodeToCAD"
     blender_providerPath = codetocad_path / "providers/blender/blender_provider"
 
-    if not Path(blender_providerPath / "blender_actions.py").is_file():
+    if not Path(blender_providerPath / "blender_definitions.py").is_file():
         blender_providerPath = codetocad_path / "blender_provider"
 
-        if not Path(blender_providerPath / "blender_actions.py").is_file():
+        if not Path(blender_providerPath / "blender_definitions.py").is_file():
             print(
                 "Could not find blender_provider files. Please reconfigure CodeToCADBlenderAddon",
                 "Searching in: ",
