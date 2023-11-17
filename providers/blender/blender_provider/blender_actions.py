@@ -2337,7 +2337,7 @@ def add_texture_to_material(
 def log_message(
     message: str,
 ):
-    bpy.ops.code_to_cad.log_message(message=message)
+    bpy.ops.codetocad.log_message(message=message)
 
 
 def create_light(obj_name: str, energy_level, type):
