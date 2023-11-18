@@ -736,7 +736,7 @@ class TestSketch(TestProviderCase):
     def test_create_from_vertices(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.create_from_vertices("coordinates", "interpolation")
+        value = instance.create_from_vertices("points", "interpolation")
 
         assert value.is_exists(), "Create method failed."
 
@@ -744,7 +744,7 @@ class TestSketch(TestProviderCase):
     def test_create_point(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.create_point("coordinate")
+        value = instance.create_point("point")
 
         assert value.is_exists(), "Create method failed."
 

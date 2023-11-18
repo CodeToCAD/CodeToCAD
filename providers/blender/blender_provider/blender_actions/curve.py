@@ -1,9 +1,13 @@
-from typing import Optional
+from typing import List, Optional
 import bpy
 
-from codetocad.codetocad_types import DimensionOrItsFloatOrStringValue
+from codetocad.codetocad_types import (
+    DimensionOrItsFloatOrStringValue,
+    PointOrListOfFloatOrItsStringValue,
+)
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
+from codetocad.core.point import Point
 
 from .. import blender_definitions
 
@@ -27,6 +31,13 @@ def get_curve(curve_name: str) -> bpy.types.Curve:
     assert curve is not None, f"Curve {curve_name} does not exists"
 
     return curve
+
+
+def get_curve_or_none(curve_name: str) -> Optional[bpy.types.Curve]:
+    """
+    Get a curve in Blender. Returns non if the curve does not exist.
+    """
+    return bpy.data.curves.get(curve_name, None)
 
 
 def set_curve_extrude_property(curve_name: str, length: Dimension):
@@ -118,65 +129,83 @@ def create_text(
     curveData.use_path = False
 
 
-def create_3d_curve(
+def create_curve(
     curve_name: str,
     curve_type: blender_definitions.BlenderCurveTypes,
-    coordinates,
+    points: List[PointOrListOfFloatOrItsStringValue],
     interpolation=64,
     is_3d=False,
+    is_closed: bool = False,
+    order_u: int = 2,
 ):
-    curveData = bpy.data.curves.new(curve_name, type="CURVE")
+    curveData = get_curve_or_none(curve_name) or bpy.data.curves.new(
+        curve_name, type="CURVE"
+    )
     curveData.dimensions = "3D" if is_3d else "2D"
     curveData.resolution_u = interpolation
     curveData.use_path = False
 
-    create_spline(curveData, curve_type, coordinates)
+    spline = create_spline(
+        blender_curve=curveData,
+        curve_type=curve_type,
+        points=points,
+        is_closed=is_closed,
+        order_u=order_u,
+    )
 
     create_object(curve_name, curveData)
 
     assign_object_to_collection(curve_name)
 
+    return spline
+
 
 # Creates a new Splines instance in the bpy.types.curves object passed in as blender_curve
-# then assigns the coordinates to them.
+# then assigns the points to them.
 # references https://blender.stackexchange.com/a/6751/138679
 def create_spline(
     blender_curve: bpy.types.Curve,
     curve_type: blender_definitions.BlenderCurveTypes,
-    coordinates,
+    points: List[PointOrListOfFloatOrItsStringValue],
+    is_closed: bool,
+    order_u: int,
 ):
-    coordinates = [
-        blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            get_dimension_list_from_string_list(coordinate) or []
+    points_parsed: List[Point] = [
+        Point.from_list(
+            blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
+                get_dimension_list_from_string_list(point) or []
+            )
         )
-        for coordinate in coordinates
+        if not isinstance(point, Point)
+        else point
+        for point in points
     ]
-    coordinates = [
-        [dimension.value for dimension in coordinate] for coordinate in coordinates
+
+    points_expanded: List[List[float]] = [
+        [dimension.value for dimension in point.to_list()] for point in points_parsed
     ]
 
     spline = blender_curve.splines.new(curve_type.name)
-    spline.order_u = 2
+    spline.order_u = order_u
 
     # subtract 1 so the end and origin points are not connected
-    number_of_points = len(coordinates) - 1
+    number_of_points = len(points_expanded) - (0 if is_closed else 1)
 
     if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
-        # subtract 1 so the end and origin points are not connected
         spline.bezier_points.add(number_of_points)
-        for i, coord in enumerate(coordinates):
+        for i, coord in enumerate(points_expanded):
             x, y, z = coord
             spline.bezier_points[i].co = (x, y, z)
             spline.bezier_points[i].handle_left = (x, y, z)
             spline.bezier_points[i].handle_right = (x, y, z)
 
     else:
-        # subtract 1 so the end and origin points are not connected
         spline.points.add(number_of_points)
-
-        for i, coord in enumerate(coordinates):
+        for i, coord in enumerate(points_expanded):
             x, y, z = coord
             spline.points[i].co = (x, y, z, 1)
+
+    return spline
 
 
 def add_bevel_object_to_curve(

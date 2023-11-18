@@ -431,7 +431,7 @@
             "get_dimensions": {
                 "action": "get",
                 "returnType": "Dimensions",
-                "information": "Get the length span in each coordinate axis (X,Y,Z).",
+                "information": "Get the length span in each point axis (X,Y,Z).",
                 "parameters": {}
             },
             "create_landmark": {
@@ -1106,7 +1106,7 @@
                 "returnType": "Wire",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
-                    "coordinates": {
+                    "points": {
                         "type": "list[string,list[string],Point,Vertex]"
                     }
                 }
@@ -1116,7 +1116,7 @@
                 "returnType": "Vertex",
                 "information": "Create a point",
                 "parameters": {
-                    "coordinate": {
+                    "point": {
                         "type": "string,list[string],Point"
                     }
                 }

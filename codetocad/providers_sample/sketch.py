@@ -153,11 +153,11 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def create_from_vertices(
-        self, coordinates: list[PointOrListOfFloatOrItsStringValueOrVertex]
+        self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "Wire":
         raise NotImplementedError()
 
-    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+    def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         raise NotImplementedError()
 
     def create_line_between_points(

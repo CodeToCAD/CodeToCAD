@@ -2,6 +2,7 @@ from typing import Optional
 
 from codetocad.interfaces import VertexInterface
 from codetocad.codetocad_types import *
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
@@ -32,4 +33,7 @@ class Vertex(Entity, VertexInterface):
         self.native_instance = native_instance
 
     def get_control_points(self, parameter="") -> "list[Entity]":
+        raise NotImplementedError()
+
+    def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
         raise NotImplementedError()
