@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from . import Entity
     from . import Wire
     from . import Vertex
+    from . import Edge
 
 
 class Sketch(Entity, SketchInterface):
@@ -160,12 +161,12 @@ class Sketch(Entity, SketchInterface):
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         raise NotImplementedError()
 
-    def create_line_between_points(
+    def create_line(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
-    ):
-        return self
+    ) -> "Edge":
+        raise NotImplementedError()
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         raise NotImplementedError()

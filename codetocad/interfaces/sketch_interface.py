@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from . import EntityInterface
     from . import WireInterface
     from . import VertexInterface
+    from . import EdgeInterface
 
 
 class SketchInterface(
@@ -186,19 +187,19 @@ class SketchInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def create_line_between_points(
+    def create_line(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
-    ):
+    ) -> "EdgeInterface":
         """
         Create a line between two points
         """
 
         print(
-            "create_line_between_points is called in an abstract method. Please override this method."
+            "create_line is called in an abstract method. Please override this method."
         )
-        return self
+        raise NotImplementedError()
 
     @abstractmethod
     def create_circle(
