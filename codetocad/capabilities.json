@@ -1121,8 +1121,9 @@
                     }
                 }
             },
-            "create_line_between_points": {
-                "action": "create",
+            "create_line": {
+                "action": "get",
+                "returnType": "Edge",
                 "information": "Create a line between two points",
                 "parameters": {
                     "start_at": {

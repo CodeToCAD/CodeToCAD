@@ -218,10 +218,10 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     @skip("TODO")
-    def test_create_line_between_points(self):
+    def test_create_line(self):
         instance = Sketch()
 
-        value = instance.create_line_between_points("end_at", "start_at")
+        value = instance.create_line("end_at", "start_at")
 
         assert value.is_exists(), "Create method failed."
 

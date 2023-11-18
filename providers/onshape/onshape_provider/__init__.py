@@ -1,7 +1,5 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
-from . import onshape_actions, onshape_definitions
-
 from .entity import Entity
 from .part import Part
 from .sketch import Sketch
