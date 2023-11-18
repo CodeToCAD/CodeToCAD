@@ -191,7 +191,7 @@ class PartTestInterface(
     def test_twist(self):
         instance = Part()
 
-        value = instance.twist("angle", "screw_pitch", "interations", "axis")
+        value = instance.twist("angle", "screw_pitch", "iterations", "axis")
 
         assert value, "Modify method failed."
 

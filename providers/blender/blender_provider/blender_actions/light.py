@@ -1,4 +1,3 @@
-
 import bpy
 from . import create_object, assign_object_to_collection
 

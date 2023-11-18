@@ -17,8 +17,7 @@ def create_collection(name: str, scene_name="Scene"):
         bpy.data.scenes.get(scene_name) is not None
     ), f"Scene {scene_name} does not exist"
 
-    existing_collection = bpy.data.scenes[scene_name].collection.children.get(
-        name)
+    existing_collection = bpy.data.scenes[scene_name].collection.children.get(name)
 
     assert existing_collection is None, f"Collection {name} already exists"
 

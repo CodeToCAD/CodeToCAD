@@ -139,7 +139,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_twist(self):
         instance = Sketch()
 
-        value = instance.twist("angle", "screw_pitch", "interations", "axis")
+        value = instance.twist("angle", "screw_pitch", "iterations", "axis")
 
         assert value, "Modify method failed."
 

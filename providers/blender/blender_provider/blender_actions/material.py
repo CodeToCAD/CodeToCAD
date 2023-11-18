@@ -111,5 +111,4 @@ def add_texture_to_material(
     )
     image = bpy.data.images.load(image_file_path)
     texImage.image = image
-    material.node_tree.links.new(
-        bsdf.inputs["Base Color"], texImage.outputs["Color"])
+    material.node_tree.links.new(bsdf.inputs["Base Color"], texImage.outputs["Color"])

@@ -2,6 +2,7 @@ from typing import Optional
 
 from codetocad.interfaces import EdgeInterface
 from codetocad.codetocad_types import *
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
@@ -49,4 +50,28 @@ class Edge(Entity, EdgeInterface):
         return self
 
     def get_is_construction(self) -> bool:
+        raise NotImplementedError()
+
+    def remesh(self, strategy: str, amount: float):
+        raise NotImplementedError()
+        return self
+
+    def subdivide(self, amount: float):
+        raise NotImplementedError()
+        return self
+
+    def decimate(self, amount: float):
+        raise NotImplementedError()
+        return self
+
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        raise NotImplementedError()
+        return self
+
+    def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
         raise NotImplementedError()

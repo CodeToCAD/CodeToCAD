@@ -16,16 +16,19 @@ class Landmark(Entity, LandmarkInterface):
     name: str
     parent_entity: EntityOrItsName
     description: Optional[str] = None
+    native_instance = None
 
     def __init__(
         self,
         name: str,
         parent_entity: EntityOrItsName,
         description: Optional[str] = None,
+        native_instance=None,
     ):
         self.name = name
         self.parent_entity = parent_entity
         self.description = description
+        self.native_instance = native_instance
 
     def get_landmark_entity_name(self) -> str:
         parent_entityName = self.parent_entity

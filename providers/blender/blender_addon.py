@@ -75,8 +75,7 @@ class LogMessage(Operator):
     message: bpy.props.StringProperty(
         name="Message", default="Reporting : Base message"
     )  # type: ignore
-    isError: bpy.props.BoolProperty(
-        name="isError", default=False)  # type: ignore
+    isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
 
     def execute(self, context):
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
@@ -284,8 +283,7 @@ class ImportCodeToCAD(Operator, ImportHelper):
 
 def menu_import(self, context):
     self.layout.operator_context = "INVOKE_DEFAULT"
-    self.layout.operator(ImportCodeToCAD.bl_idname,
-                         text="CodeToCAD (.codetocad)")
+    self.layout.operator(ImportCodeToCAD.bl_idname, text="CodeToCAD (.codetocad)")
 
 
 class CodeToCADAddonPreferences(AddonPreferences):

@@ -2,7 +2,10 @@ from typing import Any, Optional
 from uuid import uuid4
 import bpy
 import mathutils
-from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, DimensionOrItsFloatOrStringValue
+from codetocad.codetocad_types import (
+    AngleOrItsFloatOrStringValue,
+    DimensionOrItsFloatOrStringValue,
+)
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
@@ -85,8 +88,7 @@ def blender_primitive_function(
     if primitive == blender_definitions.BlenderObjectPrimitiveTypes.plane:
         return bpy.ops.mesh.primitive_plane_add(**kwargs)
 
-    raise Exception(
-        f"Primitive with name {primitive.name} is not implemented.")
+    raise Exception(f"Primitive with name {primitive.name} is not implemented.")
 
 
 # Extracts dimensions from a string, then passes them as arguments to the blender_primitive_function
@@ -326,6 +328,7 @@ def create_mesh_from_curve(
     new_object_name: Optional[str] = None,
 ):
     from . import assign_object_to_collection
+
     existingCurveObject = get_object(existing_curve_object_name)
 
     if new_object_name is None:
@@ -420,6 +423,7 @@ def duplicate_object(
     existing_object_name: str, new_object_name: str, copy_landmarks: bool = True
 ):
     from . import assign_object_to_collection
+
     clonedObject = bpy.data.objects.get(new_object_name)
 
     assert clonedObject is None, f"Object with name {new_object_name} already exists."
@@ -440,8 +444,7 @@ def duplicate_object(
         blenderObjectChildren: list[bpy.types.Object] = blenderObject.children
         for child in blenderObjectChildren:
             if (
-                isinstance(
-                    child, blender_definitions.BlenderTypes.OBJECT.value)
+                isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
                 and child.type == "EMPTY"
             ):
                 newChild: bpy.types.Object = child.copy()
@@ -459,8 +462,7 @@ def get_object_local_location(
 
     return Point.from_list(
         [
-            Dimension(
-                p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for p in blenderObject.location
         ]
     )
@@ -473,8 +475,7 @@ def get_object_world_location(
 
     return Point.from_list(
         [
-            Dimension(
-                p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for p in blenderObject.matrix_world.translation
         ]
     )

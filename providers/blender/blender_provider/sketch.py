@@ -2,7 +2,7 @@ from functools import wraps
 from typing import Optional
 
 
-from . import blender_actions, blender_definitions
+from . import blender_actions, blender_definitions, implementables
 
 
 from codetocad.interfaces import SketchInterface, PartInterface
@@ -13,6 +13,14 @@ from codetocad.enums import *
 
 
 from . import Entity, Part
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from . import Part
+    from . import Entity
+    from . import Wire
+    from . import Vertex
 
 
 class Sketch(Entity, SketchInterface):
@@ -31,8 +39,7 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists(
-        ) is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -75,7 +82,8 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":
         blender_actions.set_curve_extrude_property(
-            self.name, Dimension.from_string(length))
+            self.name, Dimension.from_string(length)
+        )
 
         blender_actions.create_mesh_from_curve(self.name)
 
@@ -142,8 +150,7 @@ class Sketch(Entity, SketchInterface):
     ):
         blender_actions.create_3d_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             coordinates,
@@ -196,90 +203,58 @@ class Sketch(Entity, SketchInterface):
 
         return decorator
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Point)
-    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue):
-        return self
+    # @_create_primitive_decorator(CurvePrimitiveTypes.Point)
+    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Line)
-    def create_line(
-        self,
-        length: DimensionOrItsFloatOrStringValue,
-        angle_x: AngleOrItsFloatOrStringValue = 0.0,
-        angle_y: AngleOrItsFloatOrStringValue = 0.0,
-        symmetric: bool = False,
-    ):
-        return self
-
-    @_create_primitive_decorator(CurvePrimitiveTypes.LineTo)
     def create_line_between_points(
         self,
-        end_at: PointOrListOfFloatOrItsStringValue,
-        start_at: Optional[PointOrListOfFloatOrItsStringValue] = None,
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ):
         return self
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Circle)
-    def create_circle(self, radius: DimensionOrItsFloatOrStringValue):
-        return self
+    def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Ellipse)
     def create_ellipse(
         self,
-        radius_a: DimensionOrItsFloatOrStringValue,
-        radius_b: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+        radius_minor: DimensionOrItsFloatOrStringValue,
+        radius_major: DimensionOrItsFloatOrStringValue,
+    ) -> "Wire":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Arc)
     def create_arc(
         self,
-        radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
-        return self
-
-    def create_arc_between_three_points(
-        self, point_a: "Point", point_b: "Point", center_point: "Point"
-    ):
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        center_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+    ) -> "Wire":
         raise NotImplementedError()
-        return self
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Segment)
-    def create_segment(
-        self,
-        inner_radius: DimensionOrItsFloatOrStringValue,
-        outer_radius: DimensionOrItsFloatOrStringValue,
-        angle: AngleOrItsFloatOrStringValue = "180d",
-    ):
-        return self
-
-    @_create_primitive_decorator(CurvePrimitiveTypes.Rectangle)
     def create_rectangle(
         self,
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Polygon_ab)
     def create_polygon(
         self,
         number_of_sides: "int",
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Trapezoid)
     def create_trapezoid(
         self,
         length_upper: DimensionOrItsFloatOrStringValue,
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
-    ):
-        return self
+    ) -> "Wire":
+        raise NotImplementedError()
 
-    @_create_primitive_decorator(CurvePrimitiveTypes.Spiral)
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -287,5 +262,94 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
+    ) -> "Wire":
+        raise NotImplementedError()
+
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        iterations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
     ):
+        implementables.twist(self, angle, screw_pitch, iterations, axis)
+        return self
+
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        implementables.mirror(
+            self, mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        implementables.linear_pattern(self, instance_count, offset, direction_axis)
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        implementables.circular_pattern(
+            self,
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
+        return self
+
+    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
+        implementables.export(self, file_path, overwrite, scale)
+        return self
+
+    def scale_xyz(
+        self,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ):
+        implementables.scale_xyz(self, x, y, z)
+        return self
+
+    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_x(self, scale)
+        return self
+
+    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_y(self, scale)
+        return self
+
+    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_z(self, scale)
+        return self
+
+    def scale_x_by_factor(self, scale_factor: float):
+        implementables.scale_x_by_factor(self, scale_factor)
+        return self
+
+    def scale_y_by_factor(self, scale_factor: float):
+        implementables.scale_y_by_factor(self, scale_factor)
+        return self
+
+    def scale_z_by_factor(self, scale_factor: float):
+        implementables.scale_z_by_factor(self, scale_factor)
+        return self
+
+    def scale_keep_aspect_ratio(
+        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+    ):
+        implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self

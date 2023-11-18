@@ -89,7 +89,7 @@ class SketchInterface(
         self,
         angle: AngleOrItsFloatOrStringValue,
         screw_pitch: DimensionOrItsFloatOrStringValue,
-        interations: "int" = 1,
+        iterations: "int" = 1,
         axis: AxisOrItsIndexOrItsName = "z",
     ):
         """

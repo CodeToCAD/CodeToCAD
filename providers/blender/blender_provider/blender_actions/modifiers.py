@@ -1,4 +1,3 @@
-
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.enums.axis import Axis
