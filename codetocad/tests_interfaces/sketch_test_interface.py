@@ -105,7 +105,7 @@ class SketchTestInterface(
     def test_create_from_vertices(self):
         instance = Sketch()
 
-        value = instance.create_from_vertices("coordinates")
+        value = instance.create_from_vertices("points")
 
         assert value, "Get method failed."
 
@@ -113,7 +113,7 @@ class SketchTestInterface(
     def test_create_point(self):
         instance = Sketch()
 
-        value = instance.create_point("coordinate")
+        value = instance.create_point("point")
 
         assert value, "Get method failed."
 

@@ -244,7 +244,7 @@ class EntityInterface(metaclass=ABCMeta):
     @abstractmethod
     def get_dimensions(self) -> "Dimensions":
         """
-        Get the length span in each coordinate axis (X,Y,Z).
+        Get the length span in each point axis (X,Y,Z).
         """
 
         print(

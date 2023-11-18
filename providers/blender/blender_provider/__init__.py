@@ -5,10 +5,10 @@ from . import blender_actions, blender_definitions
 from .entity import Entity
 from . import implementables
 from .part import Part
-from .sketch import Sketch
 from .vertex import Vertex
 from .edge import Edge
 from .wire import Wire
+from .sketch import Sketch
 from .landmark import Landmark
 from .joint import Joint
 from .material import Material

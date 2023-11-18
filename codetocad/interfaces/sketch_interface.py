@@ -161,7 +161,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_from_vertices(
-        self, coordinates: list[PointOrListOfFloatOrItsStringValueOrVertex]
+        self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "WireInterface":
         """
         Create a curve from 2D/3D points.
@@ -174,7 +174,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_point(
-        self, coordinate: PointOrListOfFloatOrItsStringValue
+        self, point: PointOrListOfFloatOrItsStringValue
     ) -> "VertexInterface":
         """
         Create a point

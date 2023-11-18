@@ -75,3 +75,23 @@ class Edge(Entity, EdgeInterface):
 
     def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
         raise NotImplementedError()
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        raise NotImplementedError()
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        raise NotImplementedError()
+        return self

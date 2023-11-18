@@ -1,4 +1,3 @@
-from functools import wraps
 from typing import Optional
 
 
@@ -12,15 +11,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity, Part
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Part
-    from . import Entity
-    from . import Wire
-    from . import Vertex
+from . import Entity, Part, Vertex, Wire, Edge
 
 
 class Sketch(Entity, SketchInterface):
@@ -145,67 +136,37 @@ class Sketch(Entity, SketchInterface):
 
     def create_from_vertices(
         self,
-        coordinates: list[PointOrListOfFloatOrItsStringValue],
+        points: list[PointOrListOfFloatOrItsStringValue],
         interpolation: "int" = 64,
     ):
-        blender_actions.create_3d_curve(
+        blender_actions.create_curve(
             self.name,
             blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
-            coordinates,
+            points,
             interpolation,
             is_3d=True,
         )
 
         return self
 
-    @staticmethod
-    def _create_primitive_decorator(curve_primitive_type: CurvePrimitiveTypes):
-        def decorator(primitiveFunction):
-            @wraps(primitiveFunction)
-            def wrapper(*args, **kwargs):
-                self = args[0]
-
-                blenderCurvePrimitiveType = blender_definitions.BlenderCurvePrimitiveTypes.from_curve_primitive_types(
-                    curve_primitive_type
+    def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+        return Vertex(
+            location=point,
+            name=create_uuid_like_id(),
+            parent_sketch=self,
+            native_instance=blender_actions.create_curve(
+                curve_name=self.name,
+                curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
+                    self.curve_type
                 )
-
-                blenderPrimitiveFunction = (
-                    blender_actions.get_blender_curve_primitive_function(
-                        blenderCurvePrimitiveType
-                    )
-                )
-
-                keywordArgs = dict(
-                    {
-                        "curve_type": blender_definitions.BlenderCurveTypes.from_curve_types(
-                            self.curve_type
-                        )
-                        if self.curve_type is not None
-                        else None
-                    },
-                    **kwargs,
-                )
-
-                blenderPrimitiveFunction(*args[1:], **keywordArgs)
-
-                # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-                # therefore, we'll use the object's "expected" name and rename it to what it should be
-                # note: this will fail if the "expected" name is incorrect
-                _ = Sketch(blenderCurvePrimitiveType.name).rename(self.name)
-
-                blender_actions.set_curve_use_path(self.name, False)
-
-                return primitiveFunction(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    # @_create_primitive_decorator(CurvePrimitiveTypes.Point)
-    def create_point(self, coordinate: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        raise NotImplementedError()
+                if self.curve_type is not None
+                else blender_definitions.BlenderCurveTypes.BEZIER,
+                points=[point],
+                is_3d=False,
+            ),
+        )
 
     def create_line_between_points(
         self,

@@ -2,6 +2,7 @@ from typing import Optional
 
 from codetocad.interfaces import WireInterface
 from codetocad.codetocad_types import *
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
@@ -38,3 +39,35 @@ class Wire(Entity, WireInterface):
 
     def is_closed(self) -> bool:
         raise NotImplementedError()
+
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        raise NotImplementedError()
+        return self
+
+    def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
+        raise NotImplementedError()
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        raise NotImplementedError()
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        raise NotImplementedError()
+        return self
