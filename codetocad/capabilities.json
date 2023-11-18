@@ -809,7 +809,7 @@
                     "screw_pitch": {
                         "type": "string,float,Dimension"
                     },
-                    "interations": {
+                    "iterations": {
                         "type": "int",
                         "defaultValue": 1
                     },
@@ -1007,7 +1007,7 @@
                     "screw_pitch": {
                         "type": "string,float,Dimension"
                     },
-                    "interations": {
+                    "iterations": {
                         "type": "int",
                         "defaultValue": 1
                     },

@@ -7,15 +7,21 @@ from codetocad.core.dimension import Dimension
 
 from .. import blender_definitions
 
-from . import get_object, create_object, convert_object_using_ops, assign_object_to_collection, enable_curve_extra_objects_addon
+from . import (
+    get_object,
+    create_object,
+    convert_object_using_ops,
+    assign_object_to_collection,
+    enable_curve_extra_objects_addon,
+)
 
 from codetocad import get_dimension_list_from_string_list
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
-    '''
+    """
     Get a curve in Blender. Throws if the curve does not exist.
-    '''
+    """
     curve = bpy.data.curves.get(curve_name)
 
     assert curve is not None, f"Curve {curve_name} does not exists"
@@ -24,25 +30,23 @@ def get_curve(curve_name: str) -> bpy.types.Curve:
 
 
 def set_curve_extrude_property(curve_name: str, length: Dimension):
-    '''
+    """
     Changes a curve's Geometry -> Extrude property.
-    '''
+    """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
 
 def set_curve_offset_geometry(curve_name: str, offset: Dimension):
-    '''
+    """
     Changes a curve's Geometry -> Offset property.
-    '''
+    """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
@@ -85,8 +89,7 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            size).value,
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -110,8 +113,7 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(
-        curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
@@ -180,9 +182,9 @@ def create_spline(
 def add_bevel_object_to_curve(
     path_curve_object_name: str, profile_curve_object_name: str, fill_cap=False
 ):
-    '''
+    """
     Effectively sweeps an object along a path
-    '''
+    """
     pathCurveObject = get_object(path_curve_object_name)
 
     profileCurveObject = get_object(profile_curve_object_name)
@@ -447,8 +449,7 @@ class BlenderCurvePrimitives:
         )
 
         radiusDiff = (
-            0 if radius_endMeters is None else (
-                radius_endMeters - radiusMeters).value
+            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
         )
 
         curve_type: blender_definitions.BlenderCurveTypes = (
@@ -475,10 +476,10 @@ class BlenderCurvePrimitives:
 def create_simple_curve(
     curve_primitiveType: blender_definitions.BlenderCurvePrimitiveTypes, **kwargs
 ):
-    '''
+    """
     assumes add_curve_extra_objects is enabled
     https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
-    '''
+    """
     curve_type: blender_definitions.BlenderCurveTypes = (
         kwargs["curve_type"]
         if "curve_type" in kwargs and kwargs["curve_type"]

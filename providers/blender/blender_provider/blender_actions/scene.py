@@ -1,4 +1,3 @@
-
 from typing import Optional
 import bpy
 from .. import blender_definitions
@@ -36,8 +35,7 @@ def add_hdr_texture(
     nodeOutput.location = 0, 0
     links = get_node_tree(scene_name).links
     links.new(nodeEnvironment.outputs["Color"], nodeBackground.inputs["Color"])
-    links.new(nodeBackground.outputs["Background"],
-              nodeOutput.inputs["Surface"])
+    links.new(nodeBackground.outputs["Background"], nodeOutput.inputs["Surface"])
 
 
 def set_background_location(scene_name: str, x, y):

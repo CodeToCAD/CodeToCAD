@@ -142,8 +142,7 @@ def get_closest_points_to_vertex(
     matrixWorld: mathutils.Matrix = blenderObject.matrix_world
     invertedMatrixWorld = matrixWorld.inverted()
 
-    vertexInverted: mathutils.Vector = invertedMatrixWorld @ mathutils.Vector(
-        vertex)
+    vertexInverted: mathutils.Vector = invertedMatrixWorld @ mathutils.Vector(vertex)
 
     return kdTree.find_n(vertexInverted, number_of_points)
 

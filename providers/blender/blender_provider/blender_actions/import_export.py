@@ -1,4 +1,3 @@
-
 from typing import Optional
 import bpy
 from .. import blender_definitions
@@ -99,7 +98,6 @@ def export_object(object_name: str, file_path: str, overwrite=True, scale=1.0):
     assert file_type in fileImportFunctions, f"File type {file_type} is not supported"
 
     # export the file:
-    isSuccess = fileExportFunctions[file_type](
-        file_path, scale) == {"FINISHED"}
+    isSuccess = fileExportFunctions[file_type](file_path, scale) == {"FINISHED"}
 
     assert isSuccess is True, f"Could not export {file_path}"

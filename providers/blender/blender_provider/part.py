@@ -1,6 +1,4 @@
 from typing import Optional
-from . import blender_actions
-from . import blender_definitions
 
 from codetocad.interfaces import PartInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
@@ -8,8 +6,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
-from . import Entity
+from . import blender_actions, blender_definitions, implementables, Entity
 
 from typing import TYPE_CHECKING
 
@@ -604,6 +601,99 @@ class Part(Entity, PartInterface):
         self, landmark_name: Optional[LandmarkOrItsName] = None
     ):
         raise NotImplementedError()
+        return self
+
+    def twist(
+        self,
+        angle: AngleOrItsFloatOrStringValue,
+        screw_pitch: DimensionOrItsFloatOrStringValue,
+        iterations: "int" = 1,
+        axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        implementables.twist(self, angle, screw_pitch, iterations, axis)
+        return self
+
+    def mirror(
+        self,
+        mirror_across_entity: EntityOrItsName,
+        axis: AxisOrItsIndexOrItsName,
+        resulting_mirrored_entity_name: Optional[str] = None,
+    ):
+        implementables.mirror(
+            self, mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: DimensionOrItsFloatOrStringValue,
+        direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        implementables.linear_pattern(self, instance_count, offset, direction_axis)
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: AngleOrItsFloatOrStringValue,
+        center_entity_or_landmark: EntityOrItsName,
+        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    ):
+        implementables.circular_pattern(
+            self,
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
+        return self
+
+    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
+        implementables.export(self, file_path, overwrite, scale)
+        return self
+
+    def scale_xyz(
+        self,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ):
+        implementables.scale_xyz(self, x, y, z)
+        return self
+
+    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_x(self, scale)
+        return self
+
+    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_y(self, scale)
+        return self
+
+    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
+        implementables.scale_z(self, scale)
+        return self
+
+    def scale_x_by_factor(self, scale_factor: float):
+        implementables.scale_x_by_factor(self, scale_factor)
+        return self
+
+    def scale_y_by_factor(self, scale_factor: float):
+        implementables.scale_y_by_factor(self, scale_factor)
+        return self
+
+    def scale_z_by_factor(self, scale_factor: float):
+        implementables.scale_z_by_factor(self, scale_factor)
+        return self
+
+    def scale_keep_aspect_ratio(
+        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+    ):
+        implementables.scale_keep_aspect_ratio(self, scale, axis)
+        return self
+
+    def remesh(self, strategy: str, amount: float):
+        implementables.remesh(self, strategy, amount)
         return self
 
     def subdivide(self, amount: float):

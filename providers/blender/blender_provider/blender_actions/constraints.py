@@ -1,4 +1,3 @@
-
 from typing import Optional
 import bpy
 from codetocad.core.angle import Angle
@@ -6,7 +5,15 @@ from codetocad.core.dimension import Dimension
 from codetocad.enums.axis import Axis
 from .. import blender_definitions
 
-from . import get_object,  set_driver, set_driver_variable_single_prop, create_driver, translate_object, get_object_world_location, update_view_layer
+from . import (
+    get_object,
+    set_driver,
+    set_driver_variable_single_prop,
+    create_driver,
+    translate_object,
+    get_object_world_location,
+    update_view_layer,
+)
 
 
 def get_constraint(object_name: str, constraint_name) -> Optional[bpy.types.Constraint]:
@@ -21,8 +28,7 @@ def apply_constraint(
 ):
     blenderObject = get_object(object_name)
 
-    constraint_name = kwargs.get(
-        "name") or constraint_type.get_default_blender_name()
+    constraint_name = kwargs.get("name") or constraint_type.get_default_blender_name()
 
     constraint = get_constraint(object_name, constraint_name)
 

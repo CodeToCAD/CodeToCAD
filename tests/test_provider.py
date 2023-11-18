@@ -373,7 +373,7 @@ class TestEntity(TestProviderCase):
     def test_twist(self):
         instance = Part("name", "description")
 
-        value = instance.twist("angle", "screwPitch", "interations", "axis")
+        value = instance.twist("angle", "screwPitch", "iterations", "axis")
 
         assert value, "Modify method failed."
 

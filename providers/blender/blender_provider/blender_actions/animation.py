@@ -1,4 +1,3 @@
-
 from typing import Optional
 
 from . import get_object, get_scene
