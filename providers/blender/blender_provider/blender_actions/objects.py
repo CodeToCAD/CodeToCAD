@@ -501,6 +501,12 @@ def get_object(
     return blenderObject
 
 
+def get_object_or_none(
+    object_name: str,
+) -> Optional[bpy.types.Object]:
+    return bpy.data.objects.get(object_name)
+
+
 def get_objectType(object_name: str) -> blender_definitions.BlenderObjectTypes:
     blenderObject = bpy.data.objects.get(object_name)
 

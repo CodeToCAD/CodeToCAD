@@ -1,5 +1,10 @@
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from codetocad.core.dimension import Dimension
+
+
+if TYPE_CHECKING:
+    from codetocad.codetocad_types import PointOrListOfFloatOrItsStringValue
 
 
 @dataclass
@@ -11,10 +16,33 @@ class Point:
     def to_list(self):
         return [self.x, self.y, self.z]
 
-    @classmethod
-    def from_list(cls, point_list: list[Dimension]):
+    @staticmethod
+    def from_list(point_list: list[Dimension]) -> "Point":
         assert len(point_list) == 3, "Point list must contain three Dimensions."
-        return cls(point_list[0], point_list[1], point_list[2])
+        return Point(point_list[0], point_list[1], point_list[2])
+
+    @staticmethod
+    def from_list_of_float_or_string(
+        point_representation: "PointOrListOfFloatOrItsStringValue",
+    ) -> "Point":
+        if isinstance(point_representation, list):
+            assert (
+                len(point_representation) == 3
+            ), "Point list must contain three Dimensions."
+            points = [
+                Dimension.from_dimension_or_its_float_or_string_value(point, None)
+                for point in point_representation
+            ]
+            return Point(points[0], points[1], points[2])
+        elif isinstance(point_representation, str):
+            from codetocad.utilities import get_dimension_list_from_string_list
+
+            points = get_dimension_list_from_string_list(point_representation)
+            return Point(points[0], points[1], points[2])
+        elif isinstance(point_representation, Point):
+            return point_representation
+
+        raise ValueError(f"Cannot convert type {type(point_representation)} to Point.")
 
     def arithmetic_precheck_and_unit_conversion(self, other) -> "Point":
         assert other is not None, "Right-hand value cannot be None."
