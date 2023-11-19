@@ -4,7 +4,7 @@ from typing import Optional
 from . import blender_actions, blender_definitions, implementables
 
 
-from codetocad.interfaces import SketchInterface, PartInterface
+from codetocad.interfaces import SketchInterface, PartInterface, VertexInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -30,8 +30,7 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists(
-        ) is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -142,8 +141,7 @@ class Sketch(Entity, SketchInterface):
     ):
         blender_actions.create_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             points,
@@ -154,20 +152,21 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+        blender_spline = blender_actions.create_curve(
+            curve_name=self.name,
+            curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
+                self.curve_type
+            )
+            if self.curve_type is not None
+            else blender_definitions.BlenderCurveTypes.BEZIER,
+            points=[point],
+            is_3d=False,
+        )
         return Vertex(
             location=point,
             name=create_uuid_like_id(),
             parent_sketch=self,
-            native_instance=blender_actions.create_curve(
-                curve_name=self.name,
-                curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
-                    self.curve_type
-                )
-                if self.curve_type is not None
-                else blender_definitions.BlenderCurveTypes.BEZIER,
-                points=[point],
-                is_3d=False,
-            ),
+            native_instance=blender_spline,
         )
 
     def create_line(
@@ -175,7 +174,35 @@ class Sketch(Entity, SketchInterface):
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Edge":
-        return self
+        start_point: Point
+        end_point: Point
+        if isinstance(start_at, VertexInterface):
+            start_point = Point.from_list_of_float_or_string(start_at.location)
+        else:
+            start_point = Point.from_list_of_float_or_string(start_at)
+
+        if isinstance(end_at, VertexInterface):
+            end_point = Point.from_list_of_float_or_string(end_at.location)
+        else:
+            end_point = Point.from_list_of_float_or_string(end_at)
+
+        blender_spline, added_points = blender_actions.create_curve(
+            curve_name=self.name,
+            curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
+                self.curve_type
+            )
+            if self.curve_type is not None
+            else blender_definitions.BlenderCurveTypes.BEZIER,
+            points=[start_point, end_point],
+            is_3d=False,
+        )
+
+        edge = blender_actions.get_edge_from_blender_edge(
+            entity=blender_actions.get_curve(self.name),
+            edge=(added_points[0], added_points[1]),
+        )
+
+        return edge
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         raise NotImplementedError()
@@ -255,8 +282,7 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        implementables.linear_pattern(
-            self, instance_count, offset, direction_axis)
+        implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(

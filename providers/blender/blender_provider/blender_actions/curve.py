@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, TYPE_CHECKING
 import bpy
 
 from codetocad.codetocad_types import (
@@ -14,6 +14,7 @@ from .. import blender_definitions
 
 from . import (
     get_object,
+    get_object_or_none,
     create_object,
     convert_object_using_ops,
     assign_object_to_collection,
@@ -21,6 +22,9 @@ from . import (
 )
 
 from codetocad import get_dimension_list_from_string_list
+
+if TYPE_CHECKING:
+    from .. import Vertex, Edge, Wire
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
@@ -47,8 +51,7 @@ def set_curve_extrude_property(curve_name: str, length: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
@@ -59,8 +62,7 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
@@ -103,8 +105,7 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            size).value,
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -128,13 +129,16 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(
-        curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
 
-def get_vertex_from_blender_point(spline_point: Union[bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex]):
+def get_vertex_from_blender_point(
+    spline_point: Union[
+        bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex
+    ]
+) -> "Vertex":
     from .. import Vertex
 
     point = spline_point.co
@@ -142,16 +146,28 @@ def get_vertex_from_blender_point(spline_point: Union[bpy.types.BezierSplinePoin
     point = point[0:3]
 
     point_dimension: List[Dimension] = [
-        Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in point]
+        Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        for p in point
+    ]
 
     return Vertex(
         location=Point.from_list(point_dimension),
         name=create_uuid_like_id(),
-        native_instance=spline_point
+        native_instance=spline_point,
     )
 
 
-def get_edge_from_blender_edge(entity: Union[bpy.types.Curve, bpy.types.Mesh], edge: Union[bpy.types.Spline, bpy.types.MeshEdge, Tuple[bpy.types.SplinePoint | bpy.types.BezierSplinePoint, bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]):
+def get_edge_from_blender_edge(
+    entity: Union[bpy.types.Curve, bpy.types.Mesh],
+    edge: Union[
+        bpy.types.Spline,
+        bpy.types.MeshEdge,
+        Tuple[
+            bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
+            bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
+        ],
+    ],
+) -> "Edge":
     from .. import Vertex, Edge
 
     v1: Vertex
@@ -161,7 +177,8 @@ def get_edge_from_blender_edge(entity: Union[bpy.types.Curve, bpy.types.Mesh], e
 
         if len(points) > 2:
             raise Exception(
-                "Edge contains more than two vertices. Did you mean to create a Wire instead of an Edge?")
+                "Edge contains more than two vertices. Did you mean to create a Wire instead of an Edge?"
+            )
 
         v1 = get_vertex_from_blender_point(points[0])
         v2 = get_vertex_from_blender_point(points[1])
@@ -181,11 +198,14 @@ def get_edge_from_blender_edge(entity: Union[bpy.types.Curve, bpy.types.Mesh], e
         v2=v2,
         name=create_uuid_like_id(),
         parent_sketch=entity.name,
-        native_instance=edge
+        native_instance=edge,
     )
 
 
-def get_wire_from_blender_wire(entity: Union[bpy.types.Curve, bpy.types.Mesh], wire: Union[bpy.types.Spline, bpy.types.MeshPolygon]):
+def get_wire_from_blender_wire(
+    entity: Union[bpy.types.Curve, bpy.types.Mesh],
+    wire: Union[bpy.types.Spline, bpy.types.MeshPolygon],
+) -> "Wire":
     from .. import Edge, Wire
 
     edges: List[Edge]
@@ -194,24 +214,19 @@ def get_wire_from_blender_wire(entity: Union[bpy.types.Curve, bpy.types.Mesh], w
 
         edges = [
             get_edge_from_blender_edge(
-                entity=entity,
-                edge=(points[index], points[index+1])
+                entity=entity, edge=(points[index], points[index + 1])
             )
-            for index in range(0, len(points))
+            for index in range(0, len(points) - 1)
         ]
     elif isinstance(wire, bpy.types.MeshPolygon) and isinstance(entity, bpy.types.Mesh):
         # references https://blender.stackexchange.com/a/6729
         all_edge_keys: List = entity.edge_keys
         wire_edge_keys: List = wire.edge_keys
         mesh_edges = entity.edges
-        face_edge_map = {ek: mesh_edges[i]
-                         for i, ek in enumerate(all_edge_keys)}
+        face_edge_map = {ek: mesh_edges[i] for i, ek in enumerate(all_edge_keys)}
 
         edges = [
-            get_edge_from_blender_edge(
-                entity=entity,
-                edge=face_edge_map[edge_key]
-            )
+            get_edge_from_blender_edge(entity=entity, edge=face_edge_map[edge_key])
             for edge_key in wire_edge_keys
         ]
     else:
@@ -221,29 +236,25 @@ def get_wire_from_blender_wire(entity: Union[bpy.types.Curve, bpy.types.Mesh], w
         edges=edges,
         name=create_uuid_like_id(),
         parent_sketch=entity.name,
-        native_instance=wire
+        native_instance=wire,
     )
 
 
-def get_wires_from_blender_entity(entity: Union[bpy.types.Curve, bpy.types.Mesh]):
+def get_wires_from_blender_entity(
+    entity: Union[bpy.types.Curve, bpy.types.Mesh]
+) -> "List[Wire]":
     from .. import Wire
+
     wires: List[Wire]
 
     if isinstance(entity, bpy.types.Curve):
         wires = [
-            get_wire_from_blender_wire(
-                entity=entity,
-                wire=wire
-            )
+            get_wire_from_blender_wire(entity=entity, wire=wire)
             for wire in entity.splines
         ]
     elif isinstance(entity, bpy.types.Mesh):
         wires = [
-
-            get_wire_from_blender_wire(
-                entity=entity,
-                wire=wire
-            )
+            get_wire_from_blender_wire(entity=entity, wire=wire)
             for wire in entity.polygons
         ]
     else:
@@ -260,39 +271,46 @@ def create_curve(
     is_3d=False,
     is_closed: bool = False,
     order_u: int = 2,
-):
-    curveData = get_curve_or_none(curve_name) or bpy.data.curves.new(
+) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
+    curve_data = get_curve_or_none(curve_name) or bpy.data.curves.new(
         curve_name, type="CURVE"
     )
-    curveData.dimensions = "3D" if is_3d else "2D"
-    curveData.resolution_u = interpolation
-    curveData.use_path = False
+    curve_data.dimensions = "3D" if is_3d else "2D"
+    curve_data.resolution_u = interpolation
+    curve_data.use_path = False
+    curve_data.fill_mode = "FULL" if is_3d else "BOTH"
 
-    spline = create_spline(
-        blender_curve=curveData,
-        curve_type=curve_type,
-        points=points,
-        is_closed=is_closed,
-        order_u=order_u,
-    )
+    spline: bpy.types.Spline
 
-    create_object(curve_name, curveData)
+    if get_object_or_none(curve_name) is None:
+        create_object(curve_name, curve_data)
 
-    assign_object_to_collection(curve_name)
+        assign_object_to_collection(curve_name)
 
-    return spline
+        spline, added_points = create_spline(
+            blender_curve=curve_data,
+            curve_type=curve_type,
+            points=points,
+            is_closed=is_closed,
+            order_u=order_u,
+        )
+    else:
+        spline, added_points = append_to_spline(
+            spline=curve_data.splines[-1],
+            curve_type=curve_type,
+            points=points,
+            is_closed=is_closed,
+        )
+
+    return spline, added_points
 
 
-# Creates a new Splines instance in the bpy.types.curves object passed in as blender_curve
-# then assigns the points to them.
-# references https://blender.stackexchange.com/a/6751/138679
-def create_spline(
-    blender_curve: bpy.types.Curve,
+def append_to_spline(
+    spline: bpy.types.Spline,
     curve_type: blender_definitions.BlenderCurveTypes,
     points: List[PointOrListOfFloatOrItsStringValue],
     is_closed: bool,
-    order_u: int,
-):
+) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
     points_parsed: List[Point] = [
         Point.from_list(
             blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
@@ -308,27 +326,57 @@ def create_spline(
         [dimension.value for dimension in point.to_list()] for point in points_parsed
     ]
 
-    spline = blender_curve.splines.new(curve_type.name)
-    spline.order_u = order_u
-
     # subtract 1 so the end and origin points are not connected
-    number_of_points = len(points_expanded) - (0 if is_closed else 1)
+    # number_of_points = len(points_expanded) - (0 if is_closed else 1)
+    number_of_points = len(points_expanded)
+
+    added_points: List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
 
     if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
+        index_offset = len(spline.bezier_points) - 1
         spline.bezier_points.add(number_of_points)
         for i, coord in enumerate(points_expanded):
+            i = i + index_offset
             x, y, z = coord
             spline.bezier_points[i].co = (x, y, z)
             spline.bezier_points[i].handle_left = (x, y, z)
             spline.bezier_points[i].handle_right = (x, y, z)
 
+            added_points.append(spline.bezier_points[i])
+
     else:
+        index_offset = len(spline.points) - 1
         spline.points.add(number_of_points)
         for i, coord in enumerate(points_expanded):
+            i = i + index_offset
             x, y, z = coord
             spline.points[i].co = (x, y, z, 1)
 
-    return spline
+            added_points.append(spline.points[i])
+
+    return spline, added_points
+
+
+def create_spline(
+    blender_curve: bpy.types.Curve,
+    curve_type: blender_definitions.BlenderCurveTypes,
+    points: List[PointOrListOfFloatOrItsStringValue],
+    is_closed: bool,
+    order_u: int,
+):
+    """
+    Creates a new Splines instance in the bpy.types.curves object passed in as blender_curveb then assigns the points to them.
+    references https://blender.stackexchange.com/a/6751/138679
+    """
+
+    spline = blender_curve.splines.new(curve_type.name)
+    spline.order_u = order_u
+    # spline.use_cyclic_u = is_closed
+    spline.use_endpoint_u = True
+
+    return append_to_spline(
+        spline=spline, curve_type=curve_type, points=points, is_closed=is_closed
+    )
 
 
 def add_bevel_object_to_curve(
@@ -601,8 +649,7 @@ class BlenderCurvePrimitives:
         )
 
         radiusDiff = (
-            0 if radius_endMeters is None else (
-                radius_endMeters - radiusMeters).value
+            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
         )
 
         curve_type: blender_definitions.BlenderCurveTypes = (
