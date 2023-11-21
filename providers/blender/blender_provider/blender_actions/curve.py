@@ -357,18 +357,22 @@ def point_exists_in_spline(
     """
     target_vector = mathutils.Vector(target_point.to_list())
     for point in spline_points:
-        if points_touching(point.co.xyz, target_vector, tolerance):
+        if points_touching(point.co, target_vector, tolerance):
             return point
     return None
 
 
 def points_touching(
-    point1: mathutils.Vector, point2: mathutils.Vector, tolerance: float = 0.001
+    point1: mathutils.Vector | List[float],
+    point2: mathutils.Vector | List[float],
+    tolerance: float = 0.001,
 ) -> bool:
     """
     Check if two points are touching within a given tolerance.
     """
-    return (point1 - point2).length < tolerance
+    point1 = mathutils.Vector(point1)
+    point2 = mathutils.Vector(point2)
+    return (point1.xyz - point2.xyz).length < tolerance
 
 
 def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):

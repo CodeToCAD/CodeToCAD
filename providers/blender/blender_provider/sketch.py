@@ -153,7 +153,7 @@ class Sketch(Entity, SketchInterface):
             else blender_definitions.BlenderCurveTypes.BEZIER,
             parsed_points,
             interpolation,
-            is_3d=True,
+            is_3d=False,
         )
 
         if is_closed:
