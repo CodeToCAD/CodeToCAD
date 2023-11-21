@@ -1,5 +1,6 @@
-from typing import List, Optional, Tuple, Union, TYPE_CHECKING
+from typing import List, Tuple, Optional, Union, TYPE_CHECKING
 import bpy
+import mathutils
 
 from codetocad.codetocad_types import (
     DimensionOrItsFloatOrStringValue,
@@ -21,7 +22,6 @@ from . import (
     enable_curve_extra_objects_addon,
 )
 
-from codetocad import get_dimension_list_from_string_list
 
 if TYPE_CHECKING:
     from .. import Vertex, Edge, Wire
@@ -51,7 +51,8 @@ def set_curve_extrude_property(curve_name: str, length: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+        length)
 
     curve.extrude = length.value
 
@@ -62,7 +63,8 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+        offset)
 
     curve.offset = length.value
 
@@ -105,7 +107,8 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -129,7 +132,8 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(
+        curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
@@ -223,10 +227,12 @@ def get_wire_from_blender_wire(
         all_edge_keys: List = entity.edge_keys
         wire_edge_keys: List = wire.edge_keys
         mesh_edges = entity.edges
-        face_edge_map = {ek: mesh_edges[i] for i, ek in enumerate(all_edge_keys)}
+        face_edge_map = {ek: mesh_edges[i]
+                         for i, ek in enumerate(all_edge_keys)}
 
         edges = [
-            get_edge_from_blender_edge(entity=entity, edge=face_edge_map[edge_key])
+            get_edge_from_blender_edge(
+                entity=entity, edge=face_edge_map[edge_key])
             for edge_key in wire_edge_keys
         ]
     else:
@@ -269,7 +275,6 @@ def create_curve(
     points: List[PointOrListOfFloatOrItsStringValue],
     interpolation=64,
     is_3d=False,
-    is_closed: bool = False,
     order_u: int = 2,
 ) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
     curve_data = get_curve_or_none(curve_name) or bpy.data.curves.new(
@@ -279,89 +284,60 @@ def create_curve(
     curve_data.resolution_u = interpolation
     curve_data.use_path = False
     curve_data.fill_mode = "FULL" if is_3d else "BOTH"
+    points_parsed: List[Point] = [
+        Point.from_list_of_float_or_string(point) for point in points
+    ]
 
-    spline: bpy.types.Spline
+    points_expanded: List[List[float]] = [
+        [
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                dimension
+            ).value
+            for dimension in point.to_list()
+        ]
+        for point in points_parsed
+    ]
 
     if get_object_or_none(curve_name) is None:
         create_object(curve_name, curve_data)
 
         assign_object_to_collection(curve_name)
 
-        spline, added_points = create_spline(
+        reference_spline = create_spline(
             blender_curve=curve_data,
             curve_type=curve_type,
-            points=points,
-            is_closed=is_closed,
             order_u=order_u,
         )
-    else:
-        spline, added_points = append_to_spline(
-            spline=curve_data.splines[-1],
-            curve_type=curve_type,
-            points=points,
-            is_closed=is_closed,
+
+        added_points = add_points_to_spline(
+            spline=reference_spline, points=points_expanded, overwrite_first_point=True
         )
+
+        return reference_spline, added_points
+
+    reference_spline = curve_data.splines[0]
+
+    spline, added_points = add_points_to_curve(
+        reference_spline=reference_spline,
+        points=points_expanded,
+    )
+
+    merge_touching_splines(curve=curve_data)
 
     return spline, added_points
 
 
-def append_to_spline(
-    spline: bpy.types.Spline,
-    curve_type: blender_definitions.BlenderCurveTypes,
-    points: List[PointOrListOfFloatOrItsStringValue],
-    is_closed: bool,
-) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
-    points_parsed: List[Point] = [
-        Point.from_list(
-            blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-                get_dimension_list_from_string_list(point) or []
-            )
-        )
-        if not isinstance(point, Point)
-        else point
-        for point in points
-    ]
-
-    points_expanded: List[List[float]] = [
-        [dimension.value for dimension in point.to_list()] for point in points_parsed
-    ]
-
-    # subtract 1 so the end and origin points are not connected
-    # number_of_points = len(points_expanded) - (0 if is_closed else 1)
-    number_of_points = len(points_expanded)
-
-    added_points: List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
-
-    if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
-        index_offset = len(spline.bezier_points) - 1
-        spline.bezier_points.add(number_of_points)
-        for i, coord in enumerate(points_expanded):
-            i = i + index_offset
-            x, y, z = coord
-            spline.bezier_points[i].co = (x, y, z)
-            spline.bezier_points[i].handle_left = (x, y, z)
-            spline.bezier_points[i].handle_right = (x, y, z)
-
-            added_points.append(spline.bezier_points[i])
-
-    else:
-        index_offset = len(spline.points) - 1
-        spline.points.add(number_of_points)
-        for i, coord in enumerate(points_expanded):
-            i = i + index_offset
-            x, y, z = coord
-            spline.points[i].co = (x, y, z, 1)
-
-            added_points.append(spline.points[i])
-
-    return spline, added_points
+def clone_spline(spline_to_clone: bpy.types.Spline):
+    return create_spline(
+        blender_curve=spline_to_clone.id_data,
+        curve_type=blender_definitions.BlenderCurveTypes[spline_to_clone.type],
+        order_u=spline_to_clone.order_u,
+    )
 
 
 def create_spline(
     blender_curve: bpy.types.Curve,
     curve_type: blender_definitions.BlenderCurveTypes,
-    points: List[PointOrListOfFloatOrItsStringValue],
-    is_closed: bool,
     order_u: int,
 ):
     """
@@ -374,9 +350,166 @@ def create_spline(
     # spline.use_cyclic_u = is_closed
     spline.use_endpoint_u = True
 
-    return append_to_spline(
-        spline=spline, curve_type=curve_type, points=points, is_closed=is_closed
+    return spline
+
+
+def point_exists_in_spline(
+    spline_points: bpy.types.SplinePoints | bpy.types.SplineBezierPoints,
+    target_point: Point,
+    tolerance=0.001,
+) -> bpy.types.SplinePoint | bpy.types.BezierSplinePoint | None:
+    """
+    Check if a point already exists in the spline within a given tolerance.
+    """
+    target_vector = mathutils.Vector(target_point.to_list())
+    for point in spline_points:
+        if points_touching(point.co.xyz, target_vector, tolerance):
+            return point
+    return None
+
+
+def points_touching(
+    point1: mathutils.Vector, point2: mathutils.Vector, tolerance: float = 0.001
+) -> bool:
+    """
+    Check if two points are touching within a given tolerance.
+    """
+    return (point1 - point2).length < tolerance
+
+
+def merge_touching_splines(curve: bpy.types.Curve, tolerance: float = 0.001):
+    for spline in curve.splines[1:]:
+        reference_spline = curve.splines[0]
+
+        reference_spline_points = get_spline_points(reference_spline)
+        reference_first_point: mathutils.Vector = reference_spline_points[0].co
+        reference_last_point: mathutils.Vector = reference_spline_points[-1].co
+
+        spline_points = get_spline_points(spline)
+        points_first_point: mathutils.Vector = spline_points[0].co
+        points_last_point: mathutils.Vector = spline_points[0].co
+
+        first_point_touching = points_touching(
+            points_first_point, reference_first_point
+        ) or points_touching(points_first_point, reference_last_point)
+        last_point_touching = points_touching(
+            points_last_point, reference_first_point
+        ) or points_touching(points_last_point, reference_last_point)
+
+        if first_point_touching or last_point_touching:
+            print(f"Merging spline {spline}")
+            last_reference_spline_index = len(reference_spline.points) - 1
+
+            reference_spline_points.add(len(spline_points) - 1)
+            for i, co in enumerate(spline_points):
+                reference_spline_points[last_reference_spline_index + i].co = co
+
+            curve.splines.remove(spline)
+
+
+def get_spline_points(
+    spline: bpy.types.Spline,
+) -> bpy.types.SplineBezierPoints | bpy.types.SplinePoints:
+    return spline.bezier_points if spline.type == blender_definitions.BlenderCurveTypes.BEZIER.name else spline.points
+
+
+def set_spline_point(spline_points: bpy.types.SplineBezierPoints | bpy.types.SplinePoints, new_coord: List[float], index: int, curve_type: blender_definitions.BlenderCurveTypes):
+    if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
+        spline_points[index].co = new_coord
+        spline_points[index].handle_left = new_coord
+        spline_points[index].handle_right = new_coord
+        spline_points[index].handle_left_type = "FREE"
+        spline_points[index].handle_right_type = "FREE"
+    else:
+        x, y, z = new_coord
+        spline_points[index].co = (x, y, z, 1)
+
+
+def add_points_to_spline(
+    spline: bpy.types.Spline, points: List[List[float]], overwrite_first_point: bool = False
+) -> list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]:
+    added_points: List[bpy.types.SplinePoint |
+                       bpy.types.BezierSplinePoint] = []
+
+    spline_points = get_spline_points(spline)
+
+    if overwrite_first_point:
+        set_spline_point(
+            spline_points=spline_points,
+            new_coord=points[0],
+            index=0,
+            curve_type=blender_definitions.BlenderCurveTypes[spline.type]
+        )
+        points = points[1:]
+        added_points.append(spline_points[0])
+
+    last_spline_index = len(spline_points) - 1
+
+    for coord in points:
+        last_spline_index = last_spline_index + 1
+        new_point_index = last_spline_index
+
+        spline_points.add(1)
+
+        set_spline_point(
+            spline_points=spline_points,
+            new_coord=coord,
+            index=new_point_index,
+            curve_type=blender_definitions.BlenderCurveTypes[spline.type]
+        )
+
+        added_points.append(spline_points[new_point_index])
+
+    return added_points
+
+
+def add_points_to_curve(
+    reference_spline: bpy.types.Spline,
+    points: List[List[float]],
+) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
+    reference_first_point = get_spline_points(reference_spline)[0]
+    reference_last_point = get_spline_points(reference_spline)[-1]
+
+    points_first_point = mathutils.Vector(points[0])
+    points_last_point = mathutils.Vector(points[-1])
+
+    first_point_touching_spline_start = points_touching(
+        points_first_point, reference_first_point.co
     )
+    last_point_touching_spline_start = points_touching(
+        points_last_point, reference_first_point.co)
+    first_point_touching_spline_end = points_touching(
+        points_first_point, reference_last_point.co
+    )
+    last_point_touching_spline_end = points_touching(
+        points_last_point, reference_last_point.co)
+
+    spline_to_add_points_to = reference_spline
+
+    added_points = []
+
+    overwrite_first_point = False
+
+    if not (first_point_touching_spline_start or last_point_touching_spline_start or first_point_touching_spline_end or last_point_touching_spline_end):
+        # Create a new spline
+        spline_to_add_points_to = clone_spline(reference_spline)
+        overwrite_first_point = True
+    else:
+        if first_point_touching_spline_start or first_point_touching_spline_end:
+            points = points[1:]
+            added_points.append(reference_first_point)
+        if last_point_touching_spline_start or last_point_touching_spline_end:
+            points = points[:-1]
+            added_points.append(reference_last_point)
+
+    added_points = added_points + \
+        add_points_to_spline(spline_to_add_points_to,
+                             points, overwrite_first_point=overwrite_first_point)
+
+    if first_point_touching_spline_start or last_point_touching_spline_start:
+        spline_to_add_points_to.use_cyclic_u = True
+
+    return spline_to_add_points_to, added_points
 
 
 def add_bevel_object_to_curve(
@@ -649,7 +782,8 @@ class BlenderCurvePrimitives:
         )
 
         radiusDiff = (
-            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
+            0 if radius_endMeters is None else (
+                radius_endMeters - radiusMeters).value
         )
 
         curve_type: blender_definitions.BlenderCurveTypes = (
