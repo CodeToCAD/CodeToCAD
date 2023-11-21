@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Tuple
 from codetocad.core.dimension import Dimension
 
 
@@ -16,8 +16,11 @@ class Point:
     def to_list(self):
         return [self.x, self.y, self.z]
 
+    def to_tuple(self) -> Tuple[Dimension, Dimension, Dimension]:
+        return (self.x, self.y, self.z)
+
     @staticmethod
-    def from_list(point_list: list[Dimension]) -> "Point":
+    def from_list(point_list: List[Dimension]) -> "Point":
         assert len(point_list) == 3, "Point list must contain three Dimensions."
         return Point(point_list[0], point_list[1], point_list[2])
 
