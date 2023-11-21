@@ -139,20 +139,30 @@ class Sketch(Entity, SketchInterface):
         points: list[PointOrListOfFloatOrItsStringValue],
         interpolation: "int" = 64,
     ):
-        blender_actions.create_curve(
+        parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
+
+        is_closed = False
+        if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
+            is_closed = True
+            parsed_points = parsed_points[:-1]
+
+        blender_spline, added_points = blender_actions.create_curve(
             self.name,
             blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
-            points,
+            parsed_points,
             interpolation,
             is_3d=True,
         )
 
+        if is_closed:
+            blender_spline.use_cyclic_u = True
+
         return self
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        blender_spline = blender_actions.create_curve(
+        blender_spline, added_points = blender_actions.create_curve(
             curve_name=self.name,
             curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
                 self.curve_type
