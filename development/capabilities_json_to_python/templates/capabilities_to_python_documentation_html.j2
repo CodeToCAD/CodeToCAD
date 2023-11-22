@@ -127,20 +127,18 @@
 </head>
 
 <body>
+{%- from 'generate_method.j2' import known_method_names_to_skip -%}
     {# MARK: Methods Chips View macros #}
 
     {% macro methodsChipsView(className, methods) -%}
 
     {% for method_name, properties in methods.items() %}
-    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
-    {%- if method_name == "information" %}
+    {%- if method_name in known_method_names_to_skip %}
     {# Do nothing #}
-    {%- elif method_name == "implements"-%}
-    {# Do nothing #}
-    {%- elif method_name == "constructor"%}
 
     {%- else %}
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
     <a href=#{{className}}_{{method_name}} class="chip">{{method_name}}()</a>
 
@@ -155,15 +153,11 @@
     {% macro methodsParametersView(className, methods) -%}
 
     {% for method_name, properties in methods.items() %}
-    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
-
-    {%- if method_name == "information" %}
+    {%- if method_name in known_method_names_to_skip %}
     {# Do nothing #}
-    {%- elif method_name == "implements"-%}
-    {# Do nothing #}
-    {%- elif method_name == "constructor"%}
 
     {%- else %}
+    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
 
     {{className}}::<span class="subHeading" id={{className}}_{{method_name}}>{{method_name}}({{ parameters.keys()|join(',
         ') if "parameters" in properties}})</span>
