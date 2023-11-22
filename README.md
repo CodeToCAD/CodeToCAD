@@ -1,8 +1,26 @@
-# CodeToCAD - Code-based modeling automation
+# CodeToCAD - One language for all your CAD needs.
 
-CodeToCAD brings intuitive and reliable code-based automation to your favorite 3D modeling software (e.g. Blender and OnShape).
+Use one python script to interact with all these software:
 
-Unlike other code-based CAD (e.g. CADQuery and OpenSCAD), CodeToCAD interfaces directly with existing modeling software (like Blender and OnShape). Therefore, you can keep using the software you love, but leverage the power of code and automation in your work. You don't need to be a great programmer to use CodeToCAD - the [documentation](https://codetocad.github.io/CodeToCAD/docs.html) will help you get started.
+- [Blender](https://www.blender.org/)* - Digital Modeling Software
+- [Onshape](https://www.onshape.com/en/)** - Product Development and CAD Software
+- [PyBuller](https://pybullet.org/)*** - Real-time Physics Simulation Library
+- [KiCAD](https://www.kicad.org/)*** - Electronic/PCB Design Software
+- [FreeCAD](https://www.freecad.org/)*** - CAD Software
+- [ThreeJS](https://threejs.org/)*** - Web-based 3D Library
+- [Libfive](https://libfive.com/)*** Signed Distance Field Modeling library
+
+<sub>* Alpha/Beta support
+** Pre-alpha development.
+*** To be developed.</sub>
+
+CodeToCAD brings intuitive and reliable code-based modeling automation to your favorite 3D modeling software.
+
+[READ THE DOCS](https://codetocad.github.io/CodeToCAD/docs.html) will help you get started.
+
+## Mesh or B-Rep geometry?
+
+Neither! CodeToCAD uses common surface topologies to define shapes. There are case-specific methods that might only make sense to use if you're modeling in a mesh-based software. The outcome of your model depends on the software you're doing the modeling in.
 
 <div align="center">
 <image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/three_axis_mill.gif"/>
@@ -71,13 +89,12 @@ Future planned integrations (not in any order):
 
 - KiCAD
 - FreeCAD
-- Cascade Studio
-- CADQuery
 - ThreeJS
+- Libfive (SDF library)
 
 ## Warning
 
-- Since CodeToCad scripts are written in Python, be careful when running code you find on the Internet as it may have a malicious intent. If you are unsure about the code that you are running, consider reaching out to an online community like a Discord server or a forum.
+Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
 
 ## Benefits of code-based modeling with CodeToCAD:
 
