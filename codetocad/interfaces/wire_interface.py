@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import EdgeInterface
     from . import SketchInterface
+    from . import PartInterface
 
 
 class WireInterface(
@@ -35,7 +36,7 @@ class WireInterface(
 ):
     """A collection of connected edges."""
 
-    edges: "list[Edge]"
+    edges: "list[EdgeInterface]"
     parent_sketch: Optional[SketchOrItsName] = None
 
     @abstractmethod
@@ -63,4 +64,15 @@ class WireInterface(
         """
 
         print("is_closed is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+
+    @abstractmethod
+    def loft(
+        self, other: "WireInterface", new_part_name: Optional[str] = None
+    ) -> "PartInterface":
+        """
+        Create a surface between two Wires (Faces).
+        """
+
+        print("loft is called in an abstract method. Please override this method.")
         raise NotImplementedError()

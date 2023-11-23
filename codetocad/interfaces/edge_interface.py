@@ -37,8 +37,8 @@ class EdgeInterface(
 ):
     """A curve bounded by two Vertices."""
 
-    v1: "Vertex"
-    v2: "Vertex"
+    v1: "VertexInterface"
+    v2: "VertexInterface"
     parent_sketch: Optional[SketchOrItsName] = None
 
     @abstractmethod

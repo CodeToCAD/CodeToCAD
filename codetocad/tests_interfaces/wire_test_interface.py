@@ -30,3 +30,11 @@ class WireTestInterface(
         value = instance.is_closed("")
 
         assert value, "Get method failed."
+
+    @abstractmethod
+    def test_loft(self):
+        instance = Wire()
+
+        value = instance.loft("other", "new_part_name")
+
+        assert value, "Get method failed."

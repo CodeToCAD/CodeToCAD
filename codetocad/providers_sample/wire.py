@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import Edge
     from . import Sketch
+    from . import Part
 
 
 class Wire(Entity, WireInterface):
@@ -72,4 +73,7 @@ class Wire(Entity, WireInterface):
         self.native_instance = native_instance
 
     def is_closed(self) -> bool:
+        raise NotImplementedError()
+
+    def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
         raise NotImplementedError()

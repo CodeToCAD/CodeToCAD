@@ -216,14 +216,6 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_loft(self):
-        instance = Part()
-
-        value = instance.loft("landmark1", "landmark2")
-
-        assert value.is_exists(), "Create method failed."
-
-    @skip("TODO")
     def test_union(self):
         instance = Part()
 

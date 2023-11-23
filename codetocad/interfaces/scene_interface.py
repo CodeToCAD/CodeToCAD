@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import EntityInterface
+    from . import ExportableInterface
 
 
 class SceneInterface(metaclass=ABCMeta):
@@ -65,7 +66,7 @@ class SceneInterface(metaclass=ABCMeta):
     def export(
         self,
         file_path: str,
-        entities: list[EntityOrItsName],
+        entities: "list[string,ExportableInterface]",
         overwrite: bool = True,
         scale: float = 1.0,
     ):

@@ -242,7 +242,7 @@
 
             
     
-    <a href=#Part_implements class="chip">implements()</a><a href=#Part_create_cube class="chip">create_cube()</a><a href=#Part_create_cone class="chip">create_cone()</a><a href=#Part_create_cylinder class="chip">create_cylinder()</a><a href=#Part_create_torus class="chip">create_torus()</a><a href=#Part_create_sphere class="chip">create_sphere()</a><a href=#Part_create_gear class="chip">create_gear()</a><a href=#Part_clone class="chip">clone()</a><a href=#Part_loft class="chip">loft()</a><a href=#Part_union class="chip">union()</a><a href=#Part_subtract class="chip">subtract()</a><a href=#Part_intersect class="chip">intersect()</a><a href=#Part_hollow class="chip">hollow()</a><a href=#Part_thicken class="chip">thicken()</a><a href=#Part_hole class="chip">hole()</a><a href=#Part_twist class="chip">twist()</a><a href=#Part_set_material class="chip">set_material()</a><a href=#Part_is_colliding_with_part class="chip">is_colliding_with_part()</a><a href=#Part_fillet_all_edges class="chip">fillet_all_edges()</a><a href=#Part_fillet_edges class="chip">fillet_edges()</a><a href=#Part_fillet_faces class="chip">fillet_faces()</a><a href=#Part_chamfer_all_edges class="chip">chamfer_all_edges()</a><a href=#Part_chamfer_edges class="chip">chamfer_edges()</a><a href=#Part_chamfer_faces class="chip">chamfer_faces()</a><a href=#Part_select_vertex_near_landmark class="chip">select_vertex_near_landmark()</a><a href=#Part_select_edge_near_landmark class="chip">select_edge_near_landmark()</a><a href=#Part_select_face_near_landmark class="chip">select_face_near_landmark()</a>
+    <a href=#Part_implements class="chip">implements()</a><a href=#Part_create_cube class="chip">create_cube()</a><a href=#Part_create_cone class="chip">create_cone()</a><a href=#Part_create_cylinder class="chip">create_cylinder()</a><a href=#Part_create_torus class="chip">create_torus()</a><a href=#Part_create_sphere class="chip">create_sphere()</a><a href=#Part_create_gear class="chip">create_gear()</a><a href=#Part_clone class="chip">clone()</a><a href=#Part_union class="chip">union()</a><a href=#Part_subtract class="chip">subtract()</a><a href=#Part_intersect class="chip">intersect()</a><a href=#Part_hollow class="chip">hollow()</a><a href=#Part_thicken class="chip">thicken()</a><a href=#Part_hole class="chip">hole()</a><a href=#Part_twist class="chip">twist()</a><a href=#Part_set_material class="chip">set_material()</a><a href=#Part_is_colliding_with_part class="chip">is_colliding_with_part()</a><a href=#Part_fillet_all_edges class="chip">fillet_all_edges()</a><a href=#Part_fillet_edges class="chip">fillet_edges()</a><a href=#Part_fillet_faces class="chip">fillet_faces()</a><a href=#Part_chamfer_all_edges class="chip">chamfer_all_edges()</a><a href=#Part_chamfer_edges class="chip">chamfer_edges()</a><a href=#Part_chamfer_faces class="chip">chamfer_faces()</a><a href=#Part_select_vertex_near_landmark class="chip">select_vertex_near_landmark()</a><a href=#Part_select_edge_near_landmark class="chip">select_edge_near_landmark()</a><a href=#Part_select_face_near_landmark class="chip">select_face_near_landmark()</a>
 
 
 
@@ -296,7 +296,7 @@
 
             
     
-    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_is_closed class="chip">is_closed()</a>
+    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_is_closed class="chip">is_closed()</a><a href=#Wire_loft class="chip">loft()</a>
 
 
 
@@ -1433,37 +1433,6 @@
             
             <div><span class="subSubHeading">Type:</span> boolean</div>
             <div><span class="subSubHeading">Default Value:</span> True</div>
-            
-        </div>
-    </div>
-
-
-    Part::<span class="subHeading" id=Part_loft>loft(landmark1,
-        landmark2)</span>
-
-    <div class="methods">Interpolate between two existing parts.</div>
-    
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">landmark1</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> Landmark</div>
-            
-            
-        </div>
-    </div>
-
-
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">landmark2</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> Landmark</div>
-            
             
         </div>
     </div>
@@ -4291,6 +4260,37 @@
 
     <div class="methods">A closed wire is a Face.</div>
     <div><span class="subSubHeading">returnType:</span> boolean</div>
+    Wire::<span class="subHeading" id=Wire_loft>loft(other,
+        new_part_name)</span>
+
+    <div class="methods">Create a surface between two Wires (Faces).</div>
+    <div><span class="subSubHeading">returnType:</span> Part</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">other</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> The other wire/face to loft to.</div>
+            <div><span class="subSubHeading">Type:</span> Wire</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">new_part_name</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> If provided, the resulting part will not be merged with the parent of this wire/face.</div>
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
     
 
                 </div>
@@ -5653,7 +5653,7 @@
         <div class="method_name grid-item">entities</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> list[string,Entity]</div>
+            <div><span class="subSubHeading">Type:</span> list[string,Exportable]</div>
             
             
         </div>

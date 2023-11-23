@@ -617,18 +617,6 @@
                     }
                 }
             },
-            "loft": {
-                "action": "create",
-                "information": "Interpolate between two existing parts.",
-                "parameters": {
-                    "landmark1": {
-                        "type": "Landmark"
-                    },
-                    "landmark2": {
-                        "type": "Landmark"
-                    }
-                }
-            },
             "union": {
                 "action": "modify",
                 "information": "Boolean union",
@@ -1350,6 +1338,22 @@
                 "information": "A closed wire is a Face.",
                 "action": "get",
                 "returnType": "boolean"
+            },
+            "loft": {
+                "action": "get",
+                "returnType": "Part",
+                "information": "Create a surface between two Wires (Faces).",
+                "parameters": {
+                    "other": {
+                        "type": "Wire",
+                        "information": "The other wire/face to loft to."
+                    },
+                    "new_part_name": {
+                        "type": "string",
+                        "required": false,
+                        "information": "If provided, the resulting part will not be merged with the parent of this wire/face."
+                    }
+                }
             }
         },
         "Landmark": {
@@ -1947,7 +1951,7 @@
                         "type": "string"
                     },
                     "entities": {
-                        "type": "list[string,Entity]"
+                        "type": "list[string,Exportable]"
                     },
                     "overwrite": {
                         "type": "boolean",
