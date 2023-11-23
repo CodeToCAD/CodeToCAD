@@ -8,6 +8,7 @@ from typing import Optional
 from codetocad.interfaces import WireInterface
 
 from codetocad.codetocad_types import *
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
@@ -20,6 +21,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import Edge
     from . import Sketch
+    from . import Part
 
 
 class Wire(Entity, WireInterface):
@@ -48,7 +50,7 @@ class Wire(Entity, WireInterface):
     ):
         return self
 
-    def project(self, project_onto: "Sketch") -> "Projectable":
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
         raise NotImplementedError()
 
     edges: "list[Edge]"
@@ -72,4 +74,7 @@ class Wire(Entity, WireInterface):
         self.native_instance = native_instance
 
     def is_closed(self) -> bool:
+        raise NotImplementedError()
+
+    def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
         raise NotImplementedError()

@@ -138,7 +138,7 @@ class Sketch(Entity, SketchInterface):
         self,
         points: list[PointOrListOfFloatOrItsStringValue],
         interpolation: "int" = 64,
-    ):
+    ) -> "Wire":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
 
         is_closed = False
@@ -159,7 +159,9 @@ class Sketch(Entity, SketchInterface):
         if is_closed:
             blender_spline.use_cyclic_u = True
 
-        return self
+        return blender_actions.get_wire_from_blender_wire(
+            entity=self.get_native_instance().data, wire=blender_spline
+        )
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         blender_spline, added_points = blender_actions.create_curve(
@@ -237,7 +239,21 @@ class Sketch(Entity, SketchInterface):
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        half_length = (
+            Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
+        )
+        half_width = (
+            Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
+        )
+
+        left_top = Point(half_length * -1, half_width, Dimension(0))
+        left_bottom = Point(half_length * -1, half_width * -1, Dimension(0))
+        right_bottom = Point(half_length, half_width * -1, Dimension(0))
+        right_top = Point(half_length, half_width, Dimension(0))
+
+        return self.create_from_vertices(
+            [left_top, left_bottom, right_bottom, right_top, left_top]
+        )
 
     def create_polygon(
         self,

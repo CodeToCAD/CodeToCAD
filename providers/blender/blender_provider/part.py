@@ -153,10 +153,6 @@ class Part(Entity, PartInterface):
 
         return Part(new_name, self.description)
 
-    def loft(self, landmark1: "LandmarkInterface", landmark2: "LandmarkInterface"):
-        raise NotImplementedError()
-        return self
-
     def union(
         self,
         with_part: PartOrItsName,

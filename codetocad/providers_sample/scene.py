@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Entity
+    from . import Exportable
 
 
 class Scene(SceneInterface):
@@ -43,7 +44,7 @@ class Scene(SceneInterface):
     def export(
         self,
         file_path: str,
-        entities: list[EntityOrItsName],
+        entities: "list[string,Exportable]",
         overwrite: bool = True,
         scale: float = 1.0,
     ):

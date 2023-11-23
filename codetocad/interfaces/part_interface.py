@@ -157,15 +157,6 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def loft(self, landmark1: "LandmarkInterface", landmark2: "LandmarkInterface"):
-        """
-        Interpolate between two existing parts.
-        """
-
-        print("loft is called in an abstract method. Please override this method.")
-        return self
-
-    @abstractmethod
     def union(
         self,
         with_part: PartOrItsName,

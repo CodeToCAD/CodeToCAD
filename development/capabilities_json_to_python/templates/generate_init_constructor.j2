@@ -1,11 +1,11 @@
-{%- from 'capabilities_to_py_utilities.j2' import type_mapping, type_mapping_with_class_name_suffix, generate_method_arguments -%}
+{%- from 'capabilities_to_py_utilities.j2' import  type_mapping_with_class_name_suffix, generate_method_arguments -%}
 
 {%- macro generate_init_constructor(parameters, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names, methods, all_classes) -%}
 
     {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
     {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
     {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
-    {{ parameter }} {{-":" + ("Optional["+type_mapping(definition.type)+"]" if definition.required == False else type_mapping(definition.type)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
+    {{ parameter }} {{-":" + ("Optional["+type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)+"]" if definition.required == False else type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
     {%-endfor%}
 
     {%-set init_parameters = parameters-%}

@@ -102,14 +102,6 @@ class PartTestInterface(
         assert value, "Get method failed."
 
     @abstractmethod
-    def test_loft(self):
-        instance = Part()
-
-        value = instance.loft("landmark1", "landmark2")
-
-        assert value.is_exists(), "Create method failed."
-
-    @abstractmethod
     def test_union(self):
         instance = Part()
 

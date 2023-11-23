@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Edge
+    from . import Part
 
 
 class Wire(Entity, WireInterface):
@@ -71,3 +72,6 @@ class Wire(Entity, WireInterface):
     ):
         raise NotImplementedError()
         return self
+
+    def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
+        raise NotImplementedError()

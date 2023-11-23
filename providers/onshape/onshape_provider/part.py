@@ -155,9 +155,6 @@ class Part(Entity, PartInterface):
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
         raise NotImplementedError()
 
-    def loft(self, landmark1: "Landmark", landmark2: "Landmark"):
-        return self
-
     def union(
         self,
         with_part: PartOrItsName,
