@@ -1,0 +1,51 @@
+# Development & Contributing
+
+## Setting up development environment.
+
+1. Please install the VSCode python virtual environment using
+   `sh development/create_python_virtual_environment.sh`
+   or
+   `sh development/create_python_virtual_environment.sh /path/to/python_binary`.
+
+> If you are on Windows, please use Git Bash.
+> Note: Python 3.10+ is required.
+> Note 2: It might be a good idea to restart VSCode after installing the virtual environment.
+> Note 3: If VSCode prompts you, please use the interpreter under `development/developmentVirtualEnvironment`.
+
+2. It's good practice to run tests and linting before committing. Please run `sh ./development/install_git_hooks.sh` to instll Git Hooks.
+
+3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
+
+4. Install the Blender Addon at [providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+
+## Running Scripts
+
+Run scripts using `sh development/{script_name}.sh`.
+
+The following are the available scripts:
+
+- [run_tests.sh](./run_tests.sh) - Executes tests using pyunittest.
+- [run_lint.sh](./run_lint.sh) - Uses Flake8 to generate a lint report of the project
+- [create_blender_addon.sh](./create_blender_addon.sh) - Generates the BlenderAddon zip file
+- [create_python_virtual_environment.sh](./create_python_virtual_environment.sh) - Creates a pyenv on your local machine and installs development related packages.
+- [package_and_upload.sh](./package_and_upload.sh) - Builds a python package and uploads it to pypi using twine. You will need a `.pypirc` file in the root directory for this to work.
+
+## Capabilities.json and Jinja2 templates
+
+[CodeToCAD/capabilities.json](./CodeToCAD/capabilities.json) is a schema used to generate the [CodeToCAD interfaces](./CodeToCAD/interfaces/).
+
+Jinja2 templates are used to turn capabilities.json into an interface, as well as templates for CodeToCAD Providers and Tests.
+
+You can generate the Jinja2 templates by running the "Capabilities.json to Python" task in VSCode, or `sh development/capabilities_json_to_python/capabilities_to_py.sh`
+
+## Architecture
+
+CodeToCAD is an automation. Here is the high-level architecture for this tool.
+
+![Architecture](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/CodeToCAD%20architecture%20overview.drawio.png)
+
+## Contributing
+
+If you would like to contribute to the project, please feel free to submit a PR.
+
+Please join the Discord Server if you have any questions or suggestions: [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)

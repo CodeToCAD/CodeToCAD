@@ -1,6 +1,9 @@
 autopep8
 flake8
 
+wheel
+twine
+
 jinja2-cli
 
 # Blender Development Dependencies:
