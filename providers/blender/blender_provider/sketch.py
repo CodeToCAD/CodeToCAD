@@ -30,7 +30,8 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists(
+        ) is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -139,7 +140,8 @@ class Sketch(Entity, SketchInterface):
         points: list[PointOrListOfFloatOrItsStringValue],
         interpolation: "int" = 64,
     ) -> "Wire":
-        parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
+        parsed_points = [Point.from_list_of_float_or_string(
+            point) for point in points]
 
         is_closed = False
         if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
@@ -148,7 +150,8 @@ class Sketch(Entity, SketchInterface):
 
         blender_spline, added_points = blender_actions.create_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(
+                self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             parsed_points,
@@ -240,10 +243,12 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         half_length = (
-            Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
+            Dimension.from_dimension_or_its_float_or_string_value(
+                length, None) / 2
         )
         half_width = (
-            Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
+            Dimension.from_dimension_or_its_float_or_string_value(
+                width, None) / 2
         )
 
         left_top = Point(half_length * -1, half_width, Dimension(0))
@@ -308,7 +313,8 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        implementables.linear_pattern(self, instance_count, offset, direction_axis)
+        implementables.linear_pattern(
+            self, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(

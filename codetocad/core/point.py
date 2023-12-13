@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Tuple
 from codetocad.core.dimension import Dimension
+from codetocad.enums.length_unit import LengthUnit
 
 
 if TYPE_CHECKING:
@@ -19,6 +20,13 @@ class Point:
     def to_tuple(self) -> Tuple[Dimension, Dimension, Dimension]:
         return (self.x, self.y, self.z)
 
+    def to_tuple_float(self, convert_to_unit: LengthUnit) -> Tuple[float, float, float]:
+        return (
+            self.x.convert_to_unit(convert_to_unit).value,
+            self.y.convert_to_unit(convert_to_unit).value,
+            self.z.convert_to_unit(convert_to_unit).value,
+        )
+
     @staticmethod
     def from_list(point_list: List[Dimension]) -> "Point":
         assert len(point_list) == 3, "Point list must contain three Dimensions."
@@ -33,7 +41,8 @@ class Point:
                 len(point_representation) == 3
             ), "Point list must contain three Dimensions."
             points = [
-                Dimension.from_dimension_or_its_float_or_string_value(point, None)
+                Dimension.from_dimension_or_its_float_or_string_value(
+                    point, None)
                 for point in point_representation
             ]
             return Point(points[0], points[1], points[2])
@@ -45,7 +54,8 @@ class Point:
         elif isinstance(point_representation, Point):
             return point_representation
 
-        raise ValueError(f"Cannot convert type {type(point_representation)} to Point.")
+        raise ValueError(
+            f"Cannot convert type {type(point_representation)} to Point.")
 
     def arithmetic_precheck_and_unit_conversion(self, other) -> "Point":
         assert other is not None, "Right-hand value cannot be None."

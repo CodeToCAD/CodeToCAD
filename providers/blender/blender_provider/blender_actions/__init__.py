@@ -20,3 +20,4 @@ from .material import *
 from .mesh import *
 from .modifiers import *
 from .render import *
+from .vertex_edge_wire import *

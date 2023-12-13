@@ -1342,7 +1342,7 @@
             "loft": {
                 "action": "get",
                 "returnType": "Part",
-                "information": "Create a surface between two Wires (Faces).",
+                "information": "Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.",
                 "parameters": {
                     "other": {
                         "type": "Wire",
