@@ -296,9 +296,6 @@ def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
                 curve=curve, reference_spline_index=reference_spline_index
             )
 
-        if first_point_touching_spline_start or last_point_touching_spline_start:
-            spline.use_cyclic_u = True
-
     merge_touching_splines(
         curve=curve, reference_spline_index=reference_spline_index + 1
     )
@@ -410,6 +407,8 @@ def add_points_to_curve(
         spline_to_add_points_to = clone_spline(reference_spline)
         overwrite_first_point = True
     else:
+        if first_point_touching_spline_start or last_point_touching_spline_start:
+            spline_to_add_points_to.use_cyclic_u = True
         if first_point_touching_spline_start or first_point_touching_spline_end:
             points = points[1:]
             added_points.append(reference_first_point)
