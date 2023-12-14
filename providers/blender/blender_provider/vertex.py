@@ -6,17 +6,22 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.blender.blender_provider import blender_actions
 
 
 from . import Entity
 
 
 class Vertex(Entity, VertexInterface):
-    location: PointOrListOfFloatOrItsStringValue
     parent_sketch: Optional[SketchOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
+
+    @property
+    def location(self) -> PointOrListOfFloatOrItsStringValue:
+        return blender_actions.get_vertex_location_from_blender_point(
+            self.native_instance)
 
     def __init__(
         self,
@@ -26,7 +31,7 @@ class Vertex(Entity, VertexInterface):
         description: Optional[str] = None,
         native_instance=None,
     ):
-        self.location = location
+        # self.location = location
         self.parent_sketch = parent_sketch
         self.name = name
         self.description = description

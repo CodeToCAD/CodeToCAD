@@ -12,12 +12,11 @@ if TYPE_CHECKING:
     from .. import Vertex, Edge, Wire
 
 
-def get_vertex_from_blender_point(
+def get_vertex_location_from_blender_point(
     spline_point: Union[
         bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex
     ]
-) -> "Vertex":
-    from .. import Vertex
+) -> "Point":
 
     point = spline_point.co
 
@@ -28,8 +27,18 @@ def get_vertex_from_blender_point(
         for p in point
     ]
 
+    return Point.from_list(point_dimension)
+
+
+def get_vertex_from_blender_point(
+    spline_point: Union[
+        bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex
+    ]
+) -> "Vertex":
+    from .. import Vertex
+
     return Vertex(
-        location=Point.from_list(point_dimension),
+        location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
         native_instance=spline_point,
     )

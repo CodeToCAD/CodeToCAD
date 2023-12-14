@@ -440,8 +440,6 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     wire_2_world_matrix = mathutils.Matrix() if wire_2.parent_sketch is None else get_object(
         wire_2.parent_sketch.name if not isinstance(wire_2.parent_sketch, str) else wire_2.parent_sketch).matrix_world
 
-    print("wire2", wire_2_world_matrix)
-
     spline_1_vertices: List[Tuple[float, float, float]] = []
     for edge in wire_1.edges:
         v1 = edge.v1.location.to_tuple_float(
@@ -458,10 +456,10 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
             blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
         v2 = edge.v2.location.to_tuple_float(
             blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
-        print("wire2 v1, v2", v1, v2)
+
         v1 = wire_2_world_matrix @ mathutils.Vector(v1)
         v2 = wire_2_world_matrix @ mathutils.Vector(v2)
-        print("wire2 v1, v2 transformed", v1, v2)
+
         spline_2_vertices.append(v1.to_tuple())
         spline_2_vertices.append(v2.to_tuple())
 
