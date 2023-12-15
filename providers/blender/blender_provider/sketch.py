@@ -1,8 +1,7 @@
+import math
 from typing import Optional
 
-
 from . import blender_actions, blender_definitions, implementables
-
 
 from codetocad.interfaces import SketchInterface, PartInterface, VertexInterface
 from codetocad.codetocad_types import *
@@ -30,8 +29,7 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        assert Entity(new_name).is_exists(
-        ) is False, f"{new_name} already exists."
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
         blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
 
@@ -82,7 +80,7 @@ class Sketch(Entity, SketchInterface):
         return Part(self.name, self.description).apply()
 
     def sweep(
-        self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
+        self, profile_name_or_instance: EntityOrItsName, fill_cap: bool = True
     ) -> "PartInterface":
         profile_curve_name = profile_name_or_instance
         if isinstance(profile_curve_name, SketchInterface):
@@ -139,9 +137,9 @@ class Sketch(Entity, SketchInterface):
         self,
         points: list[PointOrListOfFloatOrItsStringValue],
         interpolation: "int" = 64,
+        order_u: int = 2,
     ) -> "Wire":
-        parsed_points = [Point.from_list_of_float_or_string(
-            point) for point in points]
+        parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
 
         is_closed = False
         if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
@@ -150,13 +148,13 @@ class Sketch(Entity, SketchInterface):
 
         blender_spline, added_points = blender_actions.create_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type)
+            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             parsed_points,
             interpolation,
             is_3d=False,
+            order_u=order_u,
         )
 
         if is_closed:
@@ -180,7 +178,7 @@ class Sketch(Entity, SketchInterface):
         return Vertex(
             location=point,
             name=create_uuid_like_id(),
-            parent_sketch=self,
+            parent_entity=self,
             native_instance=blender_spline,
         )
 
@@ -220,7 +218,66 @@ class Sketch(Entity, SketchInterface):
         return edge
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
-        raise NotImplementedError()
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
+
+        points = []
+
+        num_verts = 4 if self.curve_type == CurveTypes.BEZIER else 64
+
+        # Add vertices to form a circle
+        for index in range(num_verts):
+            theta = (2 * math.pi * index) / num_verts
+            x = radius * math.cos(theta)
+            y = radius * math.sin(theta)
+            z = Dimension.zero()
+
+            points.append((x, y, z))
+
+        # Add the first point to the end to close the shape
+        points.append(points[0])
+
+        wire = self.create_from_vertices(
+            [Point.from_list_of_float_or_string(point) for point in points], order_u=4
+        )
+
+        # References Blender Addon: add_curve_extra_objects/add_curve_simple.py
+        all_vertices = wire.get_vertices()
+
+        index = 1
+        import mathutils
+
+        for p1 in all_vertices:
+            p1x: float = p1.location.x.value
+            p1y: float = p1.location.y.value
+            if index >= num_verts:
+                index = 0
+            p2 = all_vertices[index]
+            p2x: float = p2.location.x.value
+            p2y: float = p2.location.y.value
+            u1 = math.asin(p1y / radius.value)
+            u2 = math.asin(p2y / radius.value)
+            if (p1x > 0 and p2x < 0) or (p1x < 0 and p2x > 0):
+                u1 = math.acos(p1x / radius.value)
+                u2 = math.acos(p2x / radius.value)
+            u = u2 - u1
+            if u < 0:
+                u = -u
+
+            v1 = mathutils.Vector((p1y * -1, p1x, 0))
+            v2 = mathutils.Vector((p2y * -1, p2x, 0))
+            v1.normalize()
+            v2.normalize()
+            left = (4 / 3 * math.tan(1 / 4 * u)) * radius.value
+            p1.get_native_instance().handle_right = (
+                mathutils.Vector((p1x, p1y, 0)) + v1 * left
+            )
+            p2.get_native_instance().handle_left = (
+                mathutils.Vector((p2x, p2y, 0)) - v2 * left
+            )
+
+            index += 1
+
+        return wire
 
     def create_ellipse(
         self,
@@ -243,12 +300,10 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         half_length = (
-            Dimension.from_dimension_or_its_float_or_string_value(
-                length, None) / 2
+            Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
         )
         half_width = (
-            Dimension.from_dimension_or_its_float_or_string_value(
-                width, None) / 2
+            Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
         )
 
         left_top = Point(half_length * -1, half_width, Dimension(0))
@@ -313,8 +368,7 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        implementables.linear_pattern(
-            self, instance_count, offset, direction_axis)
+        implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
