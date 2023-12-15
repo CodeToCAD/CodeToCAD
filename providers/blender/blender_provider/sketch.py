@@ -1,5 +1,6 @@
 import math
-from typing import Optional
+from typing import List, Optional
+
 
 from . import blender_actions, blender_definitions, implementables
 
@@ -9,6 +10,8 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
+from codetocad.core.shapes.ellipse import calculate_ellipse_points
+
 
 from . import Entity, Part, Vertex, Wire, Edge
 
@@ -17,6 +20,9 @@ class Sketch(Entity, SketchInterface):
     name: str
     curve_type: Optional[CurveTypes] = None
     description: Optional[str] = None
+
+    # resolution = 4 if self.curve_type == CurveTypes.BEZIER else 64
+    resolution = 64
 
     def __init__(
         self,
@@ -217,16 +223,59 @@ class Sketch(Entity, SketchInterface):
 
         return edge
 
+    @staticmethod
+    def _set_bezier_circular_handlers(
+        wire: Wire, radius_x: Dimension, radius_y: Optional[Dimension] = None
+    ):
+        if not radius_y:
+            radius_y = radius_x
+
+        all_vertices = wire.get_vertices()
+        num_verts = len(all_vertices)
+
+        index = 1
+        import mathutils
+
+        for p1 in all_vertices:
+            # References Blender Addon: add_curve_extra_objects/add_curve_simple.py
+            p1x: float = p1.location.x.value
+            p1y: float = p1.location.y.value
+            if index >= num_verts:
+                index = 0
+            p2 = all_vertices[index]
+            p2x: float = p2.location.x.value
+            p2y: float = p2.location.y.value
+            u1 = math.asin(p1y / radius_y.value)
+            u2 = math.asin(p2y / radius_y.value)
+            if (p1x > 0 and p2x < 0) or (p1x < 0 and p2x > 0):
+                u1 = math.acos(p1x / radius_x.value)
+                u2 = math.acos(p2x / radius_x.value)
+            u = u2 - u1
+            if u < 0:
+                u = -u
+
+            v1 = mathutils.Vector((p1y * -1, p1x, 0))
+            v2 = mathutils.Vector((p2y * -1, p2x, 0))
+            v1.normalize()
+            v2.normalize()
+            left = (4 / 3 * math.tan(1 / 4 * u)) * radius_y.value
+            p1.get_native_instance().handle_right = (
+                mathutils.Vector((p1x, p1y, 0)) + v1 * left
+            )
+            p2.get_native_instance().handle_left = (
+                mathutils.Vector((p2x, p2y, 0)) - v2 * left
+            )
+
+            index += 1
+
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
 
         points = []
 
-        num_verts = 4 if self.curve_type == CurveTypes.BEZIER else 64
-
         # Add vertices to form a circle
-        for index in range(num_verts):
-            theta = (2 * math.pi * index) / num_verts
+        for index in range(self.resolution):
+            theta = (2 * math.pi * index) / self.resolution
             x = radius * math.cos(theta)
             y = radius * math.sin(theta)
             z = Dimension.zero()
@@ -240,42 +289,7 @@ class Sketch(Entity, SketchInterface):
             [Point.from_list_of_float_or_string(point) for point in points], order_u=4
         )
 
-        # References Blender Addon: add_curve_extra_objects/add_curve_simple.py
-        all_vertices = wire.get_vertices()
-
-        index = 1
-        import mathutils
-
-        for p1 in all_vertices:
-            p1x: float = p1.location.x.value
-            p1y: float = p1.location.y.value
-            if index >= num_verts:
-                index = 0
-            p2 = all_vertices[index]
-            p2x: float = p2.location.x.value
-            p2y: float = p2.location.y.value
-            u1 = math.asin(p1y / radius.value)
-            u2 = math.asin(p2y / radius.value)
-            if (p1x > 0 and p2x < 0) or (p1x < 0 and p2x > 0):
-                u1 = math.acos(p1x / radius.value)
-                u2 = math.acos(p2x / radius.value)
-            u = u2 - u1
-            if u < 0:
-                u = -u
-
-            v1 = mathutils.Vector((p1y * -1, p1x, 0))
-            v2 = mathutils.Vector((p2y * -1, p2x, 0))
-            v1.normalize()
-            v2.normalize()
-            left = (4 / 3 * math.tan(1 / 4 * u)) * radius.value
-            p1.get_native_instance().handle_right = (
-                mathutils.Vector((p1x, p1y, 0)) + v1 * left
-            )
-            p2.get_native_instance().handle_left = (
-                mathutils.Vector((p2x, p2y, 0)) - v2 * left
-            )
-
-            index += 1
+        Sketch._set_bezier_circular_handlers(wire, radius)
 
         return wire
 
@@ -284,7 +298,22 @@ class Sketch(Entity, SketchInterface):
         radius_minor: DimensionOrItsFloatOrStringValue,
         radius_major: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
+            radius_minor
+        )
+        radius_major = Dimension.from_dimension_or_its_float_or_string_value(
+            radius_major
+        )
+
+        points = calculate_ellipse_points(radius_minor, radius_major, self.resolution)
+
+        points.append(points[0])
+
+        wire = self.create_from_vertices(
+            [Point.from_list_of_float_or_string(point) for point in points], order_u=4
+        )
+
+        Sketch._set_bezier_circular_handlers(wire, radius_minor, radius_major)
 
     def create_arc(
         self,
@@ -292,7 +321,28 @@ class Sketch(Entity, SketchInterface):
         center_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Wire":
-        raise NotImplementedError()
+        start_point: Point
+        center_point: Point
+        if isinstance(start_at, VertexInterface):
+            start_point = Point.from_list_of_float_or_string(start_at.location)
+        else:
+            start_point = Point.from_list_of_float_or_string(start_at)
+        if isinstance(center_at, VertexInterface):
+            center_point = Point.from_list_of_float_or_string(center_at.location)
+        else:
+            center_point = Point.from_list_of_float_or_string(center_at)
+
+        radius = (center_point - start_point).magnitude()
+
+        points = [start_point, center_point, end_at]
+
+        wire = self.create_from_vertices(
+            [Point.from_list_of_float_or_string(point) for point in points], order_u=4
+        )
+
+        Sketch._set_bezier_circular_handlers(wire, radius)
+
+        return wire
 
     def create_rectangle(
         self,
