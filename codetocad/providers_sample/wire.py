@@ -19,7 +19,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Edge
-    from . import Sketch
+    from . import Entity
+    from . import Vertex
     from . import Part
 
 
@@ -53,7 +54,7 @@ class Wire(Entity, WireInterface):
         raise NotImplementedError()
 
     edges: "list[Edge]"
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -62,15 +63,18 @@ class Wire(Entity, WireInterface):
         self,
         edges: "list[Edge]",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
         self.edges = edges
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    def get_vertices(self) -> "list[Vertex]":
+        raise NotImplementedError()
 
     def is_closed(self) -> bool:
         raise NotImplementedError()

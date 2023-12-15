@@ -17,32 +17,57 @@ from . import blender_definitions
 
 if TYPE_CHECKING:
     from . import Edge
+    from . import Vertex
     from . import Part
 
 
 class Wire(Entity, WireInterface):
     edges: "list[Edge]"
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
+
+    def get_native_instance(self) -> object:
+        return self.native_instance
 
     def __init__(
         self,
         edges: "list[Edge]",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
+        """
+        NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
+        """
+        assert (
+            parent_entity is not None and native_instance is not None
+        ), "Blender Provider's Wire requires a parent_entity and a native_instance"
+
         self.edges = edges
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
+    def get_vertices(self) -> list["Vertex"]:
+        if len(self.edges) == 0:
+            return []
+
+        all_vertices = [self.edges[0].v1, self.edges[0].v2]
+        for edge in self.edges[1:]:
+            all_vertices.append(edge.v2)
+
+        return all_vertices
+
     def is_closed(self) -> bool:
-        raise NotImplementedError()
+        if not self.native_instance:
+            raise Exception(
+                "Cannot find native wire instance, this may mean that this reference is stale or the object does not exist in Blender."
+            )
+        return blender_actions.is_spline_cyclical(self.native_instance)
 
     def mirror(
         self,
@@ -77,38 +102,46 @@ class Wire(Entity, WireInterface):
         return self
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
-
         blender_mesh = blender_actions.loft(self, other)
 
         from . import Part
+
         part = Part(blender_mesh.name)
 
         if new_part_name:
             part.rename(new_part_name)
         else:
-            if self.parent_sketch:
-                parent_name = self.parent_sketch.name if not isinstance(
-                    self.parent_sketch, str) else self.parent_sketch
+            if self.parent_entity:
+                parent_name = (
+                    self.parent_entity.name
+                    if not isinstance(self.parent_entity, str)
+                    else self.parent_entity
+                )
 
-                if type(blender_actions.get_object(parent_name)) == blender_definitions.BlenderTypes.MESH.value:
+                if (
+                    type(blender_actions.get_object(parent_name))
+                    == blender_definitions.BlenderTypes.MESH.value
+                ):
                     part.union(
-                        parent_name,
-                        delete_after_union=True,
-                        is_transfer_landmarks=True
+                        parent_name, delete_after_union=True, is_transfer_landmarks=True
                     )
                 else:
                     Entity(parent_name).delete()
 
                 part.rename(parent_name)
-            if other.parent_sketch:
-                parent_name = other.parent_sketch.name if not isinstance(
-                    other.parent_sketch, str) else other.parent_sketch
+            if other.parent_entity:
+                parent_name = (
+                    other.parent_entity.name
+                    if not isinstance(other.parent_entity, str)
+                    else other.parent_entity
+                )
 
-                if type(blender_actions.get_object(parent_name)) == blender_definitions.BlenderTypes.MESH.value:
+                if (
+                    type(blender_actions.get_object(parent_name))
+                    == blender_definitions.BlenderTypes.MESH.value
+                ):
                     part.union(
-                        parent_name,
-                        delete_after_union=True,
-                        is_transfer_landmarks=True
+                        parent_name, delete_after_union=True, is_transfer_landmarks=True
                     )
                 else:
                     Entity(parent_name).delete()

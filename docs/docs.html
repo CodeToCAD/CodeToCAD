@@ -296,7 +296,7 @@
 
             
     
-    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_is_closed class="chip">is_closed()</a><a href=#Wire_loft class="chip">loft()</a>
+    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_get_vertices class="chip">get_vertices()</a><a href=#Wire_is_closed class="chip">is_closed()</a><a href=#Wire_loft class="chip">loft()</a>
 
 
 
@@ -4028,7 +4028,7 @@
     
     
     Vertex::<span class="subHeading" id=Vertex_constructor>constructor(location,
-        parent_sketch)</span>
+        parent_entity)</span>
 
     
     
@@ -4037,8 +4037,8 @@
     <div class="methods grid-container-parameters">
         <div class="method_name grid-item">location</div>
         <div class="grid-item">
-            <div><span class="subSubHeading">Information:</span> Comma separated x,y,z location or [x,y,z] or Point</div>
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point</div>
+            <div><span class="subSubHeading">Information:</span> Point coordinates of a vertex.</div>
+            <div><span class="subSubHeading">Type:</span> Point</div>
             
             
         </div>
@@ -4048,10 +4048,10 @@
     
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">parent_sketch</div>
+        <div class="method_name grid-item">parent_entity</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,Sketch</div>
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
             
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
@@ -4061,7 +4061,7 @@
     Vertex::<span class="subHeading" id=Vertex_get_control_points>get_control_points(parameter)</span>
 
     <div class="methods">Get a vertex's curve control points. This may not be applicable in several situations.</div>
-    <div><span class="subSubHeading">returnType:</span> list[Entity]</div>
+    <div><span class="subSubHeading">returnType:</span> list[Vertex]</div>
     
 
     <div class="methods grid-container-parameters">
@@ -4095,7 +4095,7 @@
     
     Edge::<span class="subHeading" id=Edge_constructor>constructor(v1,
         v2,
-        parent_sketch)</span>
+        parent_entity)</span>
 
     
     
@@ -4128,10 +4128,10 @@
     
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">parent_sketch</div>
+        <div class="method_name grid-item">parent_entity</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,Sketch</div>
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
             
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
@@ -4226,7 +4226,7 @@
     
     
     Wire::<span class="subHeading" id=Wire_constructor>constructor(edges,
-        parent_sketch)</span>
+        parent_entity)</span>
 
     
     
@@ -4246,16 +4246,20 @@
     
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">parent_sketch</div>
+        <div class="method_name grid-item">parent_entity</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,Sketch</div>
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
             
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
     </div>
 
 
+    Wire::<span class="subHeading" id=Wire_get_vertices>get_vertices()</span>
+
+    <div class="methods">Collapse all edges' vertices into one list.</div>
+    <div><span class="subSubHeading">returnType:</span> list[Vertex]</div>
     Wire::<span class="subHeading" id=Wire_is_closed>is_closed()</span>
 
     <div class="methods">A closed wire is a Face.</div>
@@ -4263,7 +4267,7 @@
     Wire::<span class="subHeading" id=Wire_loft>loft(other,
         new_part_name)</span>
 
-    <div class="methods">Create a surface between two Wires (Faces).</div>
+    <div class="methods">Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.</div>
     <div><span class="subSubHeading">returnType:</span> Part</div>
     
 

@@ -19,23 +19,33 @@ if TYPE_CHECKING:
 class Edge(Entity, EdgeInterface):
     v1: "Vertex"
     v2: "Vertex"
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
+
+    def get_native_instance(self) -> object:
+        return self.native_instance
 
     def __init__(
         self,
         v1: "Vertex",
         v2: "Vertex",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
+        """
+        NOTE: Blender Provider's Edge requires a parent_entity and a native_instance
+        """
+        assert (
+            parent_entity is not None and native_instance is not None
+        ), "Blender Provider's Edge requires a parent_entity and a native_instance"
+
         self.v1 = v1
         self.v2 = v2
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance

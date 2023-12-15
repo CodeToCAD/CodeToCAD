@@ -1239,11 +1239,11 @@
             "constructor": {
                 "parameters": {
                     "location": {
-                        "information": "Comma separated x,y,z location or [x,y,z] or Point",
-                        "type": "string,list[string],Point"
+                        "information": "Point coordinates of a vertex.",
+                        "type": "Point"
                     },
-                    "parent_sketch": {
-                        "type": "string,Sketch",
+                    "parent_entity": {
+                        "type": "string,Entity",
                         "required": false
                     }
                 }
@@ -1251,7 +1251,7 @@
             "get_control_points": {
                 "information": "Get a vertex's curve control points. This may not be applicable in several situations.",
                 "action": "get",
-                "returnType": "list[Entity]",
+                "returnType": "list[Vertex]",
                 "staticMethod": false,
                 "parameters": {
                     "parameter": {
@@ -1275,8 +1275,8 @@
                     "v2": {
                         "type": "Vertex"
                     },
-                    "parent_sketch": {
-                        "type": "string,Sketch",
+                    "parent_entity": {
+                        "type": "string,Entity",
                         "required": false
                     }
                 }
@@ -1328,11 +1328,16 @@
                         "information": "A collection of edges",
                         "type": "list[Edge]"
                     },
-                    "parent_sketch": {
-                        "type": "string,Sketch",
+                    "parent_entity": {
+                        "type": "string,Entity",
                         "required": false
                     }
                 }
+            },
+            "get_vertices": {
+                "information": "Collapse all edges' vertices into one list.",
+                "action": "get",
+                "returnType": "list[Vertex]"
             },
             "is_closed": {
                 "information": "A closed wire is a Face.",

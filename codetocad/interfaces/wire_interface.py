@@ -23,7 +23,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import EdgeInterface
-    from . import SketchInterface
+    from . import EntityInterface
+    from . import VertexInterface
     from . import PartInterface
 
 
@@ -37,14 +38,14 @@ class WireInterface(
     """A collection of connected edges."""
 
     edges: "list[EdgeInterface]"
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
 
     @abstractmethod
     def __init__(
         self,
         edges: "list[EdgeInterface]",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
@@ -52,10 +53,21 @@ class WireInterface(
             name=name, description=description, native_instance=native_instance
         )
         self.edges = edges
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    @abstractmethod
+    def get_vertices(self) -> "list[VertexInterface]":
+        """
+        Collapse all edges' vertices into one list.
+        """
+
+        print(
+            "get_vertices is called in an abstract method. Please override this method."
+        )
+        raise NotImplementedError()
 
     @abstractmethod
     def is_closed(self) -> bool:
@@ -71,7 +83,7 @@ class WireInterface(
         self, other: "WireInterface", new_part_name: Optional[str] = None
     ) -> "PartInterface":
         """
-        Create a surface between two Wires (Faces).
+        Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.
         """
 
         print("loft is called in an abstract method. Please override this method.")

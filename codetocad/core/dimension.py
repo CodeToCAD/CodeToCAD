@@ -22,9 +22,13 @@ class Dimension:
         self.unit = unit
 
     @staticmethod
+    def zero(unit: Optional[Union[str, LengthUnit]] = None):
+        return Dimension(0, unit)
+
+    @staticmethod
     def from_dimension_or_its_float_or_string_value(
         mystery_dimension: Union[str, float, "Dimension"],
-        boundary_axis: Optional[BoundaryAxis],
+        boundary_axis: Optional[BoundaryAxis] = None,
     ) -> "Dimension":
         if isinstance(mystery_dimension, Dimension):
             return mystery_dimension

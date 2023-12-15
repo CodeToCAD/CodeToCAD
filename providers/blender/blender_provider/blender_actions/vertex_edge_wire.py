@@ -1,4 +1,4 @@
-from typing import List, Tuple,  Union, TYPE_CHECKING
+from typing import List, Tuple, Union, TYPE_CHECKING
 import bpy
 
 from codetocad.core.dimension import Dimension
@@ -17,7 +17,6 @@ def get_vertex_location_from_blender_point(
         bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex
     ]
 ) -> "Point":
-
     point = spline_point.co
 
     point = point[0:3]
@@ -33,7 +32,15 @@ def get_vertex_location_from_blender_point(
 def get_vertex_from_blender_point(
     spline_point: Union[
         bpy.types.BezierSplinePoint, bpy.types.SplinePoint, bpy.types.MeshVertex
-    ]
+    ],
+    edge: Union[
+        bpy.types.Spline,
+        bpy.types.MeshEdge,
+        Tuple[
+            bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
+            bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
+        ],
+    ],
 ) -> "Vertex":
     from .. import Vertex
 
@@ -41,6 +48,7 @@ def get_vertex_from_blender_point(
         location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
         native_instance=spline_point,
+        parent_entity=edge,
     )
 
 
@@ -67,16 +75,16 @@ def get_edge_from_blender_edge(
                 "Edge contains more than two vertices. Did you mean to create a Wire instead of an Edge?"
             )
 
-        v1 = get_vertex_from_blender_point(points[0])
-        v2 = get_vertex_from_blender_point(points[1])
+        v1 = get_vertex_from_blender_point(points[0], edge)
+        v2 = get_vertex_from_blender_point(points[1], edge)
     elif isinstance(edge, tuple):
-        v1 = get_vertex_from_blender_point(edge[0])
-        v2 = get_vertex_from_blender_point(edge[1])
+        v1 = get_vertex_from_blender_point(edge[0], edge)
+        v2 = get_vertex_from_blender_point(edge[1], edge)
     elif isinstance(edge, bpy.types.MeshEdge) and isinstance(entity, bpy.types.Mesh):
         points = [entity.vertices[index] for index in edge.vertices]
 
-        v1 = get_vertex_from_blender_point(points[0])
-        v2 = get_vertex_from_blender_point(points[1])
+        v1 = get_vertex_from_blender_point(points[0], edge)
+        v2 = get_vertex_from_blender_point(points[1], edge)
     else:
         raise Exception(f"Edge type {type(edge)} is not supported.")
 
@@ -84,7 +92,7 @@ def get_edge_from_blender_edge(
         v1=v1,
         v2=v2,
         name=create_uuid_like_id(),
-        parent_sketch=entity.name,
+        parent_entity=entity.name,
         native_instance=edge,
     )
 
@@ -110,12 +118,10 @@ def get_wire_from_blender_wire(
         all_edge_keys: List = entity.edge_keys
         wire_edge_keys: List = wire.edge_keys
         mesh_edges = entity.edges
-        face_edge_map = {ek: mesh_edges[i]
-                         for i, ek in enumerate(all_edge_keys)}
+        face_edge_map = {ek: mesh_edges[i] for i, ek in enumerate(all_edge_keys)}
 
         edges = [
-            get_edge_from_blender_edge(
-                entity=entity, edge=face_edge_map[edge_key])
+            get_edge_from_blender_edge(entity=entity, edge=face_edge_map[edge_key])
             for edge_key in wire_edge_keys
         ]
     else:
@@ -124,7 +130,7 @@ def get_wire_from_blender_wire(
     return Wire(
         edges=edges,
         name=create_uuid_like_id(),
-        parent_sketch=entity.name,
+        parent_entity=entity.name,
         native_instance=wire,
     )
 

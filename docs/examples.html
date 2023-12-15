@@ -166,6 +166,7 @@
     
 
     <div class="" style="width:50%">
+        <a href='#2D Sketching' class="chip">2D Sketching</a>
         <a href='#Fillets and Chamfers' class="chip">Fillets and Chamfers</a>
         <a href='#Text' class="chip">Text</a>
         <a href='#Calibration Cube' class="chip">Calibration Cube</a>
@@ -192,6 +193,95 @@
 
     <div class="grid-container">
         <div class="grid-item">
+            <div class="className" id='2D Sketching''>2D Sketching</div>
+            
+            <div class="methods">
+            <div style="
+            width: 50%;">You can construct geometry using 2D sketching on planes or faces. You can also use extruding functions like extrude, loft, sweep and twist. You may also utilize the power of Landmarks at any time to quickly reference parts of a sketch. Sketches are made up of Wires, Edges and Vertices.</div>
+            
+            
+            <pre>
+            
+from codetocad import Sketch
+
+from codetocad.enums.curve_types import CurveTypes
+
+
+
+rectangle_points_sketch = Sketch(
+
+    "rectangle_from_points", curve_type=CurveTypes.BEZIER
+
+).create_from_vertices(["0,0,0", "1,0,0", "1,1,0", "0,1,0", "0,0,0"])
+
+
+
+
+
+triangle_sketch = Sketch("triangle", curve_type=CurveTypes.NURBS)
+
+line1 = triangle_sketch.create_line("0,0,0", "1,1,0")
+
+line2 = triangle_sketch.create_line(line1.v2, "0,1,0")
+
+line3 = triangle_sketch.create_line(line2.v2, line1.v1)
+
+triangle_sketch.translate_y(1)
+
+
+
+
+
+rectangle_lines_sketch = Sketch(
+
+    name="rectangle_from_lines", curve_type=CurveTypes.BEZIER
+
+)
+
+line1 = rectangle_lines_sketch.create_line("0,0,0", "1,0,0")
+
+line2 = rectangle_lines_sketch.create_line("0,1,0", "1,1,0")
+
+line3 = rectangle_lines_sketch.create_line(line1.v1, line2.v1)
+
+line4 = rectangle_lines_sketch.create_line(line1.v2, line2.v2)
+
+rectangle_lines_sketch.translate_y(2)
+
+
+
+
+
+loft_sketch1 = Sketch("loft_sketch1", curve_type=CurveTypes.BEZIER)
+
+w1 = loft_sketch1.create_rectangle(1, 1)
+
+loft_sketch2 = Sketch("loft_sketch2", curve_type=CurveTypes.BEZIER)
+
+w2 = loft_sketch2.create_rectangle(0.5, 0.5)
+
+loft_sketch2.translate_z(1).rotate_x(45)
+
+lofted = w1.loft(w2).rename("loft")
+
+lofted.translate_xyz(0.5, 3.5, 0)
+
+
+
+
+
+circle_sketch = Sketch("circle", curve_type=CurveTypes.BEZIER)
+
+circle_wire = circle_sketch.create_circle(0.5)
+
+circle_sketch.translate_xyz(0.5, 4.5, 0)
+
+            </pre>
+        </div>
+
+    </div>
+
+    <div class="grid-item">
             <div class="className" id='Fillets and Chamfers''>Fillets and Chamfers</div>
             
             <div class="methods">

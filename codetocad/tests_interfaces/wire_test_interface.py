@@ -24,6 +24,14 @@ class WireTestInterface(
     metaclass=ABCMeta,
 ):
     @abstractmethod
+    def test_get_vertices(self):
+        instance = Wire()
+
+        value = instance.get_vertices("")
+
+        assert value, "Get method failed."
+
+    @abstractmethod
     def test_is_closed(self):
         instance = Wire()
 

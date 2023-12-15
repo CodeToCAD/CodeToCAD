@@ -18,22 +18,21 @@ from . import EntityInterface
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import SketchInterface
     from . import EntityInterface
 
 
 class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
     """A single point in space, or a control point."""
 
-    location: PointOrListOfFloatOrItsStringValue
-    parent_sketch: Optional[SketchOrItsName] = None
+    location: "Point"
+    parent_entity: Optional[EntityOrItsName] = None
 
     @abstractmethod
     def __init__(
         self,
-        location: PointOrListOfFloatOrItsStringValue,
+        location: "Point",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
@@ -41,13 +40,13 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
             name=name, description=description, native_instance=native_instance
         )
         self.location = location
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
     @abstractmethod
-    def get_control_points(self, parameter="") -> "list[EntityInterface]":
+    def get_control_points(self, parameter="") -> "list[VertexInterface]":
         """
         Get a vertex's curve control points. This may not be applicable in several situations.
         """
