@@ -27,8 +27,7 @@ def apply_object_transformations(
     rotationQuat: mathutils.Quaternion = decomposedMatrix[1]
     scaleVector: mathutils.Vector = decomposedMatrix[2]
 
-    translation: mathutils.Matrix = mathutils.Matrix.Translation(
-        translationVector)
+    translation: mathutils.Matrix = mathutils.Matrix.Translation(translationVector)
     rotation: mathutils.Matrix = rotationQuat.to_matrix().to_4x4()
     scale: mathutils.Matrix = mathutils.Matrix.Diagonal(scaleVector).to_4x4()
 
@@ -86,8 +85,7 @@ def translate_object(
 ):
     blenderObject = get_object(object_name)
 
-    assert len(
-        translation_dimensions) == 3, "translation_dimensions must be length 3"
+    assert len(translation_dimensions) == 3, "translation_dimensions must be length 3"
 
     currentLocation = blenderObject.location
 

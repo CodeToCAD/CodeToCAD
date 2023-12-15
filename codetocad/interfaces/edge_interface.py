@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import VertexInterface
-    from . import SketchInterface
+    from . import EntityInterface
 
 
 class EdgeInterface(
@@ -39,7 +39,7 @@ class EdgeInterface(
 
     v1: "VertexInterface"
     v2: "VertexInterface"
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
 
     @abstractmethod
     def __init__(
@@ -47,7 +47,7 @@ class EdgeInterface(
         v1: "VertexInterface",
         v2: "VertexInterface",
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
@@ -56,7 +56,7 @@ class EdgeInterface(
         )
         self.v1 = v1
         self.v2 = v2
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance

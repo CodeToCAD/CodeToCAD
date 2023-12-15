@@ -1,5 +1,11 @@
 [
     {
+        "name": "2D Sketching",
+        "description": "You can construct geometry using 2D sketching on planes or faces. You can also use extruding functions like extrude, loft, sweep and twist. You may also utilize the power of Landmarks at any time to quickly reference parts of a sketch. Sketches are made up of Wires, Edges and Vertices.",
+        "codeFilepath": "sketching.py",
+        "imagePath": ""
+    },
+    {
         "name": "Fillets and Chamfers",
         "description": "You can apply fillets and chamfers to specific edges or faces, or to all the edges or faces. To target a specific edge or face, create a Landmark near the target.",
         "codeFilepath": "fillets_and_chamfers.py",

@@ -13,26 +13,37 @@ from . import Entity
 
 
 class Vertex(Entity, VertexInterface):
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
 
     @property
-    def location(self) -> PointOrListOfFloatOrItsStringValue:
+    def location(self) -> Point:
         return blender_actions.get_vertex_location_from_blender_point(
-            self.native_instance)
+            self.native_instance
+        )
+
+    def get_native_instance(self) -> object:
+        return self.native_instance
 
     def __init__(
         self,
-        location: PointOrListOfFloatOrItsStringValue,
+        location: Point,
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
+        """
+        NOTE: Blender Provider's Vertex requires a parent_entity and a native_instance
+        """
+        assert (
+            parent_entity is not None and native_instance is not None
+        ), "Blender Provider's Vertex requires a parent_entity and a native_instance"
+
         # self.location = location
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance

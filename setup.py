@@ -26,8 +26,13 @@ setup(
     author="CodeToCAD",
     author_email="shehab@codethatdown.com",
     license="GPL v3",
-    packages=["codetocad", "codetocad.interfaces",
-              "codetocad.providers_sample", "codetocad.core", "codetocad.enums"],
+    packages=[
+        "codetocad",
+        "codetocad.interfaces",
+        "codetocad.providers_sample",
+        "codetocad.core",
+        "codetocad.enums",
+    ],
     install_requires=[],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

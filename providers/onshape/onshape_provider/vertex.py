@@ -27,7 +27,7 @@ class Vertex(Entity, VertexInterface):
         raise NotImplementedError()
 
     location: PointOrListOfFloatOrItsStringValue
-    parent_sketch: Optional[SketchOrItsName] = None
+    parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -36,12 +36,12 @@ class Vertex(Entity, VertexInterface):
         self,
         location: PointOrListOfFloatOrItsStringValue,
         name: str,
-        parent_sketch: Optional[SketchOrItsName] = None,
+        parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
     ):
         self.location = location
-        self.parent_sketch = parent_sketch
+        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance

@@ -72,11 +72,11 @@ Use one python script to interact with all these software:
 - Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
 
 
-## WARNING!
+### WARNING!
 
 Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
 
-## STILL HAVE DOUBTS?
+## THE POWER OF CODE-BASED CAD
 
 
 <div align="center">

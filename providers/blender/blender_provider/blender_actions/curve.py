@@ -20,7 +20,7 @@ from . import (
     convert_object_using_ops,
     assign_object_to_collection,
     enable_curve_extra_objects_addon,
-    update_view_layer
+    update_view_layer,
 )
 
 
@@ -52,8 +52,7 @@ def set_curve_extrude_property(curve_name: str, length: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
@@ -64,8 +63,7 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
@@ -108,8 +106,7 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            size).value,
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -133,8 +130,7 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(
-        curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
@@ -301,6 +297,12 @@ def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
     )
 
 
+def is_spline_cyclical(
+    spline: bpy.types.Spline,
+) -> bool:
+    return spline.use_cyclic_u or spline.use_bezier_v
+
+
 def get_spline_points(
     spline: bpy.types.Spline,
 ) -> bpy.types.SplineBezierPoints | bpy.types.SplinePoints:
@@ -333,8 +335,7 @@ def add_points_to_spline(
     points: List[List[float]],
     overwrite_first_point: bool = False,
 ) -> list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]:
-    added_points: List[bpy.types.SplinePoint |
-                       bpy.types.BezierSplinePoint] = []
+    added_points: List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
 
     spline_points = get_spline_points(spline)
 
@@ -424,7 +425,6 @@ def add_points_to_curve(
 
 
 def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
-
     update_view_layer()
 
     name = create_uuid_like_id()
@@ -434,17 +434,33 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     create_object(name, mesh)
     assign_object_to_collection(name)
 
-    wire_1_world_matrix = mathutils.Matrix() if wire_1.parent_sketch is None else get_object(
-        wire_1.parent_sketch.name if not isinstance(wire_1.parent_sketch, str) else wire_1.parent_sketch).matrix_world
-    wire_2_world_matrix = mathutils.Matrix() if wire_2.parent_sketch is None else get_object(
-        wire_2.parent_sketch.name if not isinstance(wire_2.parent_sketch, str) else wire_2.parent_sketch).matrix_world
+    wire_1_world_matrix = (
+        mathutils.Matrix()
+        if wire_1.parent_entity is None
+        else get_object(
+            wire_1.parent_entity.name
+            if not isinstance(wire_1.parent_entity, str)
+            else wire_1.parent_entity
+        ).matrix_world
+    )
+    wire_2_world_matrix = (
+        mathutils.Matrix()
+        if wire_2.parent_entity is None
+        else get_object(
+            wire_2.parent_entity.name
+            if not isinstance(wire_2.parent_entity, str)
+            else wire_2.parent_entity
+        ).matrix_world
+    )
 
     spline_1_vertices: List[Tuple[float, float, float]] = []
     for edge in wire_1.edges:
         v1 = edge.v1.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )
         v2 = edge.v2.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )
         v1 = wire_1_world_matrix @ mathutils.Vector(v1)
         v2 = wire_1_world_matrix @ mathutils.Vector(v2)
         spline_1_vertices.append(v1.to_tuple())
@@ -452,9 +468,11 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     spline_2_vertices: List[Tuple[float, float, float]] = []
     for edge in wire_2.edges:
         v1 = edge.v1.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )
         v2 = edge.v2.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )
 
         v1 = wire_2_world_matrix @ mathutils.Vector(v1)
         v2 = wire_2_world_matrix @ mathutils.Vector(v2)
@@ -470,40 +488,39 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     spline1_len = len(spline_1_vertices)
     spline2_len = len(spline_2_vertices)
 
-    spline1_edges = [
-        (i, i + 1) for i in range(spline1_len - 1)
-    ] + [(0, spline1_len - 1)]
-    spline2_edges = [
-        (
-            i + spline1_len,
-            i + spline1_len + 1
-        )
-        for i in range(spline2_len - 1)] + \
-        [(spline1_len, spline1_len + spline2_len - 1)
-         ]
-    spline1_2_edges = [
-        (i, i + spline1_len)
-        for i in range(spline1_len)
-
+    spline1_edges = [(i, i + 1) for i in range(spline1_len - 1)] + [
+        (0, spline1_len - 1)
     ]
+    spline2_edges = [
+        (i + spline1_len, i + spline1_len + 1) for i in range(spline2_len - 1)
+    ] + [(spline1_len, spline1_len + spline2_len - 1)]
+    spline1_2_edges = [(i, i + spline1_len) for i in range(spline1_len)]
 
     spline_1_faces = [tuple(range(spline1_len))]
-    spline_2_faces = [
-        tuple(range(spline1_len, spline1_len+spline2_len))]
+    spline_2_faces = [tuple(range(spline1_len, spline1_len + spline2_len))]
 
     spline_1_2_faces = [
-        (spline1_edges[i][1], spline1_2_edges[i + 1]
-         [1], spline2_edges[i][0], spline1_2_edges[i][0])
-        for i in range(len(spline1_2_edges)-1)
-
-    ] + [(spline1_edges[-1][1], spline1_2_edges[-1]
-         [1], spline2_edges[-1][0], spline1_2_edges[0][0])]
+        (
+            spline1_edges[i][1],
+            spline1_2_edges[i + 1][1],
+            spline2_edges[i][0],
+            spline1_2_edges[i][0],
+        )
+        for i in range(len(spline1_2_edges) - 1)
+    ] + [
+        (
+            spline1_edges[-1][1],
+            spline1_2_edges[-1][1],
+            spline2_edges[-1][0],
+            spline1_2_edges[0][0],
+        )
+    ]
 
     # Create a mesh from the control points of the splines
     mesh.from_pydata(
         vertices=spline_1_vertices + spline_2_vertices,
-        edges=spline1_edges+spline2_edges+spline1_2_edges,
-        faces=spline_1_faces + spline_2_faces + spline_1_2_faces
+        edges=spline1_edges + spline2_edges + spline1_2_edges,
+        faces=spline_1_faces + spline_2_faces + spline_1_2_faces,
     )
 
     # Update the mesh
@@ -782,8 +799,7 @@ class BlenderCurvePrimitives:
         )
 
         radiusDiff = (
-            0 if radius_endMeters is None else (
-                radius_endMeters - radiusMeters).value
+            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
         )
 
         curve_type: blender_definitions.BlenderCurveTypes = (

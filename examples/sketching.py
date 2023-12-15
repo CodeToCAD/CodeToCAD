@@ -10,6 +10,7 @@ triangle_sketch = Sketch("triangle", curve_type=CurveTypes.NURBS)
 line1 = triangle_sketch.create_line("0,0,0", "1,1,0")
 line2 = triangle_sketch.create_line(line1.v2, "0,1,0")
 line3 = triangle_sketch.create_line(line2.v2, line1.v1)
+triangle_sketch.translate_y(1)
 
 
 rectangle_lines_sketch = Sketch(
@@ -19,3 +20,18 @@ line1 = rectangle_lines_sketch.create_line("0,0,0", "1,0,0")
 line2 = rectangle_lines_sketch.create_line("0,1,0", "1,1,0")
 line3 = rectangle_lines_sketch.create_line(line1.v1, line2.v1)
 line4 = rectangle_lines_sketch.create_line(line1.v2, line2.v2)
+rectangle_lines_sketch.translate_y(2)
+
+
+loft_sketch1 = Sketch("loft_sketch1", curve_type=CurveTypes.BEZIER)
+w1 = loft_sketch1.create_rectangle(1, 1)
+loft_sketch2 = Sketch("loft_sketch2", curve_type=CurveTypes.BEZIER)
+w2 = loft_sketch2.create_rectangle(0.5, 0.5)
+loft_sketch2.translate_z(1).rotate_x(45)
+lofted = w1.loft(w2).rename("loft")
+lofted.translate_xyz(0.5, 3.5, 0)
+
+
+circle_sketch = Sketch("circle", curve_type=CurveTypes.BEZIER)
+circle_wire = circle_sketch.create_circle(0.5)
+circle_sketch.translate_xyz(0.5, 4.5, 0)

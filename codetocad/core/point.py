@@ -36,13 +36,12 @@ class Point:
     def from_list_of_float_or_string(
         point_representation: "PointOrListOfFloatOrItsStringValue",
     ) -> "Point":
-        if isinstance(point_representation, list):
+        if isinstance(point_representation, (list, tuple)):
             assert (
                 len(point_representation) == 3
             ), "Point list must contain three Dimensions."
             points = [
-                Dimension.from_dimension_or_its_float_or_string_value(
-                    point, None)
+                Dimension.from_dimension_or_its_float_or_string_value(point, None)
                 for point in point_representation
             ]
             return Point(points[0], points[1], points[2])
@@ -54,8 +53,7 @@ class Point:
         elif isinstance(point_representation, Point):
             return point_representation
 
-        raise ValueError(
-            f"Cannot convert type {type(point_representation)} to Point.")
+        raise ValueError(f"Cannot convert type {type(point_representation)} to Point.")
 
     def arithmetic_precheck_and_unit_conversion(self, other) -> "Point":
         assert other is not None, "Right-hand value cannot be None."

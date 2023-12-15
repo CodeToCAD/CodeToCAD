@@ -129,7 +129,7 @@ class Sketch(Entity, SketchInterface):
         raise NotImplementedError()
 
     def sweep(
-        self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
+        self, profile_name_or_instance: EntityOrItsName, fill_cap: bool = True
     ) -> "Part":
         raise NotImplementedError()
 
