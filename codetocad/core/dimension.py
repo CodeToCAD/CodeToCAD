@@ -22,8 +22,11 @@ class Dimension:
         self.unit = unit
 
     @staticmethod
-    def zero(unit: Optional[Union[str, LengthUnit]] = None):
+    def zero(unit: Optional[Union[str, LengthUnit]] = None) -> "Dimension":
         return Dimension(0, unit)
+
+    def raise_power(self, power: float | int) -> "Dimension":
+        return pow(self, power)
 
     @staticmethod
     def from_dimension_or_its_float_or_string_value(

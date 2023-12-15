@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import reduce
 from typing import TYPE_CHECKING, List, Tuple
 from codetocad.core.dimension import Dimension
 from codetocad.enums.length_unit import LengthUnit
@@ -26,6 +27,13 @@ class Point:
             self.y.convert_to_unit(convert_to_unit).value,
             self.z.convert_to_unit(convert_to_unit).value,
         )
+
+    def magnitude(self):
+        return reduce(
+            lambda acc, value: value.raise_power(2) + acc,
+            self.to_list(),
+            Dimension.zero(),
+        ).raise_power(1 / 2)
 
     @staticmethod
     def from_list(point_list: List[Dimension]) -> "Point":
