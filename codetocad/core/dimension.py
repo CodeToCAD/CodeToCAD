@@ -6,6 +6,8 @@ from codetocad.enums.length_unit import LengthUnit
 
 
 class Dimension:
+    COMPARISON_FLOAT_TOLERANCE = 0.001
+
     def __init__(self, value: float, unit: Optional[Union[str, LengthUnit]] = None):
         assert isinstance(value, (int, float)), "Dimension value must be a number."
 
@@ -129,7 +131,9 @@ class Dimension:
             return False
         other = self.arithmetic_precheck_and_unit_conversion(other)
         assert self.unit == other.unit, "Units are not matching for comparison."
-        return self.value == other.value
+        return int(self.value / self.COMPARISON_FLOAT_TOLERANCE) == int(
+            other.value / self.COMPARISON_FLOAT_TOLERANCE
+        )
 
     def __ne__(self, other):
         return not (self == other)
