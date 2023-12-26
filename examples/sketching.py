@@ -35,3 +35,12 @@ lofted.translate_xyz(0.5, 3.5, 0)
 circle_sketch = Sketch("circle", curve_type=CurveTypes.BEZIER)
 circle_wire = circle_sketch.create_circle(0.5)
 circle_sketch.translate_xyz(0.5, 4.5, 0)
+
+arc_sketch = Sketch("arc", curve_type=CurveTypes.BEZIER)
+arc_wire = arc_sketch.create_arc([0, 0, 0], [0.5, 0.5, 0], [1, -0.5, 0])
+arc_sketch.translate_xyz(0.5, 5.5, 0)
+
+
+ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+ellipse_wire = ellipse_sketch.create_ellipse(0.5, 0.25)
+ellipse_sketch.translate_xyz(0.5, 6.5, 0)

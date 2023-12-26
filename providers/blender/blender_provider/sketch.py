@@ -301,8 +301,6 @@ class Sketch(Entity, SketchInterface):
             length = (4 / 3 * math.tan(1 / 4 * u)) * math_min(
                 radius_x.value, radius_y.value
             )
-            length = 2 * 0.27606262
-            print("yo2")
             p1.get_native_instance().handle_right = (
                 mathutils.Vector((p1x, p1y, 0)) + v1 * length
             )
@@ -338,14 +336,16 @@ class Sketch(Entity, SketchInterface):
             radius_major
         )
 
-        points = get_ellipse_points(radius_minor, radius_major, self.resolution)[::-1]
+        is_minor_lesser = radius_minor < radius_major
 
-        points.append(points[0])
+        wire = self.create_circle(radius_minor if is_minor_lesser else radius_major)
 
-        wire = self.create_from_vertices(points, order_u=4)
+        blender_actions.update_view_layer()
 
-        if self.curve_type == CurveTypes.BEZIER:
-            Sketch._set_bezier_ellipse_handlers(wire, radius_minor, radius_major)
+        if is_minor_lesser:
+            self.scale_y(radius_major * 2)
+        else:
+            self.scale_x(radius_minor * 2)
 
         return wire
 
