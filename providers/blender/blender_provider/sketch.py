@@ -12,9 +12,6 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from codetocad.core.shapes.ellipse import get_ellipse_points
-
-
 from . import Entity, Part, Vertex, Wire, Edge
 
 
@@ -90,7 +87,7 @@ class Sketch(Entity, SketchInterface):
         self, profile_name_or_instance: EntityOrItsName, fill_cap: bool = True
     ) -> "PartInterface":
         profile_curve_name = profile_name_or_instance
-        if isinstance(profile_curve_name, SketchInterface):
+        if isinstance(profile_curve_name, EntityInterface):
             profile_curve_name = profile_curve_name.name
 
         blender_actions.add_bevel_object_to_curve(
@@ -138,6 +135,9 @@ class Sketch(Entity, SketchInterface):
             line_spacing,
             font_file_path,
         )
+
+        blender_actions.update_view_layer()
+
         return self
 
     def create_from_vertices(
@@ -167,9 +167,13 @@ class Sketch(Entity, SketchInterface):
         if is_closed:
             blender_spline.use_cyclic_u = True
 
-        return blender_actions.get_wire_from_blender_wire(
+        wire = blender_actions.get_wire_from_blender_wire(
             entity=self.get_native_instance().data, wire=blender_spline
         )
+
+        blender_actions.update_view_layer()
+
+        return wire
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         blender_spline, added_points = blender_actions.create_curve(
@@ -182,6 +186,9 @@ class Sketch(Entity, SketchInterface):
             points=[point],
             is_3d=False,
         )
+
+        blender_actions.update_view_layer()
+
         return Vertex(
             location=point,
             name=create_uuid_like_id(),
@@ -221,6 +228,8 @@ class Sketch(Entity, SketchInterface):
             entity=blender_actions.get_curve(self.name),
             edge=(added_points[0], added_points[1]),
         )
+
+        blender_actions.update_view_layer()
 
         return edge
 
@@ -322,6 +331,8 @@ class Sketch(Entity, SketchInterface):
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, radius)
 
+        blender_actions.update_view_layer()
+
         return wire
 
     def create_ellipse(
@@ -377,6 +388,8 @@ class Sketch(Entity, SketchInterface):
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, radius)
 
+        blender_actions.update_view_layer()
+
         return wire
 
     def create_rectangle(
@@ -396,9 +409,13 @@ class Sketch(Entity, SketchInterface):
         right_bottom = Point(half_length, half_width * -1, Dimension(0))
         right_top = Point(half_length, half_width, Dimension(0))
 
-        return self.create_from_vertices(
+        wire = self.create_from_vertices(
             [left_top, left_bottom, right_bottom, right_top, left_top]
         )
+
+        blender_actions.update_view_layer()
+
+        return wire
 
     def create_polygon(
         self,
