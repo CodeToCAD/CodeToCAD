@@ -1153,11 +1153,11 @@
                     "start_at": {
                         "type": "string,list[string],Point,Vertex"
                     },
-                    "center_at": {
-                        "type": "string,list[string],Point,Vertex"
-                    },
                     "end_at": {
                         "type": "string,list[string],Point,Vertex"
+                    },
+                    "radius": {
+                        "type": "string,float,Dimension"
                     }
                 }
             },
