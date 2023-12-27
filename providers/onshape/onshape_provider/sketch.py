@@ -181,8 +181,8 @@ class Sketch(Entity, SketchInterface):
     def create_arc(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        center_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        radius: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         raise NotImplementedError()
 

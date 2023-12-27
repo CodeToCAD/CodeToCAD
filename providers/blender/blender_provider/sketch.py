@@ -363,30 +363,21 @@ class Sketch(Entity, SketchInterface):
     def create_arc(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        center_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        radius: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         start_point: Point
-        center_point: Point
+        end_point: Point
         if isinstance(start_at, VertexInterface):
             start_point = Point.from_list_of_float_or_string(start_at.location)
         else:
             start_point = Point.from_list_of_float_or_string(start_at)
-        if isinstance(center_at, VertexInterface):
-            center_point = Point.from_list_of_float_or_string(center_at.location)
+        if isinstance(end_at, VertexInterface):
+            end_point = Point.from_list_of_float_or_string(end_at.location)
         else:
-            center_point = Point.from_list_of_float_or_string(center_at)
+            end_point = Point.from_list_of_float_or_string(end_at)
 
-        radius = (center_point - start_point).magnitude()
-
-        points = [start_point, center_point, end_at]
-
-        wire = self.create_from_vertices(
-            [Point.from_list_of_float_or_string(point) for point in points], order_u=4
-        )
-
-        if self.curve_type == CurveTypes.BEZIER:
-            Sketch._set_bezier_circular_handlers(wire, radius)
+        wire = None
 
         blender_actions.update_view_layer()
 
