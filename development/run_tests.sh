@@ -19,14 +19,7 @@ else
 fi
 
 
-python -m unittest tests/test_utilities.py
-
-
 export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/../providers"
 export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/../providers/blender"
 
-
-python -m unittest tests/test_provider_compliance.py
-
-
-python -m unittest tests/test_provider.py
+python -m unittest tests/**.py
