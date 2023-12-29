@@ -335,6 +335,7 @@ class Sketch(Entity, SketchInterface):
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
         radius: DimensionOrItsFloatOrStringValue,
+        flip: Optional[bool] = False,
     ) -> "Wire":
         start_point: Point
         end_point: Point
@@ -368,7 +369,7 @@ class Sketch(Entity, SketchInterface):
             parsed_points,
             start_point_normalized,
             end_point_normalized,
-            is_flip=False,
+            is_flip=flip or False,
             is_include_points=True,
         )
 

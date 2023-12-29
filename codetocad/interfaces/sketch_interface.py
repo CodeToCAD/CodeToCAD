@@ -235,9 +235,10 @@ class SketchInterface(
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
         radius: DimensionOrItsFloatOrStringValue,
+        flip: Optional[bool] = False,
     ) -> "WireInterface":
         """
-        Create an arc
+        Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.
         """
 
         print(

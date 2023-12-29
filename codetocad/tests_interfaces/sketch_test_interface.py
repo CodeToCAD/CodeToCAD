@@ -145,7 +145,7 @@ class SketchTestInterface(
     def test_create_arc(self):
         instance = Sketch()
 
-        value = instance.create_arc("start_at", "end_at", "radius")
+        value = instance.create_arc("start_at", "end_at", "radius", "flip")
 
         assert value, "Get method failed."
 
