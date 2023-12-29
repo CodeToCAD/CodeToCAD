@@ -1,7 +1,9 @@
 import unittest
+from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
-from codetocad.core.shapes.circle import get_circle_points
+from codetocad.core.shapes.circle import get_circle_points, get_point_on_circle_at_angle
+from codetocad.core.shapes.clipping import clip_spline_points
 
 from codetocad.core.shapes.ellipse import (
     get_ellipse_points,
@@ -39,3 +41,22 @@ class TestUtilities(unittest.TestCase):
         points = get_circle_points(radius, 64)
 
         assert points[0] == points[-1], "First and last points are not equal"
+
+    def test_clipping(self):
+        radius = Dimension(0.5)
+
+        points = get_circle_points(radius, 4 * 4)
+
+        point_a = get_point_on_circle_at_angle(
+            theta_radians=Angle(180 + 45).to_radians().value, radius=radius
+        )
+
+        point_b = get_point_on_circle_at_angle(
+            theta_radians=Angle(360 - 45).to_radians().value, radius=radius
+        )
+
+        clipped_points = clip_spline_points(points, point_a, point_b, is_flip=True)
+
+        print(points)
+        print(point_a, point_b)
+        print(clipped_points)
