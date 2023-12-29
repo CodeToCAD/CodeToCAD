@@ -57,6 +57,4 @@ class TestUtilities(unittest.TestCase):
 
         clipped_points = clip_spline_points(points, point_a, point_b, is_flip=True)
 
-        print(points)
-        print(point_a, point_b)
-        print(clipped_points)
+        assert len(clipped_points) == 15, "Wrong number of clipped points."
