@@ -52,8 +52,7 @@ def set_curve_extrude_property(curve_name: str, length: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        length)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
@@ -64,8 +63,7 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-        offset)
+    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
@@ -108,8 +106,7 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            size).value,
+        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -133,8 +130,7 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(
-        curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
 
     curveData.use_path = False
 
@@ -357,8 +353,7 @@ def add_points_to_spline(
     """
     Adds points to a specific spline
     """
-    added_points: List[bpy.types.SplinePoint |
-                       bpy.types.BezierSplinePoint] = []
+    added_points: List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
 
     spline_points = get_spline_points(spline)
 
@@ -828,8 +823,7 @@ class BlenderCurvePrimitives:
         )
 
         radiusDiff = (
-            0 if radius_endMeters is None else (
-                radius_endMeters - radiusMeters).value
+            0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
         )
 
         curve_type: blender_definitions.BlenderCurveTypes = (
