@@ -1,21 +1,23 @@
-from codetocad.enums.preset_landmark import PresetLandmark
+import unittest
+
+from codetocad.core.dimension import Dimension
 from codetocad.utilities import (
-    Dimension,
     LengthUnit,
-    AngleUnit,
-    get_angles_from_string_list,
     get_dimension_list_from_string_list,
     BoundaryAxis,
     BoundaryBox,
-    min,
-    max,
-    center,
 )
 
-import unittest
 
+class TestDimensions(unittest.TestCase):
+    def test_math(self):
+        assert min(Dimension(5), Dimension(3)) == Dimension(
+            3
+        ), "Unexpected builtin min result"
+        assert max(Dimension(5), Dimension(3)) == Dimension(
+            5
+        ), "Unexpected builtin max result"
 
-class TestUtilities(unittest.TestCase):
     def test_dimensions(self):
         try:
             dimension = Dimension.from_string("")
@@ -156,58 +158,3 @@ class TestUtilities(unittest.TestCase):
         assert dimensions[0].unit == LengthUnit.cm
 
         print("test_minMaxCenter() done.")
-
-    def test_angles(self):
-        angles = get_angles_from_string_list("10,1")
-        assert angles[0].value == 10 and angles[1].value == 1
-        assert (
-            angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
-        )
-        angles = get_angles_from_string_list("1,2,deg")
-        assert angles[0].value == 1 and angles[1].value == 2
-        assert (
-            angles[0].unit == AngleUnit.DEGREES and angles[1].unit == AngleUnit.DEGREES
-        )
-        angles = get_angles_from_string_list("1,2,3,deg")
-        assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
-        assert (
-            angles[0].unit == AngleUnit.DEGREES
-            and angles[1].unit == AngleUnit.DEGREES
-            and angles[2].unit == AngleUnit.DEGREES
-        )
-        angles = get_angles_from_string_list("1deg,2rad,3deg")
-        assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
-        assert (
-            angles[0].unit == AngleUnit.DEGREES
-            and angles[1].unit == AngleUnit.RADIANS
-            and angles[2].unit == AngleUnit.DEGREES
-        )
-        angles = get_angles_from_string_list("1,2,3deg,rad")
-        assert angles[0].value == 1 and angles[1].value == 2 and angles[2].value == 3
-        assert (
-            angles[0].unit == AngleUnit.RADIANS
-            and angles[1].unit == AngleUnit.RADIANS
-            and angles[2].unit == AngleUnit.DEGREES
-        )
-        angles = get_angles_from_string_list("21,1/8,1/8, degrees")
-        assert (
-            angles[0].value == 21
-            and angles[1].value == 0.125
-            and angles[2].value == 0.125
-        )
-        assert (
-            angles[0].unit == AngleUnit.DEGREES
-            and angles[1].unit == AngleUnit.DEGREES
-            and angles[2].unit == AngleUnit.DEGREES
-        )
-
-        print("test_angles done")
-
-    def test_preset_landmarks(self):
-        assert PresetLandmark.left.get_xyz() == (min, center, center)
-        assert PresetLandmark.right.get_xyz() == (max, center, center)
-        assert PresetLandmark.leftTop.get_xyz() == (min, center, max)
-        assert PresetLandmark.backTop.get_xyz() == (center, max, max)
-        assert PresetLandmark.rightBackBottom.get_xyz() == (max, max, min)
-        assert PresetLandmark.leftBackTop.get_xyz() == (min, max, max)
-        assert PresetLandmark.center.get_xyz() == (center, center, center)

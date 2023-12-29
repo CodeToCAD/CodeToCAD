@@ -3,7 +3,8 @@ from codetocad.enums.units import Units
 
 class LengthUnit(Units):
     # metric
-    μm = 1 / 1000
+    nm = 1 / 1e6
+    μm = 1 / 1e3
     mm = 1
     cm = 10
     m = 1000
@@ -19,7 +20,12 @@ class LengthUnit(Units):
     def from_string(name: str) -> "LengthUnit":
         aliases: dict[str, LengthUnit] = {
             # metric
+            "nanometer": LengthUnit.nm,
+            "nanometers": LengthUnit.nm,
             "micrometer": LengthUnit.μm,
+            "micrometers": LengthUnit.μm,
+            "micron": LengthUnit.μm,
+            "microns": LengthUnit.μm,
             "millimeter": LengthUnit.mm,
             "millimeters": LengthUnit.mm,
             "centimeter": LengthUnit.cm,
@@ -27,6 +33,8 @@ class LengthUnit(Units):
             "kilometer": LengthUnit.km,
             "meter": LengthUnit.m,
             "meters": LengthUnit.m,
+            "nm": LengthUnit.nm,
+            "μm": LengthUnit.μm,
             "mm": LengthUnit.mm,
             "cm": LengthUnit.cm,
             "m": LengthUnit.m,
