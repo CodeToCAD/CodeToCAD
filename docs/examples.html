@@ -280,7 +280,7 @@ circle_sketch.translate_xyz(0.5, 4.5, 0)
 
 arc_sketch = Sketch("arc", curve_type=CurveTypes.BEZIER)
 
-arc_wire = arc_sketch.create_arc([0, 0, 0], [0.5, 0.5, 0], [1, -0.5, 0])
+arc_wire = arc_sketch.create_arc([-0.5, 0, 0], [1, 1, 0], 0.25)
 
 arc_sketch.translate_xyz(0.5, 5.5, 0)
 

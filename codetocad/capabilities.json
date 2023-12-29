@@ -1148,7 +1148,7 @@
             "create_arc": {
                 "action": "get",
                 "returnType": "Wire",
-                "information": "Create an arc",
+                "information": "Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                 "parameters": {
                     "start_at": {
                         "type": "string,list[string],Point,Vertex"
@@ -1157,7 +1157,13 @@
                         "type": "string,list[string],Point,Vertex"
                     },
                     "radius": {
+                        "information": "The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                         "type": "string,float,Dimension"
+                    },
+                    "flip": {
+                        "type": "boolean",
+                        "required": false,
+                        "defaultValue": false
                     }
                 }
             },

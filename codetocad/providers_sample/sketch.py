@@ -183,6 +183,7 @@ class Sketch(Entity, SketchInterface):
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
         radius: DimensionOrItsFloatOrStringValue,
+        flip: Optional[bool] = False,
     ) -> "Wire":
         raise NotImplementedError()
 

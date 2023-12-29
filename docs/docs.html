@@ -3300,9 +3300,10 @@
 
     Sketch::<span class="subHeading" id=Sketch_create_arc>create_arc(start_at,
         end_at,
-        radius)</span>
+        radius,
+        flip)</span>
 
-    <div class="methods">Create an arc</div>
+    <div class="methods">Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.</div>
     <div><span class="subSubHeading">returnType:</span> Wire</div>
     
 
@@ -3335,10 +3336,23 @@
     <div class="methods grid-container-parameters">
         <div class="method_name grid-item">radius</div>
         <div class="grid-item">
-            
+            <div><span class="subSubHeading">Information:</span> The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.</div>
             <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
             
             
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">flip</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
         </div>
     </div>
 
