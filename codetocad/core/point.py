@@ -15,7 +15,7 @@ class Point:
     y: Dimension
     z: Dimension
 
-    def to_list(self):
+    def to_list(self) -> list[Dimension]:
         return [self.x, self.y, self.z]
 
     def to_tuple(self) -> Tuple[Dimension, Dimension, Dimension]:
@@ -28,12 +28,22 @@ class Point:
             self.z.convert_to_unit(convert_to_unit).value,
         )
 
-    def magnitude(self):
+    def magnitude(self) -> Dimension:
         return reduce(
             lambda acc, value: value.raise_power(2) + acc,
             self.to_list(),
             Dimension.zero(),
         ).raise_power(1 / 2)
+
+    def distance_to(self, other: "Point") -> Dimension:
+        return (other - self).magnitude()
+
+    def is_touching(
+        self,
+        other: "Point",
+        tolerance: float = 0.001,
+    ) -> bool:
+        return self.distance_to(other).value < tolerance
 
     @staticmethod
     def from_list(point_list: List[Dimension]) -> "Point":
@@ -110,6 +120,22 @@ class Point:
     def __eq__(self, other) -> bool:
         other = self.arithmetic_precheck_and_unit_conversion(other)
         return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def __lt__(self, other):
+        other = self.arithmetic_precheck_and_unit_conversion(other)
+        return self.x < other.x and self.y < other.y and self.z < other.z
+
+    def __le__(self, other):
+        other = self.arithmetic_precheck_and_unit_conversion(other)
+        return self.x <= other.x and self.y <= other.y and self.z <= other.z
+
+    def __gt__(self, other):
+        other = self.arithmetic_precheck_and_unit_conversion(other)
+        return self.x > other.x and self.y > other.y and self.z > other.z
+
+    def __ge__(self, other):
+        other = self.arithmetic_precheck_and_unit_conversion(other)
+        return self.x >= other.x and self.y >= other.y and self.z >= other.z
 
     def __add__(self, other):
         other = self.arithmetic_precheck_and_unit_conversion(other)
