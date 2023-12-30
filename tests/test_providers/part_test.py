@@ -143,11 +143,10 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_cube(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.create_cube("width", "length", "height", "keyword_arguments")
+        value = instance.create_cube(1, 1, 1)
 
         assert value.is_exists(), "Create method failed."
 
