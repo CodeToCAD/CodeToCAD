@@ -1,11 +1,12 @@
+from collections.abc import Sequence
+import bpy
 from typing import Any, Optional, Union
 
 import numpy as np
 
 from mock.modeling.mock_blender_math import Matrix, Vector
 import typing
-from collections.abc import Sequence
-import bpy
+
 
 class Material:
     def __init__(self, name: str) -> None:
@@ -142,7 +143,6 @@ class Object:
             return self.data.bound_box
         raise TypeError()
 
-
     @property
     def dimensions(self):
         if isinstance(self.data, (Mesh, Curve)):
@@ -276,6 +276,7 @@ class Collection:
 class Objects:
     def __init__(self) -> None:
         self.objects: list[Object] = []
+
     def new(self, name, data):
         obj = Object(name, mockBpy.context.default_user_collection)
         obj.data = data
@@ -300,14 +301,13 @@ class Objects:
 
 class Collections:
     def __init__(self) -> None:
-        self.collections: list[Collection] = [
-            Collection("Scene Collection")
-        ]
+        self.collections: list[Collection] = [Collection("Scene Collection")]
 
     def get(self, name):
         for collection in self.collections:
             if collection.name == name:
                 return collection
+
 
 class Meshes:
     def __init__(self) -> None:
@@ -342,8 +342,8 @@ class Materials:
     def remove(self, material):
         self.materials.remove(material)
 
-class Scene:
 
+class Scene:
     def __init__(self, name) -> None:
         self.name = name
 
@@ -371,9 +371,7 @@ class Scene:
 
 class Scenes:
     def __init__(self) -> None:
-        self.scenes: list[Scene] = [
-            Scene("Scene")
-        ]
+        self.scenes: list[Scene] = [Scene("Scene")]
 
     def new(self, name):
         scene = Scene(name)
@@ -388,8 +386,8 @@ class Scenes:
     def remove(self, scene):
         self.scenes.remove(scene)
 
-class SplinePoint:
 
+class SplinePoint:
     co = Vector((0, 0, 0, 0))
 
     def __setattr__(self, __name: str, __value: Any) -> None:
@@ -436,7 +434,6 @@ class SplinePoints(Sequence):
 
 
 class Spline(bpy.types.Spline):
-
     bezier_points = SplinePoints([SplinePoint()])
     points = SplinePoints([SplinePoint()])
 
@@ -490,8 +487,9 @@ class Curve(bpy.types.Curve):
     def calculate_dimensions(self, scale: Optional[Vector]) -> Vector:
         all_points = []
         for spline in self.splines:
-            all_points += [point for point in spline.points] + \
-                [point for point in spline.bezier_points]
+            all_points += [point for point in spline.points] + [
+                point for point in spline.bezier_points
+            ]
 
         dimensions = Vector(
             (
@@ -526,8 +524,10 @@ class Curves:
 class Data:
     def __init__(self) -> None:
         self.objects = Objects()
+        self.curves = Curves()
         self.meshes = Meshes()
         self.materials = Materials()
+        self.scenes = Scenes()
         self.collections = Collections()
         self.collections.collections.append(Collection("Scene"))
 
@@ -548,7 +548,7 @@ class Data:
 
 
 class Ops:
-    class Preferences():
+    class Preferences:
         def addon_enable(self, **kwargs):
             global mockBpy
             mockBpy.context.preferences.addons[kwargs["module"]] = {}
@@ -558,6 +558,7 @@ class Ops:
             del mockBpy.context.preferences.addons[kwargs["module"]]
 
     preferences = Preferences()
+
     def __init__(self) -> None:
         self.object = Ops.OpsObject()
         self.mesh = Ops.OpsMesh()
@@ -641,99 +642,85 @@ class Ops:
 
     class OpsMesh:
         @staticmethod
-        def primitive_cylinder_add(
-                vertices: Optional[Any] = 32,
-                radius: Optional[Any] = 1.0,
-                depth: Optional[Any] = 2.0,
-                end_fill_type: Optional[Any] = 'NGON',
-                calc_uvs: Optional[Union[bool, Any]] = True,
-                enter_editmode: Optional[Union[bool,
-                                               Any]] = False,
-                align: Optional[Any] = 'WORLD',
-                location: Optional[Any] = (0.0, 0.0, 0.0),
-                rotation: Optional[Any] = (0.0, 0.0, 0.0),
-                scale: Optional[Any] = (0.0, 0.0, 0.0)):
+        def primitive_cone_add(
+            vertices: typing.Optional[typing.Any] = 32,
+            radius1: typing.Optional[typing.Any] = 1.0,
+            radius2: typing.Optional[typing.Any] = 0.0,
+            depth: typing.Optional[typing.Any] = 2.0,
+            end_fill_type: typing.Optional[typing.Any] = "NGON",
+            calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
+            align: typing.Optional[typing.Any] = "WORLD",
+            location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+        ):
             global mockBpy
             mockBpy.data.create_mesh_object(
-                "Cylinder",
-                "Cylinder",
+                "Cone",
+                "Cone",
                 [],
             )
-        @staticmethod
-        def primitive_cone_add(
 
-                vertices: typing.Optional[typing.Any] = 32,
-                radius1: typing.Optional[typing.Any] = 1.0,
-                radius2: typing.Optional[typing.Any] = 0.0,
-                depth: typing.Optional[typing.Any] = 2.0,
-                end_fill_type: typing.Optional[typing.Any] = "NGON",
-                calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
-                enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
-                align: typing.Optional[typing.Any] = "WORLD",
-                location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-        ):
-            global mockBpy
-            mockBpy.data.create_mesh_object(
-                "Cone",
-                "Cone",
-                [],)
         @staticmethod
         def primitive_torus_add(
-                align: typing.Optional[typing.Any] = "WORLD",
-                location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                major_segments: typing.Optional[typing.Any] = 48,
-                minor_segments: typing.Optional[typing.Any] = 12,
-                mode: typing.Optional[typing.Any] = "MAJOR_MINOR",
-                major_radius: typing.Optional[typing.Any] = 1.0,
-                minor_radius: typing.Optional[typing.Any] = 0.25,
-                abso_major_rad: typing.Optional[typing.Any] = 1.25,
-                abso_minor_rad: typing.Optional[typing.Any] = 0.75,
-                generate_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            align: typing.Optional[typing.Any] = "WORLD",
+            location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            major_segments: typing.Optional[typing.Any] = 48,
+            minor_segments: typing.Optional[typing.Any] = 12,
+            mode: typing.Optional[typing.Any] = "MAJOR_MINOR",
+            major_radius: typing.Optional[typing.Any] = 1.0,
+            minor_radius: typing.Optional[typing.Any] = 0.25,
+            abso_major_rad: typing.Optional[typing.Any] = 1.25,
+            abso_minor_rad: typing.Optional[typing.Any] = 0.75,
+            generate_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
         ):
             global mockBpy
             mockBpy.data.create_mesh_object(
                 "Torus",
                 "Torus",
-                [],)
+                [],
+            )
 
         @staticmethod
         def primitive_uv_sphere_add(
-                segments: typing.Optional[typing.Any] = 32,
-                ring_count: typing.Optional[typing.Any] = 16,
-                radius: typing.Optional[typing.Any] = 1.0,
-                calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
-                enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
-                align: typing.Optional[typing.Any] = "WORLD",
-                location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            segments: typing.Optional[typing.Any] = 32,
+            ring_count: typing.Optional[typing.Any] = 16,
+            radius: typing.Optional[typing.Any] = 1.0,
+            calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
+            align: typing.Optional[typing.Any] = "WORLD",
+            location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
         ):
             global mockBpy
             mockBpy.data.create_mesh_object(
                 "Sphere",
                 "Sphere",
-                [],)
+                [],
+            )
+
         @staticmethod
         def primitive_circle_add(
-
-                vertices: typing.Optional[typing.Any] = 32,
-                radius: typing.Optional[typing.Any] = 1.0,
-                fill_type: typing.Optional[typing.Any] = "NOTHING",
-                calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
-                enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
-                align: typing.Optional[typing.Any] = "WORLD",
-                location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
-                scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            vertices: typing.Optional[typing.Any] = 32,
+            radius: typing.Optional[typing.Any] = 1.0,
+            fill_type: typing.Optional[typing.Any] = "NOTHING",
+            calc_uvs: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            enter_editmode: typing.Optional[typing.Union[bool, typing.Any]] = False,
+            align: typing.Optional[typing.Any] = "WORLD",
+            location: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            rotation: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
+            scale: typing.Optional[typing.Any] = (0.0, 0.0, 0.0),
         ):
             global mockBpy
             mockBpy.data.create_mesh_object(
                 "Circle",
                 "Circle",
-                [],)
+                [],
+            )
+
         @staticmethod
         def primitive_gear(
             name,
@@ -768,6 +755,26 @@ class Ops:
             )
 
         @staticmethod
+        def primitive_cylinder_add(
+            vertices: Optional[Any] = 32,
+            radius: Optional[Any] = 1.0,
+            depth: Optional[Any] = 2.0,
+            end_fill_type: Optional[Any] = "NGON",
+            calc_uvs: Optional[Union[bool, Any]] = True,
+            enter_editmode: Optional[Union[bool, Any]] = False,
+            align: Optional[Any] = "WORLD",
+            location: Optional[Any] = (0.0, 0.0, 0.0),
+            rotation: Optional[Any] = (0.0, 0.0, 0.0),
+            scale: Optional[Any] = (0.0, 0.0, 0.0),
+        ):
+            global mockBpy
+            mockBpy.data.create_mesh_object(
+                "Cylinder",
+                "Cylinder",
+                [],
+            )
+
+        @staticmethod
         def primitive_cube_add(
             size: Optional[Any] = 2.0,
             location: Optional[Any] = (0.0, 0.0, 0.0),
@@ -794,11 +801,38 @@ class Ops:
             )
 
 
+class Region:
+    def __init__(self, type) -> None:
+        self.type = type
+
+
+class Area:
+    regions = [Region("WINDOW")]
+
+    def __init__(self, type) -> None:
+        self.type = type
+
+
+class Screen:
+    areas = [Area("VIEW_3D")]
+
+
+class Window:
+    screen = Screen()
+
+
+class WindowManager:
+    windows = [Window()]
+
+
 class Context:
-    class Preferences():
+    class Preferences:
         addons = {}
 
     preferences = Preferences()
+
+    window_manager = WindowManager()
+
     @property
     def default_user_collection(self):
         global mockBpy
@@ -809,6 +843,9 @@ class Context:
 
     def evaluated_depsgraph_get(self):
         pass
+
+    def temp_override(self, window=None, area=None, region=None, **kwargs):
+        return self
 
     class ViewLayer:
         def update(self):

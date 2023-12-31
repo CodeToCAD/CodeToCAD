@@ -1,6 +1,6 @@
 from typing import Optional
 
-from codetocad.interfaces import PartInterface, EntityInterface, LandmarkInterface
+from codetocad.interfaces import PartInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
