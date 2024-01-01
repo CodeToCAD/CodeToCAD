@@ -8,35 +8,43 @@ from unittest import skip
 from .test_helper import *
 from codetocad.tests_interfaces import SketchTestInterface
 
+import math
 
 class SketchTest(TestProviderCase, SketchTestInterface):
-    @skip("TODO")
+    # @skip("TODO")
     def test_mirror(self):
-        instance = Sketch()
+
+        instance = Sketch("mySketch")
+
+        instance.create_rectangle(length=5, width=5)
 
         value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+            mirror_across_entity="mySketch", axis=1,
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_linear_pattern(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.linear_pattern(instance_count=2, offset=2)
 
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_circular_pattern(self):
-        instance = Sketch()
+    def test_circular_pattern(self): # TypeError
+        instance = Sketch("mySketch")
+
+        instance.create_rectangle(length=5, width=5)
 
         value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
+            instance_count=2,
+            separation_angle=math.pi,
+            center_entity_or_landmark="mySketch",
+            normal_direction_axis="z",
         )
 
         assert value, "Modify method failed."
@@ -49,121 +57,151 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_export(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.export("file_path", "overwrite", "scale")
+        instance.create_rectangle(length=5, width=5)
 
-    @skip("TODO")
+        value = instance.export(file_path="my-sketch-exported.stl")
+
+        assert value.is_exists(), "Create method failed."
+
+    # @skip("TODO")
     def test_scale_xyz(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_xyz("x", "y", "z")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_xyz(x=0.5, y=0.5, z=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_x(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_x("scale")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_x(scale=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_y(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_y("scale")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_y(scale=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_z(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_z("scale")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_z(scale=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_x_by_factor(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_x_by_factor("scale_factor")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_x_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_y_by_factor(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_y_by_factor("scale_factor")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_y_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_z_by_factor(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_z_by_factor("scale_factor")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.scale_z_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_keep_aspect_ratio(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.scale_keep_aspect_ratio("scale", "axis")
+        instance.create_rectangle(length=5, width=5)
 
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_clone(self):
-        instance = Sketch()
-
-        value = instance.clone("new_name", "copy_landmarks")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_revolve(self):
-        instance = Sketch()
-
-        value = instance.revolve("angle", "about_entity_or_landmark", "axis")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_twist(self):
-        instance = Sketch()
-
-        value = instance.twist("angle", "screw_pitch", "iterations", "axis")
+        value = instance.scale_keep_aspect_ratio(scale=2, axis=1)
 
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_extrude(self):
-        instance = Sketch()
+    def test_clone(self): # None type object has no attribute name
+        instance = Sketch("mySketch")
 
-        value = instance.extrude("length")
+        instance.create_rectangle(length=5, width=5)
 
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_sweep(self):
-        instance = Sketch()
-
-        value = instance.sweep("profile_name_or_instance", "fill_cap")
+        value = instance.clone(new_name="myCloneSketch")
 
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_offset(self):
-        instance = Sketch()
+    def test_revolve(self): # meshes error
+        instance = Sketch("mySketch")
 
-        value = instance.offset("radius")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.revolve(angle=math.pi, about_entity_or_landmark="mySketch", axis=2)
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_twist(self): # not know implement
+        instance = Sketch("mySketch")
+
+        value = instance.twist(angle=30, screw_pitch=5, iterations=10,)
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_extrude(self): # meshes error
+        instance = Sketch("mySketch")
+
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.extrude(length=5)
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_sweep(self): # Meshes error
+        instance = Sketch("mySketch")
+
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.sweep(profile_name_or_instance="mySketch",)
+
+        assert value, "Get method failed."
+
+    # @skip("TODO")
+    def test_offset(self): # Curves.get() missing 1 required positional argument: 'default'
+        instance = Sketch("mySketch")
+
+        instance.create_circle(radius=5)
+
+        value = instance.offset(radius=2)
 
         assert value, "Modify method failed."
 
@@ -177,77 +215,68 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
     @skip("TODO")
     def test_create_text(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
         value = instance.create_text(
-            "text",
-            "font_size",
-            "bold",
-            "italic",
-            "underlined",
-            "character_spacing",
-            "word_spacing",
-            "line_spacing",
-            "font_file_path",
-        )
+            text="sketch-text-test",)
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_from_vertices(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.create_from_vertices("points", "interpolation")
+        instance.create_from_vertices(points=[(0,2,0), (2,2,0), (2,0,0),(0,0,0), (0,2,0)])
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_point(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.create_point("point")
+        instance.create_point(point=(0, 0, 0))
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
+    # def test_create_line(self):
+    #     instance = Sketch()
+    #
+    #     value = instance.create_line("length", "angle_x", "angle_y", "symmetric")
+    #
+    #     assert value.is_exists(), "Create method failed."
+
+    # @skip("TODO")
     def test_create_line(self):
-        instance = Sketch()
+        instance = Sketch("mySketch")
 
-        value = instance.create_line("length", "angle_x", "angle_y", "symmetric")
+        instance.create_line(end_at=(0,5,0), start_at=(5,10,0))
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
-    @skip("TODO")
-    def test_create_line(self):
-        instance = Sketch()
-
-        value = instance.create_line("end_at", "start_at")
-
-        assert value.is_exists(), "Create method failed."
-
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_circle(self):
-        instance = Sketch()
+        instance = Sketch("myCircle")
 
-        value = instance.create_circle("radius")
+        instance.create_circle(radius="5mm")
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_ellipse(self):
-        instance = Sketch()
+        instance = Sketch("Ellipse")
 
-        value = instance.create_ellipse("radius_a", "radius_b")
+        instance.create_ellipse(radius_major=5, radius_minor=2)
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_arc(self):
-        instance = Sketch()
+        instance = Sketch("myArc")
 
-        value = instance.create_arc("radius", "angle")
+        instance.create_arc(start_at=(0, 0, 0), end_at=(5, 0, 0), radius=2.5)
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_create_arc_between_three_points(self):
@@ -267,13 +296,13 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_rectangle(self):
-        instance = Sketch()
+        instance = Sketch("myRectangle")
 
-        value = instance.create_rectangle("length", "width")
+        instance.create_rectangle(length=5, width=10)
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_create_polygon(self):

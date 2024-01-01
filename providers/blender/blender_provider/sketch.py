@@ -10,7 +10,7 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
 
 from . import blender_actions, blender_definitions, implementables
 
-from codetocad.interfaces import SketchInterface, PartInterface, VertexInterface
+from codetocad.interfaces import SketchInterface, PartInterface, VertexInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

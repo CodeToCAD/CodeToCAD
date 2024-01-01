@@ -37,6 +37,17 @@ class Vector:
     def z(self):
         return self.vector[2]
 
+    @property
+    def xyz(self):
+        return Vector(self.vector.tolist()[:2])
+
+    @property
+    def length(self):
+        sum = 0
+        for value in self.vector.tolist():
+            sum += pow(value, 2)
+        return pow(sum, 1/2)
+
     def to_1x4(self):
         vector = np.ones((1, 4))
         vector[0, : self.vector.shape[0]] = self.vector
