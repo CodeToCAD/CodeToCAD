@@ -7,7 +7,7 @@ twine
 jinja2-cli
 
 # Blender Development Dependencies:
-fake-bpy-module-latest
+fake-bpy-module-latest==20231025
 numpy
 
 # Onshape Development Dependencies:
