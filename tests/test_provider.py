@@ -10,7 +10,7 @@ from mock.modeling.mock_modeling_provider import (
 from codetocad import *
 from codetocad.utilities import Dimension, center, max, min
 from providers.blender.blender_provider import *
-
+from providers.blender.blender_provider.blender_definitions import BlenderCurveTypes, CurveTypes
 
 def injectMockProvider():
     reset_mock_modeling_provider()

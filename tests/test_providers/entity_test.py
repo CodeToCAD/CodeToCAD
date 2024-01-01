@@ -10,85 +10,107 @@ from codetocad.tests_interfaces import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):
-    @skip("TODO")
+    # @skip("TODO")
     def test_is_exists(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.is_exists("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.is_exists()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_rename(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.rename("new_name", "renamelinked_entities_and_landmarks")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.rename("changeSketchName",)# "renamelinked_entities_and_landmarks")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_delete(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
+
+        instance.create_rectangle(length=5, width=5)
 
         value = instance.delete("remove_children")
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_is_visible(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.is_visible("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.is_visible()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_set_visible(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.set_visible("is_visible")
+        instance.create_rectangle(length=5, width=5)
 
-    @skip("TODO")
+        value = instance.set_visible(is_visible=False)
+
+    # @skip("TODO")
     def test_apply(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.apply("rotation", "scale", "location", "modifiers")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.apply() #"rotation", "scale", "location", "modifiers")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_get_native_instance(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.get_native_instance("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.get_native_instance()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_get_location_world(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.get_location_world("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.get_location_world()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_get_location_local(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.get_location_local("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.get_location_local()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_select(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.select("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.select()
 
     @skip("TODO")
-    def test_translate_xyz(self):
-        instance = Entity()
+    def test_translate_xyz(self): # TypeError
+        instance = Sketch("mySketch")
 
-        value = instance.translate_xyz("x", "y", "z")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.translate_xyz(x=1, y=2, z=3)
 
         assert value, "Modify method failed."
 
@@ -149,33 +171,43 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_get_bounding_box(self):
-        instance = Entity()
+    def test_get_bounding_box(self): # TypeError
+        instance = Sketch("mySketch")
 
-        value = instance.get_bounding_box("")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.get_bounding_box()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_get_dimensions(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.get_dimensions("")
+        instance.create_rectangle(length=5, width=5)
 
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_create_landmark(self):
-        instance = Entity()
-
-        value = instance.create_landmark("landmark_name", "x", "y", "z")
+        value = instance.get_dimensions()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
+    def test_create_landmark(self): # TypeError
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
+
+        value = instance.create_landmark(landmark_name="test-lm", x=1, y=2, z=3)
+
+        assert value, "Get method failed."
+
+    # @skip("TODO")
     def test_get_landmark(self):
-        instance = Entity()
+        instance = Part("myCube")
 
-        value = instance.get_landmark("landmark_name")
+        instance.create_cube(1, 1, 1)
+
+        instance.create_landmark(landmark_name="test-lm", x=1, y=2, z=3)
+
+        value = instance.get_landmark("test-lm")
 
         assert value, "Get method failed."

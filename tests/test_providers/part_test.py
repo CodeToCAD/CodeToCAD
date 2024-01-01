@@ -7,36 +7,42 @@ from unittest import skip
 
 from .test_helper import *
 from codetocad.tests_interfaces import PartTestInterface
-
+import math
 
 class PartTest(TestProviderCase, PartTestInterface):
-    @skip("TODO")
+    # @skip("TODO")
     def test_mirror(self):
-        instance = Part()
+        instance = Part("myPart")
+
+        instance.create_cylinder(radius=5, height=20, )
 
         value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+            mirror_across_entity="myPart", axis="z"
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_linear_pattern(self):
-        instance = Part()
+        instance = Part("myPart")
 
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+        instance.create_cylinder(radius=5, height=20, )
+
+        value = instance.linear_pattern(instance_count=2, offset=2,)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_circular_pattern(self):
-        instance = Part()
+        instance = Part("myPart")
+
+        value = instance.create_cube(1, 1, 1)
 
         value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
+            instance_count=2,
+            separation_angle=math.pi,
+            center_entity_or_landmark="myPart",
+            # "normal_direction_axis",
         )
 
         assert value, "Modify method failed."
@@ -50,10 +56,12 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_subdivide(self):
-        instance = Part()
+    def test_subdivide(self): # NotImplemented
+        instance = Part("myCube")
 
-        value = instance.subdivide("amount")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.subdivide(amount=10)
 
         assert value, "Modify method failed."
 
@@ -73,73 +81,91 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_export(self):
-        instance = Part()
+        instance = Part("myPart")
 
-        value = instance.export("file_path", "overwrite", "scale")
+        instance.create_cylinder(radius=5, height=20, )
 
-    @skip("TODO")
+        value = instance.export(file_path="part-export-test.stl", )
+
+    # @skip("TODO")
     def test_scale_xyz(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_xyz("x", "y", "z")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_xyz(x=1, y=0.5, z=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_x(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_x("scale")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_x(scale=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_y(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_y("scale")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_y(scale=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_z(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_z("scale")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_z(scale=3)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_x_by_factor(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_x_by_factor("scale_factor")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_x_by_factor(scale_factor=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_y_by_factor(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_y_by_factor("scale_factor")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_y_by_factor(scale_factor=2.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_z_by_factor(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_z_by_factor("scale_factor")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_z_by_factor(scale_factor=1.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_scale_keep_aspect_ratio(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.scale_keep_aspect_ratio("scale", "axis")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.scale_keep_aspect_ratio(scale=2, axis='z')
 
         assert value, "Modify method failed."
 
@@ -150,185 +176,225 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_cone(self):
-        instance = Part()
+        instance = Part("myPart")
 
         value = instance.create_cone(
-            "radius", "height", "draft_radius", "keyword_arguments"
+            radius=10, height=5, draft_radius=5, #"keyword_arguments"
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_cylinder(self):
-        instance = Part()
+        instance = Part("myPart")
 
-        value = instance.create_cylinder("radius", "height", "keyword_arguments")
+        value = instance.create_cylinder(radius=5, height=20, )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_torus(self):
-        instance = Part()
+        instance = Part("myPart")
 
         value = instance.create_torus(
-            "inner_radius", "outer_radius", "keyword_arguments"
+            inner_radius=3, outer_radius=7,# "keyword_arguments"
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_sphere(self):
-        instance = Part()
+        instance = Part("myPart")
 
-        value = instance.create_sphere("radius", "keyword_arguments")
+        value = instance.create_sphere(radius=5,)# "keyword_arguments")
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_create_gear(self):
-        instance = Part()
+        instance = Part("myPart")
 
         value = instance.create_gear(
-            "outer_radius",
-            "addendum",
-            "inner_radius",
-            "dedendum",
-            "height",
-            "pressure_angle",
-            "number_of_teeth",
-            "skew_angle",
-            "conical_angle",
-            "crown_angle",
-            "keyword_arguments",
+            outer_radius=50,
+            addendum=5,
+            inner_radius=35,
+            dedendum=12,
+            height=5,
+            # "pressure_angle",
+            # "number_of_teeth",
+            # "skew_angle",
+            # "conical_angle",
+            # "crown_angle",
+            # "keyword_arguments",
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_clone(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.clone("new_name", "copy_landmarks")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.clone("myCubeClone",)
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_union(self):
-        instance = Part()
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
+
+        instance2 = Part("myCylinder")
+
+        instance2.create_cylinder(radius=5, height=10)
 
         value = instance.union(
-            "with_part", "delete_after_union", "is_transfer_landmarks"
+            with_part="myCylinder", #"delete_after_union", "is_transfer_landmarks"
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_subtract(self):
-        instance = Part()
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
+
+        instance2 = Part("myCylinder")
+
+        instance2.create_cylinder(radius=5, height=10)
 
         value = instance.subtract(
-            "with_part", "delete_after_subtract", "is_transfer_landmarks"
+            with_part="myCylinder", #"delete_after_subtract", "is_transfer_landmarks"
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_intersect(self):
-        instance = Part()
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
+
+        instance2 = Part("myCylinder")
+
+        instance2.create_cylinder(radius=5, height=10)
 
         value = instance.intersect(
-            "with_part", "delete_after_intersect", "is_transfer_landmarks"
+            with_part="myCylinder",# "delete_after_intersect", "is_transfer_landmarks"
         )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_hollow(self):
-        instance = Part()
+    def test_hollow(self): # Object myCube_f7272a513a does not exists
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
 
         value = instance.hollow(
-            "thickness_x", "thickness_y", "thickness_z", "start_axis", "flip_axis"
+            thickness_x=0.5, thickness_y=0.5, thickness_z=0.5, #"start_axis", "flip_axis"
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_thicken(self):
-        instance = Part()
+        instance = Part("myCylinder")
 
-        value = instance.thicken("radius")
+        instance.create_cylinder(radius=5, height=10)
+
+        value = instance.thicken(radius=1)
 
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_hole(self):
-        instance = Part()
+    def test_hole(self): # zero-size array to reduction operation minimum which has no identity
+        instance = Part("myCylinder")
+
+        instance.create_cylinder(radius=5, height=10)
 
         value = instance.hole(
-            "hole_landmark",
-            "radius",
-            "depth",
-            "normal_axis",
-            "flip_axis",
-            "initial_rotation_x",
-            "initial_rotation_y",
-            "initial_rotation_z",
-            "mirror_about_entity_or_landmark",
-            "mirror_axis",
-            "mirror",
-            "circular_pattern_instance_count",
-            "circular_pattern_instance_separation",
-            "circular_pattern_instance_axis",
-            "circular_pattern_about_entity_or_landmark",
-            "linear_pattern_instance_count",
-            "linear_pattern_instance_separation",
-            "linear_pattern_instance_axis",
-            "linear_pattern2nd_instance_count",
-            "linear_pattern2nd_instance_separation",
-            "linear_pattern2nd_instance_axis",
+            hole_landmark="myCube",
+            radius=2,
+            depth=3,
+            # "normal_axis",
+            # "flip_axis",
+            # "initial_rotation_x",
+            # "initial_rotation_y",
+            # "initial_rotation_z",
+            # "mirror_about_entity_or_landmark",
+            # "mirror_axis",
+            # "mirror",
+            # "circular_pattern_instance_count",
+            # "circular_pattern_instance_separation",
+            # "circular_pattern_instance_axis",
+            # "circular_pattern_about_entity_or_landmark",
+            # "linear_pattern_instance_count",
+            # "linear_pattern_instance_separation",
+            # "linear_pattern_instance_axis",
+            # "linear_pattern2nd_instance_count",
+            # "linear_pattern2nd_instance_separation",
+            # "linear_pattern2nd_instance_axis",
         )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_twist(self):
-        instance = Part()
+        instance = Part("myScrew")
 
-        value = instance.twist("angle", "screw_pitch", "iterations", "axis")
+        value = instance.twist(angle=30, screw_pitch=5, iterations=10,)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_set_material(self):
-        instance = Part()
+        instance = Part("myCylinder")
 
-        value = instance.set_material("material_name")
+        instance.create_cylinder(radius=5, height=10)
+
+        value = instance.set_material(material_name="test-material")
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_is_colliding_with_part(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.is_colliding_with_part("other_part")
+        instance.create_cube(1, 1, 1)
+
+        instance2 = Part("myCylinder")
+
+        instance2.create_cylinder(radius=5, height=10)
+
+        value = instance.is_colliding_with_part(other_part="myCylinder")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_fillet_all_edges(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.fillet_all_edges("radius", "use_width")
+        instance.create_cube(5, 5, 5)
+
+        value = instance.fillet_all_edges(radius=0.2, )# "use_width")
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_fillet_edges(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.fillet_edges("radius", "landmarks_near_edges", "use_width")
+        instance.create_cube(1, 1, 1)
+
+        instance.create_landmark(x=0.5, y=0.5, z=0.5, landmark_name="fillet-ref-lm")
+
+        value = instance.fillet_edges(radius=0.1, landmarks_near_edges=["fillet-ref-lm"],)# "use_width")
 
         assert value, "Modify method failed."
 
@@ -340,11 +406,13 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    # @skip("TODO")
     def test_chamfer_all_edges(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.chamfer_all_edges("radius")
+        instance.create_cube(5, 5, 5)
+
+        value = instance.chamfer_all_edges(radius=2)
 
         assert value, "Modify method failed."
 
@@ -366,7 +434,9 @@ class PartTest(TestProviderCase, PartTestInterface):
 
     @skip("TODO")
     def test_select_vertex_near_landmark(self):
-        instance = Part()
+        instance = Part("myCube")
+
+        instance.create_cube(5, 5, 5)
 
         value = instance.select_vertex_near_landmark("landmark_name")
 
