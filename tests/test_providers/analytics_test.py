@@ -10,6 +10,7 @@ from codetocad.tests_interfaces import AnalyticsTestInterface
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
+    
     def test_measure_distance(self):
         instance = Sketch("mySketch")
 

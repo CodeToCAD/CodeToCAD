@@ -137,7 +137,6 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "Part":
         from . import Part
-
         print("revolve called:", angle, about_entity_or_landmark, axis)
         return Part("a part")
 
