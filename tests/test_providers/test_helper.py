@@ -1,6 +1,5 @@
 import unittest
-
-from providers.blender.blender_provider import *
+from codetocad.providers_sample import *
 
 from mock.modeling.mock_modeling_provider import (
     inject_mock_modeling_provider,
@@ -15,5 +14,5 @@ def injectMockProvider():
 
 class TestProviderCase(unittest.TestCase):
     def setUp(self) -> None:
-        injectMockProvider()
+        # injectMockProvider()
         super().setUp()

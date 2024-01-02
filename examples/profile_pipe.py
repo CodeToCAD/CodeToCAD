@@ -12,7 +12,7 @@ Pipe is 1/4" thick.
                |------------18.5"------------|
 """
 
-profile = [
+profile_vertices = [
     [0, 0, 0],  # start A
     "2,1,0,in",  # B
     # "21.5/2,1,0,in", #midpoint C
@@ -20,6 +20,10 @@ profile = [
     "21.5,0,0,in",  # end E
 ]
 
-Sketch("circle").create_circle("1in").set_visible(False)
+circle = Sketch("circle")
+circle.create_circle("1in")
+circle.set_visible(False)
 
-Sketch("profile").create_from_vertices(profile).sweep("circle")
+profile = Sketch("profile")
+profile.create_from_vertices(profile_vertices)
+profile.sweep("circle", fill_cap=False)

@@ -33,13 +33,22 @@ class Scene(SceneInterface):
         return Scene()
 
     def create(self):
+        print(
+            "create called:",
+        )
         return self
 
     def delete(self):
+        print(
+            "delete called:",
+        )
         return self
 
     def get_selected_entity(self) -> "Entity":
-        raise NotImplementedError()
+        print(
+            "get_selected_entity called:",
+        )
+        return Entity("an entity")
 
     def export(
         self,
@@ -48,18 +57,23 @@ class Scene(SceneInterface):
         overwrite: bool = True,
         scale: float = 1.0,
     ):
+        print("export called:", file_path, entities, overwrite, scale)
         return self
 
     def set_default_unit(self, unit: LengthUnitOrItsName):
+        print("set_default_unit called:", unit)
         return self
 
     def create_group(self, name: str):
+        print("create_group called:", name)
         return self
 
     def delete_group(self, name: str, remove_children: bool):
+        print("delete_group called:", name, remove_children)
         return self
 
     def remove_from_group(self, entity_name: str, group_name: str):
+        print("remove_from_group called:", entity_name, group_name)
         return self
 
     def assign_to_group(
@@ -68,9 +82,11 @@ class Scene(SceneInterface):
         group_name: str,
         remove_from_other_groups: Optional[bool] = True,
     ):
+        print("assign_to_group called:", entities, group_name, remove_from_other_groups)
         return self
 
     def set_visible(self, entities: list[EntityOrItsName], is_visible: bool):
+        print("set_visible called:", entities, is_visible)
         return self
 
     def set_background_image(
@@ -79,4 +95,5 @@ class Scene(SceneInterface):
         location_x: Optional[DimensionOrItsFloatOrStringValue] = 0,
         location_y: Optional[DimensionOrItsFloatOrStringValue] = 0,
     ):
+        print("set_background_image called:", file_path, location_x, location_y)
         return self

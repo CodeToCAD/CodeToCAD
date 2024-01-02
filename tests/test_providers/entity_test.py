@@ -10,7 +10,6 @@ from codetocad.tests_interfaces import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):
-    # @skip("TODO")
     def test_is_exists(self):
         instance = Sketch("mySketch")
 
@@ -20,17 +19,18 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_rename(self):
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
 
-        value = instance.rename("changeSketchName",)# "renamelinked_entities_and_landmarks")
+        # "renamelinked_entities_and_landmarks")
+        value = instance.rename(
+            "changeSketchName",
+        )
 
         assert value, "Modify method failed."
 
-    # @skip("TODO")
     def test_delete(self):
         instance = Sketch("mySketch")
 
@@ -38,7 +38,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         value = instance.delete("remove_children")
 
-    # @skip("TODO")
     def test_is_visible(self):
         instance = Sketch("mySketch")
 
@@ -48,7 +47,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_set_visible(self):
         instance = Sketch("mySketch")
 
@@ -56,17 +54,15 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         value = instance.set_visible(is_visible=False)
 
-    # @skip("TODO")
     def test_apply(self):
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
 
-        value = instance.apply() #"rotation", "scale", "location", "modifiers")
+        value = instance.apply()  # "rotation", "scale", "location", "modifiers")
 
         assert value, "Modify method failed."
 
-    # @skip("TODO")
     def test_get_native_instance(self):
         instance = Sketch("mySketch")
 
@@ -76,7 +72,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_get_location_world(self):
         instance = Sketch("mySketch")
 
@@ -86,7 +81,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_get_location_local(self):
         instance = Sketch("mySketch")
 
@@ -96,7 +90,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_select(self):
         instance = Sketch("mySketch")
 
@@ -105,7 +98,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         value = instance.select()
 
     @skip("TODO")
-    def test_translate_xyz(self): # TypeError
+    def test_translate_xyz(self):  # TypeError
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
@@ -171,7 +164,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
-    def test_get_bounding_box(self): # TypeError
+    def test_get_bounding_box(self):  # TypeError
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
@@ -180,7 +173,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_get_dimensions(self):
         instance = Sketch("mySketch")
 
@@ -190,8 +182,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
-    def test_create_landmark(self): # TypeError
+    def test_create_landmark(self):  # TypeError
         instance = Part("myCube")
 
         instance.create_cube(1, 1, 1)
@@ -200,7 +191,6 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    # @skip("TODO")
     def test_get_landmark(self):
         instance = Part("myCube")
 

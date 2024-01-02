@@ -32,18 +32,27 @@ class Entity(EntityInterface):
         self.native_instance = native_instance
 
     def is_exists(self) -> bool:
-        raise NotImplementedError()
+        print(
+            "is_exists called:",
+        )
+        return True
 
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True):
+        print("rename called:", new_name, renamelinked_entities_and_landmarks)
         return self
 
     def delete(self, remove_children: bool = True):
+        print("delete called:", remove_children)
         return self
 
     def is_visible(self) -> bool:
-        raise NotImplementedError()
+        print(
+            "is_visible called:",
+        )
+        return True
 
     def set_visible(self, is_visible: bool):
+        print("set_visible called:", is_visible)
         return self
 
     def apply(
@@ -53,18 +62,31 @@ class Entity(EntityInterface):
         location: bool = False,
         modifiers: bool = True,
     ):
+        print("apply called:", rotation, scale, location, modifiers)
         return self
 
     def get_native_instance(self) -> object:
-        raise NotImplementedError()
+        print(
+            "get_native_instance called:",
+        )
+        return "instance"
 
     def get_location_world(self) -> "Point":
-        raise NotImplementedError()
+        print(
+            "get_location_world called:",
+        )
+        return Point.from_list_of_float_or_string([0, 0, 0])
 
     def get_location_local(self) -> "Point":
-        raise NotImplementedError()
+        print(
+            "get_location_local called:",
+        )
+        return Point.from_list_of_float_or_string([0, 0, 0])
 
     def select(self):
+        print(
+            "select called:",
+        )
         return self
 
     def translate_xyz(
@@ -73,15 +95,19 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
+        print("translate_xyz called:", x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
+        print("translate_x called:", amount)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
+        print("translate_y called:", amount)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
+        print("translate_z called:", amount)
         return self
 
     def rotate_xyz(
@@ -90,31 +116,47 @@ class Entity(EntityInterface):
         y: AngleOrItsFloatOrStringValue,
         z: AngleOrItsFloatOrStringValue,
     ):
+        print("rotate_xyz called:", x, y, z)
         return self
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
+        print("rotate_x called:", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
+        print("rotate_y called:", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
+        print("rotate_z called:", rotation)
         return self
 
     def get_bounding_box(self) -> "BoundaryBox":
-        raise NotImplementedError()
+        print(
+            "get_bounding_box called:",
+        )
+        return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
 
     def get_dimensions(self) -> "Dimensions":
-        raise NotImplementedError()
+        print(
+            "get_dimensions called:",
+        )
+        return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
     def create_landmark(
         self,
-        landmark_name: str,
+        landmark_name: "str",
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
-        raise NotImplementedError()
+        from . import Landmark
+
+        print("create_landmark called:", landmark_name, x, y, z)
+        return Landmark("name", "parent")
 
     def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
-        raise NotImplementedError()
+        from . import Landmark
+
+        print("get_landmark called:", landmark_name)
+        return Landmark("name", "parent")

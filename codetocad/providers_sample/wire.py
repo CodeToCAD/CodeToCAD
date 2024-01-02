@@ -31,6 +31,9 @@ class Wire(Entity, WireInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
+        print(
+            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
         return self
 
     def linear_pattern(
@@ -39,6 +42,7 @@ class Wire(Entity, WireInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print("linear_pattern called:", instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
@@ -48,10 +52,18 @@ class Wire(Entity, WireInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print(
+            "circular_pattern called:",
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
         return self
 
     def project(self, project_onto: "Sketch") -> "Projectable":
-        raise NotImplementedError()
+        print("project called:", project_onto)
+        return Sketch("a projected sketch")
 
     edges: "list[Edge]"
     parent_entity: Optional[EntityOrItsName] = None
@@ -74,10 +86,17 @@ class Wire(Entity, WireInterface):
         self.native_instance = native_instance
 
     def get_vertices(self) -> "list[Vertex]":
-        raise NotImplementedError()
+        print(
+            "get_vertices called:",
+        )
+        return None
 
     def is_closed(self) -> bool:
-        raise NotImplementedError()
+        print(
+            "is_closed called:",
+        )
+        return True
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
-        raise NotImplementedError()
+        print("loft called:", other, new_part_name)
+        return Part("a part")

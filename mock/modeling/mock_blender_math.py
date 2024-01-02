@@ -6,55 +6,55 @@ import numpy as np
 
 def get_numpy_array_from_vector_or_matrix(vector_or_matrix):
     if isinstance(vector_or_matrix, Vector):
-        return vector_or_matrix.vector
+        return vector_or_matrix._vector
     if isinstance(vector_or_matrix, Matrix):
         return vector_or_matrix.matrix
     if isinstance(vector_or_matrix, Quaternion):
-        return vector_or_matrix.to_vector().vector
+        return vector_or_matrix.to_vector()._vector
     return vector_or_matrix
 
 
 class Vector:
-    vector: np.ndarray
+    _vector: np.ndarray
 
     def __init__(
         self,
         vector: Union[tuple[float, float, float], tuple[float, float, float, float]],
     ) -> None:
-        self.vector = np.array(vector, dtype=float)
+        self._vector = np.array(vector, dtype=float)
 
         self.iteratorIndex = 0
 
     @property
     def x(self):
-        return self.vector[0]
+        return self._vector[0]
 
     @property
     def y(self):
-        return self.vector[1]
+        return self._vector[1]
 
     @property
     def z(self):
-        return self.vector[2]
+        return self._vector[2]
 
     @property
     def xyz(self):
-        return Vector(self.vector.tolist()[:2])
+        return Vector(self._vector.tolist()[:2])
 
     @property
     def length(self):
         sum = 0
-        for value in self.vector.tolist():
+        for value in self._vector.tolist():
             sum += pow(value, 2)
-        return pow(sum, 1/2)
+        return pow(sum, 1 / 2)
 
     def to_1x4(self):
         vector = np.ones((1, 4))
-        vector[0, : self.vector.shape[0]] = self.vector
+        vector[0, : self._vector.shape[0]] = self._vector
         return Vector(vector.tolist())
 
     def to_1x3(self):
-        self.vector = self.vector[0, :3]
+        self._vector = self._vector[0, :3]
         return self
 
     def __iter__(self):
@@ -75,42 +75,44 @@ class Vector:
         return (self.x, self.y, self.z)
 
     def __sizeof__(self) -> int:
-        return self.vector.size
+        return self._vector.size
 
     def __len__(self) -> int:
         return self.__sizeof__()
 
     def __add__(self, other):
         return Vector(
-            np.add(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist()
+            np.add(self._vector, get_numpy_array_from_vector_or_matrix(other)).tolist()
         )
 
     def __sub__(self, other):
         return Vector(
             np.subtract(
-                self.vector, get_numpy_array_from_vector_or_matrix(other)
+                self._vector, get_numpy_array_from_vector_or_matrix(other)
             ).tolist()
         )
 
     def __mul__(self, other):
         return Vector(
             np.multiply(
-                self.vector, get_numpy_array_from_vector_or_matrix(other)
+                self._vector, get_numpy_array_from_vector_or_matrix(other)
             ).tolist()
         )
 
     def __pow__(self, other, mod=None):
         return Vector(
-            np.power(self.vector, get_numpy_array_from_vector_or_matrix(other)).tolist()
+            np.power(
+                self._vector, get_numpy_array_from_vector_or_matrix(other)
+            ).tolist()
         )
 
     def __abs__(self):
-        return Vector(np.abs(self.vector).tolist())
+        return Vector(np.abs(self._vector).tolist())
 
     def __matmul__(self, other):
         return Vector(
             np.matmul(
-                self.vector, get_numpy_array_from_vector_or_matrix(other)
+                self._vector, get_numpy_array_from_vector_or_matrix(other)
             ).tolist()
         )
 
@@ -124,10 +126,10 @@ class Vector:
         return self.__deepcopy__()
 
     def __getitem__(self, key):
-        return self.vector[key]
+        return self._vector[key]
 
     def rotate(self, quat: "Quaternion"):
-        self.vector = (self @ quat.to_matrix()).vector
+        self._vector = (self @ quat.to_matrix())._vector
 
     def __str__(self):
         return f"""x   y   z
@@ -181,7 +183,7 @@ class Quaternion:
     def __mul__(self, other):
         return Quaternion(
             np.multiply(
-                self.to_vector().vector, get_numpy_array_from_vector_or_matrix(other)
+                self.to_vector()._vector, get_numpy_array_from_vector_or_matrix(other)
             ).tolist()
         )
 
@@ -253,7 +255,7 @@ class Matrix:
 
     def get_rotation(self):
         # references https://answers.ros.org/question/388140/converting-a-rotation-matrix-to-quaternions-in-python/?answer=388168#post-id-388168
-        m = self.to_3x3().matrix / self.scale_vector.vector
+        m = self.to_3x3().matrix / self.scale_vector._vector
         t = m.trace()
         q = np.asarray([0.0, 0.0, 0.0, 0.0], dtype=np.float64)
 

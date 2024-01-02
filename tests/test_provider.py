@@ -10,7 +10,7 @@ from mock.modeling.mock_modeling_provider import (
 from codetocad import *
 from codetocad.utilities import Dimension, center, max, min
 from providers.blender.blender_provider import *
-from providers.blender.blender_provider.blender_definitions import BlenderCurveTypes, CurveTypes
+
 
 def injectMockProvider():
     reset_mock_modeling_provider()
@@ -764,13 +764,12 @@ class TestSketch(TestProviderCase):
 
         assert value.is_exists(), "Create method failed."
 
-    @unittest.skip("")
     def test_create_circle(self):
-        instance = Sketch("name", "curveType", "description")
+        instance = Sketch("myCircle")
 
-        value = instance.create_circle("radius")
+        instance.create_circle("2mm")
 
-        assert value.is_exists(), "Create method failed."
+        assert instance.is_exists(), "Create method failed."
 
     @unittest.skip("")
     def test_create_ellipse(self):

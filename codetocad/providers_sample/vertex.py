@@ -23,7 +23,8 @@ if TYPE_CHECKING:
 
 class Vertex(Entity, VertexInterface):
     def project(self, project_onto: "Sketch") -> "Projectable":
-        raise NotImplementedError()
+        print("project called:", project_onto)
+        return Sketch("a projected sketch")
 
     location: "Point"
     parent_entity: Optional[EntityOrItsName] = None
@@ -46,4 +47,5 @@ class Vertex(Entity, VertexInterface):
         self.native_instance = native_instance
 
     def get_control_points(self, parameter="") -> "list[Vertex]":
-        raise NotImplementedError()
+        print("get_control_points called:", parameter)
+        return None

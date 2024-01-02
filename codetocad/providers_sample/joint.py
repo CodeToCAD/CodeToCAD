@@ -28,12 +28,19 @@ class Joint(JointInterface):
         self.entity2 = entity2
 
     def translate_landmark_onto_another(self):
+        print(
+            "translate_landmark_onto_another called:",
+        )
         return self
 
     def pivot(self):
+        print(
+            "pivot called:",
+        )
         return self
 
     def gear_ratio(self, ratio: float):
+        print("gear_ratio called:", ratio)
         return self
 
     def limit_location_xyz(
@@ -42,6 +49,7 @@ class Joint(JointInterface):
         y: Optional[DimensionOrItsFloatOrStringValue] = None,
         z: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
+        print("limit_location_xyz called:", x, y, z)
         return self
 
     def limit_location_x(
@@ -49,6 +57,7 @@ class Joint(JointInterface):
         min: Optional[DimensionOrItsFloatOrStringValue] = None,
         max: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
+        print("limit_location_x called:", min, max)
         return self
 
     def limit_location_y(
@@ -56,6 +65,7 @@ class Joint(JointInterface):
         min: Optional[DimensionOrItsFloatOrStringValue] = None,
         max: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
+        print("limit_location_y called:", min, max)
         return self
 
     def limit_location_z(
@@ -63,6 +73,7 @@ class Joint(JointInterface):
         min: Optional[DimensionOrItsFloatOrStringValue] = None,
         max: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
+        print("limit_location_z called:", min, max)
         return self
 
     def limit_rotation_xyz(
@@ -71,6 +82,7 @@ class Joint(JointInterface):
         y: Optional[AngleOrItsFloatOrStringValue] = None,
         z: Optional[AngleOrItsFloatOrStringValue] = None,
     ):
+        print("limit_rotation_xyz called:", x, y, z)
         return self
 
     def limit_rotation_x(
@@ -78,6 +90,7 @@ class Joint(JointInterface):
         min: Optional[AngleOrItsFloatOrStringValue] = None,
         max: Optional[AngleOrItsFloatOrStringValue] = None,
     ):
+        print("limit_rotation_x called:", min, max)
         return self
 
     def limit_rotation_y(
@@ -85,6 +98,7 @@ class Joint(JointInterface):
         min: Optional[AngleOrItsFloatOrStringValue] = None,
         max: Optional[AngleOrItsFloatOrStringValue] = None,
     ):
+        print("limit_rotation_y called:", min, max)
         return self
 
     def limit_rotation_z(
@@ -92,4 +106,5 @@ class Joint(JointInterface):
         min: Optional[AngleOrItsFloatOrStringValue] = None,
         max: Optional[AngleOrItsFloatOrStringValue] = None,
     ):
+        print("limit_rotation_z called:", min, max)
         return self

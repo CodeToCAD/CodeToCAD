@@ -28,16 +28,21 @@ class Animation(AnimationInterface):
         return Animation()
 
     def set_frame_start(self, frame_number: "int"):
+        print("set_frame_start called:", frame_number)
         return self
 
     def set_frame_end(self, frame_number: "int"):
+        print("set_frame_end called:", frame_number)
         return self
 
     def set_frame_current(self, frame_number: "int"):
+        print("set_frame_current called:", frame_number)
         return self
 
     def create_key_frame_location(self, entity: EntityOrItsName, frame_number: "int"):
+        print("create_key_frame_location called:", entity, frame_number)
         return self
 
     def create_key_frame_rotation(self, entity: EntityOrItsName, frame_number: "int"):
+        print("create_key_frame_rotation called:", entity, frame_number)
         return self
