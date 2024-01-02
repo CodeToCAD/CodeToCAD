@@ -69,6 +69,10 @@ class Dimension:
             other = Dimension.from_string(other)
         if other.unit is not None and self.unit is not None and other.unit != self.unit:
             other = other.convert_to_unit(self.unit)
+        if other.unit is None:
+            other.unit = self.unit
+        if self.unit is None:
+            self.unit = other.unit
         return other
 
     def __add__(self, other):
