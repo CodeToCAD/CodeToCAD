@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+import copy
 import bpy
 from typing import Any, Optional, Union
 
@@ -6,6 +7,8 @@ import numpy as np
 
 from mock.modeling.mock_blender_math import Matrix, Vector
 import typing
+
+from mock.modeling.stub_vertices import get_cylinder_verts
 
 
 class Material:
@@ -43,8 +46,8 @@ class Mesh(bpy.types.Mesh):
         tuple[float, float, float],
         tuple[float, float, float],
     ]:
-        minX, minY, minZ = np.min([v.co.vector for v in self.vertices], axis=0).tolist()
-        maxX, maxY, maxZ = np.max([v.co.vector for v in self.vertices], axis=0).tolist()
+        minX, minY, minZ = np.min([v.co for v in self.vertices], axis=0).tolist()
+        maxX, maxY, maxZ = np.max([v.co for v in self.vertices], axis=0).tolist()
 
         return (
             (minX, minY, minZ),
@@ -60,8 +63,8 @@ class Mesh(bpy.types.Mesh):
     def calculate_dimensions(self, scale: Optional[Vector]) -> Vector:
         dimensions = Vector(
             (
-                np.max([v.co.vector for v in self.vertices], axis=0)
-                - np.min([v.co.vector for v in self.vertices], axis=0)
+                np.max([v.co._vector for v in self.vertices], axis=0)
+                - np.min([v.co._vector for v in self.vertices], axis=0)
             ).tolist()
         )
         if scale:
@@ -139,7 +142,7 @@ class Object:
 
     @property
     def bound_box(self):
-        if isinstance(self.data, Mesh):
+        if isinstance(self.data, (Mesh, Curve)):
             return self.data.bound_box
         raise TypeError()
 
@@ -196,7 +199,7 @@ class Object:
         global mockBpy
         copy = Object(self.name, mockBpy.context.default_user_collection)
         copy.data = self.data
-        copy.children = self.children
+        # copy.children = self.children #bpy.types.object.copy() does not copy children..
         copy.location = self.location
         copy.parent = self.parent
         copy.matrix_world = self.matrix_world
@@ -281,6 +284,7 @@ class Objects:
         obj = Object(name, mockBpy.context.default_user_collection)
         obj.data = data
         self.objects.append(obj)
+        return obj
 
     def get(self, name):
         for object in self.objects:
@@ -323,6 +327,19 @@ class Meshes:
 
         global mockBpy
         mockBpy.data.objects.remove_using_data(mesh)
+
+    def new_from_object(
+        self, object: "Object", preserve_all_data_layers=False, depsgraph=None
+    ) -> "Mesh":
+        global mockBpy
+        data = mockBpy.data.objects.get(object.name).data
+
+        if isinstance(data, Curve):
+            mesh = Mesh(data.name, data.get_all_points())
+            self.meshes.append(mesh)
+            return mesh
+
+        return copy.copy(data)
 
 
 class Materials:
@@ -484,13 +501,44 @@ class Curve(bpy.types.Curve):
         self.use_path = False
         self.fill_mode = "FULL"
 
-    def calculate_dimensions(self, scale: Optional[Vector]) -> Vector:
+    def get_all_points(self):
         all_points = []
         for spline in self.splines:
             all_points += [point for point in spline.points] + [
                 point for point in spline.bezier_points
             ]
+        return all_points
 
+    @property
+    def bound_box(
+        self,
+    ) -> tuple[
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+        tuple[float, float, float],
+    ]:
+        all_points = self.get_all_points()
+        minX, minY, minZ = np.min([v.co for v in all_points], axis=0).tolist()
+        maxX, maxY, maxZ = np.max([v.co for v in all_points], axis=0).tolist()
+
+        return (
+            (minX, minY, minZ),
+            (minX, minY, maxZ),
+            (minX, maxY, maxZ),
+            (minX, maxY, minZ),
+            (maxX, minY, minZ),
+            (maxX, minY, maxZ),
+            (maxX, maxY, maxZ),
+            (maxX, maxY, minZ),
+        )
+
+    def calculate_dimensions(self, scale: Optional[Vector]) -> Vector:
+        all_points = self.get_all_points()
         dimensions = Vector(
             (
                 np.max([v.co for v in all_points], axis=0)
@@ -500,6 +548,14 @@ class Curve(bpy.types.Curve):
         if scale:
             dimensions *= scale
         return dimensions
+
+    def copy(self):
+        new_mesh = copy.copy(self)
+        new_mesh.name += "copy"
+        return new_mesh
+
+    def update(self):
+        pass
 
 
 class Curves:
@@ -601,6 +657,25 @@ class Ops:
             mockBpy.data.objects.objects.append(
                 Object("Empty", mockBpy.context.default_user_collection)
             )
+
+        @staticmethod
+        def convert(
+            override_context: typing.Optional[
+                typing.Union[typing.Dict, "bpy.types.Context"]
+            ] = None,
+            execution_context: typing.Optional[typing.Union[str, int]] = None,
+            undo: typing.Optional[bool] = None,
+            *,
+            target: typing.Optional[typing.Any] = "MESH",
+            keep_original: typing.Optional[typing.Union[bool, typing.Any]] = False,
+            merge_customdata: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            angle: typing.Optional[typing.Any] = 1.22173,
+            thickness: typing.Optional[typing.Any] = 5,
+            seams: typing.Optional[typing.Union[bool, typing.Any]] = False,
+            faces: typing.Optional[typing.Union[bool, typing.Any]] = True,
+            offset: typing.Optional[typing.Any] = 0.01
+        ):
+            pass
 
         @staticmethod
         def select_all(action: Optional[Any] = "TOGGLE"):
@@ -771,7 +846,7 @@ class Ops:
             mockBpy.data.create_mesh_object(
                 "Cylinder",
                 "Cylinder",
-                [],
+                [Mesh.MeshVertex(Vector(v)) for v in get_cylinder_verts()],
             )
 
         @staticmethod
@@ -848,8 +923,20 @@ class Context:
         return self
 
     class ViewLayer:
+        class LayerObjects:
+            active = None
+            selected = None
+
+        objects = LayerObjects()
+
         def update(self):
             pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        pass
 
 
 class Bpy:
@@ -857,6 +944,39 @@ class Bpy:
         self.ops = Ops()
         self.data = Data()
         self.context = Context()
+
+
+class FakeBMesh:
+    class BMesh:
+        faces = []
+
+        def from_mesh(
+            self,
+            mesh: "bpy.types.Mesh",
+            face_normals=True,
+            vertex_normals=True,
+            use_shape_key: bool = False,
+            shape_key_index: int = 0,
+        ):
+            pass
+
+        def to_mesh(self, mesh: "bpy.types.Mesh"):
+            pass
+
+        def clear(self):
+            pass
+
+    class BMeshOps:
+        def recalc_face_normals(bm, faces):
+            """Right-Hand Faces. Computes an "outside" normal for the specified input faces.
+
+            :param bm: The bmesh to operate on.
+            :type bm: 'bmesh.types.BMesh'
+            :param faces: input faces
+            :type faces: typing.List['bmesh.types.BMFace']
+            """
+
+            pass
 
 
 mockBpy = Bpy()
@@ -870,6 +990,11 @@ def inject_mock_bpy():
     setattr(bpy, "data", mockBpy.data)
     setattr(bpy, "ops", mockBpy.ops)
     setattr(bpy, "context", mockBpy.context)
+
+    import bmesh
+
+    setattr(bmesh, "new", lambda: FakeBMesh.BMesh())
+    setattr(bmesh, "ops", FakeBMesh.BMeshOps)
 
     import mathutils
 
