@@ -31,6 +31,7 @@ setup(
         "codetocad.interfaces",
         "codetocad.providers_sample",
         "codetocad.core",
+        "codetocad.core.shapes",
         "codetocad.enums",
     ],
     install_requires=[],
