@@ -10,18 +10,18 @@ from codetocad.tests_interfaces import LandmarkTestInterface
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
-    @skip("TODO")
+    
     def test_get_landmark_entity_name(self):
-        instance = Landmark()
+        instance = Landmark("test-landmark", parent_entity="myEntity")
 
-        value = instance.get_landmark_entity_name("")
+        value = instance.get_landmark_entity_name()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
+    
     def test_get_parent_entity(self):
-        instance = Landmark()
+        instance = Landmark("test-landmark", parent_entity="myEntity")
 
-        value = instance.get_parent_entity("")
+        value = instance.get_parent_entity()
 
         assert value, "Get method failed."

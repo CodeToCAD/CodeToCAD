@@ -52,3 +52,6 @@ class Material(MaterialInterface):
     def set_image_texture(self, image_file_path: str):
         print("set_image_texture called:", image_file_path)
         return self
+    @classmethod
+    def get_sample_mat_instance(cls):
+        return cls(name="myMaterial", description="material is created for testing")

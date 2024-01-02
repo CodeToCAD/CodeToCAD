@@ -62,6 +62,7 @@ class Wire(Entity, WireInterface):
         return self
 
     def project(self, project_onto: "Sketch") -> "Projectable":
+        from . import  Sketch
         print("project called:", project_onto)
         return Sketch("a projected sketch")
 
@@ -86,10 +87,11 @@ class Wire(Entity, WireInterface):
         self.native_instance = native_instance
 
     def get_vertices(self) -> "list[Vertex]":
+        from . import Vertex
         print(
             "get_vertices called:",
         )
-        return None
+        return [Vertex(location=(0, 0), name="myVertex")]
 
     def is_closed(self) -> bool:
         print(
@@ -98,5 +100,6 @@ class Wire(Entity, WireInterface):
         return True
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
+        from . import Part
         print("loft called:", other, new_part_name)
         return Part("a part")

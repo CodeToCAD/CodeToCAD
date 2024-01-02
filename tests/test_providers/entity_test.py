@@ -97,7 +97,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         value = instance.select()
 
-    @skip("TODO")
+    
     def test_translate_xyz(self):  # TypeError
         instance = Sketch("mySketch")
 
@@ -107,63 +107,77 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_translate_x(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.translate_x("amount")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.translate_x(amount=1)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_translate_y(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.translate_y("amount")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.translate_y(amount=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_translate_z(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.translate_z("amount")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.translate_z(amount=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_rotate_xyz(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.rotate_xyz("x", "y", "z")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.rotate_xyz(x=30, y=60, z=90)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_rotate_x(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.rotate_x("rotation")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.rotate_x(rotation=30)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_rotate_y(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.rotate_y("rotation")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.rotate_y(rotation=60)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_rotate_z(self):
-        instance = Entity()
+        instance = Sketch("mySketch")
 
-        value = instance.rotate_z("rotation")
+        instance.create_rectangle(length=5, width=5)
+
+        value = instance.rotate_z(rotation=90)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    
     def test_get_bounding_box(self):  # TypeError
         instance = Sketch("mySketch")
 

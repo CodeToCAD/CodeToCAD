@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Entity
+    from . import Sketch
 
 
 class Joint(JointInterface):
@@ -108,3 +109,16 @@ class Joint(JointInterface):
     ):
         print("limit_rotation_z called:", min, max)
         return self
+
+    @classmethod
+    def get_dummy_obj(cls):
+        from . import Sketch
+        instance = Sketch("mySketch")
+
+        edge = instance.create_line(end_at=(0,5,0), start_at=(5,10,0))
+
+        instance = Sketch("mySketch")
+
+        edge2 = instance.create_line(end_at=(5,10,0), start_at=(5,5,0))
+
+        return cls(entity1="mySketch", entity2="mySketch2", )
