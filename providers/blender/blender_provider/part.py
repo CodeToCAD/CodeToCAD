@@ -235,25 +235,25 @@ class Part(Entity, PartInterface):
         axis = Axis.from_string(start_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        startLandmarkLocation = [center, center, center]
-        startLandmarkLocation[axis.value] = min if flip_axis else max
+        start_landmark_location = [center, center, center]
+        start_landmark_location[axis.value] = min if flip_axis else max
 
-        start_axisLandmark = self.create_landmark(
+        start_axis_landmark = self.create_landmark(
             create_uuid_like_id(),
-            startLandmarkLocation[0],
-            startLandmarkLocation[1],
-            startLandmarkLocation[2],
+            start_landmark_location[0],
+            start_landmark_location[1],
+            start_landmark_location[2],
         )
 
-        insidePart = self.clone(create_uuid_like_id(), copy_landmarks=False)
-        insidePart_start = insidePart.create_landmark(
+        inside_part = self.clone(create_uuid_like_id(), copy_landmarks=False)
+        inside_part_start = inside_part.create_landmark(
             "start",
-            startLandmarkLocation[0],
-            startLandmarkLocation[1],
-            startLandmarkLocation[2],
+            start_landmark_location[0],
+            start_landmark_location[1],
+            start_landmark_location[2],
         )
 
-        thickness_xYZ: list[Dimension] = [
+        thickness_xyz: list[Dimension] = [
             dimension
             for dimension in blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
                 [
@@ -265,38 +265,38 @@ class Part(Entity, PartInterface):
         ]
 
         dimensions = self.get_dimensions()
-        currentDimensionX: Dimension = dimensions[0]  # type:ignore
-        currentDimensionY: Dimension = dimensions[1]  # type:ignore
-        currentDimensionZ: Dimension = dimensions[2]  # type:ignore
+        current_dimension_x: Dimension = dimensions[0]  # type:ignore
+        current_dimension_y: Dimension = dimensions[1]  # type:ignore
+        current_dimension_z: Dimension = dimensions[2]  # type:ignore
 
         def scaleValue(
-            mainDimension: float, thickness: float, subtractBothSides: bool
+            main_dimension: float, thickness: float, subtract_both_sides: bool
         ) -> float:
             return (
-                mainDimension - thickness * (2 if subtractBothSides else 1)
-            ) / mainDimension
+                main_dimension - thickness * (2 if subtract_both_sides else 1)
+            ) / main_dimension
 
         scale_x: float = scaleValue(
-            currentDimensionX.value, thickness_xYZ[0].value, axis.value == 0
+            current_dimension_x.value, thickness_xyz[0].value, axis.value == 0
         )
         scale_y = scaleValue(
-            currentDimensionY.value, thickness_xYZ[1].value, axis.value == 1
+            current_dimension_y.value, thickness_xyz[1].value, axis.value == 1
         )
         scale_z = scaleValue(
-            currentDimensionZ.value, thickness_xYZ[2].value, axis.value == 2
+            current_dimension_z.value, thickness_xyz[2].value, axis.value == 2
         )
 
-        blender_actions.scale_object(insidePart.name, scale_x, scale_y, scale_z)
+        blender_actions.scale_object(inside_part.name, scale_x, scale_y, scale_z)
 
         self._apply_rotation_and_scale_only()
 
         from . import Joint  # noqa: F811
 
-        Joint(start_axisLandmark, insidePart_start).translate_landmark_onto_another()
+        Joint(start_axis_landmark, inside_part_start).translate_landmark_onto_another()
 
-        self.subtract(insidePart, is_transfer_landmarks=False)
+        self.subtract(inside_part, is_transfer_landmarks=False)
 
-        start_axisLandmark.delete()
+        start_axis_landmark.delete()
 
         return self._apply_modifiers_only()
 
