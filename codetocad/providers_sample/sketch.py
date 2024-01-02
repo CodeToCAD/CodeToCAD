@@ -32,6 +32,9 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
+        print(
+            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
         return self
 
     def linear_pattern(
@@ -40,6 +43,7 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print("linear_pattern called:", instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
@@ -49,12 +53,21 @@ class Sketch(Entity, SketchInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print(
+            "circular_pattern called:",
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
         return self
 
     def create_from_file(self, file_path: str, file_type: Optional[str] = None):
+        print("create_from_file called:", file_path, file_type)
         return self
 
     def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
+        print("export called:", file_path, overwrite, scale)
         return self
 
     def scale_xyz(
@@ -63,29 +76,37 @@ class Sketch(Entity, SketchInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
+        print("scale_xyz called:", x, y, z)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
+        print("scale_x called:", scale)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
+        print("scale_y called:", scale)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
+        print("scale_z called:", scale)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
+        print("scale_x_by_factor called:", scale_factor)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
+        print("scale_y_by_factor called:", scale_factor)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
+        print("scale_z_by_factor called:", scale_factor)
         return self
 
     def scale_keep_aspect_ratio(
         self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
     ):
+        print("scale_keep_aspect_ratio called:", scale, axis)
         return self
 
     name: str
@@ -106,7 +127,8 @@ class Sketch(Entity, SketchInterface):
         self.native_instance = native_instance
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        raise NotImplementedError()
+        print("clone called:", new_name, copy_landmarks)
+        return Sketch("a sketch")
 
     def revolve(
         self,
@@ -114,7 +136,8 @@ class Sketch(Entity, SketchInterface):
         about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "Part":
-        raise NotImplementedError()
+        print("revolve called:", angle, about_entity_or_landmark, axis)
+        return Part("a part")
 
     def twist(
         self,
@@ -123,20 +146,27 @@ class Sketch(Entity, SketchInterface):
         iterations: "int" = 1,
         axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print("twist called:", angle, screw_pitch, iterations, axis)
         return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
-        raise NotImplementedError()
+        print("extrude called:", length)
+        return Part("a part")
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
-        raise NotImplementedError()
+        from . import Part
+
+        print("sweep called:", profile_name_or_instance, fill_cap)
+        return Part("a part")
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
+        print("offset called:", radius)
         return self
 
     def profile(self, profile_curve_name: str):
+        print("profile called:", profile_curve_name)
         return self
 
     def create_text(
@@ -151,32 +181,49 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
+        print(
+            "create_text called:",
+            text,
+            font_size,
+            bold,
+            italic,
+            underlined,
+            character_spacing,
+            word_spacing,
+            line_spacing,
+            font_file_path,
+        )
         return self
 
     def create_from_vertices(
         self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_from_vertices called:", points)
+        return None
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        raise NotImplementedError()
+        print("create_point called:", point)
+        return None
 
     def create_line(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Edge":
-        raise NotImplementedError()
+        print("create_line called:", start_at, end_at)
+        return None
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
-        raise NotImplementedError()
+        print("create_circle called:", radius)
+        return None
 
     def create_ellipse(
         self,
         radius_minor: DimensionOrItsFloatOrStringValue,
         radius_major: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_ellipse called:", radius_minor, radius_major)
+        return None
 
     def create_arc(
         self,
@@ -185,14 +232,16 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         flip: Optional[bool] = False,
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_arc called:", start_at, end_at, radius, flip)
+        return None
 
     def create_rectangle(
         self,
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_rectangle called:", length, width)
+        return None
 
     def create_polygon(
         self,
@@ -200,7 +249,8 @@ class Sketch(Entity, SketchInterface):
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_polygon called:", number_of_sides, length, width)
+        return None
 
     def create_trapezoid(
         self,
@@ -208,7 +258,8 @@ class Sketch(Entity, SketchInterface):
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        print("create_trapezoid called:", length_upper, length_lower, height)
+        return None
 
     def create_spiral(
         self,
@@ -218,4 +269,12 @@ class Sketch(Entity, SketchInterface):
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
     ) -> "Wire":
-        raise NotImplementedError()
+        print(
+            "create_spiral called:",
+            number_of_turns,
+            height,
+            radius,
+            is_clockwise,
+            radius_end,
+        )
+        return None

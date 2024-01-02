@@ -29,6 +29,9 @@ class Edge(Entity, EdgeInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
+        print(
+            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
         return self
 
     def linear_pattern(
@@ -37,6 +40,7 @@ class Edge(Entity, EdgeInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print("linear_pattern called:", instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
@@ -46,19 +50,30 @@ class Edge(Entity, EdgeInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        print(
+            "circular_pattern called:",
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
         return self
 
     def remesh(self, strategy: str, amount: float):
+        print("remesh called:", strategy, amount)
         return self
 
     def subdivide(self, amount: float):
+        print("subdivide called:", amount)
         return self
 
     def decimate(self, amount: float):
+        print("decimate called:", amount)
         return self
 
     def project(self, project_onto: "Sketch") -> "Projectable":
-        raise NotImplementedError()
+        print("project called:", project_onto)
+        return Sketch("a projected sketch")
 
     v1: "Vertex"
     v2: "Vertex"
@@ -84,13 +99,19 @@ class Edge(Entity, EdgeInterface):
         self.native_instance = native_instance
 
     def offset(self, distance: DimensionOrItsFloatOrStringValue) -> "Edge":
-        raise NotImplementedError()
+        print("offset called:", distance)
+        return None
 
     def fillet(self, other_edge: "Edge", amount: AngleOrItsFloatOrStringValue):
+        print("fillet called:", other_edge, amount)
         return self
 
     def set_is_construction(self, is_construction: bool):
+        print("set_is_construction called:", is_construction)
         return self
 
     def get_is_construction(self) -> bool:
-        raise NotImplementedError()
+        print(
+            "get_is_construction called:",
+        )
+        return True

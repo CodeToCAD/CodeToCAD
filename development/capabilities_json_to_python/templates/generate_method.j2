@@ -1,5 +1,5 @@
 {%- from 'generate_init_constructor.j2' import generate_init_constructor -%}
-{%- from 'capabilities_to_py_utilities.j2' import type_mapping, type_mapping_with_class_name_suffix, generate_method_arguments -%}
+{%- from 'capabilities_to_py_utilities.j2' import type_mapping, type_mapping_with_class_name_suffix, generate_method_arguments, mock_values_by_type -%}
 
 {%-set known_method_names_to_skip = ["information", "extends", "is_interface_only"]-%}
 
@@ -45,8 +45,9 @@
         {%-endif-%}
 
         {%- else %}
-
-    {{ generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}) {{-  " -> " + type_mapping_with_class_name_suffix(properties["returnType"], classNameSuffix, all_codetocad_class_names) if "returnType" in properties}}:
+    {%- set returnTypeParsed = type_mapping_with_class_name_suffix(properties["returnType"], classNameSuffix, all_codetocad_class_names) if "returnType" in properties else None%}
+    {%- set returnTypeParsed2 = type_mapping(properties["returnType"]) if "returnType" in properties else None%}
+    {{ generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}) {{-  " -> " + returnTypeParsed if returnTypeParsed}}:
         {% if "information" in properties and use_abstract_method_decorator -%}
         '''
         {{ properties["information"] }}
@@ -56,7 +57,9 @@
         print("{{method_name}} is called in an abstract method. Please override this method.")
         {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
         {%else-%}
-        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
+        print("{{method_name}} called:", {{parameters.keys()|join(", ")}})
+        {%-set mockValue = mock_values_by_type[returnTypeParsed2] if returnTypeParsed2 in mock_values_by_type else None%}
+        return {{ "self" if "action" in properties and properties["action"] != "get" else mockValue }}
         {%endif%}
         
         {%-endif-%}

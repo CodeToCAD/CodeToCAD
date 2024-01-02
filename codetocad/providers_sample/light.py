@@ -29,16 +29,21 @@ class Light(Entity, LightInterface):
         self.native_instance = native_instance
 
     def set_color(self, r_value: IntOrFloat, g_value: IntOrFloat, b_value: IntOrFloat):
+        print("set_color called:", r_value, g_value, b_value)
         return self
 
     def create_sun(self, energy_level: float):
+        print("create_sun called:", energy_level)
         return self
 
     def create_spot(self, energy_level: float):
+        print("create_spot called:", energy_level)
         return self
 
     def create_point(self, energy_level: float):
+        print("create_point called:", energy_level)
         return self
 
     def create_area(self, energy_level: float):
+        print("create_area called:", energy_level)
         return self

@@ -29,10 +29,17 @@ class Camera(Entity, CameraInterface):
         self.native_instance = native_instance
 
     def create_perspective(self):
+        print(
+            "create_perspective called:",
+        )
         return self
 
     def create_orthogonal(self):
+        print(
+            "create_orthogonal called:",
+        )
         return self
 
     def set_focal_length(self, length: float):
+        print("set_focal_length called:", length)
         return self
