@@ -7,68 +7,76 @@ from unittest import skip
 
 from .test_helper import *
 from codetocad.tests_interfaces import WireTestInterface
+from codetocad.enums.curve_types import CurveTypes
 
 
 class WireTest(TestProviderCase, WireTestInterface):
-    @skip("TODO")
     def test_mirror(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
         value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+            mirror_across_entity="ellipse",
+            axis="z",  # "resulting_mirrored_entity_name"
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_linear_pattern(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+        value = instance.linear_pattern(
+            instance_count=2,
+            offset=2,
+        )  # "direction_axis")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_circular_pattern(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
         value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
+            instance_count=2,
+            separation_angle=30,
+            center_entity_or_landmark="circle",
+            # "normal_direction_axis",
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_project(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.project("project_onto")
+        value = instance.project(project_onto="myProject")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_vertices(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.get_vertices("")
+        value = instance.get_vertices()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_is_closed(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.is_closed("")
+        value = instance.is_closed()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_loft(self):
-        instance = Wire()
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.loft("other", "new_part_name")
+        circle_sketch = Sketch("circle", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_circle(radius=0.5)
+
+        value = instance.loft(other="circle", new_part_name="myLoft")
 
         assert value, "Get method failed."
