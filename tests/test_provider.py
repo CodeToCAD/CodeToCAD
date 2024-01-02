@@ -10,10 +10,6 @@ from mock.modeling.mock_modeling_provider import (
 from codetocad import *
 from codetocad.utilities import Dimension, center, max, min
 from providers.blender.blender_provider import *
-from providers.blender.blender_provider.blender_definitions import (
-    BlenderCurveTypes,
-    CurveTypes,
-)
 
 
 def injectMockProvider():
@@ -159,7 +155,8 @@ class TestEntity(TestProviderCase):
 
     def test_mirror(self):
         partToMirror = (
-            Part("partToMirror", "description").create_cube(1, 1, 1).translate_x(-5)
+            Part("partToMirror", "description").create_cube(
+                1, 1, 1).translate_x(-5)
         )
         partToMirrorAcross = Part("partToMirrorAcross", "description").create_cube(
             1, 1, 1
@@ -185,7 +182,8 @@ class TestEntity(TestProviderCase):
 
     def test_circular_pattern(self):
         partToPattern = (
-            Part("partToPattern", "description").create_cube(1, 1, 1).translate_x(-5)
+            Part("partToPattern", "description").create_cube(
+                1, 1, 1).translate_x(-5)
         )
         centerPart = Part("centerPart", "description").create_cube(1, 1, 1)
 
@@ -630,7 +628,8 @@ class TestPart(TestProviderCase):
     def test_fillet_edges(self):
         instance = Part("TestPart")
 
-        value = instance.fillet_edges("radius", "landmarksNearEdges", "useWidth")
+        value = instance.fillet_edges(
+            "radius", "landmarksNearEdges", "useWidth")
 
         assert value, "Modify method failed."
 
@@ -638,7 +637,8 @@ class TestPart(TestProviderCase):
     def test_fillet_faces(self):
         instance = Part("TestPart")
 
-        value = instance.fillet_faces("radius", "landmarksNearFaces", "useWidth")
+        value = instance.fillet_faces(
+            "radius", "landmarksNearFaces", "useWidth")
 
         assert value, "Modify method failed."
 
@@ -795,7 +795,8 @@ class TestSketch(TestProviderCase):
     def test_create_arcBetweenThreePoints(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.create_arcBetweenThreePoints("pointA", "pointB", "centerPoint")
+        value = instance.create_arcBetweenThreePoints(
+            "pointA", "pointB", "centerPoint")
 
         assert value.is_exists(), "Create method failed."
 
@@ -827,7 +828,8 @@ class TestSketch(TestProviderCase):
     def test_createTrapezoid(self):
         instance = Sketch("name", "curveType", "description")
 
-        value = instance.createTrapezoid("lengthUpper", "lengthLower", "height")
+        value = instance.createTrapezoid(
+            "lengthUpper", "lengthLower", "height")
 
         assert value.is_exists(), "Create method failed."
 
@@ -961,7 +963,8 @@ class TestJoint(TestProviderCase):
 
     def test_limit_location_x(self):
         partA = (
-            Part("A").create_cube(1, 1, 1).create_landmark("top", center, center, max)
+            Part("A").create_cube(1, 1, 1).create_landmark(
+                "top", center, center, max)
         )
         partB = (
             Part("B")
@@ -1001,7 +1004,8 @@ class TestJoint(TestProviderCase):
 
     def test_limit_rotation_x(self):
         partA = (
-            Part("A").create_cube(1, 1, 1).create_landmark("top", center, center, max)
+            Part("A").create_cube(1, 1, 1).create_landmark(
+                "top", center, center, max)
         )
         partB = (
             Part("B")
@@ -1449,7 +1453,8 @@ class TestScene(TestProviderCase):
     def test_assign_to_group(self):
         instance = Scene("name", "description")
 
-        instance.assign_to_group("entities", "groupName", "removeFromOtherGroups")
+        instance.assign_to_group(
+            "entities", "groupName", "removeFromOtherGroups")
 
     @unittest.skip("")
     def test_set_visible(self):

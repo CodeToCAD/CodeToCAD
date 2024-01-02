@@ -33,15 +33,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
-    def test_circular_pattern(self):  # TypeError
+    def test_circular_pattern(self):
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
 
         value = instance.circular_pattern(
             instance_count=2,
-            separation_angle=math.pi,
+            separation_angle=180,
             center_entity_or_landmark="mySketch",
             normal_direction_axis="z",
         )
@@ -137,7 +136,6 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_clone(self):  # None type object has no attribute name
         instance = Sketch("mySketch")
 
@@ -145,7 +143,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         value = instance.clone(new_name="myCloneSketch")
 
-        assert value, "Get method failed."
+        assert value.is_exists(), "Get method failed."
 
     @skip("TODO")
     def test_revolve(self):  # meshes error
@@ -181,7 +179,6 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_sweep(self):  # Meshes error
         instance = Sketch("mySketch")
 
@@ -212,7 +209,6 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_text(self):
         instance = Sketch("mySketch")
 

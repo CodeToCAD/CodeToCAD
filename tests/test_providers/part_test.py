@@ -292,8 +292,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
-    def test_hollow(self):  # Object myCube_f7272a513a does not exists
+    def test_hollow(self):
         instance = Part("myCube")
 
         instance.create_cube(1, 1, 1)
@@ -301,7 +300,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         value = instance.hollow(
             thickness_x=0.5,
             thickness_y=0.5,
-            thickness_z=0.5,  # "start_axis", "flip_axis"
+            thickness_z=0.5,
         )
 
         assert value, "Modify method failed."
@@ -315,36 +314,15 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
-    def test_hole(
-        self,
-    ):  # zero-size array to reduction operation minimum which has no identity
-        instance = Part("myCylinder")
+    def test_hole(self):
+        instance = Part("holeTest")
 
-        instance.create_cylinder(radius=5, height=10)
+        instance.create_cube(1, 1, 1)
 
         value = instance.hole(
-            hole_landmark="myCube",
+            hole_landmark=instance.get_landmark("center"),
             radius=2,
             depth=3,
-            # "normal_axis",
-            # "flip_axis",
-            # "initial_rotation_x",
-            # "initial_rotation_y",
-            # "initial_rotation_z",
-            # "mirror_about_entity_or_landmark",
-            # "mirror_axis",
-            # "mirror",
-            # "circular_pattern_instance_count",
-            # "circular_pattern_instance_separation",
-            # "circular_pattern_instance_axis",
-            # "circular_pattern_about_entity_or_landmark",
-            # "linear_pattern_instance_count",
-            # "linear_pattern_instance_separation",
-            # "linear_pattern_instance_axis",
-            # "linear_pattern2nd_instance_count",
-            # "linear_pattern2nd_instance_separation",
-            # "linear_pattern2nd_instance_axis",
         )
 
         assert value, "Modify method failed."
