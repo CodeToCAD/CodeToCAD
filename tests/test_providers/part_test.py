@@ -52,15 +52,15 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_remesh(self):
-        instance = Part()
+        instance = Part("myPart")
 
-        value = instance.remesh("strategy", "amount")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.remesh(strategy="smooth", amount=100)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_subdivide(self):  # NotImplemented
         instance = Part("myCube")
 
@@ -70,19 +70,19 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_decimate(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.decimate("amount")
+        instance.create_cube(1, 1, 1)
+
+        value = instance.decimate(amount=10)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_from_file(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.create_from_file("file_path", "file_type")
+        value = instance.create_from_file(file_path="cube.png", file_type="png")
 
         assert value.is_exists(), "Create method failed."
 
@@ -327,7 +327,6 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_twist(self):
         instance = Part("myScrew")
 
@@ -348,7 +347,6 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_is_colliding_with_part(self):
         instance = Part("myCube")
 
@@ -373,7 +371,6 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_fillet_edges(self):
         instance = Part("myCube")
 
@@ -388,11 +385,17 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_fillet_faces(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.fillet_faces("radius", "landmarks_near_faces", "use_width")
+        instance.create_cube(5, 5, 5)
+
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="fillet-ref-lm")
+
+        value = instance.fillet_faces(
+            radius=1,
+            landmarks_near_faces=["fillet-ref-lm"],
+        )
 
         assert value, "Modify method failed."
 
@@ -405,38 +408,51 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_chamfer_edges(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.chamfer_edges("radius", "landmarks_near_edges")
+        instance.create_cube(5, 5, 5)
+
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+
+        value = instance.chamfer_edges(radius=2, landmarks_near_edges=["ref-lm"])
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_chamfer_faces(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.chamfer_faces("radius", "landmarks_near_faces")
+        instance.create_cube(5, 5, 5)
+
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+
+        value = instance.chamfer_faces(radius=2, landmarks_near_faces=["ref-lm"])
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_select_vertex_near_landmark(self):
         instance = Part("myCube")
 
         instance.create_cube(5, 5, 5)
 
-        value = instance.select_vertex_near_landmark("landmark_name")
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
-    @skip("TODO")
+        value = instance.select_vertex_near_landmark(landmark_name="ref-lm")
+
     def test_select_edge_near_landmark(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.select_edge_near_landmark("landmark_name")
+        instance.create_cube(5, 5, 5)
 
-    @skip("TODO")
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+
+        value = instance.select_edge_near_landmark(landmark_name="ref-lm")
+
     def test_select_face_near_landmark(self):
-        instance = Part()
+        instance = Part("myCube")
 
-        value = instance.select_face_near_landmark("landmark_name")
+        instance.create_cube(5, 5, 5)
+
+        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+
+        value = instance.select_face_near_landmark(landmark_name="ref-lm")

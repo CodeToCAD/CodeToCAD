@@ -10,48 +10,74 @@ from codetocad.tests_interfaces import AnalyticsTestInterface
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
-    @skip("TODO")
     def test_measure_distance(self):
-        instance = Analytics()
+        instance = Sketch("mySketch")
 
-        value = instance.measure_distance("entity1", "entity2")
+        instance.create_rectangle(length=5, width=5)
+
+        instance = Sketch("mySketch2")
+
+        instance.create_line(start_at=(0, 0, 0), end_at=(1, 1, 0))
+
+        analytics = Analytics()
+
+        value = analytics.measure_distance(entity1="mySketch", entity2="mySketch2")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_measure_angle(self):
-        instance = Analytics()
+        instance = Sketch("mySketch")
 
-        value = instance.measure_angle("entity1", "entity2", "pivot")
+        instance.create_rectangle(length=5, width=5)
+
+        instance = Sketch("mySketch2")
+
+        instance.create_line(start_at=(0, 0, 0), end_at=(1, 1, 0))
+
+        analytics = Analytics()
+
+        value = analytics.measure_angle(
+            entity1="mySketch",
+            entity2="mySketch2",
+        )
+        # "pivot")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_world_pose(self):
+        instance = Part("myCube")
+
+        instance.create_cube(1, 1, 1)
+
         instance = Analytics()
 
-        value = instance.get_world_pose("entity")
+        value = instance.get_world_pose(entity="mySketch")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
-    def test_get_bounding_box(self):
-        instance = Analytics()
+    def test_get_bounding_box(self):  # TypeError
+        instance = Sketch("myCircle")
 
-        value = instance.get_bounding_box("entity_name")
+        instance.create_circle(radius="5mm")
+
+        analytics = Analytics()
+
+        value = analytics.get_bounding_box(entity_name="myCircle")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_dimensions(self):
-        instance = Analytics()
+        instance = Sketch("myCircle")
 
-        value = instance.get_dimensions("entity_name")
+        instance.create_circle(radius="5mm")
+
+        analytics = Analytics()
+
+        value = analytics.get_dimensions(entity_name="myCircle")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
-    def test_log(self):
+    def test_log(self):  #'Ops' object has no attribute 'codetocad'
         instance = Analytics()
 
         value = instance.log("message")

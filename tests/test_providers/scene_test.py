@@ -10,84 +10,81 @@ from codetocad.tests_interfaces import SceneTestInterface
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):
-    @skip("TODO")
     def test_create(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.create("")
+        value = instance.create()
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_delete(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.delete("")
+        value = instance.delete()
 
-    @skip("TODO")
     def test_get_selected_entity(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.get_selected_entity("")
+        value = instance.get_selected_entity()
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_export(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.export("file_path", "entities", "overwrite", "scale")
+        value = instance.export(
+            file_path="scene-export.png",
+            entities=[Entity("myEntity")],
+        )
 
-    @skip("TODO")
     def test_set_default_unit(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.set_default_unit("unit")
+        value = instance.set_default_unit(unit="mm")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_group(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.create_group("name")
+        value = instance.create_group(name="test-scene-group")
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_delete_group(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.delete_group("name", "remove_children")
+        value = instance.delete_group(name="test-scene-group", remove_children=True)
 
-    @skip("TODO")
     def test_remove_from_group(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.remove_from_group("entity_name", "group_name")
+        value = instance.remove_from_group(
+            entity_name="myEntity", group_name="test-scene-group"
+        )
 
-    @skip("TODO")
     def test_assign_to_group(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
         value = instance.assign_to_group(
-            "entities", "group_name", "remove_from_other_groups"
+            entities=["myEntity"],
+            group_name="test-scene-group",  # "remove_from_other_groups"
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_visible(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.set_visible("entities", "is_visible")
+        value = instance.set_visible(entities=["myEntity"], is_visible=True)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_background_image(self):
-        instance = Scene()
+        instance = Scene.get_sample_scene()
 
-        value = instance.set_background_image("file_path", "location_x", "location_y")
+        value = instance.set_background_image(
+            file_path="bg-image.png", location_x=0, location_y=0
+        )
 
         assert value, "Modify method failed."

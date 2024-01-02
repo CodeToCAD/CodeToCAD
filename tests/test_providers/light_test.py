@@ -10,42 +10,37 @@ from codetocad.tests_interfaces import LightTestInterface
 
 
 class LightTest(TestProviderCase, LightTestInterface):
-    @skip("TODO")
     def test_set_color(self):
-        instance = Light()
+        instance = Light.get_sample_light()
 
-        value = instance.set_color("r_value", "g_value", "b_value")
+        value = instance.set_color(r_value=120, g_value=60, b_value=45)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_sun(self):
-        instance = Light()
+        instance = Light.get_sample_light()
 
-        value = instance.create_sun("energy_level")
+        value = instance.create_sun(energy_level=5.5)
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_create_spot(self):
-        instance = Light()
+        instance = Light.get_sample_light()
 
-        value = instance.create_spot("energy_level")
+        value = instance.create_spot(energy_level=2.1)
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_create_point(self):
-        instance = Light()
+        instance = Light.get_sample_light()
 
-        value = instance.create_point("energy_level")
+        value = instance.create_point(energy_level=2.5)
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_create_area(self):
-        instance = Light()
+        instance = Light.get_sample_light()
 
-        value = instance.create_area("energy_level")
+        value = instance.create_area(energy_level=5.5)
 
         assert value.is_exists(), "Create method failed."
