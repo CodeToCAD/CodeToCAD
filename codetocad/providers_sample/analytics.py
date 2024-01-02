@@ -36,11 +36,28 @@ class Analytics(AnalyticsInterface):
         pivot: Optional[EntityOrItsName] = None,
     ) -> "list[Angle]":
         print("measure_angle called:", entity1, entity2, pivot)
-        return None
+        return [Angle(90)]
 
     def get_world_pose(self, entity: EntityOrItsName) -> "list[float]":
         print("get_world_pose called:", entity)
-        return None
+        return [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+        ]
 
     def get_bounding_box(self, entity_name: EntityOrItsName) -> "BoundaryBox":
         print("get_bounding_box called:", entity_name)

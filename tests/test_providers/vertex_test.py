@@ -10,18 +10,16 @@ from codetocad.tests_interfaces import VertexTestInterface
 
 
 class VertexTest(TestProviderCase, VertexTestInterface):
-    @skip("TODO")
     def test_project(self):
-        instance = Vertex()
+        instance = Vertex(location=(0, 0), name="myVertex")
 
-        value = instance.project("project_onto")
+        value = instance.project(project_onto="myProject")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_control_points(self):
-        instance = Vertex()
+        instance = Vertex(location=(0, 0), name="myVertex")
 
-        value = instance.get_control_points("parameter")
+        value = instance.get_control_points(parameter="")
 
         assert value, "Get method failed."

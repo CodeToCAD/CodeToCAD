@@ -10,97 +10,116 @@ from codetocad.tests_interfaces import EdgeTestInterface
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):
-    @skip("TODO")
     def test_mirror(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
+
+        instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
 
         value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+            mirror_across_entity="mySketch",
+            axis=1,
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_linear_pattern(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+        instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
 
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_circular_pattern(self):
-        instance = Edge()
-
-        value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
+        value = instance.linear_pattern(
+            instance_count=2,
+            offset=50,
         )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
-    def test_remesh(self):
-        instance = Edge()
+    def test_circular_pattern(self):
+        instance = Sketch("mySketch")
 
-        value = instance.remesh("strategy", "amount")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.circular_pattern(
+            instance_count=4,
+            separation_angle=90,
+            center_entity_or_landmark="mySketch",
+            # "normal_direction_axis",
+        )
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
+    def test_remesh(self):  # Not implemented
+        instance = Sketch("mySketch")
+
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.remesh(strategy="smooth", amount=100)
+
+        assert value, "Modify method failed."
+
     def test_subdivide(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.subdivide("amount")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.subdivide(amount=10)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_decimate(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.decimate("amount")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.decimate(amount=0.5)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_project(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.project("project_onto")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.project(project_onto="test-project")
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_offset(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.offset("distance")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.offset(distance=10)
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_fillet(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.fillet("other_edge", "amount")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        instance = Sketch("mySketch")
+
+        edge2 = instance.create_line(end_at=(5, 10, 0), start_at=(5, 5, 0))
+
+        value = edge.fillet(other_edge="edge2", amount=2)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_is_construction(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.set_is_construction("is_construction")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.set_is_construction(is_construction=False)
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_get_is_construction(self):
-        instance = Edge()
+        instance = Sketch("mySketch")
 
-        value = instance.get_is_construction("")
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+
+        value = edge.get_is_construction()
 
         assert value, "Get method failed."
