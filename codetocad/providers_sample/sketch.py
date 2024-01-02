@@ -157,6 +157,7 @@ class Sketch(Entity, SketchInterface):
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
         from . import Part
+
         print("sweep called:", profile_name_or_instance, fill_cap)
         return Part("a part")
 
