@@ -26,7 +26,8 @@ class Analytics(AnalyticsInterface):
     def measure_distance(
         self, entity1: EntityOrItsName, entity2: EntityOrItsName
     ) -> "Dimensions":
-        raise NotImplementedError()
+        print("measure_distance called:", entity1, entity2)
+        return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
     def measure_angle(
         self,
@@ -34,16 +35,21 @@ class Analytics(AnalyticsInterface):
         entity2: EntityOrItsName,
         pivot: Optional[EntityOrItsName] = None,
     ) -> "list[Angle]":
-        raise NotImplementedError()
+        print("measure_angle called:", entity1, entity2, pivot)
+        return None
 
     def get_world_pose(self, entity: EntityOrItsName) -> "list[float]":
-        raise NotImplementedError()
+        print("get_world_pose called:", entity)
+        return None
 
     def get_bounding_box(self, entity_name: EntityOrItsName) -> "BoundaryBox":
-        raise NotImplementedError()
+        print("get_bounding_box called:", entity_name)
+        return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
 
     def get_dimensions(self, entity_name: EntityOrItsName) -> "Dimensions":
-        raise NotImplementedError()
+        print("get_dimensions called:", entity_name)
+        return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
     def log(self, message: str):
+        print("log called:", message)
         return self

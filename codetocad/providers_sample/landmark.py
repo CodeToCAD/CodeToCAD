@@ -40,7 +40,13 @@ class Landmark(Entity, LandmarkInterface):
         self.native_instance = native_instance
 
     def get_landmark_entity_name(self) -> str:
-        raise NotImplementedError()
+        print(
+            "get_landmark_entity_name called:",
+        )
+        return "String"
 
     def get_parent_entity(self) -> "Entity":
-        raise NotImplementedError()
+        print(
+            "get_parent_entity called:",
+        )
+        return Entity("an entity")

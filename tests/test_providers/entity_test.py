@@ -187,7 +187,8 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         instance.create_cube(1, 1, 1)
 
-        value = instance.create_landmark(landmark_name="test-lm", x=1, y=2, z=3)
+        value = instance.create_landmark(
+            landmark_name="test-lm", x=1, y=2, z=3)
 
         assert value, "Get method failed."
 
