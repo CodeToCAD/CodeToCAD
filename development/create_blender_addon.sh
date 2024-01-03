@@ -7,7 +7,7 @@ SCRIPT_DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # copypasta from
 cd "$SCRIPT_DIR/.."
 
 BLENDER_ADDON_PATH="./CodeToCADBlenderAddon"
-OUTPUT_FILE_PATH="./CodeToCADBlenderAddon.zip"
+OUTPUT_FILE_PATH="$BLENDER_ADDON_PATH.zip"
 
 # Clean up existing files
 echo "Cleaning up existing files."
@@ -18,16 +18,22 @@ done
 for  file in $(find ./providers/blender/ -name '*__pycache__') ; do
 rm -rf $file
 done
-rm -rf $BLENDER_ADDON_PATH
-rm $OUTPUT_FILE_PATH
+for  file in $(find ./ -name 'CodeToCADBlenderAddon') ; do
+    echo "Removed CodeToCADBlenderAddon"
+    rm -rf $file
+done
+for file in $(find ./ -name 'CodeToCADBlenderAddon.zip') ; do
+    echo "Removed CodeToCADBlenderAddon.zip"
+    rm -rf $file
+done
 
 
 # Copy new files
 echo "Copy new files."
 
 mkdir $BLENDER_ADDON_PATH
-mkdir $BLENDER_ADDON_PATH/blender_provider
-cp -r ./providers/blender/blender_provider $BLENDER_ADDON_PATH
+mkdir -p $BLENDER_ADDON_PATH/providers/blender/blender_provider
+cp -r ./providers/blender/blender_provider $BLENDER_ADDON_PATH/providers/blender
 cp -r ./codetocad $BLENDER_ADDON_PATH/
 cp ./providers/blender/blender_addon.py $BLENDER_ADDON_PATH/__init__.py
 
@@ -38,6 +44,7 @@ echo "from blender_provider import *" >> $BLENDER_ADDON_PATH/codetocad/__init__.
 echo "Writing version string."
 
 GIT_EPOCH=$(git show -s --format=%ct HEAD)
+echo "GIT EPOCH: $GIT_EPOCH"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 sed -i '' "s/),  # patch_version marker do not remove/, $GIT_EPOCH),/g" $BLENDER_ADDON_PATH/__init__.py
