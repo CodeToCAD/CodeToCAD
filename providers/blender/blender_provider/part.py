@@ -61,11 +61,11 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "cube",
-            "{},{},{}".format(width, length, height),
-            **(keyword_arguments or {}),
-        )
+        from . import Sketch
+
+        cube_sketch = Sketch(self.name)
+        cube_sketch.create_rectangle(length, width)
+        cube_sketch.extrude(height)
 
     def create_cone(
         self,
