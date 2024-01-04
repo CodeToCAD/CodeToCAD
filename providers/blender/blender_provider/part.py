@@ -404,7 +404,7 @@ class Part(Entity, PartInterface):
                 mirror_axis,
                 resulting_mirrored_entity_name=None,
             )
-
+        
         self.subtract(hole, delete_after_subtract=True, is_transfer_landmarks=False)
         return self._apply_modifiers_only()
 
