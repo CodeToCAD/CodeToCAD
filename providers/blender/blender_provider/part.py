@@ -177,9 +177,11 @@ class Part(Entity, PartInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be unioned."
+
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
-        )
+        )   
 
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
@@ -200,6 +202,8 @@ class Part(Entity, PartInterface):
         partName = with_part
         if isinstance(partName, EntityInterface):
             partName = partName.name
+
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be subtracted."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, partName
@@ -223,6 +227,8 @@ class Part(Entity, PartInterface):
         partName = with_part
         if isinstance(partName, EntityInterface):
             partName = partName.name
+
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be intersected."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, partName
@@ -404,7 +410,7 @@ class Part(Entity, PartInterface):
                 mirror_axis,
                 resulting_mirrored_entity_name=None,
             )
-        
+
         self.subtract(hole, delete_after_subtract=True, is_transfer_landmarks=False)
         return self._apply_modifiers_only()
 
