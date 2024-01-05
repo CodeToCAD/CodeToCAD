@@ -40,7 +40,24 @@ class Analytics(AnalyticsInterface):
 
     def get_world_pose(self, entity: EntityOrItsName) -> "list[float]":
         print("get_world_pose called:", entity)
-        return [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+        return [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+        ]
 
     def get_bounding_box(self, entity_name: EntityOrItsName) -> "BoundaryBox":
         print("get_bounding_box called:", entity_name)

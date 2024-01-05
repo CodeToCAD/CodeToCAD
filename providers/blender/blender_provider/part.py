@@ -15,28 +15,6 @@ if TYPE_CHECKING:
 
 
 class Part(Entity, PartInterface):
-    def _create_primitive(self, primitive_name: str, dimensions: str, **kwargs):
-        assert self.is_exists() is False, f"{self.name} already exists."
-
-        # TODO: account for blender auto-renaming with sequential numbers
-        primitiveType = blender_definitions.BlenderObjectPrimitiveTypes[
-            primitive_name.lower()
-        ]
-
-        expectedNameOfObjectInBlender = primitiveType.default_name_in_blender()
-
-        blender_actions.add_primitive(primitiveType, dimensions, **kwargs)
-
-        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-        # therefore, we'll use the object's "expected" name and rename it to what it should be
-        # note: this will fail if the "expected" name is incorrect
-        if self.name != expectedNameOfObjectInBlender:
-            Part(expectedNameOfObjectInBlender).rename(
-                self.name, primitiveType.has_data()
-            )
-
-        return self
-
     def create_from_file(self, file_path: str, file_type: Optional[str] = None):
         assert self.is_exists() is False, f"{self.name} already exists."
 
@@ -61,11 +39,13 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "cube",
-            "{},{},{}".format(width, length, height),
-            **(keyword_arguments or {}),
-        )
+        from . import Sketch
+
+        cube_sketch = Sketch(self.name)
+        cube_sketch.create_rectangle(length, width)
+        cube_sketch.extrude(height)
+
+        return self
 
     def create_cone(
         self,
@@ -74,11 +54,21 @@ class Part(Entity, PartInterface):
         draft_radius: DimensionOrItsFloatOrStringValue = 0,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "cone",
-            "{},{},{}".format(radius, draft_radius, height),
-            **(keyword_arguments or {}),
-        )
+        from . import Sketch, Wire
+
+        base = Sketch(self.name).create_circle(radius)
+
+        top = Sketch(self.name + "_temp_top")
+        top_wire: Wire
+        if draft_radius == Dimension(0):
+            top_wire = top.create_from_vertices([(0, 0, 0)])
+        else:
+            top_wire = top.create_circle(draft_radius)
+        top.translate_z(height)
+
+        base.loft(top_wire)
+
+        return self
 
     def create_cylinder(
         self,
@@ -86,9 +76,13 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "cylinder", "{},{}".format(radius, height), **(keyword_arguments or {})
-        )
+        from . import Sketch
+
+        sketch = Sketch(self.name)
+        sketch.create_circle(radius)
+        sketch.extrude(height)
+
+        return self
 
     def create_torus(
         self,
@@ -96,20 +90,40 @@ class Part(Entity, PartInterface):
         outer_radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "torus",
-            "{},{}".format(inner_radius, outer_radius),
-            **(keyword_arguments or {}),
+        from . import Sketch
+
+        inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
+            inner_radius
         )
+        outer_radius = Dimension.from_dimension_or_its_float_or_string_value(
+            outer_radius
+        )
+
+        circle_radius = outer_radius - inner_radius
+
+        origin = Sketch(self.name + "_temp_origin")
+        origin.create_from_vertices([(0, 0, 0)])
+
+        sketch = Sketch(self.name)
+        sketch.create_circle(circle_radius)
+        sketch.rotate_x(90)
+        sketch.translate_x(inner_radius + outer_radius / 2)
+        sketch.revolve(360, origin, "z")
+
+        origin.delete()
 
     def create_sphere(
         self,
         radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        return self._create_primitive(
-            "uvsphere", "{}".format(radius), **(keyword_arguments or {})
-        )
+        from . import Sketch
+
+        sketch = Sketch(self.name)
+        sketch.create_circle(radius)
+        sketch.revolve(360, sketch.get_landmark("center"), "x")
+
+        return self
 
     def create_gear(
         self,
@@ -163,9 +177,11 @@ class Part(Entity, PartInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be unioned."
+
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
-        )
+        )   
 
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
@@ -186,6 +202,8 @@ class Part(Entity, PartInterface):
         partName = with_part
         if isinstance(partName, EntityInterface):
             partName = partName.name
+
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be subtracted."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, partName
@@ -209,6 +227,8 @@ class Part(Entity, PartInterface):
         partName = with_part
         if isinstance(partName, EntityInterface):
             partName = partName.name
+
+        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be intersected."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, partName

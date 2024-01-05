@@ -15,6 +15,7 @@ from codetocad.interfaces import (
     PartInterface,
     VertexInterface,
     EntityInterface,
+    LandmarkInterface,
 )
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -58,7 +59,11 @@ class Sketch(Entity, SketchInterface):
         about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "PartInterface":
-        if isinstance(about_entity_or_landmark, Entity):
+        if isinstance(about_entity_or_landmark, LandmarkInterface):
+            about_entity_or_landmark = (
+                about_entity_or_landmark.get_landmark_entity_name()
+            )
+        elif isinstance(about_entity_or_landmark, Entity):
             about_entity_or_landmark = about_entity_or_landmark.name
 
         axis = Axis.from_string(axis)
@@ -85,7 +90,7 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":
         blender_actions.set_curve_extrude_property(
-            self.name, Dimension.from_string(length)
+            self.name, Dimension.from_string(length) / 2
         )
 
         blender_actions.create_mesh_from_curve(self.name)

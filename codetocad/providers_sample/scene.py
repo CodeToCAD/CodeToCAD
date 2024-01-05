@@ -46,6 +46,7 @@ class Scene(SceneInterface):
 
     def get_selected_entity(self) -> "Entity":
         from . import Entity
+
         print(
             "get_selected_entity called:",
         )

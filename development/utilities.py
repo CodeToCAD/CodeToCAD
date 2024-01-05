@@ -1,5 +1,6 @@
 import re
 
+
 pattern1 = re.compile(r"(.)([A-Z][a-z]+)")
 pattern2 = re.compile(r"__([A-Z])")
 pattern3 = re.compile(r"([a-z0-9])([A-Z])")

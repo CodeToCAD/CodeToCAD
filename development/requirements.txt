@@ -9,6 +9,7 @@ jinja2-cli
 # Blender Development Dependencies:
 fake-bpy-module-latest==20231025
 numpy
+black
 
 # Onshape Development Dependencies:
 onshape-client

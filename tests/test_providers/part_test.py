@@ -260,6 +260,9 @@ class PartTest(TestProviderCase, PartTestInterface):
             with_part="myCylinder",  # "delete_after_union", "is_transfer_landmarks"
         )
 
+        #Regression test for union
+        assert instance.is_colliding_with_part(instance2) == True, "Union succeded even though parts are not touching."
+
         assert value, "Modify method failed."
 
     def test_subtract(self):
@@ -275,6 +278,9 @@ class PartTest(TestProviderCase, PartTestInterface):
             with_part="myCylinder",  # "delete_after_subtract", "is_transfer_landmarks"
         )
 
+        #Regression test for subtract
+        assert instance.is_colliding_with_part(instance2) == True, "Subtract succeded even though parts are not touching."
+
         assert value, "Modify method failed."
 
     def test_intersect(self):
@@ -289,6 +295,9 @@ class PartTest(TestProviderCase, PartTestInterface):
         value = instance.intersect(
             with_part="myCylinder",  # "delete_after_intersect", "is_transfer_landmarks"
         )
+
+        #Regression test for intersect
+        assert instance.is_colliding_with_part(instance2) == True, "Intersect succeded even though parts are not touching."
 
         assert value, "Modify method failed."
 
@@ -324,6 +333,8 @@ class PartTest(TestProviderCase, PartTestInterface):
             radius=2,
             depth=3,
         )
+        
+        assert value.is_colliding_with_part(instance) == False, "Hole succeeded even though the hole was not intersecting the part."
 
         assert value, "Modify method failed."
 
