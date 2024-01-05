@@ -1,4 +1,5 @@
 import bpy
+import logging
 
 from . import get_object
 
@@ -67,6 +68,6 @@ def get_blender_version() -> tuple:
 
 
 def log_message(
-    message: str,
+    message: str, logLevel=logging.INFO
 ):
-    bpy.ops.codetocad.log_message(message=message)
+    bpy.ops.codetocad.log_message(message=message, logLevel=logLevel)

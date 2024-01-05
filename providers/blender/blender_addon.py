@@ -16,6 +16,7 @@ from bpy.props import CollectionProperty, StringProperty
 from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
+import logging
 
 
 bl_info = {
@@ -75,13 +76,23 @@ class LogMessage(Operator):
     message: bpy.props.StringProperty(
         name="Message", default="Reporting : Base message"
     )  # type: ignore
-    isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
+    # isError: bpy.props.BoolProperty(name="isError", default=False)  # type: ignore
+    logLevel: bpy.props.IntProperty(name="logLevel", default=logging.INFO)
 
     def execute(self, context):
+        logger = logging.getLogger('my-own-logger')
         # https://blender.stackexchange.com/questions/50098/force-logs-to-appear-in-info-view-when-chaining-operator-calls
 
-        logType = {"ERROR"} if self.isError else {"INFO"}
-        self.report(logType, self.message)
+        logType = {self.logLevel} #{"ERROR"} if self.logLevel else {"INFO"}
+        # self.report(logType, self.message)
+        logger_map = {
+            logging.INFO: logger.info,
+            logging.DEBUG: logger.debug,
+            logging.WARNING: logger.warning,
+            logging.ERROR: logger.error
+        }
+
+        logger_map[self.logLevel](msg=self.message)
 
         return {"FINISHED"}
 
@@ -536,6 +547,8 @@ def add_codetocad_to_blender_console():
 
 @bpy.app.handlers.persistent  # type: ignore
 def run_from_commandline_arguments(*args):
+    logger = logging.getLogger('my-own-logger')
+
     # if --CodeToCAD path/to/file.py is passed in, we should automatically run it
     for index in range(1, len(sys.argv)):
         if sys.argv[index].lower() == "--codetocad":
@@ -555,6 +568,31 @@ def run_from_commandline_arguments(*args):
 
             break
 
+    if "--log-level" in sys.argv:
+        idx = sys.argv.index("--log-level")
+        level = sys.argv[idx+1] if len(sys.argv)>(idx+1) else logging.INFO
+
+        try:
+            logger.setLevel(level=level)
+        except Exception as e:
+            print(f"error ={e}")
+            logger.setLevel(level=logging.INFO)
+
+    if "--log-file" in sys.argv:
+        idx = sys.argv.index("--log-file")
+        filename = sys.argv[idx + 1] if len(sys.argv) > (idx + 1) else "log.txt"
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        try:
+            file_handler = logging.FileHandler(
+                filename=filename, )
+
+        except Exception as e:
+            print(f"error ={e}")
+            file_handler = logging.FileHandler("logging.txt")
+
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
 blenderLoadPostHandler: list = bpy.app.handlers.load_post  # type: ignore
 
