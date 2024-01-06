@@ -197,7 +197,7 @@
             }
         },
         "Exportable": {
-            "information": "An enttiy that can be exported.",
+            "information": "An entity that can be exported.",
             "is_interface_only": true,
             "export": {
                 "action": "interact",
