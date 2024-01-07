@@ -312,7 +312,8 @@ class Entity(EntityInterface):
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        _ = Part(landmarkObjectName)._create_primitive("Empty", "0")
+        empty_object = blender_actions.create_object(landmarkObjectName, None)
+        empty_object.empty_display_size = 0
 
         # Assign the landmark to the parent's collection
         blender_actions.assign_object_to_collection(
