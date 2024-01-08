@@ -1,7 +1,7 @@
 from typing import TypeAlias, Union
 
 from codetocad.core import Dimension, Angle, Point
-from codetocad.enums import Axis, LengthUnit, PresetLandmark
+from codetocad.enums import Axis, LengthUnit, PresetLandmark, PresetMaterial
 
 from typing import TYPE_CHECKING
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
         ExportableInterface,
     )
 
-MaterialOrItsName: TypeAlias = Union[str, "MaterialInterface"]
+MaterialOrItsName: TypeAlias = Union[str, PresetMaterial, "MaterialInterface"]
 PartOrItsName: TypeAlias = Union[str, "PartInterface"]
 EntityOrItsName: TypeAlias = Union[str, "EntityInterface"]
 SketchOrItsName: TypeAlias = Union[str, "SketchInterface"]

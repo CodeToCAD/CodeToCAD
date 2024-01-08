@@ -6,5 +6,6 @@ from .curve_types import CurveTypes
 from .file_formats import FileFormats
 from .length_unit import LengthUnit
 from .preset_landmark import PresetLandmark
+from .preset_material import PresetMaterial
 from .scaling_methods import ScalingMethods
 from .units import Units
