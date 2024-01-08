@@ -186,6 +186,10 @@ class Part(Entity, PartInterface):
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
 
+        materials = blender_actions.material.get_materials(partName)
+        for material in materials:
+            blender_actions.set_material_to_object(material.name, self.name, is_union=True)
+
         self._apply_modifiers_only()
 
         if delete_after_union:

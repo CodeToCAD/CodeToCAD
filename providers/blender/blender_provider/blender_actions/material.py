@@ -13,6 +13,11 @@ def get_material(
     return blenderMaterial
 
 
+def get_materials(obj_name: str) -> list[bpy.types.Material]:
+    obj = bpy.data.objects[obj_name]
+    return [material_slot.material for material_slot in obj.material_slots]
+
+
 def create_material(
     new_material_name: str,
 ):
@@ -63,6 +68,7 @@ def set_material_specularness(material_name: str, value: float):
 def set_material_to_object(
     material_name: str,
     object_name: str,
+    is_union=False
 ):
     material = get_material(material_name)
 
@@ -72,7 +78,7 @@ def set_material_to_object(
 
     objectMaterial = mesh.materials
 
-    if len(objectMaterial) == 0:
+    if is_union or len(objectMaterial) == 0:
         objectMaterial.append(material)
     else:
         objectMaterial[0] = material
