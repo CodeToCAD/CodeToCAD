@@ -181,7 +181,7 @@ class Part(Entity, PartInterface):
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
-        )   
+        )
 
         if is_transfer_landmarks:
             blender_actions.transfer_landmarks(partName, self.name)
@@ -417,10 +417,10 @@ class Part(Entity, PartInterface):
     def set_material(self, material_name: MaterialOrItsName):
         material = material_name
 
-        if isinstance(material, str):
+        if isinstance(material, str) or isinstance(material, PresetMaterial):
             from . import Material
 
-            material = Material(material)
+            material = Material.get_preset(material)
 
         material.assign_to_part(self.name)
         return self
