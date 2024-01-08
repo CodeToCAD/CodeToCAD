@@ -1,9 +1,58 @@
-# CodeToCAD
+<div align="center">
+    <a href="https://pypi.org/project/codetocad/0.2.1688153771/">
+        <img src="https://i.gyazo.com/c1a94076208b7b23010b00381a5b2b9e.png" width="256" height="256" alt="New Expensify Icon">
+    </a>
+    <h1></h1>
+    <p><strong>One language for all your CAD needs</p>
+</div>
+<p align="center">
+   <a href="https://codetocad.github.io/CodeToCAD/docs.html"><img src="https://img.shields.io/badge/Read_the_docs-white?logo=readthedocs&logoColor=black
+   "/></a>
+  <a href="https://discord.gg/MnZEtqwt74"><img src="https://img.shields.io/discord/955573351806562335?logo=discord&logoColor=white&label=Discord" /></a>
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/CodeToCAD/CodeToCAD"/>
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/CodeToCAD/CodeToCAD">
+</p>
 
-## ONE LANGUAGE FOR ALL YOUR CAD NEEDS
+## Table of Contents
 
 Use one python script to interact with all these software:
+1. [Getting Started](#getting-started)
+2. [Supported Applications](#supported-applications)
 
+#### [READ THE DOCS](https://codetocad.github.io/CodeToCAD/docs.html)
+
+#### [EXAMPLES WITH CODE](https://codetocad.github.io/CodeToCAD/examples.html)
+
+
+## Getting started
+
+> Pre-requisites: Python 3.10 or newer.
+
+1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
+
+   ```
+   pip install CodeToCAD
+   ```
+
+2. Create your own CodeToCAD python file and save it:
+
+   ```python
+   # my_codetocad_script.py
+   # More examples can be found under CodeToCAD/examples/
+   from codetocad import *
+
+   my_material = Material("material").set_color(169, 76, 181, 0.8)
+   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
+   ```
+
+3. Watch as your code gets seemlessly translated into CAD
+
+![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
+
+Above is the above script being run in blender using our [Blender Addon](#blender) below.
+
+
+## Supported applications
 - [Blender](https://www.blender.org/)* - Digital Modeling Software
 - [Onshape](https://www.onshape.com/en/)** - Product Development and CAD Software
 - [PyBullet](https://pybullet.org/)*** - Real-time Physics Simulation Library
@@ -17,42 +66,9 @@ Use one python script to interact with all these software:
 ** Pre-alpha development.
 *** To be developed.</sub>
 
+## BLENDER
 
-#### [READ THE DOCS](https://codetocad.github.io/CodeToCAD/docs.html)
-
-#### [EXAMPLES WITH CODE](https://codetocad.github.io/CodeToCAD/examples.html)
-
-
-## SIMPLIFY YOUR CAD WORKFLOW NOW:
-
-> Pre-requisites: Python 3.10 or newer.
-
-1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
-
-   `pip install CodeToCAD`
-
-2. Create your own CodeToCAD python file and save it:
-
-   ```python
-   # my_codetocad_script.py
-   # This is also the examples/materials.py example
-   from codetocad import *
-
-   my_material = Material("material").set_color(169, 76, 181, 0.8)
-   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
-   ```
-
-   ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
-
-3. Run your script in your modeling software. If you are using Blender, check out the instructions for installing the [Blender Addon](#blender) addon below.
-
-
-[![Release Version and Blender Addon](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml/badge.svg?branch=develop)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml) [![Documentation Pages](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment)
-
-
-### BLENDER
-
-> Note: Blender 3.1 or newer is required.
+> Pre-requisites: Blender 3.1 or newer is required.
 
 1. Download a release and install the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest Release (see the sidebar).
 
