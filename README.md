@@ -25,6 +25,7 @@
 6. [What's next](#whats-next)
 7. [For the developers](#for-the-developers)
 8. [Additional resources](#additional-resources)
+9. [Support us](#support-us-❤️)
 
 
 ## What is CodeToCAD
@@ -129,3 +130,16 @@ We welcome all contributors to the project, to get started with contributing che
  - [CodeToCAD docs](https://codetocad.github.io/CodeToCAD/docs.html)
  - [CodeToCAD PyPI](https://pypi.org/project/codetocad/)
  - [Blender API docs](https://docs.blender.org/api/current/index.html)
+
+## Contributors
+Thank you to all our contributors for their invaluable time, effort, and expertise in making CodeToCAD possible: 
+
+<a href="https://github.com/CodeToCAD/CodeToCAD/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CodeToCAD/CodeToCAD" />
+</a>
+
+
+## Support us ❤️
+Any and all donations toward the project are much appreciated and help greatly:
+ - [GitHub Sponsors](https://github.com/sponsors/CodeToCAD)
+ - [Patreon](https://www.patreon.com/CodeToCAD)
