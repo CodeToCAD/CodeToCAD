@@ -1,8 +1,3 @@
-# THIS IS AN AUTO-GENERATE FILE.
-# DO NOT EDIT MANUALLY.
-# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
-# Copy this file and remove this header to create a new CodeToCAD Provider.
-
 import json
 from typing import Optional
 
@@ -12,7 +7,13 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.onshape.onshape_provider.onshape_actions import create_extrude, create_rect, create_tab_part_studios, get_first_document_url_by_name, get_onshape_client_with_config_file
+from providers.onshape.onshape_provider.onshape_actions import (
+    create_extrude,
+    create_rect,
+    create_tab_part_studios,
+    get_first_document_url_by_name,
+    get_onshape_client_with_config_file,
+)
 
 
 from . import Entity
@@ -113,12 +114,12 @@ class Sketch(Entity, SketchInterface):
     @classmethod
     def setUpClass(cls) -> None:
         import os
+
         configPath = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             "../.onshape_client_config.yaml",
         )
-        cls.client = get_onshape_client_with_config_file(
-            config_filepath=configPath)
+        cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
@@ -144,10 +145,11 @@ class Sketch(Entity, SketchInterface):
         if self.native_instance is None:
             raise ValueError("Native Instance is None")
 
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
         feature_id = self.native_instance["feature"]["featureId"]
-        length_float = Dimension.from_dimension_or_its_float_or_string_value(length, None)
+        length_float = Dimension.from_dimension_or_its_float_or_string_value(
+            length, None
+        )
         create_extrude(self.client, onshape_url, feature_id, str(length_float))
         raise NotImplementedError()
 
@@ -215,14 +217,14 @@ class Sketch(Entity, SketchInterface):
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-
         length_float = Dimension.from_dimension_or_its_float_or_string_value(
-            length, None).value
+            length, None
+        ).value
         width_float = Dimension.from_dimension_or_its_float_or_string_value(
-            length, None).value
+            length, None
+        ).value
 
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
 
         # Create a new tab in the part studio
         part_studio_id = create_tab_part_studios(
@@ -233,10 +235,10 @@ class Sketch(Entity, SketchInterface):
         onshape_url.tab_id = part_studio_id
 
         # Define the location of the point in 3D space
-        corner1_x = Dimension(-width_float/2, "mm")
-        corner1_y = Dimension(length_float/2, "mm")
-        corner2_x = Dimension(width_float/2, "mm")
-        corner2_y = Dimension(-length_float/2, "mm")
+        corner1_x = Dimension(-width_float / 2, "mm")
+        corner1_y = Dimension(length_float / 2, "mm")
+        corner2_x = Dimension(width_float / 2, "mm")
+        corner2_y = Dimension(-length_float / 2, "mm")
 
         # Create a point in the part studio
         sketch_info = create_rect(
