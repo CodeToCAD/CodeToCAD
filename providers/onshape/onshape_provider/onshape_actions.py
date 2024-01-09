@@ -211,7 +211,8 @@ def create_rect(
 
 def create_extrude(client: Client,
                    onshape_url: onshape_definitions.OnshapeUrl,
-                   feature_id: str):
+                   feature_id: str,
+                   length_expression: str = "10.03*in"):
     tool_body_type = BTMParameterEnum145(
         value="SOLID", enum_name="ToolBodyType", parameter_id="bodyType"
     )
