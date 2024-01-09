@@ -22,10 +22,14 @@
 4. [Supported Applications](#supported-applications)
 5. [Working with the software of your choice](#working-with-the-software-of-your-choice)
    1. [Blender support](#blender)
-   2. [Onshape support](#onshape)
+   2. [Onshape support](#onshape) 
+6. [What's next](#whats-next)
+7. [For the developers](#for-the-developers)
+8. [Additional resources](#additional-resources)
 
 
 ## What is CodeToCAD
+CodeToCAD is an open source code-CAD automation. It provides extendable, declarative and imperative interfaces that allow engineers and developers to write code-CAD scripts that can be checked into source control, collaborated on, and run on any supported 3D modeling software.
 
 ## Why CodeToCAD?
 
@@ -90,6 +94,9 @@
 
 ## Working with the software of your choice
 > Remember to first follow the getting [started instructions](#getting-started)
+### Compatible softwares
+1. [Blender](#blender)
+2. [Onshape](#onshape)
 ### Blender
 > Pre-requisites: Blender 3.1 or newer is required.
 
@@ -109,8 +116,7 @@
 ### Onshape
 > Coming soon
 
-## WHAT'S NEXT
-
+## What's next
 - Run or browse the [examples](./examples/)!
 
   ![Stacked Cubes](docs/images/stacked_cubes.png)
@@ -119,3 +125,8 @@
 
 ## For the developers
 We welcome all contributors to the project, to get started with contributing check out our [Contributing guidelines](/development/README.md)
+
+## Additional Resources
+ - [CodeToCAD docs](https://codetocad.github.io/CodeToCAD/docs.html)
+ - [CodeToCAD PyPI](https://pypi.org/project/codetocad/)
+ - [Blender API docs](https://docs.blender.org/api/current/index.html)
