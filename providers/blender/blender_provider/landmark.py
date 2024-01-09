@@ -104,3 +104,26 @@ class Landmark(Entity, LandmarkInterface):
     def select(self):
         blender_actions.select_object(self.get_landmark_entity_name())
         return self
+
+    def clone(
+        self,
+        landmark_name: str,
+        offset: Optional[list[Dimension]]=None,
+        parent: Optional[Entity]=None,
+    ) -> "Landmark":
+        x = self.get_location_local().x
+        y = self.get_location_local().y
+        z = self.get_location_local().z
+
+        if offset:
+            offset_x, offset_y, offset_z = offset
+            x += offset_x
+            y += offset_y
+            z += offset_z
+
+        if parent:
+            landmark = parent.create_landmark(landmark_name, x, y, z)
+        else:
+            landmark = self.get_parent_entity().create_landmark(landmark_name, x, y, z)
+
+        return landmark
