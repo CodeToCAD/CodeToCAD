@@ -65,11 +65,7 @@ def set_material_specularness(material_name: str, value: float):
     material.specular_intensity = value
 
 
-def set_material_to_object(
-    material_name: str,
-    object_name: str,
-    is_union=False
-):
+def set_material_to_object(material_name: str, object_name: str, is_union=False):
     material = get_material(material_name)
 
     object = get_object(object_name)

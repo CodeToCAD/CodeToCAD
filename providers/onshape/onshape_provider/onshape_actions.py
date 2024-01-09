@@ -13,7 +13,7 @@ from onshape_client.oas import (
     BTMParameterQuantity147,
     BTCurveGeometryLine117,
     BTMSketchCurveSegment155,
-    BTMIndividualSketchRegionQuery140
+    BTMIndividualSketchRegionQuery140,
 )
 
 
@@ -63,10 +63,8 @@ def get_first_document_tabs_by_id(
 def get_first_document_url_by_id(
     client: Client, document_id: str
 ) -> onshape_definitions.OnshapeUrl:
-    workspace_id: str = get_first_document_workspace_by_id(client, document_id)[
-        "id"]
-    tab_id: str = get_first_document_tabs_by_id(
-        client, document_id, workspace_id)["id"]
+    workspace_id: str = get_first_document_workspace_by_id(client, document_id)["id"]
+    tab_id: str = get_first_document_tabs_by_id(client, document_id, workspace_id)["id"]
     return onshape_definitions.OnshapeUrl(
         document_id=document_id, workspace_id=workspace_id, tab_id=tab_id
     )
@@ -152,8 +150,11 @@ def create_rect(
     dist_x = corner2.x.value - corner1.x.value
     dist_y = corner2.y.value - corner1.y.value
     line_geometry1 = BTCurveGeometryLine117(
-        pnt_x=corner1.x.value, pnt_y=corner1.y.value,
-        dir_x=0.0, dir_y=dist_y, bt_type="BTCurveGeometryLine-117"
+        pnt_x=corner1.x.value,
+        pnt_y=corner1.y.value,
+        dir_x=0.0,
+        dir_y=dist_y,
+        bt_type="BTCurveGeometryLine-117",
     )
     line1 = BTMSketchCurveSegment155(
         start_point_id=f"{LINE_ID}.{START}",
@@ -161,11 +162,15 @@ def create_rect(
         start_param=0.0,
         end_param=1.0,
         geometry=line_geometry1,
-        entity_id=LINE_ID+"1",
+        entity_id=LINE_ID + "1",
         bt_type="BTMSketchCurveSegment-155",
     )
     line_geometry2 = BTCurveGeometryLine117(
-        pnt_x=corner1.x.value, pnt_y=corner2.y.value, dir_x=dist_x, dir_y=0.0, bt_type="BTCurveGeometryLine-117"
+        pnt_x=corner1.x.value,
+        pnt_y=corner2.y.value,
+        dir_x=dist_x,
+        dir_y=0.0,
+        bt_type="BTCurveGeometryLine-117",
     )
     line2 = BTMSketchCurveSegment155(
         start_point_id=f"{LINE_ID}.{START}",
@@ -173,13 +178,15 @@ def create_rect(
         start_param=0.0,
         end_param=1.0,
         geometry=line_geometry2,
-        entity_id=LINE_ID+"2",
+        entity_id=LINE_ID + "2",
         bt_type="BTMSketchCurveSegment-155",
     )
     line_geometry3 = BTCurveGeometryLine117(
-        pnt_x=corner2.x.value, pnt_y=corner2.y.value,
-        dir_x=0.0, dir_y=-dist_y,
-        bt_type="BTCurveGeometryLine-117"
+        pnt_x=corner2.x.value,
+        pnt_y=corner2.y.value,
+        dir_x=0.0,
+        dir_y=-dist_y,
+        bt_type="BTCurveGeometryLine-117",
     )
     line3 = BTMSketchCurveSegment155(
         start_point_id=f"{LINE_ID}.{START}",
@@ -187,12 +194,15 @@ def create_rect(
         start_param=0.0,
         end_param=1.0,
         geometry=line_geometry3,
-        entity_id=LINE_ID+"3",
+        entity_id=LINE_ID + "3",
         bt_type="BTMSketchCurveSegment-155",
     )
     line_geometry4 = BTCurveGeometryLine117(
-        pnt_x=corner2.x.value, pnt_y=corner1.y.value,
-        dir_x=-dist_x, dir_y=0.0, bt_type="BTCurveGeometryLine-117"
+        pnt_x=corner2.x.value,
+        pnt_y=corner1.y.value,
+        dir_x=-dist_x,
+        dir_y=0.0,
+        bt_type="BTCurveGeometryLine-117",
     )
     line4 = BTMSketchCurveSegment155(
         start_point_id=f"{LINE_ID}.{START}",
@@ -200,19 +210,23 @@ def create_rect(
         start_param=0.0,
         end_param=1.0,
         geometry=line_geometry4,
-        entity_id=LINE_ID+"4",
+        entity_id=LINE_ID + "4",
         bt_type="BTMSketchCurveSegment-155",
     )
     return create_sketch(
-        client, onshape_url, sketch_name=sketch_name, btm_entities=[
-            line1, line2, line3, line4],
+        client,
+        onshape_url,
+        sketch_name=sketch_name,
+        btm_entities=[line1, line2, line3, line4],
     )
 
 
-def create_extrude(client: Client,
-                   onshape_url: onshape_definitions.OnshapeUrl,
-                   feature_id: str,
-                   length_expression: str = "10.03*in"):
+def create_extrude(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    feature_id: str,
+    length_expression: str = "10.03*in",
+):
     tool_body_type = BTMParameterEnum145(
         value="SOLID", enum_name="ToolBodyType", parameter_id="bodyType"
     )
@@ -224,23 +238,16 @@ def create_extrude(client: Client,
 
     line_query = BTMParameterQueryList148(
         parameter_id="entities",
-        queries=[BTMIndividualSketchRegionQuery140(
-            feature_id=feature_id)],
+        queries=[BTMIndividualSketchRegionQuery140(feature_id=feature_id)],
     )
-    length = BTMParameterQuantity147(
-        expression="10.03*in", parameter_id="depth")
+    length = BTMParameterQuantity147(expression="10.03*in", parameter_id="depth")
     extrude_feature = BTMFeature134(
         bt_type="BTMFeature-134",
         name="My extrude",
         feature_type="extrude",
-        parameters=[
-            operation_type,
-            line_query,
-            length],
+        parameters=[operation_type, line_query, length],
     )
-    feature_definition = BTFeatureDefinitionCall1406(
-        feature=extrude_feature
-    )
+    feature_definition = BTFeatureDefinitionCall1406(feature=extrude_feature)
     return client.part_studios_api.add_part_studio_feature(
         **onshape_url.dict_document_and_workspaceAndModelAndTab,
         bt_feature_definition_call_1406=feature_definition,

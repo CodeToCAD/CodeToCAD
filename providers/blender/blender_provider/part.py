@@ -177,7 +177,9 @@ class Part(Entity, PartInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
-        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be unioned."
+        assert (
+            self.is_colliding_with_part(partName) == True
+        ), "Parts must be colliding to be unioned."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
@@ -188,7 +190,9 @@ class Part(Entity, PartInterface):
 
         materials = blender_actions.material.get_materials(partName)
         for material in materials:
-            blender_actions.set_material_to_object(material.name, self.name, is_union=True)
+            blender_actions.set_material_to_object(
+                material.name, self.name, is_union=True
+            )
 
         self._apply_modifiers_only()
 
@@ -207,7 +211,9 @@ class Part(Entity, PartInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
-        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be subtracted."
+        assert (
+            self.is_colliding_with_part(partName) == True
+        ), "Parts must be colliding to be subtracted."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, partName
@@ -232,7 +238,9 @@ class Part(Entity, PartInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
-        assert self.is_colliding_with_part(partName) == True, "Parts must be colliding to be intersected."
+        assert (
+            self.is_colliding_with_part(partName) == True
+        ), "Parts must be colliding to be intersected."
 
         blender_actions.apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, partName
