@@ -1,90 +1,37 @@
-# CodeToCAD
-
-## ONE LANGUAGE FOR ALL YOUR CAD NEEDS
-
-Use one python script to interact with all these software:
-
-- [Blender](https://www.blender.org/)* - Digital Modeling Software
-- [Onshape](https://www.onshape.com/en/)** - Product Development and CAD Software
-- [PyBullet](https://pybullet.org/)*** - Real-time Physics Simulation Library
-- [KiCAD](https://www.kicad.org/)*** - Electronic/PCB Design Software
-- LLM/AI based model generation ***
-- [FreeCAD](https://www.freecad.org/)*** - CAD Software
-- [ThreeJS](https://threejs.org/)*** - Web-based 3D Library
-- [Libfive](https://libfive.com/)*** Signed Distance Field Modeling library
-
-<sub>* Alpha/Beta support
-** Pre-alpha development.
-*** To be developed.</sub>
-
-
-#### [READ THE DOCS](https://codetocad.github.io/CodeToCAD/docs.html)
-
-#### [EXAMPLES WITH CODE](https://codetocad.github.io/CodeToCAD/examples.html)
-
-
-## SIMPLIFY YOUR CAD WORKFLOW NOW:
-
-> Pre-requisites: Python 3.10 or newer.
-
-1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
-
-   `pip install CodeToCAD`
-
-2. Create your own CodeToCAD python file and save it:
-
-   ```python
-   # my_codetocad_script.py
-   # This is also the examples/materials.py example
-   from codetocad import *
-
-   my_material = Material("material").set_color(169, 76, 181, 0.8)
-   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
-   ```
-
-   ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
-
-3. Run your script in your modeling software. If you are using Blender, check out the instructions for installing the [Blender Addon](#blender) addon below.
-
-
-[![Release Version and Blender Addon](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml/badge.svg?branch=develop)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/on-pr-resolved.yml) [![Documentation Pages](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/CodeToCAD/CodeToCAD/actions/workflows/pages/pages-build-deployment)
-
-
-### BLENDER
-
-> Note: Blender 3.1 or newer is required.
-
-1. Download a release and install the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest Release (see the sidebar).
-
-   > If you're a developer, instead of downloading a release, you can clone this repository. [Video Guide](https://youtu.be/YD_4nj0QUJ4)
-
-2. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
-   ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png)
-
-> Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py`
-
-## WHAT DO I DO NEXT?
-
-- Run or browse the [examples](./examples/)!
-
-  ![Stacked Cubes](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/stacked_cubes.png)
-
-- Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community! [https://discord.gg/MnZEtqwt74](https://discord.gg/MnZEtqwt74)
-
-
-### WARNING!
-
-Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
-
-## THE POWER OF CODE-BASED CAD
-
-
 <div align="center">
-<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/three_axis_mill.gif"/>
+    <a href="https://pypi.org/project/codetocad/0.2.1688153771/">
+        <img src="/docs/images/CodeToCADtempLogo.PNG" width="500" height="256">
+    </a>
+    <h1></h1>
+    <p><strong>One language for all your CAD needs</p>
 </div>
+<p align="center">
+   <a href="https://codetocad.github.io/CodeToCAD/docs.html"><img src="https://img.shields.io/badge/Read_the_docs-white?logo=readthedocs&logoColor=black"/></a>
+   <a href="https://discord.gg/MnZEtqwt74"><img alt="Discord" src="https://img.shields.io/discord/955573351806562335?logo=discord&logoColor=black&label=Discord&labelColor=white&color=blue"></a>
+   <a href="https://github.com/CodeToCAD/CodeToCAD/stargazers"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/CodeToCAD/CodeToCAD"/></a>
+   <a href="https://github.com/search?q=repo%3ACodeToCAD%2FCodeToCAD++language%3APython&type=code"><img alt="GitHub top language" src="https://img.shields.io/github/languages/top/CodeToCAD/CodeToCAD?logo=python&labelColor=white&color=blue"></a>
+   <a href="https://codetocad.github.io/CodeToCAD/examples.html"><img alt="Static Badge" src="https://img.shields.io/badge/Examples-white?logo=internetarchive&logoColor=black"></a>
+</p>
+
+## Table of Contents
+
+1. [What is CodeToCAD](#what-is-CodeToCAD)
+2. [Why CodeToCAD](#why-CodeToCAD)
+3. [Getting Started](#getting-started)
+4. [Supported Applications](#supported-applications)
+5. [Working with the software of your choice](#working-with-the-software-of-your-choice)
+   1. [Blender support](#blender)
+   2. [Onshape support](#onshape) 
+6. [What's next](#whats-next)
+7. [For the developers](#for-the-developers)
+8. [Additional resources](#additional-resources)
+9. [Support us](#support-us-❤️)
 
 
-Benefits of code-based modeling with CodeToCAD:
+## What is CodeToCAD
+CodeToCAD is an open source code-CAD automation. It provides extendable, declarative and imperative interfaces that allow engineers and developers to write code-CAD scripts that can be checked into source control, collaborated on, and run on any supported 3D modeling software.
+
+## Why CodeToCAD?
 
 ✅ Simplified modeling interface - it's all text! No more scrolling and clicking into sub-menus to edit your models.
 
@@ -97,3 +44,102 @@ Benefits of code-based modeling with CodeToCAD:
 🚦Easy version control. Your models are written in code, you can use industry-loved git to keep track of versions of your models.
 
 💕 Built by people who believe in automation and that modeling workflows should be intuitive, reliable and most importantly free and open source!
+
+<div align="center">
+<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/three_axis_mill.gif"/>
+</div>
+
+## Getting started
+
+> Pre-requisites: [Python 3.10 or newer](https://www.python.org/downloads/).
+
+1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
+
+   ```
+   pip install CodeToCAD
+   ```
+
+2. Create your own CodeToCAD python file and save it ([docs](https://codetocad.github.io/CodeToCAD/docs.html)):
+
+   ```python
+   # my_codetocad_script.py
+   # More examples can be found under CodeToCAD/examples/
+   from codetocad import *
+
+   my_material = Material("material").set_color(169, 76, 181, 0.8)
+   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
+   ```
+
+3. Watch as your code gets seemlessly translated into CAD using our [custom addon](#working-with-the-software-of-your-choice) for your desired application
+
+![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
+
+> Above is the above script being run in blender using our [Blender Addon](#blender) below.
+
+
+## Supported Applications
+#### Alpha/Beta Support
+- [Blender](https://www.blender.org/) - Digital Modeling Software
+
+#### Pre-Alpha Development
+- [Onshape](https://www.onshape.com/en/) - Product Development and CAD Software 
+
+#### To Be Developed
+- [PyBullet](https://pybullet.org/) - Real-time Physics Simulation Library 
+- [KiCAD](https://www.kicad.org/) - Electronic/PCB Design Software
+- LLM/AI based model generation
+- [FreeCAD](https://www.freecad.org/) - CAD Software
+- [ThreeJS](https://threejs.org/) - Web-based 3D Library
+- [Libfive](https://libfive.com/) - Signed Distance Field Modeling library
+
+## Working with the software of your choice
+> Remember to first follow the getting [started instructions](#getting-started)
+### Compatible softwares
+1. [Blender](#blender)
+2. [Onshape](#onshape)
+### Blender
+> Pre-requisites: Blender 3.1 or newer is required.
+
+1. Download a release of the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases)
+   > Note for developers: instead of downloading a release, you can clone this repository, then watch this guide to get set up - [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+
+2. Install the Blender Addon in the blender software
+![import_file](/docs/images/Blender_Install_Addon.gif)
+
+3. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
+   ![import_file](/docs/images/import_file_in_blender.png)
+
+> Warning: Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
+
+> Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py`
+
+#### Onshape
+> Coming soon
+
+## What's next
+- Run or browse the [examples](./examples/)!
+
+  ![Stacked Cubes](docs/images/stacked_cubes.png)
+
+- Join the [Discord Server](https://discord.gg/MnZEtqwt74) to receive updates and help from the community!
+
+## For the developers
+We welcome all contributors to the project, to get started with contributing check out our [Contributing guidelines](/development/README.md)
+
+## Additional Resources
+ - [CodeToCAD docs](https://codetocad.github.io/CodeToCAD/docs.html)
+ - [CodeToCAD PyPI](https://pypi.org/project/codetocad/)
+ - [Blender API docs](https://docs.blender.org/api/current/index.html)
+
+## Contributors
+Thank you to all our contributors for their invaluable time, effort, and expertise in making CodeToCAD possible: 
+
+<a href="https://github.com/CodeToCAD/CodeToCAD/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CodeToCAD/CodeToCAD" />
+</a>
+
+
+## Support us ❤️
+Any and all donations toward the project are much appreciated and help greatly:
+ - [GitHub Sponsors](https://github.com/sponsors/CodeToCAD)
+ - [Patreon](https://www.patreon.com/CodeToCAD)
