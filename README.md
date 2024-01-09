@@ -8,9 +8,10 @@
 <p align="center">
    <a href="https://codetocad.github.io/CodeToCAD/docs.html"><img src="https://img.shields.io/badge/Read_the_docs-white?logo=readthedocs&logoColor=black
    "/></a>
-  <a href="https://discord.gg/MnZEtqwt74"><img src="https://img.shields.io/discord/955573351806562335?logo=discord&logoColor=white&label=Discord" /></a>
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/CodeToCAD/CodeToCAD"/>
-  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/CodeToCAD/CodeToCAD">
+   <a href="https://discord.gg/MnZEtqwt74"><img alt="Discord" src="https://img.shields.io/discord/955573351806562335?logo=discord&logoColor=black&label=Discord&labelColor=white&color=blue"></a>
+   <a href="https://github.com/CodeToCAD/CodeToCAD/stargazers"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/CodeToCAD/CodeToCAD"/></a>
+   <a href="https://github.com/search?q=repo%3ACodeToCAD%2FCodeToCAD++language%3APython&type=code"><img alt="GitHub top language" src="https://img.shields.io/github/languages/top/CodeToCAD/CodeToCAD?logo=python&labelColor=white&color=blue"></a>
+   <a href="https://codetocad.github.io/CodeToCAD/examples.html"><img alt="Static Badge" src="https://img.shields.io/badge/Examples-white?logo=internetarchive&logoColor=black"></a>
 </p>
 
 ## Table of Contents
@@ -18,10 +19,6 @@
 Use one python script to interact with all these software:
 1. [Getting Started](#getting-started)
 2. [Supported Applications](#supported-applications)
-
-#### [READ THE DOCS](https://codetocad.github.io/CodeToCAD/docs.html)
-
-#### [EXAMPLES WITH CODE](https://codetocad.github.io/CodeToCAD/examples.html)
 
 
 ## Getting started
