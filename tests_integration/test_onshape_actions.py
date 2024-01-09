@@ -5,7 +5,7 @@ from providers.onshape.onshape_provider import *
 from providers.onshape.onshape_provider.onshape_actions import *
 
 from codetocad import *
-from codetocad.utilities import Point
+from codetocad.core import Point, Dimension
 
 configPath = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -19,7 +19,8 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 class TestOnshapeActions(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
+        cls.client = get_onshape_client_with_config_file(
+            config_filepath=configPath)
 
         # from onshape_provider import injectonshape_provider
         # injectonshape_provider(globals())
@@ -28,14 +29,16 @@ class TestOnshapeActions(unittest.TestCase):
         pass
 
     def test_read_document_url_by_name(self) -> None:
-        documentUrl = get_first_document_url_by_name(self.client, onshape_document_name)
+        documentUrl = get_first_document_url_by_name(
+            self.client, onshape_document_name)
 
         assert documentUrl is not None
 
         print("documentUrl", documentUrl)
 
     def test_create_part_studio_tab(self) -> None:
-        documentUrl = get_first_document_url_by_name(self.client, onshape_document_name)
+        documentUrl = get_first_document_url_by_name(
+            self.client, onshape_document_name)
 
         partStudioId = create_tab_part_studios(
             self.client, documentUrl, Utilities.create_uuid_like_id()
@@ -44,19 +47,87 @@ class TestOnshapeActions(unittest.TestCase):
         assert partStudioId is not None
 
     def test_create_point(self) -> None:
-        onshapeUrl = get_first_document_url_by_name(self.client, onshape_document_name)
+        # Replace 'CodeToCAD-onshape_actions' with the actual document name
+        onshape_document_name = "CodeToCAD-onshape_actions"
 
-        partStudioId = create_tab_part_studios(
-            self.client, onshapeUrl, Utilities.create_uuid_like_id()
+        # Get the URL of the Onshape document
+        onshape_url = get_first_document_url_by_name(
+            self.client, onshape_document_name)
+
+        # Create a new tab in the part studio
+        part_studio_id = create_tab_part_studios(
+            self.client, onshape_url, Utilities.create_uuid_like_id()
         )
 
-        onshapeUrl.tab_id = partStudioId
+        # Set the tab_id for subsequent operations
+        onshape_url.tab_id = part_studio_id
 
-        pointLocation = Dimension(1.5, "m")
+        # Define the location of the point in 3D space
+        pointLocation = Dimension(15.0, "mm")
 
+        # Create a point in the part studio
         create_point(
             self.client,
-            onshapeUrl,
+            onshape_url,
             "Test Point",
             Point(pointLocation, pointLocation, pointLocation),
         )
+
+    def test_create_rect(self) -> None:
+
+        # Get the URL of the Onshape document
+        onshape_url = get_first_document_url_by_name(
+            self.client, onshape_document_name)
+
+        # Create a new tab in the part studio
+        part_studio_id = create_tab_part_studios(
+            self.client, onshape_url, Utilities.create_uuid_like_id()
+        )
+
+        # Set the tab_id for subsequent operations
+        onshape_url.tab_id = part_studio_id
+
+        # Define the location of the point in 3D space
+        pointLocation1 = Dimension(15.0, "mm")
+        pointLocation2 = Dimension(25.0, "mm")
+
+        # Create a point in the part studio
+        create_rect(
+            self.client,
+            onshape_url,
+            "Test Point",
+            Point(pointLocation1, pointLocation1, pointLocation1),
+            Point(pointLocation2, pointLocation2, pointLocation2),
+        )
+
+    def test_extrude(self):
+
+        onshape_document_name = "CodeToCAD-onshape_actions"
+
+        # Get the URL of the Onshape document
+        onshape_url = get_first_document_url_by_name(
+            self.client, onshape_document_name)
+
+        # Create a new tab in the part studio
+        part_studio_id = create_tab_part_studios(
+            self.client, onshape_url, Utilities.create_uuid_like_id()
+        )
+
+        # Set the tab_id for subsequent operations
+        onshape_url.tab_id = part_studio_id
+
+        # Define the location of the point in 3D space
+        pointLocation1 = Dimension(15.0, "mm")
+        pointLocation2 = Dimension(25.0, "mm")
+
+        # Create a point in the part studio
+        sketch_info = create_rect(
+            self.client,
+            onshape_url,
+            "Test Point",
+            Point(pointLocation1, pointLocation1, pointLocation1),
+            Point(pointLocation2, pointLocation2, pointLocation2),
+        )
+
+        feature_id = json.loads(sketch_info.data)["feature"]["featureId"]
+        create_extrude(self.client, onshape_url, feature_id)
