@@ -111,9 +111,9 @@ class Landmark(Entity, LandmarkInterface):
         offset: Optional[list[Dimension]]=None,
         parent: Optional[Entity]=None,
     ) -> "Landmark":
-        x = self.get_location_local().x
-        y = self.get_location_local().y
-        z = self.get_location_local().z
+        x = self.get_location_local().x - self.get_parent_entity().get_location_local().x
+        y = self.get_location_local().y - self.get_parent_entity().get_location_local().y
+        z = self.get_location_local().z - self.get_parent_entity().get_location_local().z
 
         if offset:
             offset_x, offset_y, offset_z = offset
