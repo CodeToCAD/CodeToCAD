@@ -2,7 +2,7 @@ import subprocess
 from setuptools import setup
 from pathlib import Path
 
-long_description = (Path(__file__).parent / "README.md").read_text()
+long_description = (Path(__file__).parent / "README.md").read_text(encoding="utf-8")
 
 git_commit_epoch = 0
 
