@@ -44,12 +44,18 @@ class Scene(SceneInterface):
         )
         return self
 
-    def get_selected_entity(self) -> "Entity":
-        from . import Entity
+    def is_exists(self) -> bool:
+        print(
+            "is_exists called:",
+        )
+        return True
 
+    def get_selected_entity(self) -> "Entity":
         print(
             "get_selected_entity called:",
         )
+        from . import Entity
+
         return Entity("an entity")
 
     def export(
@@ -99,13 +105,3 @@ class Scene(SceneInterface):
     ):
         print("set_background_image called:", file_path, location_x, location_y)
         return self
-
-    @classmethod
-    def get_sample_scene(
-        cls,
-    ):
-        return cls(name="myScene", description="this is for testing purpose")
-
-    def is_exists(self):
-        print("is_exists called")
-        return True

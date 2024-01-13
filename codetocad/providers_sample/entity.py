@@ -145,18 +145,18 @@ class Entity(EntityInterface):
 
     def create_landmark(
         self,
-        landmark_name: "str",
+        landmark_name: str,
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
+        print("create_landmark called:", landmark_name, x, y, z)
         from . import Landmark
 
-        print("create_landmark called:", landmark_name, x, y, z)
         return Landmark("name", "parent")
 
     def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
+        print("get_landmark called:", landmark_name)
         from . import Landmark
 
-        print("get_landmark called:", landmark_name)
         return Landmark("name", "parent")

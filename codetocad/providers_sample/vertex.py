@@ -23,9 +23,9 @@ if TYPE_CHECKING:
 
 class Vertex(Entity, VertexInterface):
     def project(self, project_onto: "Sketch") -> "Projectable":
+        print("project called:", project_onto)
         from . import Sketch
 
-        print("project called:", project_onto)
         return Sketch("a projected sketch")
 
     location: "Point"
@@ -50,4 +50,6 @@ class Vertex(Entity, VertexInterface):
 
     def get_control_points(self, parameter="") -> "list[Vertex]":
         print("get_control_points called:", parameter)
-        return [Vertex(location=(0, 0), name="myVertex")]
+        from . import Vertex
+
+        return [Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")]

@@ -25,6 +25,14 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         value = instance.delete("")
 
     @skip("TODO")
+    def test_is_exists(self):
+        instance = Scene()
+
+        value = instance.is_exists("")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_get_selected_entity(self):
         instance = Scene()
 
