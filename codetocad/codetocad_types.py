@@ -1,6 +1,6 @@
 from typing import TypeAlias, Union
 
-from codetocad.core import Dimension, Angle, Point
+from codetocad.core import Dimension, Angle, Point, Dimensions
 from codetocad.enums import Axis, LengthUnit, PresetLandmark, PresetMaterial
 
 from typing import TYPE_CHECKING
@@ -32,11 +32,14 @@ IntOrFloat: TypeAlias = Union[int, float]
 AxisOrItsIndexOrItsName: TypeAlias = Union[str, int, Axis]
 DimensionOrItsFloatOrStringValue: TypeAlias = Union[str, float, Dimension]
 AngleOrItsFloatOrStringValue: TypeAlias = Union[str, float, Angle]
+DimensionsOrItsListOfFloatOrString: TypeAlias = Union[
+    str, list[FloatOrItsStringValue], list[Dimension], Dimensions
+]
 PointOrListOfFloatOrItsStringValue: TypeAlias = Union[
-    str, list[FloatOrItsStringValue], Point
+    str, list[FloatOrItsStringValue], list[Dimension], Point
 ]
 PointOrListOfFloatOrItsStringValueOrVertex: TypeAlias = Union[
-    str, list[FloatOrItsStringValue], Point, "VertexInterface"
+    str, list[FloatOrItsStringValue], list[Dimension], Point, "VertexInterface"
 ]
 LengthUnitOrItsName: TypeAlias = Union[str, LengthUnit]
 PresetLandmarkOrItsName: TypeAlias = Union[str, PresetLandmark]

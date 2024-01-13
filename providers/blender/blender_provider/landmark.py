@@ -107,9 +107,9 @@ class Landmark(Entity, LandmarkInterface):
 
     def clone(
         self,
-        landmark_name: str,
+        new_name: str,
         offset: Optional[list[Dimension]] = None,
-        parent: Optional[Entity] = None,
+        new_parent: Optional[Entity] = None,
     ) -> "Landmark":
         x = (
             self.get_location_local().x
@@ -130,9 +130,9 @@ class Landmark(Entity, LandmarkInterface):
             y += offset_y
             z += offset_z
 
-        if parent:
-            landmark = parent.create_landmark(landmark_name, x, y, z)
+        if new_parent:
+            landmark = new_parent.create_landmark(new_name, x, y, z)
         else:
-            landmark = self.get_parent_entity().create_landmark(landmark_name, x, y, z)
+            landmark = self.get_parent_entity().create_landmark(new_name, x, y, z)
 
         return landmark

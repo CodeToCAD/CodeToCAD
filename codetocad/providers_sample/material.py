@@ -27,6 +27,13 @@ class Material(MaterialInterface):
         self.name = name
         self.description = description
 
+    @staticmethod
+    def get_preset(parameter: "PresetMaterial") -> "Material":
+        print("get_preset called:", parameter)
+        from . import Material
+
+        return Material("mat")
+
     def assign_to_part(self, part_name_or_instance: PartOrItsName):
         print("assign_to_part called:", part_name_or_instance)
         return self

@@ -28,6 +28,17 @@ class MaterialInterface(metaclass=ABCMeta):
         self.name = name
         self.description = description
 
+    @staticmethod
+    def get_preset(parameter: "PresetMaterialInterface") -> "MaterialInterface":
+        """
+        Get a material from a preset
+        """
+
+        print(
+            "get_preset is called in an abstract method. Please override this method."
+        )
+        raise NotImplementedError()
+
     @abstractmethod
     def assign_to_part(self, part_name_or_instance: PartOrItsName):
         """

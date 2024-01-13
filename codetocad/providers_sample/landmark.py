@@ -39,6 +39,17 @@ class Landmark(Entity, LandmarkInterface):
         self.description = description
         self.native_instance = native_instance
 
+    def clone(
+        self,
+        new_name: str,
+        offset: Optional[DimensionsOrItsListOfFloatOrString] = None,
+        new_parent: Optional[EntityOrItsName] = None,
+    ) -> "Landmark":
+        print("clone called:", new_name, offset, new_parent)
+        from . import Landmark
+
+        return Landmark("name", "parent")
+
     def get_landmark_entity_name(self) -> str:
         print(
             "get_landmark_entity_name called:",

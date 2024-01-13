@@ -19,8 +19,7 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 class TestOnshapeActions(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = get_onshape_client_with_config_file(
-            config_filepath=configPath)
+        cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
 
         # from onshape_provider import injectonshape_provider
         # injectonshape_provider(globals())
@@ -29,16 +28,14 @@ class TestOnshapeActions(unittest.TestCase):
         pass
 
     def test_read_document_url_by_name(self) -> None:
-        documentUrl = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        documentUrl = get_first_document_url_by_name(self.client, onshape_document_name)
 
         assert documentUrl is not None
 
         print("documentUrl", documentUrl)
 
     def test_create_part_studio_tab(self) -> None:
-        documentUrl = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        documentUrl = get_first_document_url_by_name(self.client, onshape_document_name)
 
         partStudioId = create_tab_part_studios(
             self.client, documentUrl, Utilities.create_uuid_like_id()
@@ -51,8 +48,7 @@ class TestOnshapeActions(unittest.TestCase):
         onshape_document_name = "CodeToCAD-onshape_actions"
 
         # Get the URL of the Onshape document
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
 
         # Create a new tab in the part studio
         part_studio_id = create_tab_part_studios(
@@ -74,10 +70,8 @@ class TestOnshapeActions(unittest.TestCase):
         )
 
     def test_create_rect(self) -> None:
-
         # Get the URL of the Onshape document
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
 
         # Create a new tab in the part studio
         part_studio_id = create_tab_part_studios(
@@ -101,12 +95,10 @@ class TestOnshapeActions(unittest.TestCase):
         )
 
     def test_extrude(self):
-
         onshape_document_name = "CodeToCAD-onshape_actions"
 
         # Get the URL of the Onshape document
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
 
         # Create a new tab in the part studio
         part_studio_id = create_tab_part_studios(
