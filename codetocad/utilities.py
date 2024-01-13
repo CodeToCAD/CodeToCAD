@@ -1,5 +1,6 @@
 # utilities.py contains enums and helper functions for CodeToCAD python functionality.
 
+import os
 import re
 import sys
 from uuid import uuid4
@@ -45,11 +46,17 @@ def get_file_extension(file_path: str):
     return path.suffix.replace(".", "")
 
 
-def get_absolute_filepath(relative_file_path: str):
+def get_absolute_filepath(relative_file_path: str, use_pwd=False):
     path = Path(relative_file_path)
     absoluteFilePath = relative_file_path
     if not path.is_absolute():
-        absoluteFilePath = str(Path(sys.argv[0]).parent.joinpath(path).resolve())
+        base_path = Path(sys.argv[0]).parent
+
+        if use_pwd:
+            base_path = Path(os.getcwd())
+
+        absoluteFilePath = str(base_path.joinpath(path).resolve())
+
     return absoluteFilePath
 
 
