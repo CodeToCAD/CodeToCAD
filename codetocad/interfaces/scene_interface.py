@@ -52,6 +52,15 @@ class SceneInterface(metaclass=ABCMeta):
         return self
 
     @abstractmethod
+    def is_exists(self) -> bool:
+        """
+        Check if the scene exists
+        """
+
+        print("is_exists is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+
+    @abstractmethod
     def get_selected_entity(self) -> "EntityInterface":
         """
         Get the selected entity in the Scene.

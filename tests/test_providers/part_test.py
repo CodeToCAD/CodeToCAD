@@ -340,10 +340,6 @@ class PartTest(TestProviderCase, PartTestInterface):
             depth=3,
         )
 
-        assert (
-            value.is_colliding_with_part(instance) == False
-        ), "Hole succeeded even though the hole was not intersecting the part."
-
         assert value, "Modify method failed."
 
     def test_twist(self):

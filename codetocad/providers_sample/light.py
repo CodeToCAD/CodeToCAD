@@ -47,7 +47,3 @@ class Light(Entity, LightInterface):
     def create_area(self, energy_level: float):
         print("create_area called:", energy_level)
         return self
-
-    @classmethod
-    def get_sample_light(cls):
-        return cls(name="test-light", description="light instance for testing")

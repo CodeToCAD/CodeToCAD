@@ -26,6 +26,14 @@ class SceneTestInterface(metaclass=ABCMeta):
         value = instance.delete("")
 
     @abstractmethod
+    def test_is_exists(self):
+        instance = Scene()
+
+        value = instance.is_exists("")
+
+        assert value, "Get method failed."
+
+    @abstractmethod
     def test_get_selected_entity(self):
         instance = Scene()
 

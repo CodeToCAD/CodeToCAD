@@ -1949,6 +1949,11 @@
                 "information": "Deletes a scene.",
                 "action": "delete"
             },
+            "is_exists": {
+                "action": "get",
+                "information": "Check if the scene exists",
+                "returnType": "boolean"
+            },
             "get_selected_entity": {
                 "information": "Get the selected entity in the Scene.",
                 "action": "get",

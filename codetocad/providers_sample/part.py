@@ -197,6 +197,8 @@ class Part(Entity, PartInterface):
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
         print("clone called:", new_name, copy_landmarks)
+        from . import Part
+
         return Part("a part")
 
     def union(

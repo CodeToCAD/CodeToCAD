@@ -72,9 +72,9 @@ class Edge(Entity, EdgeInterface):
         return self
 
     def project(self, project_onto: "Sketch") -> "Projectable":
+        print("project called:", project_onto)
         from . import Sketch
 
-        print("project called:", project_onto)
         return Sketch("a projected sketch")
 
     v1: "Vertex"
@@ -102,7 +102,15 @@ class Edge(Entity, EdgeInterface):
 
     def offset(self, distance: DimensionOrItsFloatOrStringValue) -> "Edge":
         print("offset called:", distance)
-        return Edge.get_dummy_edge()
+        from . import Vertex
+
+        from . import Edge
+
+        return Edge(
+            v1=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
+            v2=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
+            name="an edge",
+        )
 
     def fillet(self, other_edge: "Edge", amount: AngleOrItsFloatOrStringValue):
         print("fillet called:", other_edge, amount)
@@ -117,7 +125,3 @@ class Edge(Entity, EdgeInterface):
             "get_is_construction called:",
         )
         return True
-
-    @classmethod
-    def get_dummy_edge(cls):
-        return cls(v1=(0, 5), v2=(5, 10), name="dummy")

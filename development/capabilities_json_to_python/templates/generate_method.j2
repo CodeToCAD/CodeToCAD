@@ -47,6 +47,7 @@
         {%- else %}
     {%- set returnTypeParsed = type_mapping_with_class_name_suffix(properties["returnType"], classNameSuffix, all_codetocad_class_names) if "returnType" in properties else None%}
     {%- set returnTypeParsed2 = type_mapping(properties["returnType"]) if "returnType" in properties else None%}
+    {%-set mockValue = mock_values_by_type[returnTypeParsed2] if returnTypeParsed2 in mock_values_by_type else None%}
     {{ generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}) {{-  " -> " + returnTypeParsed if returnTypeParsed}}:
         {% if "information" in properties and use_abstract_method_decorator -%}
         '''
@@ -58,7 +59,11 @@
         {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
         {%else-%}
         print("{{method_name}} called:", {{parameters.keys()|join(", ")}})
-        {%-set mockValue = mock_values_by_type[returnTypeParsed2] if returnTypeParsed2 in mock_values_by_type else None%}
+        {%-for codeToCADClassName in all_codetocad_class_names%}
+        {%-if codeToCADClassName in mockValue|string %}
+        {{"from . import "+ codeToCADClassName}}
+        {%endif-%}
+        {%endfor%}
         return {{ "self" if "action" in properties and properties["action"] != "get" else mockValue }}
         {%endif%}
         

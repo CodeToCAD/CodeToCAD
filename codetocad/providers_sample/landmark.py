@@ -49,4 +49,6 @@ class Landmark(Entity, LandmarkInterface):
         print(
             "get_parent_entity called:",
         )
+        from . import Entity
+
         return Entity("an entity")

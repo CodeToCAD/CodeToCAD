@@ -128,6 +128,8 @@ class Sketch(Entity, SketchInterface):
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         print("clone called:", new_name, copy_landmarks)
+        from . import Sketch
+
         return Sketch("a sketch")
 
     def revolve(
@@ -136,9 +138,9 @@ class Sketch(Entity, SketchInterface):
         about_entity_or_landmark: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "Part":
+        print("revolve called:", angle, about_entity_or_landmark, axis)
         from . import Part
 
-        print("revolve called:", angle, about_entity_or_landmark, axis)
         return Part("a part")
 
     def twist(
@@ -152,17 +154,17 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
+        print("extrude called:", length)
         from . import Part
 
-        print("extrude called:", length)
         return Part("a part")
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
+        print("sweep called:", profile_name_or_instance, fill_cap)
         from . import Part
 
-        print("sweep called:", profile_name_or_instance, fill_cap)
         return Part("a part")
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
@@ -203,45 +205,47 @@ class Sketch(Entity, SketchInterface):
         self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "Wire":
         print("create_from_vertices called:", points)
-        return None
+        from . import Wire
+
+        return Wire([], "a wire")
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         print("create_point called:", point)
-        return None
+        from . import Vertex
+
+        return Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")
 
     def create_line(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Edge":
+        print("create_line called:", start_at, end_at)
+        from . import Vertex
+
         from . import Edge
 
-        print("create_line called:", start_at, end_at)
-        return Edge.get_dummy_edge()
+        return Edge(
+            v1=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
+            v2=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
+            name="an edge",
+        )
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
+        print("create_circle called:", radius)
         from . import Wire
 
-        print("create_circle called:", radius)
-        return Wire(
-            edges=[],
-            name="wire",
-            parent_entity="myEdge",
-        )
+        return Wire([], "a wire")
 
     def create_ellipse(
         self,
         radius_minor: DimensionOrItsFloatOrStringValue,
         radius_major: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
+        print("create_ellipse called:", radius_minor, radius_major)
         from . import Wire
 
-        print("create_ellipse called:", radius_minor, radius_major)
-        return Wire(
-            edges=[],
-            name="wire",
-            parent_entity="myEdge",
-        )
+        return Wire([], "a wire")
 
     def create_arc(
         self,
@@ -251,7 +255,9 @@ class Sketch(Entity, SketchInterface):
         flip: Optional[bool] = False,
     ) -> "Wire":
         print("create_arc called:", start_at, end_at, radius, flip)
-        return None
+        from . import Wire
+
+        return Wire([], "a wire")
 
     def create_rectangle(
         self,
@@ -259,7 +265,9 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         print("create_rectangle called:", length, width)
-        return None
+        from . import Wire
+
+        return Wire([], "a wire")
 
     def create_polygon(
         self,
@@ -267,10 +275,10 @@ class Sketch(Entity, SketchInterface):
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        from . import Wire, Edge
-
         print("create_polygon called:", number_of_sides, length, width)
-        return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
+        from . import Wire
+
+        return Wire([], "a wire")
 
     def create_trapezoid(
         self,
@@ -278,10 +286,10 @@ class Sketch(Entity, SketchInterface):
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        from . import Wire, Edge
-
         print("create_trapezoid called:", length_upper, length_lower, height)
-        return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
+        from . import Wire
+
+        return Wire([], "a wire")
 
     def create_spiral(
         self,
@@ -291,8 +299,6 @@ class Sketch(Entity, SketchInterface):
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
     ) -> "Wire":
-        from . import Wire, Edge
-
         print(
             "create_spiral called:",
             number_of_turns,
@@ -301,4 +307,6 @@ class Sketch(Entity, SketchInterface):
             is_clockwise,
             radius_end,
         )
-        return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
+        from . import Wire
+
+        return Wire([], "a wire")
