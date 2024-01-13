@@ -7,46 +7,23 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Light
-
-
 class LightTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_set_color(self):
-        instance = Light()
-
-        value = instance.set_color("r_value", "g_value", "b_value")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_create_sun(self):
-        instance = Light()
-
-        value = instance.create_sun("energy_level")
-
-        assert value.is_exists(), "Create method failed."
+        pass
 
     @abstractmethod
     def test_create_spot(self):
-        instance = Light()
-
-        value = instance.create_spot("energy_level")
-
-        assert value.is_exists(), "Create method failed."
+        pass
 
     @abstractmethod
     def test_create_point(self):
-        instance = Light()
-
-        value = instance.create_point("energy_level")
-
-        assert value.is_exists(), "Create method failed."
+        pass
 
     @abstractmethod
     def test_create_area(self):
-        instance = Light()
-
-        value = instance.create_area("energy_level")
-
-        assert value.is_exists(), "Create method failed."
+        pass

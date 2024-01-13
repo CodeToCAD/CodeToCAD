@@ -10,6 +10,4 @@ from abc import ABCMeta, abstractmethod
 class ExportableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_export(self):
-        instance = Exportable()
-
-        value = instance.export("file_path", "overwrite", "scale")
+        pass

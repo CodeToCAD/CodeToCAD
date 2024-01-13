@@ -7,17 +7,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Vertex
-
-
-from codetocad.tests_interfaces import ProjectableTestInterface
-
-
-class VertexTestInterface(ProjectableTestInterface, metaclass=ABCMeta):
+class VertexTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_get_control_points(self):
-        instance = Vertex()
-
-        value = instance.get_control_points("parameter")
-
-        assert value, "Get method failed."
+        pass

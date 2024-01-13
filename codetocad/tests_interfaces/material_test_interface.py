@@ -7,54 +7,27 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Material
-
-
 class MaterialTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_get_preset(self):
-        instance = Material()
-
-        value = instance.get_preset("parameter")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_assign_to_part(self):
-        instance = Material()
-
-        value = instance.assign_to_part("part_name_or_instance")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_set_color(self):
-        instance = Material()
-
-        value = instance.set_color("r_value", "g_value", "b_value", "a_value")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_set_reflectivity(self):
-        instance = Material()
-
-        value = instance.set_reflectivity("reflectivity")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_set_roughness(self):
-        instance = Material()
-
-        value = instance.set_roughness("roughness")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_set_image_texture(self):
-        instance = Material()
-
-        value = instance.set_image_texture("image_file_path")
-
-        assert value, "Modify method failed."
+        pass

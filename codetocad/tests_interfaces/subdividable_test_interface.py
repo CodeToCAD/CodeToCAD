@@ -10,24 +10,12 @@ from abc import ABCMeta, abstractmethod
 class SubdividableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_remesh(self):
-        instance = Subdividable()
-
-        value = instance.remesh("strategy", "amount")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_subdivide(self):
-        instance = Subdividable()
-
-        value = instance.subdivide("amount")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_decimate(self):
-        instance = Subdividable()
-
-        value = instance.decimate("amount")
-
-        assert value, "Modify method failed."
+        pass

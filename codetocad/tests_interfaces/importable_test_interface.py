@@ -10,8 +10,4 @@ from abc import ABCMeta, abstractmethod
 class ImportableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_create_from_file(self):
-        instance = Importable()
-
-        value = instance.create_from_file("file_path", "file_type")
-
-        assert value.is_exists(), "Create method failed."
+        pass

@@ -10,21 +10,8 @@ from abc import ABCMeta, abstractmethod
 class PatternableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_linear_pattern(self):
-        instance = Patternable()
-
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_circular_pattern(self):
-        instance = Patternable()
-
-        value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
-        )
-
-        assert value, "Modify method failed."
+        pass

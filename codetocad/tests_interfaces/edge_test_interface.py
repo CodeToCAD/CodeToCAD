@@ -7,52 +7,19 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Edge
-
-
-from codetocad.tests_interfaces import (
-    MirrorableTestInterface,
-    PatternableTestInterface,
-    SubdividableTestInterface,
-    ProjectableTestInterface,
-)
-
-
-class EdgeTestInterface(
-    MirrorableTestInterface,
-    PatternableTestInterface,
-    SubdividableTestInterface,
-    ProjectableTestInterface,
-    metaclass=ABCMeta,
-):
+class EdgeTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_offset(self):
-        instance = Edge()
-
-        value = instance.offset("distance")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_fillet(self):
-        instance = Edge()
-
-        value = instance.fillet("other_edge", "amount")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_set_is_construction(self):
-        instance = Edge()
-
-        value = instance.set_is_construction("is_construction")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_get_is_construction(self):
-        instance = Edge()
-
-        value = instance.get_is_construction("")
-
-        assert value, "Get method failed."
+        pass

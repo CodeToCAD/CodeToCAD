@@ -7,42 +7,15 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Wire
-
-
-from codetocad.tests_interfaces import (
-    MirrorableTestInterface,
-    PatternableTestInterface,
-    ProjectableTestInterface,
-)
-
-
-class WireTestInterface(
-    MirrorableTestInterface,
-    PatternableTestInterface,
-    ProjectableTestInterface,
-    metaclass=ABCMeta,
-):
+class WireTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_get_vertices(self):
-        instance = Wire()
-
-        value = instance.get_vertices("")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_is_closed(self):
-        instance = Wire()
-
-        value = instance.is_closed("")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_loft(self):
-        instance = Wire()
-
-        value = instance.loft("other", "new_part_name")
-
-        assert value, "Get method failed."
+        pass

@@ -32,6 +32,9 @@
     {{"@skip('TODO')\n    " if not use_abstract_method_decorator -}}
     {{"@abstractmethod\n    " if use_abstract_method_decorator -}}
     def test_{{method_name}}(self):
+        {% if use_abstract_method_decorator %}
+        pass
+        {%else%}
         instance = {{className}}()
 
         value = instance.{{method_name}}("{{ parameters.keys()|join('","')}}")
@@ -42,6 +45,7 @@
         assert value.is_exists(), "Create method failed."
         {%elif properties["action"] == "modify"%}
         assert value, "Modify method failed."
+        {%endif%}
         {%endif%}
 
     {%-endif%}

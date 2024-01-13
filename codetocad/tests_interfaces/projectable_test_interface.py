@@ -10,8 +10,4 @@ from abc import ABCMeta, abstractmethod
 class ProjectableTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_project(self):
-        instance = Projectable()
-
-        value = instance.project("project_onto")
-
-        assert value, "Get method failed."
+        pass
