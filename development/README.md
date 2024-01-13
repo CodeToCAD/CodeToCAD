@@ -28,7 +28,8 @@ The following are the available scripts:
 - [run_lint.sh](./run_lint.sh) - Uses Flake8 to generate a lint report of the project
 - [create_blender_addon.sh](./create_blender_addon.sh) - Generates the BlenderAddon zip file
 - [create_python_virtual_environment.sh](./create_python_virtual_environment.sh) - Creates a pyenv on your local machine and installs development related packages.
-- [package_and_upload.sh](./package_and_upload.sh) - Builds a python package and uploads it to pypi using twine. You will need a `.pypirc` file in the root directory for this to work.
+- [pip_package_create.sh](./pip_package_create.sh) - Builds a python package using setup.py.
+- [pip_package_upload.sh](./pip_package_upload.sh) - Builds a python package and uploads it to pypi using twine. You will need a `.pypirc` file in the root directory for this to work.
 
 ## Capabilities.json and Jinja2 templates
 

@@ -29,7 +29,7 @@ done
 
 
 # Copy new files
-echo "Copy new files."
+echo "Copying new files."
 
 mkdir $BLENDER_ADDON_PATH
 mkdir -p $BLENDER_ADDON_PATH/providers/blender/blender_provider
@@ -38,7 +38,7 @@ cp -r ./codetocad $BLENDER_ADDON_PATH/
 cp ./providers/blender/blender_addon.py $BLENDER_ADDON_PATH/__init__.py
 
 # Make blender_provider the main provider in CodeToCAD module
-echo "from blender_provider import *" >> $BLENDER_ADDON_PATH/codetocad/__init__.py
+# echo "from blender_provider import *" >> $BLENDER_ADDON_PATH/codetocad/__init__.py
 
 # Write version string
 echo "Writing version string."
@@ -46,11 +46,7 @@ echo "Writing version string."
 GIT_EPOCH=$(git show -s --format=%ct HEAD)
 echo "GIT EPOCH: $GIT_EPOCH"
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-sed -i '' "s/),  # patch_version marker do not remove/, $GIT_EPOCH),/g" $BLENDER_ADDON_PATH/__init__.py
-else
-sed "s/),  # patch_version marker do not remove/, $GIT_EPOCH),/g" $BLENDER_ADDON_PATH/__init__.py
-fi
+echo $GIT_EPOCH > $BLENDER_ADDON_PATH/version.txt
 
 # Zip the BlenderAddon folder
 echo "Zipping BlenderAddon folder."
