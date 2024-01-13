@@ -17,14 +17,23 @@ from bpy.types import AddonPreferences, Operator, OperatorFileListElement
 from bpy_extras.io_utils import ImportHelper, orientation_helper
 from console_python import replace_help
 
+git_epoch = 0
+try:
+    with open("version.txt") as f:
+        git_epoch = int(f.read())
+except Exception as e:
+    print("No version file found.", e)
+    pass
+
+version = (1, 0, git_epoch)
+print("CodeToCAD Addon Version: ", version)
 
 bl_info = {
     "name": "CodeToCAD",
     "author": "CodeToCAD",
-    "version": (1, 0),  # patch_version marker do not remove
     "blender": (3, 1, 0),
-    "description": "",
-    "doc_url": "https://github.com/CodeToCad/CodeToCad",
+    "description": "CodeToCAD is a modeling automation. Visit https://github.com/CodeToCAD/CodeToCAD#Blender for more information",
+    "doc_url": "https://github.com/CodeToCAD/CodeToCAD",
     "category": "Scripting",
 }
 
@@ -322,7 +331,7 @@ class CodeToCADAddonPreferences(AddonPreferences):
         box = layout.box()
         box.label(text="Path to CodeToCAD folder:")
         box.label(
-            text="For setup instructions, please see https://github.com/CodeToCad/CodeToCad#Blender",
+            text="https://github.com/CodeToCAD/CodeToCAD#Blender",
             icon="QUESTION",
         )
         box.prop(self, "codetocad_file_path")  # type: ignore
@@ -387,17 +396,14 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
     blender_providerPath = codetocad_path / "providers/blender/blender_provider"
 
     if not Path(blender_providerPath / "blender_definitions.py").is_file():
-        blender_providerPath = codetocad_path / "blender_provider"
+        print(
+            "Could not find blender_provider files. Please reconfigure the CodeToCAD Blender Addon.",
+            "Searching in: ",
+            codetocad_path,
+        )
+        return {"CANCELLED"} if return_blender_operation_status else None
 
-        if not Path(blender_providerPath / "blender_definitions.py").is_file():
-            print(
-                "Could not find blender_provider files. Please reconfigure CodeToCADBlenderAddon",
-                "Searching in: ",
-                codetocad_path,
-            )
-            return {"CANCELLED"} if return_blender_operation_status else None
-    else:
-        sys.path.append(str(codetocad_path / "providers/blender"))
+    sys.path.append(str(codetocad_path / "providers/blender"))
 
     print("Adding {} to path".format(core_path))
 
