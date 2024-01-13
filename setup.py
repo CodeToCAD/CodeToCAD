@@ -26,6 +26,9 @@ setup(
     author="CodeToCAD",
     author_email="shehab@codethatdown.com",
     license="GPL v3",
+    entry_points={
+        "console_scripts": ["codetocad=codetocad.run:execute_launcher"],
+    },
     packages=[
         "codetocad",
         "codetocad.interfaces",
@@ -33,6 +36,7 @@ setup(
         "codetocad.core",
         "codetocad.core.shapes",
         "codetocad.enums",
+        "codetocad.launchers",
     ],
     install_requires=[],
     classifiers=[
