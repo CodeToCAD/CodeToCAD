@@ -1,15 +1,16 @@
-# THIS IS AN AUTO-GENERATE FILE.
-# DO NOT EDIT MANUALLY.
-# Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
-
-# testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
-
 from .test_helper import *
+from codetocad.enums.preset_material import PresetMaterial
 from codetocad.tests_interfaces import MaterialTestInterface
 
 
 class MaterialTest(TestProviderCase, MaterialTestInterface):
+    def test_get_preset(self):
+        instance = Material("myMaterial")
+
+        value = instance.get_preset(PresetMaterial.blue)
+
+        assert value, "Get method failed."
+
     def test_assign_to_part(self):
         instance = Material("myMaterial")
 

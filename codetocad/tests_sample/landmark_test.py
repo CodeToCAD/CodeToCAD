@@ -11,6 +11,14 @@ from codetocad.tests_interfaces import LandmarkTestInterface
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
     @skip("TODO")
+    def test_clone(self):
+        instance = Landmark()
+
+        value = instance.clone("new_name", "offset", "new_parent")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_get_landmark_entity_name(self):
         instance = Landmark()
 

@@ -12,6 +12,14 @@ from codetocad import Material
 
 class MaterialTestInterface(metaclass=ABCMeta):
     @abstractmethod
+    def test_get_preset(self):
+        instance = Material()
+
+        value = instance.get_preset("parameter")
+
+        assert value, "Get method failed."
+
+    @abstractmethod
     def test_assign_to_part(self):
         instance = Material()
 

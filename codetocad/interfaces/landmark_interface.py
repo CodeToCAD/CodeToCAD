@@ -43,6 +43,20 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
         self.native_instance = native_instance
 
     @abstractmethod
+    def clone(
+        self,
+        new_name: str,
+        offset: Optional[DimensionsOrItsListOfFloatOrString] = None,
+        new_parent: Optional[EntityOrItsName] = None,
+    ) -> "LandmarkInterface":
+        """
+        Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.
+        """
+
+        print("clone is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+
+    @abstractmethod
     def get_landmark_entity_name(self) -> str:
         """
         Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.
