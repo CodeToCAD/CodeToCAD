@@ -6,19 +6,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-{%if not ("is_interface_only" in methods and methods["is_interface_only"] is true)%}
-from codetocad import {{className}}
-{%-endif%}
-
-
-{%-set implementedClassesWithSuffixes = []-%}
-{%- if "implements" in methods-%}
-{%-set implementedClasses = methods["implements"]-%}
-{%-for implementedClass in implementedClasses.split(",") -%}
-{%-set implementedClassWithSuffix = implementedClass + "TestInterface"-%}
-{%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
-{%-endfor-%}
-{%-endif%}
 
 {% if implementedClassesWithSuffixes|length > 0%}
 from codetocad.tests_interfaces import ({{implementedClassesWithSuffixes|join(", ")}})

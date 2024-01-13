@@ -7,94 +7,47 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Joint
-
-
 class JointTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_translate_landmark_onto_another(self):
-        instance = Joint()
-
-        value = instance.translate_landmark_onto_another("")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_pivot(self):
-        instance = Joint()
-
-        value = instance.pivot("")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_gear_ratio(self):
-        instance = Joint()
-
-        value = instance.gear_ratio("ratio")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_location_xyz(self):
-        instance = Joint()
-
-        value = instance.limit_location_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_location_x(self):
-        instance = Joint()
-
-        value = instance.limit_location_x("min", "max")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_location_y(self):
-        instance = Joint()
-
-        value = instance.limit_location_y("min", "max")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_location_z(self):
-        instance = Joint()
-
-        value = instance.limit_location_z("min", "max")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_rotation_xyz(self):
-        instance = Joint()
-
-        value = instance.limit_rotation_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_rotation_x(self):
-        instance = Joint()
-
-        value = instance.limit_rotation_x("min", "max")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_rotation_y(self):
-        instance = Joint()
-
-        value = instance.limit_rotation_y("min", "max")
-
-        assert value, "Modify method failed."
+        pass
 
     @abstractmethod
     def test_limit_rotation_z(self):
-        instance = Joint()
-
-        value = instance.limit_rotation_z("min", "max")
-
-        assert value, "Modify method failed."
+        pass

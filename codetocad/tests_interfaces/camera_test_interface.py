@@ -7,30 +7,15 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Camera
-
-
 class CameraTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_create_perspective(self):
-        instance = Camera()
-
-        value = instance.create_perspective("")
-
-        assert value.is_exists(), "Create method failed."
+        pass
 
     @abstractmethod
     def test_create_orthogonal(self):
-        instance = Camera()
-
-        value = instance.create_orthogonal("")
-
-        assert value.is_exists(), "Create method failed."
+        pass
 
     @abstractmethod
     def test_set_focal_length(self):
-        instance = Camera()
-
-        value = instance.set_focal_length("length")
-
-        assert value, "Modify method failed."
+        pass

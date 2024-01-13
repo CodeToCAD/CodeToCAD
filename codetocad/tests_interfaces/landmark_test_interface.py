@@ -7,30 +7,15 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad import Landmark
-
-
 class LandmarkTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_clone(self):
-        instance = Landmark()
-
-        value = instance.clone("new_name", "offset", "new_parent")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_get_landmark_entity_name(self):
-        instance = Landmark()
-
-        value = instance.get_landmark_entity_name("")
-
-        assert value, "Get method failed."
+        pass
 
     @abstractmethod
     def test_get_parent_entity(self):
-        instance = Landmark()
-
-        value = instance.get_parent_entity("")
-
-        assert value, "Get method failed."
+        pass
