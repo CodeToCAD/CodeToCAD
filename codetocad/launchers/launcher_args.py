@@ -16,12 +16,20 @@ class LauncherArgs:
 
     @staticmethod
     def get_sample_launcher_name():
-        return "sample"
+        return "providers_sample"
 
     def is_sample_launcher(self):
         return self.launcher == LauncherArgs.get_sample_launcher_name()
 
     def to_subprocess_args(self):
+        """
+        Produces an array that could be passed as an argument to `subprocess.run` (https://docs.python.org/3/library/subprocess.html#subprocess.run)
+
+        NOTE: LauncherArgs with None values will be excluded from the output.
+
+        Sample output:
+        ['/path/to/launcher', '--background', 'true', '--document_name', 'myDocument', '--config_file_path', '/path/to/config']
+        """
         args = asdict(
             self, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
         )
@@ -51,6 +59,7 @@ class LauncherArgs:
             type=str,
             nargs="?",
             const=LauncherArgs.get_sample_launcher_name(),
+            default=LauncherArgs.get_sample_launcher_name(),
             help="name of the launcher to execute. You can specify a location using the --launcher_location argument.",
         )
 

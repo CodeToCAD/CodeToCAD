@@ -26,6 +26,10 @@ def build_blender_subprocess_args(launcher_args: LauncherArgs):
 
 
 def run_blender_process(launcher_args: LauncherArgs):
+    """
+    Attempts to launch blender and run the provided script path.
+    The CodeToCAD Blender Addon must be installed for this to work.
+    """
     return subprocess.Popen(
         build_blender_subprocess_args(launcher_args), env=os.environ
     )
