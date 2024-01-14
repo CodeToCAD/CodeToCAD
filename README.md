@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://pypi.org/project/codetocad/0.2.1688153771/">
-        <img src="/docs/images/CodeToCADtempLogo.PNG" width="500" height="256">
+        <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/CodeToCADtempLogo.PNG" width="500" height="256">
     </a>
     <h1></h1>
     <p><strong>One language for all your CAD needs</p>
@@ -74,6 +74,8 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 ![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
 
+4. You may also run `codetocad my_codetocad_script.py` from the CLI to run your script.
+
 > Above is the above script being run in blender using our [Blender Addon](#blender) below.
 
 
@@ -104,14 +106,14 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
    > Note for developers: instead of downloading a release, you can clone this repository, then watch this guide to get set up - [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 2. Install the Blender Addon in the blender software
-![import_file](/docs/images/Blender_Install_Addon.gif)
+![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/Blender_Install_Addon.gif)
 
 3. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
-   ![import_file](/docs/images/import_file_in_blender.png)
+   ![import_file](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png)
 
 > Warning: Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
 
-> Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py`
+> Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py` or `codetocad yourScript.py blender /path/to/blender/executable`
 
 #### Onshape
 > Coming soon
