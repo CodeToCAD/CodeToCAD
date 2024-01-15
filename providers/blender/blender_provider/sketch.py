@@ -96,13 +96,35 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "PartInterface":
-        blender_actions.set_curve_extrude_property(
-            self.name, Dimension.from_string(length) / 2
+        # We will assume that extruding a sketch will extrude all the underlying Wires.
+        # We also assume the normal is never perpendicular to the Z axis.
+        parsed_length = (
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                Dimension.from_dimension_or_its_float_or_string_value(length)
+            ).value
         )
 
-        blender_actions.create_mesh_from_curve(self.name)
+        wires = blender_actions.get_wires_from_blender_entity(
+            self.get_native_instance().data
+        )
 
-        return Part(self.name, self.description).apply()
+        for wire in wires:
+            normal = wire.get_normal()
+
+            # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
+            translate_vector = [0, 0, parsed_length]
+
+            projected_normal = blender_actions.project_vector_along_normal(
+                translate_vector, [p.value for p in normal.to_list()]
+            )
+            temp_sketch = Sketch(self.name + "_temp")
+            temp_wire = wire.clone(wire.name + "_temp", temp_sketch)
+
+            temp_sketch.translate_xyz(*projected_normal)
+
+            wire.loft(temp_wire)
+
+        return Part(self.name, self.description)
 
     def sweep(
         self, profile_name_or_instance: EntityOrItsName, fill_cap: bool = True

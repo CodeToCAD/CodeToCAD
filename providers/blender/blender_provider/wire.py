@@ -96,8 +96,15 @@ class Wire(Entity, WireInterface):
         raise Exception(f"Parent of type {type(parent)} is not supported.")
 
     def get_normal(self, flip: Optional[bool] = False) -> "Point":
-        print("get_normal called:", flip)
-        return Point.from_list_of_float_or_string([0, 0, 0])
+        # Note: 3D surfaces will not provide a good result here.
+        vertices = self.get_vertices()
+        num_vertices = len(vertices)
+        normal = blender_actions.calculate_normal(
+            vertices[0].get_native_instance().co,
+            vertices[int(num_vertices * 1 / 3)].get_native_instance().co,
+            vertices[int(num_vertices * 2 / 3)].get_native_instance().co,
+        )
+        return Point.from_list_of_float_or_string(normal)
 
     def get_vertices(self) -> list["Vertex"]:
         if len(self.edges) == 0:
