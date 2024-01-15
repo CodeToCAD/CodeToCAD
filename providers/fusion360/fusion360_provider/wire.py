@@ -1,6 +1,6 @@
 from typing import Optional
 
-from codetocad.interfaces import WireInterface
+from codetocad.interfaces import WireInterface, ProjectableInterface
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -56,7 +56,7 @@ class Wire(Entity, WireInterface):
         )
         return self
 
-    def project(self, project_onto: "Sketch") -> "Projectable":
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
         from . import Sketch
 
         print("project called:", project_onto)
@@ -81,6 +81,18 @@ class Wire(Entity, WireInterface):
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    def clone(
+        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+    ) -> "Wire":
+        print("clone called:", new_name, new_parent)
+        from . import Wire
+
+        return Wire([], "a wire")
+
+    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+        print("get_normal called:", flip)
+        return Point.from_list_of_float_or_string([0, 0, 0])
 
     def get_vertices(self) -> "list[Vertex]":
         from . import Vertex

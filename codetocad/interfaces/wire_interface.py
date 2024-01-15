@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import EdgeInterface
     from . import EntityInterface
+    from . import SketchInterface
     from . import VertexInterface
     from . import PartInterface
 
@@ -59,6 +60,28 @@ class WireInterface(
         self.native_instance = native_instance
 
     @abstractmethod
+    def clone(
+        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+    ) -> "WireInterface":
+        """
+        Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.
+        """
+
+        print("clone is called in an abstract method. Please override this method.")
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+        """
+        Get the normal created by this wire. Must be a closed wire.
+        """
+
+        print(
+            "get_normal is called in an abstract method. Please override this method."
+        )
+        raise NotImplementedError()
+
+    @abstractmethod
     def get_vertices(self) -> "list[VertexInterface]":
         """
         Collapse all edges' vertices into one list.
@@ -72,10 +95,12 @@ class WireInterface(
     @abstractmethod
     def get_is_closed(self) -> bool:
         """
-        A closed wire is a Face.
+        Checks if a wire is closed. Note: A closed wire is a Face or Surface.
         """
 
-        print("is_closed is called in an abstract method. Please override this method.")
+        print(
+            "get_is_closed is called in an abstract method. Please override this method."
+        )
         raise NotImplementedError()
 
     @abstractmethod

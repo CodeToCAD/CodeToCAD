@@ -68,6 +68,18 @@ class Wire(Entity, WireInterface):
         self.description = description
         self.native_instance = native_instance
 
+    def clone(
+        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+    ) -> "Wire":
+        print("clone called:", new_name, new_parent)
+        from . import Wire
+
+        return Wire([], "a wire")
+
+    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+        print("get_normal called:", flip)
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
     def get_vertices(self) -> "list[Vertex]":
         print(
             "get_vertices called:",

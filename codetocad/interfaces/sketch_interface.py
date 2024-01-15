@@ -17,6 +17,7 @@ from codetocad.interfaces import (
     ImportableInterface,
     ExportableInterface,
     ScalableInterface,
+    ProjectableInterface,
 )
 
 from . import EntityInterface
@@ -38,6 +39,7 @@ class SketchInterface(
     ImportableInterface,
     ExportableInterface,
     ScalableInterface,
+    ProjectableInterface,
     metaclass=ABCMeta,
 ):
     """Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires."""

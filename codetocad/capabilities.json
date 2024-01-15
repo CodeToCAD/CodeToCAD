@@ -938,7 +938,7 @@
         "Sketch": {
             "information": "Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable",
+            "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable,Projectable",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1340,13 +1340,40 @@
                     }
                 }
             },
+            "clone": {
+                "action": "get",
+                "returnType": "Wire",
+                "information": "Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.",
+                "parameters": {
+                    "new_name": {
+                        "type": "string"
+                    },
+                    "new_parent": {
+                        "type": "string,Sketch",
+                        "required": false
+                    }
+                }
+            },
+            "get_normal": {
+                "information": "Get the normal created by this wire. Must be a closed wire.",
+                "action": "get",
+                "returnType": "Point",
+                "parameters": {
+                    "flip":{
+                        "information": "Flip the normal direction.",
+                        "type": "boolean",
+                        "defaultValue": false,
+                        "required": false
+                    }
+                }
+            },
             "get_vertices": {
                 "information": "Collapse all edges' vertices into one list.",
                 "action": "get",
                 "returnType": "list[Vertex]"
             },
-            "is_closed": {
-                "information": "A closed wire is a Face.",
+            "get_is_closed": {
+                "information": "Checks if a wire is closed. Note: A closed wire is a Face or Surface.",
                 "action": "get",
                 "returnType": "boolean"
             },

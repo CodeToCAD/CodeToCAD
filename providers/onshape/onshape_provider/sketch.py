@@ -1,7 +1,7 @@
 import json
 from typing import Optional
 
-from codetocad.interfaces import SketchInterface
+from codetocad.interfaces import SketchInterface, ProjectableInterface
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -32,6 +32,12 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 
 
 class Sketch(Entity, SketchInterface):
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
+        print("project called:", project_onto)
+        from . import Sketch
+
+        return Sketch("a projected sketch")
+
     def mirror(
         self,
         mirror_across_entity: EntityOrItsName,

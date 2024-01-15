@@ -120,6 +120,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     @skip("TODO")
+    def test_project(self):
+        instance = Sketch()
+
+        value = instance.project("project_onto")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_clone(self):
         instance = Sketch()
 
