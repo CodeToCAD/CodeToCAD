@@ -55,17 +55,45 @@ class Wire(Entity, WireInterface):
     def clone(
         self, new_name: str, new_parent: Optional[SketchOrItsName] = None
     ) -> "Wire":
+        from . import Sketch, Part
+
         parent = new_parent or self.parent_entity
 
         if isinstance(parent, str):
-            parent = blender_actions.get_object_or_none(parent)
+            blender_object = blender_actions.get_object_or_none(parent)
 
-            if parent is None:
-                from . import Sketch
+            if blender_object is None:
+                curve_type = CurveTypes.BEZIER
 
-                parent = Sketch(new_parent)
+                if isinstance(self.parent_entity, Sketch):
+                    curve_type = self.parent_entity.curve_type or curve_type
 
-        return Wire([], "a wire")
+                parent = Sketch(new_parent, curve_type=curve_type)
+            else:
+                if isinstance(
+                    blender_object.data, blender_definitions.BlenderTypes.CURVE.value
+                ):
+                    parent = Sketch(
+                        blender_object.data.name,
+                        curve_type=CurveTypes[blender_object.data.splines[0].type],
+                    )
+                elif isinstance(
+                    blender_object.data, blender_definitions.BlenderTypes.MESH.value
+                ):
+                    parent = Part(blender_object.data.name)
+
+        if isinstance(parent, Sketch):
+            points = self.get_vertices()
+            points = [point.location for point in points]
+            points.append(points[0].copy())
+            wire = parent.create_from_vertices(points)
+            wire.name = new_name
+            return wire
+
+        if isinstance(parent, Part):
+            raise NotImplementedError("TODO")
+
+        raise Exception(f"Parent of type {type(parent)} is not supported.")
 
     def get_normal(self, flip: Optional[bool] = False) -> "Point":
         print("get_normal called:", flip)
