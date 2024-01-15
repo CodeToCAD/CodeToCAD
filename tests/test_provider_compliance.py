@@ -16,7 +16,7 @@ with open(capabilities_json) as f:
 class TestProviderCompliance(unittest.TestCase):
     def test_no_abstract_provider(self):
         print("capabilies_class_names", capabilies_class_names)
-        all_providers_import = __import__(f"providers")
+        all_providers_import = __import__("providers")
         all_providers_modules = inspect.getmembers(
             all_providers_import, predicate=inspect.ismodule
         )
