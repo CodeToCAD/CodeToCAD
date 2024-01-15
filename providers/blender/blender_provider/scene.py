@@ -38,6 +38,10 @@ class Scene(SceneInterface):
         raise NotImplementedError()
         return self
 
+    def is_exists(self) -> bool:
+        raise NotImplementedError()
+        return
+
     def get_selected_entity(self) -> "EntityInterface":
         return Entity(blender_actions.get_selected_object_name())
 
@@ -48,6 +52,8 @@ class Scene(SceneInterface):
         overwrite: bool = True,
         scale: float = 1.0,
     ):
+        from . import Part  # noqa
+
         for entity in entities:
             part = entity
             if isinstance(part, str):

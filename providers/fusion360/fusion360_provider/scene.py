@@ -39,6 +39,10 @@ class Scene(SceneInterface):
         )
         return self
 
+    def is_exists(self) -> bool:
+        raise NotImplementedError()
+        return
+
     def get_selected_entity(self) -> "Entity":
         from . import Entity
 
