@@ -42,5 +42,7 @@
     "python.testing.unittestArgs": [
         "-v"
     ],
-    "python.testing.unittestEnabled": true
+    "python.testing.unittestEnabled": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "black-formatter.importStrategy": "fromEnvironment"
 }
