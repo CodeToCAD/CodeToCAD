@@ -109,6 +109,12 @@ class Sketch(Entity, SketchInterface):
         print("scale_keep_aspect_ratio called:", scale, axis)
         return self
 
+    def project(self, project_onto: "Sketch") -> "Projectable":
+        print("project called:", project_onto)
+        from . import Sketch
+
+        return Sketch("a projected sketch")
+
     name: str
     curve_type: Optional["CurveTypes"] = None
     description: Optional[str] = None

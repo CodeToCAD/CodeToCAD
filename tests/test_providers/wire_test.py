@@ -47,6 +47,30 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
+    def test_clone(self):
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
+
+        value = instance.get_vertices()
+
+        assert value, "Create method failed."
+
+        value = instance.clone("new_name")
+
+        assert value, "Clone method failed."
+
+    def test_get_normal(self):
+        ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
+        instance = ellipse_sketch.create_ellipse(0.5, 0.25)
+
+        value = instance.get_vertices()
+
+        assert value, "Create method failed."
+
+        value = instance.get_normal(False)
+
+        assert value, "Get method failed."
+
     def test_get_vertices(self):
         ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
         instance = ellipse_sketch.create_ellipse(0.5, 0.25)

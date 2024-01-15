@@ -1,6 +1,6 @@
 from typing import Optional
 
-from codetocad.interfaces import SketchInterface
+from codetocad.interfaces import SketchInterface, ProjectableInterface
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -21,6 +21,12 @@ if TYPE_CHECKING:
 
 
 class Sketch(Entity, SketchInterface):
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
+        print("project called:", project_onto)
+        from . import Sketch
+
+        return Sketch("a projected sketch")
+
     def mirror(
         self,
         mirror_across_entity: EntityOrItsName,

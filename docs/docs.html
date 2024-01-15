@@ -296,7 +296,7 @@
 
             
     
-    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_get_vertices class="chip">get_vertices()</a><a href=#Wire_is_closed class="chip">get_is_closed()</a><a href=#Wire_loft class="chip">loft()</a>
+    <a href=#Wire_implements class="chip">implements()</a><a href=#Wire_constructor class="chip">constructor()</a><a href=#Wire_clone class="chip">clone()</a><a href=#Wire_get_normal class="chip">get_normal()</a><a href=#Wire_get_vertices class="chip">get_vertices()</a><a href=#Wire_get_is_closed class="chip">get_is_closed()</a><a href=#Wire_loft class="chip">loft()</a>
 
 
 
@@ -308,7 +308,7 @@
 
             
     
-    <a href=#Landmark_constructor class="chip">constructor()</a><a href=#Landmark_get_landmark_entity_name class="chip">get_landmark_entity_name()</a><a href=#Landmark_get_parent_entity class="chip">get_parent_entity()</a>
+    <a href=#Landmark_constructor class="chip">constructor()</a><a href=#Landmark_clone class="chip">clone()</a><a href=#Landmark_get_landmark_entity_name class="chip">get_landmark_entity_name()</a><a href=#Landmark_get_parent_entity class="chip">get_parent_entity()</a>
 
 
 
@@ -330,7 +330,7 @@
             <div class="subHeading">Materials affect the appearance and simulation properties of the parts.</div>
 
             
-    <a href=#Material_constructor class="chip">constructor()</a><a href=#Material_assign_to_part class="chip">assign_to_part()</a><a href=#Material_set_color class="chip">set_color()</a><a href=#Material_set_reflectivity class="chip">set_reflectivity()</a><a href=#Material_set_roughness class="chip">set_roughness()</a><a href=#Material_set_image_texture class="chip">set_image_texture()</a>
+    <a href=#Material_constructor class="chip">constructor()</a><a href=#Material_get_preset class="chip">get_preset()</a><a href=#Material_assign_to_part class="chip">assign_to_part()</a><a href=#Material_set_color class="chip">set_color()</a><a href=#Material_set_reflectivity class="chip">set_reflectivity()</a><a href=#Material_set_roughness class="chip">set_roughness()</a><a href=#Material_set_image_texture class="chip">set_image_texture()</a>
 
 
 
@@ -387,7 +387,7 @@
             <div class="subHeading">Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.</div>
 
             
-    <a href=#Scene_constructor class="chip">constructor()</a><a href=#Scene_default class="chip">default()</a><a href=#Scene_create class="chip">create()</a><a href=#Scene_delete class="chip">delete()</a><a href=#Scene_get_selected_entity class="chip">get_selected_entity()</a><a href=#Scene_export class="chip">export()</a><a href=#Scene_set_default_unit class="chip">set_default_unit()</a><a href=#Scene_create_group class="chip">create_group()</a><a href=#Scene_delete_group class="chip">delete_group()</a><a href=#Scene_remove_from_group class="chip">remove_from_group()</a><a href=#Scene_assign_to_group class="chip">assign_to_group()</a><a href=#Scene_set_visible class="chip">set_visible()</a><a href=#Scene_set_background_image class="chip">set_background_image()</a>
+    <a href=#Scene_constructor class="chip">constructor()</a><a href=#Scene_default class="chip">default()</a><a href=#Scene_create class="chip">create()</a><a href=#Scene_delete class="chip">delete()</a><a href=#Scene_is_exists class="chip">is_exists()</a><a href=#Scene_get_selected_entity class="chip">get_selected_entity()</a><a href=#Scene_export class="chip">export()</a><a href=#Scene_set_default_unit class="chip">set_default_unit()</a><a href=#Scene_create_group class="chip">create_group()</a><a href=#Scene_delete_group class="chip">delete_group()</a><a href=#Scene_remove_from_group class="chip">remove_from_group()</a><a href=#Scene_assign_to_group class="chip">assign_to_group()</a><a href=#Scene_set_visible class="chip">set_visible()</a><a href=#Scene_set_background_image class="chip">set_background_image()</a>
 
 
 
@@ -3195,7 +3195,7 @@
         <div class="method_name grid-item">points</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> list[string,list[string],Point,Vertex]</div>
+            <div><span class="subSubHeading">Type:</span> list[string,list[string],list[float],list[Dimension],Point,Vertex]</div>
             
             
         </div>
@@ -3212,7 +3212,7 @@
         <div class="method_name grid-item">point</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point</div>
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Point</div>
             
             
         </div>
@@ -3230,7 +3230,7 @@
         <div class="method_name grid-item">start_at</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point,Vertex</div>
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Point,Vertex</div>
             
             
         </div>
@@ -3243,7 +3243,7 @@
         <div class="method_name grid-item">end_at</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point,Vertex</div>
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Point,Vertex</div>
             
             
         </div>
@@ -3311,7 +3311,7 @@
         <div class="method_name grid-item">start_at</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point,Vertex</div>
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Point,Vertex</div>
             
             
         </div>
@@ -3324,7 +3324,7 @@
         <div class="method_name grid-item">end_at</div>
         <div class="grid-item">
             
-            <div><span class="subSubHeading">Type:</span> string,list[string],Point,Vertex</div>
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Point,Vertex</div>
             
             
         </div>
@@ -4270,13 +4270,61 @@
     </div>
 
 
+    Wire::<span class="subHeading" id=Wire_clone>clone(new_name,
+        new_parent)</span>
+
+    <div class="methods">Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.</div>
+    <div><span class="subSubHeading">returnType:</span> Wire</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">new_name</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">new_parent</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Sketch</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    Wire::<span class="subHeading" id=Wire_get_normal>get_normal(flip)</span>
+
+    <div class="methods">Get the normal created by this wire. Must be a closed wire.</div>
+    <div><span class="subSubHeading">returnType:</span> Point</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">flip</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> Flip the normal direction.</div>
+            <div><span class="subSubHeading">Type:</span> boolean</div>
+            <div><span class="subSubHeading">Default Value:</span> False</div>
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
     Wire::<span class="subHeading" id=Wire_get_vertices>get_vertices()</span>
 
     <div class="methods">Collapse all edges' vertices into one list.</div>
     <div><span class="subSubHeading">returnType:</span> list[Vertex]</div>
-    Wire::<span class="subHeading" id=Wire_is_closed>get_is_closed()</span>
+    Wire::<span class="subHeading" id=Wire_get_is_closed>get_is_closed()</span>
 
-    <div class="methods">A closed wire is a Face.</div>
+    <div class="methods">Checks if a wire is closed. Note: A closed wire is a Face or Surface.</div>
     <div><span class="subSubHeading">returnType:</span> boolean</div>
     Wire::<span class="subHeading" id=Wire_loft>loft(other,
         new_part_name)</span>
@@ -4362,6 +4410,51 @@
         <div class="grid-item">
             
             <div><span class="subSubHeading">Type:</span> string</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    Landmark::<span class="subHeading" id=Landmark_clone>clone(new_name,
+        offset,
+        new_parent)</span>
+
+    <div class="methods">Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.</div>
+    <div><span class="subSubHeading">returnType:</span> Landmark</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">new_name</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string</div>
+            
+            
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">offset</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,list[string],list[float],list[Dimension],Dimensions</div>
+            
+            <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">new_parent</div>
+        <div class="grid-item">
+            
+            <div><span class="subSubHeading">Type:</span> string,Entity</div>
             
             <div><span class="subSubHeading">Required:</span> False</div>
         </div>
@@ -4761,6 +4854,23 @@
             <div><span class="subSubHeading">Type:</span> string</div>
             
             <div><span class="subSubHeading">Required:</span> False</div>
+        </div>
+    </div>
+
+
+    Material::<span class="subHeading" id=Material_get_preset>get_preset(parameter)</span>
+
+    <div class="methods">Get a material from a preset</div>
+    <div><span class="subSubHeading">returnType:</span> Material</div>
+    
+
+    <div class="methods grid-container-parameters">
+        <div class="method_name grid-item">parameter</div>
+        <div class="grid-item">
+            <div><span class="subSubHeading">Information:</span> A PresetMaterial name or instance</div>
+            <div><span class="subSubHeading">Type:</span> PresetMaterial</div>
+            
+            <div><span class="subSubHeading">Required:</span> True</div>
         </div>
     </div>
 
@@ -5641,6 +5751,10 @@
 
     <div class="methods">Deletes a scene.</div>
     
+    Scene::<span class="subHeading" id=Scene_is_exists>is_exists()</span>
+
+    <div class="methods">Check if the scene exists</div>
+    <div><span class="subSubHeading">returnType:</span> boolean</div>
     Scene::<span class="subHeading" id=Scene_get_selected_entity>get_selected_entity()</span>
 
     <div class="methods">Get the selected entity in the Scene.</div>

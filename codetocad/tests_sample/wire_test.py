@@ -50,6 +50,22 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     @skip("TODO")
+    def test_clone(self):
+        instance = Wire()
+
+        value = instance.clone("new_name", "new_parent")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_get_normal(self):
+        instance = Wire()
+
+        value = instance.get_normal("flip")
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_get_vertices(self):
         instance = Wire()
 

@@ -5,7 +5,7 @@
 
 from typing import Optional
 
-from codetocad.interfaces import WireInterface
+from codetocad.interfaces import WireInterface, ProjectableInterface
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import Edge
     from . import Entity
+    from . import Sketch
     from . import Vertex
     from . import Part
 
@@ -61,7 +62,7 @@ class Wire(Entity, WireInterface):
         )
         return self
 
-    def project(self, project_onto: "Sketch") -> "Projectable":
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
         print("project called:", project_onto)
         from . import Sketch
 
@@ -87,6 +88,18 @@ class Wire(Entity, WireInterface):
         self.description = description
         self.native_instance = native_instance
 
+    def clone(
+        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+    ) -> "Wire":
+        print("clone called:", new_name, new_parent)
+        from . import Wire
+
+        return Wire([], "a wire")
+
+    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+        print("get_normal called:", flip)
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
     def get_vertices(self) -> "list[Vertex]":
         print(
             "get_vertices called:",
@@ -97,7 +110,7 @@ class Wire(Entity, WireInterface):
 
     def get_is_closed(self) -> bool:
         print(
-            "is_closed called:",
+            "get_is_closed called:",
         )
         return True
 

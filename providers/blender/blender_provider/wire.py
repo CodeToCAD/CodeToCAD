@@ -52,6 +52,25 @@ class Wire(Entity, WireInterface):
         self.description = description
         self.native_instance = native_instance
 
+    def clone(
+        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+    ) -> "Wire":
+        parent = new_parent or self.parent_entity
+
+        if isinstance(parent, str):
+            parent = blender_actions.get_object_or_none(parent)
+
+            if parent is None:
+                from . import Sketch
+
+                parent = Sketch(new_parent)
+
+        return Wire([], "a wire")
+
+    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+        print("get_normal called:", flip)
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
     def get_vertices(self) -> list["Vertex"]:
         if len(self.edges) == 0:
             return []

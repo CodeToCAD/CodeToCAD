@@ -16,6 +16,7 @@ from codetocad.interfaces import (
     VertexInterface,
     EntityInterface,
     LandmarkInterface,
+    ProjectableInterface,
 )
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -41,6 +42,12 @@ class Sketch(Entity, SketchInterface):
         self.description = description
 
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
+
+    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
+        print("project called:", project_onto)
+        from . import Sketch
+
+        return Sketch("a projected sketch")
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
