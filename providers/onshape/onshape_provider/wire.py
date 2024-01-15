@@ -14,7 +14,7 @@ from . import Entity
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Edge
+    from . import Edge, Vertex
     from . import Sketch
     from . import Part
 
@@ -67,6 +67,14 @@ class Wire(Entity, WireInterface):
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    def get_vertices(self) -> "list[Vertex]":
+        print(
+            "get_vertices called:",
+        )
+        from . import Vertex
+
+        return [Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")]
 
     def is_closed(self) -> bool:
         raise NotImplementedError()
