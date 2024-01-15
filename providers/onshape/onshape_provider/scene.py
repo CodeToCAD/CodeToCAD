@@ -32,6 +32,10 @@ class Scene(SceneInterface):
     def delete(self):
         return self
 
+    def is_exists(self) -> bool:
+        raise NotImplementedError()
+        return
+
     def get_selected_entity(self) -> "Entity":
         raise NotImplementedError()
 
