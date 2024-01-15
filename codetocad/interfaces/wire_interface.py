@@ -70,7 +70,7 @@ class WireInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def is_closed(self) -> bool:
+    def get_is_closed(self) -> bool:
         """
         A closed wire is a Face.
         """

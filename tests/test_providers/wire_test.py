@@ -55,11 +55,11 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    def test_is_closed(self):
+    def test_get_is_closed(self):
         ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
         instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.is_closed()
+        value = instance.get_is_closed()
 
         assert value, "Get method failed."
 

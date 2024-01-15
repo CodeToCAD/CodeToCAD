@@ -90,7 +90,7 @@ class Wire(Entity, WireInterface):
         )
         return [Vertex(location=(0, 0), name="myVertex")]
 
-    def is_closed(self) -> bool:
+    def get_is_closed(self) -> bool:
         print(
             "is_closed called:",
         )
