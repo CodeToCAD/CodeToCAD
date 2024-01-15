@@ -21,3 +21,4 @@ from .mesh import *
 from .modifiers import *
 from .render import *
 from .vertex_edge_wire import *
+from .normals import calculate_normal, project_vector_along_normal
