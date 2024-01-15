@@ -62,7 +62,7 @@ class Wire(Entity, WireInterface):
 
         return all_vertices
 
-    def is_closed(self) -> bool:
+    def get_is_closed(self) -> bool:
         if not self.native_instance:
             raise Exception(
                 "Cannot find native wire instance, this may mean that this reference is stale or the object does not exist in Blender."

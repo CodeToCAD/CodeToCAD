@@ -13,7 +13,7 @@ class WireTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def test_is_closed(self):
+    def test_get_is_closed(self):
         pass
 
     @abstractmethod

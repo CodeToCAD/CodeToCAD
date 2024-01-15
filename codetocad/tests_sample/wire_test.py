@@ -58,10 +58,10 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_is_closed(self):
+    def test_get_is_closed(self):
         instance = Wire()
 
-        value = instance.is_closed("")
+        value = instance.get_is_closed("")
 
         assert value, "Get method failed."
 

@@ -76,7 +76,7 @@ class Wire(Entity, WireInterface):
 
         return [Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")]
 
-    def is_closed(self) -> bool:
+    def get_is_closed(self) -> bool:
         raise NotImplementedError()
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
