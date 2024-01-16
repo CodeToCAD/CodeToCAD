@@ -1,4 +1,3 @@
-from pydoc import cli
 from onshape_client import Client
 from onshape_client.oas import (
     BTFeatureDefinitionCall1406,
@@ -243,15 +242,12 @@ def create_rect(
         geometry=line_geometry4,
         entity_id=LINE_ID + "4",
         bt_type="BTMSketchCurveSegment-155",
-    )
-    CIRCLE_ID="my_circle"
-    circle_geometry = BTCurveGeometryCircle115(radius=0.02, clockwise=True, xcenter=0.1, ycenter=0.1,xdir=0.1, ydir=0.0)
-    circle = BTMSketchCurve4(geometry=circle_geometry, entity_id=CIRCLE_ID)
+    )    
     return create_sketch(
         client,
         onshape_url,
         sketch_name=sketch_name,
-        btm_entities=[line1, line2, line3, line4, circle],
+        btm_entities=[line1, line2, line3, line4],
     )
 
 

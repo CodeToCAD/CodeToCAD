@@ -89,34 +89,3 @@ class Edge(Entity, EdgeInterface):
 
     def get_is_construction(self) -> bool:
         raise NotImplementedError()
-
-
-
-"""
-sample native_instance data
-{
-        "btType": "BTMSketchCurveSegment-155",
-        "startPointId": "",
-        "endPointId": "",
-        "offsetCurveExtensions": [],
-        "startParam": 0,
-        "endParam": 1,
-        "geometry": {
-          "btType": "BTCurveGeometryLine-117",
-          "pntX": 15,
-          "pntY": 15,
-          "dirX": 10,
-          "dirY": 10
-        },
-        "centerId": "",
-        "internalIds": [],
-        "parameters": [],
-        "isConstruction": false,
-        "isFromSplineHandle": false,
-        "isFromEndpointSplineHandle": false,
-        "isFromSplineControlPolygon": false,
-        "nodeId": "Mkn74T5u3XMgmy8T7",
-        "namespace": "",
-        "entityId": ""
-}
-"""

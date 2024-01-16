@@ -43,23 +43,3 @@ class Vertex(Entity, VertexInterface):
 
     def get_control_points(self, parameter="") -> "list[Entity]":
         raise NotImplementedError()
-
-"""
-What could be the value of Name?
-sample value of natinve_instance
-
-{
-        "btType": "BTMSketchPoint-158",
-        "x": 15,
-        "y": 15,
-        "isUserPoint": true,
-        "parameters": [],
-        "isConstruction": false,
-        "isFromSplineHandle": false,
-        "isFromEndpointSplineHandle": false,
-        "isFromSplineControlPolygon": false,
-        "nodeId": "Md4eP9dxpBjCwSDy3",
-        "namespace": "",
-        "entityId": ""
-      }
-"""
