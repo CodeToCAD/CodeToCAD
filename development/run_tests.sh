@@ -13,7 +13,7 @@ fi
 
 
 if [ -f "$VENV_DIR/Scripts/activate" ]; then
-    . "$VENV_DIR/Scripts/activate"
+    "$VENV_DIR/Scripts/activate"
 else
     . "$VENV_DIR/bin/activate"
 fi
