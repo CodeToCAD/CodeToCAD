@@ -82,10 +82,9 @@ class TestOnshapeActions(unittest.TestCase):
         onshape_url.tab_id = part_studio_id
 
         # Define the location of the point in 3D space
-        pointLocation1 = Dimension(15.0, "mm")
-        pointLocation2 = Dimension(25.0, "mm")
+        pointLocation1 = Dimension(0.1, "inch")
+        pointLocation2 = Dimension(0.3, "inch")
 
-        # Create a point in the part studio
         create_rect(
             self.client,
             onshape_url,
@@ -94,6 +93,31 @@ class TestOnshapeActions(unittest.TestCase):
             Point(pointLocation2, pointLocation2, pointLocation2),
         )
 
+    def test_create_circle(self):
+        # Get the URL of the Onshape document
+        onshape_url = get_first_document_url_by_name(
+            self.client, onshape_document_name)
+
+        # Create a new tab in the part studio
+        part_studio_id = create_tab_part_studios(
+            self.client, onshape_url, Utilities.create_uuid_like_id()
+        )
+
+        # Set the tab_id for subsequent operations
+        onshape_url.tab_id = part_studio_id
+
+        # Define the location of the point in 3D space
+        pointLocation1 = Dimension(0.1, "inch")
+        pointLocation2 = Dimension(0.3, "inch")
+
+        create_circle(
+            self.client,
+            onshape_url,
+            "Test Point",
+            0.05,
+            Point(pointLocation1, pointLocation2, pointLocation2)            
+        )
+    
     def test_extrude(self):
         onshape_document_name = "CodeToCAD-onshape_actions"
 

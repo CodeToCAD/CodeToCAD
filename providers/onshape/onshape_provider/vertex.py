@@ -34,7 +34,7 @@ class Vertex(Entity, VertexInterface):
         parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
-    ):
+    ):        
         self.location = location
         self.parent_entity = parent_entity
         self.name = name
