@@ -34,7 +34,7 @@ class Vertex(Entity, VertexInterface):
         parent_entity: Optional[EntityOrItsName] = None,
         description: Optional[str] = None,
         native_instance=None,
-    ):
+    ):        
         self.location = location
         self.parent_entity = parent_entity
         self.name = name
@@ -43,3 +43,23 @@ class Vertex(Entity, VertexInterface):
 
     def get_control_points(self, parameter="") -> "list[Entity]":
         raise NotImplementedError()
+
+"""
+What could be the value of Name?
+sample value of natinve_instance
+
+{
+        "btType": "BTMSketchPoint-158",
+        "x": 15,
+        "y": 15,
+        "isUserPoint": true,
+        "parameters": [],
+        "isConstruction": false,
+        "isFromSplineHandle": false,
+        "isFromEndpointSplineHandle": false,
+        "isFromSplineControlPolygon": false,
+        "nodeId": "Md4eP9dxpBjCwSDy3",
+        "namespace": "",
+        "entityId": ""
+      }
+"""
