@@ -17,17 +17,21 @@ if [ ! -z $1 ]; then
     if [[ -z $(python -V) ]]; then echo "Your python path input might be invalid." & exit 1; fi;
 fi
 
-PYTHON_VERSION="$(python -V | awk '$0~/(2\.|3\.[[:digit:]]\.)/{print "bad version"};')"
+PYTHON_VERSION=$(python --version 2>&1 | sed -n 's/Python \([0-9]\{1,\}\.[0-9]\{1,\}\).*/\1/p')
 
-if [[ $PYTHON_VERSION == "bad version" ]]; then
-    echo "Please run this with at least Python 3.10. If you have multiple versions of Python installed, you may run this script using 'sh create_python_virtual_environment /path/to/python'"
+numCompare() {
+   awk -v n1="$1" -v n2="$2" 'BEGIN {printf "%s " (n1<n2?"<":">=") " %s\n", n1, n2}'
+}
+
+if awk "BEGIN {exit !($PYTHON_VERSION <= 3.10)}"; then
+    echo "Please run this with at least Python 3.10. Currently" $(python -V) ". If you have multiple versions of Python installed, you may run this script using 'sh create_python_virtual_environment /path/to/python'"
     exit 1
 fi
 
 
 if [ ! -d "$VENV_DIR" ]; then
     echo "Creating virtual environment"
-    python -m venv "$VENV_DIR" || echo "Going to try running tests with python3, instead:" && python3 -m venv "$VENV_DIR"
+    python -m venv "$VENV_DIR"
 fi
 
 
