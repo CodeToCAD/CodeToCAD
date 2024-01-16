@@ -19,6 +19,7 @@
         }
     ],
     "configurations": [
+        
         {
             "name": "Capabilities.json to Python",
             "type": "python",
@@ -57,6 +58,15 @@
             "justMyCode": true,
             "jinja": true,
             "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Python: Attach",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            }
         }
     ]
 }
