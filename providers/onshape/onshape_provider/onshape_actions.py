@@ -7,14 +7,15 @@ from onshape_client.oas import (
     BTMSketch151,
     BTMFeature134,
     BTMSketchPoint158,
-    BTMParameterString149,
-    BTMSketchConstraint2,
     BTMParameterEnum145,
     BTMParameterQuantity147,
-    BTCurveGeometryLine117,
+    BTCurveGeometryLine117,    
+    BTCurveGeometryCircle115,
+    BTMSketchCurve4,
     BTMSketchCurveSegment155,
     BTMIndividualSketchRegionQuery140,
 )
+from codetocad.core.dimension import Dimension
 
 
 from codetocad.core.point import Point
@@ -22,7 +23,6 @@ from codetocad.core.point import Point
 import codetocad.utilities as Utilities
 
 from . import onshape_definitions
-import json
 
 
 def get_onshape_client(config: dict) -> Client:
@@ -109,6 +109,8 @@ def create_sketch(
     feature_definition = BTFeatureDefinitionCall1406(
         feature=sketch, bt_type="BTFeatureDefinitionCall-1406"
     )
+    
+    # client.part_studios_api.update_features(**onshape_url.dict_document_and_workspaceAndModelAndTab,_preload_content=False)
     return client.part_studios_api.add_part_studio_feature(
         **onshape_url.dict_document_and_workspaceAndModelAndTab,
         bt_feature_definition_call_1406=feature_definition,
@@ -129,9 +131,37 @@ def create_point(
         is_construction=False,
         parameters=[],
     )
-
+    
     return create_sketch(
         client, onshape_url, sketch_name=sketch_name, btm_entities=[btmPoint]
+    )
+
+
+def create_line(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    sketch_name: str,
+    start_point: Point,
+    end_point: Point,
+):
+    line_geometry1 = BTCurveGeometryLine117(
+        pnt_x=start_point.x.value,
+        pnt_y=start_point.y.value,
+        dir_x=end_point.x.value-start_point.x.value,
+        dir_y=end_point.y.value-start_point.y.value,
+        bt_type="BTCurveGeometryLine-117",
+    )
+    line = BTMSketchCurveSegment155(        
+        start_param=0.0,
+        end_param=1.0,
+        geometry=line_geometry1,        
+        bt_type="BTMSketchCurveSegment-155",
+    )
+    return create_sketch(
+        client,
+        onshape_url,
+        sketch_name=sketch_name,
+        btm_entities=[line],
     )
 
 
@@ -212,7 +242,7 @@ def create_rect(
         geometry=line_geometry4,
         entity_id=LINE_ID + "4",
         bt_type="BTMSketchCurveSegment-155",
-    )
+    )    
     return create_sketch(
         client,
         onshape_url,
@@ -220,6 +250,21 @@ def create_rect(
         btm_entities=[line1, line2, line3, line4],
     )
 
+
+def create_circle(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    sketch_name: str,
+    radius:float,
+    center:Point=Point(Dimension(0),Dimension(0),Dimension(0)),
+    clockwise:bool=False
+    ):
+    CIRCLE_ID="my_circle"
+    circle_geometry = BTCurveGeometryCircle115(radius=radius, clockwise=clockwise, xcenter=center.x.value, ycenter=center.y.value,xdir=0.1, ydir=0.0)
+    circle = BTMSketchCurve4(geometry=circle_geometry, entity_id=CIRCLE_ID)
+    return create_sketch(client, onshape_url, sketch_name, btm_entities=[circle])
+    
+    
 
 def create_extrude(
     client: Client,
@@ -253,3 +298,5 @@ def create_extrude(
         bt_feature_definition_call_1406=feature_definition,
         _preload_content=False,
     )
+
+

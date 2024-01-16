@@ -1,0 +1,47 @@
+{
+    "btType": "BTMSketch-151",
+    "entities": [
+        {
+            "btType": "BTMSketchCurve-4",
+            "geometry": {
+                "btType": "BTCurveGeometryCircle-115",
+                "radius": 0.05,
+                "clockwise": false
+            },
+            "centerId": "",
+            "internalIds": [],
+            "parameters": [],
+            "isConstruction": false,
+            "isFromSplineHandle": false,
+            "isFromEndpointSplineHandle": false,
+            "isFromSplineControlPolygon": false,
+            "nodeId": "MB7aB5wtEN6NNVcOU",
+            "namespace": "",
+            "entityId": "my_circle"
+        }
+    ],
+    "constraints": [],
+    "nodeId": "MpstK4wQ3pdhwohit",
+    "namespace": "",
+    "name": "Test Point",
+    "suppressed": false,
+    "parameters": [
+        {
+            "btType": "BTMParameterQueryList-148",
+            "queries": [
+                {
+                    "btType": "BTMIndividualQuery-138",
+                    "queryStatement": null,
+                    "queryString": "query=qCompressed(1.0,\"%B5$QueryM4Sa$entityTypeBa$EntityTypeS4$FACESb$historyTypeS8$CREATIONSb$operationIdB2$IdA1S3.7$TopplaneOpS9$queryTypeS5$DUMMY\",id);",
+                    "nodeId": "MZjFc6JFQF04AhAmi"
+                }
+            ],
+            "parameterId": "sketchPlane",
+            "nodeId": "MxYh39mHHkOQcoOe8"
+        }
+    ],
+    "featureType": "newSketch",
+    "returnAfterSubfeatures": false,
+    "subFeatures": [],
+    "featureId": "Fex8QqxEyyHVwNX_0"
+}

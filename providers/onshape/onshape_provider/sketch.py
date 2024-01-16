@@ -14,7 +14,7 @@ from providers.onshape.onshape_provider.onshape_actions import (
     get_first_document_url_by_name,
     get_onshape_client_with_config_file,
 )
-
+from providers.onshape.onshape_provider import onshape_actions
 
 from . import Entity
 
@@ -126,6 +126,7 @@ class Sketch(Entity, SketchInterface):
             "../.onshape_client_config.yaml",
         )
         cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
+        cls.onshape_url = get_first_document_url_by_name(cls.client, onshape_document_name)
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
@@ -190,17 +191,34 @@ class Sketch(Entity, SketchInterface):
         raise NotImplementedError()
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        raise NotImplementedError()
+        point = Point.from_list_of_float_or_string(point)
+        api_resp = onshape_actions.create_point(self.client, self.onshape_url, self.name, point)
+        json_native_data = json.loads(api_resp.data)
+        return Vertex(location=point, native_instance=json_native_data["feature"]["entities"][0])
 
     def create_line(
         self,
         start_at: PointOrListOfFloatOrItsStringValueOrVertex,
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Edge":
-        raise NotImplementedError()
+        start_point = Point.from_list_of_float_or_string_or_Vertex(start_at)
+        end_point = Point.from_list_of_float_or_string_or_Vertex(end_at)
+        api_resp = onshape_actions.create_line(self.client, self.onshape_url,self.name, start_point, end_point)
+        json_native_data = json.loads(api_resp.data)        
+        return Edge(
+            v1=None,
+            v2=None,
+            name="",
+            native_instance=json_native_data["feature"]["entities"][0]
+            )
+            
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
-        raise NotImplementedError()
+        radius_float = Dimension.from_dimension_or_its_float_or_string_value(radius)
+        api_resp = onshape_actions.create_circle(self.client, self.onshape_url,self.name, radius_float)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
+    
 
     def create_ellipse(
         self,
@@ -227,7 +245,7 @@ class Sketch(Entity, SketchInterface):
             length, None
         ).value
         width_float = Dimension.from_dimension_or_its_float_or_string_value(
-            length, None
+            width, None
         ).value
 
         onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
