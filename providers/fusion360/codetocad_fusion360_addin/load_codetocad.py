@@ -1,4 +1,5 @@
 from importlib import reload
+import inspect
 import sys
 from pathlib import Path
 
@@ -7,9 +8,23 @@ def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
     import codetocad
     import fusion360_provider
+    
+    all_providers_modules = inspect.getmembers(
+        fusion360_provider, predicate=inspect.ismodule
+    )
+    for module_name, module in all_providers_modules:
+        reload(module)
 
-    reload(codetocad)
     reload(fusion360_provider)
+    
+    all_providers_modules = inspect.getmembers(
+        codetocad, predicate=inspect.ismodule
+    )
+    
+    for module_name, module in all_providers_modules:
+        reload(module)
+    
+    reload(codetocad)
 
 
 def add_codetocad_to_path():

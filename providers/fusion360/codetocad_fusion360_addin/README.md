@@ -22,10 +22,12 @@ For development, you should clone the CodeToCAD repo normally, then use the
 In [`.vscode/settings.json`](./.vscode/settings.json), you may want to add `../../..` to `python.analysis.extraPaths`, in order to get syntax highlighting, e.g.:
 ```json
 {
-	"python.autoComplete.extraPaths":	["PATH FUSION NORMALLY PUTS IN FOR YOU", "../../.."],
+	"python.autoComplete.extraPaths":	["PATH FUSION NORMALLY PUTS IN FOR YOU", "../../..",
+		"../"],
 	"python.analysis.extraPaths":	[
 		"PATH FUSION NORMALLY PUTS IN FOR YOU",
-		"../../.."
+		"../../..",
+		"../"
 	]
 }
 ```

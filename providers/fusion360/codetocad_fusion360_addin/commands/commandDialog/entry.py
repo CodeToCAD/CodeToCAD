@@ -105,7 +105,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     inputs = args.command.commandInputs
 
     # TODO Define the dialog for your command by adding different inputs to the command.
-    inputs.addButtonRowCommandInput("select_file", "Choose file", False)
+    # inputs.addButtonRowCommandInput("select_file", "Choose file", False)
     # Create a simple text box input.
     inputs.addTextBoxCommandInput("text_box", "Script File", file_path or "", 1, True)
 
