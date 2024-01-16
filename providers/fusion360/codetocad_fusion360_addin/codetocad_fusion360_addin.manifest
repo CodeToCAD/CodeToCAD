@@ -1,0 +1,13 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"addin",
+	"id":	"aa612c6e-9c4b-464d-a39e-04f69b6a2dca",
+	"author":	"CodeToCAD",
+	"description":	{
+		"":	"An add-in to allow CodeToCAD scripts to run in Fusion360. For more information visit https://github.com/CodeToCAD/CodeToCAD"
+	},
+	"version":	"",
+	"runOnStartup":	true,
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
