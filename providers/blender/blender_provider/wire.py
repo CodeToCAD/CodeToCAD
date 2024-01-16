@@ -200,4 +200,6 @@ class Wire(Entity, WireInterface):
                 else:
                     Entity(parent_name).delete()
 
+        blender_actions.recalculate_normals(part.name)
+
         return part
