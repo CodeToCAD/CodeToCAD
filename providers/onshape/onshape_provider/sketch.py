@@ -1,4 +1,5 @@
 import json
+from tkinter import NO
 from typing import Optional
 
 from codetocad.interfaces import SketchInterface, ProjectableInterface
