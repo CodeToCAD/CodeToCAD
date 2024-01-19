@@ -8,7 +8,8 @@ def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
     import codetocad
     import fusion360_provider
-    
+    from fusion360_provider import fusion_actions
+
     all_providers_modules = inspect.getmembers(
         fusion360_provider, predicate=inspect.ismodule
     )
@@ -16,14 +17,21 @@ def reload_codetocad_modules():
         reload(module)
 
     reload(fusion360_provider)
-    
+
     all_providers_modules = inspect.getmembers(
         codetocad, predicate=inspect.ismodule
     )
-    
+
     for module_name, module in all_providers_modules:
         reload(module)
-    
+
+    all_providers_modules = inspect.getmembers(
+        fusion_actions, predicate=inspect.ismodule
+    )
+
+    for module_name, module in all_providers_modules:
+        reload(module)
+
     reload(codetocad)
 
 

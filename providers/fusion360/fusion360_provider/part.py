@@ -1,4 +1,5 @@
 from typing import Optional
+from adsk.fusion import adsk
 
 from codetocad.interfaces import PartInterface
 
@@ -7,8 +8,9 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
 from . import Entity
+
+from .fusion_actions.common import get_sketch, rotate_body, translate_body
 
 from typing import TYPE_CHECKING
 
@@ -75,6 +77,58 @@ class Part(Entity, PartInterface):
         print("export called:", file_path, overwrite, scale)
         return self
 
+
+    def translate_xyz(
+        self,
+        x: DimensionOrItsFloatOrStringValue,
+        y: DimensionOrItsFloatOrStringValue,
+        z: DimensionOrItsFloatOrStringValue,
+    ):
+        vector = adsk.core.Vector3D.create(x, y, z)
+        translate_body(self.name, vector)
+        return self
+
+    def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
+        vector = adsk.core.Vector3D.create(amount, 0, 0)
+        translate_body(self.name, vector)
+        return self
+
+    def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
+        vector = adsk.core.Vector3D.create(0, amount, 0)
+        translate_body(self.name, vector)
+
+        return self
+
+    def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
+        vector = adsk.core.Vector3D.create(0, 0, amount)
+        translate_body(self.name, vector)
+
+        return self
+
+
+    def rotate_xyz(
+        self,
+        x: AngleOrItsFloatOrStringValue,
+        y: AngleOrItsFloatOrStringValue,
+        z: AngleOrItsFloatOrStringValue,
+    ):
+        return self
+
+    def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
+        axis = adsk.core.Vector3D.create(1, 0, 0)
+        rotate_body(self.name, axis, rotation)
+        return self
+
+    def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
+        axis = adsk.core.Vector3D.create(0, 1, 0)
+        rotate_body(self.name, axis, rotation)
+        return self
+
+    def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
+        axis = adsk.core.Vector3D.create(0, 0, 1)
+        rotate_body(self.name, axis, rotation)
+        return self
+
     def scale_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
@@ -121,7 +175,12 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        print("create_cube called:", width, length, height, keyword_arguments)
+        from . import Sketch
+
+        cube_sketch = Sketch(self.name)
+        cube_sketch.create_rectangle(length, width)
+        cube_sketch.extrude(height)
+
         return self
 
     def create_cone(
@@ -131,7 +190,46 @@ class Part(Entity, PartInterface):
         draft_radius: DimensionOrItsFloatOrStringValue = 0,
         keyword_arguments: Optional[dict] = None,
     ):
-        print("create_cone called:", radius, height, draft_radius, keyword_arguments)
+        from . import Sketch
+
+        if draft_radius == Dimension(0):
+            import math
+            points = [
+                adsk.core.Point3D.create(0, 0, 0),
+                adsk.core.Point3D.create(0, 0, height),
+                adsk.core.Point3D.create(radius, 0, 0),
+                adsk.core.Point3D.create(0, 0, 0),
+            ]
+
+            axis = adsk.core.Point3D.create(0, 0, 1)
+
+            triangle = Sketch("Triangle")
+            triangle.create_lines(points)
+            triangle.revolve(math.pi * 2, axis)
+        else:
+            app = adsk.core.Application.get()
+            design = app.activeProduct
+            root_comp = design.rootComponent
+
+            base = Sketch(self.name)
+            base.create_circle(radius)
+            sketch = get_sketch(self.name)
+
+            top = Sketch(self.name + "_temp_top")
+            top_wire = top.create_circle(draft_radius)
+            top.translate_z(height)
+
+            sketch2 = get_sketch(self.name + "_temp_top")
+
+            loftFeats = root_comp.features.loftFeatures
+            loftInput = loftFeats.createInput(adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+            loftSectionsObj = loftInput.loftSections
+            loftSectionsObj.add(sketch.profiles.item(0))
+            loftSectionsObj.add(sketch2.profiles.item(0))
+            loftInput.isSolid = True
+            loftInput.isClosed = True
+            loftFeats.add(loftInput)
+
         return self
 
     def create_cylinder(
@@ -140,7 +238,12 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        print("create_cylinder called:", radius, height, keyword_arguments)
+        from . import Sketch
+
+        cube_sketch = Sketch(self.name)
+        cube_sketch.create_circle(radius)
+        cube_sketch.extrude(height)
+
         return self
 
     def create_torus(
@@ -157,7 +260,14 @@ class Part(Entity, PartInterface):
         radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        print("create_sphere called:", radius, keyword_arguments)
+        from . import Sketch
+
+        import math
+        axis = adsk.core.Point3D.create(1, 0, 0)
+        circle = Sketch(self.name)
+        circle.create_arc(radius)
+        circle.revolve(math.pi * 2, axis)
+
         return self
 
     def create_gear(
