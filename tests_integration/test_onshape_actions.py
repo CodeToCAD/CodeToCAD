@@ -1,3 +1,4 @@
+import json
 import os
 import unittest
 from providers.onshape import *
@@ -95,8 +96,7 @@ class TestOnshapeActions(unittest.TestCase):
 
     def test_create_circle(self):
         # Get the URL of the Onshape document
-        onshape_url = get_first_document_url_by_name(
-            self.client, onshape_document_name)
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
 
         # Create a new tab in the part studio
         part_studio_id = create_tab_part_studios(
@@ -115,9 +115,9 @@ class TestOnshapeActions(unittest.TestCase):
             onshape_url,
             "Test Point",
             0.05,
-            Point(pointLocation1, pointLocation2, pointLocation2)            
+            Point(pointLocation1, pointLocation2, pointLocation2),
         )
-    
+
     def test_extrude(self):
         onshape_document_name = "CodeToCAD-onshape_actions"
 

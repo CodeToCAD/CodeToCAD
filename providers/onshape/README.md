@@ -15,3 +15,5 @@ Onshape uses a REST API: [https://cad.onshape.com/glassworks/explorer](https://c
 - [Glassworks](https://cad.onshape.com/glassworks/explorer?_gl=1*qvs0kd*_gcl_au*MTg4NTIyNDI0OS4xNjg1ODExMDM3#/PartStudio)
 - [Python client test scripts](https://github.com/onshape-public/onshape-clients/tree/master/python/test)
 - [API Snippets](https://github.com/PTC-Education/PTC-API-Playground)
+- [API examples](https://onshape-public.github.io/docs/api-adv/featureaccess/#example-1)
+- [JSON breakdown](https://onshape-public.github.io/docs/app-dev/structuredstorage/)
