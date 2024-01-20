@@ -9,9 +9,8 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.curve import create_curve
 
-from .fusion_actions.common import get_sketch
+from .fusion_actions.common import get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, translate_sketch
 
 
 from . import Entity
@@ -80,43 +79,39 @@ class Sketch(Entity, SketchInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        sketch = get_sketch(self.name)
-
-        for point in sketch.sketchPoints:
-            current_origin = point.geometry
-            translation_vector = adsk.core.Vector3D.create(current_origin.x + x, current_origin.y + y, current_origin.z + z)
-            point.move(translation_vector)
-
+        translate_sketch(self.name, x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        sketch = get_sketch(self.name)
-
-        for point in sketch.sketchPoints:
-            current_origin = point.geometry
-            translation_vector = adsk.core.Vector3D.create(current_origin.x + amount, current_origin.y, current_origin.z)
-            point.move(translation_vector)
-
+        translate_sketch(self.name, amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        sketch = get_sketch(self.name)
-
-        for point in sketch.sketchPoints:
-            current_origin = point.geometry
-            translation_vector = adsk.core.Vector3D.create(current_origin.x, current_origin.y + amount, current_origin.z)
-            point.move(translation_vector)
-
+        translate_sketch(self.name, 0, amount, 0)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        sketch = get_sketch(self.name)
+        translate_sketch(self.name, 0, 0, amount)
+        return self
 
-        for point in sketch.sketchPoints:
-            current_origin = point.geometry
-            translation_vector = adsk.core.Vector3D.create(current_origin.x, current_origin.y, current_origin.z + amount)
-            point.move(translation_vector)
+    def rotate_xyz(
+        self,
+        x: AngleOrItsFloatOrStringValue,
+        y: AngleOrItsFloatOrStringValue,
+        z: AngleOrItsFloatOrStringValue,
+    ):
+        return self
 
+    def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
+        rotate_sketch(self.name, 1, 0, 0, rotation)
+        return self
+
+    def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
+        rotate_sketch(self.name, 0, 1, 0, rotation)
+        return self
+
+    def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
+        rotate_sketch(self.name, 0, 0, 1, rotation)
         return self
 
     def scale_xyz(
@@ -125,37 +120,38 @@ class Sketch(Entity, SketchInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        print("scale_xyz called:", x, y, z)
+        scale_sketch(self.name, x, y, z)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_x called:", scale)
+        scale_sketch(self.name, scale, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_y called:", scale)
+        scale_sketch(self.name, 0, scale, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_z called:", scale)
+        scale_sketch(self.name, 0, 0, scale)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        print("scale_x_by_factor called:", scale_factor)
+        scale_by_factor_sketch(self.name, scale_factor, 0, 0)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        print("scale_y_by_factor called:", scale_factor)
+        scale_by_factor_sketch(self.name, 0, scale_factor, 0)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        print("scale_z_by_factor called:", scale_factor)
+        scale_by_factor_sketch(self.name, 0, 0, scale_factor)
         return self
 
     def scale_keep_aspect_ratio(
-        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+        # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+        self, scale: DimensionOrItsFloatOrStringValue
     ):
-        print("scale_keep_aspect_ratio called:", scale, axis)
+        scale_sketch_uniform(self.name, scale)
         return self
 
     name: str
@@ -320,7 +316,20 @@ class Sketch(Entity, SketchInterface):
     ) -> "Edge":
         from . import Edge
 
-        print("create_line called:", start_at, end_at)
+        app = adsk.core.Application.get()
+        design = app.activeProduct
+        rootComp = design.rootComponent
+        sketches = rootComp.sketches
+        xyPlane = rootComp.xYConstructionPlane
+
+        sketch = sketches.add(xyPlane)
+        sketch.name = self.name
+
+        sketchLines = sketch.sketchCurves.sketchLines
+        start = adsk.core.Point3D.create(start_at.x.value, start_at.y.value, start_at.z.value)
+        end = adsk.core.Point3D.create(end_at.x.value, end_at.y.value, end_at.z.value)
+        sketchLines.addByTwoPoints(start, end)
+
         return Edge.get_dummy_edge()
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
@@ -365,9 +374,9 @@ class Sketch(Entity, SketchInterface):
         wire = self.create_circle(radius_minor if is_minor_lesser else radius_major)
 
         if is_minor_lesser:
-            self.scale_y(radius_major * 2)
+            self.scale_y(radius_major.value * 2)
         else:
-            self.scale_x(radius_minor * 2)
+            self.scale_x(radius_minor.value * 2)
 
         return wire
 

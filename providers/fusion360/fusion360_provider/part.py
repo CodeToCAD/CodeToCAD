@@ -10,7 +10,7 @@ from codetocad.enums import *
 
 from . import Entity
 
-from .fusion_actions.common import get_sketch, rotate_body, translate_body
+from .fusion_actions.common import get_sketch, rotate_body, scale_body, scale_body_uniform, set_material, translate_body, scale_by_factor_body
 
 from typing import TYPE_CHECKING
 
@@ -115,17 +115,17 @@ class Part(Entity, PartInterface):
         return self
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Vector3D.create(1, 0, 0)
+        axis = adsk.core.Point3D.create(1, 0, 0)
         rotate_body(self.name, axis, rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Vector3D.create(0, 1, 0)
+        axis = adsk.core.Point3D.create(0, 1, 0)
         rotate_body(self.name, axis, rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Vector3D.create(0, 0, 1)
+        axis = adsk.core.Point3D.create(0, 0, 1)
         rotate_body(self.name, axis, rotation)
         return self
 
@@ -135,37 +135,38 @@ class Part(Entity, PartInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        print("scale_xyz called:", x, y, z)
+        scale_body(self.name, x, y, z)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_x called:", scale)
+        scale_body(self.name, scale, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_y called:", scale)
+        scale_body(self.name, 0, scale, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_z called:", scale)
+        scale_body(self.name, 0, 0, scale)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        print("scale_x_by_factor called:", scale_factor)
+        scale_by_factor_body(self.name, scale_factor, 1, 1)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        print("scale_y_by_factor called:", scale_factor)
+        scale_by_factor_body(self.name, 1, scale_factor, 1)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        print("scale_z_by_factor called:", scale_factor)
+        scale_by_factor_body(self.name, 1, 1, scale_factor)
         return self
 
     def scale_keep_aspect_ratio(
-        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+        # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
+        self, scale: DimensionOrItsFloatOrStringValue
     ):
-        print("scale_keep_aspect_ratio called:", scale, axis)
+        scale_body_uniform(self.name, scale)
         return self
 
     def create_cube(
@@ -421,7 +422,7 @@ class Part(Entity, PartInterface):
         return self
 
     def set_material(self, material_name: MaterialOrItsName):
-        print("set_material called:", material_name)
+        set_material(self.name, material_name)
         return self
 
     def is_colliding_with_part(self, other_part: PartOrItsName) -> bool:
