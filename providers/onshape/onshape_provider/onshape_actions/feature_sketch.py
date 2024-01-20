@@ -45,7 +45,7 @@ def create_or_update_sketch(
     )
 
     return client.part_studios_api.add_part_studio_feature(
-        **onshape_url.dict_document_and_workspaceAndModelAndTab,
+        **onshape_url.dict_document_and_workspace_and_model_and_tab,
         bt_feature_definition_call_1406=feature_definition,
         _preload_content=False,
     )
@@ -71,7 +71,7 @@ def update_sketch(
         feature=sketch, bt_type="BTFeatureDefinitionCall-1406"
     )
 
-    feature_url = onshape_url.dict_document_and_workspaceAndModelAndTab
+    feature_url = onshape_url.dict_document_and_workspace_and_model_and_tab
     feature_url["fid"] = sketch_feature_id
 
     return client.part_studios_api.update_part_studio_feature(
@@ -266,7 +266,7 @@ def create_extrude(
     )
     feature_definition = BTFeatureDefinitionCall1406(feature=extrude_feature)
     return client.part_studios_api.add_part_studio_feature(
-        **onshape_url.dict_document_and_workspaceAndModelAndTab,
+        **onshape_url.dict_document_and_workspace_and_model_and_tab,
         bt_feature_definition_call_1406=feature_definition,
         _preload_content=False,
     )

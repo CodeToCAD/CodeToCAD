@@ -40,14 +40,14 @@ class OnshapeUrl:
         return {"did": self.document_id, "wid": self.workspace_id}
 
     @property
-    def dict_document_and_workspaceAndModel(self) -> dict[str, str]:
+    def dict_document_and_workspace_and_model(self) -> dict[str, str]:
         """
         returns a dictionary with ["did", "wvmid", "wvm"] as keys
         """
         return {"did": self.document_id, "wvmid": self.workspace_id, "wvm": "w"}
 
     @property
-    def dict_document_and_workspaceAndTab(self) -> dict[str, str]:
+    def dict_document_and_workspace_and_tab(self) -> dict[str, str]:
         """
         returns a dictionary with ["did", "wid", "eid"] as keys
         """
@@ -56,7 +56,7 @@ class OnshapeUrl:
         return {"did": self.document_id, "wid": self.workspace_id, "eid": self.tab_id}
 
     @property
-    def dict_document_and_workspaceAndModelAndTab(self) -> dict[str, str]:
+    def dict_document_and_workspace_and_model_and_tab(self) -> dict[str, str]:
         """
         returns a dictionary with ["did", "wvmid", "wvm", "eid"] as keys
         """

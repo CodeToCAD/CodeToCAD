@@ -71,5 +71,5 @@ def get_features(client: Client, onshape_url: onshape_definitions.OnshapeUrl):
     Get the features in a tab (aka element).
     """
     return client.part_studios_api.get_part_studio_features(
-        **onshape_url.dict_document_and_workspaceAndModelAndTab
+        **onshape_url.dict_document_and_workspace_and_model_and_tab
     ).to_dict()

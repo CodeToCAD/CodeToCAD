@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from onshape_client import Client
 
 from providers.onshape.onshape_provider import onshape_definitions
