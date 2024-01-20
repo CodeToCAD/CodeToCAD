@@ -43,6 +43,17 @@
         "-v"
     ],
     "python.testing.unittestEnabled": true,
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "black-formatter.importStrategy": "fromEnvironment"
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.formatOnType": true,
+        "editor.wordBasedSuggestions": "allDocuments",
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "black-formatter.importStrategy": "fromEnvironment",
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
 }
