@@ -2,7 +2,6 @@ from onshape_client import Client
 from onshape_client.oas import (
     BTFeatureDefinitionCall1406,
     BTMIndividualQuery138,
-    BTModelElementParams,
     BTMParameterQueryList148,
     BTMSketch151,
     BTMFeature134,
@@ -19,82 +18,44 @@ from codetocad.core.dimension import Dimension
 
 
 from codetocad.core.point import Point
-
-import codetocad.utilities as Utilities
-
-from . import onshape_definitions
+from providers.onshape.onshape_provider import onshape_definitions
+from providers.onshape.onshape_provider.onshape_actions.tabs import get_features
 
 
-def get_onshape_client(config: dict) -> Client:
-    return Client(configuration=config).get_client()
-
-
-def get_onshape_client_with_config_file(config_filepath: str) -> Client:
-    configAbsolutePath = Utilities.get_absolute_filepath(config_filepath)
-    return Client(keys_file=configAbsolutePath).get_client()
-
-
-def get_document_by_name(client: Client, name: str) -> dict:
-    return client.documents_api.get_documents(q=name)["items"][0]
-
-
-def get_document_workspaces_by_id(client: Client, document_id: str) -> list[dict]:
-    return client.documents_api.get_document_workspaces(did=document_id)
-
-
-def get_first_document_workspace_by_id(client: Client, document_id: str) -> dict:
-    return get_document_workspaces_by_id(client, document_id)[0]
-
-
-def get_document_tabs_by_id(
-    client: Client, document_id: str, workspace_id: str
-) -> list[dict]:
-    return client.documents_api.get_elements_in_document(
-        did=document_id, wvmid=workspace_id, wvm="w"
-    )
-
-
-def get_first_document_tabs_by_id(
-    client: Client, document_id: str, workspace_id: str
-) -> dict:
-    return get_document_tabs_by_id(client, document_id, workspace_id)[0]
-
-
-def get_first_document_url_by_id(
-    client: Client, document_id: str
-) -> onshape_definitions.OnshapeUrl:
-    workspace_id: str = get_first_document_workspace_by_id(client, document_id)["id"]
-    tab_id: str = get_first_document_tabs_by_id(client, document_id, workspace_id)["id"]
-    return onshape_definitions.OnshapeUrl(
-        document_id=document_id, workspace_id=workspace_id, tab_id=tab_id
-    )
-
-
-def get_first_document_url_by_name(
-    client: Client, document_name: str
-) -> onshape_definitions.OnshapeUrl:
-    document_id = get_document_by_name(client, document_name)["id"]
-    return get_first_document_url_by_id(client, document_id)
-
-
-def create_tab_part_studios(
-    client: Client, onshape_url: onshape_definitions.OnshapeUrl, tab_name: str
-) -> str:
-    """
-    Create a Part Studio tab and return the newly created tab id
-    """
-
-    partStudio = client.part_studios_api.create_part_studio(
-        **onshape_url.dict_document_and_workspace,
-        bt_model_element_params=BTModelElementParams(name=tab_name),
-    )
-    return partStudio["id"]
-
-
-def create_sketch(
+def create_or_update_sketch(
     client: Client,
     onshape_url: onshape_definitions.OnshapeUrl,
     sketch_name: str,
+    btm_entities: list,
+):
+    # References https://github.com/onshape-public/onshape-clients/blob/master/python/test/test_part_studios_api.py and https://onshape-public.github.io/docs/api-adv/featureaccess/#sketches
+    features = get_features(client, onshape_url)
+    PLANE_ID = "JDC"  # The plane deterministic ID for the sketch
+    plane_query = BTMParameterQueryList148(
+        parameter_id="sketchPlane",
+        queries=[BTMIndividualQuery138(deterministic_ids=[PLANE_ID])],
+    )
+    sketch = BTMSketch151(
+        entities=btm_entities,
+        name=sketch_name,
+        parameters=[plane_query],
+    )
+    feature_definition = BTFeatureDefinitionCall1406(
+        feature=sketch, bt_type="BTFeatureDefinitionCall-1406"
+    )
+
+    return client.part_studios_api.add_part_studio_feature(
+        **onshape_url.dict_document_and_workspaceAndModelAndTab,
+        bt_feature_definition_call_1406=feature_definition,
+        _preload_content=False,
+    )
+
+
+def update_sketch(
+    client: Client,
+    onshape_url: onshape_definitions.OnshapeUrl,
+    sketch_name: str,
+    sketch_feature_id: str,
     btm_entities: list,
 ):
     # References https://github.com/onshape-public/onshape-clients/blob/master/python/test/test_part_studios_api.py
@@ -110,9 +71,11 @@ def create_sketch(
         feature=sketch, bt_type="BTFeatureDefinitionCall-1406"
     )
 
-    # client.part_studios_api.update_features(**onshape_url.dict_document_and_workspaceAndModelAndTab,_preload_content=False)
-    return client.part_studios_api.add_part_studio_feature(
-        **onshape_url.dict_document_and_workspaceAndModelAndTab,
+    feature_url = onshape_url.dict_document_and_workspaceAndModelAndTab
+    feature_url["fid"] = sketch_feature_id
+
+    return client.part_studios_api.update_part_studio_feature(
+        **feature_url,
         bt_feature_definition_call_1406=feature_definition,
         _preload_content=False,
     )
@@ -132,7 +95,7 @@ def create_point(
         parameters=[],
     )
 
-    return create_sketch(
+    return create_or_update_sketch(
         client, onshape_url, sketch_name=sketch_name, btm_entities=[btmPoint]
     )
 
@@ -157,7 +120,7 @@ def create_line(
         geometry=line_geometry1,
         bt_type="BTMSketchCurveSegment-155",
     )
-    return create_sketch(
+    return create_or_update_sketch(
         client,
         onshape_url,
         sketch_name=sketch_name,
@@ -243,7 +206,7 @@ def create_rect(
         entity_id=LINE_ID + "4",
         bt_type="BTMSketchCurveSegment-155",
     )
-    return create_sketch(
+    return create_or_update_sketch(
         client,
         onshape_url,
         sketch_name=sketch_name,
@@ -269,14 +232,17 @@ def create_circle(
         ydir=0.0,
     )
     circle = BTMSketchCurve4(geometry=circle_geometry, entity_id=CIRCLE_ID)
-    return create_sketch(client, onshape_url, sketch_name, btm_entities=[circle])
+
+    return create_or_update_sketch(
+        client, onshape_url, sketch_name, btm_entities=[circle]
+    )
 
 
 def create_extrude(
     client: Client,
     onshape_url: onshape_definitions.OnshapeUrl,
     feature_id: str,
-    length_expression: str = "10.03*in",
+    length_expression: str,
 ):
     # tool_body_type = BTMParameterEnum145(
     #     value="SOLID", enum_name="ToolBodyType", parameter_id="bodyType"
@@ -291,7 +257,7 @@ def create_extrude(
         parameter_id="entities",
         queries=[BTMIndividualSketchRegionQuery140(feature_id=feature_id)],
     )
-    length = BTMParameterQuantity147(expression="10.03*in", parameter_id="depth")
+    length = BTMParameterQuantity147(expression=length_expression, parameter_id="depth")
     extrude_feature = BTMFeature134(
         bt_type="BTMFeature-134",
         name="My extrude",
