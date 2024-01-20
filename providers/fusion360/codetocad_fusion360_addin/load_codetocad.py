@@ -41,6 +41,7 @@ def add_codetocad_to_path():
     core_path = codetocad_path / "codetocad"
     fusion360_path = codetocad_path / "providers/fusion360"
     fusion360_provider_path = codetocad_path / "providers/fusion360/fusion360_provider"
+    fusion360_provider_actions_path = codetocad_path / "providers/fusion360/fusion360_provider/actions"
 
     if not fusion360_provider_path.exists():
         raise Exception(
@@ -62,3 +63,7 @@ def add_codetocad_to_path():
     print("Adding {} to path".format(fusion360_provider_path))
 
     sys.path.append(str(fusion360_provider_path))
+
+    print("Adding {} to path".format(fusion360_provider_actions_path))
+
+    sys.path.append(str(fusion360_provider_actions_path))
