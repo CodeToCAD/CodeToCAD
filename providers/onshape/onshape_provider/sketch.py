@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import json
 from typing import Optional
 
@@ -10,11 +11,12 @@ from codetocad.enums import *
 from providers.onshape.onshape_provider.onshape_actions import (
     create_extrude,
     create_rect,
-    create_tab_part_studios,
-    get_first_document_url_by_name,
-    get_onshape_client_with_config_file,
 )
-from providers.onshape.onshape_provider import onshape_actions
+from providers.onshape.onshape_provider import onshape_actions, onshape_definitions
+from providers.onshape.onshape_provider.onshape_actions import (
+    create_or_update_sketch,
+    OnshapeContext,
+)
 
 from . import Entity
 
@@ -22,13 +24,15 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Part
-    from . import Entity
     from . import Wire
     from . import Vertex
     from . import Edge
 
-# Note: you must create a "CodeToCAD-onshape_actions" document to run tests that use it.
-onshape_document_name = "CodeToCAD-onshape_actions"
+
+@dataclass
+class SketchRef:
+    onshape_url: onshape_definitions.OnshapeUrl
+    feature_id: str
 
 
 class Sketch(Entity, SketchInterface):
@@ -103,30 +107,24 @@ class Sketch(Entity, SketchInterface):
     name: str
     curve_type: Optional["CurveTypes"] = None
     description: Optional[str] = None
-    native_instance = None
+    native_instance: SketchRef
 
     def __init__(
         self,
         name: str,
         curve_type: Optional["CurveTypes"] = None,
         description: Optional[str] = None,
-        native_instance=None,
+        native_instance: SketchRef | None = None,
     ):
         self.name = name
         self.curve_type = curve_type
         self.description = description
-        self.native_instance = native_instance
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        import os
+        context = OnshapeContext.get_active()
 
-        configPath = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            "../.onshape_client_config.yaml",
+        self.native_instance = native_instance or create_or_update_sketch(
+            context.active_client, context.active_tab_url, name, []
         )
-        cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
-        cls.onshape_url = get_first_document_url_by_name(cls.client, onshape_document_name)
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
@@ -150,15 +148,21 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         if self.native_instance is None:
-            raise ValueError("Native Instance is None")
+            raise RuntimeError("Feature ID is missing, cannot locate this feature.")
 
-        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
-        feature_id = self.native_instance["feature"]["featureId"]
+        feature_id = self.native_instance.feature_id
         length_float = Dimension.from_dimension_or_its_float_or_string_value(
             length, None
         )
-        create_extrude(self.client, onshape_url, feature_id, str(length_float))
-        raise NotImplementedError()
+
+        context = OnshapeContext.get_active()
+
+        create_extrude(
+            context.active_client,
+            self.native_instance.onshape_url,
+            feature_id,
+            str(length_float),
+        )
 
     def sweep(
         self, profile_name_or_instance: EntityOrItsName, fill_cap: bool = True
@@ -192,9 +196,18 @@ class Sketch(Entity, SketchInterface):
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         point = Point.from_list_of_float_or_string(point)
-        api_resp = onshape_actions.create_point(self.client, self.onshape_url, self.name, point)
+
+        context = OnshapeContext.get_active()
+
+        api_resp = onshape_actions.create_point(
+            context.active_client, self.native_instance.onshape_url, self.name, point
+        )
         json_native_data = json.loads(api_resp.data)
-        return Vertex(location=point, native_instance=json_native_data["feature"]["entities"][0])
+        return Vertex(
+            location=point,
+            name=create_uuid_like_id(),
+            native_instance=json_native_data["feature"]["entities"][0],
+        )
 
     def create_line(
         self,
@@ -203,22 +216,41 @@ class Sketch(Entity, SketchInterface):
     ) -> "Edge":
         start_point = Point.from_list_of_float_or_string_or_Vertex(start_at)
         end_point = Point.from_list_of_float_or_string_or_Vertex(end_at)
-        api_resp = onshape_actions.create_line(self.client, self.onshape_url,self.name, start_point, end_point)
-        json_native_data = json.loads(api_resp.data)        
+
+        context = OnshapeContext.get_active()
+
+        api_resp = onshape_actions.create_line(
+            context.active_client,
+            self.native_instance.onshape_url,
+            self.name,
+            start_point,
+            end_point,
+        )
+        json_native_data = json.loads(api_resp.data)
         return Edge(
             v1=None,
             v2=None,
-            name="",
-            native_instance=json_native_data["feature"]["entities"][0]
-            )
-            
+            name=create_uuid_like_id(),
+            native_instance=json_native_data["feature"]["entities"][0],
+        )
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         radius_float = Dimension.from_dimension_or_its_float_or_string_value(radius)
-        api_resp = onshape_actions.create_circle(self.client, self.onshape_url,self.name, radius_float)
+
+        context = OnshapeContext.get_active()
+
+        api_resp = onshape_actions.create_circle(
+            context.active_client,
+            self.native_instance.onshape_url,
+            self.name,
+            radius_float,
+        )
         json_native_data = json.loads(api_resp.data)
-        return Wire(native_instance=json_native_data["feature"])
-    
+        return Wire(
+            edges=[],
+            name=create_uuid_like_id(),
+            native_instance=json_native_data["feature"],
+        )
 
     def create_ellipse(
         self,
@@ -248,29 +280,21 @@ class Sketch(Entity, SketchInterface):
             width, None
         ).value
 
-        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
-
-        # Create a new tab in the part studio
-        part_studio_id = create_tab_part_studios(
-            self.client, onshape_url, create_uuid_like_id()
-        )
-
-        # Set the tab_id for subsequent operations
-        onshape_url.tab_id = part_studio_id
-
         # Define the location of the point in 3D space
         corner1_x = Dimension(-width_float / 2, "mm")
         corner1_y = Dimension(length_float / 2, "mm")
         corner2_x = Dimension(width_float / 2, "mm")
         corner2_y = Dimension(-length_float / 2, "mm")
 
+        context = OnshapeContext.get_active()
+
         # Create a point in the part studio
         sketch_info = create_rect(
-            self.client,
-            onshape_url,
-            "Test Point",
-            Point(corner1_x, corner1_y, Dimension(0, "mm")),
-            Point(corner2_x, corner2_y, Dimension(0, "mm")),
+            context.active_client,
+            self.native_instance.onshape_url,
+            create_uuid_like_id(),
+            Point(corner1_x, corner1_y, Dimension.zero()),
+            Point(corner2_x, corner2_y, Dimension.zero()),
         )
         self.native_instance = json.loads(sketch_info.data)
         raise NotImplementedError()

@@ -7,7 +7,7 @@ class OnshapeUrl:
         self,
         document_id: str,
         workspace_id: str,
-        tab_id: str,
+        tab_id: str | None = None,
         base_url: str = "https://cad.onshape.com",
     ) -> None:
         self.document_id = document_id
@@ -51,6 +51,8 @@ class OnshapeUrl:
         """
         returns a dictionary with ["did", "wid", "eid"] as keys
         """
+        if self.tab_id is None:
+            raise Exception("Tab ID is None.")
         return {"did": self.document_id, "wid": self.workspace_id, "eid": self.tab_id}
 
     @property
@@ -58,6 +60,8 @@ class OnshapeUrl:
         """
         returns a dictionary with ["did", "wvmid", "wvm", "eid"] as keys
         """
+        if self.tab_id is None:
+            raise Exception("Tab ID is None.")
         return {
             "did": self.document_id,
             "wvmid": self.workspace_id,
