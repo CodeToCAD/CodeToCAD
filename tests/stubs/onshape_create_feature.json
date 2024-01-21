@@ -1,0 +1,59 @@
+{
+    "btType": "BTFeatureDefinitionResponse-1617",
+    "featureState": {
+        "btType": "BTFeatureState-1688",
+        "featureStatus": "OK"
+    },
+    "feature": {
+        "btType": "BTMSketch-151",
+        "entities": [
+            {
+                "btType": "BTMSketchCurve-4",
+                "geometry": {
+                    "btType": "BTCurveGeometryCircle-115",
+                    "radius": 0.05,
+                    "clockwise": false
+                },
+                "centerId": "",
+                "internalIds": [],
+                "parameters": [],
+                "isConstruction": false,
+                "isFromSplineHandle": false,
+                "isFromEndpointSplineHandle": false,
+                "isFromSplineControlPolygon": false,
+                "namespace": "",
+                "nodeId": "MnMiXl4EmjzZ2rU2M",
+                "entityId": "my_circle"
+            }
+        ],
+        "constraints": [],
+        "namespace": "",
+        "nodeId": "MfJDALabuXY7yVrms",
+        "name": "a circle",
+        "suppressed": false,
+        "parameters": [
+            {
+                "btType": "BTMParameterQueryList-148",
+                "queries": [
+                    {
+                        "btType": "BTMIndividualQuery-138",
+                        "queryStatement": null,
+                        "queryString": "query=qCompressed(1.0,\"%B5$QueryM4Sa$entityTypeBa$EntityTypeS4$FACESb$historyTypeS8$CREATIONSb$operationIdB2$IdA1S3.7$TopplaneOpS9$queryTypeS5$DUMMY\",id);",
+                        "nodeId": "MbuLfGNUAexmCWIy3"
+                    }
+                ],
+                "parameterId": "sketchPlane",
+                "nodeId": "M8YRuWpyKFUMPO+6m"
+            }
+        ],
+        "featureType": "newSketch",
+        "returnAfterSubfeatures": false,
+        "subFeatures": [],
+        "featureId": "F3bcKZMQQ0V7uXG_0"
+    },
+    "serializationVersion": "1.2.4",
+    "libraryVersion": 0,
+    "rejectMicroversionSkew": false,
+    "microversionSkew": false,
+    "sourceMicroversion": "78ae270f37491e6110317560"
+}
