@@ -10,7 +10,7 @@ from codetocad.enums import *
 
 from . import Entity
 
-from .fusion_actions.common import get_sketch, rotate_body, scale_body, scale_body_uniform, set_material, translate_body, scale_by_factor_body
+from .fusion_actions.common import combine, create_circular_pattern, get_sketch, mirror, rotate_body, scale_body, scale_body_uniform, set_material, subtract, translate_body, scale_by_factor_body
 
 from typing import TYPE_CHECKING
 
@@ -23,13 +23,11 @@ if TYPE_CHECKING:
 class Part(Entity, PartInterface):
     def mirror(
         self,
-        mirror_across_entity: EntityOrItsName,
+        # mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
-        print(
-            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
-        )
+        mirror(self.name, axis)
         return self
 
     def linear_pattern(
@@ -48,12 +46,12 @@ class Part(Entity, PartInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        print(
-            "circular_pattern called:",
+        create_circular_pattern(
+            self.name,
             instance_count,
             separation_angle,
             center_entity_or_landmark,
-            normal_direction_axis,
+            normal_direction_axis
         )
         return self
 
@@ -84,24 +82,20 @@ class Part(Entity, PartInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        vector = adsk.core.Vector3D.create(x, y, z)
-        translate_body(self.name, vector)
+        translate_body(self.name, x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        vector = adsk.core.Vector3D.create(amount, 0, 0)
-        translate_body(self.name, vector)
+        translate_body(self.name, amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        vector = adsk.core.Vector3D.create(0, amount, 0)
-        translate_body(self.name, vector)
+        translate_body(self.name, 0, amount, 0)
 
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        vector = adsk.core.Vector3D.create(0, 0, amount)
-        translate_body(self.name, vector)
+        translate_body(self.name, 0, 0, amount)
 
         return self
 
@@ -115,18 +109,15 @@ class Part(Entity, PartInterface):
         return self
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Point3D.create(1, 0, 0)
-        rotate_body(self.name, axis, rotation)
+        rotate_body(self.name, "x", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Point3D.create(0, 1, 0)
-        rotate_body(self.name, axis, rotation)
+        rotate_body(self.name, "y", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        axis = adsk.core.Point3D.create(0, 0, 1)
-        rotate_body(self.name, axis, rotation)
+        rotate_body(self.name, "z", rotation)
         return self
 
     def scale_xyz(
@@ -166,7 +157,7 @@ class Part(Entity, PartInterface):
         # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
         self, scale: DimensionOrItsFloatOrStringValue
     ):
-        scale_body_uniform(self.name, scale)
+        scale_body_uniform(self.name, scale, scale, scale)
         return self
 
     def create_cube(
@@ -193,6 +184,10 @@ class Part(Entity, PartInterface):
     ):
         from . import Sketch
 
+        app = adsk.core.Application.get()
+        design = app.activeProduct
+        root_comp = design.rootComponent
+
         if draft_radius == Dimension(0):
             import math
             points = [
@@ -208,16 +203,12 @@ class Part(Entity, PartInterface):
             triangle.create_lines(points)
             triangle.revolve(math.pi * 2, axis)
         else:
-            app = adsk.core.Application.get()
-            design = app.activeProduct
-            root_comp = design.rootComponent
-
             base = Sketch(self.name)
             base.create_circle(radius)
             sketch = get_sketch(self.name)
 
             top = Sketch(self.name + "_temp_top")
-            top_wire = top.create_circle(draft_radius)
+            _ = top.create_circle(draft_radius)
             top.translate_z(height)
 
             sketch2 = get_sketch(self.name + "_temp_top")
@@ -230,6 +221,9 @@ class Part(Entity, PartInterface):
             loftInput.isSolid = True
             loftInput.isClosed = True
             loftFeats.add(loftInput)
+
+        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body.name = self.name
 
         return self
 
@@ -253,7 +247,47 @@ class Part(Entity, PartInterface):
         outer_radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        print("create_torus called:", inner_radius, outer_radius, keyword_arguments)
+        import math
+
+        inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
+            inner_radius
+        )
+        outer_radius = Dimension.from_dimension_or_its_float_or_string_value(
+            outer_radius
+        )
+
+        app = adsk.core.Application.get()
+        design = app.activeProduct
+        rootComp = design.rootComponent
+
+        sketches = rootComp.sketches;
+        xyPlane = rootComp.xYConstructionPlane;
+        sketch = sketches.add(xyPlane)
+        sketch.name = self.name
+
+        circles = sketch.sketchCurves.sketchCircles
+        _ = circles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0), inner_radius.value)
+
+        lines = sketch.sketchCurves.sketchLines
+
+        axisLine = lines.addByTwoPoints(
+            adsk.core.Point3D.create(
+                -inner_radius.value, -outer_radius.value, 0),
+                adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0)
+        )
+
+        prof = sketch.profiles.item(0)
+        revolves = rootComp.features.revolveFeatures
+        revInput = revolves.createInput(
+            prof, axisLine, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+
+        angle = adsk.core.ValueInput.createByReal(math.pi * 2)
+        revInput.setAngleExtent(False, angle)
+        revolves.add(revInput)
+
+        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body.name = self.name
+
         return self
 
     def create_sphere(
@@ -311,7 +345,7 @@ class Part(Entity, PartInterface):
         delete_after_union: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        print("union called:", with_part, delete_after_union, is_transfer_landmarks)
+        combine(self.name, with_part)
         return self
 
     def subtract(
@@ -320,9 +354,7 @@ class Part(Entity, PartInterface):
         delete_after_subtract: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        print(
-            "subtract called:", with_part, delete_after_subtract, is_transfer_landmarks
-        )
+        subtract(self.name, with_part)
         return self
 
     def intersect(
