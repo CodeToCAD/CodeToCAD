@@ -47,7 +47,19 @@ operatorIds = {
     "OpenPreferences": namespace + ".open_preferences",
     "LogMessage": namespace + ".log_message",
     "ReloadCodeToCADModules": namespace + ".reload_codetocad_modules",
+    "StartDebugger": namespace + ".start_debugger",
 }
+
+
+class StartDebugger(Operator):
+    bl_idname = operatorIds["StartDebugger"]
+    bl_label = "Start a debugpy server"
+    bl_options = {"REGISTER"}
+
+    def execute(self, context):
+        __import__("blender_provider").blender_actions.start_debugger()
+
+        return {"FINISHED"}
 
 
 class ReloadCodeToCADModules(Operator):
@@ -56,7 +68,7 @@ class ReloadCodeToCADModules(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-        __import__("blender_provider.blender_actions").reload_codetocad_modules()
+        __import__("blender_provider").blender_actions.reload_codetocad_modules()
 
         return {"FINISHED"}
 
@@ -172,7 +184,7 @@ imported_file_watcher: Optional[ImportedFileWatcher] = None
 
 
 def import_codetocad_file(filePath, directory, saveFile):
-    __import__("blender_provider.blender_actions").reload_codetocad_modules()
+    __import__("blender_provider").blender_actions.reload_codetocad_modules()
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
@@ -481,6 +493,10 @@ class CodeToCADPanel(bpy.types.Panel):
         )
         self.layout.separator()
         self.layout.operator(
+            StartDebugger.bl_idname, icon="LINKED", text="Start Debugger"
+        )
+        self.layout.separator()
+        self.layout.operator(
             ReloadCodeToCADModules.bl_idname,
             icon="FILE_REFRESH",
             text="Reload CodeToCAD Modules",
@@ -579,6 +595,7 @@ def register():
     bpy.utils.register_class(OpenPreferences)
     bpy.utils.register_class(LogMessage)
     bpy.utils.register_class(ReloadCodeToCADModules)
+    bpy.utils.register_class(StartDebugger)
 
     add_codetocad_to_path()
 
@@ -600,6 +617,7 @@ def unregister():
     bpy.utils.unregister_class(OpenPreferences)
     bpy.utils.unregister_class(LogMessage)
     bpy.utils.unregister_class(ReloadCodeToCADModules)
+    bpy.utils.unregister_class(StartDebugger)
 
     console_python.replace_help = replace_help
 
