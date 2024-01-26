@@ -4,6 +4,18 @@ from functools import wraps
 from importlib import reload
 
 
+def start_debugger(host: str = "localhost", port: int = 5678):
+    import debugpy
+
+    try:
+        debugpy.listen((host, port))
+        write_to_console(
+            f"debugpy server has started on {host}:{port}. You may connect to it by attaching your IDE's debugger to a remote debugger at {host}:{port}."
+        )
+    except Exception as e:
+        print(e)
+
+
 def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
     import codetocad
