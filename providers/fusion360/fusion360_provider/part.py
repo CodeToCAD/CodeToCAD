@@ -10,7 +10,19 @@ from codetocad.enums import *
 
 from . import Entity
 
-from .fusion_actions.common import combine, create_circular_pattern, get_sketch, mirror, rotate_body, scale_body, scale_body_uniform, set_material, subtract, translate_body, scale_by_factor_body
+from .fusion_actions.common import (
+    combine,
+    create_circular_pattern,
+    get_sketch,
+    mirror,
+    rotate_body,
+    scale_body,
+    scale_body_uniform,
+    set_material,
+    subtract,
+    translate_body,
+    scale_by_factor_body,
+)
 
 from typing import TYPE_CHECKING
 
@@ -51,7 +63,7 @@ class Part(Entity, PartInterface):
             instance_count,
             separation_angle,
             center_entity_or_landmark,
-            normal_direction_axis
+            normal_direction_axis,
         )
         return self
 
@@ -75,7 +87,6 @@ class Part(Entity, PartInterface):
         print("export called:", file_path, overwrite, scale)
         return self
 
-
     def translate_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
@@ -98,7 +109,6 @@ class Part(Entity, PartInterface):
         translate_body(self.name, 0, 0, amount)
 
         return self
-
 
     def rotate_xyz(
         self,
@@ -155,7 +165,8 @@ class Part(Entity, PartInterface):
 
     def scale_keep_aspect_ratio(
         # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-        self, scale: DimensionOrItsFloatOrStringValue
+        self,
+        scale: DimensionOrItsFloatOrStringValue,
     ):
         scale_body_uniform(self.name, scale, scale, scale)
         return self
@@ -190,6 +201,7 @@ class Part(Entity, PartInterface):
 
         if draft_radius == Dimension(0):
             import math
+
             points = [
                 adsk.core.Point3D.create(0, 0, 0),
                 adsk.core.Point3D.create(0, 0, height),
@@ -214,7 +226,9 @@ class Part(Entity, PartInterface):
             sketch2 = get_sketch(self.name + "_temp_top")
 
             loftFeats = root_comp.features.loftFeatures
-            loftInput = loftFeats.createInput(adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+            loftInput = loftFeats.createInput(
+                adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+            )
             loftSectionsObj = loftInput.loftSections
             loftSectionsObj.add(sketch.profiles.item(0))
             loftSectionsObj.add(sketch2.profiles.item(0))
@@ -222,7 +236,9 @@ class Part(Entity, PartInterface):
             loftInput.isClosed = True
             loftFeats.add(loftInput)
 
-        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body = design.rootComponent.bRepBodies.item(
+            design.rootComponent.bRepBodies.count - 1
+        )
         body.name = self.name
 
         return self
@@ -260,32 +276,36 @@ class Part(Entity, PartInterface):
         design = app.activeProduct
         rootComp = design.rootComponent
 
-        sketches = rootComp.sketches;
-        xyPlane = rootComp.xYConstructionPlane;
+        sketches = rootComp.sketches
+        xyPlane = rootComp.xYConstructionPlane
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
         circles = sketch.sketchCurves.sketchCircles
-        _ = circles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0), inner_radius.value)
+        _ = circles.addByCenterRadius(
+            adsk.core.Point3D.create(0, 0, 0), inner_radius.value
+        )
 
         lines = sketch.sketchCurves.sketchLines
 
         axisLine = lines.addByTwoPoints(
-            adsk.core.Point3D.create(
-                -inner_radius.value, -outer_radius.value, 0),
-                adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0)
+            adsk.core.Point3D.create(-inner_radius.value, -outer_radius.value, 0),
+            adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0),
         )
 
         prof = sketch.profiles.item(0)
         revolves = rootComp.features.revolveFeatures
         revInput = revolves.createInput(
-            prof, axisLine, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+            prof, axisLine, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+        )
 
         angle = adsk.core.ValueInput.createByReal(math.pi * 2)
         revInput.setAngleExtent(False, angle)
         revolves.add(revInput)
 
-        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body = design.rootComponent.bRepBodies.item(
+            design.rootComponent.bRepBodies.count - 1
+        )
         body.name = self.name
 
         return self
@@ -298,6 +318,7 @@ class Part(Entity, PartInterface):
         from . import Sketch
 
         import math
+
         axis = adsk.core.Point3D.create(1, 0, 0)
         circle = Sketch(self.name)
         circle.create_arc(radius)

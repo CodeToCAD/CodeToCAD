@@ -1,0 +1,98 @@
+import bpy
+from console_python import replace_help
+from functools import wraps
+from importlib import reload
+
+
+def reload_codetocad_modules():
+    print("Reloading CodeToCAD modules")
+    import codetocad
+    import blender_provider
+    import inspect
+
+    all_providers_modules = inspect.getmembers(
+        blender_provider, predicate=inspect.ismodule
+    )
+    for module_name, module in all_providers_modules:
+        reload(module)
+
+    reload(blender_provider)
+
+    all_providers_modules = inspect.getmembers(codetocad, predicate=inspect.ismodule)
+
+    for module_name, module in all_providers_modules:
+        reload(module)
+
+    reload(codetocad)
+
+
+def write_to_console(message: str, text_type: str = "INFO"):
+    """
+    Write to the visible console.
+
+    text_type is one of ('OUTPUT', 'INPUT', 'INFO', 'ERROR')
+    """
+    # References https://blender.stackexchange.com/a/78332
+    area, space, region = console_get()
+
+    context_override = bpy.context.copy()
+    context_override.update(
+        {
+            "space": space,
+            "area": area,
+            "region": region,
+        }
+    )
+    with bpy.context.temp_override(**context_override):
+        for line in message.split("\n"):
+            bpy.ops.console.scrollback_append(text=line, type=text_type)
+
+
+def console_get():
+    for area in bpy.context.screen.areas:
+        if area.type == "CONSOLE":
+            for space in area.spaces:
+                if space.type == "CONSOLE":
+                    for region in area.regions:
+                        if region.type == "WINDOW":
+                            return area, space, region
+    raise Exception("Can't get the UI's console")
+
+
+@wraps(replace_help)
+def add_codetocad_convenience_words_to_console(namespace):
+    # references https://blender.stackexchange.com/a/2751
+
+    print("Adding Blender Console Convenience Words")
+
+    from blender_provider import (
+        Analytics,
+        Animation,
+        Joint,
+        Landmark,
+        Material,
+        Part,
+        Scene,
+        Sketch,
+    )
+    from codetocad.utilities import center, max, min
+    from codetocad.core import Dimension, Dimensions, Angle
+
+    namespace["Part"] = Part
+    namespace["Shape"] = Part
+    namespace["Sketch"] = Sketch
+    namespace["Curve"] = Sketch
+    namespace["Landmark"] = Landmark
+    namespace["Scene"] = Scene
+    namespace["Analytics"] = Analytics
+    namespace["Joint"] = Joint
+    namespace["Material"] = Material
+    namespace["Animation"] = Animation
+    namespace["min"] = min
+    namespace["max"] = max
+    namespace["center"] = center
+    namespace["Dimension"] = Dimension
+    namespace["Dimensions"] = Dimensions
+    namespace["Angle"] = Angle
+
+    replace_help(namespace)

@@ -2,7 +2,6 @@ import os
 import pkgutil
 import runpy
 import sys
-from functools import wraps
 from importlib import reload
 from pathlib import Path
 import tempfile
@@ -57,7 +56,8 @@ class ReloadCodeToCADModules(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-        reload_codetocad_modules()
+        __import__("blender_provider.blender_actions").reload_codetocad_modules()
+
         return {"FINISHED"}
 
 
@@ -111,19 +111,6 @@ class StopAutoReload(Operator):
         imported_file_watcher.stop_watching_file()
 
         return {"FINISHED"}
-
-
-def reload_codetocad_modules():
-    print("Reloading CodeToCAD modules")
-    import codetocad
-    import blender_provider
-
-    reload(codetocad)
-    reload(blender_provider)
-
-    add_codetocad_to_blender_console()
-
-    check_version()
 
 
 class ImportedFileWatcher:
@@ -185,7 +172,7 @@ imported_file_watcher: Optional[ImportedFileWatcher] = None
 
 
 def import_codetocad_file(filePath, directory, saveFile):
-    reload_codetocad_modules()
+    __import__("blender_provider.blender_actions").reload_codetocad_modules()
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
@@ -238,14 +225,15 @@ def import_codetocad_file(filePath, directory, saveFile):
                 select_object,
             )
 
-            objectToZoomOn = bpy.data.objects[-1]
-            objectToZoomOn = (
-                objectToZoomOn.parent
-                if objectToZoomOn.parent is not None
-                else objectToZoomOn
-            )
-            select_object(objectToZoomOn.name)
-            zoom_to_selected_objects()
+            if len(bpy.data.objects) > 0:
+                objectToZoomOn = bpy.data.objects[-1]
+                objectToZoomOn = (
+                    objectToZoomOn.parent
+                    if objectToZoomOn.parent is not None
+                    else objectToZoomOn
+                )
+                select_object(objectToZoomOn.name)
+                zoom_to_selected_objects()
 
             # Cleanup:
             sys.path.remove(directory)
@@ -392,69 +380,35 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
 
     codetocad_path = Path(codetocad_path)
 
-    core_path = codetocad_path / "CodeToCAD"
-    blender_providerPath = codetocad_path / "providers/blender/blender_provider"
+    core_path = codetocad_path / "codetocad"
+    blender_path = codetocad_path / "providers/blender"
+    blender_provider_path = blender_path / "blender_provider"
 
-    if not Path(blender_providerPath / "blender_definitions.py").is_file():
+    if not Path(blender_provider_path / "blender_definitions.py").is_file():
         print(
             "Could not find blender_provider files. Please reconfigure the CodeToCAD Blender Addon.",
             "Searching in: ",
-            codetocad_path,
+            blender_provider_path,
         )
         return {"CANCELLED"} if return_blender_operation_status else None
-
-    sys.path.append(str(codetocad_path / "providers/blender"))
-
-    print("Adding {} to path".format(core_path))
-
-    sys.path.append(str(core_path))
-
-    print("Adding {} to path".format(blender_providerPath))
-
-    sys.path.append(str(blender_providerPath))
 
     print("Adding {} to path".format(codetocad_path))
 
     sys.path.append(str(codetocad_path))
 
+    print("Adding {} to path".format(core_path))
+
+    sys.path.append(str(core_path))
+
+    print("Adding {} to path".format(blender_path))
+
+    sys.path.append(str(blender_path))
+
+    print("Adding {} to path".format(blender_provider_path))
+
+    sys.path.append(str(blender_provider_path))
+
     return {"FINISHED"} if return_blender_operation_status else None
-
-
-@wraps(replace_help)
-def add_codetocad_convenience_words_to_console(namspace):
-    # references https://blender.stackexchange.com/a/2751
-
-    replace_help(namspace)
-
-    from blender_provider import (
-        Analytics,
-        Animation,
-        Joint,
-        Landmark,
-        Material,
-        Part,
-        Scene,
-        Sketch,
-    )
-    from codetocad.utilities import center, max, min
-    from codetocad.core import Dimension, Dimensions, Angle
-
-    namspace["Part"] = Part
-    namspace["Shape"] = Part
-    namspace["Sketch"] = Sketch
-    namspace["Curve"] = Sketch
-    namspace["Landmark"] = Landmark
-    namspace["Scene"] = Scene
-    namspace["Analytics"] = Analytics
-    namspace["Joint"] = Joint
-    namspace["Material"] = Material
-    namspace["Animation"] = Animation
-    namspace["min"] = min
-    namspace["max"] = max
-    namspace["center"] = center
-    namspace["Dimension"] = Dimension
-    namspace["Dimensions"] = Dimensions
-    namspace["Angle"] = Angle
 
 
 class ConfirmImportedFileReload(bpy.types.Operator):
@@ -536,8 +490,41 @@ class CodeToCADPanel(bpy.types.Panel):
         )
 
 
-def add_codetocad_to_blender_console():
+@bpy.app.handlers.persistent  # type: ignore
+def add_codetocad_to_blender_console(*args):
+    from blender_provider.blender_actions.console import (
+        add_codetocad_convenience_words_to_console,
+    )
+
+    if len(args) != 0:
+        # If add_codetocad_to_blender_console is called via the app handler, wait a bit before printing the CodeToCAD banner, otherwise it somehow replaces the default banner..
+        bpy.app.timers.register(print_codetocad_banner, first_interval=1)
+
     console_python.replace_help = add_codetocad_convenience_words_to_console
+
+
+def print_codetocad_banner():
+    from blender_provider.blender_actions.console import (
+        write_to_console,
+    )
+
+    try:
+        write_to_console(
+            """
+------------------------------
+CodeToCAD has been added to your console.
+
+You can access the CodeToCAD menu in the sidebar. (Press 'n' on the keyboard)
+                    
+Try `my_cube = Part("my_cube").create_cube("100cm", "1m", "1m")`
+
+WARNING: If you are actively developing core CodeToCAD modules, this console window does not reload_modules, even if you click the 'Reload CodeToCAD Modules' button in the menu. However, when you reload an imported CodeToCAD file, it should reload the modules correctly.
+------------------------------
+    """,
+            "INFO",
+        )
+    except:  # noqa
+        ...
 
 
 @bpy.app.handlers.persistent  # type: ignore
@@ -595,7 +582,7 @@ def register():
 
     add_codetocad_to_path()
 
-    add_codetocad_to_blender_console()
+    blenderLoadPostHandler.append(add_codetocad_to_blender_console)
 
     blenderLoadPostHandler.append(run_from_commandline_arguments)
 
