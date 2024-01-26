@@ -126,7 +126,9 @@ class Sketch(Entity, SketchInterface):
             "../.onshape_client_config.yaml",
         )
         cls.client = get_onshape_client_with_config_file(config_filepath=configPath)
-        cls.onshape_url = get_first_document_url_by_name(cls.client, onshape_document_name)
+        cls.onshape_url = get_first_document_url_by_name(
+            cls.client, onshape_document_name
+        )
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         raise NotImplementedError()
@@ -192,9 +194,13 @@ class Sketch(Entity, SketchInterface):
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         point = Point.from_list_of_float_or_string(point)
-        api_resp = onshape_actions.create_point(self.client, self.onshape_url, self.name, point)
+        api_resp = onshape_actions.create_point(
+            self.client, self.onshape_url, self.name, point
+        )
         json_native_data = json.loads(api_resp.data)
-        return Vertex(location=point, native_instance=json_native_data["feature"]["entities"][0])
+        return Vertex(
+            location=point, native_instance=json_native_data["feature"]["entities"][0]
+        )
 
     def create_line(
         self,
@@ -203,22 +209,24 @@ class Sketch(Entity, SketchInterface):
     ) -> "Edge":
         start_point = Point.from_list_of_float_or_string_or_Vertex(start_at)
         end_point = Point.from_list_of_float_or_string_or_Vertex(end_at)
-        api_resp = onshape_actions.create_line(self.client, self.onshape_url,self.name, start_point, end_point)
-        json_native_data = json.loads(api_resp.data)        
+        api_resp = onshape_actions.create_line(
+            self.client, self.onshape_url, self.name, start_point, end_point
+        )
+        json_native_data = json.loads(api_resp.data)
         return Edge(
             v1=None,
             v2=None,
             name="",
-            native_instance=json_native_data["feature"]["entities"][0]
-            )
-            
+            native_instance=json_native_data["feature"]["entities"][0],
+        )
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         radius_float = Dimension.from_dimension_or_its_float_or_string_value(radius)
-        api_resp = onshape_actions.create_circle(self.client, self.onshape_url,self.name, radius_float)
+        api_resp = onshape_actions.create_circle(
+            self.client, self.onshape_url, self.name, radius_float
+        )
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
-    
 
     def create_ellipse(
         self,

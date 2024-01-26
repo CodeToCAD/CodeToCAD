@@ -10,7 +10,14 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from .fusion_actions.common import get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, translate_sketch
+from .fusion_actions.common import (
+    get_sketch,
+    rotate_sketch,
+    scale_by_factor_sketch,
+    scale_sketch,
+    scale_sketch_uniform,
+    translate_sketch,
+)
 
 
 from . import Entity
@@ -149,7 +156,8 @@ class Sketch(Entity, SketchInterface):
 
     def scale_keep_aspect_ratio(
         # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-        self, scale: DimensionOrItsFloatOrStringValue
+        self,
+        scale: DimensionOrItsFloatOrStringValue,
     ):
         scale_sketch_uniform(self.name, scale)
         return self
@@ -187,8 +195,8 @@ class Sketch(Entity, SketchInterface):
         app = adsk.core.Application.get()
         design = app.activeProduct
         root_comp = design.rootComponent
-        sketches = root_comp.sketches;
-        xyPlane = root_comp.xYConstructionPlane;
+        sketches = root_comp.sketches
+        xyPlane = root_comp.xYConstructionPlane
         sketch = sketches.add(xyPlane)
 
         # revolve_axes = design.rootComponent.constructionAxes
@@ -206,12 +214,16 @@ class Sketch(Entity, SketchInterface):
         operation = adsk.fusion.FeatureOperations.NewBodyFeatureOperation
 
         revolveFeatures = root_comp.features.revolveFeatures
-        input = revolveFeatures.createInput(sketch.profiles.item(0), revolve_axis, operation)
+        input = revolveFeatures.createInput(
+            sketch.profiles.item(0), revolve_axis, operation
+        )
         angle = adsk.core.ValueInput.createByReal(angle)
         input.setAngleExtent(False, angle)
         revolveFeature = revolveFeatures.add(input)
 
-        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body = design.rootComponent.bRepBodies.item(
+            design.rootComponent.bRepBodies.count - 1
+        )
         body.name = self.name
 
         return Part(self.name)
@@ -237,14 +249,18 @@ class Sketch(Entity, SketchInterface):
         sketch = get_sketch(self.name)
         prof = sketch.profiles.item(0)
         extrudes = rootComp.features.extrudeFeatures
-        extInput = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+        extInput = extrudes.createInput(
+            prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+        )
 
         distance = adsk.core.ValueInput.createByReal(length)
         extInput.setDistanceExtent(False, distance)
         extInput.isSolid = True
         ext = extrudes.add(extInput)
 
-        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
+        body = design.rootComponent.bRepBodies.item(
+            design.rootComponent.bRepBodies.count - 1
+        )
         body.name = self.name
 
         return Part("a part")
@@ -301,7 +317,6 @@ class Sketch(Entity, SketchInterface):
 
         # curve_data, parsed_points = create_curve(self.name, points)
 
-
         wire = Wire(points, create_uuid_like_id(), self.name)
         return wire
 
@@ -326,7 +341,9 @@ class Sketch(Entity, SketchInterface):
         sketch.name = self.name
 
         sketchLines = sketch.sketchCurves.sketchLines
-        start = adsk.core.Point3D.create(start_at.x.value, start_at.y.value, start_at.z.value)
+        start = adsk.core.Point3D.create(
+            start_at.x.value, start_at.y.value, start_at.z.value
+        )
         end = adsk.core.Point3D.create(end_at.x.value, end_at.y.value, end_at.z.value)
         sketchLines.addByTwoPoints(start, end)
 
@@ -346,7 +363,10 @@ class Sketch(Entity, SketchInterface):
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         points = circle.get_circle_points(radius, self.resolution)
-        points = [adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value) for point in points]
+        points = [
+            adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value)
+            for point in points
+        ]
 
         control_points = adsk.core.ObjectCollection_create()
         for point in points:
@@ -402,7 +422,7 @@ class Sketch(Entity, SketchInterface):
 
         trim_line = sketch.sketchCurves.sketchLines.addByTwoPoints(
             adsk.core.Point3D.create(center.x - radius, center.y, 0),
-            adsk.core.Point3D.create(center.x + radius, center.y, 0)
+            adsk.core.Point3D.create(center.x + radius, center.y, 0),
         )
 
         return None
@@ -436,8 +456,12 @@ class Sketch(Entity, SketchInterface):
 
         sketchLines = sketch.sketchCurves.sketchLines
         for i in range(len(points) - 1):
-            start = adsk.core.Point3D.create(points[i].x.value, points[i].y.value, points[i].z.value)
-            end = adsk.core.Point3D.create(points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value)
+            start = adsk.core.Point3D.create(
+                points[i].x.value, points[i].y.value, points[i].z.value
+            )
+            end = adsk.core.Point3D.create(
+                points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value
+            )
             sketchLines.addByTwoPoints(start, end)
 
         # startPoint = adsk.core.Point3D.create(0, 0, 0)

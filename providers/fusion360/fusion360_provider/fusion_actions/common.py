@@ -8,13 +8,14 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
+
 def make_axis(axis_input: str):
     app = adsk.core.Application.get()
     product = app.activeProduct
     design = adsk.fusion.Design.cast(product)
     rootComp = design.rootComponent
 
-    sketches = rootComp.sketches;
+    sketches = rootComp.sketches
     xyPlane = rootComp.xYConstructionPlane
     sketch = sketches.add(xyPlane)
 
@@ -25,9 +26,10 @@ def make_axis(axis_input: str):
     elif axis_input == "z":
         axis_point = adsk.core.Point3D.create(0, 0, 1)
 
-    sketchLine = sketch.sketchCurves.sketchLines;
+    sketchLine = sketch.sketchCurves.sketchLines
     axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), axis_point)
     return axis, sketch
+
 
 def get_sketch(name: str) -> Optional[fusion.Sketch]:
     app = adsk.core.Application.get()
@@ -37,6 +39,7 @@ def get_sketch(name: str) -> Optional[fusion.Sketch]:
     sketch = rootComp.sketches.itemByName(name)
     return sketch
 
+
 def translate_sketch(name: str, x, y, z):
     sketch = get_sketch(name)
 
@@ -44,9 +47,11 @@ def translate_sketch(name: str, x, y, z):
         transform = adsk.core.Vector3D.create(x, y, z)
         point.move(transform)
 
+
 # not working
 def rotate_sketch(name: str, x: float, y: float, z: float, angle: float):
     import math
+
     sketch = get_sketch(name)
 
     entities = adsk.core.ObjectCollection.create()
@@ -71,7 +76,10 @@ def scale_sketch(name: str, x: float, y: float, z: float):
         yFactor = abs(point.geometry.y) / (abs(point.geometry.y) + y) if y > 0 else 0
         zFactor = abs(point.geometry.z) / (abs(point.geometry.z) + z) if z > 0 else 0
         transform = adsk.core.Vector3D.create(
-            point.geometry.x * xFactor, point.geometry.y * yFactor, point.geometry.z * zFactor)
+            point.geometry.x * xFactor,
+            point.geometry.y * yFactor,
+            point.geometry.z * zFactor,
+        )
         point.move(transform)
 
 
@@ -80,8 +88,10 @@ def scale_by_factor_sketch(name: str, x: float, y: float, z: float):
 
     for point in sketch.sketchPoints:
         transform = adsk.core.Vector3D.create(
-            point.geometry.x * x, point.geometry.y * y, point.geometry.z * z)
+            point.geometry.x * x, point.geometry.y * y, point.geometry.z * z
+        )
         point.move(transform)
+
 
 def scale_sketch_uniform(name: str, scale: float):
     app = adsk.core.Application.get()
@@ -111,6 +121,7 @@ def get_body(name: str) -> Optional[fusion.BRepBody]:
     body = rootComp.bRepBodies.itemByName(name)
     return body
 
+
 def translate_body(name: str, x: float, y: float, z: float):
     app = adsk.core.Application.get()
 
@@ -133,8 +144,10 @@ def translate_body(name: str, x: float, y: float, z: float):
     moveFeatureInput.defineAsFreeMove(transform)
     moveFeats.add(moveFeatureInput)
 
+
 def rotate_body(name: str, axis_input: str, angle: float):
     import math
+
     app = adsk.core.Application.get()
     product = app.activeProduct
     design = adsk.fusion.Design.cast(product)
@@ -155,6 +168,7 @@ def rotate_body(name: str, axis_input: str, angle: float):
     moveFeatureInput.defineAsRotate(axis, angle)
     moveFeats.add(moveFeatureInput)
 
+
 def scale_body(name: str, x: float, y: float, z: float):
     body = get_body(name)
 
@@ -166,6 +180,7 @@ def scale_body(name: str, x: float, y: float, z: float):
     #     transform = adsk.core.Vector3D.create(
     #         point.geometry.x * xFactor, point.geometry.y * yFactor, point.geometry.z * zFactor)
     #     point.geometry.set(transform.x, transform.y, transform.z)
+
 
 def scale_by_factor_body(name: str, x: float, y: float, z: float):
     app = adsk.core.Application.get()
@@ -191,6 +206,7 @@ def scale_by_factor_body(name: str, x: float, y: float, z: float):
 
     scale = scales.add(scaleInput)
 
+
 def scale_body_uniform(name: str, scale: float):
     app = adsk.core.Application.get()
     design = app.activeProduct
@@ -209,6 +225,7 @@ def scale_body_uniform(name: str, scale: float):
     scaleInput = scales.createInput(inputColl, basePt, scaleFactor)
 
     scale = scales.add(scaleInput)
+
 
 # not working
 def set_material(name: str, material_name):
@@ -235,9 +252,15 @@ def set_material(name: str, material_name):
         # body.material.appearence = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
         # body.material.appearence = color
         # solidColor = adsk.fusion.CustomGraphicsSolidColorEffect.create(color)
-        coords = adsk.fusion.CustomGraphicsCoordinates.create(bodyMesh.nodeCoordinatesAsDouble)
-        mesh = graphics.addMesh(coords, bodyMesh.nodeIndices,
-                                bodyMesh.normalVectorsAsDouble, bodyMesh.nodeIndices)
+        coords = adsk.fusion.CustomGraphicsCoordinates.create(
+            bodyMesh.nodeCoordinatesAsDouble
+        )
+        mesh = graphics.addMesh(
+            coords,
+            bodyMesh.nodeIndices,
+            bodyMesh.normalVectorsAsDouble,
+            bodyMesh.nodeIndices,
+        )
 
         # mesh.color = solidColor
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
@@ -265,7 +288,10 @@ def mirror(name: str, plane: str):
 
     mirrorFeatures.add(mirrorInput)
 
-def create_circular_pattern(name: str, count: int, angle: float, center_name: str, axis: str):
+
+def create_circular_pattern(
+    name: str, count: int, angle: float, center_name: str, axis: str
+):
     app = adsk.core.Application.get()
     design = app.activeProduct
     rootComp = design.rootComponent
@@ -290,6 +316,7 @@ def create_circular_pattern(name: str, count: int, angle: float, center_name: st
 
     circularFeature = circularFeats.add(circularFeatInput)
 
+
 def combine(name: str, other_name: str):
     app = adsk.core.Application.get()
     design = app.activeProduct
@@ -308,6 +335,7 @@ def combine(name: str, other_name: str):
     combineFeaturesInput.isNewComponent = False
     combineFeaturesInput.isKeepToolBodies = False
     combine_feature = combineFeatures.add(combineFeaturesInput)
+
 
 def subtract(name: str, other_name: str):
     app = adsk.core.Application.get()
