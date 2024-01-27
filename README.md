@@ -21,7 +21,8 @@
 4. [Supported Applications](#supported-applications)
 5. [Working with the software of your choice](#working-with-the-software-of-your-choice)
    1. [Blender support](#blender)
-   2. [Onshape support](#onshape) 
+   2. [Fusion 360 support](#fusion-360) 
+   3. [Onshape support](#onshape) 
 6. [What's next](#whats-next)
 7. [For the developers](#for-the-developers)
 8. [Additional resources](#additional-resources)
@@ -78,13 +79,18 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 > Above is the above script being run in blender using our [Blender Addon](#blender) below.
 
+> Warning: Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
+
+
 
 ## Supported Applications
 #### Alpha/Beta Support
 - [Blender](https://www.blender.org/) - Digital Modeling Software
-
-#### Pre-Alpha Development
+   - [Instructions](#blender)
+- [Fusion 360](https://www.autodesk.com/products/fusion-360/overview) - M-CAD, E-CAD and CAE Software developed by Autodesk
+   - [Instructions](#fusion-360)
 - [Onshape](https://www.onshape.com/en/) - Product Development and CAD Software 
+   - [Instructions](#onshape)
 
 #### To Be Developed
 - [PyBullet](https://pybullet.org/) - Real-time Physics Simulation Library 
@@ -96,11 +102,13 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 ## Working with the software of your choice
 > Remember to first follow the getting [started instructions](#getting-started)
-### Compatible softwares
+
+### Compatible software
 1. [Blender](#blender)
+2. [Fusion360](#fusion-360)
 2. [Onshape](#onshape)
+
 ### Blender
-> Pre-requisites: Blender 3.1 or newer is required.
 
 1. Download a release of the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases)
    > Note for developers: instead of downloading a release, you can clone this repository, then import [blender_addon.py](./providers/blender/blender_addon.py) and set to CodeToCAD path in the addon to the root of this repository. Please watch this guide to get set up: [Video Guide](https://youtu.be/YD_4nj0QUJ4)
@@ -113,8 +121,6 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
    <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png" width=400 />
 
-> Warning: Since CodeToCAD scripts are written and executed in Python, be careful when running scripts you find on the internet!
-
 > Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py` or `codetocad yourScript.py blender /path/to/blender/executable`
 
 #### Sidebar Panel
@@ -123,8 +129,15 @@ You can use the side-panel to import CodeToCAD files or start a debugger server.
 
    <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/blender_panel.png" width=400 />
 
+#### Fusion 360
+
+To use CodeToCAD with Fusion 360, please install the Add-In. Please check out the [README](./providers/fusion360/codetocad_fusion360_addin/README.md) for more information.
+
+   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/fusion360_addin.png" width=400 />
+
 #### Onshape
-> Coming soon
+
+Please refer to the [Onshape README](./providers/onshape/README.md) for more information on how to setup an API key and connect to the Onshape Client.
 
 ## What's next
 - Run or browse the [examples](./examples/)!
