@@ -460,10 +460,10 @@ class Sketch(Entity, SketchInterface):
             Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
         )
 
-        left_top = Point(half_length * -1, half_width, Dimension(0))
-        left_bottom = Point(half_length * -1, half_width * -1, Dimension(0))
-        right_bottom = Point(half_length, half_width * -1, Dimension(0))
-        right_top = Point(half_length, half_width, Dimension(0))
+        left_top = Point(half_width * -1, half_length, Dimension(0))
+        left_bottom = Point(half_width * -1, half_length * -1, Dimension(0))
+        right_bottom = Point(half_width, half_length * -1, Dimension(0))
+        right_top = Point(half_width, half_length, Dimension(0))
 
         wire = self.create_from_vertices(
             [left_top, left_bottom, right_bottom, right_top, left_top]
