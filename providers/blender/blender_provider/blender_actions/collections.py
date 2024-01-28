@@ -1,5 +1,9 @@
 import bpy
-from . import get_object, remove_object
+
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object,
+    remove_object,
+)
 
 
 def get_collection(name: str, scene_name="Scene") -> bpy.types.Collection:

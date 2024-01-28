@@ -1,16 +1,22 @@
 from typing import Optional
 
-from . import blender_actions
-from . import blender_definitions
-
 from codetocad.interfaces import CameraInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
-from . import Entity
+from providers.blender.blender_provider import (
+    blender_definitions,
+    Entity,
+)
+from providers.blender.blender_provider.blender_actions.camera import (
+    create_camera,
+    set_focal_length,
+)
+from providers.blender.blender_provider.blender_actions.transformations import (
+    rotate_object,
+)
 
 
 class Camera(Entity, CameraInterface):
@@ -22,19 +28,19 @@ class Camera(Entity, CameraInterface):
         self.description = description
 
     def create_perspective(self):
-        blender_actions.create_camera(self.name, type="PERSP")
+        create_camera(self.name, type="PERSP")
         return self
 
     def create_orthogonal(self):
-        blender_actions.create_camera(self.name, type="ORTHO")
+        create_camera(self.name, type="ORTHO")
         return self
 
     def create_panoramic(self):
-        blender_actions.create_camera(self.name, type="PANO")
+        create_camera(self.name, type="PANO")
         return self
 
     def set_focal_length(self, length):
-        blender_actions.set_focal_length(self.name, length)
+        set_focal_length(self.name, length)
         return self
 
     def translate_xyz(
@@ -57,7 +63,7 @@ class Camera(Entity, CameraInterface):
         yAngle = Angle.from_angle_or_its_float_or_string_value(y)
         zAngle = Angle.from_angle_or_its_float_or_string_value(z)
 
-        blender_actions.rotate_object(
+        rotate_object(
             self.name,
             [xAngle, yAngle, zAngle],
             blender_definitions.BlenderRotationTypes.EULER,

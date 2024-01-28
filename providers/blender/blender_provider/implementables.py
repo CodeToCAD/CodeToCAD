@@ -1,8 +1,5 @@
 import math
-from typing import Optional, TYPE_CHECKING
-
-from . import blender_actions
-from . import blender_definitions
+from typing import Optional
 
 from codetocad.interfaces import EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
@@ -10,14 +7,38 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-if TYPE_CHECKING:
-    from . import Entity
+
+from providers.blender.blender_provider import (
+    blender_definitions,
+    Entity,
+)
+from providers.blender.blender_provider.blender_actions.constraints import (
+    apply_pivot_constraint,
+)
+from providers.blender.blender_provider.blender_actions.import_export import (
+    export_object,
+)
+from providers.blender.blender_provider.blender_actions.mesh import (
+    set_edges_mean_crease,
+)
+from providers.blender.blender_provider.blender_actions.modifiers import (
+    apply_circular_pattern,
+    apply_decimate_modifier,
+    apply_linear_pattern,
+    apply_mirror_modifier,
+    apply_modifier,
+    apply_screw_modifier,
+)
+from providers.blender.blender_provider.blender_actions.transformations import (
+    rotate_object,
+    scale_object,
+)
 
 
 def export(self: "Entity", file_path: str, overwrite: bool = True, scale: float = 1.0):
     absoluteFilePath = get_absolute_filepath(file_path)
 
-    blender_actions.export_object(self.name, absoluteFilePath, overwrite, scale)
+    export_object(self.name, absoluteFilePath, overwrite, scale)
     return self
 
 
@@ -40,7 +61,7 @@ def mirror(
 
     assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-    blender_actions.apply_mirror_modifier(self.name, mirrorAcrossEntityName, axis)
+    apply_mirror_modifier(self.name, mirrorAcrossEntityName, axis)
 
     return self._apply_modifiers_only()
 
@@ -64,7 +85,7 @@ def linear_pattern(
         )
         offset = offset.value
 
-    blender_actions.apply_linear_pattern(self.name, instance_count, axis, offset)
+    apply_linear_pattern(self.name, instance_count, axis, offset)
 
     return self._apply_modifiers_only()
 
@@ -92,9 +113,7 @@ def circular_pattern(
         pivotLandmarkName
     ).get_landmark_entity_name()
 
-    blender_actions.apply_pivot_constraint(
-        pivotLandmarkEntityName, center_entity_or_landmark_name
-    )
+    apply_pivot_constraint(pivotLandmarkEntityName, center_entity_or_landmark_name)
 
     axis = Axis.from_string(normal_direction_axis)
 
@@ -110,15 +129,13 @@ def circular_pattern(
 
     angles[axis.value] = angle
 
-    blender_actions.rotate_object(
+    rotate_object(
         pivotLandmarkEntityName,
         angles,
         blender_definitions.BlenderRotationTypes.EULER,
     )
 
-    blender_actions.apply_circular_pattern(
-        self.name, instance_count, pivotLandmarkEntityName
-    )
+    apply_circular_pattern(self.name, instance_count, pivotLandmarkEntityName)
 
     self._apply_modifiers_only()
 
@@ -126,7 +143,7 @@ def circular_pattern(
 
     return self
 
-    boundingBox = blender_actions.get_bounding_box(self.name)
+    boundingBox = get_bounding_box(self.name)
 
     assert boundingBox.z, "Could not get bounding box"
 
@@ -136,7 +153,7 @@ def circular_pattern(
         )
     )
 
-    blender_actions.translate_object(
+    translate_object(
         self.name,
         [None, None, dimension],
         blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -176,7 +193,7 @@ def scale_xyz(
         z, currentDimensions.z.value
     )
 
-    blender_actions.scale_object(self.name, xScaleFactor, yScaleFactor, zScaleFactor)
+    scale_object(self.name, xScaleFactor, yScaleFactor, zScaleFactor)
 
     return self._apply_rotation_and_scale_only()
 
@@ -185,7 +202,7 @@ def scale_x(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().x.value
     )
-    blender_actions.scale_object(self.name, scale_factor, None, None)
+    scale_object(self.name, scale_factor, None, None)
     return self._apply_rotation_and_scale_only()
 
 
@@ -193,7 +210,7 @@ def scale_y(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().y.value
     )
-    blender_actions.scale_object(self.name, None, scale_factor, None)
+    scale_object(self.name, None, scale_factor, None)
     return self._apply_rotation_and_scale_only()
 
 
@@ -201,22 +218,22 @@ def scale_z(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().z.value
     )
-    blender_actions.scale_object(self.name, None, None, scale_factor)
+    scale_object(self.name, None, None, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_x_by_factor(self: "Entity", scale_factor: float):
-    blender_actions.scale_object(self.name, scale_factor, None, None)
+    scale_object(self.name, scale_factor, None, None)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_y_by_factor(self: "Entity", scale_factor: float):
-    blender_actions.scale_object(self.name, None, scale_factor, None)
+    scale_object(self.name, None, scale_factor, None)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_z_by_factor(self: "Entity", scale_factor: float):
-    blender_actions.scale_object(self.name, None, None, scale_factor)
+    scale_object(self.name, None, None, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
@@ -233,7 +250,7 @@ def scale_keep_aspect_ratio(
     dimensionInAxis = self.get_dimensions()[Axis.from_string(axis).value]
     scale_factor: float = (valueInBlenderDefaultLength / dimensionInAxis).value
 
-    blender_actions.scale_object(self.name, scale_factor, scale_factor, scale_factor)
+    scale_object(self.name, scale_factor, scale_factor, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
@@ -252,7 +269,7 @@ def twist(
 
     screw_pitch = Dimension.from_string(screw_pitch)
 
-    blender_actions.apply_screw_modifier(
+    apply_screw_modifier(
         self.name,
         angleParsed.to_radians(),
         axis,
@@ -265,19 +282,19 @@ def twist(
 
 def remesh(self: "Entity", strategy: str, amount: float):
     if strategy == "decimate":
-        blender_actions.apply_decimate_modifier(self.name, int(amount))
+        apply_decimate_modifier(self.name, int(amount))
     else:
         if strategy == "crease":
-            blender_actions.set_edges_mean_crease(self.name, 1.0)
+            set_edges_mean_crease(self.name, 1.0)
         if strategy == "edgesplit":
-            blender_actions.apply_modifier(
+            apply_modifier(
                 self.name,
                 blender_definitions.BlenderModifiers.EDGE_SPLIT,
                 name="EdgeDiv",
                 split_angle=math.radians(30),
             )
 
-        blender_actions.apply_modifier(
+        apply_modifier(
             self.name,
             blender_definitions.BlenderModifiers.SUBSURF,
             name="Subdivision",
@@ -287,6 +304,6 @@ def remesh(self: "Entity", strategy: str, amount: float):
     self._apply_modifiers_only()
 
     if strategy == "crease":
-        blender_actions.set_edges_mean_crease(self.name, 0)
+        set_edges_mean_crease(self.name, 0)
 
     return self

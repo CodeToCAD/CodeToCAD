@@ -6,7 +6,10 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.blender.blender_provider import blender_actions
+
+from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
+    get_vertex_location_from_blender_point,
+)
 
 
 from . import Entity
@@ -20,9 +23,7 @@ class Vertex(Entity, VertexInterface):
 
     @property
     def location(self) -> Point:
-        return blender_actions.get_vertex_location_from_blender_point(
-            self.native_instance
-        )
+        return get_vertex_location_from_blender_point(self.native_instance)
 
     def get_native_instance(self) -> object:
         return self.native_instance

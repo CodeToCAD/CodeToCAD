@@ -1,14 +1,16 @@
 from typing import Optional
 
-from . import blender_actions
-
 from codetocad.interfaces import AnalyticsInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from . import Entity
+from providers.blender.blender_provider import Entity
+from providers.blender.blender_provider.blender_actions.context import log_message
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object_world_pose,
+)
 
 
 class Analytics(AnalyticsInterface):
@@ -44,7 +46,7 @@ class Analytics(AnalyticsInterface):
         partName = entity
         if isinstance(partName, EntityInterface):
             partName = partName.name
-        return blender_actions.get_object_world_pose(partName)
+        return get_object_world_pose(partName)
 
     def get_bounding_box(self, entity_name: EntityOrItsName) -> "BoundaryBox":
         entity = entity_name
@@ -61,5 +63,5 @@ class Analytics(AnalyticsInterface):
         raise TypeError("entity_name must be a string or an Entity")
 
     def log(self, message):
-        blender_actions.log_message(message)
+        log_message(message)
         return self
