@@ -1,6 +1,19 @@
 from typing import Optional
+from providers.blender.blender_provider.blender_actions.context import (
+    select_object,
+    update_view_layer,
+)
 
-from . import blender_actions
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object,
+    get_object_local_location,
+    get_object_visibility,
+    get_object_world_location,
+    remove_object,
+    set_object_visibility,
+    update_object_name,
+)
+
 
 from codetocad.interfaces import LandmarkInterface, EntityInterface
 from codetocad.codetocad_types import *
@@ -48,9 +61,7 @@ class Landmark(Entity, LandmarkInterface):
 
     def is_exists(self) -> bool:
         try:
-            return (
-                blender_actions.get_object(self.get_landmark_entity_name()) is not None
-            )
+            return get_object(self.get_landmark_entity_name()) is not None
         except:  # noqa E722
             return False
 
@@ -63,7 +74,7 @@ class Landmark(Entity, LandmarkInterface):
         if isinstance(parent_entityName, EntityInterface):
             parent_entityName = parent_entityName.name
 
-        blender_actions.update_object_name(
+        update_object_name(
             self.get_landmark_entity_name(),
             format_landmark_entity_name(parent_entityName, new_name),
         )
@@ -73,36 +84,30 @@ class Landmark(Entity, LandmarkInterface):
         return self
 
     def delete(self):
-        blender_actions.remove_object(self.get_landmark_entity_name())
+        remove_object(self.get_landmark_entity_name())
         return self
 
     def is_visible(self) -> bool:
-        return blender_actions.get_object_visibility(self.get_landmark_entity_name())
+        return get_object_visibility(self.get_landmark_entity_name())
 
     def set_visible(self, is_visible: bool):
-        blender_actions.set_object_visibility(
-            self.get_landmark_entity_name(), is_visible
-        )
+        set_object_visibility(self.get_landmark_entity_name(), is_visible)
 
         return self
 
     def get_native_instance(self):
-        return blender_actions.get_object(self.get_landmark_entity_name())
+        return get_object(self.get_landmark_entity_name())
 
     def get_location_world(self) -> "Point":
-        blender_actions.update_view_layer()
-        return blender_actions.get_object_world_location(
-            self.get_landmark_entity_name()
-        )
+        update_view_layer()
+        return get_object_world_location(self.get_landmark_entity_name())
 
     def get_location_local(self) -> "Point":
-        blender_actions.update_view_layer()
-        return blender_actions.get_object_local_location(
-            self.get_landmark_entity_name()
-        )
+        update_view_layer()
+        return get_object_local_location(self.get_landmark_entity_name())
 
     def select(self):
-        blender_actions.select_object(self.get_landmark_entity_name())
+        select_object(self.get_landmark_entity_name())
         return self
 
     def clone(

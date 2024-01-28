@@ -1,11 +1,17 @@
-from . import blender_actions
-from . import blender_definitions
-
 from codetocad.interfaces import AnimationInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+
+from providers.blender.blender_provider import blender_definitions
+
+from providers.blender.blender_provider.blender_actions.animation import (
+    add_keyframe_to_object,
+    set_frame_current,
+    set_frame_end,
+    set_frame_start,
+)
 
 
 class Animation(AnimationInterface):
@@ -17,17 +23,17 @@ class Animation(AnimationInterface):
         return Animation()
 
     def set_frame_start(self, frame_number: "int"):
-        blender_actions.set_frame_start(frame_number, None)
+        set_frame_start(frame_number, None)
 
         return self
 
     def set_frame_end(self, frame_number: "int"):
-        blender_actions.set_frame_end(frame_number, None)
+        set_frame_end(frame_number, None)
 
         return self
 
     def set_frame_current(self, frame_number: "int"):
-        blender_actions.set_frame_current(frame_number, None)
+        set_frame_current(frame_number, None)
 
         return self
 
@@ -37,7 +43,7 @@ class Animation(AnimationInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
-        blender_actions.add_keyframe_to_object(
+        add_keyframe_to_object(
             partName,
             frame_number,
             blender_definitions.BlenderTranslationTypes.ABSOLUTE.value,
@@ -51,7 +57,7 @@ class Animation(AnimationInterface):
         if isinstance(partName, EntityInterface):
             partName = partName.name
 
-        blender_actions.add_keyframe_to_object(
+        add_keyframe_to_object(
             partName, frame_number, blender_definitions.BlenderRotationTypes.EULER.value
         )
 

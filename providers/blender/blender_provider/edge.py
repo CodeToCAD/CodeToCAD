@@ -8,12 +8,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Vertex
+from providers.blender.blender_provider import Entity, Vertex
 
 
 class Edge(Entity, EdgeInterface):

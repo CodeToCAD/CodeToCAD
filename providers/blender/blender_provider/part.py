@@ -6,12 +6,42 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from . import blender_actions, blender_definitions, implementables, Entity
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Joint  # noqa: F401
+from providers.blender.blender_provider import (
+    blender_definitions,
+    implementables,
+    Entity,
+    Sketch,
+    Wire,
+    Joint,
+    Material,
+)
+from providers.blender.blender_provider.blender_actions.import_export import import_file
+from providers.blender.blender_provider.blender_actions.material import (
+    get_materials,
+    set_material_to_object,
+)
+from providers.blender.blender_provider.blender_actions.mesh import (
+    create_kd_tree_for_object,
+    get_closest_face_to_vertex,
+    get_closest_points_to_vertex,
+    is_collision_between_two_objects,
+)
+from providers.blender.blender_provider.blender_actions.modifiers import (
+    apply_bevel_modifier,
+    apply_boolean_modifier,
+    apply_solidify_modifier,
+)
+from providers.blender.blender_provider.blender_actions.objects import (
+    add_verticies_to_vertex_group,
+    create_gear,
+    create_object_vertex_group,
+    duplicate_object,
+    remove_object,
+    transfer_landmarks,
+)
+from providers.blender.blender_provider.blender_actions.transformations import (
+    scale_object,
+)
 
 
 class Part(Entity, PartInterface):
@@ -20,14 +50,12 @@ class Part(Entity, PartInterface):
 
         absoluteFilePath = get_absolute_filepath(file_path)
 
-        importedFileName = blender_actions.import_file(absoluteFilePath, file_type)
+        importedFileName = import_file(absoluteFilePath, file_type)
 
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
         if self.name != importedFileName:
-            from . import Part  # noqa: F811
-
             Part(importedFileName).rename(self.name)
 
         return self
@@ -39,8 +67,6 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch
-
         cube_sketch = Sketch(self.name)
         cube_sketch.create_rectangle(length, width)
         cube_sketch.extrude(height)
@@ -54,8 +80,6 @@ class Part(Entity, PartInterface):
         draft_radius: DimensionOrItsFloatOrStringValue = 0,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch, Wire
-
         base = Sketch(self.name).create_circle(radius)
 
         top = Sketch(self.name + "_temp_top")
@@ -76,8 +100,6 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch
-
         sketch = Sketch(self.name)
         sketch.create_circle(radius)
         sketch.extrude(height)
@@ -90,8 +112,6 @@ class Part(Entity, PartInterface):
         outer_radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch
-
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
             inner_radius
         )
@@ -117,8 +137,6 @@ class Part(Entity, PartInterface):
         radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch
-
         sketch = Sketch(self.name)
         sketch.create_circle(radius)
         sketch.revolve(360, sketch.get_landmark("center"), "x")
@@ -139,7 +157,7 @@ class Part(Entity, PartInterface):
         crown_angle: AngleOrItsFloatOrStringValue = 0,
         keyword_arguments: Optional[dict] = None,
     ):
-        blender_actions.create_gear(
+        create_gear(
             self.name,
             outer_radius,
             addendum,
@@ -163,7 +181,7 @@ class Part(Entity, PartInterface):
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "PartInterface":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
-        blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
+        duplicate_object(self.name, new_name, copy_landmarks)
 
         return Part(new_name, self.description)
 
@@ -178,26 +196,24 @@ class Part(Entity, PartInterface):
             partName = partName.name
 
         assert (
-            self.is_colliding_with_part(partName) == True
+            self.is_colliding_with_part(partName) is True
         ), "Parts must be colliding to be unioned."
 
-        blender_actions.apply_boolean_modifier(
+        apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
         )
 
         if is_transfer_landmarks:
-            blender_actions.transfer_landmarks(partName, self.name)
+            transfer_landmarks(partName, self.name)
 
-        materials = blender_actions.material.get_materials(partName)
+        materials = get_materials(partName)
         for material in materials:
-            blender_actions.set_material_to_object(
-                material.name, self.name, is_union=True
-            )
+            set_material_to_object(material.name, self.name, is_union=True)
 
         self._apply_modifiers_only()
 
         if delete_after_union:
-            blender_actions.remove_object(partName, remove_children=True)
+            remove_object(partName, remove_children=True)
 
         return self
 
@@ -212,20 +228,20 @@ class Part(Entity, PartInterface):
             partName = partName.name
 
         assert (
-            self.is_colliding_with_part(partName) == True
+            self.is_colliding_with_part(partName) is True
         ), "Parts must be colliding to be subtracted."
 
-        blender_actions.apply_boolean_modifier(
+        apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, partName
         )
 
         if is_transfer_landmarks:
-            blender_actions.transfer_landmarks(partName, self.name)
+            transfer_landmarks(partName, self.name)
 
         self._apply_modifiers_only()
 
         if delete_after_subtract:
-            blender_actions.remove_object(partName, remove_children=True)
+            remove_object(partName, remove_children=True)
         return self
 
     def intersect(
@@ -239,20 +255,20 @@ class Part(Entity, PartInterface):
             partName = partName.name
 
         assert (
-            self.is_colliding_with_part(partName) == True
+            self.is_colliding_with_part(partName) is True
         ), "Parts must be colliding to be intersected."
 
-        blender_actions.apply_boolean_modifier(
+        apply_boolean_modifier(
             self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, partName
         )
 
         if is_transfer_landmarks:
-            blender_actions.transfer_landmarks(partName, self.name)
+            transfer_landmarks(partName, self.name)
 
         self._apply_modifiers_only()
 
         if delete_after_intersect:
-            blender_actions.remove_object(partName, remove_children=True)
+            remove_object(partName, remove_children=True)
 
         return self
 
@@ -318,11 +334,9 @@ class Part(Entity, PartInterface):
             current_dimension_z.value, thickness_xyz[2].value, axis.value == 2
         )
 
-        blender_actions.scale_object(inside_part.name, scale_x, scale_y, scale_z)
+        scale_object(inside_part.name, scale_x, scale_y, scale_z)
 
         self._apply_rotation_and_scale_only()
-
-        from . import Joint  # noqa: F811
 
         Joint(start_axis_landmark, inside_part_start).translate_landmark_onto_another()
 
@@ -335,7 +349,7 @@ class Part(Entity, PartInterface):
     def thicken(self, radius: DimensionOrItsFloatOrStringValue) -> "PartInterface":
         radius = Dimension.from_string(radius)
 
-        blender_actions.apply_solidify_modifier(self.name, radius)
+        apply_solidify_modifier(self.name, radius)
 
         return self._apply_modifiers_only()
 
@@ -379,8 +393,6 @@ class Part(Entity, PartInterface):
         elif axis is Axis.Y:
             initial_rotation_x = (axisRotation + initial_rotation_x).value
         hole.rotate_xyz(initial_rotation_x, initial_rotation_y, initial_rotation_z)
-
-        from . import Joint  # noqa: F811
 
         Joint(hole_landmark, hole_head).limit_location_x(0, 0)
         Joint(hole_landmark, hole_head).limit_location_y(0, 0)
@@ -430,8 +442,6 @@ class Part(Entity, PartInterface):
         material = material_name
 
         if isinstance(material, str) or isinstance(material, PresetMaterial):
-            from . import Material
-
             material = Material.get_preset(material)
 
         material.assign_to_part(self.name)
@@ -445,9 +455,7 @@ class Part(Entity, PartInterface):
         if other_partName == self.name:
             raise NameError("Collision must be checked between different Parts.")
 
-        return blender_actions.is_collision_between_two_objects(
-            self.name, other_partName
-        )
+        return is_collision_between_two_objects(self.name, other_partName)
 
     def fillet_all_edges(
         self, radius: DimensionOrItsFloatOrStringValue, use_width: bool = False
@@ -510,10 +518,8 @@ class Part(Entity, PartInterface):
     def _add_edges_near_landmarks_to_vertex_group(
         self, bevel_edges_nearlandmark_names: list[LandmarkOrItsName], vertex_group_name
     ):
-        kdTree = blender_actions.create_kd_tree_for_object(self.name)
-        vertexGroupObject = blender_actions.create_object_vertex_group(
-            self.name, vertex_group_name
-        )
+        kdTree = create_kd_tree_for_object(self.name)
+        vertexGroupObject = create_object_vertex_group(self.name, vertex_group_name)
 
         for landmarkOrItsName in bevel_edges_nearlandmark_names:
             landmark = (
@@ -523,7 +529,7 @@ class Part(Entity, PartInterface):
             )
             vertexIndecies = [
                 index
-                for (_, index, _) in blender_actions.get_closest_points_to_vertex(
+                for (_, index, _) in get_closest_points_to_vertex(
                     self.name,
                     [
                         dimension.value
@@ -538,16 +544,12 @@ class Part(Entity, PartInterface):
                 len(vertexIndecies) == 2
             ), f"Could not find edges near landmark {landmark.get_landmark_entity_name()}"
 
-            blender_actions.add_verticies_to_vertex_group(
-                vertexGroupObject, vertexIndecies
-            )
+            add_verticies_to_vertex_group(vertexGroupObject, vertexIndecies)
 
     def _add_faces_near_landmarks_to_vertex_group(
         self, bevel_faces_nearlandmark_names: list[LandmarkOrItsName], vertex_group_name
     ):
-        vertexGroupObject = blender_actions.create_object_vertex_group(
-            self.name, vertex_group_name
-        )
+        vertexGroupObject = create_object_vertex_group(self.name, vertex_group_name)
 
         for landmarkOrItsName in bevel_faces_nearlandmark_names:
             landmark = (
@@ -556,7 +558,7 @@ class Part(Entity, PartInterface):
                 else landmarkOrItsName
             )
 
-            blenderPolygon = blender_actions.get_closest_face_to_vertex(
+            blenderPolygon = get_closest_face_to_vertex(
                 self.name,
                 [
                     dimension.value
@@ -566,9 +568,7 @@ class Part(Entity, PartInterface):
 
             faceIndecies: list[int] = blenderPolygon.vertices
 
-            blender_actions.add_verticies_to_vertex_group(
-                vertexGroupObject, faceIndecies
-            )
+            add_verticies_to_vertex_group(vertexGroupObject, faceIndecies)
 
     def bevel(
         self,
@@ -601,7 +601,7 @@ class Part(Entity, PartInterface):
             )
         )
 
-        blender_actions.apply_bevel_modifier(
+        apply_bevel_modifier(
             self.name,
             radiusDimension,
             vertex_group_name=vertex_group_name,

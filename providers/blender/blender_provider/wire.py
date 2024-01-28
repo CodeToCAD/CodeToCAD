@@ -8,17 +8,24 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity
-
-from typing import TYPE_CHECKING
-
-from . import blender_actions
-from . import blender_definitions
-
-if TYPE_CHECKING:
-    from . import Edge
-    from . import Vertex
-    from . import Part
+from providers.blender.blender_provider import (
+    Entity,
+    blender_definitions,
+    Edge,
+    Vertex,
+    Part,
+    Sketch,
+)
+from providers.blender.blender_provider.blender_actions.curve import (
+    is_spline_cyclical,
+    loft,
+)
+from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
+from providers.blender.blender_provider.blender_actions.normals import calculate_normal
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object,
+    get_object_or_none,
+)
 
 
 class Wire(Entity, WireInterface):
@@ -55,12 +62,10 @@ class Wire(Entity, WireInterface):
     def clone(
         self, new_name: str, new_parent: Optional[SketchOrItsName] = None
     ) -> "Wire":
-        from . import Sketch, Part
-
         parent = new_parent or self.parent_entity
 
         if isinstance(parent, str):
-            blender_object = blender_actions.get_object_or_none(parent)
+            blender_object = get_object_or_none(parent)
 
             if blender_object is None:
                 curve_type = CurveTypes.BEZIER
@@ -99,7 +104,7 @@ class Wire(Entity, WireInterface):
         # Note: 3D surfaces will not provide a good result here.
         vertices = self.get_vertices()
         num_vertices = len(vertices)
-        normal = blender_actions.calculate_normal(
+        normal = calculate_normal(
             vertices[0].get_native_instance().co,
             vertices[int(num_vertices * 1 / 3)].get_native_instance().co,
             vertices[int(num_vertices * 2 / 3)].get_native_instance().co,
@@ -121,7 +126,7 @@ class Wire(Entity, WireInterface):
             raise Exception(
                 "Cannot find native wire instance, this may mean that this reference is stale or the object does not exist in Blender."
             )
-        return blender_actions.is_spline_cyclical(self.native_instance)
+        return is_spline_cyclical(self.native_instance)
 
     def mirror(
         self,
@@ -156,9 +161,7 @@ class Wire(Entity, WireInterface):
         return self
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
-        blender_mesh = blender_actions.loft(self, other)
-
-        from . import Part
+        blender_mesh = loft(self, other)
 
         part = Part(blender_mesh.name)
 
@@ -173,7 +176,7 @@ class Wire(Entity, WireInterface):
                 )
 
                 if (
-                    type(blender_actions.get_object(parent_name))
+                    type(get_object(parent_name))
                     == blender_definitions.BlenderTypes.MESH.value
                 ):
                     part.union(
@@ -191,7 +194,7 @@ class Wire(Entity, WireInterface):
                 )
 
                 if (
-                    type(blender_actions.get_object(parent_name))
+                    type(get_object(parent_name))
                     == blender_definitions.BlenderTypes.MESH.value
                 ):
                     part.union(
@@ -200,6 +203,6 @@ class Wire(Entity, WireInterface):
                 else:
                     Entity(parent_name).delete()
 
-        blender_actions.recalculate_normals(part.name)
+        recalculate_normals(part.name)
 
         return part

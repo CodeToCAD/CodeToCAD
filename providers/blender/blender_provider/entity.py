@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
 from codetocad.interfaces import EntityInterface, LandmarkInterface
 
@@ -7,11 +7,41 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
-if TYPE_CHECKING:
-    from . import Landmark
-
-from . import blender_actions, blender_definitions
+from providers.blender.blender_provider import (
+    blender_definitions,
+)
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
+from providers.blender.blender_provider.blender_actions.context import (
+    apply_dependency_graph,
+    select_object,
+    update_view_layer,
+)
+from providers.blender.blender_provider.blender_actions.mesh import (
+    get_bounding_box,
+    remove_mesh,
+)
+from providers.blender.blender_provider.blender_actions.modifiers import clear_modifiers
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_object,
+    get_object,
+    get_object_collection_name,
+    get_object_local_location,
+    get_object_visibility,
+    get_object_world_location,
+    make_parent,
+    remove_object,
+    set_object_visibility,
+    update_object_data_name,
+    update_object_landmark_names,
+    update_object_name,
+)
+from providers.blender.blender_provider.blender_actions.transformations import (
+    apply_object_transformations,
+    rotate_object,
+    translate_object,
+)
 
 
 class Entity(EntityInterface):
@@ -28,33 +58,33 @@ class Entity(EntityInterface):
 
     def is_exists(self) -> bool:
         try:
-            return blender_actions.get_object(self.name) is not None
+            return get_object(self.name) is not None
         except:  # noqa: E722
             return False
 
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True):
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
-        blender_actions.update_object_name(self.name, new_name)
+        update_object_name(self.name, new_name)
 
         if renamelinked_entities_and_landmarks:
-            blender_actions.update_object_data_name(new_name, new_name)
+            update_object_data_name(new_name, new_name)
 
-            blender_actions.update_object_landmark_names(new_name, self.name, new_name)
+            update_object_landmark_names(new_name, self.name, new_name)
 
         self.name = new_name
 
         return self
 
     def delete(self, remove_children: bool = True):
-        blender_actions.remove_object(self.name, remove_children)
+        remove_object(self.name, remove_children)
         return self
 
     def is_visible(self) -> bool:
-        return blender_actions.get_object_visibility(self.name)
+        return get_object_visibility(self.name)
 
     def set_visible(self, is_visible: bool):
-        blender_actions.set_object_visibility(self.name, is_visible)
+        set_object_visibility(self.name, is_visible)
 
         return self
 
@@ -71,41 +101,37 @@ class Entity(EntityInterface):
         location: bool = False,
         modifiers: bool = True,
     ):
-        blender_actions.update_view_layer()
-
-        from . import Part  # noqa: F811
+        update_view_layer()
 
         if modifiers and isinstance(self, Part):
             # Only apply modifiers for Blender Objects that have meshes
 
-            blender_actions.apply_dependency_graph(self.name)
+            apply_dependency_graph(self.name)
 
-            blender_actions.remove_mesh(self.name)
+            remove_mesh(self.name)
 
-            blender_actions.update_object_data_name(self.name, self.name)
+            update_object_data_name(self.name, self.name)
 
-            blender_actions.clear_modifiers(self.name)
+            clear_modifiers(self.name)
 
         if rotation or scale or location:
-            blender_actions.apply_object_transformations(
-                self.name, rotation, scale, location
-            )
+            apply_object_transformations(self.name, rotation, scale, location)
 
         return self
 
     def get_native_instance(self) -> object:
-        return blender_actions.get_object(self.name)
+        return get_object(self.name)
 
     def get_location_world(self) -> "Point":
-        blender_actions.update_view_layer()
-        return blender_actions.get_object_world_location(self.name)
+        update_view_layer()
+        return get_object_world_location(self.name)
 
     def get_location_local(self) -> "Point":
-        blender_actions.update_view_layer()
-        return blender_actions.get_object_local_location(self.name)
+        update_view_layer()
+        return get_object_local_location(self.name)
 
     def select(self):
-        blender_actions.select_object(self.name)
+        select_object(self.name)
         return self
 
     @staticmethod
@@ -127,7 +153,7 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        boundingBox = blender_actions.get_bounding_box(self.name)
+        boundingBox = get_bounding_box(self.name)
 
         assert (
             boundingBox.x and boundingBox.y and boundingBox.z
@@ -149,7 +175,7 @@ class Entity(EntityInterface):
             )
         )
 
-        blender_actions.translate_object(
+        translate_object(
             self.name,
             [xDimension, yDimension, zDimension],
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -158,7 +184,7 @@ class Entity(EntityInterface):
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        boundingBox = blender_actions.get_bounding_box(self.name)
+        boundingBox = get_bounding_box(self.name)
 
         assert boundingBox.x, "Could not get bounding box"
 
@@ -168,7 +194,7 @@ class Entity(EntityInterface):
             )
         )
 
-        blender_actions.translate_object(
+        translate_object(
             self.name,
             [dimension, None, None],
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -177,7 +203,7 @@ class Entity(EntityInterface):
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        boundingBox = blender_actions.get_bounding_box(self.name)
+        boundingBox = get_bounding_box(self.name)
 
         assert boundingBox.y, "Could not get bounding box"
 
@@ -187,7 +213,7 @@ class Entity(EntityInterface):
             )
         )
 
-        blender_actions.translate_object(
+        translate_object(
             self.name,
             [None, dimension, None],
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -196,7 +222,7 @@ class Entity(EntityInterface):
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        boundingBox = blender_actions.get_bounding_box(self.name)
+        boundingBox = get_bounding_box(self.name)
 
         assert boundingBox.z, "Could not get bounding box"
 
@@ -206,7 +232,7 @@ class Entity(EntityInterface):
             )
         )
 
-        blender_actions.translate_object(
+        translate_object(
             self.name,
             [None, None, dimension],
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -224,7 +250,7 @@ class Entity(EntityInterface):
         yAngle = Angle.from_angle_or_its_float_or_string_value(y)
         zAngle = Angle.from_angle_or_its_float_or_string_value(z)
 
-        blender_actions.rotate_object(
+        rotate_object(
             self.name,
             [xAngle, yAngle, zAngle],
             blender_definitions.BlenderRotationTypes.EULER,
@@ -235,7 +261,7 @@ class Entity(EntityInterface):
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
-        blender_actions.rotate_object(
+        rotate_object(
             self.name,
             [angle, None, None],
             blender_definitions.BlenderRotationTypes.EULER,
@@ -246,7 +272,7 @@ class Entity(EntityInterface):
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
-        blender_actions.rotate_object(
+        rotate_object(
             self.name,
             [None, angle, None],
             blender_definitions.BlenderRotationTypes.EULER,
@@ -256,7 +282,7 @@ class Entity(EntityInterface):
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
 
-        blender_actions.rotate_object(
+        rotate_object(
             self.name,
             [None, None, angle],
             blender_definitions.BlenderRotationTypes.EULER,
@@ -264,10 +290,10 @@ class Entity(EntityInterface):
         return self._apply_rotation_and_scale_only()
 
     def get_bounding_box(self) -> "BoundaryBox":
-        return blender_actions.get_bounding_box(self.name)
+        return get_bounding_box(self.name)
 
     def get_dimensions(self) -> "Dimensions":
-        dimensions = blender_actions.get_object(self.name).dimensions
+        dimensions = get_object(self.name).dimensions
         dimensions = [
             Dimension.from_string(
                 dimension,
@@ -284,7 +310,7 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
-        boundingBox = blender_actions.get_bounding_box(self.name)
+        boundingBox = get_bounding_box(self.name)
 
         localPositions = [
             Dimension.from_dimension_or_its_float_or_string_value(x, boundingBox.x),
@@ -298,8 +324,6 @@ class Entity(EntityInterface):
             )
         )
 
-        from . import Part, Landmark
-
         landmark = Landmark(landmark_name, self.name)
         landmarkObjectName = landmark.get_landmark_entity_name()
 
@@ -307,18 +331,19 @@ class Entity(EntityInterface):
         # Using an Empty object allows us to parent the object to this Empty.
         # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
         # This might not work in other CodeToCAD implementations, but it does in Blender
-        empty_object = blender_actions.create_object(landmarkObjectName, None)
+        empty_object = create_object(landmarkObjectName, None)
         empty_object.empty_display_size = 0
 
         # Assign the landmark to the parent's collection
-        blender_actions.assign_object_to_collection(
-            landmarkObjectName, blender_actions.get_object_collection_name(self.name)
+        assign_object_to_collection(
+            landmarkObjectName,
+            get_object_collection_name(self.name),
         )
 
         # Parent the landmark to the object
-        blender_actions.make_parent(landmarkObjectName, self.name)
+        make_parent(landmarkObjectName, self.name)
 
-        blender_actions.translate_object(
+        translate_object(
             landmarkObjectName,
             localPositions,
             blender_definitions.BlenderTranslationTypes.ABSOLUTE,
@@ -339,14 +364,12 @@ class Entity(EntityInterface):
             preset = landmark_name
             landmark_name = preset.name
 
-        from . import Landmark
-
         landmark = Landmark(landmark_name, self.name)
 
         if preset is not None:
             # if preset does not exist, create it.
             try:
-                blender_actions.get_object(landmark.get_landmark_entity_name())
+                get_object(landmark.get_landmark_entity_name())
             except:  # noqa: E722
                 presetXYZ = preset.get_xyz()
                 self.create_landmark(
@@ -356,6 +379,6 @@ class Entity(EntityInterface):
                 return landmark
 
         assert (
-            blender_actions.get_object(landmark.get_landmark_entity_name()) is not None
+            get_object(landmark.get_landmark_entity_name()) is not None
         ), f"Landmark {landmark_name} does not exist for {self.name}."
         return landmark

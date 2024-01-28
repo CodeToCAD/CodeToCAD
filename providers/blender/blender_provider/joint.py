@@ -1,7 +1,5 @@
 from typing import Optional
 
-from . import blender_actions
-from . import blender_definitions
 
 from codetocad.interfaces import JointInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
@@ -10,10 +8,17 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity  # noqa: 401
+from providers.blender.blender_provider import blender_definitions
+from providers.blender.blender_provider.blender_actions.constraints import (
+    apply_copy_location_constraint,
+    apply_copy_rotation_constraint,
+    apply_gear_constraint,
+    apply_limit_location_constraint,
+    apply_limit_rotation_constraint,
+    apply_pivot_constraint,
+    get_constraint,
+)
+from providers.blender.blender_provider.blender_actions.context import update_view_layer
 
 
 class Joint(JointInterface):
@@ -67,9 +72,7 @@ class Joint(JointInterface):
 
         objectToPivotAboutName = Joint._get_entity_or_landmark_name(self.entity1)
 
-        blender_actions.apply_pivot_constraint(
-            objectToPivotName, objectToPivotAboutName
-        )
+        apply_pivot_constraint(objectToPivotName, objectToPivotAboutName)
 
         return self
 
@@ -78,7 +81,7 @@ class Joint(JointInterface):
 
         object2 = Joint._get_entity_or_landmark_name(self.entity1)
 
-        blender_actions.apply_gear_constraint(object1, object2, ratio)
+        apply_gear_constraint(object1, object2, ratio)
 
         return self
 
@@ -135,10 +138,8 @@ class Joint(JointInterface):
             object_to_limit_name = object_to_limit_name.name
 
         # SA: Blender's Limit Location must be paired with Copy Location if we don't want the objectToLimit's rotation and scale to be affected by relativeToObject's transformations.
-        blender_actions.apply_limit_location_constraint(
-            object_to_limit_name, x, y, z, None
-        )
-        blender_actions.apply_copy_location_constraint(
+        apply_limit_location_constraint(object_to_limit_name, x, y, z, None)
+        apply_copy_location_constraint(
             object_to_limit_name, relativeToObjectName, True, True, True, True
         )
         self._apply_pivot_constraint_if_location_and_rotation_limit_constraints_exist(
@@ -148,16 +149,16 @@ class Joint(JointInterface):
     def _apply_pivot_constraint_if_location_and_rotation_limit_constraints_exist(
         self, object_to_limit_name, pivot_object_name
     ):
-        blender_actions.update_view_layer()
+        update_view_layer()
 
-        locationConstraint = blender_actions.get_constraint(
+        locationConstraint = get_constraint(
             object_to_limit_name,
             blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
                 object_to_limit_name, None
             ),
         )
 
-        rotationConstraint = blender_actions.get_constraint(
+        rotationConstraint = get_constraint(
             object_to_limit_name,
             blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
                 object_to_limit_name, None
@@ -165,9 +166,7 @@ class Joint(JointInterface):
         )
 
         if locationConstraint and rotationConstraint:
-            blender_actions.apply_pivot_constraint(
-                object_to_limit_name, pivot_object_name
-            )
+            apply_pivot_constraint(object_to_limit_name, pivot_object_name)
 
     def limit_location_xyz(
         self,
@@ -237,9 +236,9 @@ class Joint(JointInterface):
             self.entity1
         )
 
-        # blender_actions.applyLimitRotapply_limit_rotation_constraintationConstraint(
+        # applyLimitRotapply_limit_rotation_constraintationConstraint(
         #     object_to_limit_name, rotation_pair_x, rotation_pair_y, rotation_pair_z, relativeToObjectName)
-        blender_actions.apply_limit_rotation_constraint(
+        apply_limit_rotation_constraint(
             object_to_limit_name,
             rotation_pair_x,
             rotation_pair_y,
@@ -255,7 +254,7 @@ class Joint(JointInterface):
         copyZ = rotation_pair_z is not None and all(
             [value is not None for value in rotation_pair_z]
         )
-        blender_actions.apply_copy_rotation_constraint(
+        apply_copy_rotation_constraint(
             object_to_limit_name, relativeToObjectOrParentName, copyX, copyY, copyZ
         )
         self._apply_pivot_constraint_if_location_and_rotation_limit_constraints_exist(

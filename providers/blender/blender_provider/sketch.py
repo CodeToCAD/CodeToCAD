@@ -3,12 +3,33 @@ from typing import Optional, Sequence
 
 from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
 from codetocad.core.shapes.clipping import clip_spline_points
+from providers.blender.blender_provider.blender_actions.context import update_view_layer
+from providers.blender.blender_provider.blender_actions.curve import (
+    add_bevel_object_to_curve,
+    create_curve,
+    create_text,
+    get_curve,
+    merge_touching_splines,
+    set_curve_offset_geometry,
+)
+from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
+from providers.blender.blender_provider.blender_actions.modifiers import (
+    apply_curve_modifier,
+    apply_screw_modifier,
+)
+from providers.blender.blender_provider.blender_actions.normals import (
+    project_vector_along_normal,
+)
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_mesh_from_curve,
+    duplicate_object,
+)
 from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
+    get_edge_from_blender_edge,
     get_wire_from_blender_wire,
+    get_wires_from_blender_entity,
 )
 
-
-from . import blender_actions, blender_definitions, implementables
 
 from codetocad.interfaces import (
     SketchInterface,
@@ -23,7 +44,15 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from . import Entity, Part, Vertex, Wire, Edge
+from providers.blender.blender_provider import (
+    blender_definitions,
+    implementables,
+    Entity,
+    Part,
+    Vertex,
+    Wire,
+    Edge,
+)
 
 
 class Sketch(Entity, SketchInterface):
@@ -45,14 +74,13 @@ class Sketch(Entity, SketchInterface):
 
     def project(self, project_onto: "Sketch") -> "ProjectableInterface":
         print("project called:", project_onto)
-        from . import Sketch
 
         return Sketch("a projected sketch")
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
 
-        blender_actions.duplicate_object(self.name, new_name, copy_landmarks)
+        duplicate_object(self.name, new_name, copy_landmarks)
 
         return Sketch(new_name, self.curve_type, self.description)
 
@@ -77,21 +105,21 @@ class Sketch(Entity, SketchInterface):
 
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
 
-        blender_actions.apply_screw_modifier(
+        apply_screw_modifier(
             self.name,
             Angle.from_string(angle).to_radians(),
             axis,
             entity_nameToDetermineAxis=about_entity_or_landmark,
         )
 
-        blender_actions.create_mesh_from_curve(self.name)
+        create_mesh_from_curve(self.name)
 
         return Part(self.name, self.description).apply()
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
         radius = Dimension.from_string(radius)
 
-        blender_actions.set_curve_offset_geometry(self.name, radius)
+        set_curve_offset_geometry(self.name, radius)
 
         return self
 
@@ -104,9 +132,7 @@ class Sketch(Entity, SketchInterface):
             ).value
         )
 
-        wires = blender_actions.get_wires_from_blender_entity(
-            self.get_native_instance().data
-        )
+        wires = get_wires_from_blender_entity(self.get_native_instance().data)
 
         for wire in wires:
             normal = wire.get_normal()
@@ -114,7 +140,7 @@ class Sketch(Entity, SketchInterface):
             # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
             translate_vector = [0, 0, parsed_length]
 
-            projected_normal = blender_actions.project_vector_along_normal(
+            projected_normal = project_vector_along_normal(
                 translate_vector, [p.value for p in normal.to_list()]
             )
             temp_sketch = Sketch(self.name + "_temp")
@@ -133,14 +159,12 @@ class Sketch(Entity, SketchInterface):
         if isinstance(profile_curve_name, EntityInterface):
             profile_curve_name = profile_curve_name.name
 
-        blender_actions.add_bevel_object_to_curve(
-            self.name, profile_curve_name, fill_cap
-        )
+        add_bevel_object_to_curve(self.name, profile_curve_name, fill_cap)
 
-        blender_actions.create_mesh_from_curve(self.name)
+        create_mesh_from_curve(self.name)
 
         # Recalculate normals because they're usually wrong after sweeping.
-        blender_actions.recalculate_normals(self.name)
+        recalculate_normals(self.name)
 
         return Part(self.name, self.description).apply()
 
@@ -148,7 +172,7 @@ class Sketch(Entity, SketchInterface):
         if isinstance(profile_curve_name, Entity):
             profile_curve_name = profile_curve_name.name
 
-        blender_actions.apply_curve_modifier(self.name, profile_curve_name)
+        apply_curve_modifier(self.name, profile_curve_name)
 
         return self
 
@@ -166,7 +190,7 @@ class Sketch(Entity, SketchInterface):
     ):
         size = Dimension.from_string(font_size)
 
-        blender_actions.create_text(
+        create_text(
             self.name,
             text,
             size,
@@ -179,7 +203,7 @@ class Sketch(Entity, SketchInterface):
             font_file_path,
         )
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return self
 
@@ -196,7 +220,7 @@ class Sketch(Entity, SketchInterface):
             is_closed = True
             parsed_points = parsed_points[:-1]
 
-        blender_spline, curve_data, added_points = blender_actions.create_curve(
+        blender_spline, curve_data, added_points = create_curve(
             self.name,
             blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
@@ -207,23 +231,21 @@ class Sketch(Entity, SketchInterface):
             order_u=order_u,
         )
 
-        blender_actions.merge_touching_splines(
-            curve=curve_data, reference_spline_index=0
-        )
+        merge_touching_splines(curve=curve_data, reference_spline_index=0)
 
         if is_closed:
             blender_spline.use_cyclic_u = True
 
-        wire = blender_actions.get_wire_from_blender_wire(
+        wire = get_wire_from_blender_wire(
             entity=self.get_native_instance().data, wire=blender_spline
         )
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return wire
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        blender_spline, curve_data, added_points = blender_actions.create_curve(
+        blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
             curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
                 self.curve_type
@@ -234,11 +256,9 @@ class Sketch(Entity, SketchInterface):
             is_3d=False,
         )
 
-        blender_actions.merge_touching_splines(
-            curve=curve_data, reference_spline_index=0
-        )
+        merge_touching_splines(curve=curve_data, reference_spline_index=0)
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return Vertex(
             location=point,
@@ -264,7 +284,7 @@ class Sketch(Entity, SketchInterface):
         else:
             end_point = Point.from_list_of_float_or_string(end_at)
 
-        blender_spline, curve_data, added_points = blender_actions.create_curve(
+        blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
             curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
                 self.curve_type
@@ -275,16 +295,14 @@ class Sketch(Entity, SketchInterface):
             is_3d=False,
         )
 
-        blender_actions.merge_touching_splines(
-            curve=curve_data, reference_spline_index=0
-        )
+        merge_touching_splines(curve=curve_data, reference_spline_index=0)
 
-        edge = blender_actions.get_edge_from_blender_edge(
-            entity=blender_actions.get_curve(self.name),
+        edge = get_edge_from_blender_edge(
+            entity=get_curve(self.name),
             edge=(added_points[0], added_points[1]),
         )
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return edge
 
@@ -340,7 +358,7 @@ class Sketch(Entity, SketchInterface):
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, radius)
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return wire
 
@@ -360,7 +378,7 @@ class Sketch(Entity, SketchInterface):
 
         wire = self.create_circle(radius_minor if is_minor_lesser else radius_major)
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         if is_minor_lesser:
             self.scale_y(radius_major * 2)
@@ -421,7 +439,7 @@ class Sketch(Entity, SketchInterface):
         #     is_closed = True
         #     clipped_points: list[Point] = clipped_points[:-1]
 
-        blender_spline, curve_data, added_points = blender_actions.create_curve(
+        blender_spline, curve_data, added_points = create_curve(
             self.name,
             blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
@@ -437,14 +455,12 @@ class Sketch(Entity, SketchInterface):
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, circle_radius)
 
-        blender_actions.merge_touching_splines(
-            curve=curve_data, reference_spline_index=0
-        )
+        merge_touching_splines(curve=curve_data, reference_spline_index=0)
 
         # if is_closed:
         #     blender_spline.use_cyclic_u = True
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return wire
 
@@ -469,7 +485,7 @@ class Sketch(Entity, SketchInterface):
             [left_top, left_bottom, right_bottom, right_top, left_top]
         )
 
-        blender_actions.update_view_layer()
+        update_view_layer()
 
         return wire
 

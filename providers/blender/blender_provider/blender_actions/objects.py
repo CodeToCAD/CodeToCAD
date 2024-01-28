@@ -9,6 +9,14 @@ from codetocad.codetocad_types import (
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
+from providers.blender.blender_provider.blender_actions.addons import addon_set_enabled
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
+from providers.blender.blender_provider.blender_actions.context import (
+    get_context_view_3d,
+    update_view_layer,
+)
 from .. import blender_definitions
 
 from codetocad.utilities import get_dimension_list_from_string_list
@@ -128,8 +136,6 @@ def create_gear(
     crown_angle: AngleOrItsFloatOrStringValue = 0,
 ):
     addon_name = "add_mesh_extra_objects"
-
-    from . import addon_set_enabled
 
     # check if the addon is enabled, enable it if it is not.
     addon = bpy.context.preferences.addons.get(addon_name)
@@ -310,8 +316,6 @@ def add_verticies_to_vertex_group(vertex_group_object, vertex_indecies: list[int
 def convert_object_using_ops(
     existing_object_name: str, convert_to_type: blender_definitions.BlenderTypes
 ):
-    from . import get_context_view_3d, update_view_layer
-
     existingObject = get_object(existing_object_name)
     with get_context_view_3d(
         active_object=existingObject, selected_objects=[existingObject]
@@ -327,8 +331,6 @@ def create_mesh_from_curve(
     existing_curve_object_name: str,
     new_object_name: Optional[str] = None,
 ):
-    from . import assign_object_to_collection
-
     existingCurveObject = get_object(existing_curve_object_name)
 
     if new_object_name is None:
@@ -382,8 +384,6 @@ def transfer_landmarks(
     from_object_name: str,
     to_object_name: str,
 ):
-    from . import update_view_layer, assign_object_to_collection
-
     update_view_layer()
 
     fromBlenderObject = get_object(from_object_name)
@@ -422,8 +422,6 @@ def transfer_landmarks(
 def duplicate_object(
     existing_object_name: str, new_object_name: str, copy_landmarks: bool = True
 ):
-    from . import assign_object_to_collection
-
     clonedObject = bpy.data.objects.get(new_object_name)
 
     assert clonedObject is None, f"Object with name {new_object_name} already exists."
