@@ -16,6 +16,7 @@ from .fusion_actions.common import (
     create_circular_pattern,
     create_rectangular_pattern,
     get_sketch,
+    hole,
     hollow,
     intersect,
     mirror,
@@ -433,30 +434,9 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
     ):
-        print(
-            "hole called:",
-            hole_landmark,
-            radius,
-            depth,
-            normal_axis,
-            flip_axis,
-            initial_rotation_x,
-            initial_rotation_y,
-            initial_rotation_z,
-            mirror_about_entity_or_landmark,
-            mirror_axis,
-            mirror,
-            circular_pattern_instance_count,
-            circular_pattern_instance_separation,
-            circular_pattern_instance_axis,
-            circular_pattern_about_entity_or_landmark,
-            linear_pattern_instance_count,
-            linear_pattern_instance_separation,
-            linear_pattern_instance_axis,
-            linear_pattern2nd_instance_count,
-            linear_pattern2nd_instance_separation,
-            linear_pattern2nd_instance_axis,
-        )
+        # hardcoded because I need to figure out how to get that information
+        # @check: implement Landmark.py
+        hole(self.name, Point(0.5, 1, 6.0), radius, depth)
         return self
 
     def twist(

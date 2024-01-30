@@ -600,5 +600,29 @@ def hollow(name: str, thickness: float):
     shellInput.insideThickness = thicknessInput
     shellFeatures.add(shellInput)
 
-def hole(name: str):
-    ...
+def hole(name: str, point, radius, depth):
+    # the point should be a list of landmarks (sketch points)
+    # and always use the points feature
+    # or it should be called from the callee which would loop over
+    # the point list
+    comp = get_component(name).component
+    features = comp.features
+
+    body = get_body(name)
+
+    face_selected = None
+    for face in body.faces:
+        _, normal = face.evaluator.getNormalAtPoint(face.pointOnFace)
+        if normal.z > 0:
+            face_selected = face
+
+    # holeDiam = adsk.core.ValueInput.createByString('20 mm')
+    holeDiam = adsk.core.ValueInput.createByReal(radius)
+    holeDepth = adsk.core.ValueInput.createByReal(depth)
+
+    holeFeatures = comp.features.holeFeatures
+
+    input = holeFeatures.createSimpleInput(holeDiam)
+    input.setDistanceExtent(holeDepth)
+    input.setPositionByPoint(face_selected, adsk.core.Point3D.create(point.x, point.y, point.z))
+    holeFeature = holeFeatures.add(input)
