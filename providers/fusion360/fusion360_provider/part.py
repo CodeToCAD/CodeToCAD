@@ -11,9 +11,13 @@ from codetocad.enums import *
 from . import Entity
 
 from .fusion_actions.common import (
+    clone_body,
     combine,
     create_circular_pattern,
+    create_rectangular_pattern,
     get_sketch,
+    hollow,
+    intersect,
     mirror,
     rotate_body,
     scale_body,
@@ -48,7 +52,8 @@ class Part(Entity, PartInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        print("linear_pattern called:", instance_count, offset, direction_axis)
+
+        create_rectangular_pattern(self.name, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
@@ -274,10 +279,12 @@ class Part(Entity, PartInterface):
 
         app = adsk.core.Application.get()
         design = app.activeProduct
-        rootComp = design.rootComponent
 
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
@@ -294,7 +301,7 @@ class Part(Entity, PartInterface):
         )
 
         prof = sketch.profiles.item(0)
-        revolves = rootComp.features.revolveFeatures
+        revolves = newComp.features.revolveFeatures
         revInput = revolves.createInput(
             prof, axisLine, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
         )
@@ -303,8 +310,8 @@ class Part(Entity, PartInterface):
         revInput.setAngleExtent(False, angle)
         revolves.add(revInput)
 
-        body = design.rootComponent.bRepBodies.item(
-            design.rootComponent.bRepBodies.count - 1
+        body = newComp.bRepBodies.item(
+            newComp.bRepBodies.count - 1
         )
         body.name = self.name
 
@@ -357,8 +364,8 @@ class Part(Entity, PartInterface):
         return self
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
-        print("clone called:", new_name, copy_landmarks)
-        return Part("a part")
+        clone_body(self.name, new_name)
+        return Part(new_name)
 
     def union(
         self,
@@ -384,12 +391,7 @@ class Part(Entity, PartInterface):
         delete_after_intersect: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        print(
-            "intersect called:",
-            with_part,
-            delete_after_intersect,
-            is_transfer_landmarks,
-        )
+        intersect(self.name, with_part, delete_after_intersect)
         return self
 
     def hollow(
@@ -400,14 +402,7 @@ class Part(Entity, PartInterface):
         start_axis: AxisOrItsIndexOrItsName = "z",
         flip_axis: bool = False,
     ):
-        print(
-            "hollow called:",
-            thickness_x,
-            thickness_y,
-            thickness_z,
-            start_axis,
-            flip_axis,
-        )
+        hollow(self.name, thickness_x)
         return self
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue):
