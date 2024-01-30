@@ -10,14 +10,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from .fusion_actions.common import (
-    get_sketch,
-    rotate_sketch,
-    scale_by_factor_sketch,
-    scale_sketch,
-    scale_sketch_uniform,
-    translate_sketch,
-)
+from .fusion_actions.common import clone_sketch, create_circular_pattern_sketch, create_retangular_pattern_sketch, create_text, get_component, get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, sweep, translate_sketch
 
 
 from . import Entity
@@ -53,7 +46,7 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        print("linear_pattern called:", instance_count, offset, direction_axis)
+        create_retangular_pattern_sketch(self.name, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(
@@ -63,12 +56,12 @@ class Sketch(Entity, SketchInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        print(
-            "circular_pattern called:",
+        create_circular_pattern_sketch(
+            self.name,
             instance_count,
             separation_angle,
             center_entity_or_landmark,
-            normal_direction_axis,
+            normal_direction_axis
         )
         return self
 
@@ -110,15 +103,15 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, 1, 0, 0, rotation)
+        rotate_sketch(self.name, "x", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, 0, 1, 0, rotation)
+        rotate_sketch(self.name, "y", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, 0, 0, 1, rotation)
+        rotate_sketch(self.name, "z", rotation)
         return self
 
     def scale_xyz(
@@ -156,8 +149,7 @@ class Sketch(Entity, SketchInterface):
 
     def scale_keep_aspect_ratio(
         # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-        self,
-        scale: DimensionOrItsFloatOrStringValue,
+        self, scale: DimensionOrItsFloatOrStringValue
     ):
         scale_sketch_uniform(self.name, scale)
         return self
@@ -181,7 +173,7 @@ class Sketch(Entity, SketchInterface):
         self.resolution = 4
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        print("clone called:", new_name, copy_landmarks)
+        clone_sketch(self.name, new_name)
         return Sketch("a sketch")
 
     def revolve(
@@ -195,8 +187,8 @@ class Sketch(Entity, SketchInterface):
         app = adsk.core.Application.get()
         design = app.activeProduct
         root_comp = design.rootComponent
-        sketches = root_comp.sketches
-        xyPlane = root_comp.xYConstructionPlane
+        sketches = root_comp.sketches;
+        xyPlane = root_comp.xYConstructionPlane;
         sketch = sketches.add(xyPlane)
 
         # revolve_axes = design.rootComponent.constructionAxes
@@ -214,20 +206,17 @@ class Sketch(Entity, SketchInterface):
         operation = adsk.fusion.FeatureOperations.NewBodyFeatureOperation
 
         revolveFeatures = root_comp.features.revolveFeatures
-        input = revolveFeatures.createInput(
-            sketch.profiles.item(0), revolve_axis, operation
-        )
+        input = revolveFeatures.createInput(sketch.profiles.item(0), revolve_axis, operation)
         angle = adsk.core.ValueInput.createByReal(angle)
         input.setAngleExtent(False, angle)
         revolveFeature = revolveFeatures.add(input)
 
-        body = design.rootComponent.bRepBodies.item(
-            design.rootComponent.bRepBodies.count - 1
-        )
+        body = design.rootComponent.bRepBodies.item(design.rootComponent.bRepBodies.count - 1)
         body.name = self.name
 
         return Part(self.name)
 
+    # requires rotate done
     def twist(
         self,
         angle: AngleOrItsFloatOrStringValue,
@@ -240,27 +229,19 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         from . import Part
-
-        app = adsk.core.Application.get()
-
-        design = app.activeProduct
-        rootComp = design.rootComponent
+        comp = get_component(self.name).component
 
         sketch = get_sketch(self.name)
         prof = sketch.profiles.item(0)
-        extrudes = rootComp.features.extrudeFeatures
-        extInput = extrudes.createInput(
-            prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
-        )
+        extrudes = comp.features.extrudeFeatures
+        extInput = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 
         distance = adsk.core.ValueInput.createByReal(length)
         extInput.setDistanceExtent(False, distance)
         extInput.isSolid = True
         ext = extrudes.add(extInput)
 
-        body = design.rootComponent.bRepBodies.item(
-            design.rootComponent.bRepBodies.count - 1
-        )
+        body = comp.bRepBodies.item(comp.bRepBodies.count - 1)
         body.name = self.name
 
         return Part("a part")
@@ -269,8 +250,7 @@ class Sketch(Entity, SketchInterface):
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
         from . import Part
-
-        print("sweep called:", profile_name_or_instance, fill_cap)
+        sweep(self.name, profile_name_or_instance)
         return Part("a part")
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
@@ -293,8 +273,8 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
-        print(
-            "create_text called:",
+        create_text(
+            self.name,
             text,
             font_size,
             bold,
@@ -303,7 +283,7 @@ class Sketch(Entity, SketchInterface):
             character_spacing,
             word_spacing,
             line_spacing,
-            font_file_path,
+            font_file_path
         )
         return self
 
@@ -317,11 +297,27 @@ class Sketch(Entity, SketchInterface):
 
         # curve_data, parsed_points = create_curve(self.name, points)
 
+
         wire = Wire(points, create_uuid_like_id(), self.name)
         return wire
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        print("create_point called:", point)
+        app = adsk.core.Application.get()
+        design = app.activeProduct
+
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
+
+        sketch = sketches.add(xyPlane)
+        sketch.name = self.name
+
+        somePoint = adsk.core.Point3D.create(point.x, point.y, point.z)
+        sketchPoints = sketch.sketchPoints
+        point = sketchPoints.add(somePoint)
+
         return None
 
     def create_line(
@@ -333,47 +329,50 @@ class Sketch(Entity, SketchInterface):
 
         app = adsk.core.Application.get()
         design = app.activeProduct
-        rootComp = design.rootComponent
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
 
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
         sketchLines = sketch.sketchCurves.sketchLines
-        start = adsk.core.Point3D.create(
-            start_at.x.value, start_at.y.value, start_at.z.value
-        )
-        end = adsk.core.Point3D.create(end_at.x.value, end_at.y.value, end_at.z.value)
+        # start = adsk.core.Point3D.create(start_at.x.value, start_at.y.value, start_at.z.value)
+        # end = adsk.core.Point3D.create(end_at.x.value, end_at.y.value, end_at.z.value)
+        start = adsk.core.Point3D.create(start_at.x, start_at.y, start_at.z)
+        end = adsk.core.Point3D.create(end_at.x, end_at.y, end_at.z)
         sketchLines.addByTwoPoints(start, end)
 
-        return Edge.get_dummy_edge()
+        # return Edge.get_dummy_edge()
+        return self
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         from .fusion_actions import circle
 
         app = adsk.core.Application.get()
         design = app.activeProduct
-        rootComp = design.rootComponent
 
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         points = circle.get_circle_points(radius, self.resolution)
-        points = [
-            adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value)
-            for point in points
-        ]
+        points = [adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value) for point in points]
 
         control_points = adsk.core.ObjectCollection_create()
         for point in points:
             control_points.add(point)
 
         spline = sketch.sketchCurves.sketchFittedSplines.add(control_points)
-        return None
+        return self
 
     def create_ellipse(
         self,
@@ -402,28 +401,29 @@ class Sketch(Entity, SketchInterface):
 
     def create_arc(
         self,
-        # start_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        # end_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
+        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
         radius: DimensionOrItsFloatOrStringValue,
         flip: Optional[bool] = False,
     ) -> "Wire":
         app = adsk.core.Application.get()
         design = app.activeProduct
-        rootComp = design.rootComponent
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
 
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
-        center = adsk.core.Point3D.create(0, 0, 0)
-        circle = sketch.sketchCurves.sketchCircles
-        circle.addByCenterRadius(center, radius)
+        startPoint = adsk.core.Point3D.create(start_at.x, start_at.y, start_at.z)
+        alongPoint = adsk.core.Point3D.create((start_at.x + end_at.x) / 2, start_at.y + radius, start_at.z)
+        endPoint = adsk.core.Point3D.create(end_at.x, end_at.y, end_at.z)
 
-        trim_line = sketch.sketchCurves.sketchLines.addByTwoPoints(
-            adsk.core.Point3D.create(center.x - radius, center.y, 0),
-            adsk.core.Point3D.create(center.x + radius, center.y, 0),
-        )
+        arcs = sketch.sketchCurves.sketchArcs
+        arc = arcs.addByThreePoints(startPoint, alongPoint, endPoint)
 
         return None
 
@@ -448,20 +448,20 @@ class Sketch(Entity, SketchInterface):
         app = adsk.core.Application.get()
         design = app.activeProduct
         rootComp = design.rootComponent
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+
+        newComp = rootComp.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
 
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
 
         sketchLines = sketch.sketchCurves.sketchLines
         for i in range(len(points) - 1):
-            start = adsk.core.Point3D.create(
-                points[i].x.value, points[i].y.value, points[i].z.value
-            )
-            end = adsk.core.Point3D.create(
-                points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value
-            )
+            start = adsk.core.Point3D.create(points[i].x.value, points[i].y.value, points[i].z.value)
+            end = adsk.core.Point3D.create(points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value)
             sketchLines.addByTwoPoints(start, end)
 
         # startPoint = adsk.core.Point3D.create(0, 0, 0)
@@ -476,9 +476,12 @@ class Sketch(Entity, SketchInterface):
     ) -> "Wire":
         app = adsk.core.Application.get()
         design = app.activeProduct
-        rootComp = design.rootComponent
-        sketches = rootComp.sketches
-        xyPlane = rootComp.xYConstructionPlane
+
+        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+        newComp.name = self.name
+
+        sketches = newComp.sketches
+        xyPlane = newComp.xYConstructionPlane
 
         sketch = sketches.add(xyPlane)
         sketch.name = self.name
