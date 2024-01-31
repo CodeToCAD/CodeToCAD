@@ -11,10 +11,12 @@ from codetocad.enums import *
 from . import Entity
 
 from .fusion_actions.common import (
+    chamfer_all_edges,
     clone_body,
     combine,
     create_circular_pattern,
     create_rectangular_pattern,
+    fillet_all_edges,
     get_sketch,
     hole,
     hollow,
@@ -460,7 +462,7 @@ class Part(Entity, PartInterface):
     def fillet_all_edges(
         self, radius: DimensionOrItsFloatOrStringValue, use_width: bool = False
     ):
-        print("fillet_all_edges called:", radius, use_width)
+        fillet_all_edges(self.name, radius)
         return self
 
     def fillet_edges(
@@ -482,7 +484,7 @@ class Part(Entity, PartInterface):
         return self
 
     def chamfer_all_edges(self, radius: DimensionOrItsFloatOrStringValue):
-        print("chamfer_all_edges called:", radius)
+        chamfer_all_edges(self.name, radius)
         return self
 
     def chamfer_edges(
@@ -490,7 +492,6 @@ class Part(Entity, PartInterface):
         radius: DimensionOrItsFloatOrStringValue,
         landmarks_near_edges: list[LandmarkOrItsName],
     ):
-        print("chamfer_edges called:", radius, landmarks_near_edges)
         return self
 
     def chamfer_faces(

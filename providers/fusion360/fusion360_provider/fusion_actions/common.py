@@ -626,3 +626,37 @@ def hole(name: str, point, radius, depth):
     input.setDistanceExtent(holeDepth)
     input.setPositionByPoint(face_selected, adsk.core.Point3D.create(point.x, point.y, point.z))
     holeFeature = holeFeatures.add(input)
+
+def fillet_all_edges(name: str, radius: float):
+    comp = get_component(name).component
+    features = comp.features
+
+    body = get_body(name)
+
+    entities = adsk.core.ObjectCollection.create()
+    for edge in body.edges:
+        entities.add(edge)
+
+    offset = adsk.core.ValueInput.createByReal(radius)
+
+    fillets = features.filletFeatures
+    filletInput = fillets.createInput()
+    filletInput.addConstantRadiusEdgeSet(entities, offset, True)
+    fillet = fillets.add(filletInput)
+
+def chamfer_all_edges(name: str, radius: float):
+    comp = get_component(name).component
+    features = comp.features
+
+    body = get_body(name)
+
+    entities = adsk.core.ObjectCollection.create()
+    for edge in body.edges:
+        entities.add(edge)
+
+    offset = adsk.core.ValueInput.createByReal(radius)
+
+    chamfers = features.chamferFeatures
+    chamferInput = chamfers.createInput2()
+    chamferInput.chamferEdgeSets.addEqualDistanceChamferEdgeSet(entities, offset, True)
+    chamfer = chamfers.add(chamferInput)
