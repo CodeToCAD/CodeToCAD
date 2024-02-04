@@ -10,7 +10,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from .fusion_actions.common import clone_sketch, create_circular_pattern_sketch, create_retangular_pattern_sketch, create_text, get_component, get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, sweep, translate_sketch
+from .fusion_actions.common import clone_sketch, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, create_rectangular_pattern_sketch, create_retangular_pattern_sketch, create_text, get_component, get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, sweep, translate_sketch
 
 
 from . import Entity
@@ -46,7 +46,7 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        create_retangular_pattern_sketch(self.name, instance_count, offset, direction_axis)
+        create_rectangular_pattern_sketch(self.name, instance_count, offset, direction_axis)
         return self
 
     def circular_pattern(

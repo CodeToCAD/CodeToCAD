@@ -380,16 +380,21 @@ def create_circular_pattern(name: str, count: int, angle: float, center_name: st
     comp = get_component(name)
     features = comp.features
 
+    # must be a point comming from callee, implement in Entity.get_boundbox()
+    center = get_body(center_name)
+    boundBox = center.boundingBox
+    origin = adsk.core.Point3D.create(
+        (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
+        (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
+        (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
+    )
+
+
     body = get_body(name)
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(body)
 
-    if axis == "x":
-        axisInput = comp.xConstructionAxis
-    elif axis == "y":
-        axisInput = comp.yConstructionAxis
-    elif axis == "z":
-        axisInput = comp.zConstructionAxis
+    axisInput, sketch = make_axis2(axis, origin)
 
     circularFeats = features.circularPatternFeatures
     circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
@@ -399,7 +404,11 @@ def create_circular_pattern(name: str, count: int, angle: float, center_name: st
 
     circularFeature = circularFeats.add(circularFeatInput)
 
-# same as sketch pattern
+    translate_sketch(name, origin.x, origin.y, origin.z)
+
+    sketch.deleteMe()
+
+
 def create_rectangular_pattern(name: str, count: int, offset: float, axis: str):
     comp = get_component(name)
     features = comp.features
@@ -418,11 +427,13 @@ def create_rectangular_pattern(name: str, count: int, offset: float, axis: str):
 
     quantity = adsk.core.ValueInput.createByReal(count)
     distance = adsk.core.ValueInput.createByReal(offset)
+    one = adsk.core.ValueInput.createByReal(1)
 
     rectangularPatterns = features.rectangularPatternFeatures
     rectangularPatternInput = rectangularPatterns.createInput(
         inputEntites, axisInput,
         quantity, distance, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+    rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
 
@@ -430,17 +441,21 @@ def create_circular_pattern_sketch(name: str, count: int, angle: float, center_n
     comp = get_component(name)
     features = comp.features
 
+    # must be a point comming from callee, implement in Entity.get_boundbox()
+    center = get_body(center_name)
+    boundBox = center.boundingBox
+    origin = adsk.core.Point3D.create(
+        (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
+        (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
+        (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
+    )
+
     occ = get_occurrence(name)
 
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
-    if axis == "x":
-        axisInput = comp.xConstructionAxis
-    elif axis == "y":
-        axisInput = comp.yConstructionAxis
-    elif axis == "z":
-        axisInput = comp.zConstructionAxis
+    axisInput, sketch = make_axis2(axis, origin)
 
     circularFeats = features.circularPatternFeatures
     circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
@@ -450,8 +465,12 @@ def create_circular_pattern_sketch(name: str, count: int, angle: float, center_n
 
     circularFeature = circularFeats.add(circularFeatInput)
 
+    translate_sketch(name, origin.x, origin.y, origin.z)
+
+    sketch.deleteMe()
+
 # creating more than expected (the positions are correct)
-def create_retangular_pattern_sketch(name: str, count: int, offset: float, axis: str):
+def create_rectangular_pattern_sketch(name: str, count: int, offset: float, axis: str):
     comp = get_component(name)
     features = comp.features
 
@@ -470,11 +489,13 @@ def create_retangular_pattern_sketch(name: str, count: int, offset: float, axis:
 
     quantity = adsk.core.ValueInput.createByReal(count)
     distance = adsk.core.ValueInput.createByReal(offset)
+    one = adsk.core.ValueInput.createByReal(1)
 
     rectangularPatterns = features.rectangularPatternFeatures
     rectangularPatternInput = rectangularPatterns.createInput(
         inputEntites, axisInput,
         quantity, distance, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+    rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
 
