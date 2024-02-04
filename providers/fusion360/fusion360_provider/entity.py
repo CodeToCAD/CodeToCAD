@@ -10,6 +10,8 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
+from providers.fusion360.fusion360_provider.fusion_actions.common import rotate_body, rotate_sketch, translate_body, translate_sketch
+
 if TYPE_CHECKING:
     from . import Landmark
 
@@ -84,25 +86,32 @@ class Entity(EntityInterface):
         )
         return self
 
+    # translate gives wrong transform
+    # when translate sketch and then body
+    # with just sketch transform it's transform the body too
     def translate_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        print("translate_xyz called:", x, y, z)
+        translate_sketch(self.name, x, y, z)
+        # translate_body(self.name, x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        print("translate_x called:", amount)
+        translate_sketch(self.name, amount, 0, 0)
+        # translate_body(self.name, amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        print("translate_y called:", amount)
+        translate_sketch(self.name, 0, amount, 0)
+        # translate_body(self.name, 0, amount, 0)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        print("translate_z called:", amount)
+        translate_sketch(self.name, 0, 0, amount)
+        # translate_body(self.name, 0, 0, amount)
         return self
 
     def rotate_xyz(
@@ -114,16 +123,22 @@ class Entity(EntityInterface):
         print("rotate_xyz called:", x, y, z)
         return self
 
+    # rotate gives wrong transform
+    # when rotate sketch and then body
+    # with just sketch transform it's transform the body too
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        print("rotate_x called:", rotation)
+        rotate_sketch(self.name, "x", rotation)
+        # rotate_body(self.name, "x", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        print("rotate_y called:", rotation)
+        rotate_sketch(self.name, "y", rotation)
+        # rotate_body(self.name, "y", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        print("rotate_z called:", rotation)
+        rotate_sketch(self.name, "z", rotation)
+        # rotate_body(self.name, "z", rotation)
         return self
 
     def get_bounding_box(self) -> "BoundaryBox":
