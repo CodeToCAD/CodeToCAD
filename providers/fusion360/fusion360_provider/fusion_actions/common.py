@@ -29,6 +29,26 @@ def make_axis(axis_input: str):
     axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), axis_point)
     return axis, sketch
 
+def make_axis2(axis_input: str, point):
+    app = adsk.core.Application.get()
+    product = app.activeProduct
+    design = adsk.fusion.Design.cast(product)
+    rootComp = design.rootComponent
+
+    sketches = rootComp.sketches;
+    xyPlane = rootComp.xYConstructionPlane
+    sketch = sketches.add(xyPlane)
+    if axis_input == "x":
+        axis_point = adsk.core.Point3D.create(point.x + 1, point.y, point.z)
+    elif axis_input == "y":
+        axis_point = adsk.core.Point3D.create(point.x, point.y + 1, point.z)
+    elif axis_input == "z":
+        axis_point = adsk.core.Point3D.create(point.x, point.y, point.z + 1)
+
+    sketchLine = sketch.sketchCurves.sketchLines;
+    axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(point.x, point.y, point.z), axis_point)
+    return axis, sketch
+
 def make_axis_vector(axis_input: str):
     if axis_input == "x":
         axis = adsk.core.Vector3D.create(1, 0, 0)
@@ -45,55 +65,83 @@ def get_component(name: str) -> Optional[fusion.Sketch]:
 
     for occurrence in rootComp.occurrences:
         if name == occurrence.component.name.split(":")[0]:
+            return occurrence.component
+
+    return None
+
+def get_occurrence(name: str) -> Optional[fusion.Sketch]:
+    app = adsk.core.Application.get()
+    design = app.activeProduct
+    rootComp = design.rootComponent
+
+    for occurrence in rootComp.occurrences:
+        if name == occurrence.component.name.split(":")[0]:
             return occurrence
 
     return None
 
 def get_sketch(name: str) -> Optional[fusion.Sketch]:
-    comp = get_component(name).component
+    comp = get_component(name)
 
     sketch = comp.sketches.itemByName(name)
     return sketch
 
-def translate_sketch(name: str, x, y, z):
-    sketch = get_sketch(name)
-
-    for point in sketch.sketchPoints:
-        transform = adsk.core.Vector3D.create(x, y, z)
-        point.move(transform)
-
-def rotate_sketch(name: str, axis_input: str, angle: float):
-    import math
+def sketch_move(name, matrix):
     sketch = get_sketch(name)
 
     entities = adsk.core.ObjectCollection.create()
 
     if len(sketch.sketchCurves.sketchLines) > 0:
-        entities.add(sketch.sketchCurves.sketchLines[0])
+        for line in sketch.sketchCurves.sketchLines:
+            entities.add(line)
 
     if len(sketch.sketchCurves.sketchArcs) > 0:
-        entities.add(sketch.sketchCurves.sketchArcs[0])
+        for line in sketch.sketchCurves.sketchArcs:
+            entities.add(line)
 
     if len(sketch.sketchCurves.sketchConicCurves) > 0:
-        entities.add(sketch.sketchCurves.sketchConicCurves[0])
+        for line in sketch.sketchCurves.sketchConicCurves:
+            entities.add(line)
 
     if len(sketch.sketchCurves.sketchFittedSplines) > 0:
-        entities.add(sketch.sketchCurves.sketchFittedSplines[0])
+        for line in sketch.sketchCurves.sketchFittedSplines:
+            entities.add(line)
 
     if len(sketch.sketchCurves.sketchFixedSplines) > 0:
-        entities.add(sketch.sketchCurves.sketchFixedSplines[0])
+        for line in sketch.sketchCurves.sketchFixedSplines:
+            entities.add(line)
 
     if len(sketch.sketchTexts) > 0:
-        entities.add(sketch.sketchTexts[0])
+        for line in sketch.sketchTexts:
+            entities.add(line)
+
+    sketch.move(entities, matrix)
+
+
+def translate_sketch(name: str, x, y, z):
+    matrix = adsk.core.Matrix3D.create()
+    matrix.translation = adsk.core.Vector3D.create(x, y, z)
+    sketch_move(name, matrix)
+
+
+def rotate_sketch(name: str, axis_input: str, angle: float):
+    import math
+    sketch = get_sketch(name)
 
     axis = make_axis_vector(axis_input)
     angle = math.radians(angle)
 
-    origin = sketch.origin
-    transform = adsk.core.Matrix3D.create()
-    transform.setToRotation(angle, axis, origin)
+    boundBox = sketch.boundingBox
+    origin = adsk.core.Point3D.create(
+        (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
+        (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
+        (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
+    )
 
-    sketch.move(entities, transform)
+    matrix = adsk.core.Matrix3D.create()
+    matrix.setToRotation(angle, axis, origin)
+
+    sketch_move(name, matrix)
 
 
 def scale_sketch(name: str, x: float, y: float, z: float):
@@ -136,15 +184,18 @@ def scale_sketch_uniform(name: str, scale: float):
 
 
 def get_body(name: str) -> Optional[fusion.BRepBody]:
-    comp = get_component(name).component
+    comp = get_component(name)
     body = comp.bRepBodies.itemByName(name)
     return body
 
 def translate_body(name: str, x: float, y: float, z: float):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
+
+    if body is None:
+        return
 
     bodies = adsk.core.ObjectCollection.create()
     bodies.add(body)
@@ -159,18 +210,26 @@ def translate_body(name: str, x: float, y: float, z: float):
 
 def rotate_body(name: str, axis_input: str, angle: float):
     import math
-    app = adsk.core.Application.get()
-    product = app.activeProduct
-    design = adsk.fusion.Design.cast(product)
-    rootComp = design.rootComponent
-    features = rootComp.features
+
+    comp = get_component(name)
+    features = comp.features
 
     body = get_body(name)
+
+    if body is None:
+        return
 
     bodies = adsk.core.ObjectCollection.create()
     bodies.add(body)
 
-    axis, sketch = make_axis(axis_input)
+    boundBox = body.boundingBox
+    origin = adsk.core.Point3D.create(
+        (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
+        (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
+        (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
+    )
+
+    axis, sketch = make_axis2(axis_input, origin)
 
     angle = adsk.core.ValueInput.createByReal(math.radians(angle))
 
@@ -179,9 +238,14 @@ def rotate_body(name: str, axis_input: str, angle: float):
     moveFeatureInput.defineAsRotate(axis, angle)
     moveFeats.add(moveFeatureInput)
 
+    # sketch.deleteMe()
+
 def scale_body(name: str, x: float, y: float, z: float):
-    comp = get_component(name).component
+    comp = get_component(name)
     body = get_body(name)
+
+    if body is None:
+        return
 
     xFactor = 1
     yFactor = 1
@@ -214,9 +278,13 @@ def scale_body(name: str, x: float, y: float, z: float):
     scale = scales.add(scaleInput)
 
 def scale_by_factor_body(name: str, x: float, y: float, z: float):
-    comp = get_component(name).component
+    comp = get_component(name)
 
     body = get_body(name)
+
+    if body is None:
+        return
+
     sketch = get_sketch(name)
 
     inputColl = adsk.core.ObjectCollection.create()
@@ -236,9 +304,13 @@ def scale_by_factor_body(name: str, x: float, y: float, z: float):
     scale = scales.add(scaleInput)
 
 def scale_body_uniform(name: str, scale: float):
-    comp = get_component(name).component
+    comp = get_component(name)
 
     body = get_body(name)
+
+    if body is None:
+        return
+
     sketch = get_sketch(name)
 
     inputColl = adsk.core.ObjectCollection.create()
@@ -285,7 +357,7 @@ def set_material(name: str, material_name):
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
 
 def mirror(name: str, plane: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
@@ -305,7 +377,7 @@ def mirror(name: str, plane: str):
     mirrorFeatures.add(mirrorInput)
 
 def create_circular_pattern(name: str, count: int, angle: float, center_name: str, axis: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
@@ -329,11 +401,12 @@ def create_circular_pattern(name: str, count: int, angle: float, center_name: st
 
 # same as sketch pattern
 def create_rectangular_pattern(name: str, count: int, offset: float, axis: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
+    occ = get_occurrence(name)
+
     inputEntites = adsk.core.ObjectCollection.create()
-    occ = get_component(name)
     inputEntites.add(occ)
 
     if axis == "x":
@@ -354,12 +427,11 @@ def create_rectangular_pattern(name: str, count: int, offset: float, axis: str):
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
 
 def create_circular_pattern_sketch(name: str, count: int, angle: float, center_name: str, axis: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
-    occ = get_component(name)
+    occ = get_occurrence(name)
 
-    sketch = get_sketch(name)
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
@@ -380,10 +452,10 @@ def create_circular_pattern_sketch(name: str, count: int, angle: float, center_n
 
 # creating more than expected (the positions are correct)
 def create_retangular_pattern_sketch(name: str, count: int, offset: float, axis: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
-    occ = get_component(name)
+    occ = get_occurrence(name)
 
     sketch = get_sketch(name)
     inputEntites = adsk.core.ObjectCollection.create()
@@ -464,7 +536,7 @@ def intersect(name: str, other_name: str, delete_after_intersect: bool):
     combine_feature = combineFeatures.add(combineFeaturesInput)
 
 def sweep(name: str, profile_name: str):
-    comp = get_component(name).component
+    comp = get_component(name)
     path_sketch = get_sketch(name)
 
     paths = adsk.core.ObjectCollection.create()
@@ -486,7 +558,7 @@ def sweep(name: str, profile_name: str):
 
     path = comp.features.createPath(paths)
 
-    comp_profile = get_component(profile_name).component
+    comp_profile = get_component(profile_name)
     profile_sketch = get_sketch(profile_name)
 
     prof = profile_sketch.profiles.item(0)
@@ -498,13 +570,13 @@ def sweep(name: str, profile_name: str):
 
     component = comp_profile.occurrences.item(
         comp_profile.occurrences.count - 1
-    ).component
+    )
     component.name = f"Sweep {profile_name}"
 
 def create_text(name: str, text: str, font_size: float, bold: bool, italic: bool, underlined: bool, character_spainc: int, word_spacing: int, line_spacing: int, font_file_path: Optional[str] = None):
     app = adsk.core.Application.get()
     design = app.activeProduct
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
     newComp.name = name
 
     sketch = newComp.sketches.add(newComp.xYConstructionPlane)
@@ -532,7 +604,7 @@ def clone_sketch(name: str, new_name: str):
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
     newComp.name = new_name
 
     sketches = newComp.sketches
@@ -572,7 +644,7 @@ def clone_body(name: str, new_name: str):
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
     newComp.name = new_name
 
     old_body = get_body(name)
@@ -583,7 +655,7 @@ def clone_body(name: str, new_name: str):
     body.name = new_name
 
 def hollow(name: str, thickness: float):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
@@ -605,7 +677,7 @@ def hole(name: str, point, radius, depth):
     # and always use the points feature
     # or it should be called from the callee which would loop over
     # the point list
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
@@ -628,7 +700,7 @@ def hole(name: str, point, radius, depth):
     holeFeature = holeFeatures.add(input)
 
 def fillet_all_edges(name: str, radius: float):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)
@@ -645,7 +717,7 @@ def fillet_all_edges(name: str, radius: float):
     fillet = fillets.add(filletInput)
 
 def chamfer_all_edges(name: str, radius: float):
-    comp = get_component(name).component
+    comp = get_component(name)
     features = comp.features
 
     body = get_body(name)

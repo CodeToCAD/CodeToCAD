@@ -8,14 +8,16 @@ def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
     import codetocad
     import fusion360_provider
-    from fusion360_provider import fusion_actions
+    import fusion360_provider.fusion_actions
 
     all_providers_modules = inspect.getmembers(
-        fusion_actions, predicate=inspect.ismodule
+        fusion360_provider.fusion_actions, predicate=inspect.ismodule
     )
 
     for module_name, module in all_providers_modules:
         reload(module)
+
+    reload(fusion360_provider.fusion_actions)
 
     all_providers_modules = inspect.getmembers(
         fusion360_provider, predicate=inspect.ismodule
@@ -40,7 +42,7 @@ def add_codetocad_to_path():
     fusion360_path = codetocad_path / "providers/fusion360"
     fusion360_provider_path = codetocad_path / "providers/fusion360/fusion360_provider"
     fusion360_provider_actions_path = (
-        codetocad_path / "providers/fusion360/fusion360_provider/actions"
+        codetocad_path / "providers/fusion360/fusion360_provider/fusion_actions"
     )
 
     if not fusion360_provider_path.exists():

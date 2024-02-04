@@ -95,48 +95,25 @@ class Part(Entity, PartInterface):
         print("export called:", file_path, overwrite, scale)
         return self
 
-    def translate_xyz(
-        self,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
-    ):
-        translate_body(self.name, x, y, z)
-        return self
+    # def rotate_xyz(
+    #     self,
+    #     x: AngleOrItsFloatOrStringValue,
+    #     y: AngleOrItsFloatOrStringValue,
+    #     z: AngleOrItsFloatOrStringValue,
+    # ):
+    #     return self
 
-    def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_body(self.name, amount, 0, 0)
-        return self
+    # def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
+    #     rotate_body(self.name, "x", rotation)
+    #     return self
 
-    def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_body(self.name, 0, amount, 0)
+    # def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
+    #     rotate_body(self.name, "y", rotation)
+    #     return self
 
-        return self
-
-    def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_body(self.name, 0, 0, amount)
-
-        return self
-
-    def rotate_xyz(
-        self,
-        x: AngleOrItsFloatOrStringValue,
-        y: AngleOrItsFloatOrStringValue,
-        z: AngleOrItsFloatOrStringValue,
-    ):
-        return self
-
-    def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_body(self.name, "x", rotation)
-        return self
-
-    def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_body(self.name, "y", rotation)
-        return self
-
-    def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_body(self.name, "z", rotation)
-        return self
+    # def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
+    #     rotate_body(self.name, "z", rotation)
+    #     return self
 
     def scale_xyz(
         self,
