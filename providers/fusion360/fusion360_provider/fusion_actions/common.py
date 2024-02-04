@@ -393,11 +393,7 @@ def set_material(name: str, material_name):
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
 
 
-# check the behavior
 def mirror(name: str, other_name: str, axis: str):
-    comp = get_component(name)
-    features = comp.features
-
     body = get_body(name)
     bodyBoundBox = body.boundingBox
 
@@ -425,28 +421,40 @@ def mirror(name: str, other_name: str, axis: str):
     import math
 
     distance = math.sqrt(
-        (centerBody.x - centerOtherBody.x) ** 2 +
-        (centerBody.y - centerOtherBody.y) ** 2 +
-        (centerBody.z - centerOtherBody.z) ** 2
+        (centerOtherBody.x - centerBody.x) ** 2 +
+        (centerOtherBody.y - centerBody.y) ** 2 +
+        (centerOtherBody.z - centerBody.z) ** 2
     )
 
     if axis == "x":
+        if distanceBodyToOther.x + distance == 0:
+            move = distanceBodyToOther.x - distance
+        else:
+            move = distanceBodyToOther.x + distance
         newPosition = adsk.core.Point3D.create(
-            distanceBodyToOther.x + distance,
+            move,
             distanceBodyToOther.y,
             distanceBodyToOther.z,
         )
     elif axis == "y":
+        if distanceBodyToOther.y + distance == 0:
+            move = distanceBodyToOther.y - distance
+        else:
+            move = distanceBodyToOther.y + distance
         newPosition = adsk.core.Point3D.create(
             distanceBodyToOther.x,
-            distanceBodyToOther.y + distance,
+            move,
             distanceBodyToOther.z,
         )
     elif axis == "z":
+        if distanceBodyToOther.z + distance == 0:
+            move = distanceBodyToOther.z - distance
+        else:
+            move = distanceBodyToOther.z + distance
         newPosition = adsk.core.Point3D.create(
             distanceBodyToOther.x,
             distanceBodyToOther.y,
-            distanceBodyToOther.z + distance,
+            move,
         )
 
     newName = f"{body.name} clone"
