@@ -147,10 +147,31 @@ def rotate_sketch(name: str, axis_input: str, angle: float):
 def scale_sketch(name: str, x: float, y: float, z: float):
     sketch = get_sketch(name)
 
+    boundBox = sketch.boundingBox
+
+    xFactor = 0
+    yFactor = 0
+    zFactor = 0
+
+    if x > 0:
+        if 0 > boundBox.minPoint.x < 1:
+            xFactor = (abs(boundBox.minPoint.x) + x) * abs(boundBox.minPoint.x)
+        else:
+            xFactor =  abs(boundBox.minPoint.x) / (abs(boundBox.minPoint.x) + x)
+
+    if y > 0:
+        if 0 > boundBox.minPoint.y < 1:
+            yFactor = (abs(boundBox.minPoint.y) + y) * abs(boundBox.minPoint.y)
+        else:
+            yFactor = abs(boundBox.minPoint.y) / (abs(boundBox.minPoint.y) + y)
+
+    if z > 0:
+        if 0 > boundBox.minPoint.z < 1:
+            zFactor = (abs(boundBox.minPoint.z) + z) * abs(boundBox.minPoint.z)
+        else:
+            zFactor = abs(boundBox.minPoint.z) / (abs(boundBox.minPoint.z) + z)
+
     for point in sketch.sketchPoints:
-        xFactor = abs(point.geometry.x) / (abs(point.geometry.x) + x) if x > 0 else 0
-        yFactor = abs(point.geometry.y) / (abs(point.geometry.y) + y) if y > 0 else 0
-        zFactor = abs(point.geometry.z) / (abs(point.geometry.z) + z) if z > 0 else 0
         transform = adsk.core.Vector3D.create(
             point.geometry.x * xFactor, point.geometry.y * yFactor, point.geometry.z * zFactor)
         point.move(transform)
@@ -161,7 +182,10 @@ def scale_by_factor_sketch(name: str, x: float, y: float, z: float):
 
     for point in sketch.sketchPoints:
         transform = adsk.core.Vector3D.create(
-            point.geometry.x * x, point.geometry.y * y, point.geometry.z * z)
+            point.geometry.x * (x / 2),
+            point.geometry.y * (y / 2),
+            point.geometry.z * (z / 2)
+        )
         point.move(transform)
 
 def scale_sketch_uniform(name: str, scale: float):
@@ -247,17 +271,29 @@ def scale_body(name: str, x: float, y: float, z: float):
     if body is None:
         return
 
+    boundBox = body.boundingBox
+
     xFactor = 1
     yFactor = 1
     zFactor = 1
 
-    for point in body.vertices:
-        if xFactor == 1 and point.geometry.x > 0 and x > 0:
-            xFactor = (abs(point.geometry.x) + x) / abs(point.geometry.x)
-        if yFactor == 1 and point.geometry.y > 0 and y > 0:
-            yFactor = (abs(point.geometry.y) + y) / abs(point.geometry.y)
-        if zFactor == 1 and point.geometry.z > 0 and z > 0:
-            zFactor = (abs(point.geometry.z) + z) / abs(point.geometry.z)
+    if x > 0:
+        if 0 > boundBox.minPoint.x < 1:
+            xFactor += (abs(boundBox.minPoint.x) + x) * abs(boundBox.minPoint.x)
+        else:
+            xFactor +=  abs(boundBox.minPoint.x) / (abs(boundBox.minPoint.x) + x)
+
+    if y > 0:
+        if 0 > boundBox.minPoint.y < 1:
+            yFactor += (abs(boundBox.minPoint.y) + y) * abs(boundBox.minPoint.y)
+        else:
+            yFactor += abs(boundBox.minPoint.y) / (abs(boundBox.minPoint.y) + y)
+
+    if z > 0:
+        if 0 > boundBox.minPoint.z < 1:
+            zFactor += (abs(boundBox.minPoint.z) + z) * abs(boundBox.minPoint.z)
+        else:
+            zFactor += abs(boundBox.minPoint.z) / (abs(boundBox.minPoint.z) + z)
 
     sketch = get_sketch(name)
 
