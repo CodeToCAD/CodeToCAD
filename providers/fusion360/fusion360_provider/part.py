@@ -42,11 +42,11 @@ if TYPE_CHECKING:
 class Part(Entity, PartInterface):
     def mirror(
         self,
-        # mirror_across_entity: EntityOrItsName,
+        mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
-        mirror(self.name, axis)
+        mirror(self.name, mirror_across_entity, axis)
         return self
 
     def linear_pattern(

@@ -392,7 +392,71 @@ def set_material(name: str, material_name):
         # mesh.color = solidColor
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
 
-def mirror(name: str, plane: str):
+
+# check the behavior
+def mirror(name: str, other_name: str, axis: str):
+    comp = get_component(name)
+    features = comp.features
+
+    body = get_body(name)
+    bodyBoundBox = body.boundingBox
+
+    other_body = get_body(other_name)
+    otherBodyBoundBox = other_body.boundingBox
+
+    centerBody = adsk.core.Point3D.create(
+        (bodyBoundBox.minPoint.x + bodyBoundBox.maxPoint.x) / 2,
+        (bodyBoundBox.minPoint.y + bodyBoundBox.maxPoint.y) / 2,
+        (bodyBoundBox.minPoint.z + bodyBoundBox.maxPoint.z) / 2,
+    )
+
+    centerOtherBody = adsk.core.Point3D.create(
+        (otherBodyBoundBox.minPoint.x + otherBodyBoundBox.maxPoint.x) / 2,
+        (otherBodyBoundBox.minPoint.y + otherBodyBoundBox.maxPoint.y) / 2,
+        (otherBodyBoundBox.minPoint.z + otherBodyBoundBox.maxPoint.z) / 2,
+    )
+
+    distanceBodyToOther = adsk.core.Point3D.create(
+        centerOtherBody.x - centerBody.x,
+        centerOtherBody.y - centerBody.y,
+        centerOtherBody.z - centerBody.z,
+    )
+
+    import math
+
+    distance = math.sqrt(
+        (centerBody.x - centerOtherBody.x) ** 2 +
+        (centerBody.y - centerOtherBody.y) ** 2 +
+        (centerBody.z - centerOtherBody.z) ** 2
+    )
+
+    if axis == "x":
+        newPosition = adsk.core.Point3D.create(
+            distanceBodyToOther.x + distance,
+            distanceBodyToOther.y,
+            distanceBodyToOther.z,
+        )
+    elif axis == "y":
+        newPosition = adsk.core.Point3D.create(
+            distanceBodyToOther.x,
+            distanceBodyToOther.y + distance,
+            distanceBodyToOther.z,
+        )
+    elif axis == "z":
+        newPosition = adsk.core.Point3D.create(
+            distanceBodyToOther.x,
+            distanceBodyToOther.y,
+            distanceBodyToOther.z + distance,
+        )
+
+    newName = f"{body.name} clone"
+    # clone_sketch(name, newName)
+    # translate_sketch(newName, newPosition.x, newPosition.y, newPosition.z)
+    clone_body(body.name, newName)
+    translate_body(newName, newPosition.x, newPosition.y, newPosition.z)
+
+
+def mirror_old(name: str, plane: str):
     comp = get_component(name)
     features = comp.features
 
@@ -424,7 +488,6 @@ def create_circular_pattern(name: str, count: int, angle: float, center_name: st
         (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
         (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
     )
-
 
     body = get_body(name)
     inputEntites = adsk.core.ObjectCollection.create()
@@ -633,7 +696,7 @@ def sweep(name: str, profile_name: str):
 def create_text(name: str, text: str, font_size: float, bold: bool, italic: bool, underlined: bool, character_spainc: int, word_spacing: int, line_spacing: int, font_file_path: Optional[str] = None):
     app = adsk.core.Application.get()
     design = app.activeProduct
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
     newComp.name = name
 
     sketch = newComp.sketches.add(newComp.xYConstructionPlane)
@@ -661,7 +724,7 @@ def clone_sketch(name: str, new_name: str):
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
     newComp.name = new_name
 
     sketches = newComp.sketches
@@ -675,22 +738,28 @@ def clone_sketch(name: str, new_name: str):
     entities = adsk.core.ObjectCollection.create()
 
     if len(old_sketch.sketchCurves.sketchLines) > 0:
-        entities.add(old_sketch.sketchCurves.sketchLines[0])
+        for line in old_sketch.sketchCurves.sketchLines:
+            entities.add(line)
 
     if len(old_sketch.sketchCurves.sketchArcs) > 0:
-        entities.add(old_sketch.sketchCurves.sketchArcs[0])
+        for line in old_sketch.sketchCurves.sketchArcs:
+            entities.add(line)
 
     if len(old_sketch.sketchCurves.sketchConicCurves) > 0:
-        entities.add(old_sketch.sketchCurves.sketchConicCurves[0])
+        for line in old_sketch.sketchCurves.sketchConicCurves:
+            entities.add(line)
 
     if len(old_sketch.sketchCurves.sketchFittedSplines) > 0:
-        entities.add(old_sketch.sketchCurves.sketchFittedSplines[0])
+        for line in old_sketch.sketchCurves.sketchFittedSplines:
+            entities.add(line)
 
     if len(old_sketch.sketchCurves.sketchFixedSplines) > 0:
-        entities.add(old_sketch.sketchCurves.sketchFixedSplines[0])
+        for line in old_sketch.sketchCurves.sketchFixedSplines:
+            entities.add(line)
 
     if len(old_sketch.sketchTexts) > 0:
-        entities.add(old_sketch.sketchTexts[0])
+        for line in old_sketch.sketchTexts:
+            entities.add(line)
 
     old_sketch.copy(entities, adsk.core.Matrix3D.create(), new_sketch)
 
@@ -701,7 +770,7 @@ def clone_body(name: str, new_name: str):
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create())
+    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
     newComp.name = new_name
 
     old_body = get_body(name)

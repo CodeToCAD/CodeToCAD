@@ -10,7 +10,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-from .fusion_actions.common import clone_sketch, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, create_rectangular_pattern_sketch, create_retangular_pattern_sketch, create_text, get_component, get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, sweep, translate_sketch
+from .fusion_actions.common import clone_sketch, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, create_rectangular_pattern_sketch, create_text, get_component, get_sketch, rotate_sketch, scale_by_factor_sketch, scale_sketch, scale_sketch_uniform, sweep, translate_sketch
 
 
 from . import Entity
@@ -71,26 +71,6 @@ class Sketch(Entity, SketchInterface):
 
     def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
         print("export called:", file_path, overwrite, scale)
-        return self
-
-    def rotate_xyz(
-        self,
-        x: AngleOrItsFloatOrStringValue,
-        y: AngleOrItsFloatOrStringValue,
-        z: AngleOrItsFloatOrStringValue,
-    ):
-        return self
-
-    def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "x", rotation)
-        return self
-
-    def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "y", rotation)
-        return self
-
-    def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "z", rotation)
         return self
 
     def scale_xyz(
