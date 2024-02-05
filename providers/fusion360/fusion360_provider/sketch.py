@@ -8,13 +8,13 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.actions import clone_sketch, mirror
-from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_revolve
+from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, mirror
+from .fusion_actions.modifiers import make_revolve
 
-from .fusion_actions.curve import make_arc, make_circle, make_lines, make_point, make_rectangle
+from .fusion_actions.curve import make_arc, make_circle, make_point, make_rectangle
 from .fusion_actions.fusion_sketch import FusionSketch
 
-from .fusion_actions.common import create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, make_point3d, sweep
+from .fusion_actions.common import create_text, make_point3d, sweep
 
 
 from . import Entity
@@ -74,7 +74,12 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-        create_rectangular_pattern_sketch(self.name, instance_count, offset, direction_axis)
+        create_rectangular_pattern_sketch(
+            self.fusion_sketch.component,
+            instance_count,
+            offset,
+            direction_axis
+        )
         return self
 
     def circular_pattern(
@@ -84,13 +89,18 @@ class Sketch(Entity, SketchInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        center = center_entity_or_landmark.center
+
         create_circular_pattern_sketch(
-            self.name,
+            self.fusion_sketch.component,
+            center,
             instance_count,
             separation_angle,
-            center_entity_or_landmark,
             normal_direction_axis
         )
+
+        self.fusion_sketch.translate(center.x, center.y, center.z)
+
         return self
 
     def create_from_file(self, file_path: str, file_type: Optional[str] = None):

@@ -187,3 +187,58 @@ def create_rectangular_pattern(
     rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
+
+
+def create_circular_pattern_sketch(
+    component: adsk.fusion.Component,
+    center: adsk.core.Point3D,
+    count: int,
+    angle: float,
+    axis: str
+):
+    occ = get_occurrence(component.name)
+
+    inputEntites = adsk.core.ObjectCollection.create()
+    inputEntites.add(occ)
+
+    axisInput, sketch = make_axis(axis, center)
+
+    circularFeats = component.features.circularPatternFeatures
+    circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
+    circularFeatInput.quantity = adsk.core.ValueInput.createByReal(count)
+    circularFeatInput.totalAngle = adsk.core.ValueInput.createByReal(angle)
+    circularFeatInput.isSymmetric = True
+
+    circularFeature = circularFeats.add(circularFeatInput)
+
+    sketch.deleteMe()
+
+def create_rectangular_pattern_sketch(
+    component: adsk.fusion.Component,
+    count: int,
+    offset: float,
+    axis: str
+):
+    occ = get_occurrence(component.name)
+
+    inputEntites = adsk.core.ObjectCollection.create()
+    inputEntites.add(occ)
+
+    if axis == "x":
+        axisInput = component.xConstructionAxis
+    elif axis == "y":
+        axisInput = component.yConstructionAxis
+    elif axis == "z":
+        axisInput = component.zConstructionAxis
+
+    quantity = adsk.core.ValueInput.createByReal(count)
+    distance = adsk.core.ValueInput.createByReal(offset)
+    one = adsk.core.ValueInput.createByReal(1)
+
+    rectangularPatterns = component.features.rectangularPatternFeatures
+    rectangularPatternInput = rectangularPatterns.createInput(
+        inputEntites, axisInput,
+        quantity, distance, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+    rectangularPatternInput.setDirectionTwo(axisInput, one, one)
+
+    rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
