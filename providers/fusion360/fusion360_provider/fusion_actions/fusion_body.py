@@ -1,4 +1,4 @@
-from .common import make_axis2, make_collection, make_matrix, make_vector
+from .common import make_axis, make_collection, make_matrix, make_vector
 from .fusion_interface import FusionInterface
 
 import adsk.core, adsk.fusion
@@ -47,7 +47,7 @@ class FusionBody(FusionInterface):
         origin = self.center
 
         # @check
-        axis, sketch = make_axis2(axis_input, origin)
+        axis, sketch = make_axis(axis_input, origin)
 
         angle = adsk.core.ValueInput.createByReal(math.radians(angle))
 

@@ -26,3 +26,24 @@ def make_revolve(
     body.name = sketch.name
 
     return body
+
+def make_loft(
+    component: adsk.fusion.Component,
+    sketch1: adsk.fusion.Sketch,
+    sketch2: adsk.fusion.Sketch,
+) -> adsk.fusion.BRepBody:
+    loftFeats = component.features.loftFeatures
+    loftInput = loftFeats.createInput(
+        adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+    )
+    loftSectionsObj = loftInput.loftSections
+    loftSectionsObj.add(sketch1.profiles.item(0))
+    loftSectionsObj.add(sketch2.profiles.item(0))
+    loftInput.isSolid = True
+    loftInput.isClosed = True
+    _ = loftFeats.add(loftInput)
+
+    body = component.bRepBodies.item(component.bRepBodies.count - 1)
+    body.name = component.name.split(":")[0]
+
+    return body

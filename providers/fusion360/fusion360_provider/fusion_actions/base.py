@@ -2,6 +2,12 @@ from typing import Optional
 
 import adsk.core, adsk.fusion
 
+def get_root_component() -> adsk.fusion.Component:
+    app = adsk.core.Application.get()
+    design = app.activeProduct
+    rootComp = design.rootComponent
+    return rootComp
+
 
 def get_or_create_component(name: str) -> adsk.fusion.Component:
     app = adsk.core.Application.get()
@@ -45,6 +51,17 @@ def get_occurrence(name: str) -> Optional[adsk.fusion.Occurrence]:
             return occurrence
 
     return None
+
+def delete_occurrence(name: str):
+    app = adsk.core.Application.get()
+    design = app.activeProduct
+    rootComp = design.rootComponent
+
+    for occurrence in rootComp.occurrences:
+        # if name == occurrence.component.name.split(":")[0]:
+        if name == occurrence.component.name:
+            occurrence.deleteMe()
+            # return occurrence
 
 
 def get_body(component, name: str) -> Optional[adsk.fusion.BRepBody]:
