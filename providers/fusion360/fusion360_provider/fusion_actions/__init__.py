@@ -18,6 +18,7 @@ from .fusion_interface import *
 from .fusion_sketch import *
 from .base import *
 from .modifiers import *
+from .actions import *
 
 
 # from .transformations import *

@@ -1,9 +1,10 @@
+from .actions import clone_body
 from .common import make_axis, make_collection, make_matrix, make_vector
 from .fusion_interface import FusionInterface
 
 import adsk.core, adsk.fusion
 
-from .base import get_body, get_or_create_component, get_or_create_sketch
+from .base import get_or_create_component, get_or_create_sketch
 
 
 class FusionBody(FusionInterface):
@@ -12,9 +13,9 @@ class FusionBody(FusionInterface):
     sketch: adsk.fusion.Sketch
     def __init__(self, name):
         self.component = get_or_create_component(name)
-        # self.instance = get_body(self.component, name)
         self.sketch = get_or_create_sketch(self.component, name)
 
+    # def translate(self, x: float, y: float, z: float):
     def translate(self, x: float, y: float, z: float):
         features = self.component.features
 
@@ -38,15 +39,11 @@ class FusionBody(FusionInterface):
 
         body = self.instance
 
-        if body is None:
-            return
-
         bodies = make_collection()
         bodies.add(body)
 
         origin = self.center
 
-        # @check
         axis, sketch = make_axis(axis_input, origin)
 
         angle = adsk.core.ValueInput.createByReal(math.radians(angle))
@@ -134,6 +131,10 @@ class FusionBody(FusionInterface):
         scaleInput = scales.createInput(inputColl, basePt, scaleFactor)
 
         scale = scales.add(scaleInput)
+
+    def clone(self, new_name: str, copy_landmarks) -> adsk.fusion.BRepBody:
+        body = clone_body(self.instance, new_name, copy_landmarks)
+        return body
 
     @property
     def center(self):

@@ -17,6 +17,9 @@ class FusionInterface(ABC):
     def scale_uniform(self, x: float, y: float, z: float):
         ...
 
+    def clone(self):
+        ...
+
     @property
     def center(self):
         ...
