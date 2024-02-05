@@ -10,7 +10,9 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
-from providers.fusion360.fusion360_provider.fusion_actions.common import rotate_body, rotate_sketch, translate_body, translate_sketch
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_body import FusionBody
+
+from .fusion_actions.fusion_sketch import FusionSketch
 
 if TYPE_CHECKING:
     from . import Landmark
@@ -27,6 +29,8 @@ class Entity(EntityInterface):
         self.name = name
         self.description = description
         self.native_instance = native_instance
+        self.fusion_sketch = FusionSketch(name)
+        self.fusion_body = FusionBody(name)
 
     def is_exists(self) -> bool:
         print(
@@ -86,31 +90,34 @@ class Entity(EntityInterface):
         )
         return self
 
-    # translate gives wrong transform
-    # when translate sketch and then body
-    # with just sketch transform it's transform the body too
     def translate_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        translate_sketch(self.name, x, y, z)
-        # translate_body(self.name, x, y, z)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.translate(x, y, z)
+        else:
+            self.fusion_sketch.translate(x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_sketch(self.name, amount, 0, 0)
+        # translate_sketch(self.name, amount, 0, 0)
+        self.fusion_sketch.translate(amount, 0, 0)
         # translate_body(self.name, amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_sketch(self.name, 0, amount, 0)
+        # translate_sketch(self.name, 0, amount, 0)
+        self.fusion_sketch.translate(0, amount, 0)
         # translate_body(self.name, 0, amount, 0)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        translate_sketch(self.name, 0, 0, amount)
+        # translate_sketch(self.name, 0, 0, amount)
+        self.fusion_sketch.translate(0, 0, amount)
         # translate_body(self.name, 0, 0, amount)
         return self
 
@@ -123,21 +130,20 @@ class Entity(EntityInterface):
         print("rotate_xyz called:", x, y, z)
         return self
 
-    # rotate gives wrong transform
     # when rotate sketch and then body
     # with just sketch transform it's transform the body too
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "x", rotation)
+        self.fusion_sketch.rotate("x", rotation)
         # rotate_body(self.name, "x", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "y", rotation)
+        self.fusion_sketch.rotate("y", rotation)
         # rotate_body(self.name, "y", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        rotate_sketch(self.name, "z", rotation)
+        self.fusion_sketch.rotate("z", rotation)
         # rotate_body(self.name, "z", rotation)
         return self
 

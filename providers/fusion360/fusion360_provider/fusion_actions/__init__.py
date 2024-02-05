@@ -11,8 +11,13 @@
 # from .animation import *
 # from .camera import *
 # from .drivers import *
-# from .curve import *
+
+from .curve import *
 from .common import *
+from .fusion_interface import *
+from .fusion_sketch import *
+from .base import *
+
 
 # from .transformations import *
 # from .constraints import *
@@ -20,6 +25,6 @@ from .common import *
 # from .light import *
 # from .material import *
 # from .mesh import *
-# from .modifiers import *
+from .modifiers import *
 # from .render import *
 # from .vertex_edge_wire import *
