@@ -8,27 +8,6 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-# def make_axis(axis_input: str):
-#     app = adsk.core.Application.get()
-#     product = app.activeProduct
-#     design = adsk.fusion.Design.cast(product)
-#     rootComp = design.rootComponent
-
-#     sketches = rootComp.sketches;
-#     xyPlane = rootComp.xYConstructionPlane
-#     sketch = sketches.add(xyPlane)
-
-#     if axis_input == "x":
-#         axis_point = adsk.core.Point3D.create(1, 0, 0)
-#     elif axis_input == "y":
-#         axis_point = adsk.core.Point3D.create(0, 1, 0)
-#     elif axis_input == "z":
-#         axis_point = adsk.core.Point3D.create(0, 0, 1)
-
-#     sketchLine = sketch.sketchCurves.sketchLines;
-#     axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), axis_point)
-#     return axis, sketch
-
 def make_axis(
     axis_input: str,
     point: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0)

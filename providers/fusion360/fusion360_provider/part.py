@@ -105,39 +105,37 @@ class Part(Entity, PartInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        self.fusion_body.scale_body(x, y, z)
+        self.fusion_body.scale(x, y, z)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale_body(scale, 0, 0)
+        self.fusion_body.scale(scale, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale_body(0, scale, 0)
+        self.fusion_body.scale(0, scale, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale_body(0, 0, scale)
+        self.fusion_body.scale(0, 0, scale)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor_body(scale_factor, 1, 1)
+        self.fusion_body.scale_by_factor(scale_factor, 1, 1)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor_body(1, scale_factor, 1)
+        self.fusion_body.scale_by_factor(1, scale_factor, 1)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor_body(1, 1, scale_factor)
+        self.fusion_body.scale_by_factor(1, 1, scale_factor)
         return self
 
     def scale_keep_aspect_ratio(
-        # self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-        self,
-        scale: DimensionOrItsFloatOrStringValue,
+        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
     ):
-        self.fusion_body.scale_body_uniform(scale, scale, scale)
+        self.fusion_body.scale_uniform(scale)
         return self
 
     def create_cube(
@@ -221,6 +219,7 @@ class Part(Entity, PartInterface):
         outer_radius: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
+        from . import Sketch
         import math
 
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
@@ -230,43 +229,27 @@ class Part(Entity, PartInterface):
             outer_radius
         )
 
-        app = adsk.core.Application.get()
-        design = app.activeProduct
-
-        newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
-        newComp.name = self.name
-
-        sketches = newComp.sketches
-        xyPlane = newComp.xYConstructionPlane
-        sketch = sketches.add(xyPlane)
-        sketch.name = self.name
+        sketch = Sketch(self.fusion_body.sketch.name).fusion_sketch.instance
 
         circles = sketch.sketchCurves.sketchCircles
         _ = circles.addByCenterRadius(
             adsk.core.Point3D.create(0, 0, 0), inner_radius.value
         )
 
-        lines = sketch.sketchCurves.sketchLines
+        # this should be a landmark
+        # lines = sketch.sketchCurves.sketchLines
+        # axisLine = lines.addByTwoPoints(
+        #     adsk.core.Point3D.create(-inner_radius.value, -outer_radius.value, 0),
+        #     adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0),
+        # )
 
-        axisLine = lines.addByTwoPoints(
-            adsk.core.Point3D.create(-inner_radius.value, -outer_radius.value, 0),
-            adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0),
+        self.fusion_body.instance = make_revolve(
+            self.fusion_body.component,
+            sketch,
+            math.pi * 2,
+            "",
+            "x",
         )
-
-        prof = sketch.profiles.item(0)
-        revolves = newComp.features.revolveFeatures
-        revInput = revolves.createInput(
-            prof, axisLine, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
-        )
-
-        angle = adsk.core.ValueInput.createByReal(math.pi * 2)
-        revInput.setAngleExtent(False, angle)
-        revolves.add(revInput)
-
-        body = newComp.bRepBodies.item(
-            newComp.bRepBodies.count - 1
-        )
-        body.name = self.name
 
         return self
 
