@@ -85,65 +85,6 @@ def set_material(name: str, material_name):
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
 
 
-
-
-def combine(name: str, other_name: str):
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
-    features = rootComp.features
-
-    body = get_body(name)
-    otherBody = get_body(other_name)
-
-    bodyCollection = adsk.core.ObjectCollection.create()
-    bodyCollection.add(otherBody)
-
-    combineFeatures = features.combineFeatures
-    combineFeaturesInput = combineFeatures.createInput(body, bodyCollection)
-    combineFeaturesInput.operation = adsk.fusion.FeatureOperations.JoinFeatureOperation
-    combineFeaturesInput.isNewComponent = False
-    combineFeaturesInput.isKeepToolBodies = False
-    combine_feature = combineFeatures.add(combineFeaturesInput)
-
-def subtract(name: str, other_name: str):
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
-    features = rootComp.features
-
-    body = get_body(name)
-    otherBody = get_body(other_name)
-
-    bodyCollection = adsk.core.ObjectCollection.create()
-    bodyCollection.add(otherBody)
-
-    combineFeatures = features.combineFeatures
-    combineFeaturesInput = combineFeatures.createInput(body, bodyCollection)
-    combineFeaturesInput.operation = adsk.fusion.FeatureOperations.CutFeatureOperation
-    combineFeaturesInput.isNewComponent = False
-    combineFeaturesInput.isKeepToolBodies = False
-    combine_feature = combineFeatures.add(combineFeaturesInput)
-
-def intersect(name: str, other_name: str, delete_after_intersect: bool):
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
-    features = rootComp.features
-
-    body = get_body(name)
-    otherBody = get_body(other_name)
-
-    bodyCollection = adsk.core.ObjectCollection.create()
-    bodyCollection.add(otherBody)
-
-    combineFeatures = features.combineFeatures
-    combineFeaturesInput = combineFeatures.createInput(body, bodyCollection)
-    combineFeaturesInput.operation = adsk.fusion.FeatureOperations.IntersectFeatureOperation
-    combineFeaturesInput.isNewComponent = False
-    combineFeaturesInput.isKeepToolBodies = False
-    combine_feature = combineFeatures.add(combineFeaturesInput)
-
 def sweep(name: str, profile_name: str):
     comp = get_component(name)
     path_sketch = get_sketch(name)

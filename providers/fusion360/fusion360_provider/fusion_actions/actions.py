@@ -1,5 +1,5 @@
 import adsk.core, adsk.fusion
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence
+from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
 from .fusion_interface import FusionInterface
 
@@ -242,3 +242,53 @@ def create_rectangular_pattern_sketch(
     rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
+
+def combine_action(
+    body: adsk.fusion.BRepBody,
+    otherBody: adsk.fusion.BRepBody,
+    operation: adsk.fusion.FeatureOperations,
+):
+    rootComp = get_root_component()
+    features = rootComp.features
+
+    bodyCollection = adsk.core.ObjectCollection.create()
+    bodyCollection.add(otherBody)
+
+    combineFeatures = features.combineFeatures
+    combineFeaturesInput = combineFeatures.createInput(body, bodyCollection)
+    # combineFeaturesInput.operation = adsk.fusion.FeatureOperations.JoinFeatureOperation
+    combineFeaturesInput.operation = operation
+    combineFeaturesInput.isNewComponent = False
+    combineFeaturesInput.isKeepToolBodies = False
+    combine_feature = combineFeatures.add(combineFeaturesInput)
+
+def combine(
+    body: adsk.fusion.BRepBody,
+    otherBody: adsk.fusion.BRepBody,
+):
+    combine_action(
+        body,
+        otherBody,
+        adsk.fusion.FeatureOperations.JoinFeatureOperation,
+    )
+
+def subtract(
+    body: adsk.fusion.BRepBody,
+    otherBody: adsk.fusion.BRepBody,
+):
+    combine_action(
+        body,
+        otherBody,
+        adsk.fusion.FeatureOperations.CutFeatureOperation,
+    )
+
+def intersect(
+    body: adsk.fusion.BRepBody,
+    otherBody: adsk.fusion.BRepBody,
+    delete_after_intersect: bool,
+):
+    combine_action(
+        body,
+        otherBody,
+        adsk.fusion.FeatureOperations.IntersectFeatureOperation,
+    )
