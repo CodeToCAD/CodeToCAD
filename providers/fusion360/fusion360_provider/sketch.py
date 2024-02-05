@@ -400,17 +400,6 @@ class Sketch(Entity, SketchInterface):
 
         sketch = self.fusion_sketch.instance
 
-        # sketchLines = sketch.sketchCurves.sketchLines
-        # self.curves = sketchLines
-        # for i in range(len(points) - 1):
-        #     start = adsk.core.Point3D.create(points[i].x.value, points[i].y.value, points[i].z.value)
-        #     end = adsk.core.Point3D.create(points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value)
-        #     sketchLines.addByTwoPoints(start, end)
-
-        # startPoint = adsk.core.Point3D.create(0, 0, 0)
-        # endPoint = adsk.core.Point3D.create(width, length, 0)
-        # sketchLines.addTwoPointRectangle(startPoint, endPoint)
-
         self.curves = make_rectangle(sketch, points)
 
         edges = []

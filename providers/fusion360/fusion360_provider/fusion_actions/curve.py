@@ -18,7 +18,9 @@ def make_line(
     return sketchLines
 
 def make_circle(
-    sketch: adsk.fusion.Sketch, radius: DimensionOrItsFloatOrStringValue, resolution: float
+    sketch: adsk.fusion.Sketch,
+    radius: DimensionOrItsFloatOrStringValue,
+    resolution: float
 ) -> adsk.fusion.SketchFittedSplines:
     from .circle import get_circle_points
     radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
@@ -33,11 +35,20 @@ def make_circle(
     return sketch.sketchCurves.sketchFittedSplines
 
 def make_arc(
-    sketch: adsk.fusion.Sketch, start: adsk.core.Point3D, end: adsk.core.Point3D, radius:DimensionOrItsFloatOrStringValue
+    sketch: adsk.fusion.Sketch,
+    start: adsk.core.Point3D,
+    end: adsk.core.Point3D,
+    radius: DimensionOrItsFloatOrStringValue,
+    closed: bool = False,
 ) -> adsk.fusion.SketchArcs:
     along = adsk.core.Point3D.create((start.x + end.x) / 2, start.y + radius, start.z)
     arcs = sketch.sketchCurves.sketchArcs
     _ = arcs.addByThreePoints(start, along, end)
+
+    if closed:
+        lines = sketch.sketchCurves.sketchLines
+        _ = lines.addByTwoPoints(start, end)
+
     return arcs
 
 def make_rectangle(

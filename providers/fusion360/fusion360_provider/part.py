@@ -8,7 +8,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import delete_occurrence
-from providers.fusion360.fusion360_provider.fusion_actions.curve import make_lines
+from providers.fusion360.fusion360_provider.fusion_actions.curve import make_arc, make_lines
 from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_loft, make_revolve
 
 from .fusion_actions.fusion_body import FusionBody
@@ -259,13 +259,26 @@ class Part(Entity, PartInterface):
         keyword_arguments: Optional[dict] = None,
     ):
         from . import Sketch
-
         import math
 
-        axis = adsk.core.Point3D.create(1, 0, 0)
-        circle = Sketch(self.name)
-        circle.create_arc(radius)
-        circle.revolve(math.pi * 2, axis)
+        radius = Dimension.from_dimension_or_its_float_or_string_value(
+            radius
+        )
+
+        start = make_point3d(radius.value, 0, 0)
+        end = make_point3d(-radius.value, 0, 0)
+
+        sketch = Sketch(self.fusion_body.sketch.name)
+
+        make_arc(sketch.fusion_sketch.instance, start, end, radius.value, True)
+
+        self.fusion_body.instance = make_revolve(
+            self.fusion_body.component,
+            sketch.fusion_sketch.instance,
+            math.pi * 2,
+            "",
+            "x",
+        )
 
         return self
 

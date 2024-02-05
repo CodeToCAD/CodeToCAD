@@ -10,7 +10,8 @@ def make_revolve(
     about_entity_or_landmark: EntityOrItsName,
     axis: AxisOrItsIndexOrItsName
 ) -> adsk.fusion.BRepBody:
-    resolveAxis, sketchAxis = make_axis(axis, adsk.core.Point3D.create(5, 5, 3))
+    # @check this point must be an landmark or center of and object
+    resolveAxis, sketchAxis = make_axis(axis, adsk.core.Point3D.create(0, 0, 0))
 
     operation = adsk.fusion.FeatureOperations.NewBodyFeatureOperation
 
