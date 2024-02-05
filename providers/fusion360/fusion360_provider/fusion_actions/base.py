@@ -10,9 +10,7 @@ def get_root_component() -> adsk.fusion.Component:
 
 
 def get_or_create_component(name: str) -> adsk.fusion.Component:
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
+    rootComp = get_root_component()
 
     for occurrence in rootComp.occurrences:
         if name == occurrence.component.name:
@@ -59,6 +57,13 @@ def delete_occurrence(name: str):
         if name == occurrence.component.name:
             occurrence.deleteMe()
 
+def delete_all_occurrence():
+    app = adsk.core.Application.get()
+    design = app.activeProduct
+    rootComp = design.rootComponent
+
+    for occurrence in rootComp.occurrences:
+        occurrence.deleteMe()
 
 def get_body(component, name: str) -> Optional[adsk.fusion.BRepBody]:
     body = component.bRepBodies.itemByName(name)

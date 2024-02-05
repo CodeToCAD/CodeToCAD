@@ -52,8 +52,24 @@ def make_arc(
     return arcs
 
 def make_rectangle(
-    sketch: adsk.fusion.Sketch, points: list[Point]
+    sketch: adsk.fusion.Sketch,
+    length: DimensionOrItsFloatOrStringValue,
+    width: DimensionOrItsFloatOrStringValue,
 ) -> adsk.fusion.SketchLines:
+    half_length = (
+        Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
+    )
+    half_width = (
+        Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
+    )
+
+    left_top = Point(half_length * -1, half_width, Dimension(0))
+    left_bottom = Point(half_length * -1, half_width * -1, Dimension(0))
+    right_bottom = Point(half_length, half_width * -1, Dimension(0))
+    right_top = Point(half_length, half_width, Dimension(0))
+
+    points = [left_top, left_bottom, right_bottom, right_top, left_top]
+
     sketchLines = sketch.sketchCurves.sketchLines
 
     for i in range(len(points) - 1):

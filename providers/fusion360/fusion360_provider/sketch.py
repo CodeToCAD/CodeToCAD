@@ -8,12 +8,13 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.actions import clone_sketch, mirror
 from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_revolve
 
 from .fusion_actions.curve import make_arc, make_circle, make_lines, make_point, make_rectangle
 from .fusion_actions.fusion_sketch import FusionSketch
 
-from .fusion_actions.common import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, make_point3d, sweep
+from .fusion_actions.common import create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, make_point3d, sweep
 
 
 from . import Entity
@@ -29,6 +30,27 @@ if TYPE_CHECKING:
 
 
 class Sketch(Entity, SketchInterface):
+    name: str
+    curve_type: Optional["CurveTypes"] = None
+    description: Optional[str] = None
+    native_instance = None
+    curves = None
+
+    def __init__(
+        self,
+        name: str,
+        curve_type: Optional["CurveTypes"] = None,
+        description: Optional[str] = None,
+        native_instance=None,
+    ):
+        self.fusion_sketch = FusionSketch(name)
+        # self.name = name
+        self.name = self.fusion_sketch.instance.name
+        self.curve_type = curve_type
+        self.description = description
+        self.native_instance = native_instance
+        self.resolution = 4
+
     def project(self, project_onto: "Sketch") -> "ProjectableInterface":
         print("project called:", project_onto)
         from . import Sketch
@@ -41,6 +63,9 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
+        sketch, newPosition = mirror(self.fusion_sketch, mirror_across_entity.center, axis)
+        part = self.__class__(sketch.name)
+        part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
         return self
 
     def linear_pattern(
@@ -117,30 +142,10 @@ class Sketch(Entity, SketchInterface):
         self.fusion_sketch.scale_uniform(scale)
         return self
 
-    name: str
-    curve_type: Optional["CurveTypes"] = None
-    description: Optional[str] = None
-    native_instance = None
-    curves = None
-
-    def __init__(
-        self,
-        name: str,
-        curve_type: Optional["CurveTypes"] = None,
-        description: Optional[str] = None,
-        native_instance=None,
-    ):
-        self.fusion_sketch = FusionSketch(name)
-        # self.name = name
-        self.name = self.fusion_sketch.instance.name
-        self.curve_type = curve_type
-        self.description = description
-        self.native_instance = native_instance
-        self.resolution = 4
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        clone_sketch(self.name, new_name)
-        return Sketch("a sketch")
+        new_sketch = clone_sketch(self.fusion_sketch.instance, new_name, copy_landmarks)
+        return Sketch(new_sketch.name)
 
     def revolve(
         self,
@@ -150,7 +155,7 @@ class Sketch(Entity, SketchInterface):
     ) -> "Part":
         from . import Part
 
-        name = make_revolve(
+        body = make_revolve(
             self.fusion_sketch.component,
             self.fusion_sketch.instance,
             angle,
@@ -158,7 +163,7 @@ class Sketch(Entity, SketchInterface):
             axis,
         )
 
-        return Part(name)
+        return Part(body.name)
 
     def twist(
         self,
@@ -172,8 +177,8 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         from . import Part
-        name = self.fusion_sketch.extrude(length)
-        return Part(name)
+        body = self.fusion_sketch.extrude(length)
+        return Part(body.name)
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
@@ -385,22 +390,10 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         from . import Wire, Edge
-        half_length = (
-            Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
-        )
-        half_width = (
-            Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
-        )
-        left_top = Point(half_length * -1, half_width, Dimension(0))
-        left_bottom = Point(half_length * -1, half_width * -1, Dimension(0))
-        right_bottom = Point(half_length, half_width * -1, Dimension(0))
-        right_top = Point(half_length, half_width, Dimension(0))
-
-        points = [left_top, left_bottom, right_bottom, right_top, left_top]
 
         sketch = self.fusion_sketch.instance
 
-        self.curves = make_rectangle(sketch, points)
+        self.curves = make_rectangle(sketch, length, width)
 
         edges = []
         for line in self.curves:
@@ -408,40 +401,12 @@ class Sketch(Entity, SketchInterface):
             end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
             edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
             edges.append(edge)
-
-        # return self
 
         return Wire(
             edges=edges,
             name=create_uuid_like_id(),
             parent_entity=self.name,
         )
-
-    # @check delete this and use the make_lines to create the lines
-    def create_lines(
-        self,
-        points,
-    ) -> "Wire":
-        from . import Edge
-        sketch = self.fusion_sketch.instance
-
-        # lines = sketch.sketchCurves.sketchLines
-
-        # for i in range(len(points) - 1):
-        #     start = points[i]
-        #     end = points[i + 1]
-        #     lines.addByTwoPoints(start, end)
-
-        # self.curves = lines
-        self.curves = make_lines(sketch, points)
-        edges = []
-        for line in self.curves:
-            start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
-            end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
-            edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
-            edges.append(edge)
-
-        return None
 
     def create_polygon(
         self,

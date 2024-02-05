@@ -7,9 +7,12 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.base import delete_occurrence
-from providers.fusion360.fusion360_provider.fusion_actions.curve import make_arc, make_lines
-from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_loft, make_revolve
+from .fusion_actions.actions import create_circular_pattern, create_rectangular_pattern, mirror
+from .fusion_actions.fusion_sketch import FusionSketch
+
+from .fusion_actions.base import delete_occurrence
+from .fusion_actions.curve import make_arc, make_circle, make_lines, make_rectangle
+from .fusion_actions.modifiers import make_loft, make_revolve
 
 from .fusion_actions.fusion_body import FusionBody
 
@@ -17,17 +20,12 @@ from . import Entity
 
 from .fusion_actions.common import (
     chamfer_all_edges,
-    clone_body,
     combine,
-    create_circular_pattern,
-    create_rectangular_pattern,
     fillet_all_edges,
-    get_sketch,
     hole,
     hollow,
     intersect,
     make_point3d,
-    mirror,
     set_material,
     subtract,
 )
@@ -43,6 +41,8 @@ if TYPE_CHECKING:
 class Part(Entity, PartInterface):
     def __init__(self, name: str):
         self.fusion_body = FusionBody(name)
+        self.name = name
+
 
     def mirror(
         self,
@@ -50,7 +50,10 @@ class Part(Entity, PartInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
-        mirror(self.name, mirror_across_entity, axis)
+        body, newPosition = mirror(self.fusion_body, mirror_across_entity.center, axis)
+        part = self.__class__(body.name)
+        part.fusion_body.instance = body
+        part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
         return self
 
     def linear_pattern(
@@ -59,8 +62,12 @@ class Part(Entity, PartInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-
-        create_rectangular_pattern(self.name, instance_count, offset, direction_axis)
+        create_rectangular_pattern(
+            self.fusion_body.component,
+            instance_count,
+            offset,
+            direction_axis
+        )
         return self
 
     def circular_pattern(
@@ -70,13 +77,18 @@ class Part(Entity, PartInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+
+        # sketch it's not moved
+        center = center_entity_or_landmark.center
         create_circular_pattern(
-            self.name,
+            self.fusion_body.component,
+            self.fusion_body.instance,
+            center,
             instance_count,
             separation_angle,
-            center_entity_or_landmark,
             normal_direction_axis,
         )
+
         return self
 
     def remesh(self, strategy: str, amount: float):
@@ -145,11 +157,9 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
-        from . import Sketch
-
-        cube_sketch = Sketch(self.name)
-        cube_sketch.create_rectangle(length, width)
-        cube_sketch.extrude(height)
+        sketch = FusionSketch(self.fusion_body.sketch.name)
+        _ = make_rectangle(sketch.instance, width, length)
+        self.fusion_body.instance = sketch.extrude(height)
 
         return self
 
@@ -207,9 +217,9 @@ class Part(Entity, PartInterface):
     ):
         from . import Sketch
 
-        cube_sketch = Sketch(self.name)
-        cube_sketch.create_circle(radius)
-        cube_sketch.extrude(height)
+        sketch = FusionSketch(self.fusion_body.sketch.name)
+        _ = make_circle(sketch.instance, radius, 4)
+        self.fusion_body.instance = sketch.extrude(height)
 
         return self
 
@@ -313,8 +323,9 @@ class Part(Entity, PartInterface):
         return self
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
-        clone_body(self.name, new_name)
-        return Part(new_name)
+        body = self.fusion_body.clone(new_name, copy_landmarks)
+        return Part(body.name)
+
 
     def union(
         self,

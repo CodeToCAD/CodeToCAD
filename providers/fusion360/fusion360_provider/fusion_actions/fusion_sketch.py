@@ -1,3 +1,4 @@
+from providers.fusion360.fusion360_provider.fusion_actions.actions import clone_sketch
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis_vector
 from .fusion_interface import FusionInterface
 from .base import get_or_create_component, get_or_create_sketch
@@ -156,7 +157,11 @@ class FusionSketch(FusionInterface):
         body = self.component.bRepBodies.item(self.component.bRepBodies.count - 1)
         body.name = self.instance.name
 
-        return body.name
+        return body
+
+    def clone(self, new_name: str, copy_landmarks) -> adsk.fusion.Sketch:
+        sketch = clone_sketch(self.instance, new_name, copy_landmarks)
+        return sketch
 
     @property
     def center(self):
