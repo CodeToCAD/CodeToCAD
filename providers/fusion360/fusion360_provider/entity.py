@@ -104,21 +104,27 @@ class Entity(EntityInterface):
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        # translate_sketch(self.name, amount, 0, 0)
-        self.fusion_sketch.translate(amount, 0, 0)
-        # translate_body(self.name, amount, 0, 0)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.translate(amount, 0, 0)
+        else:
+            self.fusion_sketch.translate(amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        # translate_sketch(self.name, 0, amount, 0)
-        self.fusion_sketch.translate(0, amount, 0)
-        # translate_body(self.name, 0, amount, 0)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.translate(0, amount, 0)
+        else:
+            self.fusion_sketch.translate(0, amount, 0)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        # translate_sketch(self.name, 0, 0, amount)
-        self.fusion_sketch.translate(0, 0, amount)
-        # translate_body(self.name, 0, 0, amount)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.translate(0, 0, amount)
+        else:
+            self.fusion_sketch.translate(0, 0, amount)
         return self
 
     def rotate_xyz(
@@ -130,21 +136,28 @@ class Entity(EntityInterface):
         print("rotate_xyz called:", x, y, z)
         return self
 
-    # when rotate sketch and then body
-    # with just sketch transform it's transform the body too
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-        self.fusion_sketch.rotate("x", rotation)
-        # rotate_body(self.name, "x", rotation)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.rotate("x", rotation)
+        else:
+            self.fusion_sketch.rotate("x", rotation)
         return self
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-        self.fusion_sketch.rotate("y", rotation)
-        # rotate_body(self.name, "y", rotation)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.rotate("y", rotation)
+        else:
+            self.fusion_sketch.rotate("y", rotation)
         return self
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-        self.fusion_sketch.rotate("z", rotation)
-        # rotate_body(self.name, "z", rotation)
+        from . import Part
+        if isinstance(self, Part):
+            self.fusion_body.rotate("z", rotation)
+        else:
+            self.fusion_sketch.rotate("z", rotation)
         return self
 
     def get_bounding_box(self) -> "BoundaryBox":

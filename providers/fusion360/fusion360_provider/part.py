@@ -7,8 +7,9 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.base import delete_occurrence
 from providers.fusion360.fusion360_provider.fusion_actions.curve import make_lines
-from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_revolve
+from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_loft, make_revolve
 
 from .fusion_actions.fusion_body import FusionBody
 
@@ -163,10 +164,6 @@ class Part(Entity, PartInterface):
     ):
         from . import Sketch
 
-        app = adsk.core.Application.get()
-        design = app.activeProduct
-        root_comp = design.rootComponent
-
         if draft_radius == Dimension(0):
             import math
 
@@ -186,31 +183,21 @@ class Part(Entity, PartInterface):
                 "z"
             )
         else:
-            base = Sketch(self.name)
-            base.create_circle(radius)
-            sketch = get_sketch(self.name)
+            base = Sketch(self.fusion_body.sketch.name + "_temp_base")
+            _ = base.create_circle(radius)
 
-            top = Sketch(self.name + "_temp_top")
+            top = Sketch(self.fusion_body.sketch.name + "_temp_top")
             _ = top.create_circle(draft_radius)
             top.translate_z(height)
 
-            sketch2 = get_sketch(self.name + "_temp_top")
-
-            loftFeats = root_comp.features.loftFeatures
-            loftInput = loftFeats.createInput(
-                adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+            self.fusion_body.instance = make_loft(
+                self.fusion_body.component,
+                base.fusion_sketch.instance,
+                top.fusion_sketch.instance
             )
-            loftSectionsObj = loftInput.loftSections
-            loftSectionsObj.add(sketch.profiles.item(0))
-            loftSectionsObj.add(sketch2.profiles.item(0))
-            loftInput.isSolid = True
-            loftInput.isClosed = True
-            loftFeats.add(loftInput)
 
-        # body = self.fusion_body.component.bRepBodies.item(
-        #     self.fusion_body.component.bRepBodies.count - 1
-        # )
-        # body.name = self.name
+            delete_occurrence(base.fusion_sketch.instance.name)
+            delete_occurrence(top.fusion_sketch.instance.name)
 
         return self
 
