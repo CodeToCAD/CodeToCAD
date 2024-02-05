@@ -7,6 +7,10 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.curve import make_lines
+from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_revolve
+
+from .fusion_actions.fusion_body import FusionBody
 
 from . import Entity
 
@@ -21,14 +25,10 @@ from .fusion_actions.common import (
     hole,
     hollow,
     intersect,
+    make_point3d,
     mirror,
-    rotate_body,
-    scale_body,
-    scale_body_uniform,
     set_material,
     subtract,
-    translate_body,
-    scale_by_factor_body,
 )
 
 from typing import TYPE_CHECKING
@@ -40,6 +40,9 @@ if TYPE_CHECKING:
 
 
 class Part(Entity, PartInterface):
+    def __init__(self, name: str):
+        self.fusion_body = FusionBody(name)
+
     def mirror(
         self,
         mirror_across_entity: EntityOrItsName,
@@ -95,57 +98,37 @@ class Part(Entity, PartInterface):
         print("export called:", file_path, overwrite, scale)
         return self
 
-    # def rotate_xyz(
-    #     self,
-    #     x: AngleOrItsFloatOrStringValue,
-    #     y: AngleOrItsFloatOrStringValue,
-    #     z: AngleOrItsFloatOrStringValue,
-    # ):
-    #     return self
-
-    # def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
-    #     rotate_body(self.name, "x", rotation)
-    #     return self
-
-    # def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
-    #     rotate_body(self.name, "y", rotation)
-    #     return self
-
-    # def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
-    #     rotate_body(self.name, "z", rotation)
-    #     return self
-
     def scale_xyz(
         self,
         x: DimensionOrItsFloatOrStringValue,
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        scale_body(self.name, x, y, z)
+        self.fusion_body.scale_body(x, y, z)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        scale_body(self.name, scale, 0, 0)
+        self.fusion_body.scale_body(scale, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        scale_body(self.name, 0, scale, 0)
+        self.fusion_body.scale_body(0, scale, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        scale_body(self.name, 0, 0, scale)
+        self.fusion_body.scale_body(0, 0, scale)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        scale_by_factor_body(self.name, scale_factor, 1, 1)
+        self.fusion_body.scale_by_factor_body(scale_factor, 1, 1)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        scale_by_factor_body(self.name, 1, scale_factor, 1)
+        self.fusion_body.scale_by_factor_body(1, scale_factor, 1)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        scale_by_factor_body(self.name, 1, 1, scale_factor)
+        self.fusion_body.scale_by_factor_body(1, 1, scale_factor)
         return self
 
     def scale_keep_aspect_ratio(
@@ -153,7 +136,7 @@ class Part(Entity, PartInterface):
         self,
         scale: DimensionOrItsFloatOrStringValue,
     ):
-        scale_body_uniform(self.name, scale, scale, scale)
+        self.fusion_body.scale_body_uniform(scale, scale, scale)
         return self
 
     def create_cube(
@@ -188,17 +171,20 @@ class Part(Entity, PartInterface):
             import math
 
             points = [
-                adsk.core.Point3D.create(0, 0, 0),
-                adsk.core.Point3D.create(0, 0, height),
-                adsk.core.Point3D.create(radius, 0, 0),
-                adsk.core.Point3D.create(0, 0, 0),
+                make_point3d(0, 0, 0),
+                make_point3d(0, 0, height),
+                make_point3d(radius, 0, 0),
+                make_point3d(0, 0, 0),
             ]
 
-            axis = adsk.core.Point3D.create(0, 0, 1)
-
-            triangle = Sketch("Triangle")
-            triangle.create_lines(points)
-            triangle.revolve(math.pi * 2, axis)
+            _ = make_lines(self.fusion_body.sketch, points)
+            self.fusion_body.instance = make_revolve(
+                self.fusion_body.component,
+                self.fusion_body.sketch,
+                math.pi * 2,
+                "Entity",
+                "z"
+            )
         else:
             base = Sketch(self.name)
             base.create_circle(radius)
@@ -221,10 +207,10 @@ class Part(Entity, PartInterface):
             loftInput.isClosed = True
             loftFeats.add(loftInput)
 
-        body = design.rootComponent.bRepBodies.item(
-            design.rootComponent.bRepBodies.count - 1
-        )
-        body.name = self.name
+        # body = self.fusion_body.component.bRepBodies.item(
+        #     self.fusion_body.component.bRepBodies.count - 1
+        # )
+        # body.name = self.name
 
         return self
 
