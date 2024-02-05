@@ -371,3 +371,80 @@ def create_text(
     textInput.textStyle = textStyle
 
     sketch_text = texts.add(textInput)
+
+def hollow(
+    component: adsk.fusion.Component,
+    body: adsk.fusion.BRepBody,
+    thickness: float
+):
+    entities = adsk.core.ObjectCollection.create()
+    for face in body.faces:
+        _, normal = face.evaluator.getNormalAtPoint(face.pointOnFace)
+        if normal.z > 0:
+            entities.add(face)
+
+    shellFeatures = component.features.shellFeatures
+    shellInput = shellFeatures.createInput(entities, False)
+    thicknessInput = adsk.core.ValueInput.createByReal(thickness)
+    shellInput.insideThickness = thicknessInput
+    shellFeatures.add(shellInput)
+
+def hole(
+    component: adsk.fusion.Component,
+    body: adsk.fusion.BRepBody,
+    point,
+    radius,
+    depth
+):
+    # the point should be a list of landmarks (sketch points)
+    # and always use the points feature
+    # or it should be called from the callee which would loop over
+    # the point list
+    face_selected = None
+    for face in body.faces:
+        _, normal = face.evaluator.getNormalAtPoint(face.pointOnFace)
+        if normal.z > 0:
+            face_selected = face
+
+    # holeDiam = adsk.core.ValueInput.createByString('20 mm')
+    holeDiam = adsk.core.ValueInput.createByReal(radius)
+    holeDepth = adsk.core.ValueInput.createByReal(depth)
+
+    holeFeatures = component.features.holeFeatures
+
+    input = holeFeatures.createSimpleInput(holeDiam)
+    input.setDistanceExtent(holeDepth)
+    input.setPositionByPoint(face_selected, adsk.core.Point3D.create(point.x, point.y, point.z))
+    holeFeature = holeFeatures.add(input)
+
+def fillet_all_edges(
+    component: adsk.fusion.Component,
+    body: adsk.fusion.BRepBody,
+    radius: float
+):
+    entities = adsk.core.ObjectCollection.create()
+    for edge in body.edges:
+        entities.add(edge)
+
+    offset = adsk.core.ValueInput.createByReal(radius)
+
+    fillets = component.features.filletFeatures
+    filletInput = fillets.createInput()
+    filletInput.addConstantRadiusEdgeSet(entities, offset, True)
+    fillet = fillets.add(filletInput)
+
+def chamfer_all_edges(
+    component: adsk.fusion.Component,
+    body: adsk.fusion.BRepBody,
+    radius: float
+):
+    entities = adsk.core.ObjectCollection.create()
+    for edge in body.edges:
+        entities.add(edge)
+
+    offset = adsk.core.ValueInput.createByReal(radius)
+
+    chamfers = component.features.chamferFeatures
+    chamferInput = chamfers.createInput2()
+    chamferInput.chamferEdgeSets.addEqualDistanceChamferEdgeSet(entities, offset, True)
+    chamfer = chamfers.add(chamferInput)
