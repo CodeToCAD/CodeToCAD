@@ -7,7 +7,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import combine, create_circular_pattern, create_rectangular_pattern, intersect, mirror, subtract
+from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence
@@ -19,12 +19,7 @@ from .fusion_actions.fusion_body import FusionBody
 from . import Entity
 
 from .fusion_actions.common import (
-    chamfer_all_edges,
-    fillet_all_edges,
-    hole,
-    hollow,
     make_point3d,
-    set_material,
 )
 
 from typing import TYPE_CHECKING
@@ -359,7 +354,11 @@ class Part(Entity, PartInterface):
         start_axis: AxisOrItsIndexOrItsName = "z",
         flip_axis: bool = False,
     ):
-        hollow(self.name, thickness_x)
+        hollow(
+            self.fusion_body.component,
+            self.fusion_body.instance,
+            thickness_x
+        )
         return self
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue):
@@ -392,7 +391,13 @@ class Part(Entity, PartInterface):
     ):
         # hardcoded because I need to figure out how to get that information
         # @check: implement Landmark.py
-        hole(self.name, Point(0.5, 1, 6.0), radius, depth)
+        hole(
+            self.fusion_body.component,
+            self.fusion_body.instance,
+            Point(0.5, 1, 6.0),
+            radius,
+            depth
+        )
         return self
 
     def twist(
@@ -406,7 +411,7 @@ class Part(Entity, PartInterface):
         return self
 
     def set_material(self, material_name: MaterialOrItsName):
-        set_material(self.name, material_name)
+        # set_material(self.name, material_name)
         return self
 
     def is_colliding_with_part(self, other_part: PartOrItsName) -> bool:
@@ -416,7 +421,11 @@ class Part(Entity, PartInterface):
     def fillet_all_edges(
         self, radius: DimensionOrItsFloatOrStringValue, use_width: bool = False
     ):
-        fillet_all_edges(self.name, radius)
+        fillet_all_edges(
+            self.fusion_body.component,
+            self.fusion_body.instance,
+            radius
+        )
         return self
 
     def fillet_edges(
@@ -438,7 +447,11 @@ class Part(Entity, PartInterface):
         return self
 
     def chamfer_all_edges(self, radius: DimensionOrItsFloatOrStringValue):
-        chamfer_all_edges(self.name, radius)
+        chamfer_all_edges(
+            self.fusion_body.component,
+            self.fusion_body.instance,
+            radius
+        )
         return self
 
     def chamfer_edges(
