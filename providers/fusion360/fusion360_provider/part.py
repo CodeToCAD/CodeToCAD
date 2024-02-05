@@ -7,7 +7,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import create_circular_pattern, create_rectangular_pattern, mirror
+from .fusion_actions.actions import combine, create_circular_pattern, create_rectangular_pattern, intersect, mirror, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence
@@ -20,14 +20,11 @@ from . import Entity
 
 from .fusion_actions.common import (
     chamfer_all_edges,
-    combine,
     fillet_all_edges,
     hole,
     hollow,
-    intersect,
     make_point3d,
     set_material,
-    subtract,
 )
 
 from typing import TYPE_CHECKING
@@ -333,7 +330,7 @@ class Part(Entity, PartInterface):
         delete_after_union: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        combine(self.name, with_part)
+        combine(self.fusion_body.instance, with_part.fusion_body.instance)
         return self
 
     def subtract(
@@ -342,7 +339,7 @@ class Part(Entity, PartInterface):
         delete_after_subtract: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        subtract(self.name, with_part)
+        subtract(self.fusion_body.instance, with_part.fusion_body.instance)
         return self
 
     def intersect(
@@ -351,7 +348,7 @@ class Part(Entity, PartInterface):
         delete_after_intersect: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        intersect(self.name, with_part, delete_after_intersect)
+        intersect(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_intersect)
         return self
 
     def hollow(
