@@ -85,75 +85,7 @@ def set_material(name: str, material_name):
         mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
 
 
-def sweep(name: str, profile_name: str):
-    comp = get_component(name)
-    path_sketch = get_sketch(name)
 
-    paths = adsk.core.ObjectCollection.create()
-
-    if len(path_sketch.sketchCurves.sketchLines) > 0:
-        for line in path_sketch.sketchCurves.sketchLines:
-            paths.add(line)
-
-    if len(path_sketch.sketchCurves.sketchArcs) > 0:
-        for line in path_sketch.sketchCurves.sketchArcs:
-            paths.add(line)
-
-    if len(path_sketch.sketchCurves.sketchConicCurves) > 0:
-        for line in path_sketch.sketchCurves.sketchConicCurves:
-            paths.add(line)
-
-    if len(path_sketch.sketchCurves.sketchFittedSplines) > 0:
-        for line in path_sketch.sketchCurves.sketchFittedSplines:
-            paths.add(line)
-
-    if len(path_sketch.sketchCurves.sketchFixedSplines) > 0:
-        for line in path_sketch.sketchCurves.sketchFixedSplines:
-            paths.add(line)
-
-    path = comp.features.createPath(paths)
-
-    comp_profile = get_component(profile_name)
-    profile_sketch = get_sketch(profile_name)
-
-    prof = profile_sketch.profiles.item(0)
-
-    sweeps = comp_profile.features.sweepFeatures
-    sweepInput = sweeps.createInput(
-        prof, path, adsk.fusion.FeatureOperations.NewComponentFeatureOperation)
-    sweep = sweeps.add(sweepInput)
-
-    component = comp_profile.occurrences.item(
-        comp_profile.occurrences.count - 1
-    )
-    component.name = f"Sweep {profile_name}"
-
-def create_text(name: str, text: str, font_size: float, bold: bool, italic: bool, underlined: bool, character_spainc: int, word_spacing: int, line_spacing: int, font_file_path: Optional[str] = None):
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
-    newComp.name = name
-
-    sketch = newComp.sketches.add(newComp.xYConstructionPlane)
-    sketch.name = name
-
-    texts = sketch.sketchTexts
-
-    line = sketch.sketchCurves.sketchLines.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), adsk.core.Point3D.create(len(text), 0, 0))
-    textInput = texts.createInput2(text, font_size)
-    textInput.setAsFitOnPath(line, True)
-
-    textStyle = 0
-    if bold:
-        textStyle |= adsk.fusion.TextStyles.TextStyleBold
-    if italic:
-        textStyle |= adsk.fusion.TextStyles.TextStyleItalic
-    if underlined:
-        textStyle |= adsk.fusion.TextStyles.TextStyleUnderline
-
-    textInput.textStyle = textStyle
-
-    sketch_text = texts.add(textInput)
 
 
 def hollow(name: str, thickness: float):

@@ -1,3 +1,4 @@
+from typing import Optional
 import adsk.core, adsk.fusion
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
@@ -292,3 +293,81 @@ def intersect(
         otherBody,
         adsk.fusion.FeatureOperations.IntersectFeatureOperation,
     )
+
+def sweep(
+    path_component: adsk.fusion.Component,
+    path_sketch: adsk.fusion.Sketch,
+    profile_component: adsk.fusion.Component,
+    profile_sketch: adsk.fusion.Sketch,
+) -> str:
+    paths = adsk.core.ObjectCollection.create()
+
+    if len(path_sketch.sketchCurves.sketchLines) > 0:
+        for line in path_sketch.sketchCurves.sketchLines:
+            paths.add(line)
+
+    if len(path_sketch.sketchCurves.sketchArcs) > 0:
+        for line in path_sketch.sketchCurves.sketchArcs:
+            paths.add(line)
+
+    if len(path_sketch.sketchCurves.sketchConicCurves) > 0:
+        for line in path_sketch.sketchCurves.sketchConicCurves:
+            paths.add(line)
+
+    if len(path_sketch.sketchCurves.sketchFittedSplines) > 0:
+        for line in path_sketch.sketchCurves.sketchFittedSplines:
+            paths.add(line)
+
+    if len(path_sketch.sketchCurves.sketchFixedSplines) > 0:
+        for line in path_sketch.sketchCurves.sketchFixedSplines:
+            paths.add(line)
+
+    path = path_component.features.createPath(paths)
+
+    prof = profile_sketch.profiles.item(0)
+
+    sweeps = profile_component.features.sweepFeatures
+    sweepInput = sweeps.createInput(
+        prof, path, adsk.fusion.FeatureOperations.NewComponentFeatureOperation)
+    sweep = sweeps.add(sweepInput)
+
+    rootComp = get_root_component()
+
+    occurrence = rootComp.occurrences.item(
+        rootComp.occurrences.count - 1
+    )
+    component = occurrence.component
+
+    component.name = f"Sweep {profile_component.name}"
+
+    return component.name
+
+def create_text(
+    sketch: adsk.fusion.Sketch,
+    text: str,
+    font_size: float,
+    bold: bool,
+    italic: bool,
+    underlined: bool,
+    character_spainc: int,
+    word_spacing: int,
+    line_spacing: int,
+    font_file_path: Optional[str] = None
+):
+    texts = sketch.sketchTexts
+
+    line = sketch.sketchCurves.sketchLines.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), adsk.core.Point3D.create(len(text), 0, 0))
+    textInput = texts.createInput2(text, font_size)
+    textInput.setAsFitOnPath(line, True)
+
+    textStyle = 0
+    if bold:
+        textStyle |= adsk.fusion.TextStyles.TextStyleBold
+    if italic:
+        textStyle |= adsk.fusion.TextStyles.TextStyleItalic
+    if underlined:
+        textStyle |= adsk.fusion.TextStyles.TextStyleUnderline
+
+    textInput.textStyle = textStyle
+
+    sketch_text = texts.add(textInput)
