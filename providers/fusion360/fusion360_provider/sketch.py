@@ -8,13 +8,13 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, mirror
+from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, mirror, sweep
 from .fusion_actions.modifiers import make_revolve
 
-from .fusion_actions.curve import make_arc, make_circle, make_point, make_rectangle
+from .fusion_actions.curve import make_arc, make_circle, make_line, make_point, make_rectangle
 from .fusion_actions.fusion_sketch import FusionSketch
 
-from .fusion_actions.common import create_text, make_point3d, sweep
+from .fusion_actions.common import make_point3d
 
 
 from . import Entity
@@ -194,8 +194,13 @@ class Sketch(Entity, SketchInterface):
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
         from . import Part
-        sweep(self.name, profile_name_or_instance)
-        return Part("a part")
+        name = sweep(
+            self.fusion_sketch.component,
+            self.fusion_sketch.instance,
+            profile_name_or_instance.fusion_sketch.component,
+            profile_name_or_instance.fusion_sketch.instance,
+        )
+        return Part(name)
 
     def offset(self, radius: DimensionOrItsFloatOrStringValue):
         print("offset called:", radius)
@@ -217,9 +222,8 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
-        # check
         create_text(
-            self.name,
+            self.fusion_sketch.instance,
             text,
             font_size,
             bold,
@@ -287,7 +291,8 @@ class Sketch(Entity, SketchInterface):
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(end_at.x, end_at.y, end_at.z)
 
-        self.curves = make_point(sketch, start, end)
+        # self.curves = make_point(sketch, start, end)
+        self.curves = make_line(sketch, start, end)
 
         line = self.curves[0]
         start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
