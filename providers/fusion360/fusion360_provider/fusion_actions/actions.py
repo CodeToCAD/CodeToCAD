@@ -68,8 +68,6 @@ def clone_sketch(
     new_name: str,
     copy_landmarks: bool = True,
 ):
-    _ = copy_landmarks # @check how to implement
-
     app = adsk.core.Application.get()
     design = app.activeProduct
 
@@ -107,6 +105,11 @@ def clone_sketch(
     if len(old_sketch.sketchTexts) > 0:
         for line in old_sketch.sketchTexts:
             entities.add(line)
+
+    if len(old_sketch.sketchPoints) > 0 and copy_landmarks:
+        # @check creating 2 landmark
+        for landmark in old_sketch.sketchPoints:
+            entities.add(landmark)
 
     old_sketch.copy(entities, adsk.core.Matrix3D.create(), new_sketch)
 

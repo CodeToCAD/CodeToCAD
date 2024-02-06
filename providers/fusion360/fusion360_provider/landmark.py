@@ -6,6 +6,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import FusionLandmark
 
 
 from . import Entity
@@ -29,6 +30,7 @@ class Landmark(Entity, LandmarkInterface):
         description: Optional[str] = None,
         native_instance=None,
     ):
+        self.fusion_landmark = FusionLandmark(name)
         self.name = name
         self.parent_entity = parent_entity
         self.description = description
@@ -40,19 +42,25 @@ class Landmark(Entity, LandmarkInterface):
         offset: Optional[DimensionsOrItsListOfFloatOrString] = None,
         new_parent: Optional[EntityOrItsName] = None,
     ) -> "Landmark":
-        print("clone called:", new_name, offset, new_parent)
         from . import Landmark
 
-        return Landmark("name", "parent")
+        if new_parent:
+            if isinstance(new_parent, str):
+                parent = Entity(new_parent)
+            else:
+                parent = new_parent
+        else:
+            parent = self.parent_entity
+
+        sketch = self.fusion_landmark.clone(new_name, True)
+
+        return Landmark(sketch.name, parent)
 
     def get_landmark_entity_name(self) -> str:
-        print(
-            "get_landmark_entity_name called:",
-        )
-        return "String"
+        return self.fusion_landmark.instance.name
 
     def get_parent_entity(self) -> "Entity":
-        print(
-            "get_parent_entity called:",
-        )
-        return Entity("an entity")
+        if isinstance(self.parent_entity, str):
+            return Entity(self.parent_entity)
+        return self.parent_entity
+
