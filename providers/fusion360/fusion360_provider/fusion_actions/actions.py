@@ -1,6 +1,6 @@
 from typing import Optional
 import adsk.core, adsk.fusion
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_root_component
+from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_or_create_sketch, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
 from .fusion_interface import FusionInterface
 
@@ -36,9 +36,6 @@ def mirror(
         return distance1 + distance2
 
     if axis == "x":
-        adsk.core.Application.get().userInterface.messageBox(
-            f"{distanceBodyToOther.x, distance}"
-        )
         newPosition = adsk.core.Point3D.create(
             move(distanceBodyToOther.x, distance),
             distanceBodyToOther.y,
@@ -193,27 +190,66 @@ def create_rectangular_pattern(
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
 
 
+def translate_sketch(component, x, y, z):
+    matrix = adsk.core.Matrix3D.create()
+    matrix.translation = adsk.core.Vector3D.create(x, y, z)
+
+    sketch = get_or_create_sketch(component, component.name)
+
+    entities = adsk.core.ObjectCollection.create()
+
+    if len(sketch.sketchCurves.sketchLines) > 0:
+        for line in sketch.sketchCurves.sketchLines:
+            entities.add(line)
+
+    if len(sketch.sketchCurves.sketchArcs) > 0:
+        for line in sketch.sketchCurves.sketchArcs:
+            entities.add(line)
+
+    if len(sketch.sketchCurves.sketchConicCurves) > 0:
+        for line in sketch.sketchCurves.sketchConicCurves:
+            entities.add(line)
+
+    if len(sketch.sketchCurves.sketchFittedSplines) > 0:
+        for line in sketch.sketchCurves.sketchFittedSplines:
+            entities.add(line)
+
+    if len(sketch.sketchCurves.sketchFixedSplines) > 0:
+        for line in sketch.sketchCurves.sketchFixedSplines:
+            entities.add(line)
+
+    if len(sketch.sketchTexts) > 0:
+        for line in sketch.sketchTexts:
+            entities.add(line)
+
+    sketch.move(entities, matrix)
+
+
 def create_circular_pattern_sketch(
-    component: adsk.fusion.Component,
+    # component: adsk.fusion.Component,
+    fusion_interface: FusionInterface,
     center: adsk.core.Point3D,
     count: int,
     angle: float,
     axis: str
 ):
-    occ = get_occurrence(component.name)
+    occ = get_occurrence(fusion_interface.component.name)
 
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
     axisInput, sketch = make_axis(axis, center)
 
-    circularFeats = component.features.circularPatternFeatures
+    circularFeats = fusion_interface.component.features.circularPatternFeatures
     circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
     circularFeatInput.quantity = adsk.core.ValueInput.createByReal(count)
     circularFeatInput.totalAngle = adsk.core.ValueInput.createByReal(angle)
     circularFeatInput.isSymmetric = True
 
     circularFeature = circularFeats.add(circularFeatInput)
+
+    # @check sphere with axis x and y
+    fusion_interface.translate(center.x, center.y, center.z)
 
     sketch.deleteMe()
 
@@ -260,7 +296,6 @@ def combine_action(
 
     combineFeatures = features.combineFeatures
     combineFeaturesInput = combineFeatures.createInput(body, bodyCollection)
-    # combineFeaturesInput.operation = adsk.fusion.FeatureOperations.JoinFeatureOperation
     combineFeaturesInput.operation = operation
     combineFeaturesInput.isNewComponent = False
     combineFeaturesInput.isKeepToolBodies = False
