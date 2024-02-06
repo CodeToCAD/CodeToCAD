@@ -138,7 +138,8 @@ class FusionBody(FusionInterface):
 
     @property
     def center(self):
-        boundBox = self.instance.boundingBox
+        # boundBox = self.instance.boundingBox
+        boundBox = self.sketch.boundingBox
 
         center = adsk.core.Point3D.create(
             (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
