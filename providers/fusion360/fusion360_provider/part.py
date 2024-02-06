@@ -7,7 +7,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, subtract
+from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, set_material, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence
@@ -408,7 +408,7 @@ class Part(Entity, PartInterface):
 
     def set_material(self, material_name: MaterialOrItsName):
         # not working
-        # set_material(self.name, material_name)
+        set_material(self.fusion_body, material_name)
         return self
 
     def is_colliding_with_part(self, other_part: PartOrItsName) -> bool:

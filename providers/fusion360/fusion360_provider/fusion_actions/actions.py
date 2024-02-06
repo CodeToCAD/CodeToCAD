@@ -1,5 +1,6 @@
 from typing import Optional
 import adsk.core, adsk.fusion
+from codetocad.enums.preset_material import PresetMaterial
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_or_create_sketch, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
 from .fusion_interface import FusionInterface
@@ -450,3 +451,23 @@ def chamfer_all_edges(
     chamferInput = chamfers.createInput2()
     chamferInput.chamferEdgeSets.addEqualDistanceChamferEdgeSet(entities, offset, True)
     chamfer = chamfers.add(chamferInput)
+
+def set_material(
+    fusion_interface: FusionInterface,
+    material_name
+):
+    body = fusion_interface.instance
+
+    if isinstance(material_name, str):
+        material_name = getattr(PresetMaterial, material_name)
+
+    if isinstance(material_name, PresetMaterial):
+        r, g, b, a = material_name.color
+        color = adsk.core.Color.create(r, g, b, round(a * 255))
+
+        appearance = body.appearance
+
+        colorProp = adsk.core.ColorProperty.cast(appearance.appearanceProperties.itemByName('Color'))
+        colorProp.value = color
+
+        body.appearance = appearance

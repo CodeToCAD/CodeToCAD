@@ -48,35 +48,3 @@ def make_point3d(x: float, y: float, z: float):
 
 def make_collection():
     return adsk.core.ObjectCollection.create()
-
-# not working
-def set_material(name: str, material_name):
-    body = get_body(name)
-
-    app = adsk.core.Application.get()
-    design = app.activeProduct
-    rootComp = design.rootComponent
-
-    if rootComp.customGraphicsGroups.count > 0:
-        rootComp.customGraphicsGroups.item(0).deleteMe()
-        app.activeViewport.refresh()
-
-    graphics = rootComp.customGraphicsGroups.add()
-    bodyMesh = body.meshManager.createMeshCalculator()
-    bodyMesh = body.meshManager.displayMeshes.bestMesh
-
-    if isinstance(material_name, str):
-        material_name = getattr(PresetMaterial, material_name)
-
-    if isinstance(material_name, PresetMaterial):
-        r, g, b, a = material_name.color
-        color = adsk.core.Color.create(r, g, b, round(a * 255))
-        # body.material.appearence = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
-        # body.material.appearence = color
-        # solidColor = adsk.fusion.CustomGraphicsSolidColorEffect.create(color)
-        coords = adsk.fusion.CustomGraphicsCoordinates.create(bodyMesh.nodeCoordinatesAsDouble)
-        mesh = graphics.addMesh(coords, bodyMesh.nodeIndices,
-                                bodyMesh.normalVectorsAsDouble, bodyMesh.nodeIndices)
-
-        # mesh.color = solidColor
-        mesh.color = adsk.fusion.CustomGraphicsBasicMaterialColorEffect.create(color)
