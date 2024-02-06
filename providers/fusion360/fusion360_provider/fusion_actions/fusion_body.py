@@ -4,7 +4,7 @@ from .fusion_interface import FusionInterface
 
 import adsk.core, adsk.fusion
 
-from .base import get_or_create_component, get_or_create_sketch
+from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
 
 
 class FusionBody(FusionInterface):
@@ -135,6 +135,16 @@ class FusionBody(FusionInterface):
     def clone(self, new_name: str, copy_landmarks) -> adsk.fusion.BRepBody:
         body = clone_body(self.instance, new_name, copy_landmarks)
         return body
+
+    def rename(self, new_name: str):
+        self.component.name = new_name
+        self.sketch.name = new_name
+
+        if self.instance:
+            self.instance.name = new_name
+
+    def delete(self):
+        delete_occurrence(self.component.name)
 
     @property
     def center(self):

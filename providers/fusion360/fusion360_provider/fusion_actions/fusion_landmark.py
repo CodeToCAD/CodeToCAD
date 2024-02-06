@@ -2,7 +2,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.common import make_po
 from .actions import clone_sketch
 from .fusion_interface import FusionInterface
 
-from .base import get_or_create_component, get_or_create_sketch
+from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
 
 import adsk.core
 
@@ -33,6 +33,13 @@ class FusionLandmark(FusionInterface):
     def clone(self, new_name: str, copy_landmarks) -> adsk.fusion.Sketch:
         sketch = clone_sketch(self.instance, new_name, copy_landmarks)
         return sketch
+
+    def rename(self, new_name: str):
+        self.component.name = new_name
+        self.instance.name = new_name
+
+    def delete(self):
+        delete_occurrence(self.component.name)
 
     @property
     def center(self):

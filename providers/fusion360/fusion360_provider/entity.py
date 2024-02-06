@@ -49,11 +49,23 @@ class Entity(EntityInterface):
         return True
 
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True):
-        print("rename called:", new_name, renamelinked_entities_and_landmarks)
+        from . import Part, Sketch, Landmark
+        if isinstance(self, Part):
+            self.fusion_body.rename(new_name)
+        if isinstance(self, Sketch):
+            self.fusion_sketch.rename(new_name)
+        if isinstance(self, Landmark):
+            self.fusion_landmark.rename(new_name)
         return self
 
     def delete(self, remove_children: bool = True):
-        print("delete called:", remove_children)
+        from . import Part, Sketch, Landmark
+        if isinstance(self, Part):
+            self.fusion_body.delete()
+        if isinstance(self, Sketch):
+            self.fusion_sketch.delete()
+        if isinstance(self, Landmark):
+            self.fusion_landmark.delete()
         return self
 
     def is_visible(self) -> bool:

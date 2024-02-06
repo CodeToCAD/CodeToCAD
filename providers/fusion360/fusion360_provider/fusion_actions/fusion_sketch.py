@@ -1,7 +1,7 @@
 from .actions import clone_sketch
 from .common import make_axis_vector
 from .fusion_interface import FusionInterface
-from .base import get_or_create_component, get_or_create_sketch
+from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
 
 import adsk.core
 
@@ -162,6 +162,13 @@ class FusionSketch(FusionInterface):
     def clone(self, new_name: str, copy_landmarks) -> adsk.fusion.Sketch:
         sketch = clone_sketch(self.instance, new_name, copy_landmarks)
         return sketch
+
+    def rename(self, new_name: str):
+        self.component.name = new_name
+        self.instance.name = new_name
+
+    def delete(self):
+        delete_occurrence(self.component.name)
 
     @property
     def center(self):
