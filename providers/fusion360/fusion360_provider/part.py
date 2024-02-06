@@ -7,7 +7,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, subtract
+from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence
@@ -69,12 +69,10 @@ class Part(Entity, PartInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
-
-        # sketch it's not moved
         center = center_entity_or_landmark.center
-        create_circular_pattern(
-            self.fusion_body.component,
-            self.fusion_body.instance,
+        create_circular_pattern_sketch(
+            # self.fusion_body.component,
+            self.fusion_body,
             center,
             instance_count,
             separation_angle,

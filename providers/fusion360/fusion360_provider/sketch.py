@@ -92,14 +92,13 @@ class Sketch(Entity, SketchInterface):
         center = center_entity_or_landmark.center
 
         create_circular_pattern_sketch(
-            self.fusion_sketch.component,
+            # self.fusion_sketch.component,
+            self.fusion_sketch,
             center,
             instance_count,
             separation_angle,
             normal_direction_axis
         )
-
-        self.fusion_sketch.translate(center.x, center.y, center.z)
 
         return self
 
@@ -257,14 +256,10 @@ class Sketch(Entity, SketchInterface):
         return Wire(edges=points, name=create_uuid_like_id(), parent_entity=self.name)
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
+        from . import Vertex
         sketch = self.fusion_sketch.instance
 
         make_point(sketch, point.x, point.y, point.z)
-
-        # somePoint = adsk.core.Point3D.create(point.x, point.y, point.z)
-        # sketchPoints = sketch.sketchPoints
-        # self.curve = sketchPoints
-        # point = sketchPoints.add(somePoint)
 
         return Vertex(
             location=point,
