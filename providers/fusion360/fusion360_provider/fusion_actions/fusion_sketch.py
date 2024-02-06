@@ -1,5 +1,5 @@
-from providers.fusion360.fusion360_provider.fusion_actions.actions import clone_sketch
-from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis_vector
+from .actions import clone_sketch
+from .common import make_axis_vector
 from .fusion_interface import FusionInterface
 from .base import get_or_create_component, get_or_create_sketch
 

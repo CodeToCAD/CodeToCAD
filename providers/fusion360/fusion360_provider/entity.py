@@ -10,6 +10,8 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
+from .fusion_actions.fusion_landmark import FusionLandmark
+
 from .fusion_actions.fusion_body import FusionBody
 
 from .fusion_actions.fusion_sketch import FusionSketch
@@ -104,35 +106,43 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        from . import Part
+        from . import Part, Sketch, Landmark
         if isinstance(self, Part):
             self.fusion_body.translate(x, y, z)
-        else:
+        elif isinstance(self, Sketch):
             self.fusion_sketch.translate(x, y, z)
+        elif isinstance(self, Landmark):
+            self.fusion_landmark.translate(x, y, z)
         return self
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
-        from . import Part
+        from . import Part, Sketch, Landmark
         if isinstance(self, Part):
             self.fusion_body.translate(amount, 0, 0)
-        else:
+        elif isinstance(self, Sketch):
             self.fusion_sketch.translate(amount, 0, 0)
+        elif isinstance(self, Landmark):
+            self.fusion_landmark.translate(amount, 0, 0)
         return self
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
-        from . import Part
+        from . import Part, Sketch, Landmark
         if isinstance(self, Part):
             self.fusion_body.translate(0, amount, 0)
-        else:
+        elif isinstance(self, Sketch):
             self.fusion_sketch.translate(0, amount, 0)
+        elif isinstance(self, Landmark):
+            self.fusion_landmark.translate(0, amount, 0)
         return self
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
-        from . import Part
+        from . import Part, Sketch, Landmark
         if isinstance(self, Part):
             self.fusion_body.translate(0, 0, amount)
-        else:
+        elif isinstance(self, Sketch):
             self.fusion_sketch.translate(0, 0, amount)
+        elif isinstance(self, Landmark):
+            self.fusion_landmark.translate(0, 0, amount)
         return self
 
     def rotate_xyz(
@@ -187,13 +197,24 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
-        from . import Landmark
+        from . import Landmark, Part
+        if isinstance(self, Part):
+            center =  self.fusion_body.center
+            name =  self.fusion_body.instance.name
+        else:
+            center =  self.fusion_sketch.center
+            name =  self.fusion_sketch.instance.name
 
-        print("create_landmark called:", landmark_name, x, y, z)
-        return Landmark("name", "parent")
+        landmark = Landmark(landmark_name, name)
+        landmark.fusion_landmark.create_landmark(center.x + x, center.y + y, center.z + z)
+
+        return landmark
 
     def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
-        from . import Landmark
+        from . import Landmark, Part
+        if isinstance(self, Part):
+            name =  self.fusion_body.instance.name
+        else:
+            name =  self.fusion_sketch.instance.name
 
-        print("get_landmark called:", landmark_name)
-        return Landmark("name", "parent")
+        return Landmark(landmark_name, name)
