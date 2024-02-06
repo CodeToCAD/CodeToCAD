@@ -110,33 +110,40 @@ class Part(Entity, PartInterface):
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale(scale, 0, 0)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_body.scale(scale.value, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale(0, scale, 0)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_body.scale(0, scale.value, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_body.scale(0, 0, scale)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_body.scale(0, 0, scale.value)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor(scale_factor, 1, 1)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_body.scale_by_factor(scale_factor.value, 1, 1)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor(1, scale_factor, 1)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_body.scale_by_factor(1, scale_factor.value, 1)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        self.fusion_body.scale_by_factor(1, 1, scale_factor)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_body.scale_by_factor(1, 1, scale_factor.value)
         return self
 
     def scale_keep_aspect_ratio(
         self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
     ):
-        self.fusion_body.scale_uniform(scale)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_body.scale_uniform(scale.value)
         return self
 
     def create_cube(
@@ -146,9 +153,13 @@ class Part(Entity, PartInterface):
         height: DimensionOrItsFloatOrStringValue,
         keyword_arguments: Optional[dict] = None,
     ):
+        width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
+        length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
+        height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
+
         sketch = FusionSketch(self.fusion_body.sketch.name)
-        _ = make_rectangle(sketch.instance, width, length)
-        self.fusion_body.instance = sketch.extrude(height)
+        _ = make_rectangle(sketch.instance, width.value, length.value)
+        self.fusion_body.instance = sketch.extrude(height.value)
 
         return self
 
@@ -160,14 +171,17 @@ class Part(Entity, PartInterface):
         keyword_arguments: Optional[dict] = None,
     ):
         from . import Sketch
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
+        height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
+        draft_radius = Dimension.from_dimension_or_its_float_or_string_value(draft_radius, None)
 
         if draft_radius == Dimension(0):
             import math
 
             points = [
                 make_point3d(0, 0, 0),
-                make_point3d(0, 0, height),
-                make_point3d(radius, 0, 0),
+                make_point3d(0, 0, height.value),
+                make_point3d(radius.value, 0, 0),
                 make_point3d(0, 0, 0),
             ]
 
@@ -176,8 +190,8 @@ class Part(Entity, PartInterface):
                 self.fusion_body.component,
                 self.fusion_body.sketch,
                 math.pi * 2,
-                "Entity",
-                "z"
+                make_point3d(0, 0, 0),
+                make_point3d(0, 0, radius.value)
             )
         else:
             base = Sketch(self.fusion_body.sketch.name + "_temp_base")
@@ -185,7 +199,7 @@ class Part(Entity, PartInterface):
 
             top = Sketch(self.fusion_body.sketch.name + "_temp_top")
             _ = top.create_circle(draft_radius)
-            top.translate_z(height)
+            top.translate_z(height.value)
 
             self.fusion_body.instance = make_loft(
                 self.fusion_body.component,
@@ -206,9 +220,12 @@ class Part(Entity, PartInterface):
     ):
         from . import Sketch
 
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
+        height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
+
         sketch = FusionSketch(self.fusion_body.sketch.name)
-        _ = make_circle(sketch.instance, radius, 4)
-        self.fusion_body.instance = sketch.extrude(height)
+        _ = make_circle(sketch.instance, radius.value, 4)
+        self.fusion_body.instance = sketch.extrude(height.value)
 
         return self
 
@@ -235,19 +252,13 @@ class Part(Entity, PartInterface):
             adsk.core.Point3D.create(0, 0, 0), inner_radius.value
         )
 
-        # this should be a landmark
-        # lines = sketch.sketchCurves.sketchLines
-        # axisLine = lines.addByTwoPoints(
-        #     adsk.core.Point3D.create(-inner_radius.value, -outer_radius.value, 0),
-        #     adsk.core.Point3D.create(inner_radius.value, -outer_radius.value, 0),
-        # )
-
         self.fusion_body.instance = make_revolve(
             self.fusion_body.component,
             sketch,
             math.pi * 2,
-            "",
             "x",
+            start=make_point3d(-inner_radius.value, -outer_radius.value, 0),
+            end=make_point3d(inner_radius.value, -outer_radius.value, 0),
         )
 
         return self
@@ -275,8 +286,8 @@ class Part(Entity, PartInterface):
             self.fusion_body.component,
             sketch.fusion_sketch.instance,
             math.pi * 2,
-            "",
-            "x",
+            start=make_point3d(0, 0, 0),
+            end=end,
         )
 
         return self
@@ -386,13 +397,17 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
     ):
-        # @check: hardcoded before implementing Landmark.py
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
+        depth = Dimension.from_dimension_or_its_float_or_string_value(depth, None)
+
+        point = hole_landmark.center
+
         hole(
             self.fusion_body.component,
             self.fusion_body.instance,
-            Point(0.5, 1, 6.0),
-            radius,
-            depth
+            point,
+            radius.value,
+            depth.value,
         )
         return self
 
@@ -407,7 +422,6 @@ class Part(Entity, PartInterface):
         return self
 
     def set_material(self, material_name: MaterialOrItsName):
-        # not working
         set_material(self.fusion_body, material_name)
         return self
 
@@ -418,10 +432,11 @@ class Part(Entity, PartInterface):
     def fillet_all_edges(
         self, radius: DimensionOrItsFloatOrStringValue, use_width: bool = False
     ):
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         fillet_all_edges(
             self.fusion_body.component,
             self.fusion_body.instance,
-            radius
+            radius.value,
         )
         return self
 
@@ -444,10 +459,11 @@ class Part(Entity, PartInterface):
         return self
 
     def chamfer_all_edges(self, radius: DimensionOrItsFloatOrStringValue):
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         chamfer_all_edges(
             self.fusion_body.component,
             self.fusion_body.instance,
-            radius
+            radius.value
         )
         return self
 

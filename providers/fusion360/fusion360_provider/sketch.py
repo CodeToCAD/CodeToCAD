@@ -74,10 +74,11 @@ class Sketch(Entity, SketchInterface):
         offset: DimensionOrItsFloatOrStringValue,
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        offset = Dimension.from_dimension_or_its_float_or_string_value(offset, None)
         create_rectangular_pattern_sketch(
             self.fusion_sketch.component,
             instance_count,
-            offset,
+            offset.value,
             direction_axis
         )
         return self
@@ -115,38 +116,48 @@ class Sketch(Entity, SketchInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ):
-        self.fusion_sketch.scale(x, y, z)
+        x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
+        y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
+        z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
+        self.fusion_sketch.scale(x.value, y.value, z.value)
         return self
 
     def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_sketch.scale(scale, 0, 0)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_sketch.scale(scale.value, 0, 0)
         return self
 
     def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_sketch.scale(0, scale, 0)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_sketch.scale(0, scale.value, 0)
         return self
 
     def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        self.fusion_sketch.scale(0, 0, scale)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_sketch.scale(0, 0, scale.value)
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        self.fusion_sketch.scale_by_factor(scale_factor, 0, 0)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_sketch.scale_by_factor(scale_factor.value, 0, 0)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        self.fusion_sketch.scale_by_factor(0, scale_factor, 0)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_sketch.scale_by_factor(0, scale_factor.value, 0)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        self.fusion_sketch.scale_by_factor(0, 0, scale_factor)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        self.fusion_sketch.scale_by_factor(0, 0, scale_factor.value)
         return self
 
     # @check behavior with axis
     def scale_keep_aspect_ratio(
         self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName = None
     ):
-        self.fusion_sketch.scale_uniform(scale)
+        scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
+        self.fusion_sketch.scale_uniform(scale.value)
         return self
 
 
@@ -166,8 +177,8 @@ class Sketch(Entity, SketchInterface):
             self.fusion_sketch.component,
             self.fusion_sketch.instance,
             angle,
-            about_entity_or_landmark,
             axis,
+            start=about_entity_or_landmark.center,
         )
 
         return Part(body.name)
@@ -184,7 +195,8 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         from . import Part
-        body = self.fusion_sketch.extrude(length)
+        length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
+        body = self.fusion_sketch.extrude(length.value)
         return Part(body.name)
 
     def sweep(
@@ -219,10 +231,12 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
+
+        font_size = Dimension.from_dimension_or_its_float_or_string_value(font_size, None)
         create_text(
             self.fusion_sketch.instance,
             text,
-            font_size,
+            font_size.value,
             bold,
             italic,
             underlined,
@@ -288,9 +302,11 @@ class Sketch(Entity, SketchInterface):
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         from . import Wire, Edge
 
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
+
         sketch = self.fusion_sketch.instance
 
-        self.curves = make_circle(sketch, radius, self.resolution)
+        self.curves = make_circle(sketch, radius.value, self.resolution)
 
         edges = []
         for line in self.curves:
@@ -340,10 +356,12 @@ class Sketch(Entity, SketchInterface):
         from . import Wire, Edge
         sketch = self.fusion_sketch.instance
 
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
+
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(end_at.x, end_at.y, end_at.z)
 
-        self.curves = make_arc(sketch, start, end, radius)
+        self.curves = make_arc(sketch, start, end, radius.value)
 
         edges = []
         for line in self.curves:
@@ -364,10 +382,12 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         from . import Wire, Edge
+        length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
+        width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
 
         sketch = self.fusion_sketch.instance
 
-        self.curves = make_rectangle(sketch, length, width)
+        self.curves = make_rectangle(sketch, length.value, width.value)
 
         edges = []
         for line in self.curves:

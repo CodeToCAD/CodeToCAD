@@ -8,7 +8,7 @@ from codetocad.enums import *
 def make_axis(
     axis_input: str,
     point: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0)
-):
+) -> (adsk.fusion.SketchLine, adsk.fusion.Sketch):
     app = adsk.core.Application.get()
     product = app.activeProduct
     design = adsk.fusion.Design.cast(product)
@@ -26,6 +26,23 @@ def make_axis(
 
     sketchLine = sketch.sketchCurves.sketchLines;
     axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(point.x, point.y, point.z), axis_point)
+    return axis, sketch
+
+def make_axis_from_points(
+    start: adsk.core.Point3D,
+    end: adsk.core.Point3D
+) -> (adsk.fusion.SketchLine, adsk.fusion.Sketch):
+    app = adsk.core.Application.get()
+    product = app.activeProduct
+    design = adsk.fusion.Design.cast(product)
+    rootComp = design.rootComponent
+
+    sketches = rootComp.sketches;
+    xyPlane = rootComp.xYConstructionPlane
+    sketch = sketches.add(xyPlane)
+
+    sketchLine = sketch.sketchCurves.sketchLines;
+    axis = sketchLine.addByTwoPoints(start, end)
     return axis, sketch
 
 def make_axis_vector(axis_input: str):
