@@ -71,7 +71,6 @@ class Part(Entity, PartInterface):
     ):
         center = center_entity_or_landmark.center
         create_circular_pattern_sketch(
-            # self.fusion_body.component,
             self.fusion_body,
             center,
             instance_count,
@@ -387,8 +386,7 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
     ):
-        # hardcoded because I need to figure out how to get that information
-        # @check: implement Landmark.py
+        # @check: hardcoded before implementing Landmark.py
         hole(
             self.fusion_body.component,
             self.fusion_body.instance,
@@ -409,6 +407,7 @@ class Part(Entity, PartInterface):
         return self
 
     def set_material(self, material_name: MaterialOrItsName):
+        # not working
         # set_material(self.name, material_name)
         return self
 

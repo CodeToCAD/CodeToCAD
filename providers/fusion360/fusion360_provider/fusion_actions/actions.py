@@ -190,43 +190,7 @@ def create_rectangular_pattern(
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
 
 
-def translate_sketch(component, x, y, z):
-    matrix = adsk.core.Matrix3D.create()
-    matrix.translation = adsk.core.Vector3D.create(x, y, z)
-
-    sketch = get_or_create_sketch(component, component.name)
-
-    entities = adsk.core.ObjectCollection.create()
-
-    if len(sketch.sketchCurves.sketchLines) > 0:
-        for line in sketch.sketchCurves.sketchLines:
-            entities.add(line)
-
-    if len(sketch.sketchCurves.sketchArcs) > 0:
-        for line in sketch.sketchCurves.sketchArcs:
-            entities.add(line)
-
-    if len(sketch.sketchCurves.sketchConicCurves) > 0:
-        for line in sketch.sketchCurves.sketchConicCurves:
-            entities.add(line)
-
-    if len(sketch.sketchCurves.sketchFittedSplines) > 0:
-        for line in sketch.sketchCurves.sketchFittedSplines:
-            entities.add(line)
-
-    if len(sketch.sketchCurves.sketchFixedSplines) > 0:
-        for line in sketch.sketchCurves.sketchFixedSplines:
-            entities.add(line)
-
-    if len(sketch.sketchTexts) > 0:
-        for line in sketch.sketchTexts:
-            entities.add(line)
-
-    sketch.move(entities, matrix)
-
-
 def create_circular_pattern_sketch(
-    # component: adsk.fusion.Component,
     fusion_interface: FusionInterface,
     center: adsk.core.Point3D,
     count: int,
