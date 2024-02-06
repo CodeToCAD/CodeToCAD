@@ -92,7 +92,6 @@ class Sketch(Entity, SketchInterface):
         center = center_entity_or_landmark.center
 
         create_circular_pattern_sketch(
-            # self.fusion_sketch.component,
             self.fusion_sketch,
             center,
             instance_count,
@@ -146,7 +145,6 @@ class Sketch(Entity, SketchInterface):
     # @check behavior with axis
     def scale_keep_aspect_ratio(
         self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName = None
-        # self, scale: DimensionOrItsFloatOrStringValue
     ):
         self.fusion_sketch.scale_uniform(scale)
         return self
@@ -275,18 +273,9 @@ class Sketch(Entity, SketchInterface):
         from . import Edge
         sketch = self.fusion_sketch.instance
 
-        # sketchLines = sketch.sketchCurves.sketchLines
-        # self.curves = sketchLines
-        # # start = adsk.core.Point3D.create(start_at.x.value, start_at.y.value, start_at.z.value)
-        # # end = adsk.core.Point3D.create(end_at.x.value, end_at.y.value, end_at.z.value)
-        # start = adsk.core.Point3D.create(start_at.x, start_at.y, start_at.z)
-        # end = adsk.core.Point3D.create(end_at.x, end_at.y, end_at.z)
-        # sketchLines.addByTwoPoints(start, end)
-
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(end_at.x, end_at.y, end_at.z)
 
-        # self.curves = make_point(sketch, start, end)
         self.curves = make_line(sketch, start, end)
 
         line = self.curves[0]
@@ -294,7 +283,6 @@ class Sketch(Entity, SketchInterface):
         end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
         edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
 
-        # return Edge.get_dummy_edge()
         return edge
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
@@ -302,21 +290,6 @@ class Sketch(Entity, SketchInterface):
 
         sketch = self.fusion_sketch.instance
 
-        # radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
-        # points = circle.get_circle_points(radius, self.resolution)
-        # points = [adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value) for point in points]
-
-        # control_points = adsk.core.ObjectCollection_create()
-        # for point in points:
-        #     control_points.add(point)
-
-        # spline = sketch.sketchCurves.sketchFittedSplines.add(control_points)
-
-        # circles = sketch.sketchCurves.sketchCircles
-        # circle2 = circles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0), radius.value)
-
-        # self.curves = circles
-        # self.curves = sketch.sketchCurves.sketchFittedSplines
         self.curves = make_circle(sketch, radius, self.resolution)
 
         edges = []
@@ -332,7 +305,6 @@ class Sketch(Entity, SketchInterface):
             parent_entity=self.name,
         )
 
-    # @check wrong scaling
     def create_ellipse(
         self,
         radius_minor: DimensionOrItsFloatOrStringValue,
@@ -367,14 +339,6 @@ class Sketch(Entity, SketchInterface):
     ) -> "Wire":
         from . import Wire, Edge
         sketch = self.fusion_sketch.instance
-
-        # startPoint = adsk.core.Point3D.create(start_at.x, start_at.y, start_at.z)
-        # alongPoint = adsk.core.Point3D.create((start_at.x + end_at.x) / 2, start_at.y + radius, start_at.z)
-        # endPoint = adsk.core.Point3D.create(end_at.x, end_at.y, end_at.z)
-
-        # arcs = sketch.sketchCurves.sketchArcs
-        # self.curves = arcs
-        # arc = arcs.addByThreePoints(startPoint, alongPoint, endPoint)
 
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(end_at.x, end_at.y, end_at.z)
