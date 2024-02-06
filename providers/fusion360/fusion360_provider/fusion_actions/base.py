@@ -2,6 +2,21 @@ from typing import Optional
 
 import adsk.core, adsk.fusion
 
+# https://modthemachine.typepad.com/my_weblog/2021/03/log-debug-messages-in-fusion-360.html
+class UiLogger:
+    def __init__(self, forceUpdate=True):
+        app = adsk.core.Application.get()
+        ui  = app.userInterface
+        palettes = ui.palettes
+        self.textPalette = palettes.itemById("TextCommands")
+        self.forceUpdate = forceUpdate
+        self.textPalette.isVisible = True
+
+    def print(self, text):
+        self.textPalette.writeText(text)
+        if (self.forceUpdate):
+            adsk.doEvents()
+
 def get_root_component() -> adsk.fusion.Component:
     app = adsk.core.Application.get()
     design = app.activeProduct

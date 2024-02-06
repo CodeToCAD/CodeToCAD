@@ -46,3 +46,7 @@ class Vertex(Entity, VertexInterface):
     def get_control_points(self, parameter="") -> "list[Vertex]":
         print("get_control_points called:", parameter)
         return [Vertex(location=(0, 0), name="myVertex")]
+
+    @property
+    def center(self):
+        return self.location

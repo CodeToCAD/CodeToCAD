@@ -30,8 +30,6 @@ def mirror(
     assert distance > 0.01, "Can't mirror an item that's at the same position!"
 
     def move(distance1: float, distance2: float) -> float:
-        # known bug when it's a sketch and a body at same axis
-        # the center height difference gives a "wrong" answer
         if distance1 + distance2 == 0:
             return distance1 - distance2
         return distance1 + distance2
@@ -105,7 +103,7 @@ def clone_sketch(
             entities.add(line)
 
     if len(old_sketch.sketchPoints) > 0 and copy_landmarks:
-        # @check creating 2 landmark
+        # @check creating 2 landmarks
         for landmark in old_sketch.sketchPoints:
             entities.add(landmark)
 
@@ -118,7 +116,7 @@ def clone_body(
     new_name: str,
     copy_landmarks: bool = True,
 ) -> adsk.fusion.BRepBody:
-    _ = copy_landmarks # @check how to implement
+    _ = copy_landmarks
 
     app = adsk.core.Application.get()
     design = app.activeProduct
@@ -399,10 +397,7 @@ def hole(
     radius,
     depth
 ):
-    # the point should be a list of landmarks (sketch points)
-    # and always use the points feature
-    # or it should be called from the callee which would loop over
-    # the point list
+    # select the top face
     face_selected = None
     for face in body.faces:
         _, normal = face.evaluator.getNormalAtPoint(face.pointOnFace)
@@ -417,7 +412,10 @@ def hole(
 
     input = holeFeatures.createSimpleInput(holeDiam)
     input.setDistanceExtent(holeDepth)
-    input.setPositionByPoint(face_selected, adsk.core.Point3D.create(point.x, point.y, point.z))
+    input.setPositionByPoint(
+        face_selected,
+        adsk.core.Point3D.create(point.x, point.y, point.z)
+    )
     holeFeature = holeFeatures.add(input)
 
 def fillet_all_edges(

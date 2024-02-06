@@ -1,6 +1,7 @@
 import adsk.core, adsk.fusion
 
 from codetocad import *
+from providers.fusion360.fusion360_provider.fusion_actions.common import make_point3d
 
 def make_point(
     sketch: adsk.fusion.Sketch, x: float, y: float, z: float
@@ -53,28 +54,32 @@ def make_arc(
 
 def make_rectangle(
     sketch: adsk.fusion.Sketch,
-    length: DimensionOrItsFloatOrStringValue,
-    width: DimensionOrItsFloatOrStringValue,
+    length: float,
+    width: float,
 ) -> adsk.fusion.SketchLines:
-    half_length = (
-        Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
-    )
-    half_width = (
-        Dimension.from_dimension_or_its_float_or_string_value(width, None) / 2
-    )
+    half_length = length / 2
+    half_width = width / 2
 
-    left_top = Point(half_length * -1, half_width, Dimension(0))
-    left_bottom = Point(half_length * -1, half_width * -1, Dimension(0))
-    right_bottom = Point(half_length, half_width * -1, Dimension(0))
-    right_top = Point(half_length, half_width, Dimension(0))
+    left_top = Point(half_length * -1, half_width, 0)
+    left_bottom = Point(half_length * -1, half_width * -1, 0)
+    right_bottom = Point(half_length, half_width * -1, 0)
+    right_top = Point(half_length, half_width, 0)
 
     points = [left_top, left_bottom, right_bottom, right_top, left_top]
 
     sketchLines = sketch.sketchCurves.sketchLines
 
     for i in range(len(points) - 1):
-        start = adsk.core.Point3D.create(points[i].x.value, points[i].y.value, points[i].z.value)
-        end = adsk.core.Point3D.create(points[i + 1].x.value, points[i + 1].y.value, points[i + 1].z.value)
+        start = make_point3d(
+            points[i].x,
+            points[i].y,
+            points[i].z,
+        )
+        end = make_point3d(
+            points[i + 1].x,
+            points[i + 1].y,
+            points[i + 1].z,
+        )
         sketchLines.addByTwoPoints(start, end)
 
     return sketchLines

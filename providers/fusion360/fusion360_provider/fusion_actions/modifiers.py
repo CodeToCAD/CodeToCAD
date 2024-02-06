@@ -1,22 +1,23 @@
 from codetocad import *
 
 import adsk.core, adsk.fusion
-from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
+from .common import make_axis, make_axis_from_points
 
 def make_revolve(
     component: adsk.fusion.Component,
     sketch: adsk.fusion.Sketch,
     angle: AngleOrItsFloatOrStringValue,
-    about_entity_or_landmark: EntityOrItsName,
-    axis: AxisOrItsIndexOrItsName
+    start: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0),
+    end: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0),
 ) -> adsk.fusion.BRepBody:
-    # @check this point must be an landmark or center of and object
-    resolveAxis, sketchAxis = make_axis(axis, adsk.core.Point3D.create(0, 0, 0))
-
-    operation = adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+    resolveAxis, sketchAxis = make_axis_from_points(start, end)
 
     revolveFeatures = component.features.revolveFeatures
-    input = revolveFeatures.createInput(sketch.profiles.item(0), resolveAxis, operation)
+    input = revolveFeatures.createInput(
+        sketch.profiles.item(0),
+        resolveAxis,
+        adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+    )
     angle = adsk.core.ValueInput.createByReal(angle)
     input.setAngleExtent(False, angle)
     _ = revolveFeatures.add(input)
