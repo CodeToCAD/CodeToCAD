@@ -57,31 +57,36 @@ class FusionBody(FusionInterface):
 
     def scale(self, x: float, y: float, z: float):
         body = self.instance
+        sketch = self.sketch
 
+        # diffent value when body is rotated first
         boundBox = body.boundingBox
 
         xFactor = 1
         yFactor = 1
         zFactor = 1
 
+        distanceX = boundBox.maxPoint.x - boundBox.minPoint.x
+        distanceY = boundBox.maxPoint.y - boundBox.minPoint.y
+        distanceZ = boundBox.maxPoint.z - boundBox.minPoint.z
+
         if x > 0:
-            if 0 > boundBox.minPoint.x < 1:
-                xFactor += (abs(boundBox.minPoint.x) + x) * abs(boundBox.minPoint.x)
+            if 0 > abs(distanceX) < 1:
+                xFactor += (abs(distanceX) + x) * abs(distanceX)
             else:
-                xFactor +=  abs(boundBox.minPoint.x) / (abs(boundBox.minPoint.x) + x)
+                xFactor +=  abs(distanceX) / (abs(distanceX) + x)
 
         if y > 0:
-            if 0 > boundBox.minPoint.y < 1:
-                yFactor += (abs(boundBox.minPoint.y) + y) * abs(boundBox.minPoint.y)
+            if 0 > abs(distanceY) < 1:
+                yFactor += (abs(distanceY) + y) * abs(distanceY)
             else:
-                yFactor += abs(boundBox.minPoint.y) / (abs(boundBox.minPoint.y) + y)
+                yFactor += abs(distanceY) / (abs(distanceY) + y)
 
         if z > 0:
-            if 0 > boundBox.minPoint.z < 1:
-                zFactor += (abs(boundBox.minPoint.z) + z) * abs(boundBox.minPoint.z)
+            if 0 > abs(distanceZ) < 1:
+                zFactor += (abs(distanceZ) + z) * abs(distanceZ)
             else:
-                zFactor += abs(boundBox.minPoint.z) / (abs(boundBox.minPoint.z) + z)
-
+                zFactor += abs(distanceZ) / (abs(distanceZ) + z)
 
         inputColl = adsk.core.ObjectCollection.create()
         inputColl.add(body)
