@@ -1,3 +1,5 @@
+from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName
+from codetocad.core.angle import Angle
 from .actions import clone_body
 from .common import make_axis, make_collection, make_matrix, make_vector
 from .fusion_interface import FusionInterface
@@ -15,7 +17,6 @@ class FusionBody(FusionInterface):
         self.component = get_or_create_component(name)
         self.sketch = get_or_create_sketch(self.component, name)
 
-    # def translate(self, x: float, y: float, z: float):
     def translate(self, x: float, y: float, z: float):
         features = self.component.features
 
@@ -32,9 +33,7 @@ class FusionBody(FusionInterface):
         moveFeatureInput.defineAsFreeMove(transform)
         moveFeats.add(moveFeatureInput)
 
-    def rotate(self, axis_input: str, angle: float):
-        import math
-
+    def rotate(self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue):
         features = self.component.features
 
         body = self.instance
@@ -46,7 +45,8 @@ class FusionBody(FusionInterface):
 
         axis, sketch = make_axis(axis_input, origin)
 
-        angle = adsk.core.ValueInput.createByReal(math.radians(angle))
+        angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
+        angle = adsk.core.ValueInput.createByReal(angle)
 
         moveFeats = features.moveFeatures
         moveFeatureInput = moveFeats.createInput2(bodies)

@@ -1,5 +1,6 @@
+from codetocad import *
 from .actions import clone_sketch
-from .common import make_axis_vector
+from .common import make_axis_vector, make_collection, make_matrix, make_vector
 from .fusion_interface import FusionInterface
 from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
 
@@ -12,12 +13,12 @@ class FusionSketch(FusionInterface):
         self.instance = get_or_create_sketch(self.component, name)
 
     def translate(self, x: float, y: float, z: float):
-        matrix = adsk.core.Matrix3D.create()
-        matrix.translation = adsk.core.Vector3D.create(x, y, z)
+        matrix = make_matrix()
+        matrix.translation = make_vector(x, y, z)
 
         sketch = self.instance
 
-        entities = adsk.core.ObjectCollection.create()
+        entities = make_collection()
 
         if len(sketch.sketchCurves.sketchLines) > 0:
             for line in sketch.sketchCurves.sketchLines:
@@ -45,19 +46,18 @@ class FusionSketch(FusionInterface):
 
         sketch.move(entities, matrix)
 
-    def rotate(self, axis_input: str, angle: float):
-        import math
+    def rotate(self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue):
         sketch = self.instance
 
         axis = make_axis_vector(axis_input)
-        angle = math.radians(angle)
+        angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
 
         origin = self.center
 
-        matrix = adsk.core.Matrix3D.create()
+        matrix = make_matrix()
         matrix.setToRotation(angle, axis, origin)
 
-        entities = adsk.core.ObjectCollection.create()
+        entities = make_collection()
 
         if len(sketch.sketchCurves.sketchLines) > 0:
             for line in sketch.sketchCurves.sketchLines:

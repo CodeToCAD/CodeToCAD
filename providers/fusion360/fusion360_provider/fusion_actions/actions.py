@@ -1,14 +1,17 @@
 from typing import Optional
 import adsk.core, adsk.fusion
+from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName
+from codetocad.core.angle import Angle
+from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_or_create_sketch, get_root_component
+from providers.fusion360.fusion360_provider.fusion_actions.base import UiLogger, get_body, get_occurrence, get_or_create_sketch, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
 from .fusion_interface import FusionInterface
 
 def mirror(
     obj: FusionInterface,
     other: adsk.core.Point3D,
-    axis: str
+    axis: AxisOrItsIndexOrItsName
 ):
     centerBody = obj.center
     centerOtherBody = other
@@ -27,6 +30,11 @@ def mirror(
         (centerOtherBody.z - centerBody.z) ** 2
     )
 
+    logger = UiLogger()
+    logger.print(f"AEHOOO")
+    logger.print(f"{axis}")
+    logger.print(f"{Axis.from_string(axis)}")
+
     assert distance > 0.01, "Can't mirror an item that's at the same position!"
 
     def move(distance1: float, distance2: float) -> float:
@@ -34,24 +42,27 @@ def mirror(
             return distance1 - distance2
         return distance1 + distance2
 
-    if axis == "x":
-        newPosition = adsk.core.Point3D.create(
-            move(distanceBodyToOther.x, distance),
-            distanceBodyToOther.y,
-            distanceBodyToOther.z,
-        )
-    elif axis == "y":
-        newPosition = adsk.core.Point3D.create(
-            distanceBodyToOther.x,
-            move(distanceBodyToOther.y, distance),
-            distanceBodyToOther.z,
-        )
-    elif axis == "z":
-        newPosition = adsk.core.Point3D.create(
-            distanceBodyToOther.x,
-            distanceBodyToOther.y,
-            move(distanceBodyToOther.z, distance),
-        )
+    match Axis.from_string(axis).value:
+        case Axis.X.value:
+            newPosition = adsk.core.Point3D.create(
+                move(distanceBodyToOther.x, distance),
+                distanceBodyToOther.y,
+                distanceBodyToOther.z,
+            )
+        case Axis.Y.value:
+            newPosition = adsk.core.Point3D.create(
+                distanceBodyToOther.x,
+                move(distanceBodyToOther.y, distance),
+                distanceBodyToOther.z,
+            )
+        case Axis.Z.value:
+            newPosition = adsk.core.Point3D.create(
+                distanceBodyToOther.x,
+                distanceBodyToOther.y,
+                move(distanceBodyToOther.z, distance),
+            )
+        case _:
+            raise Exception(f"Invalid Axis! Got {Axis.from_string(axis).value}")
 
     newName = f"{obj.instance.name} clone"
     newObj = obj.clone(newName, True)
@@ -136,8 +147,8 @@ def create_circular_pattern(
     body: adsk.fusion.BRepBody,
     center: adsk.core.Point3D,
     count: int,
-    angle: float,
-    axis: str
+    angle: AngleOrItsFloatOrStringValue,
+    axis: AxisOrItsIndexOrItsName
 ):
     features = component.features
 
@@ -145,6 +156,8 @@ def create_circular_pattern(
     inputEntites.add(body)
 
     axisInput, sketch = make_axis(axis, center)
+
+    angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
 
     circularFeats = features.circularPatternFeatures
     circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
@@ -160,7 +173,7 @@ def create_rectangular_pattern(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: str
+    axis: AxisOrItsIndexOrItsName
 ):
     features = component.features
 
@@ -169,12 +182,13 @@ def create_rectangular_pattern(
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
-    if axis == "x":
-        axisInput = component.xConstructionAxis
-    elif axis == "y":
-        axisInput = component.yConstructionAxis
-    elif axis == "z":
-        axisInput = component.zConstructionAxis
+    match Axis.from_string(axis).value:
+        case Axis.X.value:
+            axisInput = component.xConstructionAxis
+        case Axis.Y.value:
+            axisInput = component.yConstructionAxis
+        case Axis.Z.value:
+            axisInput = component.zConstructionAxis
 
     quantity = adsk.core.ValueInput.createByReal(count)
     distance = adsk.core.ValueInput.createByReal(offset)
@@ -193,16 +207,17 @@ def create_circular_pattern_sketch(
     fusion_interface: FusionInterface,
     center: adsk.core.Point3D,
     count: int,
-    angle: float,
-    axis: str
+    angle: AngleOrItsFloatOrStringValue,
+    axis: AxisOrItsIndexOrItsName
 ):
     occ = get_occurrence(fusion_interface.component.name)
+
+    angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
 
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
     axisInput, sketch = make_axis(axis, center)
-
     circularFeats = fusion_interface.component.features.circularPatternFeatures
     circularFeatInput = circularFeats.createInput(inputEntites, axisInput)
     circularFeatInput.quantity = adsk.core.ValueInput.createByReal(count)
@@ -220,19 +235,20 @@ def create_rectangular_pattern_sketch(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: str
+    axis: AxisOrItsIndexOrItsName
 ):
     occ = get_occurrence(component.name)
 
     inputEntites = adsk.core.ObjectCollection.create()
     inputEntites.add(occ)
 
-    if axis == "x":
-        axisInput = component.xConstructionAxis
-    elif axis == "y":
-        axisInput = component.yConstructionAxis
-    elif axis == "z":
-        axisInput = component.zConstructionAxis
+    match Axis.from_string(axis).value:
+        case Axis.X.value:
+            axisInput = component.xConstructionAxis
+        case Axis.Y.value:
+            axisInput = component.yConstructionAxis
+        case Axis.Z.value:
+            axisInput = component.zConstructionAxis
 
     quantity = adsk.core.ValueInput.createByReal(count)
     distance = adsk.core.ValueInput.createByReal(offset)

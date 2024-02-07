@@ -197,7 +197,9 @@ class Sketch(Entity, SketchInterface):
         from . import Part
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         body = self.fusion_sketch.extrude(length.value)
-        return Part(body.name)
+        part = Part(body.name)
+        part.fusion_body.instance = body
+        return part
 
     def sweep(
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
