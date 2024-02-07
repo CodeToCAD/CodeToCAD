@@ -4,9 +4,10 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.base import UiLogger
 
 def make_axis(
-    axis_input: str,
+    axis_input: AxisOrItsIndexOrItsName,
     point: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0)
 ) -> (adsk.fusion.SketchLine, adsk.fusion.Sketch):
     app = adsk.core.Application.get()
@@ -17,15 +18,20 @@ def make_axis(
     sketches = rootComp.sketches;
     xyPlane = rootComp.xYConstructionPlane
     sketch = sketches.add(xyPlane)
-    if axis_input == "x":
-        axis_point = adsk.core.Point3D.create(point.x + 1, point.y, point.z)
-    elif axis_input == "y":
-        axis_point = adsk.core.Point3D.create(point.x, point.y + 1, point.z)
-    elif axis_input == "z":
-        axis_point = adsk.core.Point3D.create(point.x, point.y, point.z + 1)
+
+    match Axis.from_string(axis_input).value:
+        case Axis.X.value:
+            axis_point = adsk.core.Point3D.create(point.x + 1, point.y, point.z)
+        case Axis.Y.value:
+            axis_point = adsk.core.Point3D.create(point.x, point.y + 1, point.z)
+        case Axis.Z.value:
+            axis_point = adsk.core.Point3D.create(point.x, point.y, point.z + 1)
 
     sketchLine = sketch.sketchCurves.sketchLines;
-    axis = sketchLine.addByTwoPoints(adsk.core.Point3D.create(point.x, point.y, point.z), axis_point)
+    axis = sketchLine.addByTwoPoints(
+        adsk.core.Point3D.create(point.x, point.y, point.z),
+        axis_point
+    )
     return axis, sketch
 
 def make_axis_from_points(
@@ -45,13 +51,14 @@ def make_axis_from_points(
     axis = sketchLine.addByTwoPoints(start, end)
     return axis, sketch
 
-def make_axis_vector(axis_input: str):
-    if axis_input == "x":
-        axis = adsk.core.Vector3D.create(1, 0, 0)
-    elif axis_input == "y":
-        axis = adsk.core.Vector3D.create(0, 1, 0)
-    elif axis_input == "z":
-        axis = adsk.core.Vector3D.create(0, 0, 1)
+def make_axis_vector(axis_input: AxisOrItsIndexOrItsName):
+    match Axis.from_string(axis_input).value:
+        case Axis.X.value:
+            axis = adsk.core.Vector3D.create(1, 0, 0)
+        case Axis.Y.value:
+            axis = adsk.core.Vector3D.create(0, 1, 0)
+        case Axis.Z.value:
+            axis = adsk.core.Vector3D.create(0, 0, 1)
     return axis
 
 def make_matrix():

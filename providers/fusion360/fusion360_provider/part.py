@@ -7,7 +7,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, set_material, subtract
+from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, set_material, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence
@@ -42,7 +42,11 @@ class Part(Entity, PartInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
-        body, newPosition = mirror(self.fusion_body, mirror_across_entity.center, axis)
+        body, newPosition = mirror(
+            self.fusion_body,
+            mirror_across_entity.center,
+            axis
+        )
         part = self.__class__(body.name)
         part.fusion_body.instance = body
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
@@ -323,8 +327,11 @@ class Part(Entity, PartInterface):
         return self
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Part":
-        body = self.fusion_body.clone(new_name, copy_landmarks)
-        return Part(body.name)
+        body, sketch = self.fusion_body.clone(new_name, copy_landmarks)
+        part = Part(body.name)
+        part.fusion_body.instance = body
+        part.fusion_body.sketch = sketch
+        return part
 
 
     def union(
