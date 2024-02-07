@@ -8,6 +8,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_component, get_or_create_component
 from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, mirror, sweep
 from .fusion_actions.modifiers import make_revolve
 
@@ -63,7 +64,19 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
-        sketch, newPosition = mirror(self.fusion_sketch, mirror_across_entity.center, axis)
+        from . import Part
+        if isinstance(mirror_across_entity, str):
+            component = get_component(mirror_across_entity)
+            if get_body(component, mirror_across_entity):
+                mirror_across_entity = Part(mirror_across_entity).fusion_body
+            else:
+                mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
+
+        sketch, newPosition = mirror(
+            self.fusion_sketch,
+            mirror_across_entity.center,
+            axis
+        )
         part = self.__class__(sketch.name)
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
         return self
@@ -90,6 +103,14 @@ class Sketch(Entity, SketchInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        from . import Part
+        if isinstance(center_entity_or_landmark, str):
+            component = get_component(center_entity_or_landmark)
+            if get_body(component, center_entity_or_landmark):
+                center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
+            else:
+                center_entity_or_landmark = Sketch(center_entity_or_landmark).fusion_sketch
+
         center = center_entity_or_landmark.center
 
         create_circular_pattern_sketch(
@@ -172,6 +193,12 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "Part":
         from . import Part
+        if isinstance(about_entity_or_landmark, str):
+            component = get_component(about_entity_or_landmark)
+            if get_body(component, about_entity_or_landmark):
+                about_entity_or_landmark = Part(about_entity_or_landmark).fusion_body
+            else:
+                about_entity_or_landmark = Sketch(about_entity_or_landmark).fusion_sketch
 
         body = make_revolve(
             self.fusion_sketch.component,
@@ -181,7 +208,10 @@ class Sketch(Entity, SketchInterface):
             start=about_entity_or_landmark.center,
         )
 
-        return Part(body.name)
+        part = Part(body.name)
+        part.fusion_body.instance = body
+
+        return part
 
     def twist(
         self,

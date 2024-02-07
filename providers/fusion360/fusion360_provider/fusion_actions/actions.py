@@ -4,7 +4,7 @@ from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsInd
 from codetocad.core.angle import Angle
 from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
-from providers.fusion360.fusion360_provider.fusion_actions.base import UiLogger, get_body, get_occurrence, get_or_create_sketch, get_root_component
+from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_or_create_sketch, get_root_component
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
 from .fusion_interface import FusionInterface
 
@@ -29,11 +29,6 @@ def mirror(
         (centerOtherBody.y - centerBody.y) ** 2 +
         (centerOtherBody.z - centerBody.z) ** 2
     )
-
-    logger = UiLogger()
-    logger.print(f"AEHOOO")
-    logger.print(f"{axis}")
-    logger.print(f"{Axis.from_string(axis)}")
 
     assert distance > 0.01, "Can't mirror an item that's at the same position!"
 
