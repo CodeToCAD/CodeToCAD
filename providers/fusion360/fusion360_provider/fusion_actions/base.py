@@ -38,6 +38,14 @@ def get_or_create_component(name: str) -> adsk.fusion.Component:
 
     return component
 
+def get_component(name: str) -> adsk.fusion.Component:
+    rootComp = get_root_component()
+
+    for occurrence in rootComp.occurrences:
+        if name == occurrence.component.name:
+            return occurrence.component
+
+    raise Exception(f"Component {name} not found!")
 
 def get_or_create_sketch(component, name: str) -> adsk.fusion.Sketch:
     sketch = component.sketches.itemByName(name)
@@ -51,6 +59,13 @@ def get_or_create_sketch(component, name: str) -> adsk.fusion.Sketch:
     sketch.name = name
 
     return sketch
+
+def get_sketch(component, name: str) -> adsk.fusion.Sketch:
+    sketch = component.sketches.itemByName(name)
+    if sketch:
+        return sketch
+
+    raise Exception(f"Sketch {name} not found!")
 
 def get_occurrence(name: str) -> Optional[adsk.fusion.Occurrence]:
     app = adsk.core.Application.get()

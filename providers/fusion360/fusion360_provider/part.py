@@ -10,7 +10,7 @@ from codetocad.enums import *
 from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, set_material, subtract
 from .fusion_actions.fusion_sketch import FusionSketch
 
-from .fusion_actions.base import delete_occurrence
+from .fusion_actions.base import delete_occurrence, get_body, get_component
 from .fusion_actions.curve import make_arc, make_circle, make_lines, make_rectangle
 from .fusion_actions.modifiers import make_loft, make_revolve
 
@@ -35,13 +35,20 @@ class Part(Entity, PartInterface):
         self.fusion_body = FusionBody(name)
         self.name = name
 
-
     def mirror(
         self,
         mirror_across_entity: EntityOrItsName,
         axis: AxisOrItsIndexOrItsName,
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
+        from . import Sketch
+        if isinstance(mirror_across_entity, str):
+            component = get_component(mirror_across_entity)
+            if get_body(component, mirror_across_entity):
+                mirror_across_entity = Part(mirror_across_entity).fusion_body
+            else:
+                mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
+
         body, newPosition = mirror(
             self.fusion_body,
             mirror_across_entity.center,
@@ -73,6 +80,14 @@ class Part(Entity, PartInterface):
         center_entity_or_landmark: EntityOrItsName,
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
+        from . import Sketch
+        if isinstance(center_entity_or_landmark, str):
+            component = get_component(center_entity_or_landmark)
+            if get_body(component, center_entity_or_landmark):
+                center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
+            else:
+                center_entity_or_landmark = Sketch(center_entity_or_landmark).fusion_sketch
+
         center = center_entity_or_landmark.center
         create_circular_pattern_sketch(
             self.fusion_body,
@@ -404,6 +419,16 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_separation: DimensionOrItsFloatOrStringValue = 0.0,
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
     ):
+        from . import Sketch
+        if isinstance(hole_landmark, str):
+            component = get_component(hole_landmark)
+            if get_body(component, hole_landmark):
+                hole_landmark = Part(hole_landmark).fusion_body
+            else:
+                hole_landmark = Sketch(hole_landmark).fusion_sketch
+
+
+
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         depth = Dimension.from_dimension_or_its_float_or_string_value(depth, None)
 

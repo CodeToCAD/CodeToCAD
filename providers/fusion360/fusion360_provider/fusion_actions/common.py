@@ -4,7 +4,6 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.base import UiLogger
 
 def make_axis(
     axis_input: AxisOrItsIndexOrItsName,
