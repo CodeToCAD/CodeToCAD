@@ -6,7 +6,7 @@ from .fusion_interface import FusionInterface
 
 import adsk.core, adsk.fusion
 
-from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
+from .base import delete_occurrence, get_body, get_or_create_component, get_or_create_sketch
 
 
 class FusionBody(FusionInterface):
@@ -16,6 +16,7 @@ class FusionBody(FusionInterface):
     def __init__(self, name):
         self.component = get_or_create_component(name)
         self.sketch = get_or_create_sketch(self.component, name)
+        self.instance = get_body(self.component, name)
 
     def translate(self, x: float, y: float, z: float):
         features = self.component.features

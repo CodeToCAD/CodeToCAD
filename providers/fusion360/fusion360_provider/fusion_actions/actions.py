@@ -1,11 +1,11 @@
 from typing import Optional
 import adsk.core, adsk.fusion
-from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName
+from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName, MaterialOrItsName
 from codetocad.core.angle import Angle
 from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_occurrence, get_or_create_sketch, get_root_component
-from providers.fusion360.fusion360_provider.fusion_actions.common import make_axis
+from .base import get_body, get_occurrence, get_root_component
+from .common import make_axis
 from .fusion_interface import FusionInterface
 
 def mirror(
@@ -463,20 +463,26 @@ def chamfer_all_edges(
 
 def set_material(
     fusion_interface: FusionInterface,
-    material_name
+    material_name: MaterialOrItsName
 ):
     body = fusion_interface.instance
 
     if isinstance(material_name, str):
-        material_name = getattr(PresetMaterial, material_name)
+        try:
+            material_name = getattr(PresetMaterial, material_name)
+        except:
+            raise Exception(f"Preset {material_name} not found!")
 
-    if isinstance(material_name, PresetMaterial):
-        r, g, b, a = material_name.color
-        color = adsk.core.Color.create(r, g, b, round(a * 255))
+    r, g, b, a = material_name.color
+    color = adsk.core.Color.create(r, g, b, round(a * 255))
 
-        appearance = body.appearance
+    appearance = body.appearance
 
-        colorProp = adsk.core.ColorProperty.cast(appearance.appearanceProperties.itemByName('Color'))
-        colorProp.value = color
+    appearance.name = material_name.name
 
-        body.appearance = appearance
+    colorProp = adsk.core.ColorProperty.cast(appearance.appearanceProperties.itemByName('Color'))
+    colorProp.value = color
+    roughnessProp = appearance.appearanceProperties.itemByName('Roughness')
+    roughnessProp.value = material_name.roughness
+
+    body.appearance = appearance
