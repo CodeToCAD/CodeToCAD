@@ -2,8 +2,10 @@ from typing import Optional
 import adsk.core, adsk.fusion
 from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName, MaterialOrItsName
 from codetocad.core.angle import Angle
+from codetocad.core.point import Point
 from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
+from codetocad.providers_sample.vertex import Vertex
 from .base import get_body, get_occurrence, get_root_component
 from .common import make_axis
 from .fusion_interface import FusionInterface
@@ -486,3 +488,23 @@ def set_material(
     roughnessProp.value = material_name.roughness
 
     body.appearance = appearance
+
+def get_vertices_location_from_sketch(
+    sketch: adsk.fusion.Sketch
+) -> list[Vertex]:
+    # check how to get the correct verticesa because it's different for each curve
+    vertices = []
+    for point in sketch.sketchPoints:
+        vertice = Vertex(
+            Point(
+                point.geometry.x,
+                point.geometry.y,
+                point.geometry.z,
+            ),
+            "vertex"
+        )
+        vertices.append(vertice)
+    return vertices
+
+def get_vertices_location_from_body():
+    ...

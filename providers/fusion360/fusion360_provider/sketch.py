@@ -9,7 +9,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_component, get_or_create_component
-from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, mirror, sweep
+from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, get_vertices_location_from_sketch, mirror, sweep
 from .fusion_actions.modifiers import make_revolve
 
 from .fusion_actions.curve import make_arc, make_circle, make_line, make_point, make_rectangle
@@ -282,22 +282,19 @@ class Sketch(Entity, SketchInterface):
     def create_from_vertices(
         self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "Wire":
-        parsed_points = [Point.from_dimension_or_its_float_or_string_value(point) for point in points]
+        from . import Edge, Vertex, Wire
+        edges = []
+        for index in range(len(points) - 1):
+            start = Vertex(points[index], "vertex")
+            end = Vertex(points[index + 1], "vertex")
+            edge = Edge(v1=start, v2=end, name=self.name, parent_entity=self.name)
+            edges.append(edge)
 
-        is_closed = False
-        if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
-            is_closed = True
-            parsed_points = parsed_points[:-1]
-
-        # is_closed = False
-        # if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
-        #     is_closed = True
-        #     parsed_points = parsed_points[:-1]
-
-        # curve_data, parsed_points = create_curve(self.name, points)
-
-
-        return Wire(edges=points, name=create_uuid_like_id(), parent_entity=self.name)
+        return Wire(
+            edges=edges,
+            name=create_uuid_like_id(),
+            parent_entity=self.name,
+        )
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         from . import Vertex
@@ -332,7 +329,7 @@ class Sketch(Entity, SketchInterface):
         return edge
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
-        from . import Wire, Edge
+        from . import Wire, Edge, Vertex
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
 
@@ -340,18 +337,9 @@ class Sketch(Entity, SketchInterface):
 
         self.curves = make_circle(sketch, radius.value, self.resolution)
 
-        edges = []
-        for line in self.curves:
-            start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
-            end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
-            edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
-            edges.append(edge)
+        wire = self.create_from_vertices(self.curves)
 
-        return Wire(
-            edges=edges,
-            name=create_uuid_like_id(),
-            parent_entity=self.name,
-        )
+        return wire
 
     def create_ellipse(
         self,
@@ -385,7 +373,7 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         flip: Optional[bool] = False,
     ) -> "Wire":
-        from . import Wire, Edge
+        from . import Wire, Edge, Vertex
         sketch = self.fusion_sketch.instance
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
@@ -395,44 +383,27 @@ class Sketch(Entity, SketchInterface):
 
         self.curves = make_arc(sketch, start, end, radius.value)
 
-        edges = []
-        for line in self.curves:
-            start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
-            end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
-            edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
-            edges.append(edge)
+        wire = self.create_from_vertices(self.curves)
 
-        return Wire(
-            edges=edges,
-            name=create_uuid_like_id(),
-            parent_entity=self.name,
-        )
+        return wire
 
     def create_rectangle(
         self,
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        from . import Wire, Edge
+        from . import Wire, Edge, Vertex
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
 
         sketch = self.fusion_sketch.instance
 
         self.curves = make_rectangle(sketch, length.value, width.value)
+        self.name = sketch.name
 
-        edges = []
-        for line in self.curves:
-            start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
-            end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
-            edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
-            edges.append(edge)
+        wire = self.create_from_vertices(self.curves)
 
-        return Wire(
-            edges=edges,
-            name=create_uuid_like_id(),
-            parent_entity=self.name,
-        )
+        return wire
 
     def create_polygon(
         self,

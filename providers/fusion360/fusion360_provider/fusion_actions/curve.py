@@ -5,35 +5,39 @@ from providers.fusion360.fusion360_provider.fusion_actions.common import make_po
 
 def make_point(
     sketch: adsk.fusion.Sketch, x: float, y: float, z: float
-) -> adsk.fusion.SketchCurve:
+) -> Point:
     somePoint = adsk.core.Point3D.create(x, y, z)
     sketchPoints = sketch.sketchPoints
     _ = sketchPoints.add(somePoint)
-    return sketchPoints
+    return Point(x, y, z)
 
 def make_line(
     sketch: adsk.fusion.Sketch, start: adsk.core.Point3D, end: adsk.core.Point3D
-) -> adsk.fusion.SketchLines:
+) -> list[Point]:
     sketchLines = sketch.sketchCurves.sketchLines
     sketchLines.addByTwoPoints(start, end)
-    return sketchLines
+    points = [Point(start.x, start.y, start.z), Point(end.x, end.y, end.z)]
+    return points
 
 def make_circle(
     sketch: adsk.fusion.Sketch,
     radius: DimensionOrItsFloatOrStringValue,
     resolution: float
-) -> adsk.fusion.SketchFittedSplines:
+) -> list[Point]:
     from .circle import get_circle_points
     radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
-    points = get_circle_points(radius, resolution)
-    points = [adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value) for point in points]
+    points_ = get_circle_points(radius, resolution)
+    points = [
+        adsk.core.Point3D.create(point.x.value, point.y.value, point.z.value)
+        for point in points_
+    ]
 
     control_points = adsk.core.ObjectCollection_create()
     for point in points:
         control_points.add(point)
 
     _ = sketch.sketchCurves.sketchFittedSplines.add(control_points)
-    return sketch.sketchCurves.sketchFittedSplines
+    return points_
 
 def make_arc(
     sketch: adsk.fusion.Sketch,
@@ -41,22 +45,28 @@ def make_arc(
     end: adsk.core.Point3D,
     radius: DimensionOrItsFloatOrStringValue,
     closed: bool = False,
-) -> adsk.fusion.SketchArcs:
+) -> list[Point]:
     along = adsk.core.Point3D.create((start.x + end.x) / 2, start.y + radius, start.z)
     arcs = sketch.sketchCurves.sketchArcs
-    _ = arcs.addByThreePoints(start, along, end)
+    arcs = arcs.addByThreePoints(start, along, end)
+
+    points = [
+        Point(start.x, start.y, start.z),
+        Point(along.x, along.y, along.z),
+        Point(end.x, end.y, end.z),
+    ]
 
     if closed:
         lines = sketch.sketchCurves.sketchLines
         _ = lines.addByTwoPoints(start, end)
 
-    return arcs
+    return points
 
 def make_rectangle(
     sketch: adsk.fusion.Sketch,
     length: float,
     width: float,
-) -> adsk.fusion.SketchLines:
+) -> list[Point]:
     half_length = length / 2
     half_width = width / 2
 
@@ -82,15 +92,15 @@ def make_rectangle(
         )
         sketchLines.addByTwoPoints(start, end)
 
-    return sketchLines
+    return points[:-1]
 
 def make_lines(
     sketch: adsk.fusion.Sketch, points: list[Point]
-) -> adsk.fusion.SketchLines:
+) -> list[Point]:
     sketchLines = sketch.sketchCurves.sketchLines
     for i in range(len(points) - 1):
         start = points[i]
         end = points[i + 1]
         sketchLines.addByTwoPoints(start, end)
 
-    return sketchLines
+    return points

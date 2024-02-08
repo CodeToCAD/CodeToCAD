@@ -6,6 +6,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.normals import calculate_normal
 
 
 from . import Entity
@@ -85,22 +86,41 @@ class Wire(Entity, WireInterface):
     def clone(
         self, new_name: str, new_parent: Optional[SketchOrItsName] = None
     ) -> "Wire":
-        print("clone called:", new_name, new_parent)
-        from . import Wire
+        from . import Sketch
+        parent = new_parent or self.parent_entity
 
-        return Wire([], "a wire")
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+
+        if isinstance(parent, Sketch):
+            points = self.get_vertices()
+            points = [point.location for point in points]
+            points.append(points[0].copy())
+            wire = parent.create_from_vertices(points)
+            wire.name = new_name
+            return wire
+
+        raise Exception(f"Parent of type {type(parent)} is not supported.")
 
     def get_normal(self, flip: Optional[bool] = False) -> "Point":
-        print("get_normal called:", flip)
-        return Point.from_list_of_float_or_string([0, 0, 0])
+        vertices = self.get_vertices()
+        num_vertices = len(vertices)
+        normal = calculate_normal(
+            vertices[0].location,
+            vertices[int(num_vertices * 1 / 3)].location,
+            vertices[int(num_vertices * 2 / 3)].location,
+        )
+        return normal
 
     def get_vertices(self) -> "list[Vertex]":
-        from . import Vertex
+        if len(self.edges) == 0:
+            return []
 
-        print(
-            "get_vertices called:",
-        )
-        return [Vertex(location=(0, 0), name="myVertex")]
+        all_vertices = [self.edges[0].v1, self.edges[0].v2]
+        for edge in self.edges:
+            all_vertices.append(edge.v2)
+
+        return all_vertices
 
     def get_is_closed(self) -> bool:
         print(
