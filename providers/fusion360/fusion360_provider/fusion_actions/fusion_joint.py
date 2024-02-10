@@ -9,9 +9,11 @@ class FusionJoint:
         self.entity1 = entity1
         self.entity2 = entity2
         self.joint_slider = None
-        self.joint_ball_motion = self._make_ball_joint_motion()
+        self.joint_ball_motion = None
 
     def limit_rotation_motion(self, axis: str, min: float, max: float):
+        if self.joint_ball_motion is None:
+            self.joint_ball_motion = self._make_ball_joint_motion()
         ballMotion = self.joint_ball_motion.jointMotion
 
         # @check if the orientations are correct
@@ -29,6 +31,9 @@ class FusionJoint:
         limits.maximumValue = max
 
     def _make_ball_joint_motion(self):
+        if self.joint_slider:
+            return
+
         geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
             self.entity1.fusion_landmark.point
         )
@@ -53,10 +58,8 @@ class FusionJoint:
 
         return joint
 
-
     def limit_location(self, axis: str, min: float, max: float):
-        # skip if already exists a limit in one axis
-        if self.joint_slider is not None:
+        if self.joint_ball_motion:
             return
 
         match axis:
@@ -67,30 +70,32 @@ class FusionJoint:
             case "z":
                 direction = adsk.fusion.JointDirections.ZAxisJointDirection
 
-        geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
-            self.entity1.fusion_landmark.point
-        )
-        geoEntity2 = adsk.fusion.JointGeometry.createByPoint(
-            self.entity2.fusion_landmark.point
-        )
+        if self.joint_slider is None:
+            geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
+                self.entity1.fusion_landmark.point
+            )
+            geoEntity2 = adsk.fusion.JointGeometry.createByPoint(
+                self.entity2.fusion_landmark.point
+            )
 
-        angle = adsk.core.ValueInput.createByReal(0)
-        offset = adsk.core.ValueInput.createByReal(0)
+            angle = adsk.core.ValueInput.createByReal(0)
+            offset = adsk.core.ValueInput.createByReal(0)
 
-        rootComp = get_root_component()
-        joints = rootComp.joints
-        jointInput = joints.createInput(geoEntity1, geoEntity2)
-        jointInput.angle = angle
-        jointInput.offset = offset
-        jointInput.setAsSliderJointMotion(direction)
-        joint = joints.add(jointInput)
+            rootComp = get_root_component()
+            joints = rootComp.joints
+            jointInput = joints.createInput(geoEntity2, geoEntity1)
+            jointInput.angle = angle
+            jointInput.offset = offset
+            jointInput.setAsSliderJointMotion(direction)
+            joint = joints.add(jointInput)
 
-        sliderMotion = joint.jointMotion
+            self.joint_slider = joint
+
+        sliderMotion = self.joint_slider.jointMotion
         limits = sliderMotion.slideLimits
         limits.isMinimumValueEnabled = True
         limits.minimumValue = min
         limits.isMaximumValueEnabled = True
         limits.maximumValue = max
 
-        self.joint_slider = joint
 
