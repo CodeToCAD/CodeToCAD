@@ -10,6 +10,8 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
+from providers.fusion360.fusion360_provider.fusion_actions.base import get_component
+
 from .fusion_actions.fusion_landmark import FusionLandmark
 
 from .fusion_actions.fusion_body import FusionBody
@@ -101,10 +103,16 @@ class Entity(EntityInterface):
         return Point.from_list_of_float_or_string([0, 0, 0])
 
     def get_location_local(self) -> "Point":
-        print(
-            "get_location_local called:",
-        )
-        return Point.from_list_of_float_or_string([0, 0, 0])
+        # check the correct behavior
+        from . import Part, Sketch, Landmark
+        if isinstance(self, Part):
+            pos = self.fusion_body.center
+        elif isinstance(self, Sketch):
+            pos = self.fusion_sketch.center
+        elif isinstance(self, Landmark):
+            pos = self.fusion_landmark.get_point()
+
+        return Point(pos.x, pos.y, pos.z)
 
     def select(self):
         print(
@@ -191,10 +199,12 @@ class Entity(EntityInterface):
         return self
 
     def get_bounding_box(self) -> "BoundaryBox":
-        print(
-            "get_bounding_box called:",
-        )
-        return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
+        from . import Part
+        if isinstance(self, Part):
+            boundaryBox = self.fusion_body.get_bounding_box()
+        else:
+            boundaryBox = self.fusion_sketch.get_bounding_box()
+        return boundaryBox
 
     def get_dimensions(self) -> "Dimensions":
         print(
@@ -209,24 +219,47 @@ class Entity(EntityInterface):
         y: DimensionOrItsFloatOrStringValue,
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
-        from . import Landmark, Part
-        if isinstance(self, Part):
-            center =  self.fusion_body.center
-            name =  self.fusion_body.instance.name
-        else:
-            center =  self.fusion_sketch.center
-            name =  self.fusion_sketch.instance.name
+        from . import Landmark
+        boundingBox =  self.fusion_body.get_bounding_box()
 
-        landmark = Landmark(landmark_name, name)
-        landmark.fusion_landmark.create_landmark(center.x + x, center.y + y, center.z + z)
+        localPositions = [
+            Dimension.from_dimension_or_its_float_or_string_value(x, boundingBox.x),
+            Dimension.from_dimension_or_its_float_or_string_value(y, boundingBox.y),
+            Dimension.from_dimension_or_its_float_or_string_value(z, boundingBox.z),
+        ]
+
+        landmark = Landmark(landmark_name, self)
+        landmark.fusion_landmark.create_landmark(
+            localPositions[0].value,
+            localPositions[1].value,
+            localPositions[2].value,
+        )
 
         return landmark
 
     def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
-        from . import Landmark, Part
-        if isinstance(self, Part):
-            name =  self.fusion_body.instance.name
-        else:
-            name =  self.fusion_sketch.instance.name
+        if isinstance(landmark_name, LandmarkInterface):
+            landmark_name = landmark_name.name
 
-        return Landmark(landmark_name, name)
+        preset: Optional[PresetLandmark] = None
+
+        if isinstance(landmark_name, str):
+            preset = PresetLandmark.from_string(landmark_name)
+
+        if isinstance(landmark_name, PresetLandmark):
+            preset = landmark_name
+            landmark_name = preset.name
+
+        landmark = Landmark(landmark_name, self.name)
+
+        if preset is not None:
+            component = get_component(landmark.get_landmark_entity_name())
+
+            if component is None:
+                presetXYZ = preset.get_xyz()
+                self.create_landmark(
+                    landmark_name, presetXYZ[0], presetXYZ[1], presetXYZ[2]
+                )
+
+                return landmark
+        return landmark

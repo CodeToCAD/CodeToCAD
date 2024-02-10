@@ -43,6 +43,12 @@ class Material(MaterialInterface):
         b_value: IntOrFloat,
         a_value: IntOrFloat = 1.0,
     ):
+        if r_value < 1:
+            r_value = round(r_value * 255)
+        if g_value < 1:
+            g_value = round(g_value * 255)
+        if b_value < 1:
+            b_value = round(b_value * 255)
         self.color = r_value, g_value, b_value, a_value
         return self
 

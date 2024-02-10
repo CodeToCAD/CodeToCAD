@@ -1,5 +1,4 @@
-from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName
-from codetocad.core.angle import Angle
+from codetocad import *
 from .actions import clone_body
 from .common import make_axis, make_collection, make_matrix, make_vector
 from .fusion_interface import FusionInterface
@@ -164,3 +163,12 @@ class FusionBody(FusionInterface):
         )
 
         return center
+
+    def get_bounding_box(self):
+        minPoint = self.instance.boundingBox.minPoint
+        maxPoint = self.instance.boundingBox.maxPoint
+        return BoundaryBox(
+            BoundaryAxis(minPoint.x, maxPoint.x),
+            BoundaryAxis(minPoint.y, maxPoint.y),
+            BoundaryAxis(minPoint.z, maxPoint.z),
+        )

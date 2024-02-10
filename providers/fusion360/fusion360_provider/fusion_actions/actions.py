@@ -263,6 +263,7 @@ def combine_action(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
     operation: adsk.fusion.FeatureOperations,
+    deleteAfter: bool,
 ):
     rootComp = get_root_component()
     features = rootComp.features
@@ -277,35 +278,43 @@ def combine_action(
     combineFeaturesInput.isKeepToolBodies = False
     combine_feature = combineFeatures.add(combineFeaturesInput)
 
+    if deleteAfter:
+        otherBody.deleteMe()
+
 def combine(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
+    deleteAfter: bool,
 ):
     combine_action(
         body,
         otherBody,
         adsk.fusion.FeatureOperations.JoinFeatureOperation,
+        deleteAfter,
     )
 
 def subtract(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
+    deleteAfter: bool,
 ):
     combine_action(
         body,
         otherBody,
         adsk.fusion.FeatureOperations.CutFeatureOperation,
+        deleteAfter,
     )
 
 def intersect(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
-    delete_after_intersect: bool,
+    deleteAfter: bool,
 ):
     combine_action(
         body,
         otherBody,
         adsk.fusion.FeatureOperations.IntersectFeatureOperation,
+        deleteAfter,
     )
 
 def sweep(
@@ -493,6 +502,7 @@ def get_vertices_location_from_sketch(
     sketch: adsk.fusion.Sketch
 ) -> list[Vertex]:
     # check how to get the correct verticesa because it's different for each curve
+    # @check important look at sketch profiles
     vertices = []
     for point in sketch.sketchPoints:
         vertice = Vertex(
