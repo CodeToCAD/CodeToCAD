@@ -68,26 +68,20 @@ class Joint(JointInterface):
 
         return locationPair
 
-    def _limit_rotation_xyz(self, rotation_pair_x, rotation_pair_y, rotation_pair_z):
-        if rotation_pair_x:
-            self.fusion_joint.limit_rotation_motion("x", rotation_pair_x[0].value, rotation_pair_x[1].value)
-        elif rotation_pair_y:
-            self.fusion_joint.limit_rotation_motion("y", rotation_pair_y[0].value, rotation_pair_y[1].value)
-        elif rotation_pair_z:
-            self.fusion_joint.limit_rotation_motion("z", rotation_pair_z[0].value, rotation_pair_z[1].value)
-        return self
-
-    def limit_location_xyz(
+    def _limit_location_xyz(
         self,
         x: Optional[DimensionOrItsFloatOrStringValue] = None,
         y: Optional[DimensionOrItsFloatOrStringValue] = None,
         z: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
+        if self.fusion_joint.joint_ball_motion:
+            return self
+
         # offset = self.entity2.get_location_local() * -1
         offset = self.entity2.get_location_local()
         offset.x = offset.x * -1
-        offset.y = offset.x * -1
-        offset.z = offset.x * -1
+        offset.y = offset.y * -1
+        offset.z = offset.z * -1
 
         if x and x[0]:
             x[0] += offset.x
@@ -103,11 +97,11 @@ class Joint(JointInterface):
             z[1] += offset.z
 
         if x:
-            self.fusion_join.limit_location("x", x[0], x[1])
+            self.fusion_joint.limit_location("x", x[0].value, x[1].value)
         elif y:
-            self.fusion_join.limit_location("y", y[0], y[1])
+            self.fusion_joint.limit_location("y", y[0].value, y[1].value)
         elif z:
-            self.fusion_join.limit_location("z", z[0], z[1])
+            self.fusion_joint.limit_location("z", z[0].value, z[1].value)
 
         return self
 
@@ -141,23 +135,18 @@ class Joint(JointInterface):
         self._limit_location_xyz(None, None, dimensions)
         return self
 
-    def limit_rotation_xyz(
+    def limit_location_xyz(
         self,
-        x: Optional[AngleOrItsFloatOrStringValue] = None,
-        y: Optional[AngleOrItsFloatOrStringValue] = None,
-        z: Optional[AngleOrItsFloatOrStringValue] = None,
+        x: Optional[DimensionOrItsFloatOrStringValue] = None,
+        y: Optional[DimensionOrItsFloatOrStringValue] = None,
+        z: Optional[DimensionOrItsFloatOrStringValue] = None,
     ):
-        rotation_pair_x = (
-            Joint._get_limit_rotation_pair(x, x) if x is not None else None
-        )
-        rotation_pair_y = (
-            Joint._get_limit_rotation_pair(y, y) if y is not None else None
-        )
-        rotation_pair_z = (
-            Joint._get_limit_rotation_pair(z, z) if z is not None else None
-        )
+        dimensionsX = Joint._get_limit_location_pair(x, x) if x is not None else None
+        dimensionsY = Joint._get_limit_location_pair(y, y) if y is not None else None
+        dimensionsZ = Joint._get_limit_location_pair(z, z) if y is not None else None
 
-        self._limit_rotation_xyz(rotation_pair_x, rotation_pair_y, rotation_pair_z)
+        self._limit_location_xyz(dimensionsX, dimensionsY, dimensionsZ)
+
         return self
 
     @staticmethod
@@ -165,11 +154,37 @@ class Joint(JointInterface):
         rotationPair: list[Optional[Angle]] = [None, None]
 
         if min is not None:
-            rotationPair[0] = Angle.from_string(min).to_radians()
+            rotationPair[0] = Angle.from_angle_or_its_float_or_string_value(min).to_radians()
         if max is not None:
-            rotationPair[1] = Angle.from_string(max).to_radians()
+            rotationPair[1] = Angle.from_angle_or_its_float_or_string_value(max).to_radians()
 
         return rotationPair
+
+    def _limit_rotation_xyz(self, rotation_pair_x, rotation_pair_y, rotation_pair_z):
+        if self.fusion_joint.joint_slider:
+            return self
+
+        if rotation_pair_x:
+            self.fusion_joint.limit_rotation_motion("x", rotation_pair_x[0].value, rotation_pair_x[1].value)
+        if rotation_pair_y:
+            self.fusion_joint.limit_rotation_motion("y", rotation_pair_y[0].value, rotation_pair_y[1].value)
+        if rotation_pair_z:
+            self.fusion_joint.limit_rotation_motion("z", rotation_pair_z[0].value, rotation_pair_z[1].value)
+
+        return self
+
+    def limit_rotation_xyz(
+        self,
+        x: Optional[AngleOrItsFloatOrStringValue] = None,
+        y: Optional[AngleOrItsFloatOrStringValue] = None,
+        z: Optional[AngleOrItsFloatOrStringValue] = None,
+    ):
+        rotation_pair_x = Joint._get_limit_rotation_pair(x, x)
+        rotation_pair_y = Joint._get_limit_rotation_pair(y, y)
+        rotation_pair_z = Joint._get_limit_rotation_pair(z, z)
+
+        self._limit_rotation_xyz(rotation_pair_x, rotation_pair_y, rotation_pair_z)
+        return self
 
     def limit_rotation_x(
         self,

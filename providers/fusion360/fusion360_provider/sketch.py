@@ -1,7 +1,5 @@
 from typing import Optional
 
-import adsk.core, adsk.fusion
-
 from codetocad.interfaces import SketchInterface, ProjectableInterface
 
 from codetocad.codetocad_types import *
@@ -9,7 +7,7 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_component
-from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, get_vertices_location_from_sketch, mirror, sweep
+from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, mirror, sweep
 from .fusion_actions.modifiers import make_revolve
 
 from .fusion_actions.curve import make_arc, make_circle, make_line, make_point, make_rectangle
