@@ -10,8 +10,6 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
-from providers.fusion360.fusion360_provider.fusion_actions.base import UiLogger
-
 if TYPE_CHECKING:
     from . import Part
 

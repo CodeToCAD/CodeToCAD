@@ -497,24 +497,3 @@ def set_material(
     roughnessProp.value = material_name.roughness
 
     body.appearance = appearance
-
-def get_vertices_location_from_sketch(
-    sketch: adsk.fusion.Sketch
-) -> list[Vertex]:
-    # check how to get the correct verticesa because it's different for each curve
-    # @check important look at sketch profiles
-    vertices = []
-    for point in sketch.sketchPoints:
-        vertice = Vertex(
-            Point(
-                point.geometry.x,
-                point.geometry.y,
-                point.geometry.z,
-            ),
-            "vertex"
-        )
-        vertices.append(vertice)
-    return vertices
-
-def get_vertices_location_from_body():
-    ...

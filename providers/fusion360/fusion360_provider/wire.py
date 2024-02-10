@@ -6,6 +6,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_loft
 from providers.fusion360.fusion360_provider.fusion_actions.normals import calculate_normal
 
 
@@ -77,6 +78,8 @@ class Wire(Entity, WireInterface):
         description: Optional[str] = None,
         native_instance=None,
     ):
+        if isinstance(parent_entity, str):
+            parent_entity = Entity(parent_entity)
         self.edges = edges
         self.parent_entity = parent_entity
         self.name = name
@@ -129,7 +132,20 @@ class Wire(Entity, WireInterface):
         return True
 
     def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
+        new_name = new_part_name if new_part_name else self.parent_entity.name
+
+        component = self.parent_entity.fusion_sketch.component
+        sketch = self.parent_entity.fusion_sketch.instance
+        other_sketch = other.parent_entity.fusion_sketch.instance
+
         from . import Part
 
-        print("loft called:", other, new_part_name)
-        return Part("a part")
+        part = Part(new_name)
+
+        part.fusion_body.instance = make_loft(
+            component,
+            sketch,
+            other_sketch,
+        )
+
+        return part
