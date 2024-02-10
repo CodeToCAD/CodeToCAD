@@ -181,3 +181,12 @@ class FusionSketch(FusionInterface):
         )
 
         return center
+
+    def get_bounding_box(self):
+        minPoint = self.instance.boundingBox.minPoint
+        maxPoint = self.instance.boundingBox.maxPoint
+        return BoundaryBox(
+            BoundaryAxis(minPoint.x, maxPoint.x),
+            BoundaryAxis(minPoint.y, maxPoint.y),
+            BoundaryAxis(minPoint.z, maxPoint.z),
+        )

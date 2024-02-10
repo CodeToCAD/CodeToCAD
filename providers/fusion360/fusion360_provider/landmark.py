@@ -30,7 +30,10 @@ class Landmark(Entity, LandmarkInterface):
         description: Optional[str] = None,
         native_instance=None,
     ):
-        self.fusion_landmark = FusionLandmark(name)
+        from . import Part
+        if isinstance(parent_entity, str):
+            parent_entity = Part(parent_entity)
+        self.fusion_landmark = FusionLandmark(name, parent_entity.fusion_body.component)
         self.name = name
         self.parent_entity = parent_entity
         self.description = description

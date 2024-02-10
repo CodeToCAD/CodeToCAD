@@ -348,14 +348,13 @@ class Part(Entity, PartInterface):
         part.fusion_body.sketch = sketch
         return part
 
-
     def union(
         self,
         with_part: PartOrItsName,
         delete_after_union: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        combine(self.fusion_body.instance, with_part.fusion_body.instance)
+        combine(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_union)
         return self
 
     def subtract(
@@ -364,7 +363,7 @@ class Part(Entity, PartInterface):
         delete_after_subtract: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        subtract(self.fusion_body.instance, with_part.fusion_body.instance)
+        subtract(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_subtract)
         return self
 
     def intersect(

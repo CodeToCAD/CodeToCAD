@@ -2,19 +2,21 @@ from providers.fusion360.fusion360_provider.fusion_actions.common import make_po
 from .actions import clone_sketch
 from .fusion_interface import FusionInterface
 
-from .base import delete_occurrence, get_or_create_component, get_or_create_sketch
+from .base import delete_occurrence, get_component, get_or_create_component, get_or_create_sketch
 
 import adsk.core
 
 
 class FusionLandmark(FusionInterface):
-    def __init__(self, name):
-        self.component = get_or_create_component(name)
+    def __init__(self, name: str, parent_component: adsk.fusion.Component):
+        # self.component = get_or_create_component(name)
+        self.component = parent_component
         self.instance = get_or_create_sketch(self.component, name)
+        self.point = self.instance.sketchPoints.item(0)
 
     def create_landmark(self, x: float, y: float, z: float):
-        point = make_point3d(x, y, z)
-        self.instance.sketchPoints.add(point)
+        self.point_ = make_point3d(x, y, z)
+        self.point = self.instance.sketchPoints.add(self.point_)
 
     def translate(self, x: float, y: float, z: float):
         matrix = adsk.core.Matrix3D.create()
@@ -43,15 +45,10 @@ class FusionLandmark(FusionInterface):
 
     @property
     def center(self):
-        boundBox = self.instance.boundingBox
+        return self.point
 
-        center = adsk.core.Point3D.create(
-            (boundBox.minPoint.x + boundBox.maxPoint.x) / 2,
-            (boundBox.minPoint.y + boundBox.maxPoint.y) / 2,
-            (boundBox.minPoint.z + boundBox.maxPoint.z) / 2,
-        )
-
-        return center
+    def get_point(self):
+        return self.point_
 
     def scale(self, x: float, y: float, z: float):
         ...
