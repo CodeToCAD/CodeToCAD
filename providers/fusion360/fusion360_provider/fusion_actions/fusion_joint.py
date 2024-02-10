@@ -1,5 +1,5 @@
 from codetocad import *
-from .base import UiLogger, get_root_component
+from .base import get_root_component
 
 import adsk.fusion
 
@@ -32,13 +32,6 @@ class FusionJoint:
         geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
             self.entity1.fusion_landmark.point
         )
-        # sketch = self.entity2.parent_entity.fusion_body.sketch
-        # profile = sketch.profiles.item(0)
-        # geoEntity2 = adsk.fusion.JointGeometry.createByProfile(
-        #     profile,
-        #     None,
-        #     adsk.fusion.JointKeyPointTypes.CenterKeyPoint
-        # )
         geoEntity2 = adsk.fusion.JointGeometry.createByPoint(
             self.entity2.fusion_landmark.point
         )
@@ -48,7 +41,7 @@ class FusionJoint:
 
         rootComp = get_root_component()
         joints = rootComp.joints
-        # jointInput = joints.createInput(geoEntity1, geoEntity2)
+        # First input is who moves and the second is the "origin" point from the move
         jointInput = joints.createInput(geoEntity2, geoEntity1)
         jointInput.angle = angle
         jointInput.offset = offset
