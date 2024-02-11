@@ -12,16 +12,13 @@ class CapabilitiesImportsBuilder:
     Holds references to CodeToCAD class names to help categorize imports by type for templating purposes.
     """
 
-    codetocad_implementable_class_names = set()
-    codetocad_interface_class_names = set()
-
     def get_implementable_class_names(self):
-        return list(self.codetocad_implementable_class_names)
+        return list(self._codetocad_implementable_class_names)
 
     def get_interface_class_names(self, suffix: str = "Interface"):
         return [
             class_name + suffix
-            for class_name in list(self.codetocad_interface_class_names)
+            for class_name in list(self._codetocad_interface_class_names)
         ]
 
     def __init__(
@@ -31,6 +28,9 @@ class CapabilitiesImportsBuilder:
     ) -> None:
         self.exclude_class_names = exclude_class_names or []
         self.capabilities_loader_ref = weakref.ref(capabilities_loader)
+
+        self._codetocad_implementable_class_names = set()
+        self._codetocad_interface_class_names = set()
 
     @property
     def loader_implementable_class_names(self):
@@ -61,26 +61,26 @@ class CapabilitiesImportsBuilder:
             return
 
         if self._check_class_in_implementable_class_names(class_name):
-            self.codetocad_implementable_class_names.add(class_name)
+            self._codetocad_implementable_class_names.add(class_name)
             return
 
         if self._check_class_in_interface_class_names(class_name):
-            self.codetocad_interface_class_names.add(class_name)
+            self._codetocad_interface_class_names.add(class_name)
             return
 
     def copy_from(self, other: "CapabilitiesImportsBuilder"):
         """
         In-place copies class names from another ImportsBuilder
         """
-        self.codetocad_implementable_class_names = (
-            self.codetocad_implementable_class_names.union(
-                other.codetocad_implementable_class_names
+        self._codetocad_implementable_class_names = (
+            self._codetocad_implementable_class_names.union(
+                other._codetocad_implementable_class_names
             )
         )
 
-        self.codetocad_interface_class_names = (
-            self.codetocad_interface_class_names.union(
-                other.codetocad_interface_class_names
+        self._codetocad_interface_class_names = (
+            self._codetocad_interface_class_names.union(
+                other._codetocad_interface_class_names
             )
         )
 

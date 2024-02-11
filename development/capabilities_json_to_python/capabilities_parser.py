@@ -1,13 +1,29 @@
 from dataclasses import dataclass, field, fields
 
 
-@dataclass
+from .capabilities_parameter_types import capabilities_type_to_python_type
+from .capabilities_parameter_types_mock_values import (
+    capabilities_type_to_python_mock_value,
+)
+
+
+@dataclass(frozen=True)
 class CapabilitiesParameter:
     name: str
     information: str
     type: str
     default_value: str | None
     required: bool
+
+    @property
+    def type_parsed(self):
+        if self.type == "any":
+            return None
+        return capabilities_type_to_python_type(self.type)
+
+    @property
+    def type_mock_value(self):
+        return capabilities_type_to_python_mock_value(self.type_parsed)
 
     @staticmethod
     def from_json(name: str, parameter_json: dict) -> "CapabilitiesParameter":
@@ -20,7 +36,7 @@ class CapabilitiesParameter:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class CapabilitiesMethod:
     name: str
     information: str
@@ -28,6 +44,24 @@ class CapabilitiesMethod:
     return_type: str | None
     static_method: bool
     parameters: list[CapabilitiesParameter] = field(default_factory=list)
+
+    @property
+    def parameters_names(self):
+        return [parameter.name for parameter in self.parameters]
+
+    @property
+    def return_type_parsed(self):
+        return (
+            capabilities_type_to_python_type(self.return_type)
+            if self.return_type
+            else None
+        )
+
+    @property
+    def return_type_mock_value(self):
+        if self.return_type is None:
+            return None
+        return capabilities_type_to_python_mock_value(self.return_type_parsed)
 
     @staticmethod
     def from_json(name: str, method_json: dict) -> "CapabilitiesMethod":
@@ -48,7 +82,7 @@ class CapabilitiesMethod:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class CapabilitiesClass:
     name: str
     information: str
@@ -56,7 +90,14 @@ class CapabilitiesClass:
     constructor: CapabilitiesMethod | None
     extends: list[str] = field(default_factory=list)
     implements: list[str] = field(default_factory=list)
+
     methods: list[CapabilitiesMethod] = field(default_factory=list)
+
+    def get_extends_class_names(self, suffix: str = "Interface"):
+        return [class_name + suffix for class_name in self.extends]
+
+    def get_implements_class_names(self, suffix: str = "Interface"):
+        return [class_name + suffix for class_name in self.implements]
 
     @staticmethod
     def get_custom_keys_from_json(class_json: dict) -> list[str]:
