@@ -86,6 +86,94 @@
                 }
             }
         },
+        "Booleanable":{
+            "information": "An entity that supports boolean operations: union, intersect, subtract.",
+            "is_interface_only": true,
+            "union": {
+                "action": "modify",
+                "information": "Boolean union",
+                "parameters": {
+                    "other": {
+                        "type": "string,Booleanable"
+                    },
+                    "delete_after_union": {
+                        "type": "boolean",
+                        "default_value": true
+                    },
+                    "is_transfer_data": {
+                        "type": "boolean",
+                        "default_value": false
+                    }
+                }
+            },
+            "subtract": {
+                "action": "modify",
+                "information": "Boolean subtraction",
+                "parameters": {
+                    "other": {
+                        "type": "string,Booleanable"
+                    },
+                    "delete_after_subtract": {
+                        "type": "boolean",
+                        "default_value": true
+                    },
+                    "is_transfer_data": {
+                        "type": "boolean",
+                        "default_value": false
+                    }
+                }
+            },
+            "intersect": {
+                "action": "modify",
+                "information": "Boolean intersection",
+                "parameters": {
+                    "other": {
+                        "type": "string,Booleanable"
+                    },
+                    "delete_after_intersect": {
+                        "type": "boolean",
+                        "default_value": true
+                    },
+                    "is_transfer_data": {
+                        "type": "boolean",
+                        "default_value": false
+                    }
+                }
+            }
+        },
+        "Landmarkable": {
+            "information": "An entity that can be use landmarks.",
+            "is_interface_only": true,
+            "create_landmark": {
+                "action": "get",
+                "return_type": "Landmark",
+                "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
+                "parameters": {
+                    "landmark_name": {
+                        "type": "string"
+                    },
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "get_landmark": {
+                "action": "get",
+                "return_type": "Landmark",
+                "information": "Get the landmark by name",
+                "parameters": {
+                    "landmark_name": {
+                        "type": "string,PresetLandmark"
+                    }
+                }
+            }
+        },
         "Mirrorable": {
             "information": "An entity that can be mirrored.",
             "is_interface_only": true,
@@ -121,7 +209,7 @@
                     },
                     "direction_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     }
                 }
             },
@@ -140,7 +228,7 @@
                     },
                     "normal_direction_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     }
                 }
             }
@@ -208,11 +296,11 @@
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "scale": {
                         "type": "float",
-                        "defaultValue": 1.0
+                        "default_value": 1.0
                     }
                 }
             }
@@ -223,11 +311,11 @@
             "project": {
                 "information": "Project this entity onto another",
                 "action": "get",
-                "returnType": "Projectable",
+                "return_type": "Projectable",
                 "parameters": {
                     "project_onto": {
-                        "information": "Sketch to project onto",
-                        "type": "Sketch",
+                        "information": "Projectable to project onto",
+                        "type": "Projectable",
                         "required": true
                     }
                 }
@@ -254,7 +342,7 @@
             "is_exists": {
                 "action": "get",
                 "information": "Check if an entity exists",
-                "returnType": "boolean"
+                "return_type": "boolean"
             },
             "rename": {
                 "action": "modify",
@@ -265,7 +353,7 @@
                     },
                     "renamelinked_entities_and_landmarks": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
@@ -275,14 +363,14 @@
                 "parameters": {
                     "remove_children": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
             "is_visible": {
                 "action": "get",
                 "information": "Returns whether the entity is visible in the scene.",
-                "returnType": "boolean"
+                "return_type": "boolean"
             },
             "set_visible": {
                 "action": "interact",
@@ -299,37 +387,37 @@
                 "parameters": {
                     "rotation": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "scale": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "location": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "modifiers": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
             "get_native_instance": {
                 "action": "get",
                 "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "returnType": "any",
+                "return_type": "any",
                 "parameters": {}
             },
             "get_location_world": {
                 "action": "get",
-                "returnType": "Point",
+                "return_type": "Point",
                 "information": "Get the entities XYZ location relative to World Space.",
                 "parameters": {}
             },
             "get_location_local": {
                 "action": "get",
-                "returnType": "Point",
+                "return_type": "Point",
                 "information": "Get the entities XYZ location relative to Local Space.",
                 "parameters": {}
             },
@@ -424,50 +512,21 @@
             },
             "get_bounding_box": {
                 "action": "get",
-                "returnType": "BoundaryBox",
+                "return_type": "BoundaryBox",
                 "information": "Get the Boundary Box around the entity.",
                 "parameters": {}
             },
             "get_dimensions": {
                 "action": "get",
-                "returnType": "Dimensions",
+                "return_type": "Dimensions",
                 "information": "Get the length span in each point axis (X,Y,Z).",
                 "parameters": {}
-            },
-            "create_landmark": {
-                "action": "get",
-                "returnType": "Landmark",
-                "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
-                "parameters": {
-                    "landmark_name": {
-                        "type": "string"
-                    },
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "get_landmark": {
-                "action": "get",
-                "returnType": "Landmark",
-                "information": "Get the landmark by name",
-                "parameters": {
-                    "landmark_name": {
-                        "type": "string,PresetLandmark"
-                    }
-                }
             }
         },
         "Part": {
             "information": "Capabilities related to creating and manipulating 3D shapes.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Subdividable,Importable,Exportable,Scalable",
+            "implements": "Mirrorable,Patternable,Subdividable,Importable,Exportable,Scalable,Landmarkable,Booleanable",
             "create_cube": {
                 "action": "create",
                 "information": "Adds cuboid geometry to a part.",
@@ -500,7 +559,7 @@
                     },
                     "draft_radius": {
                         "type": "string,float,Dimension",
-                        "defaultValue": 0
+                        "default_value": 0
                     },
                     "keyword_arguments": {
                         "type": "object",
@@ -578,23 +637,23 @@
                     },
                     "pressure_angle": {
                         "type": "string,float,Angle",
-                        "defaultValue": "20d"
+                        "default_value": "20d"
                     },
                     "number_of_teeth": {
                         "type": "int",
-                        "defaultValue": 12
+                        "default_value": 12
                     },
                     "skew_angle": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0
+                        "default_value": 0
                     },
                     "conical_angle": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0
+                        "default_value": 0
                     },
                     "crown_angle": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0
+                        "default_value": 0
                     },
                     "keyword_arguments": {
                         "type": "object",
@@ -605,7 +664,7 @@
             },
             "clone": {
                 "action": "get",
-                "returnType": "Part",
+                "return_type": "Part",
                 "information": "Clone an existing Part with its geometry and properties. Returns the new Part.",
                 "parameters": {
                     "new_name": {
@@ -613,58 +672,7 @@
                     },
                     "copy_landmarks": {
                         "type": "boolean",
-                        "defaultValue": true
-                    }
-                }
-            },
-            "union": {
-                "action": "modify",
-                "information": "Boolean union",
-                "parameters": {
-                    "with_part": {
-                        "type": "string,Part"
-                    },
-                    "delete_after_union": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    },
-                    "is_transfer_landmarks": {
-                        "type": "boolean",
-                        "defaultValue": false
-                    }
-                }
-            },
-            "subtract": {
-                "action": "modify",
-                "information": "Boolean subtraction",
-                "parameters": {
-                    "with_part": {
-                        "type": "string,Part"
-                    },
-                    "delete_after_subtract": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    },
-                    "is_transfer_landmarks": {
-                        "type": "boolean",
-                        "defaultValue": false
-                    }
-                }
-            },
-            "intersect": {
-                "action": "modify",
-                "information": "Boolean intersection",
-                "parameters": {
-                    "with_part": {
-                        "type": "string,Part"
-                    },
-                    "delete_after_intersect": {
-                        "type": "boolean",
-                        "defaultValue": true
-                    },
-                    "is_transfer_landmarks": {
-                        "type": "boolean",
-                        "defaultValue": false
+                        "default_value": true
                     }
                 }
             },
@@ -683,11 +691,11 @@
                     },
                     "start_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     },
                     "flip_axis": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     }
                 }
             },
@@ -715,23 +723,23 @@
                     },
                     "normal_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     },
                     "flip_axis": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "initial_rotation_x": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "initial_rotation_y": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "initial_rotation_z": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "mirror_about_entity_or_landmark": {
                         "type": "string,Entity",
@@ -739,23 +747,23 @@
                     },
                     "mirror_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "x"
+                        "default_value": "x"
                     },
                     "mirror": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "circular_pattern_instance_count": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "circular_pattern_instance_separation": {
                         "type": "string,float,Angle",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "circular_pattern_instance_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     },
                     "circular_pattern_about_entity_or_landmark": {
                         "type": "string,Entity",
@@ -763,27 +771,27 @@
                     },
                     "linear_pattern_instance_count": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "linear_pattern_instance_separation": {
                         "type": "string,float,Dimension",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "linear_pattern_instance_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "x"
+                        "default_value": "x"
                     },
                     "linear_pattern2nd_instance_count": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "linear_pattern2nd_instance_separation": {
                         "type": "string,float,Dimension",
-                        "defaultValue": 0.0
+                        "default_value": 0.0
                     },
                     "linear_pattern2nd_instance_axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "y"
+                        "default_value": "y"
                     }
                 }
             },
@@ -799,11 +807,11 @@
                     },
                     "iterations": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     }
                 }
             },
@@ -819,7 +827,7 @@
             "is_colliding_with_part": {
                 "action": "get",
                 "information": "Check if this part is colliding with another.",
-                "returnType": "boolean",
+                "return_type": "boolean",
                 "parameters": {
                     "other_part": {
                         "type": "string,Part"
@@ -835,7 +843,7 @@
                     },
                     "use_width": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     }
                 }
             },
@@ -851,7 +859,7 @@
                     },
                     "use_width": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     }
                 }
             },
@@ -867,7 +875,7 @@
                     },
                     "use_width": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     }
                 }
             },
@@ -938,7 +946,7 @@
         "Sketch": {
             "information": "Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable,Projectable",
+            "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable,Projectable,Landmarkable",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -956,7 +964,7 @@
             },
             "clone": {
                 "action": "get",
-                "returnType": "Sketch",
+                "return_type": "Sketch",
                 "information": "Clone an existing sketch with its geometry and properties. Returns the new Sketch.",
                 "parameters": {
                     "new_name": {
@@ -964,13 +972,13 @@
                     },
                     "copy_landmarks": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
             "revolve": {
                 "action": "get",
-                "returnType": "Part",
+                "return_type": "Part",
                 "information": "Revolve a Sketch around another Entity or Landmark",
                 "parameters": {
                     "angle": {
@@ -981,7 +989,7 @@
                     },
                     "axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     }
                 }
             },
@@ -997,17 +1005,17 @@
                     },
                     "iterations": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "axis": {
                         "type": "string,int,Axis",
-                        "defaultValue": "z"
+                        "default_value": "z"
                     }
                 }
             },
             "extrude": {
                 "action": "get",
-                "returnType": "Part",
+                "return_type": "Part",
                 "information": "Extrude a curve by a specified length. Returns a Part type.",
                 "parameters": {
                     "length": {
@@ -1017,7 +1025,7 @@
             },
             "sweep": {
                 "action": "get",
-                "returnType": "Part",
+                "return_type": "Part",
                 "information": "Extrude this Sketch along the path of another Sketch",
                 "parameters": {
                     "profile_name_or_instance": {
@@ -1025,7 +1033,7 @@
                     },
                     "fill_cap": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
@@ -1056,42 +1064,42 @@
                     },
                     "font_size": {
                         "type": "string,float,Dimension",
-                        "defaultValue": 1.0
+                        "default_value": 1.0
                     },
                     "bold": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "italic": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "underlined": {
                         "type": "boolean",
-                        "defaultValue": false
+                        "default_value": false
                     },
                     "character_spacing": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "word_spacing": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "line_spacing": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "font_file_path": {
                         "type": "string",
-                        "defaultValue": null,
+                        "default_value": null,
                         "required": false
                     }
                 }
             },
             "create_from_vertices": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
                     "points": {
@@ -1101,7 +1109,7 @@
             },
             "create_point": {
                 "action": "get",
-                "returnType": "Vertex",
+                "return_type": "Vertex",
                 "information": "Create a point",
                 "parameters": {
                     "point": {
@@ -1111,7 +1119,7 @@
             },
             "create_line": {
                 "action": "get",
-                "returnType": "Edge",
+                "return_type": "Edge",
                 "information": "Create a line between two points",
                 "parameters": {
                     "start_at": {
@@ -1124,7 +1132,7 @@
             },
             "create_circle": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create a circle",
                 "parameters": {
                     "radius": {
@@ -1134,7 +1142,7 @@
             },
             "create_ellipse": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create an ellipse",
                 "parameters": {
                     "radius_minor": {
@@ -1147,7 +1155,7 @@
             },
             "create_arc": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                 "parameters": {
                     "start_at": {
@@ -1163,13 +1171,13 @@
                     "flip": {
                         "type": "boolean",
                         "required": false,
-                        "defaultValue": false
+                        "default_value": false
                     }
                 }
             },
             "create_rectangle": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create a rectangle",
                 "parameters": {
                     "length": {
@@ -1182,7 +1190,7 @@
             },
             "create_polygon": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create an n-gon",
                 "parameters": {
                     "number_of_sides": {
@@ -1198,7 +1206,7 @@
             },
             "create_trapezoid": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create a trapezoid",
                 "parameters": {
                     "length_upper": {
@@ -1214,7 +1222,7 @@
             },
             "create_spiral": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Create a spiral or helix",
                 "parameters": {
                     "number_of_turns": {
@@ -1228,7 +1236,7 @@
                     },
                     "is_clockwise": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "radius_end": {
                         "information": "Specify a radiusEnd to make a conical or drafted spiral. Pass None to make a cylindrical spiral.",
@@ -1257,13 +1265,13 @@
             "get_control_points": {
                 "information": "Get a vertex's curve control points. This may not be applicable in several situations.",
                 "action": "get",
-                "returnType": "list[Vertex]",
-                "staticMethod": false,
+                "return_type": "list[Vertex]",
+                "is_static_method": false,
                 "parameters": {
                     "parameter": {
                         "information": "",
                         "type": "",
-                        "defaultValue": "",
+                        "default_value": "",
                         "required": false
                     }
                 }
@@ -1272,7 +1280,7 @@
         "Edge": {
             "information": "A curve bounded by two Vertices.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Subdividable,Projectable",
+            "implements": "Mirrorable,Patternable,Subdividable,Projectable,Landmarkable",
             "constructor": {
                 "parameters": {
                     "v1": {
@@ -1290,7 +1298,7 @@
             "offset": {
                 "information": "Clone and offset this edge a distance away from this one.",
                 "action": "get",
-                "returnType": "Edge",
+                "return_type": "Edge",
                 "parameters": {
                     "distance": {
                         "type": "string,float,Dimension"
@@ -1321,13 +1329,13 @@
             "get_is_construction": {
                 "information": "Check if this edge is for construction only.",
                 "action": "get",
-                "returnType": "boolean"
+                "return_type": "boolean"
             }
         },
         "Wire": {
             "information": "A collection of connected edges.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Projectable",
+            "implements": "Mirrorable,Patternable,Projectable,Landmarkable,Booleanable",
             "constructor": {
                 "parameters": {
                     "edges": {
@@ -1342,7 +1350,7 @@
             },
             "clone": {
                 "action": "get",
-                "returnType": "Wire",
+                "return_type": "Wire",
                 "information": "Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.",
                 "parameters": {
                     "new_name": {
@@ -1357,12 +1365,12 @@
             "get_normal": {
                 "information": "Get the normal created by this wire. Must be a closed wire.",
                 "action": "get",
-                "returnType": "Point",
+                "return_type": "Point",
                 "parameters": {
                     "flip":{
                         "information": "Flip the normal direction.",
                         "type": "boolean",
-                        "defaultValue": false,
+                        "default_value": false,
                         "required": false
                     }
                 }
@@ -1370,16 +1378,16 @@
             "get_vertices": {
                 "information": "Collapse all edges' vertices into one list.",
                 "action": "get",
-                "returnType": "list[Vertex]"
+                "return_type": "list[Vertex]"
             },
             "get_is_closed": {
                 "information": "Checks if a wire is closed. Note: A closed wire is a Face or Surface.",
                 "action": "get",
-                "returnType": "boolean"
+                "return_type": "boolean"
             },
             "loft": {
                 "action": "get",
-                "returnType": "Part",
+                "return_type": "Part",
                 "information": "Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.",
                 "parameters": {
                     "other": {
@@ -1396,7 +1404,6 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
-            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1413,9 +1420,36 @@
                     }
                 }
             },
+            "get_location_world": {
+                "action": "get",
+                "return_type": "Point",
+                "information": "Get the Landmark XYZ location relative to World Space.",
+                "parameters": {}
+            },
+            "get_location_local": {
+                "action": "get",
+                "return_type": "Point",
+                "information": "Get the Landmark XYZ location relative to Local Space.",
+                "parameters": {}
+            },
+            "translate_xyz": {
+                "action": "modify",
+                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
+                "parameters": {
+                    "x": {
+                        "type": "string,float,Dimension"
+                    },
+                    "y": {
+                        "type": "string,float,Dimension"
+                    },
+                    "z": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
             "clone": {
                 "action": "get",
-                "returnType": "Landmark",
+                "return_type": "Landmark",
                 "information": "Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.",
                 "parameters": {
                     "new_name": {
@@ -1434,12 +1468,12 @@
             "get_landmark_entity_name": {
                 "information": "Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.",
                 "action": "get",
-                "returnType": "string"
+                "return_type": "string"
             },
             "get_parent_entity": {
                 "information": "Get the name of the entity this landmark belongs to.",
                 "action": "get",
-                "returnType": "Entity"
+                "return_type": "Entity"
             }
         },
         "Joint": {
@@ -1610,8 +1644,8 @@
             "get_preset": {
                 "information": "Get a material from a preset",
                 "action": "get",
-                "returnType": "Material",
-                "staticMethod": true,
+                "return_type": "Material",
+                "is_static_method": true,
                 "parameters": {
                     "parameter": {
                         "information": "A PresetMaterial name or instance",
@@ -1644,14 +1678,14 @@
                     },
                     "a_value": {
                         "type": "int,float",
-                        "defaultValue": 1.0
+                        "default_value": 1.0
                     }
                 }
             },
             "set_reflectivity": {
                 "information": "Change the surface reflectivity (metallic luster) of the material.",
                 "action": "modify",
-                "staticMethod": false,
+                "is_static_method": false,
                 "parameters": {
                     "reflectivity": {
                         "information": "A float value between 0.0-1.0",
@@ -1663,7 +1697,7 @@
             "set_roughness": {
                 "information": "Change the surface roughness of the material.",
                 "action": "modify",
-                "staticMethod": false,
+                "is_static_method": false,
                 "parameters": {
                     "roughness": {
                         "information": "A float value between 0.0-1.0",
@@ -1688,8 +1722,8 @@
             "default": {
                 "information": "Get an Animation instance for the current scene.",
                 "action": "get",
-                "staticMethod": true,
-                "returnType": "Animation"
+                "is_static_method": true,
+                "return_type": "Animation"
             },
             "set_frame_start": {
                 "information": "Set the start animation frame in the scene.",
@@ -1855,7 +1889,7 @@
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "file_type": {
                         "type": "string",
@@ -1873,19 +1907,19 @@
                     },
                     "start_frame_number": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "end_frame_number": {
                         "type": "int",
-                        "defaultValue": 100
+                        "default_value": 100
                     },
                     "step_frames": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
@@ -1903,19 +1937,19 @@
                     },
                     "start_frame_number": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "end_frame_number": {
                         "type": "int",
-                        "defaultValue": 100
+                        "default_value": 100
                     },
                     "step_frames": {
                         "type": "int",
-                        "defaultValue": 1
+                        "default_value": 1
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "file_type": {
                         "type": "string",
@@ -1996,8 +2030,8 @@
             "default": {
                 "information": "Get a Scene instance for the current scene.",
                 "action": "get",
-                "staticMethod": true,
-                "returnType": "Scene"
+                "is_static_method": true,
+                "return_type": "Scene"
             },
             "create": {
                 "information": "Creates a new scene.",
@@ -2010,12 +2044,12 @@
             "is_exists": {
                 "action": "get",
                 "information": "Check if the scene exists",
-                "returnType": "boolean"
+                "return_type": "boolean"
             },
             "get_selected_entity": {
                 "information": "Get the selected entity in the Scene.",
                 "action": "get",
-                "returnType": "Entity"
+                "return_type": "Entity"
             },
             "export": {
                 "action": "interact",
@@ -2029,11 +2063,11 @@
                     },
                     "overwrite": {
                         "type": "boolean",
-                        "defaultValue": true
+                        "default_value": true
                     },
                     "scale": {
                         "type": "float",
-                        "defaultValue": 1.0
+                        "default_value": 1.0
                     }
                 }
             },
@@ -2092,7 +2126,7 @@
                     "remove_from_other_groups": {
                         "type": "boolean",
                         "required": false,
-                        "defaultValue": true
+                        "default_value": true
                     }
                 }
             },
@@ -2118,12 +2152,12 @@
                     "location_x": {
                         "type": "string,float,Dimension",
                         "required": false,
-                        "defaultValue": 0
+                        "default_value": 0
                     },
                     "location_y": {
                         "type": "string,float,Dimension",
                         "required": false,
-                        "defaultValue": 0
+                        "default_value": 0
                     }
                 }
             }
@@ -2133,7 +2167,7 @@
             "constructor": {},
             "measure_distance": {
                 "action": "get",
-                "returnType": "Dimensions",
+                "return_type": "Dimensions",
                 "information": "The ubiquitous ruler.",
                 "parameters": {
                     "entity1": {
@@ -2146,7 +2180,7 @@
             },
             "measure_angle": {
                 "action": "get",
-                "returnType": "list[Angle]",
+                "return_type": "list[Angle]",
                 "information": "The ubiquitous ruler.",
                 "parameters": {
                     "entity1": {
@@ -2163,7 +2197,7 @@
             },
             "get_world_pose": {
                 "action": "get",
-                "returnType": "list[float]",
+                "return_type": "list[float]",
                 "information": "Returns the world pose of an entity.",
                 "parameters": {
                     "entity": {
@@ -2173,7 +2207,7 @@
             },
             "get_bounding_box": {
                 "action": "get",
-                "returnType": "BoundaryBox",
+                "return_type": "BoundaryBox",
                 "information": "Returns the bounding box of an entity.",
                 "parameters": {
                     "entity_name": {
@@ -2183,7 +2217,7 @@
             },
             "get_dimensions": {
                 "action": "get",
-                "returnType": "Dimensions",
+                "return_type": "Dimensions",
                 "information": "Returns the dimensions of an entity.",
                 "parameters": {
                     "entity_name": {

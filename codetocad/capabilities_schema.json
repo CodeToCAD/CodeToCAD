@@ -4,14 +4,14 @@
     "definitions": {
         "returnTypeList": {
             "type": "string",
-            "pattern": "^list\\[((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial)(,|))*\\]$"
+            "pattern": "^list\\[((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable)(,|))*\\]$"
         },
-        "returnType": {
+        "return_type": {
             "type": "string",
-            "description": "A value of type: any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial",
+            "description": "A value of type: any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable",
             "oneOf": [
                 {
-                    "pattern": "^(any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial)$"
+                    "pattern": "^(any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable)$"
                 },
                 {
                     "$ref": "#/definitions/returnTypeList"
@@ -20,10 +20,10 @@
         },
         "methodTypes": {
             "type": "string",
-            "description": "Comma separated values of types: any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial",
+            "description": "Comma separated values of types: any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable",
             "oneOf": [
                 {
-                    "pattern": "^((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial)(,|))*$"
+                    "pattern": "^((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable)(,|))*$"
                 },
                 {
                     "$ref": "#/definitions/returnTypeList"
@@ -38,13 +38,13 @@
                     "body": {
                         "information": "$1",
                         "action": "$2",
-                        "returnType": "$3",
-                        "staticMethod": false,
+                        "return_type": "$3",
+                        "is_static_method": false,
                         "parameters": {
                             "parameter": {
                                 "information": "$4",
                                 "type": "$5",
-                                "defaultValue": "$6",
+                                "default_value": "$6",
                                 "required": false
                             }
                         }
@@ -73,7 +73,7 @@
                                     "body": {
                                         "information": "$1",
                                         "type": "$2",
-                                        "defaultValue": "$3",
+                                        "default_value": "$3",
                                         "required": false
                                     }
                                 }
@@ -87,7 +87,7 @@
                                 "type": {
                                     "$ref": "#/definitions/methodTypes"
                                 },
-                                "defaultValue": {
+                                "default_value": {
                                     "description": "The default value for this parameter.",
                                     "type": [
                                         "string",
@@ -113,10 +113,10 @@
                     "description": "Information about this method.",
                     "type": "string"
                 },
-                "returnType": {
-                    "$ref": "#/definitions/returnType"
+                "return_type": {
+                    "$ref": "#/definitions/return_type"
                 },
-                "staticMethod": {
+                "is_static_method": {
                     "type": "boolean"
                 }
             },
@@ -131,7 +131,7 @@
                     },
                     "then": {
                         "required": [
-                            "returnType"
+                            "return_type"
                         ]
                     }
                 }
