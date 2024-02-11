@@ -15,6 +15,8 @@ if TYPE_CHECKING:
         CameraInterface,
         VertexInterface,
         ExportableInterface,
+        BooleanableInterface,
+        LandmarkableInterface,
     )
 
 MaterialOrItsName: TypeAlias = Union[str, PresetMaterial, "MaterialInterface"]
@@ -24,6 +26,8 @@ SketchOrItsName: TypeAlias = Union[str, "SketchInterface"]
 LandmarkOrItsName: TypeAlias = Union[str, "LandmarkInterface"]
 CameraOrItsName: TypeAlias = Union[str, "CameraInterface"]
 ExportableOrItsName: TypeAlias = Union[str, "ExportableInterface"]
+BooleanableOrItsName: TypeAlias = Union[str, "BooleanableInterface"]
+LandmarkableOrItsName: TypeAlias = Union[str, "LandmarkableInterface"]
 
 
 FloatOrItsStringValue: TypeAlias = Union[str, float]
