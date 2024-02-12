@@ -12,8 +12,11 @@ class CapabilitiesImportsBuilder:
     Holds references to CodeToCAD class names to help categorize imports by type for templating purposes.
     """
 
-    def get_implementable_class_names(self):
-        return list(self._codetocad_implementable_class_names)
+    def get_implementable_class_names(self, suffix: str = ""):
+        return [
+            class_name + suffix
+            for class_name in list(self._codetocad_implementable_class_names)
+        ]
 
     def get_interface_class_names(self, suffix: str = "Interface"):
         return [
