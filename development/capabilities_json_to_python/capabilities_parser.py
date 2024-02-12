@@ -42,7 +42,7 @@ class CapabilitiesMethod:
     information: str
     action: str
     return_type: str | None
-    static_method: bool
+    is_static_method: bool
     parameters: list[CapabilitiesParameter] = field(default_factory=list)
 
     @property
@@ -72,7 +72,7 @@ class CapabilitiesMethod:
             return_type=method_json.get("return_type")
             if method_json["action"] != "get"
             else method_json["return_type"],
-            static_method=method_json.get("is_static_method", False),
+            is_static_method=method_json.get("is_static_method", False),
             parameters=[
                 CapabilitiesParameter.from_json(parameter_name, parameter_json)
                 for parameter_name, parameter_json in method_json.get(

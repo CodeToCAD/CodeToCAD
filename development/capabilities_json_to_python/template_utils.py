@@ -47,12 +47,12 @@ def get_templates_to_generate() -> list[TemplateArgs]:
     )
 
     return [
-        # TemplateArgs(
-        #     template_path=capabilities_to_py_interface,
-        #     output_folder_path=capabilities_to_py_interface_out,
-        #     suffix="Interface",
-        #     generate_interface_only_capabilities_in_a_separate_file=True,
-        # ),
+        TemplateArgs(
+            template_path=capabilities_to_py_interface,
+            output_folder_path=capabilities_to_py_interface_out,
+            suffix="Interface",
+            generate_interface_only_capabilities_in_a_separate_file=True,
+        ),
         TemplateArgs(
             template_path=capabilities_to_py_provider,
             output_folder_path=capabilities_to_py_provider_out,

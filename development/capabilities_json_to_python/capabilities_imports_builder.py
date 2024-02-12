@@ -18,7 +18,7 @@ class CapabilitiesImportsBuilder:
             for class_name in list(self._codetocad_implementable_class_names)
         ]
 
-    def get_interface_class_names(self, suffix: str = "Interface"):
+    def get_interface_class_names(self, suffix: str = ""):
         return [
             class_name + suffix
             for class_name in list(self._codetocad_interface_class_names)

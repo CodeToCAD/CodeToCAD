@@ -3,37 +3,17 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from typing import Optional
-{%set interfaceName = className + "Interface" %}
-from codetocad.interfaces import {{interfaceName}}
-
-{%-set extendedClassesWithSuffixes = []-%}
-{%- if "extends" in methods-%}
-{%-set extendedClasses = methods["extends"]-%}
-{%-for extendedClass in extendedClasses.split(",") -%}
-{%-set extendedClassWithSuffix = extendedClass + classNameSuffix-%}
-{%- set extendedClassesWithSuffixes = extendedClassesWithSuffixes.append(extendedClassWithSuffix)-%}
-{%-endfor-%}
-{%-endif%}
-
-
-{%-set implementedClassesWithSuffixes = []-%}
-{%- if "implements" in methods-%}
-{%-set implementedClasses = methods["implements"]-%}
-{%-for implementedClass in implementedClasses.split(",") -%}
-{%-set implementedClassWithSuffix = implementedClass + "Interface"-%}
-{%- set implementedClassesWithSuffixes = implementedClassesWithSuffixes.append(implementedClassWithSuffix)-%}
-{%-endfor-%}
-{%-endif%}
-
 {% include 'common_imports.j2' %}
 
-{% if extendedClassesWithSuffixes|length > 0%}
-from . import ({{extendedClassesWithSuffixes|join(", ")}})
-{%-endif%}
+{%set interface_name = class_name + "Interface" %}
+{% set imports = capabilities_loader.generate_imports(class_name, [class_name]) %}
 
-{% include 'type_check_imports.j2' %}
+from codetocad.interfaces import {{interface_name}} {{", "+imports.get_interface_class_names("Interface")|join(", ") if imports.get_interface_class_names()|length > 0}}
 
-class {{className}}({{extendedClassesWithSuffixes|join(",") + (", " if extendedClassesWithSuffixes|length > 0 else "")-}}{{interfaceName}}): {# e.g. Part #}
+{{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
+
+{{ "from . import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
+
+class {{class_name}}({{interface_name}}):
     {% include 'capabilities_to_py_class_definition.j2' %}
     

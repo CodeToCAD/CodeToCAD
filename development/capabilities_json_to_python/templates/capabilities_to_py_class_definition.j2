@@ -1,5 +1,19 @@
 {%- from 'generate_method.j2' import generate_method -%}
+{%- from 'generate_init_constructor.j2' import generate_init_constructor -%}
 
-{%-for method_name, properties in methods.items() -%}
-{{- generate_method(method_name, properties, methods, use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_codetocad_class_names, all_classes)}}
-{%-endfor%}
+{%if capabilities_loader.capabilities[class_name].constructor%}
+{{generate_init_constructor(capabilities_loader, class_name, capabilities_loader.capabilities[class_name].constructor, use_abstract_method_decorator)}}
+{%endif%}
+
+
+{%for capabilies_method in capabilities_loader.capabilities[class_name].methods %}
+    {{generate_method(capabilities_loader, capabilies_method, use_abstract_method_decorator)}}
+{%endfor%}
+
+{%if template_args.generate_interface_only_capabilities_in_a_separate_file == false %}
+{%for implements_class_names in capabilities_loader.capabilities[class_name].implements %}
+    {%for capabilies_method in capabilities_loader.capabilities[implements_class_names].methods %}
+    {{generate_method(capabilities_loader, capabilies_method, use_abstract_method_decorator)}}
+    {%endfor%}
+{%endfor%}
+{%endif%}
