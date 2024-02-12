@@ -322,7 +322,8 @@
             }
         },
         "Entity": {
-            "information": "Capabilities shared between Parts and Sketches.",
+            "information": "Capabilities shared between scene objects.",
+            "is_interface_only": true,
             "constructor": {
                 "parameters": {
                     "name": {
