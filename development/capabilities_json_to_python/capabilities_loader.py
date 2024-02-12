@@ -49,6 +49,34 @@ class CapabilitiesLoader:
 
         return output_name if not surround_in_quotes else f'"{output_name}"'
 
+    def get_constructor_parameters_for_class(self, class_name: str):
+        """
+        Grabs the constructor parameters for the given class, and any class it extends.
+        """
+
+        classes = self.capabilities[class_name].extends + [class_name]
+
+        parameters = []  # needs to be ordered
+
+        last_non_default_value_index = 1
+
+        for some_class in classes:
+            capabilities_class = self.capabilities[some_class]
+
+            if capabilities_class.constructor:
+                for parameter in capabilities_class.constructor.parameters:
+                    if parameter in parameters:
+                        continue
+
+                    if parameter.default_value is None:
+                        parameters.insert(last_non_default_value_index, parameter)
+                        last_non_default_value_index += 1
+                        continue
+
+                    parameters.append(parameter)
+
+        return parameters
+
     @property
     def all_implementable_class_names(self):
         return deepcopy(self._all_implementable_class_names)
