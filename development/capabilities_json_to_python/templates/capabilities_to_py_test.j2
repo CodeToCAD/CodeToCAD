@@ -16,7 +16,7 @@ class {{className}}Test(TestProviderCase, {{interfaceName}}):
 
     {%-for method_name, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
 
-    {{- generate_test_method(method_name, properties, methods,use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_codetocad_class_names, all_classes)}}
+    {{- generate_test_method(method_name, properties, methods,use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_implementable_codetocad_class_names, all_interface_only_codetocad_class_names, all_classes)}}
 
 
     {%-endfor%}

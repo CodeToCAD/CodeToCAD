@@ -1,0 +1,26 @@
+{# capabilities_method is a class instance of CapabilitiesMethod #}
+
+{%macro generate_parameter(capabilities_loader, capabilities_method, parameter) -%}
+
+        {%-set default_value = '"'+ parameter.default_value+'"' if parameter.default_value and parameter.default_value is string else  parameter.default_value|string -%}
+        {%-set default_value = default_value if parameter.default_value is not none else "None" -%}
+
+        {{ parameter.name }} 
+
+        {{-": "+ capabilities_loader.append_interface_suffix(parameter.type_parsed, union_none_type=not parameter.required) if parameter.type_parsed is not none }} 
+
+        {{-" = "+ default_value if (not parameter.required) or parameter.default_value is not none -}} 
+{%- endmacro %}
+
+{%macro generate_method_definition(capabilities_loader, capabilities_method, use_abstract_method_decorator) -%}
+    {{"@abstractmethod\n" if use_abstract_method_decorator and not capabilities_method.is_static_method}}
+    {{"@staticmethod\n" if capabilities_method.is_static_method}}
+    def {{capabilities_method.name}}(
+        {{"self, " if not capabilities_method.is_static_method}}
+        {%for parameter in capabilities_method.parameters -%} 
+        {{generate_parameter(capabilities_loader, capabilities_method, parameter)}}
+        {{-", " if not loop.last}} 
+        {%-endfor%}
+    )
+    {{-  " -> " + capabilities_loader.append_interface_suffix(capabilities_method.return_type_parsed) if capabilities_method.return_type_parsed}}:
+{%- endmacro %}

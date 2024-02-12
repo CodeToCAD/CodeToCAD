@@ -1,55 +1,21 @@
-{%- from 'capabilities_to_py_utilities.j2' import  type_mapping_with_class_name_suffix, generate_method_arguments -%}
+{%- from 'generate_method_definition.j2' import generate_parameter -%}
 
-{%- macro generate_init_constructor(parameters, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names, methods, all_classes) -%}
+{%- macro generate_init_constructor(capabilities_loader, class_name, capabilities_method, use_abstract_method_decorator) -%}
 
-    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-    {%set defaultValue = definition.defaultValue if "defaultValue" in definition else None-%}
-    {%set defaultValue = '"'+defaultValue+'"' if defaultValue is string else defaultValue|string -%}
-    {{ parameter }} {{-":" + ("Optional["+type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)+"]" if definition.required == False else type_mapping_with_class_name_suffix(definition.type, classNameSuffix, all_codetocad_class_names)) if definition.type and definition.type != "any" }} {{- ("="+defaultValue if "defaultValue" in definition else "=None") if definition.required == False or "defaultValue" in definition  -}}
-    {%-endfor%}
+    {% set parameters = capabilities_loader.get_constructor_parameters_for_class(class_name)%}
 
-    {%-set init_parameters = parameters-%}
-    {%-set superParameters = []-%}
-
-    {%-if use_abstract_method_decorator and "extends" in methods %}
-        {%- for extendedClass in methods["extends"].split(",") -%}
-            {%- if "constructor" in all_classes[extendedClass]%}
-                {%-set extendedClassParameters = all_classes[extendedClass]["constructor"]["parameters"] -%}
-                {%- for parameterName in extendedClassParameters.keys() -%}
-                    {%- set superParameters = superParameters.append(parameterName + "="+parameterName)-%}
-                    {%- set _ = init_parameters.update({parameterName: extendedClassParameters[parameterName]}) -%}
-                {%- endfor-%}
-            {%-endif%}
+    {{"@abstractmethod\n" if use_abstract_method_decorator and not capabilities_method.is_static_method}}
+    def __init__(
+        self,
+        {%for parameter in parameters -%} 
+        {{generate_parameter(capabilities_loader, capabilities_method, parameter)}}
+        {{-", " if not loop.last}} 
         {%-endfor%}
-    {%-endif%}
+    )
+    {{-  " -> " + capabilities_loader.append_interface_suffix(capabilities_method.return_type_parsed) if capabilities_method.return_type_parsed}}:
+        {%for parameter in parameters%} 
+        self.{{parameter.name}} = {{parameter.name}}
+        {%-endfor%}
 
-    {%-set new_init_params = {} -%}
-    {%-set no_default_params = []-%}
-    {%-set default_params = []-%}
-    {%-for parameterName in init_parameters.keys()-%}
-    {# Rearrange parameters to make sure default and not-required parameters are placed last #}
-    {%-if "defaultValue" in init_parameters[parameterName] or ("required" in  init_parameters[parameterName] and init_parameters[parameterName]["required"] == false)-%}
-    {%- set default_params = default_params.append(parameterName)-%}
-    {%else%}
-    {%- set no_default_params = no_default_params.append(parameterName)-%}
-    {%-endif-%}
-    {%-endfor-%}
-    {%-for parameterName in no_default_params-%}
-    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
-    {%-endfor-%}
-    {%-for parameterName in default_params-%}
-    {%- set _ = new_init_params.update({parameterName: init_parameters[parameterName]}) -%}
-    {%-endfor%}
-
-    {{ generate_method_arguments("__init__", new_init_params, false, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}):
-        {%-if use_abstract_method_decorator and "extends" in methods %}
-        super().__init__({{ superParameters|join(", ") }})
-        {%-endif%}
-
-    {%-for parameter, definition in parameters.items() -%} {# e.g. {"name":{"type": "string"}} #}
-        self.{{ parameter }} = {{parameter}}
-    {%- else %}
-        pass
-    {%-endfor%}
 
 {%- endmacro %}

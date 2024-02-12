@@ -1,73 +1,21 @@
-{%- from 'generate_init_constructor.j2' import generate_init_constructor -%}
-{%- from 'capabilities_to_py_utilities.j2' import type_mapping, type_mapping_with_class_name_suffix, generate_method_arguments, mock_values_by_type -%}
+{%- from 'generate_method_definition.j2' import generate_method_definition -%}
 
-{%-set known_method_names_to_skip = ["information", "extends", "is_interface_only"]-%}
+{%macro generate_method(capabilities_loader, capabilities_method, use_abstract_method_decorator) -%}
+    {{generate_method_definition(capabilities_loader, capabilities_method, use_abstract_method_decorator)}}
 
-{%- macro generate_method(method_name, properties, methods, use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_codetocad_class_names, all_classes) -%}
-
-    {%- if method_name in known_method_names_to_skip %}
-    {# Do nothing #}
-    {%- elif method_name == "implements"-%}
-        
-            {%if generate_interface_only_capabilities_in_a_separate_file == false %}
-
-                    {%-for implementedClass in properties.split(",") -%}
-                    
-                        {%- set implementedClassMethods = all_classes[implementedClass]-%}
-
-                        {%-for method_name, implementedClassProperties in implementedClassMethods.items() -%}
-
-    {{generate_method(method_name, implementedClassProperties, implementedClassMethods, use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_codetocad_class_names, all_classes)}}
-                        
-
-                        {%-endfor-%}
-
-                    {%-endfor-%}
-
-            {%-endif-%}
-    {%-else-%}
-
-        {%- set isStaticMethod = "staticMethod" in properties and properties["staticMethod"] -%}
-
-        {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
-        
-        {%- if method_name == "constructor"%}
-
-        {{generate_init_constructor(parameters, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names, methods, all_classes)}}
-
-        {%- elif method_name == "default"%}
-
-    {{ generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}) {{-  " -> " + type_mapping_with_class_name_suffix(properties["returnType"], classNameSuffix, all_codetocad_class_names) if "returnType" in properties}}:
-        {%if use_abstract_method_decorator-%}
-        raise RuntimeError()
-        {%else-%}
-        return {{className}}()
-        {%-endif-%}
-
-        {%- else %}
-    {%- set returnTypeParsed = type_mapping_with_class_name_suffix(properties["returnType"], classNameSuffix, all_codetocad_class_names) if "returnType" in properties else None%}
-    {%- set returnTypeParsed2 = type_mapping(properties["returnType"]) if "returnType" in properties else None%}
-    {%-set mockValue = mock_values_by_type[returnTypeParsed2] if returnTypeParsed2 in mock_values_by_type else None%}
-    {{ generate_method_arguments(method_name, parameters, isStaticMethod, use_abstract_method_decorator, classNameSuffix, all_codetocad_class_names) }}) {{-  " -> " + returnTypeParsed if returnTypeParsed}}:
-        {% if "information" in properties and use_abstract_method_decorator -%}
-        '''
-        {{ properties["information"] }}
-        '''
-        {%endif%}
         {% if use_abstract_method_decorator -%}
-        print("{{method_name}} is called in an abstract method. Please override this method.")
-        {{ "return self" if "action" in properties and properties["action"] != "get" else "raise NotImplementedError()" }}
-        {%else-%}
-        print("{{method_name}} called:", {{parameters.keys()|join(", ")}})
-        {%-for codeToCADClassName in all_codetocad_class_names%}
-        {%-if codeToCADClassName in mockValue|string %}
-        {{"from . import "+ codeToCADClassName}}
-        {%endif-%}
-        {%endfor%}
-        return {{ "self" if "action" in properties and properties["action"] != "get" else mockValue }}
+        '''
+        {{ capabilities_method.information }}
+        '''
         {%endif%}
-        
-        {%-endif-%}
-    {%-endif%}
 
-{%- endmacro %}
+        {% if use_abstract_method_decorator -%}
+        print("{{capabilities_method.name}} is called in an abstract method. Please override this method.")
+        
+        raise NotImplementedError()
+        {%else-%}
+        print("{{capabilities_method.name}} called", {{"f\": {" +capabilities_method.parameters_names|join("}, {") + "}\"" if capabilities_method.parameters_names|length>0 else ""}})
+        
+        return {{ "self" if capabilities_method.action != "get" else capabilities_method.return_type_mock_value }}
+        {%endif%}
+{% endmacro %}

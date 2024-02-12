@@ -33,7 +33,7 @@ class CapabilitiesLoader:
             else:
                 self._all_implementable_class_names.append(class_name)
 
-    def append_interface_suffix_if_interface_only_class(
+    def append_interface_suffix(
         self, class_name, surround_in_quotes: bool = True, union_none_type: bool = False
     ):
         """
@@ -41,7 +41,7 @@ class CapabilitiesLoader:
         Adds Interface as a suffix to a class_name, and has options to add | None and surround the resulting type in quotes.
         """
         output_name = class_name
-        if class_name in self._all_interface_only_class_names:
+        if class_name in self.all_class_names:
             output_name += "Interface"
 
         if union_none_type:

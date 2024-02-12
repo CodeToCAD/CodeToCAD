@@ -165,8 +165,8 @@
     {% if "information" in properties -%}
     <div class="methods">{{- properties["information"] -}}</div>
     {%-endif%}
-    {% if "returnType" in properties -%}
-    <div><span class="subSubHeading">returnType:</span> {{properties["returnType"] -}}</div>
+    {% if "return_type" in properties -%}
+    <div><span class="subSubHeading">returnType:</span> {{properties["return_type"] -}}</div>
     {%-endif%}
     {% for parameterName, parameter in parameters.items() %}
 
@@ -179,8 +179,8 @@
             {% if "type" in parameter -%}
             <div><span class="subSubHeading">Type:</span> {{parameter["type"] -}}</div>
             {%-endif%}
-            {% if "defaultValue" in parameter -%}
-            <div><span class="subSubHeading">Default Value:</span> {{ parameter["defaultValue"] -}}</div>
+            {% if "default_value" in parameter -%}
+            <div><span class="subSubHeading">Default Value:</span> {{ parameter["default_value"] -}}</div>
             {%-endif%}
             {% if "required" in parameter -%}
             <div><span class="subSubHeading">Required:</span> {{ parameter["required"] -}}</div>
