@@ -3,6 +3,27 @@ from codetocad.tests_interfaces import LandmarkTestInterface
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
+    def test_get_location_world(self):
+        instance = Landmark("test-landmark", parent_entity="myEntity")
+
+        value = instance.get_location_world()
+
+        assert value, "Get method failed."
+
+    def test_get_location_local(self):
+        instance = Landmark("test-landmark", parent_entity="myEntity")
+
+        value = instance.get_location_local()
+
+        assert value, "Get method failed."
+
+    def test_translate_xyz(self):
+        instance = Landmark("test-landmark", parent_entity="myEntity")
+
+        value = instance.translate_xyz(1, 1, 1)
+
+        assert value, "Modify method failed."
+
     def test_clone(self):
         instance = Landmark("test-landmark", parent_entity="myEntity")
 

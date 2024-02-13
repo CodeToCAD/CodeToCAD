@@ -4,19 +4,18 @@
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
 
-{%- from 'generate_test_method.j2' import generate_test_method -%}
-{%set interfaceName = className+"TestInterface"%}
+
+{%- from 'generate_test_class_definition.j2' import generate_test_class_definition -%}
+
+{%set interface_name = class_name+"TestInterface"%}
 from unittest import skip
 
 from .test_helper import *
-from codetocad.tests_interfaces import {{interfaceName}}
+from codetocad.tests_interfaces import {{interface_name}}
 
-class {{className}}Test(TestProviderCase, {{interfaceName}}):    
-    {%- from 'capabilities_to_py_utilities.j2' import type_mapping -%}
+{% set imports = capabilities_loader.generate_imports(class_name, []) %}
 
-    {%-for method_name, properties in methods.items() -%} {# e.g. "parameters": {"name": {"type": "string"}} #}
+{{ "from codetocad import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
 
-    {{- generate_test_method(method_name, properties, methods,use_abstract_method_decorator, generate_interface_only_capabilities_in_a_separate_file, className, classNameSuffix, all_implementable_codetocad_class_names, all_interface_only_codetocad_class_names, all_classes)}}
-
-
-    {%-endfor%}
+class {{class_name}}Test(TestProviderCase, {{interface_name}}):    
+    {{generate_test_class_definition(capabilities_loader, class_name, use_abstract_method_decorator, template_args)}}

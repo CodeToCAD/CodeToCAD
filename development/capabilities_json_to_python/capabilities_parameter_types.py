@@ -32,6 +32,7 @@ capabilities_parameter_types = {
     "string,PresetLandmark": "PresetLandmarkOrItsName",
     "string,Camera": "CameraOrItsName",
     "string,Exportable": "ExportableOrItsName",
+    "list[string,Exportable]": "list[ExportableOrItsName]",
     "string,Booleanable": "BooleanableOrItsName",
     "string,Landmarkable": "LandmarkableOrItsName",
 }
