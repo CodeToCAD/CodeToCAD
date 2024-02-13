@@ -1,6 +1,6 @@
 {# capabilities_method is a class instance of CapabilitiesMethod #}
 
-{%macro generate_parameter(capabilities_loader, capabilities_method, parameter) -%}
+{%macro generate_parameters(capabilities_loader, capabilities_method, parameter) -%}
 
         {%-set default_value = '"'+ parameter.default_value+'"' if parameter.default_value and parameter.default_value is string else  parameter.default_value|string -%}
         {%-set default_value = default_value if parameter.default_value is not none else "None" -%}
@@ -18,7 +18,7 @@
     def {{capabilities_method.name}}(
         {{"self, " if not capabilities_method.is_static_method}}
         {%for parameter in capabilities_method.parameters -%} 
-        {{generate_parameter(capabilities_loader, capabilities_method, parameter)}}
+        {{generate_parameters(capabilities_loader, capabilities_method, parameter)}}
         {{-", " if not loop.last}} 
         {%-endfor%}
     )

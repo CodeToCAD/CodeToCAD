@@ -58,7 +58,7 @@ class CapabilitiesLoader:
 
         parameters = []  # needs to be ordered
 
-        last_non_default_value_index = 1
+        last_non_default_value_index = 0
 
         for some_class in classes:
             capabilities_class = self.capabilities[some_class]
@@ -68,7 +68,7 @@ class CapabilitiesLoader:
                     if parameter in parameters:
                         continue
 
-                    if parameter.default_value is None:
+                    if parameter.default_value is None and parameter.required:
                         parameters.insert(last_non_default_value_index, parameter)
                         last_non_default_value_index += 1
                         continue

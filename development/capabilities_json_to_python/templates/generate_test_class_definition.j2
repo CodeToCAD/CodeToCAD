@@ -1,0 +1,17 @@
+{%macro generate_test_class_definition(capabilities_loader, class_name, use_abstract_method_decorator, template_args)%}
+    {%- from 'generate_test_method.j2' import generate_test_method -%}
+
+    {% set capabilities_class = capabilities_loader.capabilities[class_name] %}
+
+    {%for capabilities_method in capabilities_class.methods %}
+    {{ generate_test_method(capabilities_loader, capabilities_class, capabilities_method, use_abstract_method_decorator)}}
+    {%endfor%}
+
+    {%if template_args.generate_interface_only_capabilities_in_a_separate_file == false %}
+    {%for implements_class_names in capabilities_class.implements %}
+        {%for capabilities_method in capabilities_loader.capabilities[implements_class_names].methods %}
+        {{ generate_test_method(capabilities_loader, capabilities_class, capabilities_method, use_abstract_method_decorator)}}
+        {%endfor%}
+    {%endfor%}
+    {%endif%}
+{%endmacro%}
