@@ -53,22 +53,36 @@ class CapabilitiesImportsBuilder:
 
         return capabilities_loader.all_interface_only_class_names
 
-    def _check_class_in_implementable_class_names(self, class_name: str):
-        return class_name in self.loader_implementable_class_names
+    def _check_class_in_implementable_class_names(self, class_name: str) -> str | None:
+        # return class_name in self.loader_implementable_class_names
+        for capabilities_class in self.loader_implementable_class_names:
+            if capabilities_class in class_name:
+                return capabilities_class
+        return None
 
-    def _check_class_in_interface_class_names(self, class_name: str):
-        return class_name in self.loader_interface_class_names
+    def _check_class_in_interface_class_names(self, class_name: str) -> str | None:
+        # return class_name in self.loader_interface_class_names
+        for capabilities_class in self.loader_interface_class_names:
+            if capabilities_class in class_name:
+                return capabilities_class
+        return None
 
     def add_class_name(self, class_name: str):
-        if class_name in self.exclude_class_names:
+        """
+        The checks are using a forloop because sometimes class_name is a composite, like list[Part] or str,Part.
+        """
+        for capabilities_class in self.exclude_class_names:
+            if class_name in capabilities_class:
+                return
+
+        capabilities_class = self._check_class_in_implementable_class_names(class_name)
+        if capabilities_class:
+            self._codetocad_implementable_class_names.add(capabilities_class)
             return
 
-        if self._check_class_in_implementable_class_names(class_name):
-            self._codetocad_implementable_class_names.add(class_name)
-            return
-
-        if self._check_class_in_interface_class_names(class_name):
-            self._codetocad_interface_class_names.add(class_name)
+        capabilities_class = self._check_class_in_interface_class_names(class_name)
+        if capabilities_class:
+            self._codetocad_interface_class_names.add(capabilities_class)
             return
 
     def copy_from(self, other: "CapabilitiesImportsBuilder"):
