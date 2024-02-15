@@ -323,7 +323,6 @@
         },
         "Entity": {
             "information": "Capabilities shared between scene objects.",
-            "is_interface_only": true,
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1267,15 +1266,7 @@
                 "information": "Get a vertex's curve control points. This may not be applicable in several situations.",
                 "action": "get",
                 "return_type": "list[Vertex]",
-                "is_static_method": false,
-                "parameters": {
-                    "parameter": {
-                        "information": "",
-                        "type": "",
-                        "default_value": "",
-                        "required": false
-                    }
-                }
+                "is_static_method": false
             }
         },
         "Edge": {
