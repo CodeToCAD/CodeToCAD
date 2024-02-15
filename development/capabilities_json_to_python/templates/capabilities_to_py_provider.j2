@@ -12,8 +12,8 @@ from codetocad.interfaces import {{interface_name}} {{", "+imports.get_interface
 
 {{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
 
-{{ "from . import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
+{{ "from codetocad import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
 
-class {{class_name}}({{interface_name}}):
+class {{class_name}}({{interface_name}}, {{capabilities_loader.capabilities[class_name].extends|join(", ")}}):
     {% include 'capabilities_to_py_class_definition.j2' %}
     

@@ -76,12 +76,12 @@ class CapabilitiesImportsBuilder:
                 return
 
         capabilities_class = self._check_class_in_implementable_class_names(class_name)
-        if capabilities_class:
+        if capabilities_class and capabilities_class not in self.exclude_class_names:
             self._codetocad_implementable_class_names.add(capabilities_class)
             return
 
         capabilities_class = self._check_class_in_interface_class_names(class_name)
-        if capabilities_class:
+        if capabilities_class and capabilities_class not in self.exclude_class_names:
             self._codetocad_interface_class_names.add(capabilities_class)
             return
 
