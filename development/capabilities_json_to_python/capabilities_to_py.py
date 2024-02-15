@@ -50,13 +50,19 @@ def generate_all_templates(
 
         create_init_file(template_args.output_folder_path)
 
-        for class_name, capabilities_class in capabilities_loader.capabilities.items():
+        for class_name in capabilities_loader.all_interface_only_class_names:
             if (
                 not template_args.generate_interface_only_capabilities_in_a_separate_file
-                and capabilities_class.is_interface_only
             ):
                 continue
 
+            generate_template_for_class(
+                class_name=class_name,
+                capabilities_loader=capabilities_loader,
+                template_args=template_args,
+            )
+
+        for class_name in capabilities_loader.all_implementable_class_names:
             generate_template_for_class(
                 class_name=class_name,
                 capabilities_loader=capabilities_loader,
