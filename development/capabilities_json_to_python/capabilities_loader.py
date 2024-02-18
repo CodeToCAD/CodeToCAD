@@ -101,6 +101,11 @@ class CapabilitiesLoader:
 
         capabilities_class = self.capabilities[class_name]
 
+        for class_name in capabilities_class.get_extends_class_names(
+            ""
+        ) + capabilities_class.get_implements_class_names(""):
+            imports_builder.add_class_name(class_name)
+
         methods = deepcopy(capabilities_class.methods)
         if capabilities_class.constructor:
             methods.append(capabilities_class.constructor)

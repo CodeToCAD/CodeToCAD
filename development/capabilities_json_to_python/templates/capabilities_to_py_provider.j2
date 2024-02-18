@@ -8,7 +8,7 @@
 {%set interface_name = class_name + "Interface" %}
 {% set imports = capabilities_loader.generate_imports(class_name, [class_name]) %}
 
-from codetocad.interfaces import {{interface_name}} {{", "+imports.get_interface_class_names("Interface")|join(", ") if imports.get_interface_class_names()|length > 0}}
+from codetocad.interfaces import {{interface_name}}
 
 {{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
 
