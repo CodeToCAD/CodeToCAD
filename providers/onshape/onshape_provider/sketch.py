@@ -15,6 +15,7 @@ from providers.onshape.onshape_provider.onshape_actions import (
     get_onshape_client_with_config_file,
 )
 from providers.onshape.onshape_provider import onshape_actions
+from providers.onshape.onshape_provider.utils import get_polygon_points
 
 from . import Entity
 
@@ -185,6 +186,13 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
+        pointLocation1 = Dimension(0.0, "mm")
+        pointLocation2 = Dimension(0.2, "mm")
+        corner1 = Point(pointLocation1, pointLocation1, pointLocation1)
+        corner2= Point(pointLocation2, pointLocation2, pointLocation2)
+        api_resp = onshape_actions.create_text(self.client,self.onshape_url, self.name, text, corner1, corner2, bold=bold, italic=italic)
+        json_native_data = json.loads(api_resp.data)
+        self.native_instance=json_native_data
         return self
 
     def create_from_vertices(
@@ -222,9 +230,7 @@ class Sketch(Entity, SketchInterface):
 
     def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
         radius_float = Dimension.from_dimension_or_its_float_or_string_value(radius)
-        api_resp = onshape_actions.create_circle(
-            self.client, self.onshape_url, self.name, radius_float
-        )
+        api_resp = onshape_actions.create_circle(self.client, self.onshape_url,self.name, radius_float.value)
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
@@ -233,7 +239,12 @@ class Sketch(Entity, SketchInterface):
         radius_minor: DimensionOrItsFloatOrStringValue,
         radius_major: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        radius_minor_float = Dimension.from_dimension_or_its_float_or_string_value(radius_minor)
+        radius_major_float = Dimension.from_dimension_or_its_float_or_string_value(radius_major)
+        api_resp = onshape_actions.create_ellipse(self.client, self.onshape_url,self.name, radius_minor_float.value, radius_major_float.value)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
+
 
     def create_arc(
         self,
@@ -242,7 +253,13 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         flip: Optional[bool] = False,
     ) -> "Wire":
-        raise NotImplementedError()
+        start_point = Point.from_list_of_float_or_string_or_Vertex(start_at)
+        end_point = Point.from_list_of_float_or_string_or_Vertex(end_at)
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
+        api_resp = onshape_actions.create_arc(self.client, self.onshape_url,self.name, radius.value, start_point, end_point,flip if flip else False)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
+        
 
     def create_rectangle(
         self,
@@ -281,7 +298,7 @@ class Sketch(Entity, SketchInterface):
             Point(corner2_x, corner2_y, Dimension(0, "mm")),
         )
         self.native_instance = json.loads(sketch_info.data)
-        raise NotImplementedError()
+        return Wire(native_instance=json_native_data["feature"])
 
     def create_polygon(
         self,
@@ -289,7 +306,19 @@ class Sketch(Entity, SketchInterface):
         length: DimensionOrItsFloatOrStringValue,
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        points = get_polygon_points(number_of_sides, length)
+        new_points: list[Point]=[]
+        for point in points:
+            new_points.append(
+                Point(
+                    Dimension(point[0], "m"),
+                    Dimension(point[1], "m"),
+                    Dimension(0.0, "m"),
+                    )
+            )
+        api_resp = onshape_actions.create_polygon(self.client, self.onshape_url, self.name, new_points)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
 
     def create_trapezoid(
         self,
@@ -297,7 +326,10 @@ class Sketch(Entity, SketchInterface):
         length_lower: DimensionOrItsFloatOrStringValue,
         height: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
-        raise NotImplementedError()
+        api_resp = onshape_actions.create_trapezoid(self.client, self.onshape_url,self.name, length_upper, length_lower, height)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
+        
 
     def create_spiral(
         self,
@@ -306,5 +338,13 @@ class Sketch(Entity, SketchInterface):
         radius: DimensionOrItsFloatOrStringValue,
         is_clockwise: bool = True,
         radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
-    ) -> "Wire":
-        raise NotImplementedError()
+    ) -> "Wire":        
+        if self.native_instance is None:
+            raise ValueError("Native Instance is None")
+        height = Dimension.from_dimension_or_its_float_or_string_value(height)
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
+        radius_end = Dimension.from_dimension_or_its_float_or_string_value(radius) if radius_end is not None else None
+        api_resp = onshape_actions.create_spiral(self.client, self.onshape_url,self.name, number_of_turns, height, radius, is_clockwise, radius_end)
+        json_native_data = json.loads(api_resp.data)
+        return Wire(native_instance=json_native_data["feature"])
+
