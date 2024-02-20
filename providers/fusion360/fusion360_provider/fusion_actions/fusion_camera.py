@@ -2,6 +2,7 @@ import adsk.core
 from codetocad import *
 from .common import make_axis_vector, make_matrix, make_vector
 
+
 class FusionCamera:
     def __init__(self):
         app = adsk.core.Application.get()
@@ -25,9 +26,7 @@ class FusionCamera:
         return target
 
     def rotate(
-        self,
-        axis_input: AxisOrItsIndexOrItsName,
-        angle: AngleOrItsFloatOrStringValue
+        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
     ):
         axis = make_axis_vector(axis_input)
         angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
@@ -38,11 +37,7 @@ class FusionCamera:
         transform.setToRotation(angle, axis, origin)
         self.update_camera(transform)
 
-    def update_camera(
-        self,
-        transform: adsk.core.Matrix3D,
-        extents=None
-    ):
+    def update_camera(self, transform: adsk.core.Matrix3D, extents=None):
         camera = self.viewport.camera
         cameraExtents = camera.viewExtents
         if extents != None:

@@ -52,7 +52,7 @@ class FusionJoint:
         jointInput.offset = offset
         jointInput.setAsBallJointMotion(
             adsk.fusion.JointDirections.ZAxisJointDirection,
-            adsk.fusion.JointDirections.XAxisJointDirection
+            adsk.fusion.JointDirections.XAxisJointDirection,
         )
         joint = joints.add(jointInput)
 
@@ -97,5 +97,3 @@ class FusionJoint:
         limits.minimumValue = min
         limits.isMaximumValueEnabled = True
         limits.maximumValue = max
-
-

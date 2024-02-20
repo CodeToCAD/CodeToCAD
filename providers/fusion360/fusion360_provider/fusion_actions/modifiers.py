@@ -3,6 +3,7 @@ from codetocad import *
 import adsk.core, adsk.fusion
 from .common import make_axis, make_axis_from_points
 
+
 def make_revolve(
     component: adsk.fusion.Component,
     sketch: adsk.fusion.Sketch,
@@ -16,7 +17,7 @@ def make_revolve(
     input = revolveFeatures.createInput(
         sketch.profiles.item(0),
         resolveAxis,
-        adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+        adsk.fusion.FeatureOperations.NewBodyFeatureOperation,
     )
     angle = adsk.core.ValueInput.createByReal(angle)
     input.setAngleExtent(False, angle)
@@ -28,6 +29,7 @@ def make_revolve(
     body.name = sketch.name
 
     return body
+
 
 def make_loft(
     component: adsk.fusion.Component,

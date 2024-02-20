@@ -1,6 +1,10 @@
 from typing import Optional
 import adsk.core, adsk.fusion
-from codetocad.codetocad_types import AngleOrItsFloatOrStringValue, AxisOrItsIndexOrItsName, MaterialOrItsName
+from codetocad.codetocad_types import (
+    AngleOrItsFloatOrStringValue,
+    AxisOrItsIndexOrItsName,
+    MaterialOrItsName,
+)
 from codetocad.core.angle import Angle
 from codetocad.core.point import Point
 from codetocad.enums.axis import Axis
@@ -10,10 +14,9 @@ from .base import get_body, get_occurrence, get_root_component
 from .common import make_axis
 from .fusion_interface import FusionInterface
 
+
 def mirror(
-    obj: FusionInterface,
-    other: adsk.core.Point3D,
-    axis: AxisOrItsIndexOrItsName
+    obj: FusionInterface, other: adsk.core.Point3D, axis: AxisOrItsIndexOrItsName
 ):
     centerBody = obj.center
     centerOtherBody = other
@@ -27,9 +30,9 @@ def mirror(
     import math
 
     distance = math.sqrt(
-        (centerOtherBody.x - centerBody.x) ** 2 +
-        (centerOtherBody.y - centerBody.y) ** 2 +
-        (centerOtherBody.z - centerBody.z) ** 2
+        (centerOtherBody.x - centerBody.x) ** 2
+        + (centerOtherBody.y - centerBody.y) ** 2
+        + (centerOtherBody.z - centerBody.z) ** 2
     )
 
     assert distance > 0.01, "Can't mirror an item that's at the same position!"
@@ -75,7 +78,9 @@ def clone_sketch(
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+    newComp = design.rootComponent.occurrences.addNewComponent(
+        adsk.core.Matrix3D.create()
+    ).component
     newComp.name = new_name
 
     sketches = newComp.sketches
@@ -119,6 +124,7 @@ def clone_sketch(
 
     return new_sketch
 
+
 def clone_body(
     old_body: adsk.fusion.BRepBody,
     new_name: str,
@@ -129,7 +135,9 @@ def clone_body(
     app = adsk.core.Application.get()
     design = app.activeProduct
 
-    newComp = design.rootComponent.occurrences.addNewComponent(adsk.core.Matrix3D.create()).component
+    newComp = design.rootComponent.occurrences.addNewComponent(
+        adsk.core.Matrix3D.create()
+    ).component
     newComp.name = new_name
 
     newComp.features.copyPasteBodies.add(old_body)
@@ -139,13 +147,14 @@ def clone_body(
 
     return body
 
+
 def create_circular_pattern(
     component: adsk.fusion.Component,
     body: adsk.fusion.BRepBody,
     center: adsk.core.Point3D,
     count: int,
     angle: AngleOrItsFloatOrStringValue,
-    axis: AxisOrItsIndexOrItsName
+    axis: AxisOrItsIndexOrItsName,
 ):
     features = component.features
 
@@ -166,11 +175,12 @@ def create_circular_pattern(
 
     sketch.deleteMe()
 
+
 def create_rectangular_pattern(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: AxisOrItsIndexOrItsName
+    axis: AxisOrItsIndexOrItsName,
 ):
     features = component.features
 
@@ -193,8 +203,12 @@ def create_rectangular_pattern(
 
     rectangularPatterns = features.rectangularPatternFeatures
     rectangularPatternInput = rectangularPatterns.createInput(
-        inputEntites, axisInput,
-        quantity, distance, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+        inputEntites,
+        axisInput,
+        quantity,
+        distance,
+        adsk.fusion.PatternDistanceType.SpacingPatternDistanceType,
+    )
     rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
@@ -205,7 +219,7 @@ def create_circular_pattern_sketch(
     center: adsk.core.Point3D,
     count: int,
     angle: AngleOrItsFloatOrStringValue,
-    axis: AxisOrItsIndexOrItsName
+    axis: AxisOrItsIndexOrItsName,
 ):
     occ = get_occurrence(fusion_interface.component.name)
 
@@ -228,11 +242,12 @@ def create_circular_pattern_sketch(
 
     sketch.deleteMe()
 
+
 def create_rectangular_pattern_sketch(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: AxisOrItsIndexOrItsName
+    axis: AxisOrItsIndexOrItsName,
 ):
     occ = get_occurrence(component.name)
 
@@ -253,11 +268,16 @@ def create_rectangular_pattern_sketch(
 
     rectangularPatterns = component.features.rectangularPatternFeatures
     rectangularPatternInput = rectangularPatterns.createInput(
-        inputEntites, axisInput,
-        quantity, distance, adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
+        inputEntites,
+        axisInput,
+        quantity,
+        distance,
+        adsk.fusion.PatternDistanceType.SpacingPatternDistanceType,
+    )
     rectangularPatternInput.setDirectionTwo(axisInput, one, one)
 
     rectangularFeature = rectangularPatterns.add(rectangularPatternInput)
+
 
 def combine_action(
     body: adsk.fusion.BRepBody,
@@ -281,6 +301,7 @@ def combine_action(
     if deleteAfter:
         otherBody.deleteMe()
 
+
 def combine(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
@@ -292,6 +313,7 @@ def combine(
         adsk.fusion.FeatureOperations.JoinFeatureOperation,
         deleteAfter,
     )
+
 
 def subtract(
     body: adsk.fusion.BRepBody,
@@ -305,6 +327,7 @@ def subtract(
         deleteAfter,
     )
 
+
 def intersect(
     body: adsk.fusion.BRepBody,
     otherBody: adsk.fusion.BRepBody,
@@ -316,6 +339,7 @@ def intersect(
         adsk.fusion.FeatureOperations.IntersectFeatureOperation,
         deleteAfter,
     )
+
 
 def sweep(
     path_component: adsk.fusion.Component,
@@ -351,19 +375,19 @@ def sweep(
 
     sweeps = profile_component.features.sweepFeatures
     sweepInput = sweeps.createInput(
-        prof, path, adsk.fusion.FeatureOperations.NewComponentFeatureOperation)
+        prof, path, adsk.fusion.FeatureOperations.NewComponentFeatureOperation
+    )
     sweep = sweeps.add(sweepInput)
 
     rootComp = get_root_component()
 
-    occurrence = rootComp.occurrences.item(
-        rootComp.occurrences.count - 1
-    )
+    occurrence = rootComp.occurrences.item(rootComp.occurrences.count - 1)
     component = occurrence.component
 
     component.name = f"Sweep {profile_component.name}"
 
     return component.name
+
 
 def create_text(
     sketch: adsk.fusion.Sketch,
@@ -375,11 +399,13 @@ def create_text(
     character_spainc: int,
     word_spacing: int,
     line_spacing: int,
-    font_file_path: Optional[str] = None
+    font_file_path: Optional[str] = None,
 ):
     texts = sketch.sketchTexts
 
-    line = sketch.sketchCurves.sketchLines.addByTwoPoints(adsk.core.Point3D.create(0, 0, 0), adsk.core.Point3D.create(len(text), 0, 0))
+    line = sketch.sketchCurves.sketchLines.addByTwoPoints(
+        adsk.core.Point3D.create(0, 0, 0), adsk.core.Point3D.create(len(text), 0, 0)
+    )
     textInput = texts.createInput2(text, font_size)
     textInput.setAsFitOnPath(line, True)
 
@@ -395,10 +421,9 @@ def create_text(
 
     sketch_text = texts.add(textInput)
 
+
 def hollow(
-    component: adsk.fusion.Component,
-    body: adsk.fusion.BRepBody,
-    thickness: float
+    component: adsk.fusion.Component, body: adsk.fusion.BRepBody, thickness: float
 ):
     entities = adsk.core.ObjectCollection.create()
     for face in body.faces:
@@ -412,12 +437,9 @@ def hollow(
     shellInput.insideThickness = thicknessInput
     shellFeatures.add(shellInput)
 
+
 def hole(
-    component: adsk.fusion.Component,
-    body: adsk.fusion.BRepBody,
-    point,
-    radius,
-    depth
+    component: adsk.fusion.Component, body: adsk.fusion.BRepBody, point, radius, depth
 ):
     # select the top face
     face_selected = None
@@ -435,15 +457,13 @@ def hole(
     input = holeFeatures.createSimpleInput(holeDiam)
     input.setDistanceExtent(holeDepth)
     input.setPositionByPoint(
-        face_selected,
-        adsk.core.Point3D.create(point.x, point.y, point.z)
+        face_selected, adsk.core.Point3D.create(point.x, point.y, point.z)
     )
     holeFeature = holeFeatures.add(input)
 
+
 def fillet_all_edges(
-    component: adsk.fusion.Component,
-    body: adsk.fusion.BRepBody,
-    radius: float
+    component: adsk.fusion.Component, body: adsk.fusion.BRepBody, radius: float
 ):
     entities = adsk.core.ObjectCollection.create()
     for edge in body.edges:
@@ -456,10 +476,9 @@ def fillet_all_edges(
     filletInput.addConstantRadiusEdgeSet(entities, offset, True)
     fillet = fillets.add(filletInput)
 
+
 def chamfer_all_edges(
-    component: adsk.fusion.Component,
-    body: adsk.fusion.BRepBody,
-    radius: float
+    component: adsk.fusion.Component, body: adsk.fusion.BRepBody, radius: float
 ):
     entities = adsk.core.ObjectCollection.create()
     for edge in body.edges:
@@ -472,10 +491,8 @@ def chamfer_all_edges(
     chamferInput.chamferEdgeSets.addEqualDistanceChamferEdgeSet(entities, offset, True)
     chamfer = chamfers.add(chamferInput)
 
-def set_material(
-    fusion_interface: FusionInterface,
-    material_name: MaterialOrItsName
-):
+
+def set_material(fusion_interface: FusionInterface, material_name: MaterialOrItsName):
     body = fusion_interface.instance
 
     if isinstance(material_name, str):
@@ -491,9 +508,11 @@ def set_material(
 
     appearance.name = material_name.name
 
-    colorProp = adsk.core.ColorProperty.cast(appearance.appearanceProperties.itemByName('Color'))
+    colorProp = adsk.core.ColorProperty.cast(
+        appearance.appearanceProperties.itemByName("Color")
+    )
     colorProp.value = color
-    roughnessProp = appearance.appearanceProperties.itemByName('Roughness')
+    roughnessProp = appearance.appearanceProperties.itemByName("Roughness")
     roughnessProp.value = material_name.roughness
 
     body.appearance = appearance

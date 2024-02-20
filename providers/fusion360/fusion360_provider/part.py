@@ -7,7 +7,19 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from .fusion_actions.actions import chamfer_all_edges, combine, create_circular_pattern_sketch, create_rectangular_pattern, fillet_all_edges, hole, hollow, intersect, mirror, set_material, subtract
+from .fusion_actions.actions import (
+    chamfer_all_edges,
+    combine,
+    create_circular_pattern_sketch,
+    create_rectangular_pattern,
+    fillet_all_edges,
+    hole,
+    hollow,
+    intersect,
+    mirror,
+    set_material,
+    subtract,
+)
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.base import delete_occurrence, get_body, get_component
@@ -42,6 +54,7 @@ class Part(Entity, PartInterface):
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
         from . import Sketch
+
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
             if get_body(component, mirror_across_entity):
@@ -49,11 +62,7 @@ class Part(Entity, PartInterface):
             else:
                 mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
 
-        body, newPosition = mirror(
-            self.fusion_body,
-            mirror_across_entity.center,
-            axis
-        )
+        body, newPosition = mirror(self.fusion_body, mirror_across_entity.center, axis)
         part = self.__class__(body.name)
         part.fusion_body.instance = body
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
@@ -66,10 +75,7 @@ class Part(Entity, PartInterface):
         direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         create_rectangular_pattern(
-            self.fusion_body.component,
-            instance_count,
-            offset,
-            direction_axis
+            self.fusion_body.component, instance_count, offset, direction_axis
         )
         return self
 
@@ -81,12 +87,15 @@ class Part(Entity, PartInterface):
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         from . import Sketch
+
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
             if get_body(component, center_entity_or_landmark):
                 center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
             else:
-                center_entity_or_landmark = Sketch(center_entity_or_landmark).fusion_sketch
+                center_entity_or_landmark = Sketch(
+                    center_entity_or_landmark
+                ).fusion_sketch
 
         center = center_entity_or_landmark.center
         create_circular_pattern_sketch(
@@ -144,17 +153,23 @@ class Part(Entity, PartInterface):
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_body.scale_by_factor(scale_factor.value, 1, 1)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_body.scale_by_factor(1, scale_factor.value, 1)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_body.scale_by_factor(1, 1, scale_factor.value)
         return self
 
@@ -190,9 +205,12 @@ class Part(Entity, PartInterface):
         keyword_arguments: Optional[dict] = None,
     ):
         from . import Sketch
+
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
-        draft_radius = Dimension.from_dimension_or_its_float_or_string_value(draft_radius, None)
+        draft_radius = Dimension.from_dimension_or_its_float_or_string_value(
+            draft_radius, None
+        )
 
         if draft_radius == Dimension(0):
             import math
@@ -210,7 +228,7 @@ class Part(Entity, PartInterface):
                 self.fusion_body.sketch,
                 math.pi * 2,
                 make_point3d(0, 0, 0),
-                make_point3d(0, 0, radius.value)
+                make_point3d(0, 0, radius.value),
             )
         else:
             base = Sketch(self.fusion_body.sketch.name + "_temp_base")
@@ -223,7 +241,7 @@ class Part(Entity, PartInterface):
             self.fusion_body.instance = make_loft(
                 self.fusion_body.component,
                 base.fusion_sketch.instance,
-                top.fusion_sketch.instance
+                top.fusion_sketch.instance,
             )
 
             delete_occurrence(base.fusion_sketch.instance.name)
@@ -290,9 +308,7 @@ class Part(Entity, PartInterface):
         from . import Sketch
         import math
 
-        radius = Dimension.from_dimension_or_its_float_or_string_value(
-            radius
-        )
+        radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
 
         start = make_point3d(radius.value, 0, 0)
         end = make_point3d(-radius.value, 0, 0)
@@ -354,7 +370,11 @@ class Part(Entity, PartInterface):
         delete_after_union: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        combine(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_union)
+        combine(
+            self.fusion_body.instance,
+            with_part.fusion_body.instance,
+            delete_after_union,
+        )
         return self
 
     def subtract(
@@ -363,7 +383,11 @@ class Part(Entity, PartInterface):
         delete_after_subtract: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        subtract(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_subtract)
+        subtract(
+            self.fusion_body.instance,
+            with_part.fusion_body.instance,
+            delete_after_subtract,
+        )
         return self
 
     def intersect(
@@ -372,7 +396,11 @@ class Part(Entity, PartInterface):
         delete_after_intersect: bool = True,
         is_transfer_landmarks: bool = False,
     ):
-        intersect(self.fusion_body.instance, with_part.fusion_body.instance, delete_after_intersect)
+        intersect(
+            self.fusion_body.instance,
+            with_part.fusion_body.instance,
+            delete_after_intersect,
+        )
         return self
 
     def hollow(
@@ -383,11 +411,7 @@ class Part(Entity, PartInterface):
         start_axis: AxisOrItsIndexOrItsName = "z",
         flip_axis: bool = False,
     ):
-        hollow(
-            self.fusion_body.component,
-            self.fusion_body.instance,
-            thickness_x
-        )
+        hollow(self.fusion_body.component, self.fusion_body.instance, thickness_x)
         return self
 
     def thicken(self, radius: DimensionOrItsFloatOrStringValue):
@@ -419,14 +443,13 @@ class Part(Entity, PartInterface):
         linear_pattern2nd_instance_axis: AxisOrItsIndexOrItsName = "y",
     ):
         from . import Sketch
+
         if isinstance(hole_landmark, str):
             component = get_component(hole_landmark)
             if get_body(component, hole_landmark):
                 hole_landmark = Part(hole_landmark).fusion_body
             else:
                 hole_landmark = Sketch(hole_landmark).fusion_sketch
-
-
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         depth = Dimension.from_dimension_or_its_float_or_string_value(depth, None)
@@ -492,9 +515,7 @@ class Part(Entity, PartInterface):
     def chamfer_all_edges(self, radius: DimensionOrItsFloatOrStringValue):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         chamfer_all_edges(
-            self.fusion_body.component,
-            self.fusion_body.instance,
-            radius.value
+            self.fusion_body.component, self.fusion_body.instance, radius.value
         )
         return self
 

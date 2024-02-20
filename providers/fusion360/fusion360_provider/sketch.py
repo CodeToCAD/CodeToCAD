@@ -6,11 +6,27 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_body, get_component
-from .fusion_actions.actions import clone_sketch, create_circular_pattern_sketch, create_rectangular_pattern_sketch, create_text, mirror, sweep
+from providers.fusion360.fusion360_provider.fusion_actions.base import (
+    get_body,
+    get_component,
+)
+from .fusion_actions.actions import (
+    clone_sketch,
+    create_circular_pattern_sketch,
+    create_rectangular_pattern_sketch,
+    create_text,
+    mirror,
+    sweep,
+)
 from .fusion_actions.modifiers import make_revolve
 
-from .fusion_actions.curve import make_arc, make_circle, make_line, make_point, make_rectangle
+from .fusion_actions.curve import (
+    make_arc,
+    make_circle,
+    make_line,
+    make_point,
+    make_rectangle,
+)
 from .fusion_actions.fusion_sketch import FusionSketch
 
 from .fusion_actions.common import make_point3d
@@ -63,6 +79,7 @@ class Sketch(Entity, SketchInterface):
         resulting_mirrored_entity_name: Optional[str] = None,
     ):
         from . import Part
+
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
             if get_body(component, mirror_across_entity):
@@ -71,9 +88,7 @@ class Sketch(Entity, SketchInterface):
                 mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
 
         sketch, newPosition = mirror(
-            self.fusion_sketch,
-            mirror_across_entity.center,
-            axis
+            self.fusion_sketch, mirror_across_entity.center, axis
         )
         part = self.__class__(sketch.name)
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
@@ -87,10 +102,7 @@ class Sketch(Entity, SketchInterface):
     ):
         offset = Dimension.from_dimension_or_its_float_or_string_value(offset, None)
         create_rectangular_pattern_sketch(
-            self.fusion_sketch.component,
-            instance_count,
-            offset.value,
-            direction_axis
+            self.fusion_sketch.component, instance_count, offset.value, direction_axis
         )
         return self
 
@@ -102,12 +114,15 @@ class Sketch(Entity, SketchInterface):
         normal_direction_axis: AxisOrItsIndexOrItsName = "z",
     ):
         from . import Part
+
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
             if get_body(component, center_entity_or_landmark):
                 center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
             else:
-                center_entity_or_landmark = Sketch(center_entity_or_landmark).fusion_sketch
+                center_entity_or_landmark = Sketch(
+                    center_entity_or_landmark
+                ).fusion_sketch
 
         center = center_entity_or_landmark.center
 
@@ -116,7 +131,7 @@ class Sketch(Entity, SketchInterface):
             center,
             instance_count,
             separation_angle,
-            normal_direction_axis
+            normal_direction_axis,
         )
 
         return self
@@ -157,28 +172,35 @@ class Sketch(Entity, SketchInterface):
         return self
 
     def scale_x_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_sketch.scale_by_factor(scale_factor.value, 0, 0)
         return self
 
     def scale_y_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_sketch.scale_by_factor(0, scale_factor.value, 0)
         return self
 
     def scale_z_by_factor(self, scale_factor: float):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(scale_factor, None)
+        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
+            scale_factor, None
+        )
         self.fusion_sketch.scale_by_factor(0, 0, scale_factor.value)
         return self
 
     # @check behavior with axis
     def scale_keep_aspect_ratio(
-        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName = None
+        self,
+        scale: DimensionOrItsFloatOrStringValue,
+        axis: AxisOrItsIndexOrItsName = None,
     ):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         self.fusion_sketch.scale_uniform(scale.value)
         return self
-
 
     def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
         new_sketch = clone_sketch(self.fusion_sketch.instance, new_name, copy_landmarks)
@@ -191,12 +213,15 @@ class Sketch(Entity, SketchInterface):
         axis: AxisOrItsIndexOrItsName = "z",
     ) -> "Part":
         from . import Part
+
         if isinstance(about_entity_or_landmark, str):
             component = get_component(about_entity_or_landmark)
             if get_body(component, about_entity_or_landmark):
                 about_entity_or_landmark = Part(about_entity_or_landmark).fusion_body
             else:
-                about_entity_or_landmark = Sketch(about_entity_or_landmark).fusion_sketch
+                about_entity_or_landmark = Sketch(
+                    about_entity_or_landmark
+                ).fusion_sketch
 
         body = make_revolve(
             self.fusion_sketch.component,
@@ -223,6 +248,7 @@ class Sketch(Entity, SketchInterface):
 
     def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
         from . import Part
+
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         body = self.fusion_sketch.extrude(length.value)
         part = Part(body.name)
@@ -233,6 +259,7 @@ class Sketch(Entity, SketchInterface):
         self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
     ) -> "Part":
         from . import Part
+
         name = sweep(
             self.fusion_sketch.component,
             self.fusion_sketch.instance,
@@ -261,8 +288,9 @@ class Sketch(Entity, SketchInterface):
         line_spacing: "int" = 1,
         font_file_path: Optional[str] = None,
     ):
-
-        font_size = Dimension.from_dimension_or_its_float_or_string_value(font_size, None)
+        font_size = Dimension.from_dimension_or_its_float_or_string_value(
+            font_size, None
+        )
         create_text(
             self.fusion_sketch.instance,
             text,
@@ -273,7 +301,7 @@ class Sketch(Entity, SketchInterface):
             character_spacing,
             word_spacing,
             line_spacing,
-            font_file_path
+            font_file_path,
         )
         return self
 
@@ -281,6 +309,7 @@ class Sketch(Entity, SketchInterface):
         self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
     ) -> "Wire":
         from . import Edge, Vertex, Wire
+
         edges = []
         for index in range(len(points) - 1):
             start = Vertex(points[index], "vertex")
@@ -296,6 +325,7 @@ class Sketch(Entity, SketchInterface):
 
     def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
         from . import Vertex
+
         sketch = self.fusion_sketch.instance
 
         make_point(sketch, point.x, point.y, point.z)
@@ -312,6 +342,7 @@ class Sketch(Entity, SketchInterface):
         end_at: PointOrListOfFloatOrItsStringValueOrVertex,
     ) -> "Edge":
         from . import Edge
+
         sketch = self.fusion_sketch.instance
 
         start = make_point3d(start_at.x, start_at.y, start_at.z)
@@ -320,8 +351,16 @@ class Sketch(Entity, SketchInterface):
         self.curves = make_line(sketch, start, end)
 
         line = self.curves[0]
-        start = Point(line.startSketchPoint.geometry.x, line.startSketchPoint.geometry.y, line.startSketchPoint.geometry.z)
-        end = Point(line.endSketchPoint.geometry.x, line.endSketchPoint.geometry.y, line.endSketchPoint.geometry.z)
+        start = Point(
+            line.startSketchPoint.geometry.x,
+            line.startSketchPoint.geometry.y,
+            line.startSketchPoint.geometry.z,
+        )
+        end = Point(
+            line.endSketchPoint.geometry.x,
+            line.endSketchPoint.geometry.y,
+            line.endSketchPoint.geometry.z,
+        )
         edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
 
         return edge
@@ -372,6 +411,7 @@ class Sketch(Entity, SketchInterface):
         flip: Optional[bool] = False,
     ) -> "Wire":
         from . import Wire, Edge, Vertex
+
         sketch = self.fusion_sketch.instance
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
@@ -391,6 +431,7 @@ class Sketch(Entity, SketchInterface):
         width: DimensionOrItsFloatOrStringValue,
     ) -> "Wire":
         from . import Wire, Edge, Vertex
+
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
 

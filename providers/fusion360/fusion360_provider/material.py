@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 # It's only set the body of the current object
 # not creating a new material in Fusion 360
 
+
 class Material(MaterialInterface):
     name: str
     description: Optional[str] = None
@@ -29,6 +30,7 @@ class Material(MaterialInterface):
 
     def assign_to_part(self, part_name_or_instance: PartOrItsName):
         from . import Part
+
         if isinstance(part_name_or_instance, str):
             part_name_or_instance = Part(part_name_or_instance)
         part_name_or_instance.set_material(self)

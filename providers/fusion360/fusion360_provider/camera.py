@@ -35,7 +35,7 @@ class Camera(Entity, CameraInterface):
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None).value
         z = Dimension.from_dimension_or_its_float_or_string_value(z, None).value
 
-        self.fusion_camera.translate(x, y , z)
+        self.fusion_camera.translate(x, y, z)
 
         return self
 

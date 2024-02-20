@@ -46,7 +46,9 @@ class FusionSketch(FusionInterface):
 
         sketch.move(entities, matrix)
 
-    def rotate(self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue):
+    def rotate(
+        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
+    ):
         sketch = self.instance
 
         axis = make_axis_vector(axis_input)
@@ -98,7 +100,7 @@ class FusionSketch(FusionInterface):
             if 0 > boundBox.minPoint.x < 1:
                 xFactor = (abs(boundBox.minPoint.x) + x) * abs(boundBox.minPoint.x)
             else:
-                xFactor =  abs(boundBox.minPoint.x) / (abs(boundBox.minPoint.x) + x)
+                xFactor = abs(boundBox.minPoint.x) / (abs(boundBox.minPoint.x) + x)
 
         if y > 0:
             if 0 > boundBox.minPoint.y < 1:
@@ -114,7 +116,10 @@ class FusionSketch(FusionInterface):
 
         for point in sketch.sketchPoints:
             transform = adsk.core.Vector3D.create(
-                point.geometry.x * xFactor, point.geometry.y * yFactor, point.geometry.z * zFactor)
+                point.geometry.x * xFactor,
+                point.geometry.y * yFactor,
+                point.geometry.z * zFactor,
+            )
             point.move(transform)
 
     def scale_by_factor(self, x: float, y: float, z: float):
@@ -124,7 +129,7 @@ class FusionSketch(FusionInterface):
             transform = adsk.core.Vector3D.create(
                 point.geometry.x * (x / 2),
                 point.geometry.y * (y / 2),
-                point.geometry.z * (z / 2)
+                point.geometry.z * (z / 2),
             )
             point.move(transform)
 
@@ -147,7 +152,9 @@ class FusionSketch(FusionInterface):
 
         prof = sketch.profiles.item(0)
         extrudes = self.component.features.extrudeFeatures
-        extInput = extrudes.createInput(prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+        extInput = extrudes.createInput(
+            prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+        )
 
         distance = adsk.core.ValueInput.createByReal(length)
         extInput.setDistanceExtent(False, distance)
