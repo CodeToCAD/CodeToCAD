@@ -20,20 +20,9 @@ from abc import ABCMeta, abstractmethod
 {%set extended_classes = capabilities_loader.capabilities[class_name].get_extends_class_names( "Interface") %}
 {%set implemented_classes = capabilities_loader.capabilities[class_name].get_implements_class_names( "Interface") %}
 
-{% if capabilities_loader.capabilities[class_name].is_interface_only and (imports.get_implementable_class_names("Interface")|length > 0 or imports.get_interface_class_names("Interface")|length > 0) %}
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-
-    {{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
-
-    {{ "from codetocad.interfaces import " + imports.get_interface_class_names("Interface")|join(", ") if imports.get_interface_class_names("Interface")|length > 0}}
-{%else%}
-
-{{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
-
-{{ "from codetocad.interfaces import " + imports.get_interface_class_names("Interface")|join(", ") if imports.get_interface_class_names("Interface")|length > 0}}
-{%endif%}
+{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") %}
+{{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
+{% endfor %}
 
 {%set _ = implemented_classes.append("metaclass=ABCMeta")%}
 
