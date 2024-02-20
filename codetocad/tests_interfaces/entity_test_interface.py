@@ -87,11 +87,3 @@ class EntityTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_get_dimensions(self):
         pass
-
-    @abstractmethod
-    def test_create_landmark(self):
-        pass
-
-    @abstractmethod
-    def test_get_landmark(self):
-        pass

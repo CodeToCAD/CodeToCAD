@@ -2,8 +2,8 @@
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
-from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -11,22 +11,25 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import (
-    MirrorableInterface,
-    PatternableInterface,
-    ProjectableInterface,
-)
+from codetocad.interfaces.entity_interface import EntityInterface
 
-from . import EntityInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
-from typing import TYPE_CHECKING
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-if TYPE_CHECKING:
-    from . import EdgeInterface
-    from . import EntityInterface
-    from . import SketchInterface
-    from . import VertexInterface
-    from . import PartInterface
+from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 
 class WireInterface(
@@ -34,44 +37,44 @@ class WireInterface(
     MirrorableInterface,
     PatternableInterface,
     ProjectableInterface,
+    LandmarkableInterface,
+    BooleanableInterface,
     metaclass=ABCMeta,
 ):
-    """A collection of connected edges."""
 
-    edges: "list[EdgeInterface]"
-    parent_entity: Optional[EntityOrItsName] = None
+    """
+    A collection of connected edges.
+    """
 
     @abstractmethod
     def __init__(
         self,
-        edges: "list[EdgeInterface]",
-        name: str,
-        parent_entity: Optional[EntityOrItsName] = None,
-        description: Optional[str] = None,
+        name: "str",
+        edges: "list[Edge]",
+        description: "str| None" = None,
         native_instance=None,
+        parent_entity: "EntityOrItsName| None" = None,
     ):
-        super().__init__(
-            name=name, description=description, native_instance=native_instance
-        )
-        self.edges = edges
-        self.parent_entity = parent_entity
         self.name = name
+        self.edges = edges
         self.description = description
         self.native_instance = native_instance
+        self.parent_entity = parent_entity
 
     @abstractmethod
     def clone(
-        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
+        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
     ) -> "WireInterface":
         """
         Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.
         """
 
         print("clone is called in an abstract method. Please override this method.")
+
         raise NotImplementedError()
 
     @abstractmethod
-    def get_normal(self, flip: Optional[bool] = False) -> "Point":
+    def get_normal(self, flip: "bool| None" = False) -> "Point":
         """
         Get the normal created by this wire. Must be a closed wire.
         """
@@ -79,10 +82,13 @@ class WireInterface(
         print(
             "get_normal is called in an abstract method. Please override this method."
         )
+
         raise NotImplementedError()
 
     @abstractmethod
-    def get_vertices(self) -> "list[VertexInterface]":
+    def get_vertices(
+        self,
+    ) -> "list[Vertex]":
         """
         Collapse all edges' vertices into one list.
         """
@@ -90,10 +96,13 @@ class WireInterface(
         print(
             "get_vertices is called in an abstract method. Please override this method."
         )
+
         raise NotImplementedError()
 
     @abstractmethod
-    def get_is_closed(self) -> bool:
+    def get_is_closed(
+        self,
+    ) -> "bool":
         """
         Checks if a wire is closed. Note: A closed wire is a Face or Surface.
         """
@@ -101,15 +110,17 @@ class WireInterface(
         print(
             "get_is_closed is called in an abstract method. Please override this method."
         )
+
         raise NotImplementedError()
 
     @abstractmethod
     def loft(
-        self, other: "WireInterface", new_part_name: Optional[str] = None
+        self, other: "WireInterface", new_part_name: "str| None" = None
     ) -> "PartInterface":
         """
         Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.
         """
 
         print("loft is called in an abstract method. Please override this method.")
+
         raise NotImplementedError()

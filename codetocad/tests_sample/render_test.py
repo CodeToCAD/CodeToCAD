@@ -9,23 +9,28 @@ from .test_helper import *
 from codetocad.tests_interfaces import RenderTestInterface
 
 
+from codetocad import Camera
+
+
 class RenderTest(TestProviderCase, RenderTestInterface):
     @skip("TODO")
     def test_render_image(self):
         instance = Render()
 
-        value = instance.render_image("output_file_path", "overwrite", "file_type")
+        value = instance.render_image(
+            output_file_path="String", overwrite=True, file_type="String"
+        )
 
     @skip("TODO")
     def test_render_video_mp4(self):
         instance = Render()
 
         value = instance.render_video_mp4(
-            "output_file_path",
-            "start_frame_number",
-            "end_frame_number",
-            "step_frames",
-            "overwrite",
+            output_file_path="String",
+            start_frame_number=1,
+            end_frame_number=100,
+            step_frames=1,
+            overwrite=True,
         )
 
     @skip("TODO")
@@ -33,20 +38,20 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         instance = Render()
 
         value = instance.render_video_frames(
-            "output_folder_path",
-            "file_name_prefix",
-            "start_frame_number",
-            "end_frame_number",
-            "step_frames",
-            "overwrite",
-            "file_type",
+            output_folder_path="String",
+            file_name_prefix="String",
+            start_frame_number=1,
+            end_frame_number=100,
+            step_frames=1,
+            overwrite=True,
+            file_type="String",
         )
 
     @skip("TODO")
     def test_set_frame_rate(self):
         instance = Render()
 
-        value = instance.set_frame_rate("frame_rate")
+        value = instance.set_frame_rate(frame_rate=0)
 
         assert value, "Modify method failed."
 
@@ -54,7 +59,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
     def test_set_resolution(self):
         instance = Render()
 
-        value = instance.set_resolution("x", "y")
+        value = instance.set_resolution(x=0, y=0)
 
         assert value, "Modify method failed."
 
@@ -62,7 +67,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
     def test_set_render_quality(self):
         instance = Render()
 
-        value = instance.set_render_quality("quality")
+        value = instance.set_render_quality(quality=0)
 
         assert value, "Modify method failed."
 
@@ -70,7 +75,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
     def test_set_render_engine(self):
         instance = Render()
 
-        value = instance.set_render_engine("name")
+        value = instance.set_render_engine(name="String")
 
         assert value, "Modify method failed."
 
@@ -78,6 +83,6 @@ class RenderTest(TestProviderCase, RenderTestInterface):
     def test_set_camera(self):
         instance = Render()
 
-        value = instance.set_camera("camera_name_or_instance")
+        value = instance.set_camera(camera_name_or_instance=Camera())
 
         assert value, "Modify method failed."

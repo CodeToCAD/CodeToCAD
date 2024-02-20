@@ -3,316 +3,440 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from typing import Optional
-
-from codetocad.interfaces import SketchInterface
-
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Part
-    from . import Entity
-    from . import Wire
-    from . import Vertex
-    from . import Edge
+from codetocad.interfaces import SketchInterface
 
 
-class Sketch(Entity, SketchInterface):
-    def mirror(
-        self,
-        mirror_across_entity: EntityOrItsName,
-        axis: AxisOrItsIndexOrItsName,
-        resulting_mirrored_entity_name: Optional[str] = None,
-    ):
-        print(
-            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
-        )
-        return self
+from codetocad.interfaces.entity_interface import EntityInterface
 
-    def linear_pattern(
-        self,
-        instance_count: "int",
-        offset: DimensionOrItsFloatOrStringValue,
-        direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        print("linear_pattern called:", instance_count, offset, direction_axis)
-        return self
+from codetocad.interfaces.vertex_interface import VertexInterface
 
-    def circular_pattern(
-        self,
-        instance_count: "int",
-        separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsName,
-        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
-    ):
-        print(
-            "circular_pattern called:",
-            instance_count,
-            separation_angle,
-            center_entity_or_landmark,
-            normal_direction_axis,
-        )
-        return self
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-    def create_from_file(self, file_path: str, file_type: Optional[str] = None):
-        print("create_from_file called:", file_path, file_type)
-        return self
+from codetocad.interfaces.part_interface import PartInterface
 
-    def export(self, file_path: str, overwrite: bool = True, scale: float = 1.0):
-        print("export called:", file_path, overwrite, scale)
-        return self
+from codetocad.interfaces.wire_interface import WireInterface
 
-    def scale_xyz(
-        self,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
-    ):
-        print("scale_xyz called:", x, y, z)
-        return self
+from codetocad.interfaces.edge_interface import EdgeInterface
 
-    def scale_x(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_x called:", scale)
-        return self
 
-    def scale_y(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_y called:", scale)
-        return self
+from codetocad.providers_sample.entity import Entity
 
-    def scale_z(self, scale: DimensionOrItsFloatOrStringValue):
-        print("scale_z called:", scale)
-        return self
+from codetocad.providers_sample.vertex import Vertex
 
-    def scale_x_by_factor(self, scale_factor: float):
-        print("scale_x_by_factor called:", scale_factor)
-        return self
+from codetocad.providers_sample.landmark import Landmark
 
-    def scale_y_by_factor(self, scale_factor: float):
-        print("scale_y_by_factor called:", scale_factor)
-        return self
+from codetocad.providers_sample.part import Part
 
-    def scale_z_by_factor(self, scale_factor: float):
-        print("scale_z_by_factor called:", scale_factor)
-        return self
+from codetocad.providers_sample.wire import Wire
 
-    def scale_keep_aspect_ratio(
-        self, scale: DimensionOrItsFloatOrStringValue, axis: AxisOrItsIndexOrItsName
-    ):
-        print("scale_keep_aspect_ratio called:", scale, axis)
-        return self
+from codetocad.providers_sample.edge import Edge
 
-    def project(self, project_onto: "Sketch") -> "Projectable":
-        print("project called:", project_onto)
-        from . import Sketch
 
-        return Sketch("a projected sketch")
-
-    name: str
-    curve_type: Optional["CurveTypes"] = None
-    description: Optional[str] = None
-    native_instance = None
-
+class Sketch(SketchInterface, Entity):
     def __init__(
         self,
-        name: str,
-        curve_type: Optional["CurveTypes"] = None,
-        description: Optional[str] = None,
+        name: "str",
+        description: "str| None" = None,
         native_instance=None,
+        curve_type: "CurveTypes| None" = None,
     ):
         self.name = name
-        self.curve_type = curve_type
         self.description = description
         self.native_instance = native_instance
+        self.curve_type = curve_type
 
-    def clone(self, new_name: str, copy_landmarks: bool = True) -> "Sketch":
-        print("clone called:", new_name, copy_landmarks)
-        from . import Sketch
+    def clone(
+        self, new_name: "str", copy_landmarks: "bool" = True
+    ) -> "SketchInterface":
+        print("clone called", f": {new_name}, {copy_landmarks}")
 
         return Sketch("a sketch")
 
     def revolve(
         self,
-        angle: AngleOrItsFloatOrStringValue,
-        about_entity_or_landmark: EntityOrItsName,
-        axis: AxisOrItsIndexOrItsName = "z",
-    ) -> "Part":
-        print("revolve called:", angle, about_entity_or_landmark, axis)
-        from . import Part
+        angle: "AngleOrItsFloatOrStringValue",
+        about_entity_or_landmark: "EntityOrItsName",
+        axis: "AxisOrItsIndexOrItsName" = "z",
+    ) -> "PartInterface":
+        print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
 
         return Part("a part")
 
     def twist(
         self,
-        angle: AngleOrItsFloatOrStringValue,
-        screw_pitch: DimensionOrItsFloatOrStringValue,
+        angle: "AngleOrItsFloatOrStringValue",
+        screw_pitch: "DimensionOrItsFloatOrStringValue",
         iterations: "int" = 1,
-        axis: AxisOrItsIndexOrItsName = "z",
+        axis: "AxisOrItsIndexOrItsName" = "z",
     ):
-        print("twist called:", angle, screw_pitch, iterations, axis)
+        print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
+
         return self
 
-    def extrude(self, length: DimensionOrItsFloatOrStringValue) -> "Part":
-        print("extrude called:", length)
-        from . import Part
+    def extrude(self, length: "DimensionOrItsFloatOrStringValue") -> "PartInterface":
+        print("extrude called", f": {length}")
 
         return Part("a part")
 
     def sweep(
-        self, profile_name_or_instance: SketchOrItsName, fill_cap: bool = True
-    ) -> "Part":
-        print("sweep called:", profile_name_or_instance, fill_cap)
-        from . import Part
+        self, profile_name_or_instance: "SketchOrItsName", fill_cap: "bool" = True
+    ) -> "PartInterface":
+        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
 
         return Part("a part")
 
-    def offset(self, radius: DimensionOrItsFloatOrStringValue):
-        print("offset called:", radius)
+    def offset(self, radius: "DimensionOrItsFloatOrStringValue"):
+        print("offset called", f": {radius}")
+
         return self
 
-    def profile(self, profile_curve_name: str):
-        print("profile called:", profile_curve_name)
+    def profile(self, profile_curve_name: "str"):
+        print("profile called", f": {profile_curve_name}")
+
         return self
 
     def create_text(
         self,
-        text: str,
-        font_size: DimensionOrItsFloatOrStringValue = 1.0,
-        bold: bool = False,
-        italic: bool = False,
-        underlined: bool = False,
+        text: "str",
+        font_size: "DimensionOrItsFloatOrStringValue" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
         character_spacing: "int" = 1,
         word_spacing: "int" = 1,
         line_spacing: "int" = 1,
-        font_file_path: Optional[str] = None,
+        font_file_path: "str| None" = None,
     ):
         print(
-            "create_text called:",
-            text,
-            font_size,
-            bold,
-            italic,
-            underlined,
-            character_spacing,
-            word_spacing,
-            line_spacing,
-            font_file_path,
+            "create_text called",
+            f": {text}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}",
         )
+
         return self
 
     def create_from_vertices(
-        self, points: list[PointOrListOfFloatOrItsStringValueOrVertex]
-    ) -> "Wire":
-        print("create_from_vertices called:", points)
-        from . import Wire
+        self, points: "list[PointOrListOfFloatOrItsStringValueOrVertex]"
+    ) -> "WireInterface":
+        print("create_from_vertices called", f": {points}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
-    def create_point(self, point: PointOrListOfFloatOrItsStringValue) -> "Vertex":
-        print("create_point called:", point)
-        from . import Vertex
+    def create_point(
+        self, point: "PointOrListOfFloatOrItsStringValue"
+    ) -> "VertexInterface":
+        print("create_point called", f": {point}")
 
-        return Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")
+        return Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))
 
     def create_line(
         self,
-        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
-    ) -> "Edge":
-        print("create_line called:", start_at, end_at)
-        from . import Vertex
-
-        from . import Edge
+        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+    ) -> "EdgeInterface":
+        print("create_line called", f": {start_at}, {end_at}")
 
         return Edge(
-            v1=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
-            v2=Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex"),
+            v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
+            v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             name="an edge",
         )
 
-    def create_circle(self, radius: DimensionOrItsFloatOrStringValue) -> "Wire":
-        print("create_circle called:", radius)
-        from . import Wire
+    def create_circle(
+        self, radius: "DimensionOrItsFloatOrStringValue"
+    ) -> "WireInterface":
+        print("create_circle called", f": {radius}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_ellipse(
         self,
-        radius_minor: DimensionOrItsFloatOrStringValue,
-        radius_major: DimensionOrItsFloatOrStringValue,
-    ) -> "Wire":
-        print("create_ellipse called:", radius_minor, radius_major)
-        from . import Wire
+        radius_minor: "DimensionOrItsFloatOrStringValue",
+        radius_major: "DimensionOrItsFloatOrStringValue",
+    ) -> "WireInterface":
+        print("create_ellipse called", f": {radius_minor}, {radius_major}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_arc(
         self,
-        start_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        end_at: PointOrListOfFloatOrItsStringValueOrVertex,
-        radius: DimensionOrItsFloatOrStringValue,
-        flip: Optional[bool] = False,
-    ) -> "Wire":
-        print("create_arc called:", start_at, end_at, radius, flip)
-        from . import Wire
+        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        radius: "DimensionOrItsFloatOrStringValue",
+        flip: "bool| None" = False,
+    ) -> "WireInterface":
+        print("create_arc called", f": {start_at}, {end_at}, {radius}, {flip}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_rectangle(
         self,
-        length: DimensionOrItsFloatOrStringValue,
-        width: DimensionOrItsFloatOrStringValue,
-    ) -> "Wire":
-        print("create_rectangle called:", length, width)
-        from . import Wire
+        length: "DimensionOrItsFloatOrStringValue",
+        width: "DimensionOrItsFloatOrStringValue",
+    ) -> "WireInterface":
+        print("create_rectangle called", f": {length}, {width}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_polygon(
         self,
         number_of_sides: "int",
-        length: DimensionOrItsFloatOrStringValue,
-        width: DimensionOrItsFloatOrStringValue,
-    ) -> "Wire":
-        print("create_polygon called:", number_of_sides, length, width)
-        from . import Wire
+        length: "DimensionOrItsFloatOrStringValue",
+        width: "DimensionOrItsFloatOrStringValue",
+    ) -> "WireInterface":
+        print("create_polygon called", f": {number_of_sides}, {length}, {width}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_trapezoid(
         self,
-        length_upper: DimensionOrItsFloatOrStringValue,
-        length_lower: DimensionOrItsFloatOrStringValue,
-        height: DimensionOrItsFloatOrStringValue,
-    ) -> "Wire":
-        print("create_trapezoid called:", length_upper, length_lower, height)
-        from . import Wire
+        length_upper: "DimensionOrItsFloatOrStringValue",
+        length_lower: "DimensionOrItsFloatOrStringValue",
+        height: "DimensionOrItsFloatOrStringValue",
+    ) -> "WireInterface":
+        print("create_trapezoid called", f": {length_upper}, {length_lower}, {height}")
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
 
     def create_spiral(
         self,
         number_of_turns: "int",
-        height: DimensionOrItsFloatOrStringValue,
-        radius: DimensionOrItsFloatOrStringValue,
-        is_clockwise: bool = True,
-        radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
-    ) -> "Wire":
+        height: "DimensionOrItsFloatOrStringValue",
+        radius: "DimensionOrItsFloatOrStringValue",
+        is_clockwise: "bool" = True,
+        radius_end: "DimensionOrItsFloatOrStringValue| None" = None,
+    ) -> "WireInterface":
         print(
-            "create_spiral called:",
-            number_of_turns,
-            height,
-            radius,
-            is_clockwise,
-            radius_end,
+            "create_spiral called",
+            f": {number_of_turns}, {height}, {radius}, {is_clockwise}, {radius_end}",
         )
-        from . import Wire
 
-        return Wire([], "a wire")
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
+
+    def mirror(
+        self,
+        mirror_across_entity: "EntityOrItsName",
+        axis: "AxisOrItsIndexOrItsName",
+        resulting_mirrored_entity_name: "str| None" = None,
+    ):
+        print(
+            "mirror called",
+            f": {mirror_across_entity}, {axis}, {resulting_mirrored_entity_name}",
+        )
+
+        return self
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: "DimensionOrItsFloatOrStringValue",
+        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+    ):
+        print(
+            "linear_pattern called", f": {instance_count}, {offset}, {direction_axis}"
+        )
+
+        return self
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: "AngleOrItsFloatOrStringValue",
+        center_entity_or_landmark: "EntityOrItsName",
+        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+    ):
+        print(
+            "circular_pattern called",
+            f": {instance_count}, {separation_angle}, {center_entity_or_landmark}, {normal_direction_axis}",
+        )
+
+        return self
+
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+        print("create_from_file called", f": {file_path}, {file_type}")
+
+        return self
+
+    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+        print("export called", f": {file_path}, {overwrite}, {scale}")
+
+        return self
+
+    def scale_xyz(
+        self,
+        x: "DimensionOrItsFloatOrStringValue",
+        y: "DimensionOrItsFloatOrStringValue",
+        z: "DimensionOrItsFloatOrStringValue",
+    ):
+        print("scale_xyz called", f": {x}, {y}, {z}")
+
+        return self
+
+    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+        print("scale_x called", f": {scale}")
+
+        return self
+
+    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+        print("scale_y called", f": {scale}")
+
+        return self
+
+    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+        print("scale_z called", f": {scale}")
+
+        return self
+
+    def scale_x_by_factor(self, scale_factor: "float"):
+        print("scale_x_by_factor called", f": {scale_factor}")
+
+        return self
+
+    def scale_y_by_factor(self, scale_factor: "float"):
+        print("scale_y_by_factor called", f": {scale_factor}")
+
+        return self
+
+    def scale_z_by_factor(self, scale_factor: "float"):
+        print("scale_z_by_factor called", f": {scale_factor}")
+
+        return self
+
+    def scale_keep_aspect_ratio(
+        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+    ):
+        print("scale_keep_aspect_ratio called", f": {scale}, {axis}")
+
+        return self
+
+    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_onto}")
+
+        return __import__("codetocad").Sketch("a projected sketch")
+
+    def create_landmark(
+        self,
+        landmark_name: "str",
+        x: "DimensionOrItsFloatOrStringValue",
+        y: "DimensionOrItsFloatOrStringValue",
+        z: "DimensionOrItsFloatOrStringValue",
+    ) -> "LandmarkInterface":
+        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
+
+        return Landmark("name", "parent")
+
+    def get_landmark(
+        self, landmark_name: "PresetLandmarkOrItsName"
+    ) -> "LandmarkInterface":
+        print("get_landmark called", f": {landmark_name}")
+
+        return Landmark("name", "parent")

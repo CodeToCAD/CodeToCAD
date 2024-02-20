@@ -11,18 +11,23 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-class ExportableInterface(metaclass=ABCMeta):
+from codetocad.interfaces.material_interface import MaterialInterface
+
+
+class MaterialableInterface(metaclass=ABCMeta):
 
     """
-    An enttiy that can be exported.
+    An entity that accepts a material or texture.
     """
 
     @abstractmethod
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def set_material(self, material_name: "MaterialOrItsName"):
         """
-        Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'
+        Assign a known material to this part.
         """
 
-        print("export is called in an abstract method. Please override this method.")
+        print(
+            "set_material is called in an abstract method. Please override this method."
+        )
 
         raise NotImplementedError()

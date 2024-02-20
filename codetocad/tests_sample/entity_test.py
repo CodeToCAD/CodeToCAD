@@ -12,170 +12,160 @@ from codetocad.tests_interfaces import EntityTestInterface
 class EntityTest(TestProviderCase, EntityTestInterface):
     @skip("TODO")
     def test_is_exists(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.is_exists("")
+        value = instance.is_exists()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_rename(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.rename("new_name", "renamelinked_entities_and_landmarks")
+        value = instance.rename(
+            new_name="String", renamelinked_entities_and_landmarks=True
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_delete(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.delete("remove_children")
+        value = instance.delete(remove_children=True)
 
     @skip("TODO")
     def test_is_visible(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.is_visible("")
+        value = instance.is_visible()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_set_visible(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.set_visible("is_visible")
+        value = instance.set_visible(is_visible=True)
 
     @skip("TODO")
     def test_apply(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.apply("rotation", "scale", "location", "modifiers")
+        value = instance.apply(
+            rotation=True, scale=True, location=False, modifiers=True
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_get_native_instance(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.get_native_instance("")
+        value = instance.get_native_instance()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_get_location_world(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.get_location_world("")
+        value = instance.get_location_world()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_get_location_local(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.get_location_local("")
+        value = instance.get_location_local()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_select(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.select("")
+        value = instance.select()
 
     @skip("TODO")
     def test_translate_xyz(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.translate_xyz("x", "y", "z")
+        value = instance.translate_xyz(
+            x=Dimension(0, "mm"), y=Dimension(0, "mm"), z=Dimension(0, "mm")
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_translate_x(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.translate_x("amount")
+        value = instance.translate_x(amount=Dimension(0, "mm"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_translate_y(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.translate_y("amount")
+        value = instance.translate_y(amount=Dimension(0, "mm"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_translate_z(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.translate_z("amount")
+        value = instance.translate_z(amount=Dimension(0, "mm"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_rotate_xyz(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.rotate_xyz("x", "y", "z")
+        value = instance.rotate_xyz(x=Angle("90"), y=Angle("90"), z=Angle("90"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_rotate_x(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.rotate_x("rotation")
+        value = instance.rotate_x(rotation=Angle("90"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_rotate_y(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.rotate_y("rotation")
+        value = instance.rotate_y(rotation=Angle("90"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_rotate_z(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.rotate_z("rotation")
+        value = instance.rotate_z(rotation=Angle("90"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_get_bounding_box(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.get_bounding_box("")
+        value = instance.get_bounding_box()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_get_dimensions(self):
-        instance = Entity()
+        instance = Entity(name="String", description="String", native_instance=value)
 
-        value = instance.get_dimensions("")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_create_landmark(self):
-        instance = Entity()
-
-        value = instance.create_landmark("landmark_name", "x", "y", "z")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_get_landmark(self):
-        instance = Entity()
-
-        value = instance.get_landmark("landmark_name")
+        value = instance.get_dimensions()
 
         assert value, "Get method failed."

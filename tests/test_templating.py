@@ -12,18 +12,76 @@ class TestTemplating(unittest.TestCase):
         imports = self.capabilies_loader.generate_imports("Sketch", ["Sketch"])
 
         assert imports._codetocad_implementable_class_names == {
+            "Landmark",
+            "Entity",
             "Edge",
             "Wire",
-            "Landmark",
-            "Part",
             "Vertex",
+            "Part",
         }
-        assert imports._codetocad_interface_class_names == {"Projectable"}
+        assert imports._codetocad_interface_class_names == {
+            "Projectable",
+            "Importable",
+            "Mirrorable",
+            "Landmarkable",
+            "Exportable",
+            "Scalable",
+            "Patternable",
+        }
+
+        imports = self.capabilies_loader.generate_imports("Part", ["Part"])
+
+        assert imports._codetocad_implementable_class_names == {
+            "Landmark",
+            "Entity",
+            "Material",
+        }
+
+        assert imports._codetocad_interface_class_names == {
+            "Scalable",
+            "Importable",
+            "Subdividable",
+            "Patternable",
+            "Materialable",
+            "Booleanable",
+            "Mirrorable",
+            "Exportable",
+            "Landmarkable",
+        }
 
         imports = self.capabilies_loader.generate_imports("Edge", ["Edge"])
 
-        assert imports._codetocad_implementable_class_names == {"Vertex", "Landmark"}
-        assert imports._codetocad_interface_class_names == {"Projectable"}
+        assert imports._codetocad_implementable_class_names == {
+            "Vertex",
+            "Landmark",
+            "Entity",
+        }
+        assert imports._codetocad_interface_class_names == {
+            "Projectable",
+            "Patternable",
+            "Subdividable",
+            "Landmarkable",
+            "Mirrorable",
+        }
+
+        imports = self.capabilies_loader.generate_imports("Wire", ["Wire"])
+
+        assert imports._codetocad_implementable_class_names == {
+            "Entity",
+            "Vertex",
+            "Sketch",
+            "Landmark",
+            "Edge",
+            "Part",
+        }
+
+        assert imports._codetocad_interface_class_names == {
+            "Booleanable",
+            "Landmarkable",
+            "Patternable",
+            "Mirrorable",
+            "Projectable",
+        }
 
     def test_init_parameters(self):
         parameters = self.capabilies_loader.get_constructor_parameters_for_class(

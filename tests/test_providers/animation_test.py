@@ -3,6 +3,13 @@ from codetocad.tests_interfaces import AnimationTestInterface
 
 
 class AnimationTest(TestProviderCase, AnimationTestInterface):
+    def test_default(self):
+        instance = Animation()
+
+        value = instance.default()
+
+        assert value, "Get method failed."
+
     def test_set_frame_start(self):
         instance = Animation()
 

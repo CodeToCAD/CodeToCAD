@@ -1,6 +1,8 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
 from .scalable_test_interface import ScalableTestInterface
+from .booleanable_test_interface import BooleanableTestInterface
+from .landmarkable_test_interface import LandmarkableTestInterface
 from .mirrorable_test_interface import MirrorableTestInterface
 from .patternable_test_interface import PatternableTestInterface
 from .subdividable_test_interface import SubdividableTestInterface

@@ -9,276 +9,512 @@ from .test_helper import *
 from codetocad.tests_interfaces import SketchTestInterface
 
 
+from codetocad import Sketch, Entity, Vertex, Landmark, Part, Wire, Edge
+
+
 class SketchTest(TestProviderCase, SketchTestInterface):
     @skip("TODO")
-    def test_mirror(self):
-        instance = Sketch()
-
-        value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
-        )
-
-        assert value.is_exists(), "Create method failed."
-
-    @skip("TODO")
-    def test_linear_pattern(self):
-        instance = Sketch()
-
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_circular_pattern(self):
-        instance = Sketch()
-
-        value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
-        )
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_create_from_file(self):
-        instance = Sketch()
-
-        value = instance.create_from_file("file_path", "file_type")
-
-        assert value.is_exists(), "Create method failed."
-
-    @skip("TODO")
-    def test_export(self):
-        instance = Sketch()
-
-        value = instance.export("file_path", "overwrite", "scale")
-
-    @skip("TODO")
-    def test_scale_xyz(self):
-        instance = Sketch()
-
-        value = instance.scale_xyz("x", "y", "z")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_x(self):
-        instance = Sketch()
-
-        value = instance.scale_x("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_y(self):
-        instance = Sketch()
-
-        value = instance.scale_y("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_z(self):
-        instance = Sketch()
-
-        value = instance.scale_z("scale")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_x_by_factor(self):
-        instance = Sketch()
-
-        value = instance.scale_x_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_y_by_factor(self):
-        instance = Sketch()
-
-        value = instance.scale_y_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_z_by_factor(self):
-        instance = Sketch()
-
-        value = instance.scale_z_by_factor("scale_factor")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_scale_keep_aspect_ratio(self):
-        instance = Sketch()
-
-        value = instance.scale_keep_aspect_ratio("scale", "axis")
-
-        assert value, "Modify method failed."
-
-    @skip("TODO")
-    def test_project(self):
-        instance = Sketch()
-
-        value = instance.project("project_onto")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
     def test_clone(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.clone("new_name", "copy_landmarks")
+        value = instance.clone(new_name="String", copy_landmarks=True)
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_revolve(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.revolve("angle", "about_entity_or_landmark", "axis")
+        value = instance.revolve(
+            angle=Angle("90"),
+            about_entity_or_landmark=__import__("codetocad").Part("an entity"),
+            axis="z",
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_twist(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.twist("angle", "screw_pitch", "iterations", "axis")
+        value = instance.twist(
+            angle=Angle("90"), screw_pitch=Dimension(0, "mm"), iterations=1, axis="z"
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_extrude(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.extrude("length")
+        value = instance.extrude(length=Dimension(0, "mm"))
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_sweep(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.sweep("profile_name_or_instance", "fill_cap")
+        value = instance.sweep(
+            profile_name_or_instance=Sketch("a sketch"), fill_cap=True
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_offset(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.offset("radius")
+        value = instance.offset(radius=Dimension(0, "mm"))
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_profile(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.profile("profile_curve_name")
+        value = instance.profile(profile_curve_name="String")
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_create_text(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
         value = instance.create_text(
-            "text",
-            "font_size",
-            "bold",
-            "italic",
-            "underlined",
-            "character_spacing",
-            "word_spacing",
-            "line_spacing",
-            "font_file_path",
+            text="String",
+            font_size=1.0,
+            bold=False,
+            italic=False,
+            underlined=False,
+            character_spacing=1,
+            word_spacing=1,
+            line_spacing=1,
+            font_file_path="String",
         )
 
         assert value.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_create_from_vertices(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_from_vertices("points")
+        value = instance.create_from_vertices(
+            points=["Point.from_list_of_float_or_string([0,0,0])"]
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_point(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_point("point")
+        value = instance.create_point(
+            point=Point.from_list_of_float_or_string([0, 0, 0])
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_line(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_line("start_at", "end_at")
+        value = instance.create_line(
+            start_at=Point.from_list_of_float_or_string([0, 0, 0]),
+            end_at=Point.from_list_of_float_or_string([0, 0, 0]),
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_circle(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_circle("radius")
+        value = instance.create_circle(radius=Dimension(0, "mm"))
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_ellipse(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_ellipse("radius_minor", "radius_major")
+        value = instance.create_ellipse(
+            radius_minor=Dimension(0, "mm"), radius_major=Dimension(0, "mm")
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_arc(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_arc("start_at", "end_at", "radius", "flip")
+        value = instance.create_arc(
+            start_at=Point.from_list_of_float_or_string([0, 0, 0]),
+            end_at=Point.from_list_of_float_or_string([0, 0, 0]),
+            radius=Dimension(0, "mm"),
+            flip=False,
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_rectangle(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_rectangle("length", "width")
+        value = instance.create_rectangle(
+            length=Dimension(0, "mm"), width=Dimension(0, "mm")
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_polygon(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_polygon("number_of_sides", "length", "width")
+        value = instance.create_polygon(
+            number_of_sides=0, length=Dimension(0, "mm"), width=Dimension(0, "mm")
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_trapezoid(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
-        value = instance.create_trapezoid("length_upper", "length_lower", "height")
+        value = instance.create_trapezoid(
+            length_upper=Dimension(0, "mm"),
+            length_lower=Dimension(0, "mm"),
+            height=Dimension(0, "mm"),
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_create_spiral(self):
-        instance = Sketch()
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
 
         value = instance.create_spiral(
-            "number_of_turns", "height", "radius", "is_clockwise", "radius_end"
+            number_of_turns=0,
+            height=Dimension(0, "mm"),
+            radius=Dimension(0, "mm"),
+            is_clockwise=True,
+            radius_end=Dimension(0, "mm"),
         )
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_mirror(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.mirror(
+            mirror_across_entity=__import__("codetocad").Part("an entity"),
+            axis=x,
+            resulting_mirrored_entity_name="String",
+        )
+
+        assert value.is_exists(), "Create method failed."
+
+    @skip("TODO")
+    def test_linear_pattern(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.linear_pattern(
+            instance_count=0, offset=Dimension(0, "mm"), direction_axis="z"
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_circular_pattern(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.circular_pattern(
+            instance_count=0,
+            separation_angle=Angle("90"),
+            center_entity_or_landmark=__import__("codetocad").Part("an entity"),
+            normal_direction_axis="z",
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_create_from_file(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.create_from_file(file_path="String", file_type="String")
+
+        assert value.is_exists(), "Create method failed."
+
+    @skip("TODO")
+    def test_export(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.export(file_path="String", overwrite=True, scale=1.0)
+
+    @skip("TODO")
+    def test_scale_xyz(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_xyz(
+            x=Dimension(0, "mm"), y=Dimension(0, "mm"), z=Dimension(0, "mm")
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_x(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_x(scale=Dimension(0, "mm"))
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_y(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_y(scale=Dimension(0, "mm"))
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_z(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_z(scale=Dimension(0, "mm"))
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_x_by_factor(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_x_by_factor(scale_factor=0.0)
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_y_by_factor(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_y_by_factor(scale_factor=0.0)
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_z_by_factor(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_z_by_factor(scale_factor=0.0)
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_scale_keep_aspect_ratio(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.scale_keep_aspect_ratio(scale=Dimension(0, "mm"), axis=x)
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_project(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.project(
+            project_onto=__import__("codetocad").Sketch("a projected sketch")
+        )
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_create_landmark(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.create_landmark(
+            landmark_name="String",
+            x=Dimension(0, "mm"),
+            y=Dimension(0, "mm"),
+            z=Dimension(0, "mm"),
+        )
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_get_landmark(self):
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance=value,
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.get_landmark(landmark_name=PresetLandmark.topLeft)
 
         assert value, "Get method failed."

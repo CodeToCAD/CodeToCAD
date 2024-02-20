@@ -1,6 +1,8 @@
 # THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.
 
 from .scalable_interface import ScalableInterface
+from .booleanable_interface import BooleanableInterface
+from .landmarkable_interface import LandmarkableInterface
 from .mirrorable_interface import MirrorableInterface
 from .patternable_interface import PatternableInterface
 from .subdividable_interface import SubdividableInterface

@@ -9,93 +9,115 @@ from .test_helper import *
 from codetocad.tests_interfaces import SceneTestInterface
 
 
+from codetocad import Entity, Scene
+
+
 class SceneTest(TestProviderCase, SceneTestInterface):
     @skip("TODO")
-    def test_create(self):
-        instance = Scene()
+    def test_default(self):
+        instance = Scene(name="String", description="String")
 
-        value = instance.create("")
+        value = instance.default()
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_create(self):
+        instance = Scene(name="String", description="String")
+
+        value = instance.create()
 
         assert value.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_delete(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.delete("")
+        value = instance.delete()
 
     @skip("TODO")
     def test_is_exists(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.is_exists("")
+        value = instance.is_exists()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_get_selected_entity(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.get_selected_entity("")
+        value = instance.get_selected_entity()
 
         assert value, "Get method failed."
 
     @skip("TODO")
     def test_export(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.export("file_path", "entities", "overwrite", "scale")
+        value = instance.export(
+            file_path="String",
+            entities=[__import__("codetocad").Part("an exportable part")],
+            overwrite=True,
+            scale=1.0,
+        )
 
     @skip("TODO")
     def test_set_default_unit(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.set_default_unit("unit")
+        value = instance.set_default_unit(unit=mm)
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_create_group(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.create_group("name")
+        value = instance.create_group(name="String")
 
         assert value.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_delete_group(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.delete_group("name", "remove_children")
+        value = instance.delete_group(name="String", remove_children=True)
 
     @skip("TODO")
     def test_remove_from_group(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.remove_from_group("entity_name", "group_name")
+        value = instance.remove_from_group(entity_name="String", group_name="String")
 
     @skip("TODO")
     def test_assign_to_group(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
         value = instance.assign_to_group(
-            "entities", "group_name", "remove_from_other_groups"
+            entities=["__import__(\"codetocad\").Part('an entity')"],
+            group_name="String",
+            remove_from_other_groups=True,
         )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_set_visible(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.set_visible("entities", "is_visible")
+        value = instance.set_visible(
+            entities=["__import__(\"codetocad\").Part('an entity')"], is_visible=True
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_set_background_image(self):
-        instance = Scene()
+        instance = Scene(name="String", description="String")
 
-        value = instance.set_background_image("file_path", "location_x", "location_y")
+        value = instance.set_background_image(
+            file_path="String", location_x=0, location_y=0
+        )
 
         assert value, "Modify method failed."

@@ -9,6 +9,10 @@ from abc import ABCMeta, abstractmethod
 
 class AnimationTestInterface(metaclass=ABCMeta):
     @abstractmethod
+    def test_default(self):
+        pass
+
+    @abstractmethod
     def test_set_frame_start(self):
         pass
 
