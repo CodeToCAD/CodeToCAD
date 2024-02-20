@@ -16,8 +16,8 @@ class CapabilitiesLoader:
     """
 
     capabilities: dict[str, CapabilitiesClass] = {}
-    _all_implementable_class_names = []
-    _all_interface_only_class_names = []
+    _all_implementable_class_names: list[str] = []
+    _all_interface_only_class_names: list[str] = []
 
     def __init__(self, capabilities_json_path: str | None = None) -> None:
         capabilities_json = get_capabilities(capabilities_json_path)
@@ -78,11 +78,11 @@ class CapabilitiesLoader:
         return parameters
 
     @property
-    def all_implementable_class_names(self):
+    def all_implementable_class_names(self) -> list[str]:
         return deepcopy(self._all_implementable_class_names)
 
     @property
-    def all_interface_only_class_names(self):
+    def all_interface_only_class_names(self) -> list[str]:
         return deepcopy(self._all_interface_only_class_names)
 
     @property
@@ -101,10 +101,10 @@ class CapabilitiesLoader:
 
         capabilities_class = self.capabilities[class_name]
 
-        for class_name in capabilities_class.get_extends_class_names(
+        for capabilities_class_name in capabilities_class.get_extends_class_names(
             ""
         ) + capabilities_class.get_implements_class_names(""):
-            imports_builder.add_class_name(class_name)
+            imports_builder.add_class_name(capabilities_class_name)
 
         methods = deepcopy(capabilities_class.methods)
         if capabilities_class.constructor:

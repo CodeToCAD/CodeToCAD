@@ -16,47 +16,50 @@ def to_snake_case(name):
     return name.lower()
 
 
-script_dir, _ = os.path.split(__file__)
+if __name__ == "__main__":
+    script_dir, _ = os.path.split(__file__)
 
-capabilities = json.load(open(f"{script_dir}/../codetocad/capabilities.json"))
+    capabilities = json.load(open(f"{script_dir}/../codetocad/capabilities.json"))
 
-# capabilities_new = json.loads(json.dumps(capabilities))
+    # capabilities_new = json.loads(json.dumps(capabilities))
 
-for className in capabilities["capabilities"].keys():
-    methods = list(capabilities["capabilities"][className].keys())
+    for className in capabilities["capabilities"].keys():
+        methods = list(capabilities["capabilities"][className].keys())
 
-    for method in methods:
-        method_name_snake = to_snake_case(method)
+        for method in methods:
+            method_name_snake = to_snake_case(method)
 
-        method_copy = deepcopy(capabilities["capabilities"][className][method])
+            method_copy = deepcopy(capabilities["capabilities"][className][method])
 
-        del capabilities["capabilities"][className][method]
+            del capabilities["capabilities"][className][method]
 
-        capabilities["capabilities"][className][method_name_snake] = method_copy
+            capabilities["capabilities"][className][method_name_snake] = method_copy
 
-        if "parameters" in capabilities["capabilities"][className][method_name_snake]:
-            parameters = list(
-                capabilities["capabilities"][className][method_name_snake][
-                    "parameters"
-                ].keys()
-            )
-
-            for parameter in parameters:
-                parameter_name_snake = to_snake_case(parameter)
-
-                parameter_copy = deepcopy(
+            if (
+                "parameters"
+                in capabilities["capabilities"][className][method_name_snake]
+            ):
+                parameters = list(
                     capabilities["capabilities"][className][method_name_snake][
                         "parameters"
-                    ][parameter]
+                    ].keys()
                 )
 
-                del capabilities["capabilities"][className][method_name_snake][
-                    "parameters"
-                ][parameter]
+                for parameter in parameters:
+                    parameter_name_snake = to_snake_case(parameter)
 
-                capabilities["capabilities"][className][method_name_snake][
-                    "parameters"
-                ][parameter_name_snake] = parameter_copy
+                    parameter_copy = deepcopy(
+                        capabilities["capabilities"][className][method_name_snake][
+                            "parameters"
+                        ][parameter]
+                    )
 
+                    del capabilities["capabilities"][className][method_name_snake][
+                        "parameters"
+                    ][parameter]
 
-json.dump(capabilities, open(f"{script_dir}/capabilities_snake.json", "w"))
+                    capabilities["capabilities"][className][method_name_snake][
+                        "parameters"
+                    ][parameter_name_snake] = parameter_copy
+
+    json.dump(capabilities, open(f"{script_dir}/capabilities_snake.json", "w"))

@@ -10,9 +10,13 @@
 
 from codetocad.interfaces import {{interface_name}}
 
-{{ "from codetocad.interfaces import " + imports.get_implementable_class_names("Interface")|join(", ") if imports.get_implementable_class_names("Interface")|length > 0}}
+{% for capabilities_class in imports.get_implementable_class_names("Interface") %}
+{{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
+{% endfor %}
 
-{{ "from codetocad import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
+{% for capabilities_class in imports.get_implementable_class_names("") %}
+{{ imports.format_import_statement(capabilities_class, "codetocad.providers_sample.") }}
+{% endfor %}
 
 class {{class_name}}({{interface_name}}, {{capabilities_loader.capabilities[class_name].extends|join(", ")}}):
     {% include 'capabilities_to_py_class_definition.j2' %}
