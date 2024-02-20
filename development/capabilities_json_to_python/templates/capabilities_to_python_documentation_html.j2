@@ -37,7 +37,7 @@
             padding: 5px;
         }
 
-        .className {
+        .class_name {
             list-style: none;
             list-style-image: none;
             font-weight: 700;
@@ -127,22 +127,13 @@
 </head>
 
 <body>
-{%- from 'generate_method.j2' import known_method_names_to_skip -%}
     {# MARK: Methods Chips View macros #}
 
-    {% macro methodsChipsView(className, methods) -%}
+    {% macro methodsChipsView(class_name, capabilities_class) -%}
 
-    {% for method_name, properties in methods.items() %}
+    {% for capabilities_method in capabilities_class.methods %}
 
-    {%- if method_name in known_method_names_to_skip %}
-    {# Do nothing #}
-
-    {%- else %}
-    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
-
-    <a href=#{{className}}_{{method_name}} class="chip">{{method_name}}()</a>
-
-    {%-endif-%}
+    <a href=#{{class_name}}_{{capabilities_method.name}} class="chip">{{capabilities_method.name}}()</a>
 
     {% endfor %}
 
@@ -150,48 +141,44 @@
 
     {# MARK: Methods Parameters macros #}
 
-    {% macro methodsParametersView(className, methods) -%}
+    {% macro methodsParametersView(class_name, capabilities_class) -%}
 
-    {% for method_name, properties in methods.items() %}
-    {%- if method_name in known_method_names_to_skip %}
-    {# Do nothing #}
+    {% for capabilities_method in capabilities_class.methods %}
 
-    {%- else %}
-    {%- set parameters = properties["parameters"] if "parameters" in properties else {} -%}
+    {{class_name}}::<span class="subHeading" id={{class_name}}_{{capabilities_method.name}}>{{capabilities_method.name}}({{ capabilities_method.parameters_names|join(',
+        ') }})</span>
 
-    {{className}}::<span class="subHeading" id={{className}}_{{method_name}}>{{method_name}}({{ parameters.keys()|join(',
-        ') if "parameters" in properties}})</span>
-
-    {% if "information" in properties -%}
-    <div class="methods">{{- properties["information"] -}}</div>
+    {% if capabilities_method.information -%}
+    <div class="methods">{{- capabilities_method.information -}}</div>
     {%-endif%}
-    {% if "return_type" in properties -%}
-    <div><span class="subSubHeading">returnType:</span> {{properties["return_type"] -}}</div>
+    {% if capabilities_method.return_type is not none -%}
+    <div><span class="subSubHeading">returnType:</span> {{capabilities_method.return_type -}}</div>
     {%-endif%}
-    {% for parameterName, parameter in parameters.items() %}
+    {% for parameter in capabilities_method.parameters %}
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">{{parameterName}}</div>
+        <div class="method_name grid-item">{{parameter.name}}</div>
         <div class="grid-item">
-            {% if "information" in parameter -%}
-            <div><span class="subSubHeading">Information:</span> {{parameter["information"] -}}</div>
+            {% if parameter.information -%}
+            <div><span class="subSubHeading">Information:</span> {{parameter.information -}}</div>
             {%-endif%}
-            {% if "type" in parameter -%}
-            <div><span class="subSubHeading">Type:</span> {{parameter["type"] -}}</div>
+            {% if parameter.type -%}
+            <div><span class="subSubHeading">Type:</span> {{parameter.type -}}</div>
             {%-endif%}
-            {% if "default_value" in parameter -%}
-            <div><span class="subSubHeading">Default Value:</span> {{ parameter["default_value"] -}}</div>
+            {% if parameter.default_value -%}
+            <div><span class="subSubHeading">Default Value:</span> {{ parameter.default_value -}}</div>
             {%-endif%}
-            {% if "required" in parameter -%}
-            <div><span class="subSubHeading">Required:</span> {{ parameter["required"] -}}</div>
+            {% if parameter.required == false -%}
+            <div><span class="subSubHeading">Required:</span> false</div>
+            {%-endif%}
+            {% if parameter.type_mock_value is not none -%}
+            <div><span class="subSubHeading">Example:</span> {{parameter.type_mock_value}}</div>
             {%-endif%}
         </div>
     </div>
 
 
     {% endfor %}
-
-    {%-endif-%}
 
     {% endfor %}
 
@@ -211,28 +198,27 @@
     {# MARK: Cheat Sheet grids: #}
 
     <div class="grid-container">
-        {% for className, methods in capabilities.items() -%}
-        {% if className == "Entity" %}
+        {% for class_name, capabilities_class in capabilities_loader.capabilities.items() -%}
+        {% if class_name == "Entity" or capabilities_class.is_interface_only %}
 
         {# Do nothing #}
 
         {%- else %}
 
         <div class="grid-item">
-            <span class="className">{{className}}</span>
-            {% if "information" in methods -%}
-            <div class="subHeading">{{- methods["information"] -}}</div>
+            <span class="class_name">{{class_name}}</span>
+            {% if capabilities_class.information -%}
+            <div class="subHeading">{{- capabilities_class.information -}}</div>
             {%-endif%}
 
-            {{methodsChipsView(className, methods)}}
+            {{methodsChipsView(class_name, capabilities_class)}}
 
 
+            {%for implements_class_names in capabilities_class.implements %}
 
-            {% if className == "Part" or className == "Sketch" %}
+                {{methodsChipsView(class_name, capabilities_loader.capabilities[implements_class_names] )}}
 
-            {{methodsChipsView(className, capabilities["Entity"])}}
-
-            {%-endif-%}
+            {%endfor%}
 
         </div>
         {%-endif-%}
@@ -248,26 +234,30 @@
     </header>
 
     <div>
-        {% for className, methods in capabilities.items() -%}
-        {% if className == "Entity" %}
+        {% for class_name, capabilities_class in capabilities_loader.capabilities.items() -%}
+        {% if class_name == "Entity" or capabilities_class.is_interface_only %}
 
         {# Do nothing #}
 
         {%- else %}
 
         <div>
-            <span class="className">{{className}}</span>
-            {% if "information" in methods -%}
-            <div class="subHeading">{{- methods["information"] -}}</div>
+            <span class="class_name">{{class_name}}</span>
+            {% if capabilities_class.information -%}
+            <div class="subHeading">{{- capabilities_class.information -}}</div>
             {%-endif%}
 
             <div class="methods">
 
-                {{methodsParametersView(className, methods)}}
+                {{methodsParametersView(class_name, capabilities_class)}}
 
-                {% if className == "Part" or className == "Sketch" %}
+                {% if class_name == "Part" or class_name == "Sketch" %}
 
-                {{methodsParametersView(className, capabilities["Entity"])}}
+
+            {%for implements_class_names in capabilities_class.implements %}
+                {{methodsParametersView(class_name, capabilities_loader.capabilities[implements_class_names] )}}
+            {%endfor%}
+            
 
                 {%-endif-%}
             </div>
