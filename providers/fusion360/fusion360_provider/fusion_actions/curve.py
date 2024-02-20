@@ -3,13 +3,13 @@ import adsk.core, adsk.fusion
 from codetocad import *
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_point3d
 
-def make_point(
-    sketch: adsk.fusion.Sketch, x: float, y: float, z: float
-) -> Point:
+
+def make_point(sketch: adsk.fusion.Sketch, x: float, y: float, z: float) -> Point:
     somePoint = adsk.core.Point3D.create(x, y, z)
     sketchPoints = sketch.sketchPoints
     _ = sketchPoints.add(somePoint)
     return Point(x, y, z)
+
 
 def make_line(
     sketch: adsk.fusion.Sketch, start: adsk.core.Point3D, end: adsk.core.Point3D
@@ -19,12 +19,14 @@ def make_line(
     points = [Point(start.x, start.y, start.z), Point(end.x, end.y, end.z)]
     return points
 
+
 def make_circle(
     sketch: adsk.fusion.Sketch,
     radius: DimensionOrItsFloatOrStringValue,
-    resolution: float
+    resolution: float,
 ) -> list[Point]:
     from .circle import get_circle_points
+
     radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
     points_ = get_circle_points(radius, resolution)
     points = [
@@ -38,6 +40,7 @@ def make_circle(
 
     _ = sketch.sketchCurves.sketchFittedSplines.add(control_points)
     return points_
+
 
 def make_arc(
     sketch: adsk.fusion.Sketch,
@@ -61,6 +64,7 @@ def make_arc(
         _ = lines.addByTwoPoints(start, end)
 
     return points
+
 
 def make_rectangle(
     sketch: adsk.fusion.Sketch,
@@ -94,9 +98,8 @@ def make_rectangle(
 
     return points[:-1]
 
-def make_lines(
-    sketch: adsk.fusion.Sketch, points: list[Point]
-) -> list[Point]:
+
+def make_lines(sketch: adsk.fusion.Sketch, points: list[Point]) -> list[Point]:
     sketchLines = sketch.sketchCurves.sketchLines
     for i in range(len(points) - 1):
         start = points[i]

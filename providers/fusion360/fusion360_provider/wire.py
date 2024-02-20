@@ -7,7 +7,9 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.modifiers import make_loft
-from providers.fusion360.fusion360_provider.fusion_actions.normals import calculate_normal
+from providers.fusion360.fusion360_provider.fusion_actions.normals import (
+    calculate_normal,
+)
 
 
 from . import Entity
@@ -90,6 +92,7 @@ class Wire(Entity, WireInterface):
         self, new_name: str, new_parent: Optional[SketchOrItsName] = None
     ) -> "Wire":
         from . import Sketch
+
         parent = new_parent or self.parent_entity
 
         if isinstance(parent, str):

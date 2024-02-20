@@ -5,13 +5,19 @@ from .fusion_interface import FusionInterface
 
 import adsk.core, adsk.fusion
 
-from .base import delete_occurrence, get_body, get_or_create_component, get_or_create_sketch
+from .base import (
+    delete_occurrence,
+    get_body,
+    get_or_create_component,
+    get_or_create_sketch,
+)
 
 
 class FusionBody(FusionInterface):
     component: adsk.fusion.Component
     instance: adsk.fusion.BRepBody = None
     sketch: adsk.fusion.Sketch
+
     def __init__(self, name):
         self.component = get_or_create_component(name)
         self.sketch = get_or_create_sketch(self.component, name)
@@ -33,7 +39,9 @@ class FusionBody(FusionInterface):
         moveFeatureInput.defineAsFreeMove(transform)
         moveFeats.add(moveFeatureInput)
 
-    def rotate(self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue):
+    def rotate(
+        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
+    ):
         features = self.component.features
 
         body = self.instance
@@ -74,7 +82,7 @@ class FusionBody(FusionInterface):
             if 0 > abs(distanceX) < 1:
                 xFactor += (abs(distanceX) + x) * abs(distanceX)
             else:
-                xFactor +=  abs(distanceX) / (abs(distanceX) + x)
+                xFactor += abs(distanceX) / (abs(distanceX) + x)
 
         if y > 0:
             if 0 > abs(distanceY) < 1:

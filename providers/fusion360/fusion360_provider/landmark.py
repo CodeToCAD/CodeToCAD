@@ -6,7 +6,9 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import FusionLandmark
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import (
+    FusionLandmark,
+)
 
 
 from . import Entity
@@ -31,6 +33,7 @@ class Landmark(Entity, LandmarkInterface):
         native_instance=None,
     ):
         from . import Part
+
         if isinstance(parent_entity, str):
             parent_entity = Part(parent_entity)
         self.fusion_landmark = FusionLandmark(name, parent_entity.fusion_body.component)
@@ -66,4 +69,3 @@ class Landmark(Entity, LandmarkInterface):
         if isinstance(self.parent_entity, str):
             return Entity(self.parent_entity)
         return self.parent_entity
-

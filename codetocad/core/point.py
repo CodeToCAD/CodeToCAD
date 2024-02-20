@@ -7,7 +7,6 @@ from codetocad.enums.length_unit import LengthUnit
 
 if TYPE_CHECKING:
     from codetocad.codetocad_types import PointOrListOfFloatOrItsStringValue
-    from codetocad.interfaces import VertexInterface
     from codetocad.codetocad_types import PointOrListOfFloatOrItsStringValueOrVertex
 
 
@@ -74,22 +73,13 @@ class Point:
             return point_representation
 
         raise ValueError(f"Cannot convert type {type(point_representation)} to Point.")
-    
-    
-    @staticmethod
-    def from_list_of_float_or_string_or_Vertex(
-        point_representation: "PointOrListOfFloatOrItsStringValueOrVertex",
-    ) -> "Point":
-        if isinstance(point_representation, VertexInterface):
-            return point_representation.location
-        else:
-            return Point.from_list_of_float_or_string(point_representation)
-        
 
     @staticmethod
     def from_list_of_float_or_string_or_Vertex(
         point_representation: "PointOrListOfFloatOrItsStringValueOrVertex",
     ) -> "Point":
+        from codetocad.interfaces.vertex_interface import VertexInterface
+
         if isinstance(point_representation, VertexInterface):
             return point_representation.location
         else:

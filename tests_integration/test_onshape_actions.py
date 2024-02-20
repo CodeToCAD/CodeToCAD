@@ -1,7 +1,6 @@
 import json
 import os
 import unittest
-import json
 from providers.onshape import *
 from providers.onshape.onshape_provider import *
 from providers.onshape.onshape_provider.onshape_actions import *
@@ -16,7 +15,7 @@ configPath = os.path.join(
 )
 
 # Note: you must create a "CodeToCAD-onshape_actions" document to run tests that use it.
-onshape_document_name = "CodeToCAD-Whitney"
+onshape_document_name = "CodeToCAD-onshape_actions"
 
 
 class TestOnshapeActions(unittest.TestCase):
@@ -28,9 +27,7 @@ class TestOnshapeActions(unittest.TestCase):
         self.onshape_url = self.get_onshape_url()
 
     def get_onshape_url(self):
-        documentUrl = get_first_document_url_by_name(
-            self.client, onshape_document_name
-        )
+        documentUrl = get_first_document_url_by_name(self.client, onshape_document_name)
         assert documentUrl is not None
         return documentUrl
 
@@ -92,9 +89,9 @@ class TestOnshapeActions(unittest.TestCase):
             "Test Point",
             0.05,
             Point(pointLocation1, pointLocation2, pointLocation2),
-            False
+            False,
         )
-    
+
     def test_create_ellipse(self):
         self.create_tab_and_set_tab_id()
         pointLocation1 = Dimension(0.0, "inch")
@@ -111,51 +108,57 @@ class TestOnshapeActions(unittest.TestCase):
 
     def test_create_arc(self):
         self.create_tab_and_set_tab_id()
-        start_point=Point(Dimension(0.014, "meter"), Dimension(0.009, "inch"), Dimension(0.0,"meter"))
-        end_point=Point(Dimension(0.00, "meter"), Dimension(-0.041, "meter"), Dimension(0.0,"meter"))
-        create_arc(self.client, self.onshape_url,
-                   "Test Arc Sketch",
-                   0.035,
-                   start_point, end_point, False
-                   )
-    
+        start_point = Point(
+            Dimension(0.014, "meter"), Dimension(0.009, "inch"), Dimension(0.0, "meter")
+        )
+        end_point = Point(
+            Dimension(0.00, "meter"),
+            Dimension(-0.041, "meter"),
+            Dimension(0.0, "meter"),
+        )
+        create_arc(
+            self.client,
+            self.onshape_url,
+            "Test Arc Sketch",
+            0.035,
+            start_point,
+            end_point,
+            False,
+        )
+
     def test_create_trapezoid(self):
         self.create_tab_and_set_tab_id()
-        create_trapezoid(self.client, self.onshape_url,
-                   "Test Trapezoid Sketch",
-                   0.5,
-                   1.0,
-                   0.3
-                )
+        create_trapezoid(
+            self.client, self.onshape_url, "Test Trapezoid Sketch", 0.5, 1.0, 0.3
+        )
+
     def test_create_polygon(self):
         self.create_tab_and_set_tab_id()
         points = get_polygon_points(10, 0.02)
-        new_points: list[Point]=[]
+        new_points: list[Point] = []
         for point in points:
             new_points.append(
                 Point(
                     Dimension(point[0], "m"),
                     Dimension(point[1], "m"),
                     Dimension(0.0, "m"),
-                    )
-            )
-        create_polygon(self.client, self.onshape_url,
-                   "Test Polygon Sketch",
-                   new_points                   
                 )
+            )
+        create_polygon(self.client, self.onshape_url, "Test Polygon Sketch", new_points)
+
     def test_create_text(self):
         self.create_tab_and_set_tab_id()
-        text="Test of Creating Text"
         pointLocation1 = Dimension(0.1, "mm")
         pointLocation2 = Dimension(0.3, "mm")
         create_text(
-            self.client, self.onshape_url,
+            self.client,
+            self.onshape_url,
             "Test Text Sketch",
             "Hello World!",
             Point(pointLocation1, pointLocation1, pointLocation1),
             Point(pointLocation2, pointLocation2, pointLocation2),
             bold=True,
-            italic=True
+            italic=True,
         )
 
     def test_extrude(self):
@@ -174,6 +177,13 @@ class TestOnshapeActions(unittest.TestCase):
 
     def test_create_spiral(self):
         self.create_tab_and_set_tab_id()
-        create_spiral(self.client, self.onshape_url, "Test Sprial Sketch", 5, 
-                      Dimension(1,"inch"), Dimension(2,"inch"), True, radius_end=Dimension(3,"inch")
-                    )
+        create_spiral(
+            self.client,
+            self.onshape_url,
+            "Test Sprial Sketch",
+            5,
+            Dimension(1, "inch"),
+            Dimension(2, "inch"),
+            True,
+            radius_end=Dimension(3, "inch"),
+        )

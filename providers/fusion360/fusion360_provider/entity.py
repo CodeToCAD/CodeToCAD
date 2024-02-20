@@ -39,6 +39,7 @@ class Entity(EntityInterface):
     @property
     def center(self):
         from . import Part, Sketch
+
         if isinstance(self, Part):
             return self.fusion_body.center
         if isinstance(self, Sketch):
@@ -52,6 +53,7 @@ class Entity(EntityInterface):
 
     def rename(self, new_name: str, renamelinked_entities_and_landmarks: bool = True):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.rename(new_name)
         if isinstance(self, Sketch):
@@ -62,6 +64,7 @@ class Entity(EntityInterface):
 
     def delete(self, remove_children: bool = True):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.delete()
         if isinstance(self, Sketch):
@@ -105,6 +108,7 @@ class Entity(EntityInterface):
     def get_location_local(self) -> "Point":
         # check the correct behavior
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             pos = self.fusion_body.center
         elif isinstance(self, Sketch):
@@ -127,6 +131,7 @@ class Entity(EntityInterface):
         z: DimensionOrItsFloatOrStringValue,
     ):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.translate(x, y, z)
         elif isinstance(self, Sketch):
@@ -137,6 +142,7 @@ class Entity(EntityInterface):
 
     def translate_x(self, amount: DimensionOrItsFloatOrStringValue):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.translate(amount, 0, 0)
         elif isinstance(self, Sketch):
@@ -147,6 +153,7 @@ class Entity(EntityInterface):
 
     def translate_y(self, amount: DimensionOrItsFloatOrStringValue):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.translate(0, amount, 0)
         elif isinstance(self, Sketch):
@@ -157,6 +164,7 @@ class Entity(EntityInterface):
 
     def translate_z(self, amount: DimensionOrItsFloatOrStringValue):
         from . import Part, Sketch, Landmark
+
         if isinstance(self, Part):
             self.fusion_body.translate(0, 0, amount)
         elif isinstance(self, Sketch):
@@ -176,6 +184,7 @@ class Entity(EntityInterface):
 
     def rotate_x(self, rotation: AngleOrItsFloatOrStringValue):
         from . import Part
+
         if isinstance(self, Part):
             self.fusion_body.rotate("x", rotation)
         else:
@@ -184,6 +193,7 @@ class Entity(EntityInterface):
 
     def rotate_y(self, rotation: AngleOrItsFloatOrStringValue):
         from . import Part
+
         if isinstance(self, Part):
             self.fusion_body.rotate("y", rotation)
         else:
@@ -192,6 +202,7 @@ class Entity(EntityInterface):
 
     def rotate_z(self, rotation: AngleOrItsFloatOrStringValue):
         from . import Part
+
         if isinstance(self, Part):
             self.fusion_body.rotate("z", rotation)
         else:
@@ -200,6 +211,7 @@ class Entity(EntityInterface):
 
     def get_bounding_box(self) -> "BoundaryBox":
         from . import Part
+
         if isinstance(self, Part):
             boundaryBox = self.fusion_body.get_bounding_box()
         else:
@@ -220,7 +232,8 @@ class Entity(EntityInterface):
         z: DimensionOrItsFloatOrStringValue,
     ) -> "Landmark":
         from . import Landmark
-        boundingBox =  self.fusion_body.get_bounding_box()
+
+        boundingBox = self.fusion_body.get_bounding_box()
 
         localPositions = [
             Dimension.from_dimension_or_its_float_or_string_value(x, boundingBox.x),

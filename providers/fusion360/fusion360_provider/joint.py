@@ -10,7 +10,9 @@ from codetocad.enums import *
 
 from typing import TYPE_CHECKING
 
-from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import FusionJoint
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
+    FusionJoint,
+)
 
 if TYPE_CHECKING:
     from . import Entity
@@ -24,6 +26,7 @@ class Joint(JointInterface):
 
     def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
         from . import Landmark
+
         if isinstance(entity1, str):
             entity1 = Landmark(entity1)
         if isinstance(entity2, str):
@@ -48,7 +51,6 @@ class Joint(JointInterface):
         entityForLandmark2.translate_xyz(translation.x, translation.y, translation.z)
 
         return self
-
 
     def pivot(self):
         return self
@@ -154,9 +156,13 @@ class Joint(JointInterface):
         rotationPair: list[Optional[Angle]] = [None, None]
 
         if min is not None:
-            rotationPair[0] = Angle.from_angle_or_its_float_or_string_value(min).to_radians()
+            rotationPair[0] = Angle.from_angle_or_its_float_or_string_value(
+                min
+            ).to_radians()
         if max is not None:
-            rotationPair[1] = Angle.from_angle_or_its_float_or_string_value(max).to_radians()
+            rotationPair[1] = Angle.from_angle_or_its_float_or_string_value(
+                max
+            ).to_radians()
 
         return rotationPair
 
@@ -165,11 +171,17 @@ class Joint(JointInterface):
             return self
 
         if rotation_pair_x:
-            self.fusion_joint.limit_rotation_motion("x", rotation_pair_x[0].value, rotation_pair_x[1].value)
+            self.fusion_joint.limit_rotation_motion(
+                "x", rotation_pair_x[0].value, rotation_pair_x[1].value
+            )
         if rotation_pair_y:
-            self.fusion_joint.limit_rotation_motion("y", rotation_pair_y[0].value, rotation_pair_y[1].value)
+            self.fusion_joint.limit_rotation_motion(
+                "y", rotation_pair_y[0].value, rotation_pair_y[1].value
+            )
         if rotation_pair_z:
-            self.fusion_joint.limit_rotation_motion("z", rotation_pair_z[0].value, rotation_pair_z[1].value)
+            self.fusion_joint.limit_rotation_motion(
+                "z", rotation_pair_z[0].value, rotation_pair_z[1].value
+            )
 
         return self
 
