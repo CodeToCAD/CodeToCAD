@@ -1,38 +1,22 @@
-import jinja2
-import os
-import json
-
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-
-docs = f"{SCRIPT_DIR}/../../docs/"
-templatesDir = f"{SCRIPT_DIR}/templates"
-
-capabilitiesJson = f"{SCRIPT_DIR}/../../codetocad/capabilities.json"
-
-capabilities_to_python_documentation_html = (
-    "capabilities_to_python_documentation_html.j2"
+from development.capabilities_json_to_python.capabilities_loader import (
+    CapabilitiesLoader,
 )
-capabilities_to_python_documentation_html_out = f"{docs}/docs.html"
+from development.capabilities_json_to_python.template_utils import get_jinja_environment
+from development.capabilities_json_to_python.paths import (
+    capabilities_to_python_documentation_html,
+    capabilities_to_python_documentation_html_out,
+)
 
-with open(capabilitiesJson) as f:
-    capabilities = json.load(f)
+if __name__ == "__main__":
+    print("Generating", capabilities_to_python_documentation_html)
 
-templatesToGenerate = [
-    (
-        capabilities_to_python_documentation_html,
-        capabilities_to_python_documentation_html_out,
+    template = get_jinja_environment().get_template(
+        capabilities_to_python_documentation_html
     )
-]
-
-templateLoader = jinja2.FileSystemLoader(searchpath=templatesDir)
-templateEnv = jinja2.Environment(loader=templateLoader)
-
-for template, output in templatesToGenerate:
-    print("Generating", template)
-
-    template = templateEnv.get_template(template)
-    output_from_parsed_template = template.render(**capabilities)
-    with open(output, "w") as fh:
+    output_from_parsed_template = template.render(
+        capabilities_loader=CapabilitiesLoader(),
+    )
+    with open(capabilities_to_python_documentation_html_out, "w") as fh:
         fh.write(output_from_parsed_template)
 
     print("Done")

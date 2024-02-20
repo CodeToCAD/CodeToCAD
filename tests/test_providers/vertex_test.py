@@ -13,6 +13,6 @@ class VertexTest(TestProviderCase, VertexTestInterface):
     def test_get_control_points(self):
         instance = Vertex(location=(0, 0), name="myVertex")
 
-        value = instance.get_control_points(parameter="")
+        value = instance.get_control_points()
 
         assert value, "Get method failed."

@@ -26,3 +26,9 @@ capabilities_to_py_test_interface_out = f"{output_dir}/tests_interfaces"
 
 capabilities_to_py_test = "capabilities_to_py_test.j2"
 capabilities_to_py_test_out = f"{output_dir}/tests_sample"
+
+
+capabilities_to_python_documentation_html = (
+    "capabilities_to_python_documentation_html.j2"
+)
+capabilities_to_python_documentation_html_out = f"{docs}/docs.html"
