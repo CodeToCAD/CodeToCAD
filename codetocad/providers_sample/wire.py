@@ -3,119 +3,195 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from typing import Optional
-
-from codetocad.interfaces import WireInterface, ProjectableInterface
-
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import Entity
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Edge
-    from . import Entity
-    from . import Sketch
-    from . import Vertex
-    from . import Part
+from codetocad.interfaces import WireInterface
 
 
-class Wire(Entity, WireInterface):
+from codetocad.interfaces.entity_interface import EntityInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
+
+
+from codetocad.providers_sample.entity import Entity
+
+from codetocad.providers_sample.vertex import Vertex
+
+from codetocad.providers_sample.landmark import Landmark
+
+from codetocad.providers_sample.part import Part
+
+from codetocad.providers_sample.edge import Edge
+
+
+class Wire(WireInterface, Entity):
+    def __init__(
+        self,
+        name: "str",
+        edges: "list[Edge]",
+        description: "str| None" = None,
+        native_instance=None,
+        parent_entity: "EntityOrItsName| None" = None,
+    ):
+        self.name = name
+        self.edges = edges
+        self.description = description
+        self.native_instance = native_instance
+        self.parent_entity = parent_entity
+
+    def clone(
+        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
+    ) -> "WireInterface":
+        print("clone called", f": {new_name}, {new_parent}")
+
+        return Wire(
+            "a wire",
+            [
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+        )
+
+    def get_normal(self, flip: "bool| None" = False) -> "Point":
+        print("get_normal called", f": {flip}")
+
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
+    def get_vertices(
+        self,
+    ) -> "list[Vertex]":
+        print(
+            "get_vertices called",
+        )
+
+        return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]
+
+    def get_is_closed(
+        self,
+    ) -> "bool":
+        print(
+            "get_is_closed called",
+        )
+
+        return True
+
+    def loft(
+        self, other: "WireInterface", new_part_name: "str| None" = None
+    ) -> "PartInterface":
+        print("loft called", f": {other}, {new_part_name}")
+
+        return Part("a part")
+
     def mirror(
         self,
-        mirror_across_entity: EntityOrItsName,
-        axis: AxisOrItsIndexOrItsName,
-        resulting_mirrored_entity_name: Optional[str] = None,
+        mirror_across_entity: "EntityOrItsName",
+        axis: "AxisOrItsIndexOrItsName",
+        resulting_mirrored_entity_name: "str| None" = None,
     ):
         print(
-            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
+            "mirror called",
+            f": {mirror_across_entity}, {axis}, {resulting_mirrored_entity_name}",
         )
+
         return self
 
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: DimensionOrItsFloatOrStringValue,
-        direction_axis: AxisOrItsIndexOrItsName = "z",
+        offset: "DimensionOrItsFloatOrStringValue",
+        direction_axis: "AxisOrItsIndexOrItsName" = "z",
     ):
-        print("linear_pattern called:", instance_count, offset, direction_axis)
+        print(
+            "linear_pattern called", f": {instance_count}, {offset}, {direction_axis}"
+        )
+
         return self
 
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: AngleOrItsFloatOrStringValue,
-        center_entity_or_landmark: EntityOrItsName,
-        normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+        separation_angle: "AngleOrItsFloatOrStringValue",
+        center_entity_or_landmark: "EntityOrItsName",
+        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
     ):
         print(
-            "circular_pattern called:",
-            instance_count,
-            separation_angle,
-            center_entity_or_landmark,
-            normal_direction_axis,
+            "circular_pattern called",
+            f": {instance_count}, {separation_angle}, {center_entity_or_landmark}, {normal_direction_axis}",
         )
+
         return self
 
-    def project(self, project_onto: "Sketch") -> "ProjectableInterface":
-        print("project called:", project_onto)
-        from . import Sketch
+    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_onto}")
 
-        return Sketch("a projected sketch")
+        return __import__("codetocad").Sketch("a projected sketch")
 
-    edges: "list[Edge]"
-    parent_entity: Optional[EntityOrItsName] = None
-    name: str
-    description: Optional[str] = None
-    native_instance = None
-
-    def __init__(
+    def create_landmark(
         self,
-        edges: "list[Edge]",
-        name: str,
-        parent_entity: Optional[EntityOrItsName] = None,
-        description: Optional[str] = None,
-        native_instance=None,
+        landmark_name: "str",
+        x: "DimensionOrItsFloatOrStringValue",
+        y: "DimensionOrItsFloatOrStringValue",
+        z: "DimensionOrItsFloatOrStringValue",
+    ) -> "LandmarkInterface":
+        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
+
+        return Landmark("name", "parent")
+
+    def get_landmark(
+        self, landmark_name: "PresetLandmarkOrItsName"
+    ) -> "LandmarkInterface":
+        print("get_landmark called", f": {landmark_name}")
+
+        return Landmark("name", "parent")
+
+    def union(
+        self,
+        other: "BooleanableOrItsName",
+        delete_after_union: "bool" = True,
+        is_transfer_data: "bool" = False,
     ):
-        self.edges = edges
-        self.parent_entity = parent_entity
-        self.name = name
-        self.description = description
-        self.native_instance = native_instance
+        print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
 
-    def clone(
-        self, new_name: str, new_parent: Optional[SketchOrItsName] = None
-    ) -> "Wire":
-        print("clone called:", new_name, new_parent)
-        from . import Wire
+        return self
 
-        return Wire([], "a wire")
-
-    def get_normal(self, flip: Optional[bool] = False) -> "Point":
-        print("get_normal called:", flip)
-        return Point.from_list_of_float_or_string([0, 0, 0])
-
-    def get_vertices(self) -> "list[Vertex]":
+    def subtract(
+        self,
+        other: "BooleanableOrItsName",
+        delete_after_subtract: "bool" = True,
+        is_transfer_data: "bool" = False,
+    ):
         print(
-            "get_vertices called:",
+            "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
         )
-        from . import Vertex
 
-        return [Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")]
+        return self
 
-    def get_is_closed(self) -> bool:
+    def intersect(
+        self,
+        other: "BooleanableOrItsName",
+        delete_after_intersect: "bool" = True,
+        is_transfer_data: "bool" = False,
+    ):
         print(
-            "get_is_closed called:",
+            "intersect called",
+            f": {other}, {delete_after_intersect}, {is_transfer_data}",
         )
-        return True
 
-    def loft(self, other: "Wire", new_part_name: Optional[str] = None) -> "Part":
-        print("loft called:", other, new_part_name)
-        from . import Part
-
-        return Part("a part")
+        return self

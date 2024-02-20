@@ -37,18 +37,6 @@ class PartTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def test_union(self):
-        pass
-
-    @abstractmethod
-    def test_subtract(self):
-        pass
-
-    @abstractmethod
-    def test_intersect(self):
-        pass
-
-    @abstractmethod
     def test_hollow(self):
         pass
 

@@ -2,8 +2,8 @@
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
-from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -11,22 +11,24 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import EntityInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class AnimationInterface(metaclass=ABCMeta):
-    """Animation related functionality."""
 
-    @abstractmethod
-    def __init__(self):
-        pass
+    """
+    Animation related functionality.
+    """
 
     @staticmethod
     def default() -> "AnimationInterface":
-        raise RuntimeError()
+        """
+        Get an Animation instance for the current scene.
+        """
+
+        print("default is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
 
     @abstractmethod
     def set_frame_start(self, frame_number: "int"):
@@ -37,7 +39,8 @@ class AnimationInterface(metaclass=ABCMeta):
         print(
             "set_frame_start is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
     def set_frame_end(self, frame_number: "int"):
@@ -48,7 +51,8 @@ class AnimationInterface(metaclass=ABCMeta):
         print(
             "set_frame_end is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
     def set_frame_current(self, frame_number: "int"):
@@ -59,10 +63,11 @@ class AnimationInterface(metaclass=ABCMeta):
         print(
             "set_frame_current is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_key_frame_location(self, entity: EntityOrItsName, frame_number: "int"):
+    def create_key_frame_location(self, entity: "EntityOrItsName", frame_number: "int"):
         """
         Create an animation key-frame using the location of the entity.
         """
@@ -70,10 +75,11 @@ class AnimationInterface(metaclass=ABCMeta):
         print(
             "create_key_frame_location is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_key_frame_rotation(self, entity: EntityOrItsName, frame_number: "int"):
+    def create_key_frame_rotation(self, entity: "EntityOrItsName", frame_number: "int"):
         """
         Create an animation key-frame using the rotation of the entity.
         """
@@ -81,4 +87,5 @@ class AnimationInterface(metaclass=ABCMeta):
         print(
             "create_key_frame_rotation is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()

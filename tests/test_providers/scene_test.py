@@ -3,6 +3,13 @@ from codetocad.tests_interfaces import SceneTestInterface
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):
+    def test_default(self):
+        instance = Scene(name="String", description="String")
+
+        value = instance.default()
+
+        assert value, "Get method failed."
+
     def test_create(self):
         instance = Scene("myScene")
 

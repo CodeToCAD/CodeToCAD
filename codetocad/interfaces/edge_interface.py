@@ -2,8 +2,8 @@
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
-from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -11,20 +11,21 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import (
-    MirrorableInterface,
-    PatternableInterface,
-    SubdividableInterface,
-    ProjectableInterface,
-)
+from codetocad.interfaces.entity_interface import EntityInterface
 
-from . import EntityInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
-from typing import TYPE_CHECKING
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-if TYPE_CHECKING:
-    from . import VertexInterface
-    from . import EntityInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 
 class EdgeInterface(
@@ -33,54 +34,55 @@ class EdgeInterface(
     PatternableInterface,
     SubdividableInterface,
     ProjectableInterface,
+    LandmarkableInterface,
     metaclass=ABCMeta,
 ):
-    """A curve bounded by two Vertices."""
 
-    v1: "VertexInterface"
-    v2: "VertexInterface"
-    parent_entity: Optional[EntityOrItsName] = None
+    """
+    A curve bounded by two Vertices.
+    """
 
     @abstractmethod
     def __init__(
         self,
+        name: "str",
         v1: "VertexInterface",
         v2: "VertexInterface",
-        name: str,
-        parent_entity: Optional[EntityOrItsName] = None,
-        description: Optional[str] = None,
+        description: "str| None" = None,
         native_instance=None,
+        parent_entity: "EntityOrItsName| None" = None,
     ):
-        super().__init__(
-            name=name, description=description, native_instance=native_instance
-        )
+        self.name = name
         self.v1 = v1
         self.v2 = v2
-        self.parent_entity = parent_entity
-        self.name = name
         self.description = description
         self.native_instance = native_instance
+        self.parent_entity = parent_entity
 
     @abstractmethod
-    def offset(self, distance: DimensionOrItsFloatOrStringValue) -> "EdgeInterface":
+    def offset(self, distance: "DimensionOrItsFloatOrStringValue") -> "EdgeInterface":
         """
         Clone and offset this edge a distance away from this one.
         """
 
         print("offset is called in an abstract method. Please override this method.")
+
         raise NotImplementedError()
 
     @abstractmethod
-    def fillet(self, other_edge: "EdgeInterface", amount: AngleOrItsFloatOrStringValue):
+    def fillet(
+        self, other_edge: "EdgeInterface", amount: "AngleOrItsFloatOrStringValue"
+    ):
         """
         Fillet this and another edge.
         """
 
         print("fillet is called in an abstract method. Please override this method.")
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def set_is_construction(self, is_construction: bool):
+    def set_is_construction(self, is_construction: "bool"):
         """
         Mark this edge for construction only.
         """
@@ -88,10 +90,13 @@ class EdgeInterface(
         print(
             "set_is_construction is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def get_is_construction(self) -> bool:
+    def get_is_construction(
+        self,
+    ) -> "bool":
         """
         Check if this edge is for construction only.
         """
@@ -99,4 +104,5 @@ class EdgeInterface(
         print(
             "get_is_construction is called in an abstract method. Please override this method."
         )
+
         raise NotImplementedError()

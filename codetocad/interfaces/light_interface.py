@@ -2,8 +2,8 @@
 # DO NOT EDIT MANUALLY.
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
-from typing import Optional
 from abc import ABCMeta, abstractmethod
+
 
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
@@ -11,37 +11,37 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from . import EntityInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class LightInterface(EntityInterface, metaclass=ABCMeta):
-    """Manipulate a light object."""
 
-    name: str
-    description: Optional[str] = None
+    """
+    Manipulate a light object.
+    """
 
     @abstractmethod
     def __init__(
-        self, name: str, description: Optional[str] = None, native_instance=None
+        self, name: "str", description: "str| None" = None, native_instance=None
     ):
-        super().__init__(
-            name=name, description=description, native_instance=native_instance
-        )
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
     @abstractmethod
-    def set_color(self, r_value: IntOrFloat, g_value: IntOrFloat, b_value: IntOrFloat):
+    def set_color(
+        self, r_value: "IntOrFloat", g_value: "IntOrFloat", b_value: "IntOrFloat"
+    ):
         """
         Set the color of an existing light.
         """
 
         print("set_color is called in an abstract method. Please override this method.")
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_sun(self, energy_level: float):
+    def create_sun(self, energy_level: "float"):
         """
         Create a Sun-type light.
         """
@@ -49,10 +49,11 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         print(
             "create_sun is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_spot(self, energy_level: float):
+    def create_spot(self, energy_level: "float"):
         """
         Create a Spot-type light.
         """
@@ -60,10 +61,11 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         print(
             "create_spot is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_point(self, energy_level: float):
+    def create_point(self, energy_level: "float"):
         """
         Create a Point-type light.
         """
@@ -71,10 +73,11 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         print(
             "create_point is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()
 
     @abstractmethod
-    def create_area(self, energy_level: float):
+    def create_area(self, energy_level: "float"):
         """
         Create an Area-type light.
         """
@@ -82,4 +85,5 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         print(
             "create_area is called in an abstract method. Please override this method."
         )
-        return self
+
+        raise NotImplementedError()

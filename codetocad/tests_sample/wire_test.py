@@ -9,82 +9,388 @@ from .test_helper import *
 from codetocad.tests_interfaces import WireTestInterface
 
 
+from codetocad import Sketch, Entity, Vertex, Landmark, Part, Wire, Edge
+
+
 class WireTest(TestProviderCase, WireTestInterface):
     @skip("TODO")
+    def test_clone(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.clone(new_name="String", new_parent=Sketch("a sketch"))
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_get_normal(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.get_normal(flip=False)
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_get_vertices(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.get_vertices()
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_get_is_closed(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.get_is_closed()
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_loft(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.loft(
+            other=Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            ),
+            new_part_name="String",
+        )
+
+        assert value, "Get method failed."
+
+    @skip("TODO")
     def test_mirror(self):
-        instance = Wire()
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
         value = instance.mirror(
-            "mirror_across_entity", "axis", "resulting_mirrored_entity_name"
+            mirror_across_entity=__import__("codetocad").Part("an entity"),
+            axis=x,
+            resulting_mirrored_entity_name="String",
         )
 
         assert value.is_exists(), "Create method failed."
 
     @skip("TODO")
     def test_linear_pattern(self):
-        instance = Wire()
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
-        value = instance.linear_pattern("instance_count", "offset", "direction_axis")
+        value = instance.linear_pattern(
+            instance_count=0, offset=Dimension(0, "mm"), direction_axis="z"
+        )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_circular_pattern(self):
-        instance = Wire()
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
         value = instance.circular_pattern(
-            "instance_count",
-            "separation_angle",
-            "center_entity_or_landmark",
-            "normal_direction_axis",
+            instance_count=0,
+            separation_angle=Angle("90"),
+            center_entity_or_landmark=__import__("codetocad").Part("an entity"),
+            normal_direction_axis="z",
         )
 
         assert value, "Modify method failed."
 
     @skip("TODO")
     def test_project(self):
-        instance = Wire()
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
-        value = instance.project("project_onto")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_clone(self):
-        instance = Wire()
-
-        value = instance.clone("new_name", "new_parent")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_get_normal(self):
-        instance = Wire()
-
-        value = instance.get_normal("flip")
-
-        assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_get_vertices(self):
-        instance = Wire()
-
-        value = instance.get_vertices("")
+        value = instance.project(
+            project_onto=__import__("codetocad").Sketch("a projected sketch")
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_get_is_closed(self):
-        instance = Wire()
+    def test_create_landmark(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
-        value = instance.get_is_closed("")
+        value = instance.create_landmark(
+            landmark_name="String",
+            x=Dimension(0, "mm"),
+            y=Dimension(0, "mm"),
+            z=Dimension(0, "mm"),
+        )
 
         assert value, "Get method failed."
 
     @skip("TODO")
-    def test_loft(self):
-        instance = Wire()
+    def test_get_landmark(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
 
-        value = instance.loft("other", "new_part_name")
+        value = instance.get_landmark(landmark_name=PresetLandmark.topLeft)
 
         assert value, "Get method failed."
+
+    @skip("TODO")
+    def test_union(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.union(
+            other=__import__("codetocad").Part("a booleanable part"),
+            delete_after_union=True,
+            is_transfer_data=False,
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_subtract(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.subtract(
+            other=__import__("codetocad").Part("a booleanable part"),
+            delete_after_subtract=True,
+            is_transfer_data=False,
+        )
+
+        assert value, "Modify method failed."
+
+    @skip("TODO")
+    def test_intersect(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance=value,
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.intersect(
+            other=__import__("codetocad").Part("a booleanable part"),
+            delete_after_intersect=True,
+            is_transfer_data=False,
+        )
+
+        assert value, "Modify method failed."

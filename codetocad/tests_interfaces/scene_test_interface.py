@@ -9,6 +9,10 @@ from abc import ABCMeta, abstractmethod
 
 class SceneTestInterface(metaclass=ABCMeta):
     @abstractmethod
+    def test_default(self):
+        pass
+
+    @abstractmethod
     def test_create(self):
         pass
 

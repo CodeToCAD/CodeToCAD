@@ -7,27 +7,15 @@
 from abc import ABCMeta, abstractmethod
 
 
-class LandmarkTestInterface(metaclass=ABCMeta):
+class BooleanableTestInterface(metaclass=ABCMeta):
     @abstractmethod
-    def test_get_location_world(self):
+    def test_union(self):
         pass
 
     @abstractmethod
-    def test_get_location_local(self):
+    def test_subtract(self):
         pass
 
     @abstractmethod
-    def test_translate_xyz(self):
-        pass
-
-    @abstractmethod
-    def test_clone(self):
-        pass
-
-    @abstractmethod
-    def test_get_landmark_entity_name(self):
-        pass
-
-    @abstractmethod
-    def test_get_parent_entity(self):
+    def test_intersect(self):
         pass
