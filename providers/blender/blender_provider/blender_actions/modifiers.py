@@ -1,9 +1,8 @@
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.enums.axis import Axis
-from .. import blender_definitions
-
-from . import get_object
+from providers.blender.blender_provider.blender_actions.objects import get_object
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 
 def clear_modifiers(

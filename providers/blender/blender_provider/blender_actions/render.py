@@ -1,5 +1,5 @@
 import bpy
-from .. import blender_definitions
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 
 def render_image(output_filepath: str, overwrite: bool):

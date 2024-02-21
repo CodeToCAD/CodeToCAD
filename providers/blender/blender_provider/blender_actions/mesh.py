@@ -6,8 +6,8 @@ import mathutils
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
 from codetocad import BoundaryAxis, BoundaryBox
-
-from . import update_view_layer, get_object
+from providers.blender.blender_provider.blender_actions.context import update_view_layer
+from providers.blender.blender_provider.blender_actions.objects import get_object
 
 
 def get_mesh(
@@ -21,12 +21,12 @@ def get_mesh(
 
 
 def remove_mesh(
-    mesh_nameOrInstance: Union[str, bpy.types.Mesh],
+    mesh_name_or_instance: Union[str, bpy.types.Mesh],
 ):
-    mesh: bpy.types.Mesh = mesh_nameOrInstance
+    mesh: bpy.types.Mesh = mesh_name_or_instance
     # if a (str) name is passed in, fetch the mesh object reference
-    if isinstance(mesh_nameOrInstance, str):
-        mesh = get_mesh(mesh_nameOrInstance)
+    if isinstance(mesh_name_or_instance, str):
+        mesh = get_mesh(mesh_name_or_instance)
 
     bpy.data.meshes.remove(mesh)
 

@@ -35,9 +35,12 @@ from providers.blender.blender_provider.blender_actions.objects import (
     add_verticies_to_vertex_group,
     create_gear,
     create_object_vertex_group,
-    duplicate_object,
     remove_object,
+)
+
+from providers.blender.blender_provider.blender_actions.objects_transmute import (
     transfer_landmarks,
+    duplicate_object,
 )
 from providers.blender.blender_provider.blender_actions.transformations import (
     scale_object,

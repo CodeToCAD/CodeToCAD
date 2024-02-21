@@ -5,7 +5,7 @@ from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from codetocad.utilities import create_uuid_like_id
 
-from .. import blender_definitions
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 
 if TYPE_CHECKING:

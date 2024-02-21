@@ -10,18 +10,23 @@ from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from codetocad.utilities import create_uuid_like_id
-
-from .. import blender_definitions
-
-from . import (
+from providers.blender.blender_provider.blender_actions.addons import (
+    enable_curve_extra_objects_addon,
+)
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
+from providers.blender.blender_provider.blender_actions.context import update_view_layer
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_object,
     get_object,
     get_object_or_none,
-    create_object,
-    convert_object_using_ops,
-    assign_object_to_collection,
-    enable_curve_extra_objects_addon,
-    update_view_layer,
 )
+from providers.blender.blender_provider.blender_actions.objects_context import (
+    convert_object_using_ops,
+)
+
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 
 if TYPE_CHECKING:

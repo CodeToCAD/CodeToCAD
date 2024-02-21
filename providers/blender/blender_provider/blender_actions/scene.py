@@ -1,6 +1,6 @@
 from typing import Optional
 import bpy
-from .. import blender_definitions
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 from . import get_node_tree, create_nodes, delete_nodes
 

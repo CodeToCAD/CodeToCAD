@@ -1,11 +1,15 @@
 from typing import Optional
 import bpy
-from .. import blender_definitions
+from providers.blender.blender_provider.blender_actions.context import (
+    get_blender_version,
+    get_context_view_3d,
+    update_view_layer,
+)
+from providers.blender.blender_provider.blender_actions.objects import get_object
+import providers.blender.blender_provider.blender_definitions as blender_definitions
 from pathlib import Path
 
 from codetocad import get_file_extension
-
-from . import get_object, update_view_layer, get_blender_version, get_context_view_3d
 
 fileImportFunctions = {
     "stl": lambda file_path: bpy.ops.import_mesh.stl(filepath=file_path),
