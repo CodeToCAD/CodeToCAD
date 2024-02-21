@@ -13,6 +13,10 @@ providers_sample_path = f"{SCRIPT_DIR}/../codetocad/providers_sample/"
 providers_path = f"{SCRIPT_DIR}/../providers/"
 
 
+def get_log_markdown_file(provider_name: str):
+    return f"{providers_path}/{provider_name.lower()}/update_providers_changelog.md"
+
+
 def get_provider_file(provider_name: str, class_name: str):
     return (
         providers_path
@@ -82,6 +86,7 @@ def update_provider_file(
     `is_remove_non_compliant_methods` - if True, then all methods that are not sunder or dunder will be removed.
     `is_dump_imports` - if True, then the import statements from the sample file will be dumped at the top of the provider file. This may cause conflicts or duplicates.
     """
+
     provider_path = get_provider_file(provider_name, class_name)
 
     if not os.path.exists(provider_path):
@@ -103,6 +108,12 @@ def update_provider_file(
     provider_class = get_class_by_name(class_name, provider_definitions.body)
     sample_class = get_class_by_name(class_name, sample_definitions.body)
 
+    provider_class.bases = sample_class.bases
+
+    log_markdown_file_content = (
+        f"## `{provider_name}.{class_name}` Additions and Deletions:\n\n"
+    )
+
     for definition in sample_class.body:
         if isinstance(definition, ast_comments.FunctionDef):
             provider_function = get_function_by_name(
@@ -111,6 +122,13 @@ def update_provider_file(
 
             if provider_function is None:
                 provider_class.body.append(definition)
+
+                log_markdown_file_content += f"""
+- Added:
+    ```python
+    {ast_comments.unparse(definition)}
+    ```
+"""
                 continue
 
             provider_function.args = definition.args
@@ -123,9 +141,6 @@ def update_provider_file(
                 provider_imports.append(ast_comments.unparse(definition))
         for definition in sample_definitions.body:
             if isinstance(definition, ast_comments.ImportFrom):
-                if ast_comments.unparse(definition) in provider_imports:
-                    continue
-
                 if "codetocad.providers_sample" in definition.module:
                     # This is niche logic; if any of the imports reference providers_sample specifically, change the module to point to this provider_name instead.
                     definition.module = definition.module.replace(
@@ -133,8 +148,15 @@ def update_provider_file(
                         f"providers.{provider_name.lower()}.{provider_name.lower()}_provider",
                     )
 
+                if ast_comments.unparse(definition) in provider_imports:
+                    continue
+
                 provider_definitions.body.insert(count_dumps, definition)
                 count_dumps += 1
+
+                log_markdown_file_content += (
+                    f"- Added: `{ast_comments.unparse(definition)}`\n\n"
+                )
 
     if is_remove_non_compliant_methods:
         for definition in provider_class.body:
@@ -146,15 +168,29 @@ def update_provider_file(
                     not in capabilities_loader.capabilities[class_name].methods_names
                 ):
                     provider_class.body.remove(definition)
+                    log_markdown_file_content += f"""
+- Deleted:
+    ```python
+    {ast_comments.unparse(definition)}
+    ```
+"""
 
     new_file = ast_comments.unparse(provider_definitions)
 
     if is_write:
         print(f"Writing to {provider_path}")
 
-        open(provider_path, "w").write(new_file)
+        with open(provider_path, "w") as fp:
+            fp.write(new_file)
+
+        with open(
+            get_log_markdown_file(provider_name),
+            "a",
+        ) as fp:
+            fp.write(log_markdown_file_content)
     else:
         print(new_file)
+        print(log_markdown_file_content)
 
 
 def main():
@@ -184,6 +220,11 @@ def main():
 
     if not provider_name:
         raise RuntimeError("--provider_name must be specified")
+
+    try:
+        os.remove(get_log_markdown_file(provider_name))
+    except:  # noqa
+        ...
 
     if class_name:
         return update_provider_file(
