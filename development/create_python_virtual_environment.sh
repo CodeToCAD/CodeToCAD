@@ -44,4 +44,6 @@ fi
 
 . "$VENV_DIR/bin/activate"
 
-pip install -r "$SCRIPT_DIR/requirements.txt"
+cd "$SCRIPT_DIR"
+
+pip install -r requirements.txt

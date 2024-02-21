@@ -29,8 +29,6 @@
             "url": "./examples/examples_schema.json"
         }
     ],
-	"python.autoComplete.extraPaths":	["providers/fusion360/fusion360_api_fake"],
-	"python.analysis.extraPaths":	["providers/fusion360/fusion360_api_fake"],
     "python.analysis.autoImportCompletions": true,
     "python.analysis.completeFunctionParens": true,
     "python.analysis.diagnosticSeverityOverrides": {
