@@ -1,13 +1,12 @@
 from typing import Optional
-
-
+from codetocad.interfaces import JointInterface
+from codetocad.interfaces.entity_interface import EntityInterface
+from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces import JointInterface, EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-
-
 from providers.blender.blender_provider import blender_definitions
 from providers.blender.blender_provider.blender_actions.constraints import (
     apply_copy_location_constraint,
@@ -25,7 +24,7 @@ class Joint(JointInterface):
     entity1: EntityOrItsName
     entity2: EntityOrItsName
 
-    def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
+    def __init__(self, entity1: "EntityOrItsName", entity2: "EntityOrItsName"):
         self.entity1 = entity1
         self.entity2 = entity2
 
@@ -34,15 +33,11 @@ class Joint(JointInterface):
             self.entity2, LandmarkInterface
         ):
             raise TypeError("Entities 1 and 2 should be landmarks.")
-
         landmark1: LandmarkInterface = self.entity1
         landmark2: LandmarkInterface = self.entity2
         entityForLandmark2 = self.entity2.get_parent_entity()
-
         translation = landmark1.get_location_world() - landmark2.get_location_world()
-
         entityForLandmark2.translate_xyz(translation.x, translation.y, translation.z)
-
         return self
 
     @staticmethod
@@ -53,7 +48,6 @@ class Joint(JointInterface):
             return entity_or_landmark.get_landmark_entity_name()
         elif isinstance(entity_or_landmark, EntityInterface):
             return entity_or_landmark.name
-
         raise TypeError("Only Entity or Landmark types are allowed.")
 
     @staticmethod
@@ -64,31 +58,23 @@ class Joint(JointInterface):
             return entity_or_landmark.get_parent_entity().name
         elif isinstance(entity_or_landmark, EntityInterface):
             return entity_or_landmark.name
-
         raise TypeError("Only Entity or Landmark types are allowed.")
 
     def pivot(self):
         objectToPivotName = Joint._get_entity_or_landmark_name(self.entity2)
-
         objectToPivotAboutName = Joint._get_entity_or_landmark_name(self.entity1)
-
         apply_pivot_constraint(objectToPivotName, objectToPivotAboutName)
-
         return self
 
-    def gear_ratio(self, ratio: float):
+    def gear_ratio(self, ratio: "float"):
         object1 = Joint._get_entity_or_landmark_name(self.entity2)
-
         object2 = Joint._get_entity_or_landmark_name(self.entity1)
-
         apply_gear_constraint(object1, object2, ratio)
-
         return self
 
     @staticmethod
     def _get_limit_location_pair(min, max) -> list[Optional[Dimension]]:
         locationPair: list[Optional[Dimension]] = [None, None]
-
         if min is not None:
             locationPair[
                 0
@@ -101,7 +87,6 @@ class Joint(JointInterface):
             ] = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(max)
             )
-
         return locationPair
 
     def _limit_location_xyz(
@@ -112,16 +97,11 @@ class Joint(JointInterface):
     ):
         objectToLimitOrItsName = self.entity2
         object_to_limit_name = objectToLimitOrItsName
-
         relativeToObjectName = Joint._get_entity_or_landmark_name(self.entity1)
-
         if isinstance(object_to_limit_name, LandmarkInterface):
             landmarkEntity = object_to_limit_name
-
             object_to_limit_name = object_to_limit_name.get_parent_entity().name
-
             offset = landmarkEntity.get_location_local() * -1
-
             if x and x[0]:
                 x[0] += offset.x
             if x and x[1]:
@@ -136,7 +116,6 @@ class Joint(JointInterface):
                 z[1] += offset.z
         elif isinstance(object_to_limit_name, EntityInterface):
             object_to_limit_name = object_to_limit_name.name
-
         # SA: Blender's Limit Location must be paired with Copy Location if we don't want the objectToLimit's rotation and scale to be affected by relativeToObject's transformations.
         apply_limit_location_constraint(object_to_limit_name, x, y, z, None)
         apply_copy_location_constraint(
@@ -150,77 +129,67 @@ class Joint(JointInterface):
         self, object_to_limit_name, pivot_object_name
     ):
         update_view_layer()
-
         locationConstraint = get_constraint(
             object_to_limit_name,
             blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
                 object_to_limit_name, None
             ),
         )
-
         rotationConstraint = get_constraint(
             object_to_limit_name,
             blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
                 object_to_limit_name, None
             ),
         )
-
         if locationConstraint and rotationConstraint:
             apply_pivot_constraint(object_to_limit_name, pivot_object_name)
 
     def limit_location_xyz(
         self,
-        x: Optional[DimensionOrItsFloatOrStringValue] = None,
-        y: Optional[DimensionOrItsFloatOrStringValue] = None,
-        z: Optional[DimensionOrItsFloatOrStringValue] = None,
+        x: "DimensionOrItsFloatOrStringValue| None" = None,
+        y: "DimensionOrItsFloatOrStringValue| None" = None,
+        z: "DimensionOrItsFloatOrStringValue| None" = None,
     ):
         dimensionsX = Joint._get_limit_location_pair(x, x) if x is not None else None
         dimensionsY = Joint._get_limit_location_pair(y, y) if y is not None else None
         dimensionsZ = Joint._get_limit_location_pair(z, z) if y is not None else None
-
         self._limit_location_xyz(dimensionsX, dimensionsY, dimensionsZ)
-
         return self
 
     def limit_location_x(
         self,
-        min: Optional[DimensionOrItsFloatOrStringValue] = None,
-        max: Optional[DimensionOrItsFloatOrStringValue] = None,
+        min: "DimensionOrItsFloatOrStringValue| None" = None,
+        max: "DimensionOrItsFloatOrStringValue| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
-
         self._limit_location_xyz(dimensions, None, None)
         return self
 
     def limit_location_y(
         self,
-        min: Optional[DimensionOrItsFloatOrStringValue] = None,
-        max: Optional[DimensionOrItsFloatOrStringValue] = None,
+        min: "DimensionOrItsFloatOrStringValue| None" = None,
+        max: "DimensionOrItsFloatOrStringValue| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
-
         self._limit_location_xyz(None, dimensions, None)
         return self
 
     def limit_location_z(
         self,
-        min: Optional[DimensionOrItsFloatOrStringValue] = None,
-        max: Optional[DimensionOrItsFloatOrStringValue] = None,
+        min: "DimensionOrItsFloatOrStringValue| None" = None,
+        max: "DimensionOrItsFloatOrStringValue| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
-
         self._limit_location_xyz(None, None, dimensions)
         return self
 
     @staticmethod
     def _get_limit_rotation_pair(min, max) -> list[Optional[Angle]]:
         rotationPair: list[Optional[Angle]] = [None, None]
-
         if min is not None:
             rotationPair[0] = Angle.from_string(min)
         if max is not None:
             rotationPair[1] = Angle.from_string(max)
-
         return rotationPair
 
     def _limit_rotation_xyz(self, rotation_pair_x, rotation_pair_y, rotation_pair_z):
@@ -229,13 +198,10 @@ class Joint(JointInterface):
             object_to_limit_name = object_to_limit_name.get_parent_entity().name
         elif isinstance(object_to_limit_name, EntityInterface):
             object_to_limit_name = object_to_limit_name.name
-
         relativeToObjectName = Joint._get_entity_or_landmark_name(self.entity1)
-
         relativeToObjectOrParentName = Joint._get_entity_or_landmark_parent_name(
             self.entity1
         )
-
         # applyLimitRotapply_limit_rotation_constraintationConstraint(
         #     object_to_limit_name, rotation_pair_x, rotation_pair_y, rotation_pair_z, relativeToObjectName)
         apply_limit_rotation_constraint(
@@ -260,14 +226,13 @@ class Joint(JointInterface):
         self._apply_pivot_constraint_if_location_and_rotation_limit_constraints_exist(
             object_to_limit_name, relativeToObjectName
         )
-
         return self
 
     def limit_rotation_xyz(
         self,
-        x: Optional[AngleOrItsFloatOrStringValue] = None,
-        y: Optional[AngleOrItsFloatOrStringValue] = None,
-        z: Optional[AngleOrItsFloatOrStringValue] = None,
+        x: "AngleOrItsFloatOrStringValue| None" = None,
+        y: "AngleOrItsFloatOrStringValue| None" = None,
+        z: "AngleOrItsFloatOrStringValue| None" = None,
     ):
         rotation_pair_x = (
             Joint._get_limit_rotation_pair(x, x) if x is not None else None
@@ -278,31 +243,30 @@ class Joint(JointInterface):
         rotation_pair_z = (
             Joint._get_limit_rotation_pair(z, z) if z is not None else None
         )
-
         return self._limit_rotation_xyz(
             rotation_pair_x, rotation_pair_y, rotation_pair_z
         )
 
     def limit_rotation_x(
         self,
-        min: Optional[AngleOrItsFloatOrStringValue] = None,
-        max: Optional[AngleOrItsFloatOrStringValue] = None,
+        min: "AngleOrItsFloatOrStringValue| None" = None,
+        max: "AngleOrItsFloatOrStringValue| None" = None,
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(rotationPair, None, None)
 
     def limit_rotation_y(
         self,
-        min: Optional[AngleOrItsFloatOrStringValue] = None,
-        max: Optional[AngleOrItsFloatOrStringValue] = None,
+        min: "AngleOrItsFloatOrStringValue| None" = None,
+        max: "AngleOrItsFloatOrStringValue| None" = None,
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, rotationPair, None)
 
     def limit_rotation_z(
         self,
-        min: Optional[AngleOrItsFloatOrStringValue] = None,
-        max: Optional[AngleOrItsFloatOrStringValue] = None,
+        min: "AngleOrItsFloatOrStringValue| None" = None,
+        max: "AngleOrItsFloatOrStringValue| None" = None,
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, None, rotationPair)

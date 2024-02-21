@@ -1,7 +1,7 @@
 from typing import Optional
-
+from codetocad.interfaces.entity_interface import EntityInterface
+from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.interfaces import LandmarkInterface
-
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -9,17 +9,14 @@ from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import (
     FusionLandmark,
 )
-
-
 from . import Entity
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Entity
 
 
-class Landmark(Entity, LandmarkInterface):
+class Landmark(LandmarkInterface):
     name: str
     parent_entity: EntityOrItsName
     description: Optional[str] = None
@@ -27,10 +24,9 @@ class Landmark(Entity, LandmarkInterface):
 
     def __init__(
         self,
-        name: str,
-        parent_entity: EntityOrItsName,
-        description: Optional[str] = None,
-        native_instance=None,
+        name: "str",
+        parent_entity: "EntityOrItsName",
+        description: "str| None" = None,
     ):
         from . import Part
 
@@ -44,9 +40,9 @@ class Landmark(Entity, LandmarkInterface):
 
     def clone(
         self,
-        new_name: str,
-        offset: Optional[DimensionsOrItsListOfFloatOrString] = None,
-        new_parent: Optional[EntityOrItsName] = None,
+        new_name: "str",
+        offset: "DimensionsOrItsListOfFloatOrString| None" = None,
+        new_parent: "EntityOrItsName| None" = None,
     ) -> "Landmark":
         from . import Landmark
 
@@ -57,9 +53,7 @@ class Landmark(Entity, LandmarkInterface):
                 parent = new_parent
         else:
             parent = self.parent_entity
-
         sketch = self.fusion_landmark.clone(new_name, True)
-
         return Landmark(sketch.name, parent)
 
     def get_landmark_entity_name(self) -> str:
@@ -69,3 +63,20 @@ class Landmark(Entity, LandmarkInterface):
         if isinstance(self.parent_entity, str):
             return Entity(self.parent_entity)
         return self.parent_entity
+
+    def get_location_world(self) -> "Point":
+        print("get_location_world called")
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
+    def get_location_local(self) -> "Point":
+        print("get_location_local called")
+        return Point.from_list_of_float_or_string([0, 0, 0])
+
+    def translate_xyz(
+        self,
+        x: "DimensionOrItsFloatOrStringValue",
+        y: "DimensionOrItsFloatOrStringValue",
+        z: "DimensionOrItsFloatOrStringValue",
+    ):
+        print("translate_xyz called", f": {x}, {y}, {z}")
+        return self

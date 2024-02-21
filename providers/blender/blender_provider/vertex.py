@@ -1,40 +1,34 @@
 from typing import Optional
-
+from codetocad.interfaces.entity_interface import EntityInterface
+from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces import VertexInterface
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-
 from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
     get_vertex_location_from_blender_point,
 )
-
-
 from . import Entity
 
 
-class Vertex(Entity, VertexInterface):
+class Vertex(VertexInterface, Entity):
     parent_entity: Optional[EntityOrItsName] = None
     name: str
     description: Optional[str] = None
     native_instance = None
-
-    @property
-    def location(self) -> Point:
-        return get_vertex_location_from_blender_point(self.native_instance)
 
     def get_native_instance(self) -> object:
         return self.native_instance
 
     def __init__(
         self,
-        location: Point,
-        name: str,
-        parent_entity: Optional[EntityOrItsName] = None,
-        description: Optional[str] = None,
+        name: "str",
+        location: "Point",
+        description: "str| None" = None,
         native_instance=None,
+        parent_entity: "EntityOrItsName| None" = None,
     ):
         """
         NOTE: Blender Provider's Vertex requires a parent_entity and a native_instance
@@ -42,15 +36,14 @@ class Vertex(Entity, VertexInterface):
         assert (
             parent_entity is not None and native_instance is not None
         ), "Blender Provider's Vertex requires a parent_entity and a native_instance"
-
         # self.location = location
         self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    def get_control_points(self, parameter="") -> "list[Entity]":
+    def get_control_points(self) -> "list[Entity]":
         raise NotImplementedError()
 
-    def project(self, project_onto: "SketchInterface") -> "ProjectableInterface":
+    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()

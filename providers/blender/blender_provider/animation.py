@@ -1,11 +1,11 @@
 from codetocad.interfaces import AnimationInterface
+from codetocad.interfaces.entity_interface import EntityInterface
+from providers.blender.blender_provider.entity import Entity
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-
 from providers.blender.blender_provider import blender_definitions
-
 from providers.blender.blender_provider.blender_actions.animation import (
     add_keyframe_to_object,
     set_frame_current,
@@ -24,41 +24,32 @@ class Animation(AnimationInterface):
 
     def set_frame_start(self, frame_number: "int"):
         set_frame_start(frame_number, None)
-
         return self
 
     def set_frame_end(self, frame_number: "int"):
         set_frame_end(frame_number, None)
-
         return self
 
     def set_frame_current(self, frame_number: "int"):
         set_frame_current(frame_number, None)
-
         return self
 
-    def create_key_frame_location(self, entity: EntityOrItsName, frame_number: "int"):
+    def create_key_frame_location(self, entity: "EntityOrItsName", frame_number: "int"):
         partName = entity
-
         if isinstance(partName, EntityInterface):
             partName = partName.name
-
         add_keyframe_to_object(
             partName,
             frame_number,
             blender_definitions.BlenderTranslationTypes.ABSOLUTE.value,
         )
-
         return self
 
-    def create_key_frame_rotation(self, entity: EntityOrItsName, frame_number: "int"):
+    def create_key_frame_rotation(self, entity: "EntityOrItsName", frame_number: "int"):
         partName = entity
-
         if isinstance(partName, EntityInterface):
             partName = partName.name
-
         add_keyframe_to_object(
             partName, frame_number, blender_definitions.BlenderRotationTypes.EULER.value
         )
-
         return self

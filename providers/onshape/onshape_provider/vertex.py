@@ -1,15 +1,12 @@
 from typing import Optional
-
+from codetocad.interfaces.entity_interface import EntityInterface
+from providers.onshape.onshape_provider.entity import Entity
 from codetocad.interfaces import VertexInterface
-
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-
-
 from . import Entity
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,8 +14,8 @@ if TYPE_CHECKING:
     from . import Entity
 
 
-class Vertex(Entity, VertexInterface):
-    def project(self, project_onto: "Sketch") -> "Projectable":
+class Vertex(VertexInterface, Entity):
+    def project(self, project_onto: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
     location: PointOrListOfFloatOrItsStringValue
@@ -29,11 +26,11 @@ class Vertex(Entity, VertexInterface):
 
     def __init__(
         self,
-        location: PointOrListOfFloatOrItsStringValue,
-        name: str,
-        parent_entity: Optional[EntityOrItsName] = None,
-        description: Optional[str] = None,
+        name: "str",
+        location: "Point",
+        description: "str| None" = None,
         native_instance=None,
+        parent_entity: "EntityOrItsName| None" = None,
     ):
         self.location = location
         self.parent_entity = parent_entity
@@ -41,5 +38,5 @@ class Vertex(Entity, VertexInterface):
         self.description = description
         self.native_instance = native_instance
 
-    def get_control_points(self, parameter="") -> "list[Entity]":
+    def get_control_points(self) -> "list[Entity]":
         raise NotImplementedError()
