@@ -1,4 +1,5 @@
-import adsk.core, adsk.fusion
+import adsk.core
+import adsk.fusion
 
 from codetocad import *
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_point3d

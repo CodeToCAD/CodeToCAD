@@ -5,10 +5,10 @@ from typing import Any, Optional, Union
 
 import numpy as np
 
-from mock.modeling.mock_blender_math import Matrix, Vector
+from providers.blender.blender_fake.mock_blender_math import Matrix, Vector
 import typing
 
-from mock.modeling.stub_vertices import get_cylinder_verts
+from providers.blender.blender_fake.stub_vertices import get_cylinder_verts
 
 
 class Material:
