@@ -4,12 +4,16 @@ black
 wheel
 twine
 
+# Templating Dev Dependencies:
 jinja2-cli
 ast-comments
 
-# Blender Development Dependencies:
+# Blender Dev Dependencies:
 fake-bpy-module-latest==20231025
 numpy
 
-# Onshape Development Dependencies:
+# Onshape Dev Dependencies:
 onshape-client
+
+# Fusion 360 Dev Dependencies:
+../providers/fusion360/fusion360_api_fake
