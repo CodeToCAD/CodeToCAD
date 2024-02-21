@@ -83,7 +83,7 @@ def update_provider_file(
     Quick and dirty semi-automatic updating of class and method definitions.
     There is no trivial way to do this correctly and accurately, but we will attempt to preserve the original provider file via https://pypi.org/project/ast-comments/
 
-    `is_remove_non_compliant_methods` - if True, then all methods that are not sunder or dunder will be removed.
+    `is_remove_non_compliant_methods` - if True, then all methods that are not sunder or dunder or @override decorated will be removed.
     `is_dump_imports` - if True, then the import statements from the sample file will be dumped at the top of the provider file. This may cause conflicts or duplicates.
     """
 
@@ -159,14 +159,16 @@ def update_provider_file(
                 )
 
     if is_remove_non_compliant_methods:
+        method_names = capabilities_loader.get_implementable_method_names_for_class(
+            class_name
+        )
         for definition in provider_class.body:
             if isinstance(definition, ast_comments.FunctionDef):
                 if definition.name[0] == "_":
                     continue
-                if (
-                    definition.name
-                    not in capabilities_loader.capabilities[class_name].methods_names
-                ):
+                if "override" in [dec.id for dec in definition.decorator_list]:
+                    continue
+                if definition.name not in method_names:
                     provider_class.body.remove(definition)
                     log_markdown_file_content += f"""
 - Deleted:

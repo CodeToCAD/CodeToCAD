@@ -77,6 +77,22 @@ class CapabilitiesLoader:
 
         return parameters
 
+    def get_implementable_method_names_for_class(self, class_name: str):
+        """
+        Grabs all the method names that should be generated for a class.
+        """
+
+        classes = self.capabilities[class_name].implements + [class_name]
+
+        method_names = []  # needs to be ordered
+
+        for some_class in classes:
+            capabilities_class = self.capabilities[some_class]
+
+            method_names += capabilities_class.methods_names
+
+        return method_names
+
     @property
     def all_implementable_class_names(self) -> list[str]:
         return deepcopy(self._all_implementable_class_names)
