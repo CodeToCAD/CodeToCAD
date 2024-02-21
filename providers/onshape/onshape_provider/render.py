@@ -1,13 +1,11 @@
 from typing import Optional
-
+from codetocad.interfaces.camera_interface import CameraInterface
+from providers.onshape.onshape_provider.camera import Camera
 from codetocad.interfaces import RenderInterface
-
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,31 +15,31 @@ if TYPE_CHECKING:
 class Render(RenderInterface):
     def render_image(
         self,
-        output_file_path: str,
-        overwrite: bool = True,
-        file_type: Optional[str] = None,
+        output_file_path: "str",
+        overwrite: "bool" = True,
+        file_type: "str| None" = None,
     ):
         return self
 
     def render_video_mp4(
         self,
-        output_file_path: str,
+        output_file_path: "str",
         start_frame_number: "int" = 1,
         end_frame_number: "int" = 100,
         step_frames: "int" = 1,
-        overwrite: bool = True,
+        overwrite: "bool" = True,
     ):
         return self
 
     def render_video_frames(
         self,
-        output_folder_path: str,
-        file_name_prefix: str,
+        output_folder_path: "str",
+        file_name_prefix: "str",
         start_frame_number: "int" = 1,
         end_frame_number: "int" = 100,
         step_frames: "int" = 1,
-        overwrite: bool = True,
-        file_type: Optional[str] = None,
+        overwrite: "bool" = True,
+        file_type: "str| None" = None,
     ):
         return self
 
@@ -54,8 +52,8 @@ class Render(RenderInterface):
     def set_render_quality(self, quality: "int"):
         return self
 
-    def set_render_engine(self, name: str):
+    def set_render_engine(self, name: "str"):
         return self
 
-    def set_camera(self, camera_name_or_instance: CameraOrItsName):
+    def set_camera(self, camera_name_or_instance: "CameraOrItsName"):
         return self
