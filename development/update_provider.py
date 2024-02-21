@@ -117,10 +117,21 @@ def update_provider_file(
 
     if is_dump_imports:
         count_dumps = 1
+        provider_imports = []
+        for definition in provider_definitions.body:
+            if isinstance(definition, ast_comments.ImportFrom):
+                provider_imports.append(ast_comments.unparse(definition))
         for definition in sample_definitions.body:
             if isinstance(definition, ast_comments.ImportFrom):
-                if definition in provider_definitions.body:
+                if ast_comments.unparse(definition) in provider_imports:
                     continue
+
+                if "codetocad.providers_sample" in definition.module:
+                    # This is niche logic; if any of the imports reference providers_sample specifically, change the module to point to this provider_name instead.
+                    definition.module = definition.module.replace(
+                        "codetocad.providers_sample",
+                        f"providers.{provider_name.lower()}.{provider_name.lower()}_provider",
+                    )
 
                 provider_definitions.body.insert(count_dumps, definition)
                 count_dumps += 1
