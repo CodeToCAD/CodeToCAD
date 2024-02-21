@@ -93,6 +93,10 @@ class CapabilitiesClass:
 
     methods: list[CapabilitiesMethod] = field(default_factory=list)
 
+    @property
+    def methods_names(self):
+        return [method.name for method in self.methods]
+
     def get_extends_class_names(self, suffix: str = "Interface"):
         return [class_name + suffix for class_name in self.extends]
 

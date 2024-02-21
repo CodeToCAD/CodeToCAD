@@ -46,5 +46,8 @@
     ],
     "python.testing.unittestEnabled": true,
     "editor.defaultFormatter": "ms-python.black-formatter",
-    "black-formatter.importStrategy": "fromEnvironment"
+    "black-formatter.importStrategy": "fromEnvironment",
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
 }

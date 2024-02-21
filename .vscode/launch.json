@@ -5,6 +5,16 @@
             "id": "confirmcapabilities_to_python",
             "description": "Are you sure? This will overwrite existing templates.",
             "type": "promptString"
+        },
+        {
+            "id": "provider_name",
+            "description": "Provider name? e.g. Blender",
+            "type": "promptString"
+        },
+        {
+            "id": "class_name",
+            "description": "Class name? Leave blank to update all the classes",
+            "type": "promptString"
         }
     ],
     "compounds": [
@@ -19,7 +29,6 @@
         }
     ],
     "configurations": [
-        
         {
             "name": "Capabilities.json to Python",
             "type": "debugpy",
@@ -54,6 +63,23 @@
             "console": "integratedTerminal",
             "args": [
                 "${input:confirmcapabilities_to_python}"
+            ],
+            "justMyCode": true,
+            "jinja": true,
+            "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Update Providers Definitions",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "development.update_provider",
+            "console": "integratedTerminal",
+            "args": [
+                "-p",
+                "${input:provider_name}",
+                "-c",
+                "${input:class_name}",
+                "-w"
             ],
             "justMyCode": true,
             "jinja": true,
