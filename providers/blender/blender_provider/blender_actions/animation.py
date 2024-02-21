@@ -1,6 +1,7 @@
 from typing import Optional
 
-from . import get_object, get_scene
+from providers.blender.blender_provider.blender_actions.objects import get_object
+from providers.blender.blender_provider.blender_actions.scene import get_scene
 
 
 def add_keyframe_to_object(object_name: str, frame_number: int, data_path: str):

@@ -20,7 +20,7 @@ from providers.blender.blender_provider.blender_actions.modifiers import (
 from providers.blender.blender_provider.blender_actions.normals import (
     project_vector_along_normal,
 )
-from providers.blender.blender_provider.blender_actions.objects import (
+from providers.blender.blender_provider.blender_actions.objects_transmute import (
     create_mesh_from_curve,
     duplicate_object,
 )

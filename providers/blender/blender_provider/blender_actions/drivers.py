@@ -1,6 +1,6 @@
 import bpy
 
-from . import get_object
+from providers.blender.blender_provider.blender_actions.objects import get_object
 
 
 def create_driver(object_name: str, path: str, index=-1):

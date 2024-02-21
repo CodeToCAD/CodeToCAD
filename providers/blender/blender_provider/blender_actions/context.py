@@ -1,6 +1,6 @@
 import bpy
 
-from . import get_object
+from providers.blender.blender_provider.blender_actions.objects import get_object
 
 
 def update_view_layer():

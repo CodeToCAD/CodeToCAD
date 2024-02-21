@@ -1,7 +1,14 @@
 from typing import Optional
 import bpy
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
 
-from . import get_object, create_object, assign_object_to_collection, get_scene
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_object,
+    get_object,
+)
+from providers.blender.blender_provider.blender_actions.scene import get_scene
 
 
 def create_camera(obj_name: str, type):
