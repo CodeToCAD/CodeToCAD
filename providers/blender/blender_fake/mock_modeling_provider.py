@@ -1,5 +1,5 @@
 from typing import Optional
-from mock.modeling.mock_blender import inject_mock_bpy, reset_mock_bpy
+from providers.blender.blender_fake.mock_blender import inject_mock_bpy, reset_mock_bpy
 
 
 def inject_mock_modeling_provider(global_context: Optional[dict]):

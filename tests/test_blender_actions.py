@@ -1,6 +1,6 @@
 import unittest
 
-from mock.modeling.mock_modeling_provider import (
+from providers.blender.blender_fake.mock_modeling_provider import (
     reset_mock_modeling_provider,
     inject_mock_modeling_provider,
 )
