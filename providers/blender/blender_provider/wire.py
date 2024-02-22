@@ -1,9 +1,5 @@
 from typing import Optional
-from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.landmark import Landmark
@@ -13,15 +9,11 @@ from codetocad.interfaces import WireInterface
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *
+from codetocad.utilities.override import override
 from codetocad.core import *
 from codetocad.enums import *
 from providers.blender.blender_provider import (
-    Entity,
     blender_definitions,
-    Edge,
-    Vertex,
-    Part,
-    Sketch,
 )
 from providers.blender.blender_provider.blender_actions.curve import (
     is_spline_cyclical,
@@ -61,6 +53,10 @@ class Wire(WireInterface, Entity):
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    @override
+    def get_native_instance(self) -> object:
+        return self.native_instance
 
     def clone(
         self, new_name: "str", new_parent: "SketchOrItsName| None" = None
@@ -170,7 +166,7 @@ class Wire(WireInterface, Entity):
                     == blender_definitions.BlenderTypes.MESH.value
                 ):
                     part.union(
-                        parent_name, delete_after_union=True, is_transfer_landmarks=True
+                        parent_name, delete_after_union=True, is_transfer_data=True
                     )
                 else:
                     Entity(parent_name).delete()
@@ -186,7 +182,7 @@ class Wire(WireInterface, Entity):
                     == blender_definitions.BlenderTypes.MESH.value
                 ):
                     part.union(
-                        parent_name, delete_after_union=True, is_transfer_landmarks=True
+                        parent_name, delete_after_union=True, is_transfer_data=True
                     )
                 else:
                     Entity(parent_name).delete()

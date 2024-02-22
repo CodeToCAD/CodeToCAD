@@ -1,13 +1,10 @@
-from typing import Optional
 from codetocad.interfaces import AnalyticsInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.entity import Entity
-from codetocad.interfaces import AnalyticsInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.blender.blender_provider import Entity
 from providers.blender.blender_provider.blender_actions.context import log_message
 from providers.blender.blender_provider.blender_actions.objects import (
     get_object_world_pose,
@@ -44,10 +41,10 @@ class Analytics(AnalyticsInterface):
         raise NotImplementedError()
 
     def get_world_pose(self, entity: "EntityOrItsName") -> "list[float]":
-        partName = entity
-        if isinstance(partName, EntityInterface):
-            partName = partName.name
-        return get_object_world_pose(partName)
+        part_name = entity
+        if isinstance(part_name, EntityInterface):
+            part_name = part_name.name
+        return get_object_world_pose(part_name)
 
     def get_bounding_box(self, entity_name: "EntityOrItsName") -> "BoundaryBox":
         entity = entity_name

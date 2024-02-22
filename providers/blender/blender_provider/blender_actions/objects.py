@@ -235,7 +235,7 @@ def update_object_data_name(
     blenderObject.data.name = new_name
 
 
-# This assumes that landmarks are named with format: `{parentPartName}_{landmarkName}`
+# This assumes that landmarks are named with format: `{parent_part_name}_{landmarkName}`
 def update_object_landmark_names(
     parent_object_name: str,
     old_namePrefix: str,

@@ -6,11 +6,14 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
 
+from providers.blender.blender_provider.entity import Entity
 
 from providers.blender.blender_provider import (
     blender_definitions,
-    Entity,
 )
 from providers.blender.blender_provider.blender_actions.constraints import (
     apply_pivot_constraint,
@@ -19,6 +22,7 @@ from providers.blender.blender_provider.blender_actions.import_export import (
     export_object,
 )
 from providers.blender.blender_provider.blender_actions.mesh import (
+    get_bounding_box,
     set_edges_mean_crease,
 )
 from providers.blender.blender_provider.blender_actions.modifiers import (
@@ -29,10 +33,17 @@ from providers.blender.blender_provider.blender_actions.modifiers import (
     apply_modifier,
     apply_screw_modifier,
 )
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_object,
+    get_object,
+    get_object_collection_name,
+    make_parent,
+)
 from providers.blender.blender_provider.blender_actions.transformations import (
     rotate_object,
     scale_object,
 )
+from providers.blender.blender_provider.landmark import Landmark
 
 
 def export(self: "Entity", file_path: str, overwrite: bool = True, scale: float = 1.0):
@@ -307,3 +318,65 @@ def remesh(self: "Entity", strategy: str, amount: float):
         set_edges_mean_crease(self.name, 0)
 
     return self
+
+
+def create_landmark(
+    self,
+    landmark_name: str,
+    x: DimensionOrItsFloatOrStringValue,
+    y: DimensionOrItsFloatOrStringValue,
+    z: DimensionOrItsFloatOrStringValue,
+) -> "Landmark":
+    boundingBox = get_bounding_box(self.name)
+    localPositions = [
+        Dimension.from_dimension_or_its_float_or_string_value(x, boundingBox.x),
+        Dimension.from_dimension_or_its_float_or_string_value(y, boundingBox.y),
+        Dimension.from_dimension_or_its_float_or_string_value(z, boundingBox.z),
+    ]
+    localPositions = (
+        blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
+            localPositions
+        )
+    )
+    landmark = Landmark(landmark_name, self.name)
+    landmarkObjectName = landmark.get_landmark_entity_name()
+    # Create an Empty object to represent the landmark
+    # Using an Empty object allows us to parent the object to this Empty.
+    # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
+    # This might not work in other CodeToCAD implementations, but it does in Blender
+    empty_object = create_object(landmarkObjectName, None)
+    empty_object.empty_display_size = 0
+    # Assign the landmark to the parent's collection
+    assign_object_to_collection(
+        landmarkObjectName, get_object_collection_name(self.name)
+    )
+    # Parent the landmark to the object
+    make_parent(landmarkObjectName, self.name)
+    translate_object(landmarkObjectName, localPositions, blender_definitions.BlenderTranslationTypes.ABSOLUTE)  # type: ignore
+    return landmark
+
+
+def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
+    if isinstance(landmark_name, LandmarkInterface):
+        landmark_name = landmark_name.name
+    preset: Optional[PresetLandmark] = None
+    if isinstance(landmark_name, str):
+        preset = PresetLandmark.from_string(landmark_name)
+    if isinstance(landmark_name, PresetLandmark):
+        preset = landmark_name
+        landmark_name = preset.name
+    landmark = Landmark(landmark_name, self.name)
+    if preset is not None:
+        # if preset does not exist, create it.
+        try:
+            get_object(landmark.get_landmark_entity_name())
+        except:  # noqa: E722
+            presetXYZ = preset.get_xyz()
+            self.create_landmark(
+                landmark_name, presetXYZ[0], presetXYZ[1], presetXYZ[2]
+            )
+            return landmark
+    assert (
+        get_object(landmark.get_landmark_entity_name()) is not None
+    ), f"Landmark {landmark_name} does not exist for {self.name}."
+    return landmark

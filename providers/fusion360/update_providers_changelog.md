@@ -102,8 +102,8 @@ def center(self):
 - Deleted:
     ```python
     @property
-def center(self):
-    return self.location
+    def center(self):
+        return self.location
     ```
 ## `Fusion360.Edge` Additions and Deletions:
 

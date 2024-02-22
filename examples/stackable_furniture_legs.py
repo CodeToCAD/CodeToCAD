@@ -18,7 +18,7 @@ ellipse_leg_outer_cutout.create_landmark("bottom", center, center, min)
 Joint(ellipse_leg_top, ellipse_leg_outer_cutout_top).translate_landmark_onto_another()
 
 ellipse_leg.hollow("5mm", "5mm", 0)
-ellipse_leg.subtract(ellipse_leg_outer_cutout, is_transfer_landmarks=True)
+ellipse_leg.subtract(ellipse_leg_outer_cutout, is_transfer_data=True)
 
 ellipse_leg2 = ellipse_leg.clone("Leg2")
 Joint(

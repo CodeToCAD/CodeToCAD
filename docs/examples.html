@@ -945,7 +945,7 @@ def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
 
 
 
-    sleeve.subtract(d_shaft, is_transfer_landmarks=True)
+    sleeve.subtract(d_shaft, is_transfer_data=True)
 
 
 
@@ -1265,7 +1265,7 @@ Joint(ball_bottom, socket_cutoff).translate_landmark_onto_another()
 
 
 
-socket.subtract(ball, delete_after_subtract=False, is_transfer_landmarks=False)
+socket.subtract(ball, delete_after_subtract=False, is_transfer_data=False)
 
 
 
@@ -1534,7 +1534,7 @@ class Yoke:
 
 
 
-        yoke = shaft_coupling.union(pin_arm, is_transfer_landmarks=True)
+        yoke = shaft_coupling.union(pin_arm, is_transfer_data=True)
 
 
 

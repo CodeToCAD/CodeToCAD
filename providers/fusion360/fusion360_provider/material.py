@@ -4,10 +4,8 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from . import Part
+
 # The implementation diverges from Blender
 # It's only set the body of the current object
 # not creating a new material in Fusion 360
@@ -60,7 +58,7 @@ class Material(MaterialInterface):
         return self
 
     @staticmethod
-    def get_preset(parameter: "PresetMaterial"):
+    def get_preset(material_name: "PresetMaterial"):
         if isinstance(material_name, str):
             try:
                 material_name = getattr(PresetMaterial, material_name)

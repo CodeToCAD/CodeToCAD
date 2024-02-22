@@ -2,7 +2,11 @@ from typing import Optional
 import bpy
 import providers.blender.blender_provider.blender_definitions as blender_definitions
 
-from . import get_node_tree, create_nodes, delete_nodes
+from providers.blender.blender_provider.blender_actions.nodes import (
+    create_nodes,
+    delete_nodes,
+    get_node_tree,
+)
 
 
 def scene_lock_interface(is_locked: bool):
