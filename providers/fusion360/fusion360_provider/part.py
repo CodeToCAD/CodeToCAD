@@ -1,16 +1,12 @@
-from typing import Optional
-from codetocad.interfaces.material_interface import MaterialInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from providers.fusion360.fusion360_provider.material import Material
 from providers.fusion360.fusion360_provider.entity import Entity
 from providers.fusion360.fusion360_provider.landmark import Landmark
-from adsk.fusion import adsk
 from codetocad.interfaces import PartInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.fusion360.fusion360_provider.landmarkable import Landmarkable
 from .fusion_actions.actions import (
     chamfer_all_edges,
     combine,
@@ -29,17 +25,10 @@ from .fusion_actions.base import delete_occurrence, get_body, get_component
 from .fusion_actions.curve import make_arc, make_circle, make_lines, make_rectangle
 from .fusion_actions.modifiers import make_loft, make_revolve
 from .fusion_actions.fusion_body import FusionBody
-from . import Entity
 from .fusion_actions.common import make_point3d
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Landmark
-    from . import Entity
-    from . import Material
 
 
-class Part(PartInterface, Entity):
+class Part(PartInterface, Entity, Landmarkable):
     def __init__(self, name: str):
         self.fusion_body = FusionBody(name)
         self.name = name

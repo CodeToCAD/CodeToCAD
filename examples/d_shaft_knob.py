@@ -9,7 +9,7 @@ def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
         d_shaft_diameter / 2 + sleeve_thickness, d_shaft.get_dimensions().z
     )
 
-    sleeve.subtract(d_shaft, is_transfer_landmarks=True)
+    sleeve.subtract(d_shaft, is_transfer_data=True)
 
     return sleeve
 

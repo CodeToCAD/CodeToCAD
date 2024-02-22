@@ -1,14 +1,10 @@
 from typing import Optional
 from codetocad.interfaces import EntityInterface
-from codetocad.interfaces import EntityInterface, LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 from providers.blender.blender_provider import blender_definitions
-from providers.blender.blender_provider.blender_actions.collections import (
-    assign_object_to_collection,
-)
 from providers.blender.blender_provider.blender_actions.context import (
     apply_dependency_graph,
     select_object,
@@ -20,13 +16,10 @@ from providers.blender.blender_provider.blender_actions.mesh import (
 )
 from providers.blender.blender_provider.blender_actions.modifiers import clear_modifiers
 from providers.blender.blender_provider.blender_actions.objects import (
-    create_object,
     get_object,
-    get_object_collection_name,
     get_object_local_location,
     get_object_visibility,
     get_object_world_location,
-    make_parent,
     remove_object,
     set_object_visibility,
     update_object_data_name,

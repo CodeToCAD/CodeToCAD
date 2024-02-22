@@ -1,5 +1,9 @@
 import bpy
-from . import create_object, assign_object_to_collection
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
+
+from providers.blender.blender_provider.blender_actions.objects import create_object
 
 
 def create_light(obj_name: str, energy_level, type):

@@ -122,8 +122,8 @@
 - Deleted:
     ```python
     @property
-def location(self) -> Point:
-    return get_vertex_location_from_blender_point(self.native_instance)
+    def location(self) -> Point:
+        return get_vertex_location_from_blender_point(self.native_instance)
     ```
 ## `Blender.Edge` Additions and Deletions:
 

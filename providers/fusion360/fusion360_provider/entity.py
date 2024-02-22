@@ -4,14 +4,10 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from typing import TYPE_CHECKING
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_component
 from .fusion_actions.fusion_landmark import FusionLandmark
 from .fusion_actions.fusion_body import FusionBody
 from .fusion_actions.fusion_sketch import FusionSketch
-
-if TYPE_CHECKING:
-    from . import Landmark
 
 
 class Entity(EntityInterface):
@@ -27,6 +23,15 @@ class Entity(EntityInterface):
         self.native_instance = native_instance
         self.fusion_sketch = FusionSketch(name)
         self.fusion_body = FusionBody(name)
+
+    @property
+    def _center(self):
+        from . import Part, Sketch
+
+        if isinstance(self, Part):
+            return self.fusion_body.center
+        if isinstance(self, Sketch):
+            return self.fusion_sketch.center
 
     def is_exists(self) -> bool:
         print("is_exists called:")

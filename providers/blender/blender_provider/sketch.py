@@ -4,15 +4,14 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.landmark import Landmark
 from providers.blender.blender_provider.part import Part
 from providers.blender.blender_provider.wire import Wire
 from providers.blender.blender_provider.edge import Edge
-from typing import Optional, Sequence
+from typing import Optional
 from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
 from codetocad.core.shapes.clipping import clip_spline_points
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
@@ -41,14 +40,6 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
     get_wire_from_blender_wire,
     get_wires_from_blender_entity,
 )
-from codetocad.interfaces import (
-    SketchInterface,
-    PartInterface,
-    VertexInterface,
-    EntityInterface,
-    LandmarkInterface,
-    ProjectableInterface,
-)
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -56,11 +47,6 @@ from codetocad.enums import *
 from providers.blender.blender_provider import (
     blender_definitions,
     implementables,
-    Entity,
-    Part,
-    Vertex,
-    Wire,
-    Edge,
 )
 
 
@@ -540,11 +526,9 @@ class Sketch(SketchInterface, Entity):
         y: "DimensionOrItsFloatOrStringValue",
         z: "DimensionOrItsFloatOrStringValue",
     ) -> "LandmarkInterface":
-        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
-        return Landmark("name", "parent")
+        return implementables.create_landmark(self, landmark_name, x, y, z)
 
     def get_landmark(
         self, landmark_name: "PresetLandmarkOrItsName"
     ) -> "LandmarkInterface":
-        print("get_landmark called", f": {landmark_name}")
-        return Landmark("name", "parent")
+        return implementables.get_landmark(self, landmark_name)

@@ -15,12 +15,11 @@ from providers.blender.blender_provider.blender_actions.objects import (
     set_object_visibility,
     update_object_name,
 )
-from codetocad.interfaces import LandmarkInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
+from codetocad.utilities.override import override
 from codetocad.core import *
 from codetocad.enums import *
-from . import Entity
 
 
 class Landmark(LandmarkInterface):
@@ -116,4 +115,26 @@ class Landmark(LandmarkInterface):
         z: "DimensionOrItsFloatOrStringValue",
     ):
         print("translate_xyz called", f": {x}, {y}, {z}")
+        return self
+
+    @override
+    def is_exists(self) -> bool:
+        try:
+            return get_object(self.get_landmark_entity_name()) is not None
+        except:  # noqa E722
+            return False
+
+    @override
+    def delete(self):
+        remove_object(self.get_landmark_entity_name())
+        return self
+
+    @override
+    def set_visible(self, is_visible: bool):
+        set_object_visibility(self.get_landmark_entity_name(), is_visible)
+        return self
+
+    @override
+    def select(self):
+        select_object(self.get_landmark_entity_name())
         return self

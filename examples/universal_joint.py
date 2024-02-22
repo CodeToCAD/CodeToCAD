@@ -113,7 +113,7 @@ class Yoke:
 
         shaft_coupling.get_landmark(PresetLandmark.top)
 
-        yoke = shaft_coupling.union(pin_arm, is_transfer_landmarks=True)
+        yoke = shaft_coupling.union(pin_arm, is_transfer_data=True)
 
         # shaftCoupling.fillet_faces(
         #     "25mm", [shaftCoupling.get_landmark(PresetLandmark.top)])

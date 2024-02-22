@@ -1,25 +1,14 @@
-from typing import Optional
 from codetocad.interfaces import PartInterface
-from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+from providers.blender.blender_provider.joint import Joint
 from providers.blender.blender_provider.material import Material
 from providers.blender.blender_provider.entity import Entity
-from providers.blender.blender_provider.landmark import Landmark
-from codetocad.interfaces import PartInterface, EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.blender.blender_provider import (
-    blender_definitions,
-    implementables,
-    Entity,
-    Sketch,
-    Wire,
-    Joint,
-    Material,
-)
+from providers.blender.blender_provider import blender_definitions, implementables
 from providers.blender.blender_provider.blender_actions.import_export import import_file
 from providers.blender.blender_provider.blender_actions.material import (
     get_materials,
@@ -70,6 +59,8 @@ class Part(PartInterface, Entity):
         height: "DimensionOrItsFloatOrStringValue",
         keyword_arguments: "dict| None" = None,
     ):
+        from providers.blender.blender_provider.sketch import Sketch
+
         cube_sketch = Sketch(self.name)
         cube_sketch.create_rectangle(length, width)
         cube_sketch.extrude(height)
@@ -180,23 +171,23 @@ class Part(PartInterface, Entity):
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
-        partName = with_part
-        if isinstance(partName, EntityInterface):
-            partName = partName.name
+        part_name = other
+        if isinstance(part_name, EntityInterface):
+            part_name = part_name.name
         assert (
-            self.is_colliding_with_part(partName) is True
+            self.is_colliding_with_part(part_name) is True
         ), "Parts must be colliding to be unioned."
         apply_boolean_modifier(
-            self.name, blender_definitions.BlenderBooleanTypes.UNION, partName
+            self.name, blender_definitions.BlenderBooleanTypes.UNION, part_name
         )
-        if is_transfer_landmarks:
-            transfer_landmarks(partName, self.name)
-        materials = get_materials(partName)
+        if is_transfer_data:
+            transfer_landmarks(part_name, self.name)
+        materials = get_materials(part_name)
         for material in materials:
             set_material_to_object(material.name, self.name, is_union=True)
         self._apply_modifiers_only()
         if delete_after_union:
-            remove_object(partName, remove_children=True)
+            remove_object(part_name, remove_children=True)
         return self
 
     def subtract(
@@ -205,20 +196,20 @@ class Part(PartInterface, Entity):
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
-        partName = with_part
-        if isinstance(partName, EntityInterface):
-            partName = partName.name
+        part_name = other
+        if isinstance(part_name, EntityInterface):
+            part_name = part_name.name
         assert (
-            self.is_colliding_with_part(partName) is True
+            self.is_colliding_with_part(part_name) is True
         ), "Parts must be colliding to be subtracted."
         apply_boolean_modifier(
-            self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, partName
+            self.name, blender_definitions.BlenderBooleanTypes.DIFFERENCE, part_name
         )
-        if is_transfer_landmarks:
-            transfer_landmarks(partName, self.name)
+        if is_transfer_data:
+            transfer_landmarks(part_name, self.name)
         self._apply_modifiers_only()
         if delete_after_subtract:
-            remove_object(partName, remove_children=True)
+            remove_object(part_name, remove_children=True)
         return self
 
     def intersect(
@@ -227,20 +218,20 @@ class Part(PartInterface, Entity):
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
-        partName = with_part
-        if isinstance(partName, EntityInterface):
-            partName = partName.name
+        part_name = other
+        if isinstance(part_name, EntityInterface):
+            part_name = part_name.name
         assert (
-            self.is_colliding_with_part(partName) is True
+            self.is_colliding_with_part(part_name) is True
         ), "Parts must be colliding to be intersected."
         apply_boolean_modifier(
-            self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, partName
+            self.name, blender_definitions.BlenderBooleanTypes.INTERSECT, part_name
         )
-        if is_transfer_landmarks:
-            transfer_landmarks(partName, self.name)
+        if is_transfer_data:
+            transfer_landmarks(part_name, self.name)
         self._apply_modifiers_only()
         if delete_after_intersect:
-            remove_object(partName, remove_children=True)
+            remove_object(part_name, remove_children=True)
         return self
 
     def hollow(
@@ -302,7 +293,7 @@ class Part(PartInterface, Entity):
         scale_object(inside_part.name, scale_x, scale_y, scale_z)
         self._apply_rotation_and_scale_only()
         Joint(start_axis_landmark, inside_part_start).translate_landmark_onto_another()
-        self.subtract(inside_part, is_transfer_landmarks=False)
+        self.subtract(inside_part, is_transfer_data=False)
         start_axis_landmark.delete()
         return self._apply_modifiers_only()
 
@@ -383,7 +374,7 @@ class Part(PartInterface, Entity):
                 mirror_axis,
                 resulting_mirrored_entity_name=None,
             )
-        self.subtract(hole, delete_after_subtract=True, is_transfer_landmarks=False)
+        self.subtract(hole, delete_after_subtract=True, is_transfer_data=False)
         return self._apply_modifiers_only()
 
     def set_material(self, material_name: "MaterialOrItsName"):
@@ -394,17 +385,54 @@ class Part(PartInterface, Entity):
         return self
 
     def is_colliding_with_part(self, other_part: "PartOrItsName"):
-        other_partName = other_part
-        if isinstance(other_partName, PartInterface):
-            other_partName = other_partName.name
-        if other_partName == self.name:
+        other_part_name = other_part
+        if isinstance(other_part_name, PartInterface):
+            other_part_name = other_part_name.name
+        if other_part_name == self.name:
             raise NameError("Collision must be checked between different Parts.")
-        return is_collision_between_two_objects(self.name, other_partName)
+        return is_collision_between_two_objects(self.name, other_part_name)
+
+    def _bevel(
+        self,
+        radius: DimensionOrItsFloatOrStringValue,
+        bevel_edges_nearlandmark_names: Optional[list[LandmarkOrItsName]] = None,
+        bevel_faces_nearlandmark_names: Optional[list[LandmarkOrItsName]] = None,
+        use_width=False,
+        chamfer=False,
+        keyword_arguments: Optional[dict] = None,
+    ):
+        vertex_group_name = None
+        if bevel_edges_nearlandmark_names is not None:
+            vertex_group_name = create_uuid_like_id()
+            self._add_edges_near_landmarks_to_vertex_group(
+                bevel_edges_nearlandmark_names, vertex_group_name
+            )
+        if bevel_faces_nearlandmark_names is not None:
+            vertex_group_name = vertex_group_name or create_uuid_like_id()
+            self._add_faces_near_landmarks_to_vertex_group(
+                bevel_faces_nearlandmark_names, vertex_group_name
+            )
+        radiusDimension = Dimension.from_string(radius)
+        radiusDimension = (
+            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+                radiusDimension
+            )
+        )
+        apply_bevel_modifier(
+            self.name,
+            radiusDimension,
+            vertex_group_name=vertex_group_name,
+            use_edges=True,
+            use_width=use_width,
+            chamfer=chamfer,
+            **keyword_arguments or {},
+        )
+        return self._apply_modifiers_only()
 
     def fillet_all_edges(
         self, radius: "DimensionOrItsFloatOrStringValue", use_width: "bool" = False
     ):
-        return self.bevel(radius, chamfer=False, use_width=use_width)
+        return self._bevel(radius, chamfer=False, use_width=use_width)
 
     def fillet_edges(
         self,
@@ -412,7 +440,7 @@ class Part(PartInterface, Entity):
         landmarks_near_edges: "list[LandmarkOrItsName]",
         use_width: "bool" = False,
     ):
-        return self.bevel(
+        return self._bevel(
             radius,
             bevel_edges_nearlandmark_names=landmarks_near_edges,
             chamfer=False,
@@ -425,7 +453,7 @@ class Part(PartInterface, Entity):
         landmarks_near_faces: "list[LandmarkOrItsName]",
         use_width: "bool" = False,
     ):
-        return self.bevel(
+        return self._bevel(
             radius,
             bevel_faces_nearlandmark_names=landmarks_near_faces,
             chamfer=False,
@@ -433,14 +461,14 @@ class Part(PartInterface, Entity):
         )
 
     def chamfer_all_edges(self, radius: "DimensionOrItsFloatOrStringValue"):
-        return self.bevel(radius, chamfer=True, use_width=False)
+        return self._bevel(radius, chamfer=True, use_width=False)
 
     def chamfer_edges(
         self,
         radius: "DimensionOrItsFloatOrStringValue",
         landmarks_near_edges: "list[LandmarkOrItsName]",
     ):
-        return self.bevel(
+        return self._bevel(
             radius,
             bevel_edges_nearlandmark_names=landmarks_near_edges,
             chamfer=True,
@@ -452,7 +480,7 @@ class Part(PartInterface, Entity):
         radius: "DimensionOrItsFloatOrStringValue",
         landmarks_near_faces: "list[LandmarkOrItsName]",
     ):
-        return self.bevel(
+        return self._bevel(
             radius,
             bevel_faces_nearlandmark_names=landmarks_near_faces,
             chamfer=True,
@@ -490,22 +518,22 @@ class Part(PartInterface, Entity):
     def _add_faces_near_landmarks_to_vertex_group(
         self, bevel_faces_nearlandmark_names: list[LandmarkOrItsName], vertex_group_name
     ):
-        vertexGroupObject = create_object_vertex_group(self.name, vertex_group_name)
-        for landmarkOrItsName in bevel_faces_nearlandmark_names:
+        vertex_group_object = create_object_vertex_group(self.name, vertex_group_name)
+        for landmark_or_its_name in bevel_faces_nearlandmark_names:
             landmark = (
-                self.get_landmark(landmarkOrItsName)
-                if isinstance(landmarkOrItsName, str)
-                else landmarkOrItsName
+                self.get_landmark(landmark_or_its_name)
+                if isinstance(landmark_or_its_name, str)
+                else landmark_or_its_name
             )
-            blenderPolygon = get_closest_face_to_vertex(
+            blender_polygon = get_closest_face_to_vertex(
                 self.name,
                 [
                     dimension.value
                     for dimension in landmark.get_location_world().to_list()
                 ],
             )
-            faceIndecies: list[int] = blenderPolygon.vertices
-            add_verticies_to_vertex_group(vertexGroupObject, faceIndecies)
+            face_indecies: list[int] = blender_polygon.vertices
+            add_verticies_to_vertex_group(vertex_group_object, face_indecies)
 
     def select_vertex_near_landmark(
         self, landmark_name: "LandmarkOrItsName| None" = None
@@ -633,11 +661,9 @@ class Part(PartInterface, Entity):
         y: "DimensionOrItsFloatOrStringValue",
         z: "DimensionOrItsFloatOrStringValue",
     ) -> "LandmarkInterface":
-        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
-        return Landmark("name", "parent")
+        return implementables.create_landmark(self, landmark_name, x, y, z)
 
     def get_landmark(
         self, landmark_name: "PresetLandmarkOrItsName"
     ) -> "LandmarkInterface":
-        print("get_landmark called", f": {landmark_name}")
-        return Landmark("name", "parent")
+        return implementables.get_landmark(self, landmark_name)

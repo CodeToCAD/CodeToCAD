@@ -64,15 +64,15 @@ class Scene(SceneInterface):
         if isinstance(unit, str):
             unit = LengthUnit.from_string(unit)
         blenderUnit = blender_definitions.BlenderLength.from_length_unit(unit)
-        blender_actions.set_default_unit(blenderUnit, self.name)
+        set_default_unit(blenderUnit, self.name)
         return self
 
     def create_group(self, name: "str"):
-        blender_actions.create_collection(name, self.name)
+        create_collection(name, self.name)
         return self
 
     def delete_group(self, name: "str", remove_children: "bool"):
-        blender_actions.remove_collection(
+        remove_collection(
             name=name, scene_name=self.name, remove_children=remove_children
         )
         return self
@@ -80,7 +80,7 @@ class Scene(SceneInterface):
     def remove_from_group(self, entity_name: "str", group_name: "str"):
         if isinstance(entity_name, Entity):
             entity_name = entity_name.name
-        blender_actions.remove_object_from_collection(
+        remove_object_from_collection(
             existing_object_name=entity_name,
             collection_name=group_name,
             scene_name=self.name,
@@ -97,7 +97,7 @@ class Scene(SceneInterface):
             entity_name = entity
             if isinstance(entity_name, EntityInterface):
                 entity_name = entity_name.name
-            blender_actions.assign_object_to_collection(
+            assign_object_to_collection(
                 entity_name, group_name, self.name, remove_from_other_groups or True
             )
         return self
@@ -106,7 +106,7 @@ class Scene(SceneInterface):
         for entity in entities:
             if isinstance(entity, EntityInterface):
                 entity = entity.name
-            blender_actions.set_object_visibility(entity, is_visible)
+            set_object_visibility(entity, is_visible)
         return self
 
     def set_background_image(
@@ -116,12 +116,12 @@ class Scene(SceneInterface):
         location_y: "DimensionOrItsFloatOrStringValue| None" = 0,
     ):
         absoluteFilePath = get_absolute_filepath(file_path)
-        blender_actions.add_hdr_texture(self.name, absoluteFilePath)
+        add_hdr_texture(self.name, absoluteFilePath)
         x = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_x or 0)
         ).value
         y = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_y or 0)
         ).value
-        blender_actions.set_background_location(self.name, x, y)
+        set_background_location(self.name, x, y)
         return self

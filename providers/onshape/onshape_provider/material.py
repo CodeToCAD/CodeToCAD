@@ -40,6 +40,6 @@ class Material(MaterialInterface):
         return self
 
     @staticmethod
-    def get_preset(parameter: "PresetMaterial") -> "MaterialInterface":
+    def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
         print("get_preset called", f": {parameter}")
         return Material("mat")

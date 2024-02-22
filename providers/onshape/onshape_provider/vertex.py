@@ -1,17 +1,11 @@
 from typing import Optional
-from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 from providers.onshape.onshape_provider.entity import Entity
 from codetocad.interfaces import VertexInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from . import Entity
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Sketch
-    from . import Entity
 
 
 class Vertex(VertexInterface, Entity):
@@ -40,3 +34,7 @@ class Vertex(VertexInterface, Entity):
 
     def get_control_points(self) -> "list[Entity]":
         raise NotImplementedError()
+
+    @property
+    def _center(self):
+        return self.location

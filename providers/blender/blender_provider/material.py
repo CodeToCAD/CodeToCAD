@@ -1,11 +1,19 @@
 from typing import Optional
 from codetocad.interfaces import MaterialInterface
-from . import blender_actions
 from codetocad.interfaces import MaterialInterface, PartInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
+from providers.blender.blender_provider.blender_actions.material import (
+    add_texture_to_material,
+    create_material,
+    get_material,
+    set_material_color,
+    set_material_metallicness,
+    set_material_roughness,
+    set_material_to_object,
+)
 
 
 class Material(MaterialInterface):
@@ -16,14 +24,14 @@ class Material(MaterialInterface):
         self.name = name
         self.description = description
         try:
-            blender_actions.get_material(self.name)
+            get_material(self.name)
         except:  # noqa: E722
-            blender_actions.create_material(self.name)
+            create_material(self.name)
 
     def assign_to_part(self, part_name_or_instance: "PartOrItsName"):
-        if isinstance(part_name, PartInterface):
+        if isinstance(part_name_or_instance, PartInterface):
             part_name = part_name.name
-        blender_actions.set_material_to_object(self.name, part_name)
+        set_material_to_object(self.name, part_name)
         return self
 
     def set_color(
@@ -33,26 +41,24 @@ class Material(MaterialInterface):
         b_value: "IntOrFloat",
         a_value: "IntOrFloat" = 1.0,
     ):
-        blender_actions.set_material_color(
-            self.name, r_value, g_value, b_value, a_value
-        )
+        set_material_color(self.name, r_value, g_value, b_value, a_value)
         return self
 
     def set_reflectivity(self, reflectivity: "float"):
-        blender_actions.set_material_metallicness(self.name, reflectivity)
+        set_material_metallicness(self.name, reflectivity)
         return self
 
     def set_roughness(self, roughness: "float"):
-        blender_actions.set_material_roughness(self.name, roughness)
+        set_material_roughness(self.name, roughness)
         return self
 
     def set_image_texture(self, image_file_path: "str"):
         absoluteFilePath = get_absolute_filepath(image_file_path)
-        blender_actions.add_texture_to_material(self.name, absoluteFilePath)
+        add_texture_to_material(self.name, absoluteFilePath)
         return self
 
     @staticmethod
-    def get_preset(parameter: "PresetMaterial"):
+    def get_preset(material_name: "PresetMaterial"):
         if isinstance(material_name, str):
             try:
                 material_name = getattr(PresetMaterial, material_name)

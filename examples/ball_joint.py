@@ -16,7 +16,7 @@ socket_center = socket.create_landmark("center", center, center, center)
 
 Joint(ball_bottom, socket_cutoff).translate_landmark_onto_another()
 
-socket.subtract(ball, delete_after_subtract=False, is_transfer_landmarks=False)
+socket.subtract(ball, delete_after_subtract=False, is_transfer_data=False)
 
 Joint(socket_center, ball).limit_rotation_x(-30, 30).limit_rotation_y(
     -30, 30
