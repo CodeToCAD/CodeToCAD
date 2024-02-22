@@ -1859,6 +1859,11 @@
                 "action": "create",
                 "parameters": {}
             },
+            "create_panoramic": {
+                "information": "Create a panorama camera in the scene.",
+                "action": "create",
+                "parameters": {}
+            },
             "set_focal_length": {
                 "information": "Set the focal length of the camera.",
                 "action": "modify",
