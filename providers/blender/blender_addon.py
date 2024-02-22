@@ -2,7 +2,6 @@ import os
 import pkgutil
 import runpy
 import sys
-from importlib import reload
 from pathlib import Path
 import tempfile
 import time
@@ -57,7 +56,11 @@ class StartDebugger(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-        __import__("blender_provider").blender_actions.start_debugger()
+        from providers.blender.blender_provider.blender_actions.console import (
+            start_debugger,
+        )
+
+        start_debugger()
 
         return {"FINISHED"}
 
@@ -68,7 +71,11 @@ class ReloadCodeToCADModules(Operator):
     bl_options = {"REGISTER"}
 
     def execute(self, context):
-        __import__("blender_provider").blender_actions.reload_codetocad_modules()
+        from providers.blender.blender_provider.blender_actions.console import (
+            reload_codetocad_modules,
+        )
+
+        reload_codetocad_modules()
 
         return {"FINISHED"}
 
@@ -184,7 +191,11 @@ imported_file_watcher: Optional[ImportedFileWatcher] = None
 
 
 def import_codetocad_file(filePath, directory, saveFile):
-    __import__("blender_provider").blender_actions.reload_codetocad_modules()
+    from providers.blender.blender_provider.blender_actions.console import (
+        reload_codetocad_modules,
+    )
+
+    reload_codetocad_modules()
 
     if saveFile:
         blendFilepath = bpy.data.filepath or os.path.join(
@@ -200,7 +211,9 @@ def import_codetocad_file(filePath, directory, saveFile):
 
     print("Running script", filePath)
 
-    from blender_provider.blender_actions import get_context_view_3d
+    from providers.blender.blender_provider.blender_actions.context import (
+        get_context_view_3d,
+    )
 
     with get_context_view_3d():
         global imported_file_watcher
@@ -232,7 +245,7 @@ def import_codetocad_file(filePath, directory, saveFile):
 
             raise err
         finally:
-            from blender_provider.blender_actions import (
+            from providers.blender.blender_provider.blender_actions.context import (
                 zoom_to_selected_objects,
                 select_object,
             )
@@ -508,7 +521,7 @@ class CodeToCADPanel(bpy.types.Panel):
 
 @bpy.app.handlers.persistent  # type: ignore
 def add_codetocad_to_blender_console(*args):
-    from blender_provider.blender_actions.console import (
+    from providers.blender.blender_provider.blender_actions.console import (
         add_codetocad_convenience_words_to_console,
     )
 
@@ -520,7 +533,7 @@ def add_codetocad_to_blender_console(*args):
 
 
 def print_codetocad_banner():
-    from blender_provider.blender_actions.console import (
+    from providers.blender.blender_provider.blender_actions.console import (
         write_to_console,
     )
 
@@ -569,15 +582,18 @@ blenderLoadPostHandler: list = bpy.app.handlers.load_post  # type: ignore
 
 
 def check_version():
-    from blender_provider import blender_actions, blender_definitions
+    from providers.blender.blender_provider.blender_actions.context import (
+        get_blender_version,
+    )
+
+    from providers.blender.blender_provider.blender_definitions import BlenderVersions
 
     if (
-        blender_actions.get_blender_version()
-        and blender_actions.get_blender_version()
-        < blender_definitions.BlenderVersions.TWO_DOT_EIGHTY.value
+        get_blender_version()
+        and get_blender_version() < BlenderVersions.TWO_DOT_EIGHTY.value
     ):
         print(
-            f"WARNING: CodeToCAD only supports Blender versions {blender_definitions.BlenderVersions.THREE_DOT_ONE.version} and above. You are running version {'.'.join(blender_actions.get_blender_version())}"
+            f"WARNING: CodeToCAD only supports Blender versions {BlenderVersions.THREE_DOT_ONE.version} and above. You are running version {'.'.join(get_blender_version())}"
         )
 
 
