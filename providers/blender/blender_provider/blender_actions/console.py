@@ -20,16 +20,23 @@ def start_debugger(host: str = "localhost", port: int = 5678):
 def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
     import codetocad
-    import blender_provider
+    import providers
+    import providers.blender
     import inspect
 
     all_providers_modules = inspect.getmembers(
-        blender_provider, predicate=inspect.ismodule
+        providers.blender.blender_provider, predicate=inspect.ismodule
     )
     for module_name, module in all_providers_modules:
         reload(module)
 
-    reload(blender_provider)
+    reload(providers.blender.blender_provider)
+
+    all_providers_modules = inspect.getmembers(providers, predicate=inspect.ismodule)
+    for module_name, module in all_providers_modules:
+        reload(module)
+
+    reload(providers)
 
     all_providers_modules = inspect.getmembers(codetocad, predicate=inspect.ismodule)
 
