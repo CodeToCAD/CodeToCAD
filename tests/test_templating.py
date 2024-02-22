@@ -38,15 +38,14 @@ class TestTemplating(unittest.TestCase):
         }
 
         assert imports._codetocad_interface_class_names == {
+            "Exportable",
+            "Booleanable",
+            "Subdividable",
             "Scalable",
             "Importable",
-            "Subdividable",
-            "Patternable",
-            "Materialable",
-            "Booleanable",
-            "Mirrorable",
-            "Exportable",
             "Landmarkable",
+            "Mirrorable",
+            "Patternable",
         }
 
         imports = self.capabilies_loader.generate_imports("Edge", ["Edge"])

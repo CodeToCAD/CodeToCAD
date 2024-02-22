@@ -250,7 +250,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance2.create_cylinder(radius=5, height=10)
 
         value = instance.union(
-            other="myCylinder",  # "delete_after_union", "is_transfer_landmarks"
+            other="myCylinder",  # "delete_after_union", "is_transfer_data"
         )
 
         # Regression test for union
@@ -270,7 +270,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance2.create_cylinder(radius=5, height=10)
 
         value = instance.subtract(
-            other="myCylinder",  # "delete_after_subtract", "is_transfer_landmarks"
+            other="myCylinder",  # "delete_after_subtract", "is_transfer_data"
         )
 
         # Regression test for subtract
@@ -290,7 +290,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance2.create_cylinder(radius=5, height=10)
 
         value = instance.intersect(
-            other="myCylinder",  # "delete_after_intersect", "is_transfer_landmarks"
+            other="myCylinder",  # "delete_after_intersect", "is_transfer_data"
         )
 
         # Regression test for intersect

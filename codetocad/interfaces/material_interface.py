@@ -23,7 +23,7 @@ class MaterialInterface(metaclass=ABCMeta):
         self.description = description
 
     @staticmethod
-    def get_preset(parameter: "PresetMaterial") -> "MaterialInterface":
+    def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
         """
         Get a material from a preset
         """

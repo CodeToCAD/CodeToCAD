@@ -21,6 +21,7 @@ class TestProviderCompliance(unittest.TestCase):
             all_providers_import, predicate=inspect.ismodule
         )
         for module_name, provider_module in all_providers_modules:
+            print(f"Testing module {module_name}")
             all_classes = inspect.getmembers(provider_module, predicate=inspect.isclass)
             for class_name, some_class in all_classes:
                 if class_name not in capabilies_class_names:
