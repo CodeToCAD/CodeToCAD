@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import SceneTestInterface
 
 
-from codetocad import Entity, Scene
+from codetocad import Scene, Entity
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):

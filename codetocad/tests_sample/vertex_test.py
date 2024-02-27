@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import VertexTestInterface
 
 
-from codetocad import Entity, Vertex
+from codetocad import Vertex, Entity
 
 
 class VertexTest(TestProviderCase, VertexTestInterface):

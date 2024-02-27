@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import SketchTestInterface
 
 
-from codetocad import Sketch, Entity, Vertex, Landmark, Part, Wire, Edge
+from codetocad import Landmark, Entity, Part, Edge, Vertex, Wire, Sketch
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):

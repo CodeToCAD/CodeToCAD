@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import LandmarkTestInterface
 
 
-from codetocad import Entity, Landmark
+from codetocad import Landmark, Entity
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):

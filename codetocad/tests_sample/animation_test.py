@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import AnimationTestInterface
 
 
-from codetocad import Animation, Entity
+from codetocad import Entity, Animation
 
 
 class AnimationTest(TestProviderCase, AnimationTestInterface):

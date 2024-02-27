@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import PartTestInterface
 
 
-from codetocad import Part, Material, Entity, Landmark
+from codetocad import Landmark, Material, Entity, Part
 
 
 class PartTest(TestProviderCase, PartTestInterface):

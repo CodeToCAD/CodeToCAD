@@ -1,8 +1,6 @@
 {%- from 'generate_method_definition.j2' import generate_parameters -%}
 
-{%- macro generate_init_constructor(capabilities_loader, class_name, capabilities_method, use_abstract_method_decorator) -%}
-
-    {% set parameters = capabilities_loader.get_constructor_parameters_for_class(class_name)%}
+{%- macro generate_init_constructor(capabilities_loader, class_name, capabilities_method, parameters, use_abstract_method_decorator)%}
 
     {{"@abstractmethod\n" if use_abstract_method_decorator and not capabilities_method.is_static_method}}
     def __init__(

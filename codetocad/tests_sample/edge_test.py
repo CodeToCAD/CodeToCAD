@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import EdgeTestInterface
 
 
-from codetocad import Edge, Entity, Vertex, Landmark
+from codetocad import Edge, Landmark, Vertex, Entity
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):
