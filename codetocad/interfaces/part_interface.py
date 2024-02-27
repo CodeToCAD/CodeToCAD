@@ -11,27 +11,27 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 from codetocad.interfaces.material_interface import MaterialInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.importable_interface import ImportableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+from codetocad.interfaces.importable_interface import ImportableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.scalable_interface import ScalableInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 
 class PartInterface(
@@ -50,6 +50,14 @@ class PartInterface(
     """
     Capabilities related to creating and manipulating 3D shapes.
     """
+
+    @abstractmethod
+    def __init__(
+        self, name: "str", description: "str| None" = None, native_instance=None
+    ):
+        self.name = name
+        self.description = description
+        self.native_instance = native_instance
 
     @abstractmethod
     def create_cube(

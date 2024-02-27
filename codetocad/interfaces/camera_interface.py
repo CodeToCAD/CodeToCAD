@@ -57,6 +57,20 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
+    def create_panoramic(
+        self,
+    ):
+        """
+        Create a panorama camera in the scene.
+        """
+
+        print(
+            "create_panoramic is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
     def set_focal_length(self, length: "float"):
         """
         Set the focal length of the camera.

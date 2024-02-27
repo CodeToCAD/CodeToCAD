@@ -1,8 +1,9 @@
 {%- from 'generate_method.j2' import generate_method -%}
 {%- from 'generate_init_constructor.j2' import generate_init_constructor -%}
 
-{%if capabilities_loader.capabilities[class_name].constructor%}
-{{generate_init_constructor(capabilities_loader, class_name, capabilities_loader.capabilities[class_name].constructor, use_abstract_method_decorator)}}
+{% set parameters = capabilities_loader.get_constructor_parameters_for_class(class_name)%}
+{%if parameters|length > 0 %}
+{{generate_init_constructor(capabilities_loader, class_name, capabilities_loader.capabilities[class_name].constructor, parameters, use_abstract_method_decorator)}}
 {%endif%}
 
 

@@ -29,9 +29,13 @@ from .fusion_actions.common import make_point3d
 
 
 class Part(PartInterface, Entity, Landmarkable):
-    def __init__(self, name: str):
+    def __init__(
+        self, name: "str", description: "str| None" = None, native_instance=None
+    ):
         self.fusion_body = FusionBody(name)
         self.name = name
+        self.description = description
+        self.native_instance = native_instance
 
     def mirror(
         self,

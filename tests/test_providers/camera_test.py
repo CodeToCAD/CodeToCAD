@@ -17,6 +17,13 @@ class CameraTest(TestProviderCase, CameraTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
+    def test_create_panoramic(self):
+        instance = Camera(name="String")
+
+        value = instance.create_panoramic()
+
+        assert value.is_exists(), "Create method failed."
+
     def test_set_focal_length(self):
         instance = Camera("myCamera")
 

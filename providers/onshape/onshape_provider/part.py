@@ -20,6 +20,13 @@ if TYPE_CHECKING:
 
 
 class Part(PartInterface, Entity):
+    def __init__(
+        self, name: "str", description: "str| None" = None, native_instance=None
+    ):
+        self.name = name
+        self.description = description
+        self.native_instance = native_instance
+
     def mirror(
         self,
         mirror_across_entity: "EntityOrItsName",

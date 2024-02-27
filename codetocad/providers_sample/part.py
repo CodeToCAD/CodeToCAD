@@ -11,22 +11,21 @@ from codetocad.enums import *
 
 from codetocad.interfaces import PartInterface
 
-
-from codetocad.interfaces.material_interface import MaterialInterface
-
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-
-
-from codetocad.providers_sample.material import Material
-
-from codetocad.providers_sample.entity import Entity
 
 from codetocad.providers_sample.landmark import Landmark
 
+from codetocad.providers_sample.entity import Entity
+
 
 class Part(PartInterface, Entity):
+    def __init__(
+        self, name: "str", description: "str| None" = None, native_instance=None
+    ):
+        self.name = name
+        self.description = description
+        self.native_instance = native_instance
+
     def create_cube(
         self,
         width: "DimensionOrItsFloatOrStringValue",

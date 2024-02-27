@@ -24,17 +24,17 @@ def reload_codetocad_modules():
     import providers.blender
     import inspect
 
-    all_providers_modules = inspect.getmembers(
-        providers.blender.blender_provider, predicate=inspect.ismodule
-    )
-    for module_name, module in all_providers_modules:
-        reload(module)
+    # all_providers_modules = inspect.getmembers(
+    #     providers.blender.blender_provider, predicate=inspect.ismodule
+    # )
+    # for module_name, module in all_providers_modules:
+    #     reload(module)
 
     reload(providers.blender.blender_provider)
 
-    all_providers_modules = inspect.getmembers(providers, predicate=inspect.ismodule)
-    for module_name, module in all_providers_modules:
-        reload(module)
+    # all_providers_modules = inspect.getmembers(providers, predicate=inspect.ismodule)
+    # for module_name, module in all_providers_modules:
+    #     reload(module)
 
     reload(providers)
 

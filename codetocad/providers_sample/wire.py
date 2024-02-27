@@ -12,26 +12,21 @@ from codetocad.enums import *
 from codetocad.interfaces import WireInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-from codetocad.interfaces.vertex_interface import VertexInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 
 from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.edge_interface import EdgeInterface
-
-
-from codetocad.providers_sample.entity import Entity
-
-from codetocad.providers_sample.vertex import Vertex
 
 from codetocad.providers_sample.landmark import Landmark
+
+from codetocad.providers_sample.entity import Entity
 
 from codetocad.providers_sample.part import Part
 
 from codetocad.providers_sample.edge import Edge
+
+from codetocad.providers_sample.vertex import Vertex
 
 
 class Wire(WireInterface, Entity):

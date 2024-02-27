@@ -41,6 +41,13 @@ from providers.blender.blender_provider.blender_actions.transformations import (
 
 
 class Part(PartInterface, Entity):
+    def __init__(
+        self, name: "str", description: "str| None" = None, native_instance=None
+    ):
+        self.name = name
+        self.description = description
+        self.native_instance = native_instance
+
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         assert self.is_exists() is False, f"{self.name} already exists."
         absoluteFilePath = get_absolute_filepath(file_path)

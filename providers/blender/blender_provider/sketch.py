@@ -190,9 +190,9 @@ class Sketch(SketchInterface, Entity):
             if self.curve_type is not None
             else blender_definitions.BlenderCurveTypes.BEZIER,
             parsed_points,
-            interpolation,
+            self.resolution,
             is_3d=False,
-            order_u=order_u,
+            order_u=4,
         )
         merge_touching_splines(curve=curve_data, reference_spline_index=0)
         if is_closed:
