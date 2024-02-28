@@ -5,7 +5,6 @@ from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
 
-
 # The implementation diverges from Blender
 # It's only set the body of the current object
 # not creating a new material in Fusion 360

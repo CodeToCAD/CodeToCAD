@@ -99,6 +99,3 @@ class Entity(EntityInterface):
 
     def get_dimensions(self) -> "Dimensions":
         raise NotImplementedError()
-
-    def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
-        raise NotImplementedError()

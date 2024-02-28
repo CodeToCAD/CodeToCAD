@@ -256,28 +256,3 @@ class Entity(EntityInterface):
             for dimension in dimensions
         ]
         return Dimensions(dimensions[0], dimensions[1], dimensions[2])
-
-    def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
-        if isinstance(landmark_name, LandmarkInterface):
-            landmark_name = landmark_name.name
-        preset: Optional[PresetLandmark] = None
-        if isinstance(landmark_name, str):
-            preset = PresetLandmark.from_string(landmark_name)
-        if isinstance(landmark_name, PresetLandmark):
-            preset = landmark_name
-            landmark_name = preset.name
-        landmark = Landmark(landmark_name, self.name)
-        if preset is not None:
-            # if preset does not exist, create it.
-            try:
-                get_object(landmark.get_landmark_entity_name())
-            except:  # noqa: E722
-                presetXYZ = preset.get_xyz()
-                self.create_landmark(
-                    landmark_name, presetXYZ[0], presetXYZ[1], presetXYZ[2]
-                )
-                return landmark
-        assert (
-            get_object(landmark.get_landmark_entity_name()) is not None
-        ), f"Landmark {landmark_name} does not exist for {self.name}."
-        return landmark

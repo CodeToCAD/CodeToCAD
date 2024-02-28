@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.blender_actions.light import (
     create_light,
     set_light_color,
