@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.interfaces import CameraInterface
 from codetocad.codetocad_types import *
@@ -48,13 +49,8 @@ class Camera(CameraInterface, Entity):
         print("create_orthogonal called:")
         return self
 
-    def create_panoramic(
-        self,
-    ):
-        print(
-            "create_panoramic called",
-        )
-
+    def create_panoramic(self):
+        print("create_panoramic called")
         return self
 
     def set_focal_length(self, length: "float"):

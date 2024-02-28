@@ -28,7 +28,7 @@ from .fusion_actions.fusion_body import FusionBody
 from .fusion_actions.common import make_point3d
 
 
-class Part(PartInterface, Entity, Landmarkable):
+class Part(PartInterface, Entity):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

@@ -1,4 +1,5 @@
 from codetocad.interfaces import PartInterface
+from providers.blender.blender_provider.landmark import Landmark
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.joint import Joint

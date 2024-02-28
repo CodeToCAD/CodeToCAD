@@ -27,13 +27,8 @@ class Camera(CameraInterface, Entity):
     def create_orthogonal(self):
         return self
 
-    def create_panoramic(
-        self,
-    ):
-        print(
-            "create_panoramic called",
-        )
-
+    def create_panoramic(self):
+        print("create_panoramic called")
         return self
 
     def set_focal_length(self, length: "float"):

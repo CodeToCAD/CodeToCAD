@@ -1,4 +1,6 @@
 import math
+from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces import SketchInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -44,10 +46,7 @@ from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
 from codetocad.enums import *
-from providers.blender.blender_provider import (
-    blender_definitions,
-    implementables,
-)
+from providers.blender.blender_provider import blender_definitions, implementables
 
 
 class Sketch(SketchInterface, Entity):

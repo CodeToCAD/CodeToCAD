@@ -1,4 +1,5 @@
 from codetocad.interfaces import AnimationInterface
+from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *

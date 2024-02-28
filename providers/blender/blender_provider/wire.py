@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
@@ -12,9 +13,7 @@ from codetocad.utilities import *
 from codetocad.utilities.override import override
 from codetocad.core import *
 from codetocad.enums import *
-from providers.blender.blender_provider import (
-    blender_definitions,
-)
+from providers.blender.blender_provider import blender_definitions
 from providers.blender.blender_provider.blender_actions.curve import (
     is_spline_cyclical,
     loft,

@@ -51,6 +51,7 @@ class Landmark(LandmarkInterface):
             return Entity(self.parent_entity)
         return self.parent_entity
 
+    @override
     def rename(self, new_name: str):
         assert (
             Landmark(new_name, self.parent_entity).is_exists() is False
@@ -65,16 +66,20 @@ class Landmark(LandmarkInterface):
         self.name = new_name
         return self
 
+    @override
     def is_visible(self) -> bool:
         return get_object_visibility(self.get_landmark_entity_name())
 
+    @override
     def get_native_instance(self):
         return get_object(self.get_landmark_entity_name())
 
+    @override
     def get_location_world(self) -> "Point":
         update_view_layer()
         return get_object_world_location(self.get_landmark_entity_name())
 
+    @override
     def get_location_local(self) -> "Point":
         update_view_layer()
         return get_object_local_location(self.get_landmark_entity_name())
@@ -107,15 +112,6 @@ class Landmark(LandmarkInterface):
         else:
             landmark = self.get_parent_entity().create_landmark(new_name, x, y, z)
         return landmark
-
-    def translate_xyz(
-        self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
-    ):
-        print("translate_xyz called", f": {x}, {y}, {z}")
-        return self
 
     @override
     def is_exists(self) -> bool:
