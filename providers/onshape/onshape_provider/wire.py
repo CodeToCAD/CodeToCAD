@@ -50,7 +50,7 @@ class Wire(WireInterface, Entity):
     ):
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
 
     edges: "list[Edge]"
@@ -72,14 +72,6 @@ class Wire(WireInterface, Entity):
         self.name = name
         self.description = description
         self.native_instance = native_instance
-
-    def clone(
-        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
-    ) -> "Wire":
-        print("clone called:", new_name, new_parent)
-        from . import Wire
-
-        return Wire([], "a wire")
 
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         print("get_normal called:", flip)

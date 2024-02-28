@@ -41,8 +41,8 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 
 
 class Sketch(SketchInterface, Entity):
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called:", project_onto)
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called:", project_from)
         from . import Sketch
 
         return Sketch("a projected sketch")

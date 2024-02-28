@@ -11,11 +11,19 @@ from codetocad.enums import *
 
 from codetocad.interfaces import PartInterface
 
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.material_interface import MaterialInterface
+
+
+from codetocad.providers_sample.entity import Entity
 
 from codetocad.providers_sample.landmark import Landmark
 
-from codetocad.providers_sample.entity import Entity
+from codetocad.providers_sample.material import Material
 
 
 class Part(PartInterface, Entity):

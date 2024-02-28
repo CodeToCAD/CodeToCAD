@@ -9,10 +9,6 @@ from abc import ABCMeta, abstractmethod
 
 class WireTestInterface(metaclass=ABCMeta):
     @abstractmethod
-    def test_clone(self):
-        pass
-
-    @abstractmethod
     def test_get_normal(self):
         pass
 

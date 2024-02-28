@@ -9,18 +9,6 @@ from abc import ABCMeta, abstractmethod
 
 class LandmarkTestInterface(metaclass=ABCMeta):
     @abstractmethod
-    def test_get_location_world(self):
-        pass
-
-    @abstractmethod
-    def test_get_location_local(self):
-        pass
-
-    @abstractmethod
-    def test_translate_xyz(self):
-        pass
-
-    @abstractmethod
     def test_clone(self):
         pass
 

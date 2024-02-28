@@ -6,7 +6,7 @@ class VertexTest(TestProviderCase, VertexTestInterface):
     def test_project(self):
         instance = Vertex(location=(0, 0), name="myVertex")
 
-        value = instance.project(project_onto="myProject")
+        value = instance.project(project_from="myProject")
 
         assert value, "Get method failed."
 

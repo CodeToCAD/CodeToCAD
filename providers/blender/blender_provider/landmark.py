@@ -22,7 +22,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-class Landmark(LandmarkInterface):
+class Landmark(LandmarkInterface, Entity):
     name: str
     parent_entity: EntityOrItsName
     description: Optional[str] = None
@@ -33,6 +33,7 @@ class Landmark(LandmarkInterface):
         name: "str",
         parent_entity: "EntityOrItsName",
         description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.parent_entity = parent_entity

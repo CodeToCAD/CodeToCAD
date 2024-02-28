@@ -66,10 +66,10 @@ class Wire(WireInterface, Entity):
         )
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         from . import Sketch
 
-        print("project called:", project_onto)
+        print("project called:", project_from)
         return Sketch("a projected sketch")
 
     edges: "list[Edge]"
@@ -93,23 +93,6 @@ class Wire(WireInterface, Entity):
         self.name = name
         self.description = description
         self.native_instance = native_instance
-
-    def clone(
-        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
-    ) -> "Wire":
-        from . import Sketch
-
-        parent = new_parent or self.parent_entity
-        if isinstance(parent, str):
-            parent = Sketch(parent)
-        if isinstance(parent, Sketch):
-            points = self.get_vertices()
-            points = [point.location for point in points]
-            points.append(points[0].copy())
-            wire = parent.create_from_vertices(points)
-            wire.name = new_name
-            return wire
-        raise Exception(f"Parent of type {type(parent)} is not supported.")
 
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         vertices = self.get_vertices()

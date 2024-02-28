@@ -18,9 +18,6 @@ class Material(MaterialInterface):
         self.name = name
         self.description = description
 
-    def assign_to_part(self, part_name_or_instance: "PartOrItsName"):
-        return self
-
     def set_color(
         self,
         r_value: "IntOrFloat",

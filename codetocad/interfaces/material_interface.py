@@ -35,18 +35,6 @@ class MaterialInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def assign_to_part(self, part_name_or_instance: "PartOrItsName"):
-        """
-        Assigns the material to a part.
-        """
-
-        print(
-            "assign_to_part is called in an abstract method. Please override this method."
-        )
-
-        raise NotImplementedError()
-
-    @abstractmethod
     def set_color(
         self,
         r_value: "IntOrFloat",

@@ -14,13 +14,13 @@ from codetocad.enums import *
 class ProjectableInterface(metaclass=ABCMeta):
 
     """
-    This entity can be projected onto a surface
+    This entity can be projected onto a surface or accept a projection
     """
 
     @abstractmethod
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         """
-        Project this entity onto another
+        Project another entity onto this one.
         """
 
         print("project is called in an abstract method. Please override this method.")

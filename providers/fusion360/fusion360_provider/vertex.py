@@ -14,10 +14,10 @@ if TYPE_CHECKING:
 
 
 class Vertex(VertexInterface, Entity):
-    def project(self, project_onto: "ProjectableInterface") -> "Projectable":
+    def project(self, project_from: "ProjectableInterface") -> "Projectable":
         from . import Sketch
 
-        print("project called:", project_onto)
+        print("project called:", project_from)
         return Sketch("a projected sketch")
 
     location: "Point"

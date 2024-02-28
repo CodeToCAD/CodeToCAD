@@ -14,19 +14,24 @@ from codetocad.interfaces import WireInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
 
 
 from codetocad.providers_sample.landmark import Landmark
 
-from codetocad.providers_sample.entity import Entity
+from codetocad.providers_sample.vertex import Vertex
 
 from codetocad.providers_sample.part import Part
 
-from codetocad.providers_sample.edge import Edge
+from codetocad.providers_sample.entity import Entity
 
-from codetocad.providers_sample.vertex import Vertex
+from codetocad.providers_sample.edge import Edge
 
 
 class Wire(WireInterface, Entity):
@@ -43,26 +48,6 @@ class Wire(WireInterface, Entity):
         self.description = description
         self.native_instance = native_instance
         self.parent_entity = parent_entity
-
-    def clone(
-        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
-    ) -> "WireInterface":
-        print("clone called", f": {new_name}, {new_parent}")
-
-        return Wire(
-            "a wire",
-            [
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
-        )
 
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         print("get_normal called", f": {flip}")
@@ -133,8 +118,8 @@ class Wire(WireInterface, Entity):
 
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called", f": {project_onto}")
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
 

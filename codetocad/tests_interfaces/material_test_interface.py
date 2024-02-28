@@ -13,10 +13,6 @@ class MaterialTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def test_assign_to_part(self):
-        pass
-
-    @abstractmethod
     def test_set_color(self):
         pass
 

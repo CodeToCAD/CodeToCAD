@@ -14,28 +14,28 @@ from codetocad.interfaces import SketchInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.wire_interface import WireInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.part_interface import PartInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
-from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.part_interface import PartInterface
-
 
 from codetocad.providers_sample.landmark import Landmark
+
+from codetocad.providers_sample.wire import Wire
+
+from codetocad.providers_sample.vertex import Vertex
+
+from codetocad.providers_sample.part import Part
 
 from codetocad.providers_sample.entity import Entity
 
 from codetocad.providers_sample.edge import Edge
-
-from codetocad.providers_sample.vertex import Vertex
-
-from codetocad.providers_sample.wire import Wire
-
-from codetocad.providers_sample.part import Part
 
 
 class Sketch(SketchInterface, Entity):
@@ -418,8 +418,8 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called", f": {project_onto}")
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
 

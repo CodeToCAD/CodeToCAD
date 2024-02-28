@@ -10,7 +10,7 @@ from codetocad.enums import *
 
 
 class Vertex(VertexInterface, Entity):
-    def project(self, project_onto: "ProjectableInterface") -> "Projectable":
+    def project(self, project_from: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
     location: PointOrListOfFloatOrItsStringValue

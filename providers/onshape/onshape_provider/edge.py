@@ -53,7 +53,7 @@ class Edge(EdgeInterface, Entity):
     def decimate(self, amount: "float"):
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "Projectable":
+    def project(self, project_from: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
     v1: "Vertex"

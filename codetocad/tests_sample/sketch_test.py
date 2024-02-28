@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import SketchTestInterface
 
 
-from codetocad import Landmark, Entity, Part, Edge, Vertex, Wire, Sketch
+from codetocad import Landmark, Wire, Vertex, Sketch, Part, Entity, Edge
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):
@@ -483,7 +483,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.project(
-            project_onto=__import__("codetocad").Sketch("a projected sketch")
+            project_from=__import__("codetocad").Sketch("a projected sketch")
         )
 
         assert value, "Get method failed."

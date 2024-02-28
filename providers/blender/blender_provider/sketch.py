@@ -66,8 +66,8 @@ class Sketch(SketchInterface, Entity):
         self.description = description
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called:", project_onto)
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called:", project_from)
         return Sketch("a projected sketch")
 
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":

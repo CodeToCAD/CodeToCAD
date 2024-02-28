@@ -274,7 +274,7 @@ class EntityInterface(metaclass=ABCMeta):
         self,
     ) -> "Dimensions":
         """
-        Get the length span in each point axis (X,Y,Z).
+        Get the bounding-box dimensions in each axis (X,Y,Z).
         """
 
         print(

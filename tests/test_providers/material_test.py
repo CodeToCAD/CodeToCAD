@@ -11,13 +11,6 @@ class MaterialTest(TestProviderCase, MaterialTestInterface):
 
         assert value, "Get method failed."
 
-    def test_assign_to_part(self):
-        instance = Material("myMaterial")
-
-        value = instance.assign_to_part(part_name_or_instance="myPart")
-
-        assert value, "Modify method failed."
-
     def test_set_color(self):
         instance = Material("myMaterial")
 

@@ -42,7 +42,7 @@ class Vertex(VertexInterface, Entity):
 
         return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called", f": {project_onto}")
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")

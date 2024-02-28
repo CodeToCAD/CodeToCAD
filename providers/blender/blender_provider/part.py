@@ -1,5 +1,5 @@
 from codetocad.interfaces import PartInterface
-from providers.blender.blender_provider.landmark import Landmark
+from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.joint import Joint
@@ -386,10 +386,17 @@ class Part(PartInterface, Entity):
         return self._apply_modifiers_only()
 
     def set_material(self, material_name: "MaterialOrItsName"):
-        material = material_name
-        if isinstance(material, str) or isinstance(material, PresetMaterial):
-            material = Material.get_preset(material)
-        material.assign_to_part(self.name)
+        if isinstance(material_name, MaterialInterface):
+            material_name = material_name.name
+        elif (
+            isinstance(material_name, str) and material_name in PresetMaterial
+        ) or isinstance(material_name, PresetMaterial):
+            preset_mat = material_name
+            if isinstance(preset_mat, str):
+                preset_mat = PresetMaterial(preset_mat)
+            material_name = Material.get_preset(preset_mat).name
+
+        set_material_to_object(material_name, self.name)
         return self
 
     def is_colliding_with_part(self, other_part: "PartOrItsName"):
