@@ -22,4 +22,5 @@ fi
 export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/../providers"
 export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR/../providers/blender"
 
-python -m unittest tests/**/**.py
+python -m unittest tests/*.py
+python -m unittest tests/**/*.py
