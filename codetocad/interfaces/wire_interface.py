@@ -11,18 +11,23 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.part_interface import PartInterface
 
+from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
@@ -55,18 +60,6 @@ class WireInterface(
         self.description = description
         self.native_instance = native_instance
         self.parent_entity = parent_entity
-
-    @abstractmethod
-    def clone(
-        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
-    ) -> "WireInterface":
-        """
-        Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.
-        """
-
-        print("clone is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
 
     @abstractmethod
     def get_normal(self, flip: "bool| None" = False) -> "Point":

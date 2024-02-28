@@ -9,34 +9,10 @@ from .test_helper import *
 from codetocad.tests_interfaces import WireTestInterface
 
 
-from codetocad import Landmark, Entity, Part, Edge, Vertex, Wire, Sketch
+from codetocad import Landmark, Vertex, Wire, Part, Entity, Edge
 
 
 class WireTest(TestProviderCase, WireTestInterface):
-    @skip("TODO")
-    def test_clone(self):
-        instance = Wire(
-            name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
-            description="String",
-            native_instance=value,
-            parent_entity=__import__("codetocad").Part("an entity"),
-        )
-
-        value = instance.clone(new_name="String", new_parent=Sketch("a sketch"))
-
-        assert value, "Get method failed."
-
     @skip("TODO")
     def test_get_normal(self):
         instance = Wire(
@@ -253,7 +229,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         )
 
         value = instance.project(
-            project_onto=__import__("codetocad").Sketch("a projected sketch")
+            project_from=__import__("codetocad").Sketch("a projected sketch")
         )
 
         assert value, "Get method failed."

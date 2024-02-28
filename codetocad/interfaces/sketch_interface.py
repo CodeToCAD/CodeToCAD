@@ -13,19 +13,19 @@ from codetocad.enums import *
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.wire_interface import WireInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.part_interface import PartInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
-from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
 
@@ -33,9 +33,9 @@ from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
 class SketchInterface(

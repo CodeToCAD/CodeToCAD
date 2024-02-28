@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import MaterialTestInterface
 
 
-from codetocad import Material, Part
+from codetocad import Material
 
 
 class MaterialTest(TestProviderCase, MaterialTestInterface):
@@ -20,14 +20,6 @@ class MaterialTest(TestProviderCase, MaterialTestInterface):
         value = instance.get_preset(material_name=PresetMaterial.red)
 
         assert value, "Get method failed."
-
-    @skip("TODO")
-    def test_assign_to_part(self):
-        instance = Material(name="String", description="String")
-
-        value = instance.assign_to_part(part_name_or_instance=Part("a part"))
-
-        assert value, "Modify method failed."
 
     @skip("TODO")
     def test_set_color(self):

@@ -306,15 +306,15 @@
             }
         },
         "Projectable": {
-            "information": "This entity can be projected onto a surface",
+            "information": "This entity can be projected onto a surface or accept a projection",
             "is_interface_only": true,
             "project": {
-                "information": "Project this entity onto another",
+                "information": "Project another entity onto this one.",
                 "action": "get",
                 "return_type": "Projectable",
                 "parameters": {
-                    "project_onto": {
-                        "information": "Projectable to project onto",
+                    "project_from": {
+                        "information": "Projectable to project from. The other shape will be copied to this one.",
                         "type": "Projectable",
                         "required": true
                     }
@@ -519,7 +519,7 @@
             "get_dimensions": {
                 "action": "get",
                 "return_type": "Dimensions",
-                "information": "Get the length span in each point axis (X,Y,Z).",
+                "information": "Get the bounding-box dimensions in each axis (X,Y,Z).",
                 "parameters": {}
             }
         },
@@ -1340,20 +1340,6 @@
                     }
                 }
             },
-            "clone": {
-                "action": "get",
-                "return_type": "Wire",
-                "information": "Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.",
-                "parameters": {
-                    "new_name": {
-                        "type": "string"
-                    },
-                    "new_parent": {
-                        "type": "string,Sketch",
-                        "required": false
-                    }
-                }
-            },
             "get_normal": {
                 "information": "Get the normal created by this wire. Must be a closed wire.",
                 "action": "get",
@@ -1396,6 +1382,7 @@
         },
         "Landmark": {
             "information": "Landmarks are named positions on an entity.",
+            "extends": "Entity",
             "constructor": {
                 "parameters": {
                     "name": {
@@ -1409,33 +1396,6 @@
                     "description": {
                         "type": "string",
                         "required": false
-                    }
-                }
-            },
-            "get_location_world": {
-                "action": "get",
-                "return_type": "Point",
-                "information": "Get the Landmark XYZ location relative to World Space.",
-                "parameters": {}
-            },
-            "get_location_local": {
-                "action": "get",
-                "return_type": "Point",
-                "information": "Get the Landmark XYZ location relative to Local Space.",
-                "parameters": {}
-            },
-            "translate_xyz": {
-                "action": "modify",
-                "information": "Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.",
-                "parameters": {
-                    "x": {
-                        "type": "string,float,Dimension"
-                    },
-                    "y": {
-                        "type": "string,float,Dimension"
-                    },
-                    "z": {
-                        "type": "string,float,Dimension"
                     }
                 }
             },
@@ -1643,15 +1603,6 @@
                         "information": "A PresetMaterial name or instance",
                         "type": "PresetMaterial",
                         "required": true
-                    }
-                }
-            },
-            "assign_to_part": {
-                "action": "modify",
-                "information": "Assigns the material to a part.",
-                "parameters": {
-                    "part_name_or_instance": {
-                        "type": "string,Part"
                     }
                 }
             },

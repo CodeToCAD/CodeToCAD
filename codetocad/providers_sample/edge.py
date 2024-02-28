@@ -12,18 +12,18 @@ from codetocad.enums import *
 from codetocad.interfaces import EdgeInterface
 
 
+from codetocad.interfaces.entity_interface import EntityInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.entity_interface import EntityInterface
 
+from codetocad.providers_sample.entity import Entity
 
 from codetocad.providers_sample.landmark import Landmark
 
 from codetocad.providers_sample.vertex import Vertex
-
-from codetocad.providers_sample.entity import Entity
 
 
 class Edge(EdgeInterface, Entity):
@@ -127,8 +127,8 @@ class Edge(EdgeInterface, Entity):
 
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called", f": {project_onto}")
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
 

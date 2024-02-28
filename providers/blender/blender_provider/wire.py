@@ -1,4 +1,7 @@
 from typing import Optional
+from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.entity import Entity
@@ -57,39 +60,6 @@ class Wire(WireInterface, Entity):
     def get_native_instance(self) -> object:
         return self.native_instance
 
-    def clone(
-        self, new_name: "str", new_parent: "SketchOrItsName| None" = None
-    ) -> "Wire":
-        parent = new_parent or self.parent_entity
-        if isinstance(parent, str):
-            blender_object = get_object_or_none(parent)
-            if blender_object is None:
-                curve_type = CurveTypes.BEZIER
-                if isinstance(self.parent_entity, Sketch):
-                    curve_type = self.parent_entity.curve_type or curve_type
-                parent = Sketch(new_parent, curve_type=curve_type)
-            elif isinstance(
-                blender_object.data, blender_definitions.BlenderTypes.CURVE.value
-            ):
-                parent = Sketch(
-                    blender_object.data.name,
-                    curve_type=CurveTypes[blender_object.data.splines[0].type],
-                )
-            elif isinstance(
-                blender_object.data, blender_definitions.BlenderTypes.MESH.value
-            ):
-                parent = Part(blender_object.data.name)
-        if isinstance(parent, Sketch):
-            points = self.get_vertices()
-            points = [point.location for point in points]
-            points.append(points[0].copy())
-            wire = parent.create_from_vertices(points)
-            wire.name = new_name
-            return wire
-        if isinstance(parent, Part):
-            raise NotImplementedError("TODO")
-        raise Exception(f"Parent of type {type(parent)} is not supported.")
-
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         # Note: 3D surfaces will not provide a good result here.
         vertices = self.get_vertices()
@@ -125,7 +95,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
 

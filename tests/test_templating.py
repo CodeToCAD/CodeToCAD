@@ -68,7 +68,6 @@ class TestTemplating(unittest.TestCase):
         assert imports._codetocad_implementable_class_names == {
             "Entity",
             "Vertex",
-            "Sketch",
             "Landmark",
             "Edge",
             "Part",

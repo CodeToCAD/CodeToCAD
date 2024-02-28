@@ -18,46 +18,18 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.providers_sample.entity import Entity
 
 
-class Landmark(
-    LandmarkInterface,
-):
+class Landmark(LandmarkInterface, Entity):
     def __init__(
         self,
         name: "str",
         parent_entity: "EntityOrItsName",
         description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.parent_entity = parent_entity
         self.description = description
-
-    def get_location_world(
-        self,
-    ) -> "Point":
-        print(
-            "get_location_world called",
-        )
-
-        return Point.from_list_of_float_or_string([0, 0, 0])
-
-    def get_location_local(
-        self,
-    ) -> "Point":
-        print(
-            "get_location_local called",
-        )
-
-        return Point.from_list_of_float_or_string([0, 0, 0])
-
-    def translate_xyz(
-        self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
-    ):
-        print("translate_xyz called", f": {x}, {y}, {z}")
-
-        return self
+        self.native_instance = native_instance
 
     def clone(
         self,

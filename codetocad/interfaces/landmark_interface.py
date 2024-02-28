@@ -14,7 +14,7 @@ from codetocad.enums import *
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-class LandmarkInterface(metaclass=ABCMeta):
+class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
 
     """
     Landmarks are named positions on an entity.
@@ -26,55 +26,12 @@ class LandmarkInterface(metaclass=ABCMeta):
         name: "str",
         parent_entity: "EntityOrItsName",
         description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.parent_entity = parent_entity
         self.description = description
-
-    @abstractmethod
-    def get_location_world(
-        self,
-    ) -> "Point":
-        """
-        Get the Landmark XYZ location relative to World Space.
-        """
-
-        print(
-            "get_location_world is called in an abstract method. Please override this method."
-        )
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def get_location_local(
-        self,
-    ) -> "Point":
-        """
-        Get the Landmark XYZ location relative to Local Space.
-        """
-
-        print(
-            "get_location_local is called in an abstract method. Please override this method."
-        )
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def translate_xyz(
-        self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
-    ):
-        """
-        Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
-        """
-
-        print(
-            "translate_xyz is called in an abstract method. Please override this method."
-        )
-
-        raise NotImplementedError()
+        self.native_instance = native_instance
 
     @abstractmethod
     def clone(

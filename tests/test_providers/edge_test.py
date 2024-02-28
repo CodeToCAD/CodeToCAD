@@ -73,7 +73,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
 
-        value = edge.project(project_onto="test-project")
+        value = edge.project(project_from="test-project")
 
         assert value, "Get method failed."
 

@@ -20,14 +20,6 @@ class Material(MaterialInterface):
         self.color = (0, 0, 0, 1)
         self.roughness = 1
 
-    def assign_to_part(self, part_name_or_instance: "PartOrItsName"):
-        from . import Part
-
-        if isinstance(part_name_or_instance, str):
-            part_name_or_instance = Part(part_name_or_instance)
-        part_name_or_instance.set_material(self)
-        return self
-
     def set_color(
         self,
         r_value: "IntOrFloat",

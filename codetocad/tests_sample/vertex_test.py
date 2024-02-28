@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import VertexTestInterface
 
 
-from codetocad import Vertex, Entity
+from codetocad import Entity, Vertex
 
 
 class VertexTest(TestProviderCase, VertexTestInterface):
@@ -38,7 +38,7 @@ class VertexTest(TestProviderCase, VertexTestInterface):
         )
 
         value = instance.project(
-            project_onto=__import__("codetocad").Sketch("a projected sketch")
+            project_from=__import__("codetocad").Sketch("a projected sketch")
         )
 
         assert value, "Get method failed."

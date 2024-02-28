@@ -9,7 +9,7 @@ from .test_helper import *
 from codetocad.tests_interfaces import EdgeTestInterface
 
 
-from codetocad import Edge, Landmark, Vertex, Entity
+from codetocad import Entity, Landmark, Vertex, Edge
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):
@@ -193,7 +193,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         )
 
         value = instance.project(
-            project_onto=__import__("codetocad").Sketch("a projected sketch")
+            project_from=__import__("codetocad").Sketch("a projected sketch")
         )
 
         assert value, "Get method failed."

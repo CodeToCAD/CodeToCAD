@@ -50,5 +50,5 @@ class Vertex(VertexInterface, Entity):
     def get_control_points(self) -> "list[Entity]":
         raise NotImplementedError()
 
-    def project(self, project_onto: "ProjectableInterface") -> "ProjectableInterface":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()

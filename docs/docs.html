@@ -673,10 +673,6 @@
 
             
 
-    <a href=#Wire_clone class="chip">clone()</a>
-
-    
-
     <a href=#Wire_get_normal class="chip">get_normal()</a>
 
     
@@ -760,18 +756,6 @@
 
             
 
-    <a href=#Landmark_get_location_world class="chip">get_location_world()</a>
-
-    
-
-    <a href=#Landmark_get_location_local class="chip">get_location_local()</a>
-
-    
-
-    <a href=#Landmark_translate_xyz class="chip">translate_xyz()</a>
-
-    
-
     <a href=#Landmark_clone class="chip">clone()</a>
 
     
@@ -851,10 +835,6 @@
             
 
     <a href=#Material_get_preset class="chip">get_preset()</a>
-
-    
-
-    <a href=#Material_assign_to_part class="chip">assign_to_part()</a>
 
     
 
@@ -956,6 +936,10 @@
     
 
     <a href=#Camera_create_orthogonal class="chip">create_orthogonal()</a>
+
+    
+
+    <a href=#Camera_create_panoramic class="chip">create_panoramic()</a>
 
     
 
@@ -4637,16 +4621,16 @@
             
                 
 
-    Sketch::<span class="subHeading" id=Sketch_project>project(project_onto)</span>
+    Sketch::<span class="subHeading" id=Sketch_project>project(project_from)</span>
 
-    <div class="methods">Project this entity onto another</div>
+    <div class="methods">Project another entity onto this one.</div>
     <div><span class="subSubHeading">returnType:</span> Projectable</div>
     
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">project_onto</div>
+        <div class="method_name grid-item">project_from</div>
         <div class="grid-item">
-            <div><span class="subSubHeading">Information:</span> Projectable to project onto</div>
+            <div><span class="subSubHeading">Information:</span> Projectable to project from. The other shape will be copied to this one.</div>
             <div><span class="subSubHeading">Type:</span> Projectable</div>
             
             
@@ -4882,43 +4866,6 @@
 
                 
 
-    Wire::<span class="subHeading" id=Wire_clone>clone(new_name,
-        new_parent)</span>
-
-    <div class="methods">Clone an existing Wire with an option to assign to a new Sketch. Returns the new Wire.</div>
-    <div><span class="subSubHeading">returnType:</span> Wire</div>
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">new_name</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string</div>
-            
-            
-            <div><span class="subSubHeading">Example:</span> 'String'</div>
-        </div>
-    </div>
-
-
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">new_parent</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,Sketch</div>
-            
-            <div><span class="subSubHeading">Required:</span> false</div>
-            <div><span class="subSubHeading">Example:</span> Sketch('a sketch')</div>
-        </div>
-    </div>
-
-
-    
-
-    
-
     Wire::<span class="subHeading" id=Wire_get_normal>get_normal(flip)</span>
 
     <div class="methods">Get the normal created by this wire. Must be a closed wire.</div>
@@ -5005,74 +4952,6 @@
             <div class="methods">
 
                 
-
-    Landmark::<span class="subHeading" id=Landmark_get_location_world>get_location_world()</span>
-
-    <div class="methods">Get the Landmark XYZ location relative to World Space.</div>
-    <div><span class="subSubHeading">returnType:</span> Point</div>
-    
-
-    
-
-    Landmark::<span class="subHeading" id=Landmark_get_location_local>get_location_local()</span>
-
-    <div class="methods">Get the Landmark XYZ location relative to Local Space.</div>
-    <div><span class="subSubHeading">returnType:</span> Point</div>
-    
-
-    
-
-    Landmark::<span class="subHeading" id=Landmark_translate_xyz>translate_xyz(x,
-        y,
-        z)</span>
-
-    <div class="methods">Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.</div>
-    
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">x</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
-            
-            
-            <div><span class="subSubHeading">Example:</span> Dimension(0,'mm')</div>
-        </div>
-    </div>
-
-
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">y</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
-            
-            
-            <div><span class="subSubHeading">Example:</span> Dimension(0,'mm')</div>
-        </div>
-    </div>
-
-
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">z</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,float,Dimension</div>
-            
-            
-            <div><span class="subSubHeading">Example:</span> Dimension(0,'mm')</div>
-        </div>
-    </div>
-
-
-    
-
-    
 
     Landmark::<span class="subHeading" id=Landmark_clone>clone(new_name,
         offset,
@@ -5530,42 +5409,20 @@
 
                 
 
-    Material::<span class="subHeading" id=Material_get_preset>get_preset(parameter)</span>
+    Material::<span class="subHeading" id=Material_get_preset>get_preset(material_name)</span>
 
     <div class="methods">Get a material from a preset</div>
     <div><span class="subSubHeading">returnType:</span> Material</div>
     
 
     <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">parameter</div>
+        <div class="method_name grid-item">material_name</div>
         <div class="grid-item">
             <div><span class="subSubHeading">Information:</span> A PresetMaterial name or instance</div>
             <div><span class="subSubHeading">Type:</span> PresetMaterial</div>
             
             
             <div><span class="subSubHeading">Example:</span> PresetMaterial.red</div>
-        </div>
-    </div>
-
-
-    
-
-    
-
-    Material::<span class="subHeading" id=Material_assign_to_part>assign_to_part(part_name_or_instance)</span>
-
-    <div class="methods">Assigns the material to a part.</div>
-    
-    
-
-    <div class="methods grid-container-parameters">
-        <div class="method_name grid-item">part_name_or_instance</div>
-        <div class="grid-item">
-            
-            <div><span class="subSubHeading">Type:</span> string,Part</div>
-            
-            
-            <div><span class="subSubHeading">Example:</span> Part('a part')</div>
         </div>
     </div>
 
@@ -6042,6 +5899,14 @@
     Camera::<span class="subHeading" id=Camera_create_orthogonal>create_orthogonal()</span>
 
     <div class="methods">Create an orthogonal camera in the scene.</div>
+    
+    
+
+    
+
+    Camera::<span class="subHeading" id=Camera_create_panoramic>create_panoramic()</span>
+
+    <div class="methods">Create a panorama camera in the scene.</div>
     
     
 

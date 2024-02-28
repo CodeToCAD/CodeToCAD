@@ -28,12 +28,6 @@ class Material(MaterialInterface):
         except:  # noqa: E722
             create_material(self.name)
 
-    def assign_to_part(self, part_name_or_instance: "PartOrItsName"):
-        if isinstance(part_name_or_instance, PartInterface):
-            part_name = part_name.name
-        set_material_to_object(self.name, part_name)
-        return self
-
     def set_color(
         self,
         r_value: "IntOrFloat",
