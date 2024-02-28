@@ -19,11 +19,11 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.material_interface import MaterialInterface
 
 
-from codetocad.providers_sample.entity import Entity
+from providers.sample.entity import Entity
 
-from codetocad.providers_sample.landmark import Landmark
+from providers.sample.landmark import Landmark
 
-from codetocad.providers_sample.material import Material
+from providers.sample.material import Material
 
 
 class Part(PartInterface, Entity):

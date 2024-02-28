@@ -15,7 +15,7 @@ from codetocad.interfaces import {{interface_name}}
 {% endfor %}
 
 {% for capabilities_class in imports.get_implementable_class_names("") %}
-{{ imports.format_import_statement(capabilities_class, "codetocad.providers_sample.") }}
+{{ imports.format_import_statement(capabilities_class, "providers.sample.") }}
 {% endfor %}
 
 class {{class_name}}({{interface_name}}, {{capabilities_loader.capabilities[class_name].extends|join(", ")}}):

@@ -17,7 +17,7 @@ capabilities_to_py_interface_out = f"{output_dir}/interfaces"
 
 
 capabilities_to_py_provider = "capabilities_to_py_provider.j2"
-capabilities_to_py_provider_out = f"{output_dir}/providers_sample"
+capabilities_to_py_provider_out = f"{output_dir}/../providers/sample"
 
 
 capabilities_to_py_test_interface = "capabilities_to_py_test_interface.j2"

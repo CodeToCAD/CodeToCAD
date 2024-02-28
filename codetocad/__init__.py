@@ -11,6 +11,8 @@ elif find_spec("fusion360_provider"):
     # this will only be available when the Fusion360 Addon is packaged:
     from providers.fusion360.fusion360_provider import *
 else:
-    # When this python library is bundled, use the providers_sample if the "providers" directory is not copied.
-    print("Warning: CodeToCAD is using the providers_sample")
-    from codetocad.providers_sample import *
+    # When this python library is bundled, use the sample if non of the other known providers are available.
+    print(
+        "Warning: you are dry-running using the sample provider. All outputs are sample text explaining which methods will be executed. Please run this script in a supported software for a real output. See the README for more information."
+    )
+    from providers.sample import *

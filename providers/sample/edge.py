@@ -19,11 +19,11 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-from codetocad.providers_sample.entity import Entity
+from providers.sample.entity import Entity
 
-from codetocad.providers_sample.landmark import Landmark
+from providers.sample.landmark import Landmark
 
-from codetocad.providers_sample.vertex import Vertex
+from providers.sample.vertex import Vertex
 
 
 class Edge(EdgeInterface, Entity):

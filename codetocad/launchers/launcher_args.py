@@ -16,7 +16,7 @@ class LauncherArgs:
 
     @staticmethod
     def get_sample_launcher_name():
-        return "providers_sample"
+        return "sample"
 
     def is_sample_launcher(self):
         return self.launcher == LauncherArgs.get_sample_launcher_name()

@@ -15,7 +15,7 @@ from codetocad.interfaces import RenderInterface
 from codetocad.interfaces.camera_interface import CameraInterface
 
 
-from codetocad.providers_sample.camera import Camera
+from providers.sample.camera import Camera
 
 
 class Render(

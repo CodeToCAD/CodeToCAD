@@ -1,6 +1,6 @@
 from codetocad.launchers.blender import run_blender_process
 from codetocad.launchers.launcher_args import LauncherArgs
-from codetocad.launchers.providers_sample_launcher import run_with_providers_sample
+from codetocad.launchers.sample import run_with_sample
 from codetocad.launchers.unknown_launcher import run_unknown_process
 
 
@@ -12,8 +12,8 @@ def execute_launcher():
 
     # Sample/Dummy/Mock launcher:
     if args.is_sample_launcher():
-        print("Running script with the providers_sample.")
-        run_with_providers_sample(args)
+        print("Running script with the sample provider.")
+        run_with_sample(args)
         return
 
     launcher_lower = args.launcher.lower()
