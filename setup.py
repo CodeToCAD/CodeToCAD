@@ -13,7 +13,7 @@ try:
         .decode()
     )
     open("version.txt", "w").write(git_commit_epoch)
-except:
+except:  # noqa
     git_commit_epoch = open("version.txt").read()
 
 setup(
@@ -32,7 +32,7 @@ setup(
     packages=[
         "codetocad",
         "codetocad.interfaces",
-        "codetocad.providers_sample",
+        "providers.sample",
         "codetocad.core",
         "codetocad.core.shapes",
         "codetocad.enums",

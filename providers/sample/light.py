@@ -15,7 +15,7 @@ from codetocad.interfaces import LightInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.providers_sample.entity import Entity
+from providers.sample.entity import Entity
 
 
 class Light(LightInterface, Entity):

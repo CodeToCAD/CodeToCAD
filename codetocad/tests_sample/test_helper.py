@@ -1,5 +1,5 @@
 import unittest
-from codetocad.providers_sample import *
+from providers.sample import *
 
 
 class TestProviderCase(unittest.TestCase):

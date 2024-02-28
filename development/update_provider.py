@@ -9,7 +9,7 @@ from development.capabilities_json_to_python.capabilities_loader import (
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-providers_sample_path = f"{SCRIPT_DIR}/../codetocad/providers_sample/"
+sample_provider_path = f"{SCRIPT_DIR}/../providers/sample/"
 providers_path = f"{SCRIPT_DIR}/../providers/"
 
 
@@ -28,7 +28,7 @@ def get_provider_file(provider_name: str, class_name: str):
 
 
 def get_sample_file(class_name: str):
-    return providers_sample_path + class_name.lower() + ".py"
+    return sample_provider_path + class_name.lower() + ".py"
 
 
 capabilities_loader = CapabilitiesLoader()
@@ -141,10 +141,10 @@ def update_provider_file(
                 provider_imports.append(ast_comments.unparse(definition))
         for definition in sample_definitions.body:
             if isinstance(definition, ast_comments.ImportFrom):
-                if "codetocad.providers_sample" in definition.module:
-                    # This is niche logic; if any of the imports reference providers_sample specifically, change the module to point to this provider_name instead.
+                if "providers.sample" in definition.module:
+                    # This is niche logic; if any of the imports reference sample provider specifically, change the module to point to this provider_name instead.
                     definition.module = definition.module.replace(
-                        "codetocad.providers_sample",
+                        "providers.sample",
                         f"providers.{provider_name.lower()}.{provider_name.lower()}_provider",
                     )
 

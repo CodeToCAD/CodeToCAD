@@ -9,7 +9,7 @@ from codetocad.core.angle import Angle
 from codetocad.core.point import Point
 from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
-from codetocad.providers_sample.vertex import Vertex
+from providers.sample.vertex import Vertex
 from .base import get_body, get_occurrence, get_root_component
 from .common import make_axis
 from .fusion_interface import FusionInterface

@@ -23,15 +23,15 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
-from codetocad.providers_sample.landmark import Landmark
+from providers.sample.landmark import Landmark
 
-from codetocad.providers_sample.vertex import Vertex
+from providers.sample.vertex import Vertex
 
-from codetocad.providers_sample.part import Part
+from providers.sample.part import Part
 
-from codetocad.providers_sample.entity import Entity
+from providers.sample.entity import Entity
 
-from codetocad.providers_sample.edge import Edge
+from providers.sample.edge import Edge
 
 
 class Wire(WireInterface, Entity):
