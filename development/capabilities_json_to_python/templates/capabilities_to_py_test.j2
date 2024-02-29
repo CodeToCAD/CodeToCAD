@@ -10,7 +10,9 @@
 {%set interface_name = class_name+"TestInterface"%}
 from unittest import skip
 
-from .test_helper import *
+from tests.test_providers.sample import *
+from tests.test_providers import TestProviderCase
+
 from codetocad.tests_interfaces import {{interface_name}}
 
 {% set imports = capabilities_loader.generate_imports(class_name, []) %}
