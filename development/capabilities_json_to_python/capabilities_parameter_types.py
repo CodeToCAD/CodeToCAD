@@ -1,3 +1,8 @@
+"""
+Type-mapping, hand-crafted for templating purposes.
+"""
+
+
 def capabilities_type_to_python_type(type_name: str):
     return capabilities_parameter_types.get(type_name, type_name)
 

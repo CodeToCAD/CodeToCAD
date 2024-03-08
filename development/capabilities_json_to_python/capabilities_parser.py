@@ -1,3 +1,6 @@
+"""
+Capabilities.json is the core of CodeToCAD. This parser understands the ins-and-outs of the json file's structure and relationships.
+"""
 from dataclasses import dataclass, field, fields
 
 

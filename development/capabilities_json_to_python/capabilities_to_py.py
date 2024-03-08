@@ -1,3 +1,7 @@
+"""
+A script to generate the CodeToCAD python files defined in template_utils.py::get_templates_to_generate() from capabilities.json + jinja2 templates.
+"""
+
 from development.capabilities_json_to_python.capabilities_loader import (
     CapabilitiesLoader,
 )

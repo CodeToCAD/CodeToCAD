@@ -17,21 +17,21 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.scalable_interface import ScalableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
 class PartInterface(
