@@ -44,6 +44,8 @@ def get_templates_to_generate() -> list[TemplateArgs]:
         capabilities_to_py_test_interface_out,
         capabilities_to_py_test,
         capabilities_to_py_test_out,
+        capabilities_to_py_facade,
+        capabilities_to_py_facade_out,
     )
 
     return [
@@ -52,6 +54,12 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_interface_out,
             suffix="Interface",
             generate_interface_only_capabilities_in_a_separate_file=True,
+        ),
+        TemplateArgs(
+            template_path=capabilities_to_py_facade,
+            output_folder_path=capabilities_to_py_facade_out,
+            suffix="",
+            generate_interface_only_capabilities_in_a_separate_file=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_provider,
@@ -64,6 +72,12 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_test_interface_out,
             suffix="TestInterface",
             generate_interface_only_capabilities_in_a_separate_file=True,
+        ),
+        TemplateArgs(
+            template_path=capabilities_to_py_test,
+            output_folder_path=capabilities_to_py_test_out,
+            suffix="Test",
+            generate_interface_only_capabilities_in_a_separate_file=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_test,
