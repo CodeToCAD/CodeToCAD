@@ -11,7 +11,7 @@ from tests.test_providers import TestProviderCase
 from codetocad.tests_interfaces import PartTestInterface
 
 
-from codetocad import Material, Part, Entity, Landmark
+from codetocad import Material, Part, Landmark, Entity
 
 
 class PartTest(TestProviderCase, PartTestInterface):

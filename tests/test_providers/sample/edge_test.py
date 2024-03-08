@@ -11,7 +11,7 @@ from tests.test_providers import TestProviderCase
 from codetocad.tests_interfaces import EdgeTestInterface
 
 
-from codetocad import Edge, Vertex, Landmark, Entity
+from codetocad import Landmark, Edge, Vertex, Entity
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):

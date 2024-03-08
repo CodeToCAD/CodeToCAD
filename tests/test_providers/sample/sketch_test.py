@@ -11,7 +11,7 @@ from tests.test_providers import TestProviderCase
 from codetocad.tests_interfaces import SketchTestInterface
 
 
-from codetocad import Sketch, Edge, Vertex, Entity, Part, Landmark, Wire
+from codetocad import Sketch, Part, Edge, Vertex, Entity, Landmark, Wire
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):

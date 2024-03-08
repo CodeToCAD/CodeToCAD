@@ -1,3 +1,8 @@
+"""
+Example and mock values, hand-crafted for templating purposes.
+"""
+
+
 def capabilities_type_to_python_mock_value(type_name: str | None):
     if type_name is None:
         return None

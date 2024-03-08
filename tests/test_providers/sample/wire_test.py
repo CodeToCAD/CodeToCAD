@@ -11,7 +11,7 @@ from tests.test_providers import TestProviderCase
 from codetocad.tests_interfaces import WireTestInterface
 
 
-from codetocad import Edge, Vertex, Entity, Part, Landmark, Wire
+from codetocad import Edge, Part, Vertex, Entity, Landmark, Wire
 
 
 class WireTest(TestProviderCase, WireTestInterface):
