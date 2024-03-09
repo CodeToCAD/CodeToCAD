@@ -5,6 +5,9 @@ import shutil
 from development.capabilities_json_to_python.capabilities_loader import (
     CapabilitiesLoader,
 )
+from development.capabilities_json_to_python.capabilities_to_py import (
+    create_register_method,
+)
 
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -17,14 +20,12 @@ def get_log_markdown_file(provider_name: str):
     return f"{providers_path}/{provider_name.lower()}/update_providers_changelog.md"
 
 
+def get_provider_folder(provider_name: str):
+    return providers_path + provider_name.lower() + f"/{provider_name.lower()}_provider"
+
+
 def get_provider_file(provider_name: str, class_name: str):
-    return (
-        providers_path
-        + provider_name.lower()
-        + f"/{provider_name.lower()}_provider/"
-        + class_name.lower()
-        + ".py"
-    )
+    return get_provider_folder(provider_name) + "/" + class_name.lower() + ".py"
 
 
 def get_sample_file(class_name: str):
@@ -242,6 +243,11 @@ def main():
         is_remove_non_compliant_methods=True,
         is_dump_imports=True,
         is_write=is_write,
+    )
+
+    create_register_method(
+        get_provider_folder(provider_name),
+        capabilities_loader.all_implementable_class_names,
     )
 
 

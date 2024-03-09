@@ -21,6 +21,21 @@ def create_init_file(outpit_dir: str):
         )
 
 
+def create_register_method(outpit_dir: str, class_names: list[str]):
+    with open(outpit_dir + "/register.py", "w") as handler:
+        handler.write(
+            """# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
+"""
+        )
+        handler.write("from . import *\n\n")
+        handler.write("def register():\n")
+
+        for class_name in class_names:
+            handler.write(
+                f"    __import__('codetocad').facade.{class_name.lower()}.{class_name}.register({class_name})\n"
+            )
+
+
 def generate_template_for_class(
     class_name,
     capabilities_loader: CapabilitiesLoader,
@@ -53,6 +68,12 @@ def generate_all_templates(
         print("Generating", template_args.template_path)
 
         create_init_file(template_args.output_folder_path)
+
+        if template_args.generate_facade_registration_methods:
+            create_register_method(
+                template_args.output_folder_path,
+                capabilities_loader.all_implementable_class_names,
+            )
 
         for class_name in capabilities_loader.all_interface_only_class_names:
             if (
