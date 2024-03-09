@@ -1,9 +1,10 @@
 from typing import Optional
+from codetocad.interfaces.render_interface import RenderInterface
 from codetocad.interfaces.camera_interface import CameraInterface
 from providers.blender.blender_provider.camera import Camera
 from . import blender_actions
 from . import blender_definitions
-from codetocad.interfaces import RenderInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

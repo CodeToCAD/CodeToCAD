@@ -1,8 +1,9 @@
 from typing import Optional
+from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from providers.onshape.onshape_provider.entity import Entity
-from codetocad.interfaces import VertexInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

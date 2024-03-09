@@ -1,7 +1,8 @@
 from typing import Optional
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-from codetocad.interfaces import LandmarkInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
@@ -64,7 +65,3 @@ class Landmark(LandmarkInterface, Entity):
         if isinstance(self.parent_entity, str):
             return Entity(self.parent_entity)
         return self.parent_entity
-
-    def get_location_local(self) -> "Point":
-        print("get_location_local called")
-        return Point.from_list_of_float_or_string([0, 0, 0])

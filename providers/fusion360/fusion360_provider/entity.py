@@ -1,5 +1,5 @@
 from typing import Optional
-from codetocad.interfaces import EntityInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

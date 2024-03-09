@@ -1,7 +1,8 @@
 from typing import Optional
+from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
-from codetocad.interfaces import AnalyticsInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

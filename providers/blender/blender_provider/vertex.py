@@ -1,7 +1,8 @@
 from typing import Optional
+from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.entity import Entity
-from codetocad.interfaces import VertexInterface
+
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *

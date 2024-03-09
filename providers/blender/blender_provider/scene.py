@@ -1,10 +1,11 @@
 from typing import Optional
-from codetocad.interfaces import SceneInterface
+from codetocad.interfaces.scene_interface import SceneInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.entity import Entity
 from . import blender_actions
 from . import blender_definitions
-from codetocad.interfaces import SceneInterface, EntityInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

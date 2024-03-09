@@ -1,6 +1,7 @@
 from typing import Optional
+from codetocad.interfaces.joint_interface import JointInterface
 from providers.blender.blender_provider.entity import Entity
-from codetocad.interfaces import JointInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *

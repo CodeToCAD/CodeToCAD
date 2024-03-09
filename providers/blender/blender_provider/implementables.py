@@ -1,7 +1,8 @@
 import math
 from typing import Optional
 
-from codetocad.interfaces import EntityInterface, LandmarkInterface
+from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

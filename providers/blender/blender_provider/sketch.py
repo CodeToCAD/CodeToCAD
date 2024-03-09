@@ -1,7 +1,8 @@
 import math
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces import SketchInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
