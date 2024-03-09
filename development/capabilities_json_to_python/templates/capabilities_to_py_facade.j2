@@ -5,7 +5,7 @@
 
 {%set interface_name = class_name + "Interface" %}
 
-from codetocad.interfaces import {{interface_name}}
+from codetocad.interfaces.{{class_name|lower}}_interface import {{interface_name}}
 
 class {{class_name}}:
     '''
@@ -13,7 +13,7 @@ class {{class_name}}:
     Register a provider using the `register()` method.
     '''
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> {{interface_name}}:
         return cls._provider(*args, **kwds)
 
     @classmethod

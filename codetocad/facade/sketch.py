@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import SketchInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
 
 
 class Sketch:
@@ -13,7 +13,7 @@ class Sketch:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> SketchInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

@@ -1,6 +1,5 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
-from codetocad.tests_interfaces import EntityTestInterface
+from tests.test_providers import *
+from codetocad.tests_interfaces.entity_test_interface import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):

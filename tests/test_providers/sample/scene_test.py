@@ -3,19 +3,12 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import SceneTestInterface
-
-
-from codetocad import Scene, Entity
+from codetocad.tests_interfaces.scene_test_interface import SceneTestInterface
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):
-    @skip("TODO")
     def test_default(self):
         instance = Scene(name="String", description="String")
 
@@ -23,7 +16,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create(self):
         instance = Scene(name="String", description="String")
 
@@ -31,13 +23,11 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_delete(self):
         instance = Scene(name="String", description="String")
 
         value = instance.delete()
 
-    @skip("TODO")
     def test_is_exists(self):
         instance = Scene(name="String", description="String")
 
@@ -45,7 +35,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_selected_entity(self):
         instance = Scene(name="String", description="String")
 
@@ -53,7 +42,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_export(self):
         instance = Scene(name="String", description="String")
 
@@ -64,15 +52,13 @@ class SceneTest(TestProviderCase, SceneTestInterface):
             scale=1.0,
         )
 
-    @skip("TODO")
     def test_set_default_unit(self):
         instance = Scene(name="String", description="String")
 
-        value = instance.set_default_unit(unit=mm)
+        value = instance.set_default_unit(unit="mm")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_group(self):
         instance = Scene(name="String", description="String")
 
@@ -80,19 +66,16 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_delete_group(self):
         instance = Scene(name="String", description="String")
 
         value = instance.delete_group(name="String", remove_children=True)
 
-    @skip("TODO")
     def test_remove_from_group(self):
         instance = Scene(name="String", description="String")
 
         value = instance.remove_from_group(entity_name="String", group_name="String")
 
-    @skip("TODO")
     def test_assign_to_group(self):
         instance = Scene(name="String", description="String")
 
@@ -104,7 +87,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_visible(self):
         instance = Scene(name="String", description="String")
 
@@ -114,7 +96,6 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_background_image(self):
         instance = Scene(name="String", description="String")
 

@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import AnimationInterface
+from codetocad.interfaces.animation_interface import AnimationInterface
 
 
 class Animation:
@@ -13,7 +13,7 @@ class Animation:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> AnimationInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

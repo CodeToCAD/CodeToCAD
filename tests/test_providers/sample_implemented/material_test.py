@@ -1,7 +1,6 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
+from tests.test_providers import *
 from codetocad.enums.preset_material import PresetMaterial
-from codetocad.tests_interfaces import MaterialTestInterface
+from codetocad.tests_interfaces.material_test_interface import MaterialTestInterface
 
 
 class MaterialTest(TestProviderCase, MaterialTestInterface):

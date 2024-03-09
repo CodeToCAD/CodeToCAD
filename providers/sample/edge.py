@@ -9,19 +9,19 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import EdgeInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
 
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from providers.sample.landmark import Landmark
-
 from providers.sample.vertex import Vertex
+
+from providers.sample.landmark import Landmark
 
 from providers.sample.entity import Entity
 

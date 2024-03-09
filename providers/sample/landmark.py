@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import LandmarkInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface

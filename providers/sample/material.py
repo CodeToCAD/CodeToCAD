@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import MaterialInterface
+from codetocad.interfaces.material_interface import MaterialInterface
 
 
 class Material(

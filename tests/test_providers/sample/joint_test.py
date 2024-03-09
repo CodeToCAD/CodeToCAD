@@ -3,19 +3,12 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import JointTestInterface
-
-
-from codetocad import Entity
+from codetocad.tests_interfaces.joint_test_interface import JointTestInterface
 
 
 class JointTest(TestProviderCase, JointTestInterface):
-    @skip("TODO")
     def test_translate_landmark_onto_another(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -26,7 +19,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_pivot(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -37,7 +29,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_gear_ratio(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -48,7 +39,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_location_xyz(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -61,7 +51,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_location_x(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -74,7 +63,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_location_y(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -87,7 +75,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_location_z(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -100,7 +87,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_rotation_xyz(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -111,7 +97,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_rotation_x(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -122,7 +107,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_rotation_y(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
@@ -133,7 +117,6 @@ class JointTest(TestProviderCase, JointTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_limit_rotation_z(self):
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),

@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import JointInterface
+from codetocad.interfaces.joint_interface import JointInterface
 
 
 class Joint:
@@ -13,7 +13,7 @@ class Joint:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> JointInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

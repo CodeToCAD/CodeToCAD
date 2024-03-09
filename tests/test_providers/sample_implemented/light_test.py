@@ -1,6 +1,5 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
-from codetocad.tests_interfaces import LightTestInterface
+from tests.test_providers import *
+from codetocad.tests_interfaces.light_test_interface import LightTestInterface
 
 
 class LightTest(TestProviderCase, LightTestInterface):

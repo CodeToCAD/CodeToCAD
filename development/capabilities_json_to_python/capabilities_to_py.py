@@ -13,12 +13,17 @@ from development.capabilities_json_to_python.template_utils import (
 from development.utilities import to_snake_case
 
 
-def create_init_file(outpit_dir: str):
+def create_init_file(outpit_dir: str, class_names: list[str], file_name_suffix):
     with open(outpit_dir + "/__init__.py", "w") as handler:
         handler.write(
             """# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
 """
         )
+
+        for class_name in class_names:
+            handler.write(
+                f"from .{class_name.lower()}{'_'+file_name_suffix.lower() if file_name_suffix else ''} import {class_name}{file_name_suffix}\n"
+            )
 
 
 def create_register_method(outpit_dir: str, class_names: list[str]):
@@ -27,7 +32,9 @@ def create_register_method(outpit_dir: str, class_names: list[str]):
             """# THIS IS AN AUTO-GENERATED FILE. DO NOT CHANGE.\n
 """
         )
-        handler.write("from . import *\n\n")
+        for class_name in class_names:
+            handler.write(f"from .{class_name.lower()} import {class_name}\n")
+
         handler.write("def register():\n")
 
         for class_name in class_names:
@@ -42,9 +49,6 @@ def generate_template_for_class(
     template_args: TemplateArgs,
 ):
     file_name = to_snake_case(f"{class_name}{template_args.suffix}")
-
-    with open(template_args.output_folder_path + "/__init__.py", "a") as handler:
-        handler.write(f"from .{file_name} import {class_name}{template_args.suffix}\n")
 
     template = get_jinja_environment().get_template(template_args.template_path)
 
@@ -67,7 +71,21 @@ def generate_all_templates(
     for template_args in templates_to_generate:
         print("Generating", template_args.template_path)
 
-        create_init_file(template_args.output_folder_path)
+        if template_args.generate_init_file_imports:
+            class_names = capabilities_loader.all_class_names
+            if (
+                not template_args.generate_interface_only_capabilities_in_a_separate_file
+            ):
+                class_names = capabilities_loader.all_implementable_class_names
+            create_init_file(
+                template_args.output_folder_path,
+                class_names,
+                file_name_suffix=template_args.suffix,
+            )
+        else:
+            create_init_file(
+                template_args.output_folder_path, [], ""
+            )  # Generate an empty __init__.py file
 
         if template_args.generate_facade_registration_methods:
             create_register_method(

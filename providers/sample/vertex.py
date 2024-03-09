@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import VertexInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface

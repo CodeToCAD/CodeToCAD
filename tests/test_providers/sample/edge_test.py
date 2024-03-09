@@ -3,26 +3,19 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import EdgeTestInterface
-
-
-from codetocad import Landmark, Edge, Vertex, Entity
+from codetocad.tests_interfaces.edge_test_interface import EdgeTestInterface
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):
-    @skip("TODO")
     def test_offset(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -30,14 +23,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_fillet(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -52,14 +44,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_set_is_construction(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -67,14 +58,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_get_is_construction(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -82,33 +72,31 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_mirror(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.mirror(
             mirror_across_entity=__import__("codetocad").Part("an entity"),
-            axis=x,
+            axis="x",
             resulting_mirrored_entity_name="String",
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_linear_pattern(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -118,14 +106,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_circular_pattern(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -138,14 +125,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_remesh(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -153,14 +139,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_subdivide(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -168,14 +153,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_decimate(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -183,14 +167,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_project(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -200,14 +183,13 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_landmark(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -220,17 +202,16 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_landmark(self):
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.get_landmark(landmark_name=PresetLandmark.topLeft)
+        value = instance.get_landmark(landmark_name=PresetLandmark.leftTop)
 
         assert value, "Get method failed."

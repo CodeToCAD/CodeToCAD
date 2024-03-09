@@ -3,19 +3,12 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import WireTestInterface
-
-
-from codetocad import Edge, Part, Vertex, Entity, Landmark, Wire
+from codetocad.tests_interfaces.wire_test_interface import WireTestInterface
 
 
 class WireTest(TestProviderCase, WireTestInterface):
-    @skip("TODO")
     def test_get_normal(self):
         instance = Wire(
             name="String",
@@ -31,7 +24,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -39,7 +32,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_vertices(self):
         instance = Wire(
             name="String",
@@ -55,7 +47,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -63,7 +55,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_is_closed(self):
         instance = Wire(
             name="String",
@@ -79,7 +70,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -87,7 +78,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_loft(self):
         instance = Wire(
             name="String",
@@ -103,7 +93,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -127,7 +117,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_mirror(self):
         instance = Wire(
             name="String",
@@ -143,19 +132,18 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.mirror(
             mirror_across_entity=__import__("codetocad").Part("an entity"),
-            axis=x,
+            axis="x",
             resulting_mirrored_entity_name="String",
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_linear_pattern(self):
         instance = Wire(
             name="String",
@@ -171,7 +159,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -181,7 +169,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_circular_pattern(self):
         instance = Wire(
             name="String",
@@ -197,7 +184,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -210,7 +197,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_project(self):
         instance = Wire(
             name="String",
@@ -226,7 +212,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -236,7 +222,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_landmark(self):
         instance = Wire(
             name="String",
@@ -252,7 +237,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -265,7 +250,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_landmark(self):
         instance = Wire(
             name="String",
@@ -281,15 +265,14 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.get_landmark(landmark_name=PresetLandmark.topLeft)
+        value = instance.get_landmark(landmark_name=PresetLandmark.leftTop)
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_union(self):
         instance = Wire(
             name="String",
@@ -305,7 +288,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -317,7 +300,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_subtract(self):
         instance = Wire(
             name="String",
@@ -333,7 +315,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
@@ -345,7 +327,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_intersect(self):
         instance = Wire(
             name="String",
@@ -361,7 +342,7 @@ class WireTest(TestProviderCase, WireTestInterface):
                 )
             ],
             description="String",
-            native_instance=value,
+            native_instance="value",
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 

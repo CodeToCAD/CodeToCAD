@@ -5,7 +5,7 @@
         {%-set default_value = '"'+ parameter.default_value+'"' if parameter.default_value and parameter.default_value is string else  parameter.default_value|string -%}
         {%-set default_value = default_value if parameter.default_value is not none else "None" -%}
 
-        {%-set type_mock_value = parameter.type_mock_value if parameter.type_mock_value is not none else "value" %}
+        {%-set type_mock_value = parameter.type_mock_value if parameter.type_mock_value is not none else "'value'" %}
         {# {%-set type_mock_value = '"'+ type_mock_value+'"' if type_mock_value is string else  type_mock_value|string -%} #}
 
         {{ parameter.name }} =
@@ -14,7 +14,6 @@
 
 {%macro generate_test_method(capabilities_loader, capabilities_class, capabilities_method, use_abstract_method_decorator) %}
 
-    {{"@skip('TODO')\n    " if not use_abstract_method_decorator }}
     {{"@abstractmethod\n    " if use_abstract_method_decorator }}
     def test_{{capabilities_method.name}}(self):
         {% if use_abstract_method_decorator %}

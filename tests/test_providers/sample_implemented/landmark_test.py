@@ -1,6 +1,5 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
-from codetocad.tests_interfaces import LandmarkTestInterface
+from tests.test_providers import *
+from codetocad.tests_interfaces.landmark_test_interface import LandmarkTestInterface
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):

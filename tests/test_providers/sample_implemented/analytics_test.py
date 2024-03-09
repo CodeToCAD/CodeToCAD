@@ -1,6 +1,5 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
-from codetocad.tests_interfaces import AnalyticsTestInterface
+from tests.test_providers import *
+from codetocad.tests_interfaces.analytics_test_interface import AnalyticsTestInterface
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):

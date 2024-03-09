@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import EntityInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class Entity:
@@ -13,7 +13,7 @@ class Entity:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> EntityInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod
