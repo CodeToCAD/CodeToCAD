@@ -1,7 +1,6 @@
-from tests.test_providers.sample_implemented.test_helper import *
-from tests.test_providers import TestProviderCase
+from tests.test_providers import *
 
-from codetocad.tests_interfaces import SketchTestInterface
+from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
 import math
 

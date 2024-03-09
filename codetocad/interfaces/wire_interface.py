@@ -11,25 +11,25 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
-
-from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
 from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 
 class WireInterface(

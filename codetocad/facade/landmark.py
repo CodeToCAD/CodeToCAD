@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import LandmarkInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 class Landmark:
@@ -13,7 +13,7 @@ class Landmark:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> LandmarkInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

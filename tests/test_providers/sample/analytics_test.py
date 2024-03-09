@@ -3,19 +3,12 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import AnalyticsTestInterface
-
-
-from codetocad import Entity
+from codetocad.tests_interfaces.analytics_test_interface import AnalyticsTestInterface
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
-    @skip("TODO")
     def test_measure_distance(self):
         instance = Analytics()
 
@@ -26,7 +19,6 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_measure_angle(self):
         instance = Analytics()
 
@@ -38,7 +30,6 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_world_pose(self):
         instance = Analytics()
 
@@ -48,7 +39,6 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_bounding_box(self):
         instance = Analytics()
 
@@ -58,7 +48,6 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_dimensions(self):
         instance = Analytics()
 
@@ -68,7 +57,6 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_log(self):
         instance = Analytics()
 

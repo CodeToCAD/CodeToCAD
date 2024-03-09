@@ -9,33 +9,33 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import SketchInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.edge_interface import EdgeInterface
-
-from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.wire_interface import WireInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.wire_interface import WireInterface
+from codetocad.interfaces.part_interface import PartInterface
 
 
-from providers.sample.edge import Edge
-
-from providers.sample.part import Part
+from providers.sample.wire import Wire
 
 from providers.sample.vertex import Vertex
+
+from providers.sample.edge import Edge
 
 from providers.sample.entity import Entity
 
 from providers.sample.landmark import Landmark
 
-from providers.sample.wire import Wire
+from providers.sample.part import Part
 
 
 class Sketch(SketchInterface, Entity):

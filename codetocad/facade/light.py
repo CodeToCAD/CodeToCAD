@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import LightInterface
+from codetocad.interfaces.light_interface import LightInterface
 
 
 class Light:
@@ -13,7 +13,7 @@ class Light:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> LightInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import CameraInterface
+from codetocad.interfaces.camera_interface import CameraInterface
 
 
 class Camera:
@@ -13,7 +13,7 @@ class Camera:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> CameraInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

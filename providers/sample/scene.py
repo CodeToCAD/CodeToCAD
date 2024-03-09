@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import SceneInterface
+from codetocad.interfaces.scene_interface import SceneInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface

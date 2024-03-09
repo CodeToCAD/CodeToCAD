@@ -4,7 +4,7 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 
-from codetocad.interfaces import PartInterface
+from codetocad.interfaces.part_interface import PartInterface
 
 
 class Part:
@@ -13,7 +13,7 @@ class Part:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, *args, **kwds):
+    def __new__(cls, *args, **kwds) -> PartInterface:
         return cls._provider(*args, **kwds)
 
     @classmethod

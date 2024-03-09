@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import AnalyticsInterface
+from codetocad.interfaces.analytics_interface import AnalyticsInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface

@@ -27,6 +27,7 @@ class TemplateArgs:
     output_folder_path: str
     suffix: str
     generate_interface_only_capabilities_in_a_separate_file: bool
+    generate_init_file_imports: bool
     generate_facade_registration_methods: bool
 
 
@@ -55,6 +56,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_interface_out,
             suffix="Interface",
             generate_interface_only_capabilities_in_a_separate_file=True,
+            generate_init_file_imports=False,
             generate_facade_registration_methods=False,
         ),
         TemplateArgs(
@@ -62,6 +64,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_facade_out,
             suffix="",
             generate_interface_only_capabilities_in_a_separate_file=False,
+            generate_init_file_imports=True,
             generate_facade_registration_methods=False,
         ),
         TemplateArgs(
@@ -69,6 +72,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_provider_out,
             suffix="",
             generate_interface_only_capabilities_in_a_separate_file=False,
+            generate_init_file_imports=False,
             generate_facade_registration_methods=True,
         ),
         TemplateArgs(
@@ -76,6 +80,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_test_interface_out,
             suffix="TestInterface",
             generate_interface_only_capabilities_in_a_separate_file=True,
+            generate_init_file_imports=False,
             generate_facade_registration_methods=False,
         ),
         TemplateArgs(
@@ -83,13 +88,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             output_folder_path=capabilities_to_py_test_out,
             suffix="Test",
             generate_interface_only_capabilities_in_a_separate_file=False,
-            generate_facade_registration_methods=False,
-        ),
-        TemplateArgs(
-            template_path=capabilities_to_py_test,
-            output_folder_path=capabilities_to_py_test_out,
-            suffix="Test",
-            generate_interface_only_capabilities_in_a_separate_file=False,
+            generate_init_file_imports=True,
             generate_facade_registration_methods=False,
         ),
     ]

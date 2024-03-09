@@ -3,24 +3,17 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 
 # testsSample will implement these interfaces - this ensures that as capabilities.json is updated, tests are up to date as well.
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import SketchTestInterface
-
-
-from codetocad import Sketch, Part, Edge, Vertex, Entity, Landmark, Wire
+from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):
-    @skip("TODO")
     def test_clone(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -28,12 +21,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_revolve(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -45,12 +37,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_twist(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -60,12 +51,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_extrude(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -73,12 +63,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_sweep(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -88,12 +77,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_offset(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -101,12 +89,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_profile(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -114,12 +101,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_text(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -137,12 +123,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_create_from_vertices(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -152,12 +137,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_point(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -167,12 +151,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_line(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -183,12 +166,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_circle(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -196,12 +178,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_ellipse(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -211,12 +192,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_arc(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -229,12 +209,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_rectangle(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -244,12 +223,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_polygon(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -259,12 +237,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_trapezoid(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -276,12 +253,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_spiral(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -295,29 +271,27 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_mirror(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
         value = instance.mirror(
             mirror_across_entity=__import__("codetocad").Part("an entity"),
-            axis=x,
+            axis="x",
             resulting_mirrored_entity_name="String",
         )
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_linear_pattern(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -327,12 +301,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_circular_pattern(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -345,12 +318,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_create_from_file(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -358,23 +330,21 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    @skip("TODO")
     def test_export(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
         value = instance.export(file_path="String", overwrite=True, scale=1.0)
 
-    @skip("TODO")
     def test_scale_xyz(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -384,12 +354,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_x(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -397,12 +366,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_y(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -410,12 +378,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_z(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -423,12 +390,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_x_by_factor(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -436,12 +402,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_y_by_factor(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -449,12 +414,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_z_by_factor(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -462,25 +426,23 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_scale_keep_aspect_ratio(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
-        value = instance.scale_keep_aspect_ratio(scale=Dimension(0, "mm"), axis=x)
+        value = instance.scale_keep_aspect_ratio(scale=Dimension(0, "mm"), axis="x")
 
         assert value, "Modify method failed."
 
-    @skip("TODO")
     def test_project(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -490,12 +452,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_create_landmark(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
@@ -508,15 +469,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value, "Get method failed."
 
-    @skip("TODO")
     def test_get_landmark(self):
         instance = Sketch(
             name="String",
             description="String",
-            native_instance=value,
+            native_instance="value",
             curve_type=CurveTypes.NURBS,
         )
 
-        value = instance.get_landmark(landmark_name=PresetLandmark.topLeft)
+        value = instance.get_landmark(landmark_name=PresetLandmark.leftTop)
 
         assert value, "Get method failed."

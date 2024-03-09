@@ -8,16 +8,9 @@
 {%- from 'generate_test_class_definition.j2' import generate_test_class_definition -%}
 
 {%set interface_name = class_name+"TestInterface"%}
-from unittest import skip
+from tests.test_providers import *
 
-from tests.test_providers.sample import *
-from tests.test_providers import TestProviderCase
-
-from codetocad.tests_interfaces import {{interface_name}}
-
-{% set imports = capabilities_loader.generate_imports(class_name, []) %}
-
-{{ "from codetocad import " + imports.get_implementable_class_names()|join(", ") if imports.get_implementable_class_names()|length > 0}}
+from codetocad.tests_interfaces.{{class_name|lower}}_test_interface  import {{interface_name}}
 
 class {{class_name}}Test(TestProviderCase, {{interface_name}}):    
     {{generate_test_class_definition(capabilities_loader, class_name, use_abstract_method_decorator, template_args)}}

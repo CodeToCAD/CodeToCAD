@@ -9,7 +9,7 @@ from codetocad.core import *
 from codetocad.enums import *
 
 
-from codetocad.interfaces import RenderInterface
+from codetocad.interfaces.render_interface import RenderInterface
 
 
 from codetocad.interfaces.camera_interface import CameraInterface
