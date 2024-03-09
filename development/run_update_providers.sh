@@ -5,3 +5,9 @@ cd "$SCRIPT_DIR/.."
 python -m development.update_provider -p Blender -w
 python -m development.update_provider -p Onshape -w
 python -m development.update_provider -p Fusion360 -w
+
+if code -v &> /dev/null; then
+    code providers/blender/update_providers_changelog.md
+    code providers/onshape/update_providers_changelog.md
+    code providers/fusion360/update_providers_changelog.md
+fi
