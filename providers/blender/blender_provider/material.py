@@ -1,6 +1,7 @@
 from typing import Optional
-from codetocad.interfaces import MaterialInterface
-from codetocad.interfaces import MaterialInterface, PartInterface
+from codetocad.interfaces.material_interface import MaterialInterface
+
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *

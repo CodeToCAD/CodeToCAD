@@ -1,5 +1,6 @@
 from typing import Optional
-from codetocad.interfaces import LandmarkInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.blender_actions.context import (

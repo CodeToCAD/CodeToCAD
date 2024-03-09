@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.enums import *
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -6,7 +7,7 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.landmark import Landmark
-from codetocad.interfaces import EdgeInterface
+
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import *

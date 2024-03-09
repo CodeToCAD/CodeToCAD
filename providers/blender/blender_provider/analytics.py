@@ -1,4 +1,4 @@
-from codetocad.interfaces import AnalyticsInterface
+from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.entity import Entity
 from codetocad.codetocad_types import *

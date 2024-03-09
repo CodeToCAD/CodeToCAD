@@ -1,7 +1,8 @@
 from typing import Optional
+from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
-from codetocad.interfaces import CameraInterface
+
 from codetocad.codetocad_types import *
 from codetocad.utilities import *
 from codetocad.core import *
