@@ -1,9 +1,6 @@
 from typing import Optional
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import get_component
 from .fusion_actions.fusion_landmark import FusionLandmark
 from .fusion_actions.fusion_body import FusionBody
@@ -105,9 +102,9 @@ class Entity(EntityInterface):
 
     def translate_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         from . import Part, Sketch, Landmark
 
@@ -119,7 +116,7 @@ class Entity(EntityInterface):
             self.fusion_landmark.translate(x, y, z)
         return self
 
-    def translate_x(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_x(self, amount: "str|float|Dimension"):
         from . import Part, Sketch, Landmark
 
         if isinstance(self, Part):
@@ -130,7 +127,7 @@ class Entity(EntityInterface):
             self.fusion_landmark.translate(amount, 0, 0)
         return self
 
-    def translate_y(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_y(self, amount: "str|float|Dimension"):
         from . import Part, Sketch, Landmark
 
         if isinstance(self, Part):
@@ -141,7 +138,7 @@ class Entity(EntityInterface):
             self.fusion_landmark.translate(0, amount, 0)
         return self
 
-    def translate_z(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_z(self, amount: "str|float|Dimension"):
         from . import Part, Sketch, Landmark
 
         if isinstance(self, Part):
@@ -153,15 +150,12 @@ class Entity(EntityInterface):
         return self
 
     def rotate_xyz(
-        self,
-        x: "AngleOrItsFloatOrStringValue",
-        y: "AngleOrItsFloatOrStringValue",
-        z: "AngleOrItsFloatOrStringValue",
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         print("rotate_xyz called:", x, y, z)
         return self
 
-    def rotate_x(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_x(self, rotation: "str|float|Angle"):
         from . import Part
 
         if isinstance(self, Part):
@@ -170,7 +164,7 @@ class Entity(EntityInterface):
             self.fusion_sketch.rotate("x", rotation)
         return self
 
-    def rotate_y(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_y(self, rotation: "str|float|Angle"):
         from . import Part
 
         if isinstance(self, Part):
@@ -179,7 +173,7 @@ class Entity(EntityInterface):
             self.fusion_sketch.rotate("y", rotation)
         return self
 
-    def rotate_z(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_z(self, rotation: "str|float|Angle"):
         from . import Part
 
         if isinstance(self, Part):

@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.render_interface import RenderInterface
 from codetocad.interfaces.camera_interface import CameraInterface
 from providers.onshape.onshape_provider.camera import Camera
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -56,5 +52,5 @@ class Render(RenderInterface):
     def set_render_engine(self, name: "str"):
         return self
 
-    def set_camera(self, camera_name_or_instance: "CameraOrItsName"):
+    def set_camera(self, camera_name_or_instance: "str|Camera"):
         return self

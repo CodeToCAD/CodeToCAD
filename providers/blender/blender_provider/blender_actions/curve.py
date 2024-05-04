@@ -2,10 +2,7 @@ from typing import List, Sequence, Tuple, Optional, TYPE_CHECKING
 import bpy
 import mathutils
 
-from codetocad.codetocad_types import (
-    DimensionOrItsFloatOrStringValue,
-    PointOrListOfFloatOrItsStringValue,
-)
+from codetocad.codetocad_types import *
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
@@ -25,12 +22,16 @@ from providers.blender.blender_provider.blender_actions.objects import (
 from providers.blender.blender_provider.blender_actions.objects_context import (
     convert_object_using_ops,
 )
-
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderCurvePrimitiveTypes,
+    BlenderCurveTypes,
+    BlenderLength,
+    BlenderTypes,
+)
 
 
 if TYPE_CHECKING:
-    from .. import Wire
+    from providers.blender.blender_provider.wire import Wire
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
@@ -57,7 +58,7 @@ def set_curve_extrude_property(curve_name: str, length: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(length)
+    length = BlenderLength.convert_dimension_to_blender_unit(length)
 
     curve.extrude = length.value
 
@@ -68,7 +69,7 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     """
     curve = get_curve(curve_name)
 
-    length = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(offset)
+    length = BlenderLength.convert_dimension_to_blender_unit(offset)
 
     curve.offset = length.value
 
@@ -111,7 +112,7 @@ def create_text(
     setattr(
         curveData,
         "size",
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(size).value,
+        BlenderLength.convert_dimension_to_blender_unit(size).value,
     )
     setattr(curveData, "space_character", character_spacing)
     setattr(curveData, "space_word", word_spacing)
@@ -135,15 +136,15 @@ def create_text(
     assign_object_to_collection(curve_name)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(curve_name, blender_definitions.BlenderTypes.CURVE)
+    convert_object_using_ops(curve_name, BlenderTypes.CURVE)
 
     curveData.use_path = False
 
 
 def create_curve(
     curve_name: str,
-    curve_type: blender_definitions.BlenderCurveTypes,
-    points: Sequence[PointOrListOfFloatOrItsStringValue],
+    curve_type: BlenderCurveTypes,
+    points: Sequence[str | list[str] | list[float] | list[Dimension] | Point],
     interpolation=64,
     is_3d=False,
     order_u: int = 2,
@@ -168,9 +169,7 @@ def create_curve(
 
     points_expanded: List[List[float]] = [
         [
-            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                dimension
-            ).value
+            BlenderLength.convert_dimension_to_blender_unit(dimension).value
             for dimension in point.to_list()
         ]
         for point in points_parsed
@@ -209,14 +208,14 @@ def clone_spline(spline_to_clone: bpy.types.Spline):
     """
     return create_spline(
         blender_curve=spline_to_clone.id_data,
-        curve_type=blender_definitions.BlenderCurveTypes[spline_to_clone.type],
+        curve_type=BlenderCurveTypes[spline_to_clone.type],
         order_u=spline_to_clone.order_u,
     )
 
 
 def create_spline(
     blender_curve: bpy.types.Curve,
-    curve_type: blender_definitions.BlenderCurveTypes,
+    curve_type: BlenderCurveTypes,
     order_u: int,
 ):
     """
@@ -324,7 +323,7 @@ def get_spline_points(
 ) -> bpy.types.SplineBezierPoints | bpy.types.SplinePoints:
     return (
         spline.bezier_points
-        if spline.type == blender_definitions.BlenderCurveTypes.BEZIER.name
+        if spline.type == BlenderCurveTypes.BEZIER.name
         else spline.points
     )
 
@@ -333,13 +332,13 @@ def set_spline_point(
     spline_points: bpy.types.SplineBezierPoints | bpy.types.SplinePoints,
     new_coord: List[float],
     index: int,
-    curve_type: blender_definitions.BlenderCurveTypes,
+    curve_type: BlenderCurveTypes,
 ):
     """
     Replace a splint point with the given coordinate.
     NOTE: this does not copy bezier control point handle data.
     """
-    if curve_type == blender_definitions.BlenderCurveTypes.BEZIER:
+    if curve_type == BlenderCurveTypes.BEZIER:
         spline_points[index].co = new_coord
         spline_points[index].handle_left = new_coord
         spline_points[index].handle_right = new_coord
@@ -367,7 +366,7 @@ def add_points_to_spline(
             spline_points=spline_points,
             new_coord=points[0],
             index=0,
-            curve_type=blender_definitions.BlenderCurveTypes[spline.type],
+            curve_type=BlenderCurveTypes[spline.type],
         )
         points = points[1:]
         added_points.append(spline_points[0])
@@ -384,7 +383,7 @@ def add_points_to_spline(
             spline_points=spline_points,
             new_coord=coord,
             index=new_point_index,
-            curve_type=blender_definitions.BlenderCurveTypes[spline.type],
+            curve_type=BlenderCurveTypes[spline.type],
         )
 
         added_points.append(spline_points[new_point_index])
@@ -484,24 +483,16 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
 
     spline_1_vertices: List[Tuple[float, float, float]] = []
     for edge in wire_1.edges:
-        v1 = edge.v1.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-        )
-        v2 = edge.v2.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-        )
+        v1 = edge.v1.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        v2 = edge.v2.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
         v1 = wire_1_world_matrix @ mathutils.Vector(v1)
         v2 = wire_1_world_matrix @ mathutils.Vector(v2)
         spline_1_vertices.append(v1.to_tuple())
         spline_1_vertices.append(v2.to_tuple())
     spline_2_vertices: List[Tuple[float, float, float]] = []
     for edge in wire_2.edges:
-        v1 = edge.v1.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-        )
-        v2 = edge.v2.location.to_tuple_float(
-            blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-        )
+        v1 = edge.v1.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        v2 = edge.v2.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
         v1 = wire_2_world_matrix @ mathutils.Vector(v1)
         v2 = wire_2_world_matrix @ mathutils.Vector(v2)
@@ -580,37 +571,37 @@ def add_bevel_object_to_curve(
 
 
 def get_blender_curve_primitive_function(
-    curve_primitive: blender_definitions.BlenderCurvePrimitiveTypes,
+    curve_primitive: BlenderCurvePrimitiveTypes,
 ):
-    if curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Point:
+    if curve_primitive == BlenderCurvePrimitiveTypes.Point:
         return BlenderCurvePrimitives.create_point
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.LineTo:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.LineTo:
         return BlenderCurvePrimitives.create_line_to
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Distance:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Distance:
         return BlenderCurvePrimitives.create_line
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Angle:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Angle:
         return BlenderCurvePrimitives.create_angle
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Circle:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Circle:
         return BlenderCurvePrimitives.create_circle
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Ellipse:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Ellipse:
         return BlenderCurvePrimitives.create_ellipse
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Sector:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Sector:
         return BlenderCurvePrimitives.create_sector
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Segment:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Segment:
         return BlenderCurvePrimitives.create_segment
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Rectangle:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Rectangle:
         return BlenderCurvePrimitives.create_rectangle
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Rhomb:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Rhomb:
         return BlenderCurvePrimitives.create_rhomb
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Trapezoid:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Trapezoid:
         return BlenderCurvePrimitives.create_trapezoid
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Polygon:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Polygon:
         return BlenderCurvePrimitives.create_polygon
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Polygon_ab:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Polygon_ab:
         return BlenderCurvePrimitives.create_polygon_ab
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Arc:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Arc:
         return BlenderCurvePrimitives.create_arc
-    elif curve_primitive == blender_definitions.BlenderCurvePrimitiveTypes.Spiral:
+    elif curve_primitive == BlenderCurvePrimitiveTypes.Spiral:
         return BlenderCurvePrimitives.create_spiral
 
     raise TypeError("Unknown primitive")
@@ -618,9 +609,9 @@ def get_blender_curve_primitive_function(
 
 class BlenderCurvePrimitives:
     @staticmethod
-    def create_point(curve_type=blender_definitions.BlenderCurveTypes.NURBS, **kwargs):
+    def create_point(curve_type=BlenderCurveTypes.NURBS, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Point,
+            BlenderCurvePrimitiveTypes.Point,
             use_cyclic_u=False,
             **kwargs,
         )
@@ -628,8 +619,8 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_line_to(end_location, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.LineTo,
-            Simple_endlocation=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.LineTo,
+            Simple_endlocation=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(end_location)
             ).value,
             use_cyclic_u=False,
@@ -639,8 +630,8 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_line(length, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Distance,
-            Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Distance,
+            Simple_length=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length)
             ).value,
             Simple_center=True,
@@ -651,8 +642,8 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_angle(length, angle, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Angle,
-            Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Angle,
+            Simple_length=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length)
             ).value,
             Simple_angle=Angle.from_string(angle).to_degrees().value,
@@ -663,8 +654,8 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_circle(radius, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Circle,
-            Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Circle,
+            Simple_radius=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius)
             ).value,
             Simple_sides=64,
@@ -674,11 +665,11 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_ellipse(radius_x, radius_y, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Ellipse,
-            Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Ellipse,
+            Simple_a=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius_x)
             ).value,
-            Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_b=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius_y)
             ).value,
             **kwargs,
@@ -687,9 +678,9 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_arc(radius, angle, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Arc,
+            BlenderCurvePrimitiveTypes.Arc,
             Simple_sides=64,
-            Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_radius=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius)
             ).value,
             Simple_startangle=0,
@@ -701,9 +692,9 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_sector(radius, angle, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Sector,
+            BlenderCurvePrimitiveTypes.Sector,
             Simple_sides=64,
-            Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_radius=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius)
             ).value,
             Simple_startangle=0,
@@ -714,12 +705,12 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_segment(outter_radius, inner_radius, angle, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Segment,
+            BlenderCurvePrimitiveTypes.Segment,
             Simple_sides=64,
-            Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_a=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(outter_radius)
             ).value,
-            Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_b=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(inner_radius)
             ).value,
             Simple_startangle=0,
@@ -730,11 +721,11 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_rectangle(length, width, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Rectangle,
-            Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Rectangle,
+            Simple_length=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length)
             ).value,
-            Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_width=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(width)
             ).value,
             Simple_rounded=0,
@@ -744,11 +735,11 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_rhomb(length, width, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Rhomb,
-            Simple_length=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Rhomb,
+            Simple_length=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length)
             ).value,
-            Simple_width=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_width=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(width)
             ).value,
             Simple_center=True,
@@ -758,9 +749,9 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_polygon(number_of_sides, radius, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Polygon,
+            BlenderCurvePrimitiveTypes.Polygon,
             Simple_sides=number_of_sides,
-            Simple_radius=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_radius=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius)
             ).value,
             **kwargs,
@@ -769,12 +760,12 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_polygon_ab(number_of_sides, length, width, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Polygon_ab,
+            BlenderCurvePrimitiveTypes.Polygon_ab,
             Simple_sides=number_of_sides,
-            Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_a=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length)
             ).value,
-            Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_b=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(width)
             ).value,
             **kwargs,
@@ -783,14 +774,14 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_trapezoid(length_upper, length_lower, height, **kwargs):
         create_simple_curve(
-            blender_definitions.BlenderCurvePrimitiveTypes.Trapezoid,
-            Simple_a=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderCurvePrimitiveTypes.Trapezoid,
+            Simple_a=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length_upper)
             ).value,
-            Simple_b=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_b=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(length_lower)
             ).value,
-            Simple_h=blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            Simple_h=BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(height)
             ).value,
             **kwargs,
@@ -799,28 +790,24 @@ class BlenderCurvePrimitives:
     @staticmethod
     def create_spiral(
         number_of_turns: "int",
-        height: DimensionOrItsFloatOrStringValue,
-        radius: DimensionOrItsFloatOrStringValue,
+        height: str | float | Dimension,
+        radius: str | float | Dimension,
         is_clockwise: bool = True,
-        radius_end: Optional[DimensionOrItsFloatOrStringValue] = None,
+        radius_end: Optional[str | float | Dimension] = None,
         **kwargs,
     ):
         enable_curve_extra_objects_addon()
 
-        heightMeters = (
-            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(height)
-            ).value
-        )
+        heightMeters = BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(height)
+        ).value
 
-        radiusMeters = (
-            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_string(radius)
-            ).value
-        )
+        radiusMeters = BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_string(radius)
+        ).value
 
         radius_endMeters = (
-            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(radius_end)
             )
             if radius_end
@@ -831,10 +818,10 @@ class BlenderCurvePrimitives:
             0 if radius_endMeters is None else (radius_endMeters - radiusMeters).value
         )
 
-        curve_type: blender_definitions.BlenderCurveTypes = (
+        curve_type: BlenderCurveTypes = (
             kwargs["curve_type"]
             if "curve_type" in kwargs and kwargs["curve_type"]
-            else blender_definitions.BlenderCurvePrimitiveTypes.Spiral.get_default_curve_type()
+            else BlenderCurvePrimitiveTypes.Spiral.get_default_curve_type()
         )
 
         curve_typeName: str = curve_type.name
@@ -852,14 +839,12 @@ class BlenderCurvePrimitives:
         )
 
 
-def create_simple_curve(
-    curve_primitiveType: blender_definitions.BlenderCurvePrimitiveTypes, **kwargs
-):
+def create_simple_curve(curve_primitiveType: BlenderCurvePrimitiveTypes, **kwargs):
     """
     assumes add_curve_extra_objects is enabled
     https://github.com/blender/blender-addons/blob/master/add_curve_extra_objects/add_curve_simple.py
     """
-    curve_type: blender_definitions.BlenderCurveTypes = (
+    curve_type: BlenderCurveTypes = (
         kwargs["curve_type"]
         if "curve_type" in kwargs and kwargs["curve_type"]
         else curve_primitiveType.get_default_curve_type()
@@ -870,16 +855,16 @@ def create_simple_curve(
     enable_curve_extra_objects_addon()
 
     assert isinstance(
-        curve_primitiveType, blender_definitions.BlenderCurvePrimitiveTypes
+        curve_primitiveType, BlenderCurvePrimitiveTypes
     ), "{} is not a known curve primitive. Options: {}".format(
         curve_primitiveType,
-        [b.name for b in blender_definitions.BlenderCurvePrimitiveTypes],
+        [b.name for b in BlenderCurvePrimitiveTypes],
     )
 
     assert isinstance(
-        curve_type, blender_definitions.BlenderCurveTypes
+        curve_type, BlenderCurveTypes
     ), "{} is not a known simple curve type. Options: {}".format(
-        curve_type, [b.name for b in blender_definitions.BlenderCurveTypes]
+        curve_type, [b.name for b in BlenderCurveTypes]
     )
 
     # Make sure an object or curve with the same name don't already exist:

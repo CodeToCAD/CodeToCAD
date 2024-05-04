@@ -5,7 +5,8 @@ import mathutils
 
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
-from codetocad import BoundaryAxis, BoundaryBox
+from codetocad.core.boundary_axis import BoundaryAxis
+from codetocad.core.boundary_box import BoundaryBox
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
 from providers.blender.blender_provider.blender_actions.objects import get_object
 

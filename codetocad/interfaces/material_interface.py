@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class MaterialInterface(metaclass=ABCMeta):
@@ -37,10 +34,10 @@ class MaterialInterface(metaclass=ABCMeta):
     @abstractmethod
     def set_color(
         self,
-        r_value: "IntOrFloat",
-        g_value: "IntOrFloat",
-        b_value: "IntOrFloat",
-        a_value: "IntOrFloat" = 1.0,
+        r_value: "int|float",
+        g_value: "int|float",
+        b_value: "int|float",
+        a_value: "int|float" = 1.0,
     ):
         """
         Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.

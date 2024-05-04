@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -22,7 +19,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def measure_distance(
-        self, entity1: "EntityOrItsName", entity2: "EntityOrItsName"
+        self, entity1: "str|Entity", entity2: "str|Entity"
     ) -> "Dimensions":
         """
         The ubiquitous ruler.
@@ -37,9 +34,9 @@ class AnalyticsInterface(metaclass=ABCMeta):
     @abstractmethod
     def measure_angle(
         self,
-        entity1: "EntityOrItsName",
-        entity2: "EntityOrItsName",
-        pivot: "EntityOrItsName| None" = None,
+        entity1: "str|Entity",
+        entity2: "str|Entity",
+        pivot: "str|Entity| None" = None,
     ) -> "list[Angle]":
         """
         The ubiquitous ruler.
@@ -52,7 +49,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_world_pose(self, entity: "EntityOrItsName") -> "list[float]":
+    def get_world_pose(self, entity: "str|Entity") -> "list[float]":
         """
         Returns the world pose of an entity.
         """
@@ -64,7 +61,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_bounding_box(self, entity_name: "EntityOrItsName") -> "BoundaryBox":
+    def get_bounding_box(self, entity_name: "str|Entity") -> "BoundaryBox":
         """
         Returns the bounding box of an entity.
         """
@@ -76,7 +73,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_dimensions(self, entity_name: "EntityOrItsName") -> "Dimensions":
+    def get_dimensions(self, entity_name: "str|Entity") -> "Dimensions":
         """
         Returns the dimensions of an entity.
         """

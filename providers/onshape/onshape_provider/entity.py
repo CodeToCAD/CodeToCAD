@@ -1,9 +1,6 @@
 from typing import Optional
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -62,36 +59,33 @@ class Entity(EntityInterface):
 
     def translate_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         return self
 
-    def translate_x(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_x(self, amount: "str|float|Dimension"):
         return self
 
-    def translate_y(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_y(self, amount: "str|float|Dimension"):
         return self
 
-    def translate_z(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_z(self, amount: "str|float|Dimension"):
         return self
 
     def rotate_xyz(
-        self,
-        x: "AngleOrItsFloatOrStringValue",
-        y: "AngleOrItsFloatOrStringValue",
-        z: "AngleOrItsFloatOrStringValue",
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         return self
 
-    def rotate_x(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_x(self, rotation: "str|float|Angle"):
         return self
 
-    def rotate_y(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_y(self, rotation: "str|float|Angle"):
         return self
 
-    def rotate_z(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_z(self, rotation: "str|float|Angle"):
         return self
 
     def get_bounding_box(self) -> "BoundaryBox":

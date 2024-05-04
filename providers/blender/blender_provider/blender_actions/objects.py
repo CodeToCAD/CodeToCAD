@@ -1,21 +1,22 @@
 from typing import Any, Optional
 import bpy
-from codetocad.codetocad_types import (
-    AngleOrItsFloatOrStringValue,
-    DimensionOrItsFloatOrStringValue,
-)
+from codetocad.codetocad_types import *
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from providers.blender.blender_provider.blender_actions.addons import addon_set_enabled
 
-import providers.blender.blender_provider.blender_definitions as blender_definitions
 
 from codetocad.utilities import get_dimension_list_from_string_list
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderLength,
+    BlenderObjectPrimitiveTypes,
+    BlenderObjectTypes,
+)
 
 
 def blender_primitive_function(
-    primitive: blender_definitions.BlenderObjectPrimitiveTypes, dimensions, **kwargs
+    primitive: BlenderObjectPrimitiveTypes, dimensions, **kwargs
 ):
     primitiveName = primitive.default_name_in_blender()
 
@@ -37,12 +38,12 @@ def blender_primitive_function(
         blenderMesh is None
     ), f"A mesh with name {primitiveName} already exists. {orphanMeshMessage}"
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cube:
+    if primitive == BlenderObjectPrimitiveTypes.cube:
         return bpy.ops.mesh.primitive_cube_add(
             size=1, scale=[dimension.value for dimension in dimensions[:3]], **kwargs
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cone:
+    if primitive == BlenderObjectPrimitiveTypes.cone:
         return bpy.ops.mesh.primitive_cone_add(
             radius1=dimensions[0].value,
             radius2=dimensions[1].value,
@@ -50,12 +51,12 @@ def blender_primitive_function(
             **kwargs,
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.cylinder:
+    if primitive == BlenderObjectPrimitiveTypes.cylinder:
         return bpy.ops.mesh.primitive_cylinder_add(
             radius=dimensions[0].value, depth=dimensions[1].value, **kwargs
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.torus:
+    if primitive == BlenderObjectPrimitiveTypes.torus:
         return bpy.ops.mesh.primitive_torus_add(
             mode="EXT_INT",
             abso_minor_rad=dimensions[0].value,
@@ -63,29 +64,29 @@ def blender_primitive_function(
             **kwargs,
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.sphere:
+    if primitive == BlenderObjectPrimitiveTypes.sphere:
         return bpy.ops.mesh.primitive_ico_sphere_add(
             radius=dimensions[0].value, **kwargs
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.uvsphere:
+    if primitive == BlenderObjectPrimitiveTypes.uvsphere:
         return bpy.ops.mesh.primitive_uv_sphere_add(
             radius=dimensions[0].value, **kwargs
         )
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.circle:
+    if primitive == BlenderObjectPrimitiveTypes.circle:
         return bpy.ops.mesh.primitive_circle_add(radius=dimensions[0].value, **kwargs)
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.grid:
+    if primitive == BlenderObjectPrimitiveTypes.grid:
         return bpy.ops.mesh.primitive_grid_add(size=dimensions[0].value, **kwargs)
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.monkey:
+    if primitive == BlenderObjectPrimitiveTypes.monkey:
         return bpy.ops.mesh.primitive_monkey_add(size=dimensions[0].value, **kwargs)
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.empty:
+    if primitive == BlenderObjectPrimitiveTypes.empty:
         return bpy.ops.object.empty_add(radius=dimensions[0].value, **kwargs)
 
-    if primitive == blender_definitions.BlenderObjectPrimitiveTypes.plane:
+    if primitive == BlenderObjectPrimitiveTypes.plane:
         return bpy.ops.mesh.primitive_plane_add(**kwargs)
 
     raise Exception(f"Primitive with name {primitive.name} is not implemented.")
@@ -93,7 +94,7 @@ def blender_primitive_function(
 
 # Extracts dimensions from a string, then passes them as arguments to the blender_primitive_function
 def add_primitive(
-    primitive_type: blender_definitions.BlenderObjectPrimitiveTypes,
+    primitive_type: BlenderObjectPrimitiveTypes,
     dimensions: str,
     **kwargs,
 ):
@@ -104,11 +105,7 @@ def add_primitive(
         get_dimension_list_from_string_list(dimensions) or []
     )
 
-    dimensionsList = (
-        blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            dimensionsList
-        )
-    )
+    dimensionsList = BlenderLength.convert_dimensions_to_blender_unit(dimensionsList)
 
     # Add the object:
     blender_primitive_function(primitive_type, dimensionsList, **kwargs)
@@ -116,16 +113,16 @@ def add_primitive(
 
 def create_gear(
     object_name: str,
-    outer_radius: DimensionOrItsFloatOrStringValue,
-    addendum: DimensionOrItsFloatOrStringValue,
-    inner_radius: DimensionOrItsFloatOrStringValue,
-    dedendum: DimensionOrItsFloatOrStringValue,
-    height: DimensionOrItsFloatOrStringValue,
-    pressure_angle: AngleOrItsFloatOrStringValue = "20d",
+    outer_radius: str | float | Dimension,
+    addendum: str | float | Dimension,
+    inner_radius: str | float | Dimension,
+    dedendum: str | float | Dimension,
+    height: str | float | Dimension,
+    pressure_angle: str | float | Angle = "20d",
     number_of_teeth: "int" = 12,
-    skew_angle: AngleOrItsFloatOrStringValue = 0,
-    conical_angle: AngleOrItsFloatOrStringValue = 0,
-    crown_angle: AngleOrItsFloatOrStringValue = 0,
+    skew_angle: str | float | Angle = 0,
+    conical_angle: str | float | Angle = 0,
+    crown_angle: str | float | Angle = 0,
 ):
     addon_name = "add_mesh_extra_objects"
 
@@ -139,31 +136,21 @@ def create_gear(
         addon is not None
     ), f"Could not enable the {addon_name} addon to create extra objects"
 
-    outer_radiusDimension = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(outer_radius)
-        ).value
-    )
-    inner_radiusDimension = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(inner_radius)
-        ).value
-    )
-    addendumDimension = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(addendum)
-        ).value
-    )
-    dedendumDimension = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(dedendum)
-        ).value
-    )
-    heightDimension = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_string(height)
-        ).value
-    )
+    outer_radiusDimension = BlenderLength.convert_dimension_to_blender_unit(
+        Dimension.from_string(outer_radius)
+    ).value
+    inner_radiusDimension = BlenderLength.convert_dimension_to_blender_unit(
+        Dimension.from_string(inner_radius)
+    ).value
+    addendumDimension = BlenderLength.convert_dimension_to_blender_unit(
+        Dimension.from_string(addendum)
+    ).value
+    dedendumDimension = BlenderLength.convert_dimension_to_blender_unit(
+        Dimension.from_string(dedendum)
+    ).value
+    heightDimension = BlenderLength.convert_dimension_to_blender_unit(
+        Dimension.from_string(height)
+    ).value
 
     if addendumDimension > outer_radiusDimension / 2:
         addendumDimension = outer_radiusDimension / 2
@@ -328,7 +315,7 @@ def get_object_local_location(
 
     return Point.from_list(
         [
-            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            Dimension(p, BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for p in blenderObject.location
         ]
     )
@@ -341,7 +328,7 @@ def get_object_world_location(
 
     return Point.from_list(
         [
-            Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
+            Dimension(p, BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for p in blenderObject.matrix_world.translation
         ]
     )
@@ -373,9 +360,9 @@ def get_object_or_none(
     return bpy.data.objects.get(object_name)
 
 
-def get_objectType(object_name: str) -> blender_definitions.BlenderObjectTypes:
+def get_objectType(object_name: str) -> BlenderObjectTypes:
     blenderObject = bpy.data.objects.get(object_name)
 
     assert blenderObject is not None, f"Object {object_name} does not exists"
 
-    return blender_definitions.BlenderObjectTypes[blenderObject.type]
+    return BlenderObjectTypes[blenderObject.type]

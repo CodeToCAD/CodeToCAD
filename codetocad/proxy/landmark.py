@@ -4,10 +4,9 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
+
+from codetocad.providers import get_provider
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
@@ -19,19 +18,17 @@ class Landmark:
     """
     Landmarks are named positions on an entity.
 
-    NOTE: This is a facade-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
     def __new__(
         cls,
         name: "str",
-        parent_entity: "EntityOrItsName",
+        parent_entity: "str|Entity",
         description: "str| None" = None,
         native_instance=None,
     ) -> LandmarkInterface:
-        return cls._provider(name, parent_entity, description, native_instance)
-
-    @classmethod
-    def register(cls, provider: LandmarkInterface):
-        cls._provider = provider
+        return get_provider(LandmarkInterface)(
+            name, parent_entity, description, native_instance
+        )  # type: ignore

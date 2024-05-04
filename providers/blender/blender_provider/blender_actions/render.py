@@ -1,5 +1,9 @@
 import bpy
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+
+from providers.blender.blender_provider.blender_definitions import (
+    FileFormat,
+    RenderEngines,
+)
 
 
 def render_image(output_filepath: str, overwrite: bool):
@@ -22,11 +26,11 @@ def set_render_quality(percentage: int):
     bpy.context.scene.render.image_settings.quality = percentage
 
 
-def set_render_file_format(format: blender_definitions.FileFormat):
+def set_render_file_format(format: FileFormat):
     bpy.context.scene.render.image_settings.file_format = format.name
 
 
-def set_render_engine(engine: blender_definitions.RenderEngines):
+def set_render_engine(engine: RenderEngines):
     bpy.context.scene.render.engine = engine.name
 
 

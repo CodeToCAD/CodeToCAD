@@ -39,9 +39,7 @@ class FusionBody(FusionInterface):
         moveFeatureInput.defineAsFreeMove(transform)
         moveFeats.add(moveFeatureInput)
 
-    def rotate(
-        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
-    ):
+    def rotate(self, axis_input: str | int | Axis, angle: str | float | Angle):
         features = self.component.features
 
         body = self.instance

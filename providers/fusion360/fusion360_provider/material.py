@@ -1,10 +1,6 @@
 from typing import Optional
 from codetocad.interfaces.material_interface import MaterialInterface
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 # The implementation diverges from Blender
 # It's only set the body of the current object
@@ -23,10 +19,10 @@ class Material(MaterialInterface):
 
     def set_color(
         self,
-        r_value: "IntOrFloat",
-        g_value: "IntOrFloat",
-        b_value: "IntOrFloat",
-        a_value: "IntOrFloat" = 1.0,
+        r_value: "int|float",
+        g_value: "int|float",
+        b_value: "int|float",
+        a_value: "int|float" = 1.0,
     ):
         if r_value < 1:
             r_value = round(r_value * 255)

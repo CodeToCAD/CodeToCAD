@@ -1,13 +1,10 @@
 import adsk.core, adsk.fusion
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 def make_axis(
-    axis_input: AxisOrItsIndexOrItsName,
+    axis_input: str | int | Axis,
     point: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0),
 ) -> (adsk.fusion.SketchLine, adsk.fusion.Sketch):
     app = adsk.core.Application.get()
@@ -51,7 +48,7 @@ def make_axis_from_points(
     return axis, sketch
 
 
-def make_axis_vector(axis_input: AxisOrItsIndexOrItsName):
+def make_axis_vector(axis_input: str | int | Axis):
     match Axis.from_string(axis_input).value:
         case Axis.X.value:
             axis = adsk.core.Vector3D.create(1, 0, 0)

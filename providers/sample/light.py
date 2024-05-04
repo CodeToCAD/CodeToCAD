@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.light_interface import LightInterface
@@ -27,7 +24,7 @@ class Light(LightInterface, Entity):
         self.native_instance = native_instance
 
     def set_color(
-        self, r_value: "IntOrFloat", g_value: "IntOrFloat", b_value: "IntOrFloat"
+        self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
         print("set_color called", f": {r_value}, {g_value}, {b_value}")
 

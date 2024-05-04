@@ -28,7 +28,7 @@ class TemplateArgs:
     suffix: str
     generate_interface_only_capabilities_in_a_separate_file: bool
     generate_init_file_imports: bool
-    generate_facade_registration_methods: bool
+    generate_registration_methods: bool
 
 
 def get_templates_to_generate() -> list[TemplateArgs]:
@@ -46,8 +46,10 @@ def get_templates_to_generate() -> list[TemplateArgs]:
         capabilities_to_py_test_interface_out,
         capabilities_to_py_test,
         capabilities_to_py_test_out,
-        capabilities_to_py_facade,
-        capabilities_to_py_facade_out,
+        capabilities_to_py_factory,
+        capabilities_to_py_factory_out,
+        capabilities_to_py_proxy,
+        capabilities_to_py_proxy_out,
     )
 
     return [
@@ -57,15 +59,23 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             suffix="Interface",
             generate_interface_only_capabilities_in_a_separate_file=True,
             generate_init_file_imports=False,
-            generate_facade_registration_methods=False,
+            generate_registration_methods=False,
         ),
         TemplateArgs(
-            template_path=capabilities_to_py_facade,
-            output_folder_path=capabilities_to_py_facade_out,
+            template_path=capabilities_to_py_factory,
+            output_folder_path=capabilities_to_py_factory_out,
+            suffix="",
+            generate_interface_only_capabilities_in_a_separate_file=False,
+            generate_init_file_imports=False,
+            generate_registration_methods=False,
+        ),
+        TemplateArgs(
+            template_path=capabilities_to_py_proxy,
+            output_folder_path=capabilities_to_py_proxy_out,
             suffix="",
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=True,
-            generate_facade_registration_methods=False,
+            generate_registration_methods=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_provider,
@@ -73,7 +83,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             suffix="",
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=False,
-            generate_facade_registration_methods=True,
+            generate_registration_methods=True,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_test_interface,
@@ -81,7 +91,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             suffix="TestInterface",
             generate_interface_only_capabilities_in_a_separate_file=True,
             generate_init_file_imports=False,
-            generate_facade_registration_methods=False,
+            generate_registration_methods=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_test,
@@ -89,7 +99,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             suffix="Test",
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=True,
-            generate_facade_registration_methods=False,
+            generate_registration_methods=False,
         ),
     ]
 

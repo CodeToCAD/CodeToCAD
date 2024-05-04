@@ -4,18 +4,20 @@ from typing import Optional
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
+
+from codetocad.utilities import create_uuid_like_id, get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.collections import (
     assign_object_to_collection,
 )
 
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderLength,
+    BlenderModifiers,
+    BlenderRotationTypes,
+)
 from providers.blender.blender_provider.entity import Entity
 
-from providers.blender.blender_provider import (
-    blender_definitions,
-)
+
 from providers.blender.blender_provider.blender_actions.constraints import (
     apply_pivot_constraint,
 )
@@ -43,6 +45,7 @@ from providers.blender.blender_provider.blender_actions.objects import (
 from providers.blender.blender_provider.blender_actions.transformations import (
     rotate_object,
     scale_object,
+    translate_object,
 )
 from providers.blender.blender_provider.landmark import Landmark
 
@@ -56,8 +59,8 @@ def export(self: "Entity", file_path: str, overwrite: bool = True, scale: float 
 
 def mirror(
     self: "Entity",
-    mirror_across_entity: EntityOrItsName,
-    axis: AxisOrItsIndexOrItsName,
+    mirror_across_entity: str | Entity,
+    axis: str | int | Axis,
     resulting_mirrored_entity_name: Optional[str],
 ):
     if resulting_mirrored_entity_name is not None:
@@ -81,8 +84,8 @@ def mirror(
 def linear_pattern(
     self: "Entity",
     instance_count: "int",
-    offset: DimensionOrItsFloatOrStringValue,
-    direction_axis: AxisOrItsIndexOrItsName = "z",
+    offset: str | float | Dimension,
+    direction_axis: str | int | Axis = "z",
 ):
     axis = Axis.from_string(direction_axis)
 
@@ -92,9 +95,7 @@ def linear_pattern(
         offset = Dimension.from_string(offset)
 
     if isinstance(offset, Dimension):
-        offset = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            offset
-        )
+        offset = BlenderLength.convert_dimension_to_blender_unit(offset)
         offset = offset.value
 
     apply_linear_pattern(self.name, instance_count, axis, offset)
@@ -105,9 +106,9 @@ def linear_pattern(
 def circular_pattern(
     self: "Entity",
     instance_count: "int",
-    separation_angle: AngleOrItsFloatOrStringValue,
-    center_entity_or_landmark: EntityOrItsName,
-    normal_direction_axis: AxisOrItsIndexOrItsName = "z",
+    separation_angle: str | float | Angle,
+    center_entity_or_landmark: str | Entity,
+    normal_direction_axis: str | int | Axis = "z",
 ):
     center_entity_or_landmark_name = center_entity_or_landmark
     if isinstance(center_entity_or_landmark_name, LandmarkInterface):
@@ -144,7 +145,7 @@ def circular_pattern(
     rotate_object(
         pivotLandmarkEntityName,
         angles,
-        blender_definitions.BlenderRotationTypes.EULER,
+        BlenderRotationTypes.EULER,
     )
 
     apply_circular_pattern(self.name, instance_count, pivotLandmarkEntityName)
@@ -168,7 +169,7 @@ def circular_pattern(
     translate_object(
         self.name,
         [None, None, dimension],
-        blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+        BlenderTranslationTypes.ABSOLUTE,
     )
 
     return self
@@ -176,23 +177,23 @@ def circular_pattern(
 
 @staticmethod
 def _scale_factor_from_dimension_or_its_float_or_string_value(
-    dimension_or_its_float_or_string_value: DimensionOrItsFloatOrStringValue,
+    dimension_or_its_float_or_string_value: str | float | Dimension,
     current_value_in_blender: float,
 ):
     value = Dimension.from_dimension_or_its_float_or_string_value(
         dimension_or_its_float_or_string_value, None
     )
-    valueInBlenderDefaultLength = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(value)
+    value_in_blender_default_length = BlenderLength.convert_dimension_to_blender_unit(
+        value
     )
-    return (valueInBlenderDefaultLength / current_value_in_blender).value
+    return (value_in_blender_default_length / current_value_in_blender).value
 
 
 def scale_xyz(
     self: "Entity",
-    x: DimensionOrItsFloatOrStringValue,
-    y: DimensionOrItsFloatOrStringValue,
-    z: DimensionOrItsFloatOrStringValue,
+    x: str | float | Dimension,
+    y: str | float | Dimension,
+    z: str | float | Dimension,
 ):
     currentDimensions = self.get_dimensions()
     xScaleFactor: float = _scale_factor_from_dimension_or_its_float_or_string_value(
@@ -210,7 +211,7 @@ def scale_xyz(
     return self._apply_rotation_and_scale_only()
 
 
-def scale_x(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
+def scale_x(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().x.value
     )
@@ -218,7 +219,7 @@ def scale_x(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
     return self._apply_rotation_and_scale_only()
 
 
-def scale_y(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
+def scale_y(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().y.value
     )
@@ -226,7 +227,7 @@ def scale_y(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
     return self._apply_rotation_and_scale_only()
 
 
-def scale_z(self: "Entity", scale: DimensionOrItsFloatOrStringValue):
+def scale_z(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().z.value
     )
@@ -251,16 +252,16 @@ def scale_z_by_factor(self: "Entity", scale_factor: float):
 
 def scale_keep_aspect_ratio(
     self: "Entity",
-    scale: DimensionOrItsFloatOrStringValue,
-    axis: AxisOrItsIndexOrItsName,
+    scale: str | float | Dimension,
+    axis: str | int | Axis,
 ):
     scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-    valueInBlenderDefaultLength = (
-        blender_definitions.BlenderLength.convert_dimension_to_blender_unit(scale)
+    value_in_blender_default_length = BlenderLength.convert_dimension_to_blender_unit(
+        scale
     )
 
     dimensionInAxis = self.get_dimensions()[Axis.from_string(axis).value]
-    scale_factor: float = (valueInBlenderDefaultLength / dimensionInAxis).value
+    scale_factor: float = (value_in_blender_default_length / dimensionInAxis).value
 
     scale_object(self.name, scale_factor, scale_factor, scale_factor)
     return self._apply_rotation_and_scale_only()
@@ -268,10 +269,10 @@ def scale_keep_aspect_ratio(
 
 def twist(
     self: "Entity",
-    angle: AngleOrItsFloatOrStringValue,
-    screw_pitch: DimensionOrItsFloatOrStringValue,
+    angle: str | float | Angle,
+    screw_pitch: str | float | Dimension,
     iterations: "int" = 1,
-    axis: AxisOrItsIndexOrItsName = "z",
+    axis: str | int | Axis = "z",
 ):
     axis = Axis.from_string(axis)
 
@@ -301,14 +302,14 @@ def remesh(self: "Entity", strategy: str, amount: float):
         if strategy == "edgesplit":
             apply_modifier(
                 self.name,
-                blender_definitions.BlenderModifiers.EDGE_SPLIT,
+                BlenderModifiers.EDGE_SPLIT,
                 name="EdgeDiv",
                 split_angle=math.radians(30),
             )
 
         apply_modifier(
             self.name,
-            blender_definitions.BlenderModifiers.SUBSURF,
+            BlenderModifiers.SUBSURF,
             name="Subdivision",
             levels=amount,
         )
@@ -324,9 +325,9 @@ def remesh(self: "Entity", strategy: str, amount: float):
 def create_landmark(
     self,
     landmark_name: str,
-    x: DimensionOrItsFloatOrStringValue,
-    y: DimensionOrItsFloatOrStringValue,
-    z: DimensionOrItsFloatOrStringValue,
+    x: str | float | Dimension,
+    y: str | float | Dimension,
+    z: str | float | Dimension,
 ) -> "Landmark":
     boundingBox = get_bounding_box(self.name)
     localPositions = [
@@ -334,11 +335,7 @@ def create_landmark(
         Dimension.from_dimension_or_its_float_or_string_value(y, boundingBox.y),
         Dimension.from_dimension_or_its_float_or_string_value(z, boundingBox.z),
     ]
-    localPositions = (
-        blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            localPositions
-        )
-    )
+    localPositions = BlenderLength.convert_dimensions_to_blender_unit(localPositions)
     landmark = Landmark(landmark_name, self.name)
     landmarkObjectName = landmark.get_landmark_entity_name()
     # Create an Empty object to represent the landmark
@@ -353,11 +350,11 @@ def create_landmark(
     )
     # Parent the landmark to the object
     make_parent(landmarkObjectName, self.name)
-    translate_object(landmarkObjectName, localPositions, blender_definitions.BlenderTranslationTypes.ABSOLUTE)  # type: ignore
+    translate_object(landmarkObjectName, localPositions, BlenderTranslationTypes.ABSOLUTE)  # type: ignore
     return landmark
 
 
-def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
+def get_landmark(self, landmark_name: str | PresetLandmark) -> "Landmark":
     if isinstance(landmark_name, LandmarkInterface):
         landmark_name = landmark_name.name
     preset: Optional[PresetLandmark] = None

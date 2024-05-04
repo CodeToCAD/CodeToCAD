@@ -1,15 +1,13 @@
-from typing import List, Tuple, Union, TYPE_CHECKING
+from typing import List, Tuple, Union
 import bpy
 
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
+from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.wire_interface import WireInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.utilities import create_uuid_like_id
-
-import providers.blender.blender_provider.blender_definitions as blender_definitions
-
-
-if TYPE_CHECKING:
-    from .. import Vertex, Edge, Wire
+from providers.blender.blender_provider.blender_definitions import BlenderLength
 
 
 def get_vertex_location_from_blender_point(
@@ -22,8 +20,7 @@ def get_vertex_location_from_blender_point(
     point = point[0:3]
 
     point_dimension: List[Dimension] = [
-        Dimension(p, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value)
-        for p in point
+        Dimension(p, BlenderLength.DEFAULT_BLENDER_UNIT.value) for p in point
     ]
 
     return Point.from_list(point_dimension)
@@ -41,9 +38,7 @@ def get_vertex_from_blender_point(
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],
     ],
-) -> "Vertex":
-    from .. import Vertex
-
+) -> "VertexInterface":
     return Vertex(
         location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
@@ -62,11 +57,9 @@ def get_edge_from_blender_edge(
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],
     ],
-) -> "Edge":
-    from .. import Vertex, Edge
-
+) -> "EdgeInterface":
     v1: Vertex
-    v2: Vertex
+    v2: VertexInterface
     if isinstance(edge, bpy.types.Spline):
         points = edge.bezier_points if edge.type == "BEZIER" else edge.points
 
@@ -100,9 +93,7 @@ def get_edge_from_blender_edge(
 def get_wire_from_blender_wire(
     entity: Union[bpy.types.Curve, bpy.types.Mesh],
     wire: Union[bpy.types.Spline, bpy.types.MeshPolygon],
-) -> "Wire":
-    from .. import Edge, Wire
-
+) -> "WireInterface":
     edges: List[Edge]
     if isinstance(wire, bpy.types.Spline):
         points = wire.bezier_points if wire.type == "BEZIER" else wire.points
@@ -138,7 +129,7 @@ def get_wire_from_blender_wire(
 def get_wires_from_blender_entity(
     entity: Union[bpy.types.Curve, bpy.types.Mesh]
 ) -> "List[Wire]":
-    from .. import Wire
+    from providers.blender.blender_provider.wire import Wire
 
     wires: List[Wire]
 

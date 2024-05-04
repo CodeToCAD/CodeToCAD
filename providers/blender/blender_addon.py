@@ -395,21 +395,20 @@ class CodeToCADAddonPreferences(AddonPreferences):
 def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=False):
     print("Going to add CodeToCAD files to path.")
 
-    codetocad_path = CodeToCADAddonPreferences.get_codetocad_file_path_from_preferences(
+    root_path = CodeToCADAddonPreferences.get_codetocad_file_path_from_preferences(
         context
-    ) or str(Path(__file__).parent.absolute())
+    ) or str(Path(__file__).parent.parent.absolute())
 
-    if not codetocad_path or not os.path.exists(codetocad_path):
+    if not root_path or not os.path.exists(root_path):
         print("The CodeToCAD base module path that you provided does not exist.")
         return {"CANCELLED"} if return_blender_operation_status else None
 
-    codetocad_path = Path(codetocad_path)
+    root_path = Path(root_path)
 
-    core_path = codetocad_path / "codetocad"
-    blender_path = codetocad_path / "providers/blender"
+    blender_path = root_path / "providers/blender"
     blender_provider_path = blender_path / "blender_provider"
 
-    if not Path(blender_provider_path / "blender_definitions.py").is_file():
+    if not Path(blender_provider_path / "py").is_file():
         print(
             "Could not find blender_provider files. Please reconfigure the CodeToCAD Blender Addon.",
             "Searching in: ",
@@ -417,21 +416,9 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
         )
         return {"CANCELLED"} if return_blender_operation_status else None
 
-    print("Adding {} to path".format(codetocad_path))
+    print("Adding {} to path".format(root_path))
 
-    sys.path.append(str(codetocad_path))
-
-    print("Adding {} to path".format(core_path))
-
-    sys.path.append(str(core_path))
-
-    print("Adding {} to path".format(blender_path))
-
-    sys.path.append(str(blender_path))
-
-    print("Adding {} to path".format(blender_provider_path))
-
-    sys.path.append(str(blender_provider_path))
+    sys.path.append(str(root_path))
 
     return {"FINISHED"} if return_blender_operation_status else None
 
@@ -546,8 +533,6 @@ CodeToCAD has been added to your console.
 You can access the CodeToCAD menu in the sidebar. (Press 'n' on the keyboard)
                     
 Try `my_cube = Part("my_cube").create_cube("100cm", "1m", "1m")`
-
-WARNING: If you are actively developing core CodeToCAD modules, this console window does not reload_modules, even if you click the 'Reload CodeToCAD Modules' button in the menu. However, when you reload an imported CodeToCAD file, it should reload the modules correctly.
 ------------------------------
     """,
             "INFO",
@@ -597,6 +582,14 @@ def check_version():
         )
 
 
+@bpy.app.handlers.persistent  # type: ignore
+def register_blender_provider(*args):
+    from providers.blender.blender_provider.register import register
+
+    print("Registering BlenderAddon as codetocad.factory provider.")
+    register()
+
+
 def register():
     print("Registering ", __name__)
 
@@ -614,6 +607,8 @@ def register():
     bpy.utils.register_class(StartDebugger)
 
     add_codetocad_to_path()
+
+    blenderLoadPostHandler.append(register_blender_provider)
 
     blenderLoadPostHandler.append(add_codetocad_to_blender_console)
 

@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class ScalableInterface(metaclass=ABCMeta):
@@ -20,9 +17,9 @@ class ScalableInterface(metaclass=ABCMeta):
     @abstractmethod
     def scale_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         """
         Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
@@ -33,7 +30,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_x(self, scale: "str|float|Dimension"):
         """
         Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -43,7 +40,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_y(self, scale: "str|float|Dimension"):
         """
         Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -53,7 +50,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_z(self, scale: "str|float|Dimension"):
         """
         Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -100,7 +97,7 @@ class ScalableInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def scale_keep_aspect_ratio(
-        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         """
         Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.

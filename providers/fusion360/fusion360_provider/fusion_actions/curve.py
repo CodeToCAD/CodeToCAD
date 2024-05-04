@@ -2,6 +2,8 @@ import adsk.core
 import adsk.fusion
 
 from codetocad import *
+from codetocad.core.dimension import Dimension
+from codetocad.core.point import Point
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_point3d
 
 
@@ -23,7 +25,7 @@ def make_line(
 
 def make_circle(
     sketch: adsk.fusion.Sketch,
-    radius: DimensionOrItsFloatOrStringValue,
+    radius: str | float | Dimension,
     resolution: float,
 ) -> list[Point]:
     from .circle import get_circle_points
@@ -47,7 +49,7 @@ def make_arc(
     sketch: adsk.fusion.Sketch,
     start: adsk.core.Point3D,
     end: adsk.core.Point3D,
-    radius: DimensionOrItsFloatOrStringValue,
+    radius: str | float | Dimension,
     closed: bool = False,
 ) -> list[Point]:
     along = adsk.core.Point3D.create((start.x + end.x) / 2, start.y + radius, start.z)

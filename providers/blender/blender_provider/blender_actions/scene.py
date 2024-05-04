@@ -1,21 +1,20 @@
 from typing import Optional
 import bpy
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+
 
 from providers.blender.blender_provider.blender_actions.nodes import (
     create_nodes,
     delete_nodes,
     get_node_tree,
 )
+from providers.blender.blender_provider.blender_definitions import BlenderLength
 
 
 def scene_lock_interface(is_locked: bool):
     bpy.context.scene.render.use_lock_interface = is_locked
 
 
-def set_default_unit(
-    blender_unit: blender_definitions.BlenderLength, scene_name="Scene"
-):
+def set_default_unit(blender_unit: BlenderLength, scene_name="Scene"):
     blenderScene = bpy.data.scenes.get(scene_name)
 
     assert blenderScene is not None, f"Scene {scene_name} does not exist"

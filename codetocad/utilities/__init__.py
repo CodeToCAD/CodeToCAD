@@ -1,5 +1,5 @@
 # utilities.py contains enums and helper functions for CodeToCAD python functionality.
-
+# TODO: break this apart.
 import os
 import re
 import sys
@@ -7,7 +7,6 @@ from uuid import uuid4
 from pathlib import Path
 
 from typing import Optional, Union
-from codetocad.codetocad_types import FloatOrItsStringValue
 from codetocad.core.angle import Angle
 from codetocad.core.boundary_axis import BoundaryAxis
 from codetocad.core.boundary_box import BoundaryBox
@@ -153,7 +152,7 @@ def get_unit_in_string(dimension_string):
 
 
 def get_dimension_list_from_string_list(
-    dimensions: Union[str, list[FloatOrItsStringValue]],
+    dimensions: Union[str, list[str | float]],
     bounding_box: Optional[BoundaryBox] = None,
 ) -> list[Dimension]:
     if isinstance(dimensions, str):

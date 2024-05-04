@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.scene_interface import SceneInterface
@@ -72,7 +69,7 @@ class Scene(
     def export(
         self,
         file_path: "str",
-        entities: "list[ExportableOrItsName]",
+        entities: "list[str|Exportable]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -80,7 +77,7 @@ class Scene(
 
         return self
 
-    def set_default_unit(self, unit: "LengthUnitOrItsName"):
+    def set_default_unit(self, unit: "str|LengthUnit"):
         print("set_default_unit called", f": {unit}")
 
         return self
@@ -102,7 +99,7 @@ class Scene(
 
     def assign_to_group(
         self,
-        entities: "list[EntityOrItsName]",
+        entities: "list[str|Entity]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -113,7 +110,7 @@ class Scene(
 
         return self
 
-    def set_visible(self, entities: "list[EntityOrItsName]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
         print("set_visible called", f": {entities}, {is_visible}")
 
         return self
@@ -121,8 +118,8 @@ class Scene(
     def set_background_image(
         self,
         file_path: "str",
-        location_x: "DimensionOrItsFloatOrStringValue| None" = 0,
-        location_y: "DimensionOrItsFloatOrStringValue| None" = 0,
+        location_x: "str|float|Dimension| None" = 0,
+        location_y: "str|float|Dimension| None" = 0,
     ):
         print(
             "set_background_image called", f": {file_path}, {location_x}, {location_y}"

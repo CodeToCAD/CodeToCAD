@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -106,50 +103,47 @@ class Entity(
 
     def translate_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         print("translate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def translate_x(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_x(self, amount: "str|float|Dimension"):
         print("translate_x called", f": {amount}")
 
         return self
 
-    def translate_y(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_y(self, amount: "str|float|Dimension"):
         print("translate_y called", f": {amount}")
 
         return self
 
-    def translate_z(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_z(self, amount: "str|float|Dimension"):
         print("translate_z called", f": {amount}")
 
         return self
 
     def rotate_xyz(
-        self,
-        x: "AngleOrItsFloatOrStringValue",
-        y: "AngleOrItsFloatOrStringValue",
-        z: "AngleOrItsFloatOrStringValue",
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         print("rotate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def rotate_x(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_x(self, rotation: "str|float|Angle"):
         print("rotate_x called", f": {rotation}")
 
         return self
 
-    def rotate_y(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_y(self, rotation: "str|float|Angle"):
         print("rotate_y called", f": {rotation}")
 
         return self
 
-    def rotate_z(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_z(self, rotation: "str|float|Angle"):
         print("rotate_z called", f": {rotation}")
 
         return self

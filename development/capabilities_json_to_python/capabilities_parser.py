@@ -100,6 +100,10 @@ class CapabilitiesClass:
     def methods_names(self):
         return [method.name for method in self.methods]
 
+    @property
+    def static_methods(self):
+        return [method for method in self.methods if method.is_static_method]
+
     def get_extends_class_names(self, suffix: str = "Interface"):
         return [class_name + suffix for class_name in self.extends]
 

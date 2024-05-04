@@ -1,6 +1,6 @@
 from codetocad import *
 
-Scene.default().set_default_unit("cm")
+default_scene().set_default_unit("cm")
 Scene.default().create_group("Bracelet")
 
 

@@ -32,7 +32,7 @@ def get_driver(
 
 def set_driver(
     driver: bpy.types.Driver,
-    driver_type,  # : blender_definitions.BlenderDriverTypes,
+    driver_type,  # : BlenderDriverTypes,
     expression="",
 ):
     driver.type = driver_type
@@ -65,8 +65,8 @@ def set_driver_variable_transforms(
     driver: bpy.types.Driver,
     variable_name: str,
     target_object_name: str,
-    transform_type,  # : blender_definitions.BlenderDriverVariableTransformTypes,
-    transform_space,  # : blender_definitions.BlenderDriverVariableTransformSpaces
+    transform_type,  # : BlenderDriverVariableTransformTypes,
+    transform_space,  # : BlenderDriverVariableTransformSpaces
 ):
     variable = driver.variables.get(variable_name)
 

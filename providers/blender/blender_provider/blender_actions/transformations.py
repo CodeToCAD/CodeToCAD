@@ -4,7 +4,10 @@ import mathutils
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from providers.blender.blender_provider.blender_actions.objects import get_object
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderRotationTypes,
+    BlenderTranslationTypes,
+)
 
 
 def apply_object_transformations(
@@ -59,7 +62,7 @@ def apply_object_transformations(
 def rotate_object(
     object_name: str,
     rotation_angles: list[Optional[Angle]],
-    rotation_type: blender_definitions.BlenderRotationTypes,
+    rotation_type: BlenderRotationTypes,
 ):
     blenderObject = get_object(object_name)
 
@@ -80,7 +83,7 @@ def rotate_object(
 def translate_object(
     object_name: str,
     translation_dimensions: list[Optional[Dimension]],
-    translation_type: blender_definitions.BlenderTranslationTypes,
+    translation_type: BlenderTranslationTypes,
 ):
     blenderObject = get_object(object_name)
 

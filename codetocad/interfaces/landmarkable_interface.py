@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -24,9 +21,9 @@ class LandmarkableInterface(metaclass=ABCMeta):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         """
         Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.
@@ -39,9 +36,7 @@ class LandmarkableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         """
         Get the landmark by name
         """

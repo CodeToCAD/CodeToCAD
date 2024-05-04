@@ -1,14 +1,7 @@
 import bpy
 
 from enum import Enum
-from codetocad.core.dimension import Dimension
-from codetocad.enums.constraint_types import ConstraintTypes
-from codetocad.enums.curve_primitive_types import CurvePrimitiveTypes
-from codetocad.enums.curve_types import CurveTypes
-from codetocad.enums.file_formats import FileFormats
-from codetocad.enums.length_unit import LengthUnit
-
-from codetocad.enums.units import Units
+from codetocad.codetocad_types import *
 
 
 class BlenderTypes(Enum):
@@ -52,7 +45,7 @@ class BlenderLength(Units):
     THOU = LengthUnit.thou
 
     # Blender internally uses this unit for everything:
-    DEFAULT_BLENDER_UNIT: LengthUnit = METERS
+    DEFAULT_BLENDER_UNIT = METERS
 
     def get_system(self):
         if (

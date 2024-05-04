@@ -5,7 +5,7 @@ import adsk.fusion
 
 
 class FusionJoint:
-    def __init__(self, entity1: EntityOrItsName, entity2: EntityOrItsName):
+    def __init__(self, entity1: str | Entity, entity2: str | Entity):
         self.entity1 = entity1
         self.entity2 = entity2
         self.joint_slider = None

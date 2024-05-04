@@ -6,36 +6,33 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
-
-from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.vertex_interface import VertexInterface
-
-from codetocad.interfaces.edge_interface import EdgeInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
+from codetocad.interfaces.wire_interface import WireInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
 
 from codetocad.interfaces.part_interface import PartInterface
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.scalable_interface import ScalableInterface
+
+from codetocad.interfaces.importable_interface import ImportableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.projectable_interface import ProjectableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.importable_interface import ImportableInterface
 
 
 class SketchInterface(
@@ -82,9 +79,9 @@ class SketchInterface(
     @abstractmethod
     def revolve(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        about_entity_or_landmark: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|Entity",
+        axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         """
         Revolve a Sketch around another Entity or Landmark
@@ -97,10 +94,10 @@ class SketchInterface(
     @abstractmethod
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         """
         AKA Helix, Screw.
@@ -111,7 +108,7 @@ class SketchInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def extrude(self, length: "DimensionOrItsFloatOrStringValue") -> "PartInterface":
+    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         """
         Extrude a curve by a specified length. Returns a Part type.
         """
@@ -122,7 +119,7 @@ class SketchInterface(
 
     @abstractmethod
     def sweep(
-        self, profile_name_or_instance: "SketchOrItsName", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
     ) -> "PartInterface":
         """
         Extrude this Sketch along the path of another Sketch
@@ -133,7 +130,7 @@ class SketchInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def offset(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def offset(self, radius: "str|float|Dimension"):
         """
         Uniformly add a wall around a Sketch.
         """
@@ -156,7 +153,7 @@ class SketchInterface(
     def create_text(
         self,
         text: "str",
-        font_size: "DimensionOrItsFloatOrStringValue" = 1.0,
+        font_size: "str|float|Dimension" = 1.0,
         bold: "bool" = False,
         italic: "bool" = False,
         underlined: "bool" = False,
@@ -177,7 +174,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_from_vertices(
-        self, points: "list[PointOrListOfFloatOrItsStringValueOrVertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
     ) -> "WireInterface":
         """
         Create a curve from 2D/3D points.
@@ -191,7 +188,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_point(
-        self, point: "PointOrListOfFloatOrItsStringValue"
+        self, point: "str|list[str]|list[float]|list[Dimension]|Point"
     ) -> "VertexInterface":
         """
         Create a point
@@ -206,8 +203,8 @@ class SketchInterface(
     @abstractmethod
     def create_line(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
     ) -> "EdgeInterface":
         """
         Create a line between two points
@@ -220,9 +217,7 @@ class SketchInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def create_circle(
-        self, radius: "DimensionOrItsFloatOrStringValue"
-    ) -> "WireInterface":
+    def create_circle(self, radius: "str|float|Dimension") -> "WireInterface":
         """
         Create a circle
         """
@@ -235,9 +230,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_ellipse(
-        self,
-        radius_minor: "DimensionOrItsFloatOrStringValue",
-        radius_major: "DimensionOrItsFloatOrStringValue",
+        self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
     ) -> "WireInterface":
         """
         Create an ellipse
@@ -252,9 +245,9 @@ class SketchInterface(
     @abstractmethod
     def create_arc(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        radius: "DimensionOrItsFloatOrStringValue",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "WireInterface":
         """
@@ -269,9 +262,7 @@ class SketchInterface(
 
     @abstractmethod
     def create_rectangle(
-        self,
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "WireInterface":
         """
         Create a rectangle
@@ -287,8 +278,8 @@ class SketchInterface(
     def create_polygon(
         self,
         number_of_sides: "int",
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        length: "str|float|Dimension",
+        width: "str|float|Dimension",
     ) -> "WireInterface":
         """
         Create an n-gon
@@ -303,9 +294,9 @@ class SketchInterface(
     @abstractmethod
     def create_trapezoid(
         self,
-        length_upper: "DimensionOrItsFloatOrStringValue",
-        length_lower: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        length_upper: "str|float|Dimension",
+        length_lower: "str|float|Dimension",
+        height: "str|float|Dimension",
     ) -> "WireInterface":
         """
         Create a trapezoid
@@ -321,10 +312,10 @@ class SketchInterface(
     def create_spiral(
         self,
         number_of_turns: "int",
-        height: "DimensionOrItsFloatOrStringValue",
-        radius: "DimensionOrItsFloatOrStringValue",
+        height: "str|float|Dimension",
+        radius: "str|float|Dimension",
         is_clockwise: "bool" = True,
-        radius_end: "DimensionOrItsFloatOrStringValue| None" = None,
+        radius_end: "str|float|Dimension| None" = None,
     ) -> "WireInterface":
         """
         Create a spiral or helix

@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -24,7 +21,7 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
     def __init__(
         self,
         name: "str",
-        parent_entity: "EntityOrItsName",
+        parent_entity: "str|Entity",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -37,8 +34,8 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
     def clone(
         self,
         new_name: "str",
-        offset: "DimensionsOrItsListOfFloatOrString| None" = None,
-        new_parent: "EntityOrItsName| None" = None,
+        offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
+        new_parent: "str|Entity| None" = None,
     ) -> "LandmarkInterface":
         """
         Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.

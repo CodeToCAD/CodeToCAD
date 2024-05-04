@@ -17,7 +17,10 @@ from providers.blender.blender_provider.blender_actions.objects import (
     remove_object,
     update_object_name,
 )
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderLength,
+    BlenderTypes,
+)
 
 
 def create_mesh_from_curve(
@@ -46,10 +49,7 @@ def create_mesh_from_curve(
 
     existingCurveObjectChildren: list[bpy.types.Object] = existingCurveObject.children
     for child in existingCurveObjectChildren:
-        if (
-            isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
-            and child.type == "EMPTY"
-        ):
+        if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
             child.parent = blenderObject
 
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
@@ -73,19 +73,14 @@ def transfer_landmarks(
 
     translation = [
         axisValue.value
-        for axisValue in blender_definitions.BlenderLength.convert_dimensions_to_blender_unit(
-            translation
-        )
+        for axisValue in BlenderLength.convert_dimensions_to_blender_unit(translation)
     ]
 
     defaultCollection = get_object_collection_name(to_object_name)
 
     fromBlenderObjectChildren: list[bpy.types.Object] = fromBlenderObject.children
     for child in fromBlenderObjectChildren:
-        if (
-            isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
-            and child.type == "EMPTY"
-        ):
+        if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
             child.name = f"{to_object_name}_{child.name}"
             isAlreadyExists = bpy.data.objects.get(child.name) is None
             if isAlreadyExists:
@@ -118,10 +113,7 @@ def duplicate_object(
     if copy_landmarks:
         blenderObjectChildren: list[bpy.types.Object] = blenderObject.children
         for child in blenderObjectChildren:
-            if (
-                isinstance(child, blender_definitions.BlenderTypes.OBJECT.value)
-                and child.type == "EMPTY"
-            ):
+            if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
                 newChild: bpy.types.Object = child.copy()
                 newChild.name = child.name.replace(
                     existing_object_name, new_object_name

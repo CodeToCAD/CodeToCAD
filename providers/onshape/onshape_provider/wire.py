@@ -10,12 +10,8 @@ from providers.onshape.onshape_provider.vertex import Vertex
 from providers.onshape.onshape_provider.landmark import Landmark
 from providers.onshape.onshape_provider.part import Part
 from providers.onshape.onshape_provider.edge import Edge
-
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from . import Entity
 from typing import TYPE_CHECKING
 
@@ -28,8 +24,8 @@ if TYPE_CHECKING:
 class Wire(WireInterface, Entity):
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         return self
@@ -37,17 +33,17 @@ class Wire(WireInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
@@ -55,7 +51,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
 
     edges: "list[Edge]"
-    parent_entity: Optional[EntityOrItsName] = None
+    parent_entity: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -66,7 +62,7 @@ class Wire(WireInterface, Entity):
         edges: "list[Edge]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         self.edges = edges
         self.parent_entity = parent_entity
@@ -93,22 +89,20 @@ class Wire(WireInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
     def union(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -117,7 +111,7 @@ class Wire(WireInterface, Entity):
 
     def subtract(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -128,7 +122,7 @@ class Wire(WireInterface, Entity):
 
     def intersect(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):

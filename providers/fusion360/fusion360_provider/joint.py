@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.joint_interface import JointInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from typing import TYPE_CHECKING
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
     FusionJoint,
@@ -18,11 +14,11 @@ if TYPE_CHECKING:
 
 
 class Joint(JointInterface):
-    entity1: EntityOrItsName
-    entity2: EntityOrItsName
+    entity1: str | Entity
+    entity2: str | Entity
     fusion_joint: FusionJoint
 
-    def __init__(self, entity1: "EntityOrItsName", entity2: "EntityOrItsName"):
+    def __init__(self, entity1: "str|Entity", entity2: "str|Entity"):
         from . import Landmark
 
         if isinstance(entity1, str):
@@ -63,9 +59,9 @@ class Joint(JointInterface):
 
     def _limit_location_xyz(
         self,
-        x: Optional[DimensionOrItsFloatOrStringValue] = None,
-        y: Optional[DimensionOrItsFloatOrStringValue] = None,
-        z: Optional[DimensionOrItsFloatOrStringValue] = None,
+        x: Optional[str | float | Dimension] = None,
+        y: Optional[str | float | Dimension] = None,
+        z: Optional[str | float | Dimension] = None,
     ):
         if self.fusion_joint.joint_ball_motion:
             return self
@@ -96,8 +92,8 @@ class Joint(JointInterface):
 
     def limit_location_x(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(dimensions, None, None)
@@ -105,8 +101,8 @@ class Joint(JointInterface):
 
     def limit_location_y(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(None, dimensions, None)
@@ -114,8 +110,8 @@ class Joint(JointInterface):
 
     def limit_location_z(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(None, None, dimensions)
@@ -123,9 +119,9 @@ class Joint(JointInterface):
 
     def limit_location_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue| None" = None,
-        y: "DimensionOrItsFloatOrStringValue| None" = None,
-        z: "DimensionOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Dimension| None" = None,
+        y: "str|float|Dimension| None" = None,
+        z: "str|float|Dimension| None" = None,
     ):
         dimensionsX = Joint._get_limit_location_pair(x, x) if x is not None else None
         dimensionsY = Joint._get_limit_location_pair(y, y) if y is not None else None
@@ -165,9 +161,9 @@ class Joint(JointInterface):
 
     def limit_rotation_xyz(
         self,
-        x: "AngleOrItsFloatOrStringValue| None" = None,
-        y: "AngleOrItsFloatOrStringValue| None" = None,
-        z: "AngleOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Angle| None" = None,
+        y: "str|float|Angle| None" = None,
+        z: "str|float|Angle| None" = None,
     ):
         rotation_pair_x = Joint._get_limit_rotation_pair(x, x)
         rotation_pair_y = Joint._get_limit_rotation_pair(y, y)
@@ -176,25 +172,19 @@ class Joint(JointInterface):
         return self
 
     def limit_rotation_x(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(rotationPair, None, None)
 
     def limit_rotation_y(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, rotationPair, None)
 
     def limit_rotation_z(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, None, rotationPair)

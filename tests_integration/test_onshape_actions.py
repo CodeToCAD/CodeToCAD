@@ -6,7 +6,7 @@ from providers.onshape.onshape_provider import *
 from providers.onshape.onshape_provider.onshape_actions import *
 
 from codetocad import *
-from codetocad.core import Point, Dimension
+
 from providers.onshape.onshape_provider.utils import get_polygon_points
 
 configPath = os.path.join(

@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -25,7 +22,7 @@ class Vertex(VertexInterface, Entity):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         self.name = name
         self.location = location

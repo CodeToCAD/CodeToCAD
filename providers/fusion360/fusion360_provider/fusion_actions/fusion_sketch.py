@@ -6,6 +6,8 @@ from .base import delete_occurrence, get_or_create_component, get_or_create_sket
 
 import adsk.core
 
+from codetocad.codetocad_types import *
+
 
 class FusionSketch(FusionInterface):
     def __init__(self, name):
@@ -46,9 +48,7 @@ class FusionSketch(FusionInterface):
 
         sketch.move(entities, matrix)
 
-    def rotate(
-        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
-    ):
+    def rotate(self, axis_input: str | int | Axis, angle: str | float | Angle):
         sketch = self.instance
 
         axis = make_axis_vector(axis_input)

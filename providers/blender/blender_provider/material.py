@@ -1,11 +1,7 @@
 from typing import Optional
 from codetocad.interfaces.material_interface import MaterialInterface
-
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
+from codetocad.utilities import get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.material import (
     add_texture_to_material,
     create_material,
@@ -13,7 +9,6 @@ from providers.blender.blender_provider.blender_actions.material import (
     set_material_color,
     set_material_metallicness,
     set_material_roughness,
-    set_material_to_object,
 )
 
 
@@ -31,10 +26,10 @@ class Material(MaterialInterface):
 
     def set_color(
         self,
-        r_value: "IntOrFloat",
-        g_value: "IntOrFloat",
-        b_value: "IntOrFloat",
-        a_value: "IntOrFloat" = 1.0,
+        r_value: "int|float",
+        g_value: "int|float",
+        b_value: "int|float",
+        a_value: "int|float" = 1.0,
     ):
         set_material_color(self.name, r_value, g_value, b_value, a_value)
         return self
@@ -57,7 +52,7 @@ class Material(MaterialInterface):
         if isinstance(material_name, str):
             try:
                 material_name = getattr(PresetMaterial, material_name)
-            except:
+            except:  # noqa
                 material = Material(material_name)
         if isinstance(material_name, PresetMaterial):
             material = Material(material_name.name)

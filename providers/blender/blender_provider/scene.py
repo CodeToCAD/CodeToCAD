@@ -1,20 +1,27 @@
 from typing import Optional
 from codetocad.interfaces.scene_interface import SceneInterface
-
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.utilities import get_absolute_filepath
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+    create_collection,
+    remove_collection,
+    remove_object_from_collection,
+)
+from providers.blender.blender_provider.blender_actions.context import (
+    get_selected_object_name,
+)
+from providers.blender.blender_provider.blender_actions.objects import (
+    set_object_visibility,
+)
+from providers.blender.blender_provider.blender_actions.scene import (
+    add_hdr_texture,
+    set_background_location,
+    set_default_unit as blender_actions_set_default_unit,
+)
+from providers.blender.blender_provider.blender_definitions import BlenderLength
 from providers.blender.blender_provider.entity import Entity
-from . import blender_actions
-from . import blender_definitions
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity
-    from . import Part
 
 
 class Scene(SceneInterface):
@@ -43,17 +50,15 @@ class Scene(SceneInterface):
         return
 
     def get_selected_entity(self) -> "EntityInterface":
-        return Entity(blender_actions.get_selected_object_name())
+        return Entity(get_selected_object_name())
 
     def export(
         self,
         file_path: "str",
-        entities: "list[ExportableOrItsName]",
+        entities: "list[str|Exportable]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
-        from . import Part  # noqa
-
         for entity in entities:
             part = entity
             if isinstance(part, str):
@@ -61,11 +66,11 @@ class Scene(SceneInterface):
             part.export(file_path, overwrite, scale)
         return self
 
-    def set_default_unit(self, unit: "LengthUnitOrItsName"):
+    def set_default_unit(self, unit: "str|LengthUnit"):
         if isinstance(unit, str):
             unit = LengthUnit.from_string(unit)
-        blenderUnit = blender_definitions.BlenderLength.from_length_unit(unit)
-        set_default_unit(blenderUnit, self.name)
+        blenderUnit = BlenderLength.from_length_unit(unit)
+        blender_actions_set_default_unit(blenderUnit, self.name)
         return self
 
     def create_group(self, name: "str"):
@@ -90,7 +95,7 @@ class Scene(SceneInterface):
 
     def assign_to_group(
         self,
-        entities: "list[EntityOrItsName]",
+        entities: "list[str|Entity]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -103,7 +108,7 @@ class Scene(SceneInterface):
             )
         return self
 
-    def set_visible(self, entities: "list[EntityOrItsName]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
         for entity in entities:
             if isinstance(entity, EntityInterface):
                 entity = entity.name
@@ -113,15 +118,15 @@ class Scene(SceneInterface):
     def set_background_image(
         self,
         file_path: "str",
-        location_x: "DimensionOrItsFloatOrStringValue| None" = 0,
-        location_y: "DimensionOrItsFloatOrStringValue| None" = 0,
+        location_x: "str|float|Dimension| None" = 0,
+        location_y: "str|float|Dimension| None" = 0,
     ):
         absoluteFilePath = get_absolute_filepath(file_path)
         add_hdr_texture(self.name, absoluteFilePath)
-        x = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+        x = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_x or 0)
         ).value
-        y = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+        y = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_y or 0)
         ).value
         set_background_location(self.name, x, y)

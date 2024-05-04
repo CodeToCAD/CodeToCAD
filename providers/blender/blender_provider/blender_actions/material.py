@@ -92,7 +92,7 @@ def set_material_to_object(material_name: str, object_name: str, is_union=False)
 # 	return blenderTexture
 
 
-# def createImageTexture(textureName, image_file_path, repeatMode:blender_definitions.RepeatMode):
+# def createImageTexture(textureName, image_file_path, repeatMode:RepeatMode):
 #   image = bpy.data.images.load(image_file_path)
 #   blenderTexture = bpy.data.textures.new(name=textureName, type="IMAGE")
 #   blenderTexture.image = image

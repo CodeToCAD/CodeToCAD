@@ -2,12 +2,8 @@ from typing import Optional
 from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
 from codetocad.utilities.override import override
-from codetocad.core import *
-from codetocad.enums import *
 from .fusion_actions.fusion_camera import FusionCamera
 
 
@@ -27,9 +23,9 @@ class Camera(CameraInterface, Entity):
     @override
     def rotate_xyz(
         self,
-        x: AngleOrItsFloatOrStringValue,
-        y: AngleOrItsFloatOrStringValue,
-        z: AngleOrItsFloatOrStringValue,
+        x: str | float | Angle,
+        y: str | float | Angle,
+        z: str | float | Angle,
     ):
         xAngle = Angle.from_angle_or_its_float_or_string_value(x)
         yAngle = Angle.from_angle_or_its_float_or_string_value(y)
@@ -61,9 +57,9 @@ class Camera(CameraInterface, Entity):
     @override
     def translate_xyz(
         self,
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
+        x: str | float | Dimension,
+        y: str | float | Dimension,
+        z: str | float | Dimension,
     ):
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None).value
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None).value

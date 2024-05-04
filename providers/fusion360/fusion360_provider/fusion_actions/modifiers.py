@@ -1,13 +1,15 @@
 from codetocad import *
 
 import adsk.core, adsk.fusion
+
+from codetocad.codetocad_types import *
 from .common import make_axis, make_axis_from_points
 
 
 def make_revolve(
     component: adsk.fusion.Component,
     sketch: adsk.fusion.Sketch,
-    angle: AngleOrItsFloatOrStringValue,
+    angle: str | float | Angle,
     start: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0),
     end: adsk.core.Point3D = adsk.core.Point3D.create(0, 0, 0),
 ) -> adsk.fusion.BRepBody:

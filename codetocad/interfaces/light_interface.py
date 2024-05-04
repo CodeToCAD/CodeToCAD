@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -30,7 +27,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
 
     @abstractmethod
     def set_color(
-        self, r_value: "IntOrFloat", g_value: "IntOrFloat", b_value: "IntOrFloat"
+        self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
         """
         Set the color of an existing light.

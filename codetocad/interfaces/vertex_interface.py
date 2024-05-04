@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -29,7 +26,7 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         self.name = name
         self.location = location

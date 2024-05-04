@@ -1,16 +1,12 @@
 from typing import Optional
-from codetocad.interfaces.light_interface import LightInterface
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.light_interface import LightInterface
 from providers.blender.blender_provider.blender_actions.light import (
     create_light,
     set_light_color,
 )
 from providers.blender.blender_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class Light(LightInterface, Entity):
@@ -40,7 +36,7 @@ class Light(LightInterface, Entity):
         return self
 
     def set_color(
-        self, r_value: "IntOrFloat", g_value: "IntOrFloat", b_value: "IntOrFloat"
+        self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
         set_light_color(self.name, r_value, g_value, b_value)
         return self

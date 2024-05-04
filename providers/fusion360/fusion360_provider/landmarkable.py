@@ -1,7 +1,4 @@
-from codetocad.codetocad_types import (
-    DimensionOrItsFloatOrStringValue,
-    PresetLandmarkOrItsName,
-)
+from codetocad.codetocad_types import *
 from codetocad.core.dimension import Dimension
 from codetocad.enums.preset_landmark import PresetLandmark
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -11,7 +8,7 @@ from providers.fusion360.fusion360_provider.landmark import Landmark
 
 
 class Landmarkable(LandmarkableInterface):
-    def get_landmark(self, landmark_name: PresetLandmarkOrItsName) -> "Landmark":
+    def get_landmark(self, landmark_name: str | PresetLandmark) -> "Landmark":
         if isinstance(landmark_name, LandmarkInterface):
             landmark_name = landmark_name.name
         preset: PresetLandmark | None = None
@@ -34,9 +31,9 @@ class Landmarkable(LandmarkableInterface):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: DimensionOrItsFloatOrStringValue,
-        y: DimensionOrItsFloatOrStringValue,
-        z: DimensionOrItsFloatOrStringValue,
+        x: str | float | Dimension,
+        y: str | float | Dimension,
+        z: str | float | Dimension,
     ) -> "Landmark":
         boundingBox = self.fusion_body.get_bounding_box()
         localPositions = [
