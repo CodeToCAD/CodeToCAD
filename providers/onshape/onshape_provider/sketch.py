@@ -1,6 +1,5 @@
 import json
 from codetocad.interfaces.sketch_interface import SketchInterface
-
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -14,11 +13,7 @@ from providers.onshape.onshape_provider.part import Part
 from providers.onshape.onshape_provider.wire import Wire
 from providers.onshape.onshape_provider.edge import Edge
 from typing import Optional
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from providers.onshape.onshape_provider.onshape_actions import (
     create_extrude,
     create_rect,
@@ -50,8 +45,8 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         return self
@@ -59,17 +54,17 @@ class Sketch(SketchInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
@@ -81,19 +76,19 @@ class Sketch(SketchInterface, Entity):
 
     def scale_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         return self
 
-    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_x(self, scale: "str|float|Dimension"):
         return self
 
-    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_y(self, scale: "str|float|Dimension"):
         return self
 
-    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_z(self, scale: "str|float|Dimension"):
         return self
 
     def scale_x_by_factor(self, scale_factor: "float"):
@@ -106,7 +101,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def scale_keep_aspect_ratio(
-        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         return self
 
@@ -132,22 +127,22 @@ class Sketch(SketchInterface, Entity):
 
     def revolve(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        about_entity_or_landmark: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|Entity",
+        axis: "str|int|Axis" = "z",
     ) -> "Part":
         raise NotImplementedError()
 
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         return self
 
-    def extrude(self, length: "DimensionOrItsFloatOrStringValue") -> "Part":
+    def extrude(self, length: "str|float|Dimension") -> "Part":
         if self.native_instance is None:
             raise ValueError("Native Instance is None")
         onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
@@ -159,11 +154,11 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
 
     def sweep(
-        self, profile_name_or_instance: "SketchOrItsName", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
     ) -> "Part":
         raise NotImplementedError()
 
-    def offset(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def offset(self, radius: "str|float|Dimension"):
         return self
 
     def profile(self, profile_curve_name: "str"):
@@ -172,7 +167,7 @@ class Sketch(SketchInterface, Entity):
     def create_text(
         self,
         text: "str",
-        font_size: "DimensionOrItsFloatOrStringValue" = 1.0,
+        font_size: "str|float|Dimension" = 1.0,
         bold: "bool" = False,
         italic: "bool" = False,
         underlined: "bool" = False,
@@ -200,11 +195,13 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "list[PointOrListOfFloatOrItsStringValueOrVertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
     ) -> "Wire":
         raise NotImplementedError()
 
-    def create_point(self, point: "PointOrListOfFloatOrItsStringValue") -> "Vertex":
+    def create_point(
+        self, point: "str|list[str]|list[float]|list[Dimension]|Point"
+    ) -> "Vertex":
         point = Point.from_list_of_float_or_string(point)
         api_resp = onshape_actions.create_point(
             self.client, self.onshape_url, self.name, point
@@ -216,8 +213,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
     ) -> "Edge":
         start_point = Point.from_list_of_float_or_string(start_at)
         end_point = Point.from_list_of_float_or_string(end_at)
@@ -232,7 +229,7 @@ class Sketch(SketchInterface, Entity):
             native_instance=json_native_data["feature"]["entities"][0],
         )
 
-    def create_circle(self, radius: "DimensionOrItsFloatOrStringValue") -> "Wire":
+    def create_circle(self, radius: "str|float|Dimension") -> "Wire":
         radius_float = Dimension.from_dimension_or_its_float_or_string_value(radius)
         api_resp = onshape_actions.create_circle(
             self.client, self.onshape_url, self.name, radius_float.value
@@ -241,9 +238,7 @@ class Sketch(SketchInterface, Entity):
         return Wire(native_instance=json_native_data["feature"])
 
     def create_ellipse(
-        self,
-        radius_minor: "DimensionOrItsFloatOrStringValue",
-        radius_major: "DimensionOrItsFloatOrStringValue",
+        self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
     ) -> "Wire":
         radius_minor_float = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
@@ -263,9 +258,9 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        radius: "DimensionOrItsFloatOrStringValue",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
         start_point = Point.from_list_of_float_or_string(start_at)
@@ -284,9 +279,7 @@ class Sketch(SketchInterface, Entity):
         return Wire(native_instance=json_native_data["feature"])
 
     def create_rectangle(
-        self,
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "Wire":
         length_float = Dimension.from_dimension_or_its_float_or_string_value(
             length, None
@@ -320,8 +313,8 @@ class Sketch(SketchInterface, Entity):
     def create_polygon(
         self,
         number_of_sides: "int",
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        length: "str|float|Dimension",
+        width: "str|float|Dimension",
     ) -> "Wire":
         points = get_polygon_points(number_of_sides, length)
         new_points: list[Point] = []
@@ -341,9 +334,9 @@ class Sketch(SketchInterface, Entity):
 
     def create_trapezoid(
         self,
-        length_upper: "DimensionOrItsFloatOrStringValue",
-        length_lower: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        length_upper: "str|float|Dimension",
+        length_lower: "str|float|Dimension",
+        height: "str|float|Dimension",
     ) -> "Wire":
         api_resp = onshape_actions.create_trapezoid(
             self.client, self.onshape_url, self.name, length_upper, length_lower, height
@@ -354,10 +347,10 @@ class Sketch(SketchInterface, Entity):
     def create_spiral(
         self,
         number_of_turns: "int",
-        height: "DimensionOrItsFloatOrStringValue",
-        radius: "DimensionOrItsFloatOrStringValue",
+        height: "str|float|Dimension",
+        radius: "str|float|Dimension",
         is_clockwise: "bool" = True,
-        radius_end: "DimensionOrItsFloatOrStringValue| None" = None,
+        radius_end: "str|float|Dimension| None" = None,
     ) -> "Wire":
         if self.native_instance is None:
             raise ValueError("Native Instance is None")
@@ -384,15 +377,13 @@ class Sketch(SketchInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

@@ -6,11 +6,7 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.onshape.onshape_provider.material import Material
 from providers.onshape.onshape_provider.entity import Entity
 from providers.onshape.onshape_provider.landmark import Landmark
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from . import Entity
 from typing import TYPE_CHECKING
 
@@ -30,8 +26,8 @@ class Part(PartInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         return self
@@ -39,17 +35,17 @@ class Part(PartInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
 
@@ -70,19 +66,19 @@ class Part(PartInterface, Entity):
 
     def scale_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         return self
 
-    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_x(self, scale: "str|float|Dimension"):
         return self
 
-    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_y(self, scale: "str|float|Dimension"):
         return self
 
-    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_z(self, scale: "str|float|Dimension"):
         return self
 
     def scale_x_by_factor(self, scale_factor: "float"):
@@ -95,63 +91,61 @@ class Part(PartInterface, Entity):
         return self
 
     def scale_keep_aspect_ratio(
-        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         return self
 
     def create_cube(
         self,
-        width: "DimensionOrItsFloatOrStringValue",
-        length: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        width: "str|float|Dimension",
+        length: "str|float|Dimension",
+        height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         return self
 
     def create_cone(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
-        draft_radius: "DimensionOrItsFloatOrStringValue" = 0,
+        radius: "str|float|Dimension",
+        height: "str|float|Dimension",
+        draft_radius: "str|float|Dimension" = 0,
         keyword_arguments: "dict| None" = None,
     ):
         return self
 
     def create_cylinder(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        radius: "str|float|Dimension",
+        height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         return self
 
     def create_torus(
         self,
-        inner_radius: "DimensionOrItsFloatOrStringValue",
-        outer_radius: "DimensionOrItsFloatOrStringValue",
+        inner_radius: "str|float|Dimension",
+        outer_radius: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         return self
 
     def create_sphere(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        keyword_arguments: "dict| None" = None,
+        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
     ):
         return self
 
     def create_gear(
         self,
-        outer_radius: "DimensionOrItsFloatOrStringValue",
-        addendum: "DimensionOrItsFloatOrStringValue",
-        inner_radius: "DimensionOrItsFloatOrStringValue",
-        dedendum: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
-        pressure_angle: "AngleOrItsFloatOrStringValue" = "20d",
+        outer_radius: "str|float|Dimension",
+        addendum: "str|float|Dimension",
+        inner_radius: "str|float|Dimension",
+        dedendum: "str|float|Dimension",
+        height: "str|float|Dimension",
+        pressure_angle: "str|float|Angle" = "20d",
         number_of_teeth: "int" = 12,
-        skew_angle: "AngleOrItsFloatOrStringValue" = 0,
-        conical_angle: "AngleOrItsFloatOrStringValue" = 0,
-        crown_angle: "AngleOrItsFloatOrStringValue" = 0,
+        skew_angle: "str|float|Angle" = 0,
+        conical_angle: "str|float|Angle" = 0,
+        crown_angle: "str|float|Angle" = 0,
         keyword_arguments: "dict| None" = None,
     ):
         return self
@@ -161,7 +155,7 @@ class Part(PartInterface, Entity):
 
     def union(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -169,7 +163,7 @@ class Part(PartInterface, Entity):
 
     def subtract(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -177,7 +171,7 @@ class Part(PartInterface, Entity):
 
     def intersect(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -185,123 +179,111 @@ class Part(PartInterface, Entity):
 
     def hollow(
         self,
-        thickness_x: "DimensionOrItsFloatOrStringValue",
-        thickness_y: "DimensionOrItsFloatOrStringValue",
-        thickness_z: "DimensionOrItsFloatOrStringValue",
-        start_axis: "AxisOrItsIndexOrItsName" = "z",
+        thickness_x: "str|float|Dimension",
+        thickness_y: "str|float|Dimension",
+        thickness_z: "str|float|Dimension",
+        start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
     ):
         return self
 
-    def thicken(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def thicken(self, radius: "str|float|Dimension"):
         return self
 
     def hole(
         self,
-        hole_landmark: "LandmarkOrItsName",
-        radius: "DimensionOrItsFloatOrStringValue",
-        depth: "DimensionOrItsFloatOrStringValue",
-        normal_axis: "AxisOrItsIndexOrItsName" = "z",
+        hole_landmark: "str|Landmark",
+        radius: "str|float|Dimension",
+        depth: "str|float|Dimension",
+        normal_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-        initial_rotation_x: "AngleOrItsFloatOrStringValue" = 0.0,
-        initial_rotation_y: "AngleOrItsFloatOrStringValue" = 0.0,
-        initial_rotation_z: "AngleOrItsFloatOrStringValue" = 0.0,
-        mirror_about_entity_or_landmark: "EntityOrItsName| None" = None,
-        mirror_axis: "AxisOrItsIndexOrItsName" = "x",
+        initial_rotation_x: "str|float|Angle" = 0.0,
+        initial_rotation_y: "str|float|Angle" = 0.0,
+        initial_rotation_z: "str|float|Angle" = 0.0,
+        mirror_about_entity_or_landmark: "str|Entity| None" = None,
+        mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
-        circular_pattern_instance_separation: "AngleOrItsFloatOrStringValue" = 0.0,
-        circular_pattern_instance_axis: "AxisOrItsIndexOrItsName" = "z",
-        circular_pattern_about_entity_or_landmark: "EntityOrItsName| None" = None,
+        circular_pattern_instance_separation: "str|float|Angle" = 0.0,
+        circular_pattern_instance_axis: "str|int|Axis" = "z",
+        circular_pattern_about_entity_or_landmark: "str|Entity| None" = None,
         linear_pattern_instance_count: "int" = 1,
-        linear_pattern_instance_separation: "DimensionOrItsFloatOrStringValue" = 0.0,
-        linear_pattern_instance_axis: "AxisOrItsIndexOrItsName" = "x",
+        linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
+        linear_pattern_instance_axis: "str|int|Axis" = "x",
         linear_pattern2nd_instance_count: "int" = 1,
-        linear_pattern2nd_instance_separation: "DimensionOrItsFloatOrStringValue" = 0.0,
-        linear_pattern2nd_instance_axis: "AxisOrItsIndexOrItsName" = "y",
+        linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
+        linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
     ):
         return self
 
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         return self
 
-    def set_material(self, material_name: "MaterialOrItsName"):
+    def set_material(self, material_name: "str|Material"):
         return self
 
-    def is_colliding_with_part(self, other_part: "PartOrItsName") -> bool:
+    def is_colliding_with_part(self, other_part: "str|Part") -> bool:
         raise NotImplementedError()
 
     def fillet_all_edges(
-        self, radius: "DimensionOrItsFloatOrStringValue", use_width: "bool" = False
+        self, radius: "str|float|Dimension", use_width: "bool" = False
     ):
         return self
 
     def fillet_edges(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_edges: "list[LandmarkOrItsName]",
+        radius: "str|float|Dimension",
+        landmarks_near_edges: "list[str|Landmark]",
         use_width: "bool" = False,
     ):
         return self
 
     def fillet_faces(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_faces: "list[LandmarkOrItsName]",
+        radius: "str|float|Dimension",
+        landmarks_near_faces: "list[str|Landmark]",
         use_width: "bool" = False,
     ):
         return self
 
-    def chamfer_all_edges(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension"):
         return self
 
     def chamfer_edges(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_edges: "list[LandmarkOrItsName]",
+        self, radius: "str|float|Dimension", landmarks_near_edges: "list[str|Landmark]"
     ):
         return self
 
     def chamfer_faces(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_faces: "list[LandmarkOrItsName]",
+        self, radius: "str|float|Dimension", landmarks_near_faces: "list[str|Landmark]"
     ):
         return self
 
-    def select_vertex_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_vertex_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         return self
 
-    def select_edge_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_edge_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         return self
 
-    def select_face_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_face_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         return self
 
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

@@ -1,23 +1,19 @@
 from typing import Optional
-from codetocad.interfaces.edge_interface import EdgeInterface
-from codetocad.enums import *
 from codetocad.interfaces.entity_interface import EntityInterface
+from providers.blender.blender_provider.vertex import Vertex
+from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.entity import Entity
-from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.landmark import Landmark
-
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
-from codetocad.utilities import *
-from codetocad.core import *
 
 
 class Edge(EdgeInterface, Entity):
     v1: "Vertex"
     v2: "Vertex"
-    parent_entity: Optional[EntityOrItsName] = None
+    parent_entity: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -29,7 +25,7 @@ class Edge(EdgeInterface, Entity):
         v2: "VertexInterface",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         """
         NOTE: Blender Provider's Edge requires a parent_entity and a native_instance
@@ -44,12 +40,10 @@ class Edge(EdgeInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    def offset(self, distance: "DimensionOrItsFloatOrStringValue") -> "Edge":
+    def offset(self, distance: "str|float|Dimension") -> "Edge":
         raise NotImplementedError()
 
-    def fillet(
-        self, other_edge: "EdgeInterface", amount: "AngleOrItsFloatOrStringValue"
-    ):
+    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
         return self
 
     def set_is_construction(self, is_construction: "bool"):
@@ -72,8 +66,8 @@ class Edge(EdgeInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         raise NotImplementedError()
@@ -86,8 +80,8 @@ class Edge(EdgeInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
         return self
@@ -95,9 +89,9 @@ class Edge(EdgeInterface, Entity):
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
         return self
@@ -105,15 +99,13 @@ class Edge(EdgeInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

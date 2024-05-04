@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -22,7 +19,7 @@ class Landmark(LandmarkInterface, Entity):
     def __init__(
         self,
         name: "str",
-        parent_entity: "EntityOrItsName",
+        parent_entity: "str|Entity",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -34,8 +31,8 @@ class Landmark(LandmarkInterface, Entity):
     def clone(
         self,
         new_name: "str",
-        offset: "DimensionsOrItsListOfFloatOrString| None" = None,
-        new_parent: "EntityOrItsName| None" = None,
+        offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
+        new_parent: "str|Entity| None" = None,
     ) -> "LandmarkInterface":
         print("clone called", f": {new_name}, {offset}, {new_parent}")
 

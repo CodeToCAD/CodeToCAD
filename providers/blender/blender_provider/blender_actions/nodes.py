@@ -1,11 +1,11 @@
 import bpy
 
+from providers.blender.blender_provider.blender_actions.scene import get_scene
+
 
 def get_node_tree(
     scene_name: str,
 ) -> bpy.types.NodeTree:
-    from . import get_scene
-
     scene = get_scene(scene_name)
     nodeTree = scene.world.node_tree
     return nodeTree

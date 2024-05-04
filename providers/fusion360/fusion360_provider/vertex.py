@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from . import Entity
 from typing import TYPE_CHECKING
 
@@ -22,7 +18,7 @@ class Vertex(VertexInterface, Entity):
         return Sketch("a projected sketch")
 
     location: "Point"
-    parent_entity: Optional[EntityOrItsName] = None
+    parent_entity: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -33,7 +29,7 @@ class Vertex(VertexInterface, Entity):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         self.location = location
         self.parent_entity = parent_entity

@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class EntityInterface(metaclass=ABCMeta):
@@ -158,9 +155,9 @@ class EntityInterface(metaclass=ABCMeta):
     @abstractmethod
     def translate_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         """
         Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
@@ -173,7 +170,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def translate_x(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_x(self, amount: "str|float|Dimension"):
         """
         Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         """
@@ -185,7 +182,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def translate_y(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_y(self, amount: "str|float|Dimension"):
         """
         Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         """
@@ -197,7 +194,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def translate_z(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_z(self, amount: "str|float|Dimension"):
         """
         Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.
         """
@@ -210,10 +207,7 @@ class EntityInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def rotate_xyz(
-        self,
-        x: "AngleOrItsFloatOrStringValue",
-        y: "AngleOrItsFloatOrStringValue",
-        z: "AngleOrItsFloatOrStringValue",
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         """
         Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
@@ -226,7 +220,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def rotate_x(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_x(self, rotation: "str|float|Angle"):
         """
         Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         """
@@ -236,7 +230,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def rotate_y(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_y(self, rotation: "str|float|Angle"):
         """
         Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         """
@@ -246,7 +240,7 @@ class EntityInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def rotate_z(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_z(self, rotation: "str|float|Angle"):
         """
         Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'
         """

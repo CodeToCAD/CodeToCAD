@@ -1,10 +1,6 @@
 from typing import Optional
 import adsk.core, adsk.fusion
-from codetocad.codetocad_types import (
-    AngleOrItsFloatOrStringValue,
-    AxisOrItsIndexOrItsName,
-    MaterialOrItsName,
-)
+
 from codetocad.core.angle import Angle
 from codetocad.core.point import Point
 from codetocad.enums.axis import Axis
@@ -14,10 +10,10 @@ from .base import get_body, get_occurrence, get_root_component
 from .common import make_axis
 from .fusion_interface import FusionInterface
 
+from providers.fusion360.fusion360_provider.material import Material
 
-def mirror(
-    obj: FusionInterface, other: adsk.core.Point3D, axis: AxisOrItsIndexOrItsName
-):
+
+def mirror(obj: FusionInterface, other: adsk.core.Point3D, axis: str | int | Axis):
     centerBody = obj.center
     centerOtherBody = other
 
@@ -153,8 +149,8 @@ def create_circular_pattern(
     body: adsk.fusion.BRepBody,
     center: adsk.core.Point3D,
     count: int,
-    angle: AngleOrItsFloatOrStringValue,
-    axis: AxisOrItsIndexOrItsName,
+    angle: str | float | Angle,
+    axis: str | int | Axis,
 ):
     features = component.features
 
@@ -180,7 +176,7 @@ def create_rectangular_pattern(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: AxisOrItsIndexOrItsName,
+    axis: str | int | Axis,
 ):
     features = component.features
 
@@ -218,8 +214,8 @@ def create_circular_pattern_sketch(
     fusion_interface: FusionInterface,
     center: adsk.core.Point3D,
     count: int,
-    angle: AngleOrItsFloatOrStringValue,
-    axis: AxisOrItsIndexOrItsName,
+    angle: str | float | Angle,
+    axis: str | int | Axis,
 ):
     occ = get_occurrence(fusion_interface.component.name)
 
@@ -247,7 +243,7 @@ def create_rectangular_pattern_sketch(
     component: adsk.fusion.Component,
     count: int,
     offset: float,
-    axis: AxisOrItsIndexOrItsName,
+    axis: str | int | Axis,
 ):
     occ = get_occurrence(component.name)
 
@@ -492,7 +488,7 @@ def chamfer_all_edges(
     chamfer = chamfers.add(chamferInput)
 
 
-def set_material(fusion_interface: FusionInterface, material_name: MaterialOrItsName):
+def set_material(fusion_interface: FusionInterface, material_name: str | Material):
     body = fusion_interface.instance
 
     if isinstance(material_name, str):

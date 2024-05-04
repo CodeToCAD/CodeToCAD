@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.animation_interface import AnimationInterface
@@ -44,12 +41,12 @@ class Animation(
 
         return self
 
-    def create_key_frame_location(self, entity: "EntityOrItsName", frame_number: "int"):
+    def create_key_frame_location(self, entity: "str|Entity", frame_number: "int"):
         print("create_key_frame_location called", f": {entity}, {frame_number}")
 
         return self
 
-    def create_key_frame_rotation(self, entity: "EntityOrItsName", frame_number: "int"):
+    def create_key_frame_rotation(self, entity: "str|Entity", frame_number: "int"):
         print("create_key_frame_rotation called", f": {entity}, {frame_number}")
 
         return self

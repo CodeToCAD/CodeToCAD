@@ -1,17 +1,24 @@
 import math
-from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
+from providers.blender.blender_provider.landmark import Landmark
+from providers.blender.blender_provider.part import Part
+from codetocad.core.angle import Angle
+from codetocad.core.dimension import Dimension
+from codetocad.core.point import Point
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.wire_interface import WireInterface
-
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.utilities import create_uuid_like_id
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderCurveTypes,
+    BlenderLength,
+)
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
-from providers.blender.blender_provider.landmark import Landmark
-from providers.blender.blender_provider.part import Part
 from providers.blender.blender_provider.wire import Wire
 from providers.blender.blender_provider.edge import Edge
 from typing import Optional
@@ -44,10 +51,7 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
     get_wires_from_blender_entity,
 )
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-from providers.blender.blender_provider import blender_definitions, implementables
+import providers.blender.blender_provider.implementables as implementables
 
 
 class Sketch(SketchInterface, Entity):
@@ -68,13 +72,21 @@ class Sketch(SketchInterface, Entity):
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called:", project_from)
-        return Sketch("a projected sketch")
+        if isinstance(project_from, WireInterface):
+            points = project_from.get_vertices()
+            points = [point.location for point in points]
+            points.append(points[0].copy())
+            wire = self.create_from_vertices(points)
+            wire.name = project_from.name
+            return wire
+        raise NotImplementedError(f"Type {type(project_from)} is not supported.")
 
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
-        return Sketch(new_name, self.curve_type, self.description)
+        return Sketch(
+            new_name, curve_type=self.curve_type, description=self.description
+        )
 
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         raise NotImplementedError()
@@ -82,9 +94,9 @@ class Sketch(SketchInterface, Entity):
 
     def revolve(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        about_entity_or_landmark: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|Entity",
+        axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         if isinstance(about_entity_or_landmark, LandmarkInterface):
             about_entity_or_landmark = (
@@ -103,19 +115,17 @@ class Sketch(SketchInterface, Entity):
         create_mesh_from_curve(self.name)
         return Part(self.name, self.description).apply()
 
-    def offset(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def offset(self, radius: "str|float|Dimension"):
         radius = Dimension.from_string(radius)
         set_curve_offset_geometry(self.name, radius)
         return self
 
-    def extrude(self, length: "DimensionOrItsFloatOrStringValue") -> "PartInterface":
+    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We will assume that extruding a sketch will extrude all the underlying Wires.
         # We also assume the normal is never perpendicular to the Z axis.
-        parsed_length = (
-            blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-                Dimension.from_dimension_or_its_float_or_string_value(length)
-            ).value
-        )
+        parsed_length = BlenderLength.convert_dimension_to_blender_unit(
+            Dimension.from_dimension_or_its_float_or_string_value(length)
+        ).value
         wires = get_wires_from_blender_entity(self.get_native_instance().data)
         for wire in wires:
             normal = wire.get_normal()
@@ -125,13 +135,13 @@ class Sketch(SketchInterface, Entity):
                 translate_vector, [p.value for p in normal.to_list()]
             )
             temp_sketch = Sketch(self.name + "_temp")
-            temp_wire = wire.clone(wire.name + "_temp", temp_sketch)
+            temp_wire = temp_sketch.project(wire)
             temp_sketch.translate_xyz(*projected_normal)
             wire.loft(temp_wire)
         return Part(self.name, self.description)
 
     def sweep(
-        self, profile_name_or_instance: "SketchOrItsName", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
     ) -> "PartInterface":
         profile_curve_name = profile_name_or_instance
         if isinstance(profile_curve_name, EntityInterface):
@@ -151,7 +161,7 @@ class Sketch(SketchInterface, Entity):
     def create_text(
         self,
         text: "str",
-        font_size: "DimensionOrItsFloatOrStringValue" = 1.0,
+        font_size: "str|float|Dimension" = 1.0,
         bold: "bool" = False,
         italic: "bool" = False,
         underlined: "bool" = False,
@@ -177,7 +187,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "list[PointOrListOfFloatOrItsStringValueOrVertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
     ) -> "Wire":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         is_closed = False
@@ -186,9 +196,9 @@ class Sketch(SketchInterface, Entity):
             parsed_points = parsed_points[:-1]
         blender_spline, curve_data, added_points = create_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
+            BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
-            else blender_definitions.BlenderCurveTypes.BEZIER,
+            else BlenderCurveTypes.BEZIER,
             parsed_points,
             self.resolution,
             is_3d=False,
@@ -203,14 +213,14 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    def create_point(self, point: "PointOrListOfFloatOrItsStringValue") -> "Vertex":
+    def create_point(
+        self, point: "str|list[str]|list[float]|list[Dimension]|Point"
+    ) -> "Vertex":
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
-            curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type
-            )
+            curve_type=BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
-            else blender_definitions.BlenderCurveTypes.BEZIER,
+            else BlenderCurveTypes.BEZIER,
             points=[point],
             is_3d=False,
         )
@@ -225,8 +235,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
     ) -> "Edge":
         start_point: Point
         end_point: Point
@@ -240,11 +250,9 @@ class Sketch(SketchInterface, Entity):
             end_point = Point.from_list_of_float_or_string(end_at)
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
-            curve_type=blender_definitions.BlenderCurveTypes.from_curve_types(
-                self.curve_type
-            )
+            curve_type=BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
-            else blender_definitions.BlenderCurveTypes.BEZIER,
+            else BlenderCurveTypes.BEZIER,
             points=[start_point, end_point],
             is_3d=False,
         )
@@ -292,11 +300,11 @@ class Sketch(SketchInterface, Entity):
             )
             index += 1
 
-    def create_circle(self, radius: "DimensionOrItsFloatOrStringValue") -> "Wire":
+    def create_circle(self, radius: "str|float|Dimension") -> "Wire":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         points = get_circle_points(radius, self.resolution)
         wire = self.create_from_vertices(
-            [Point.from_list_of_float_or_string(point) for point in points], order_u=4
+            [Point.from_list_of_float_or_string(point) for point in points]
         )
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, radius)
@@ -304,9 +312,7 @@ class Sketch(SketchInterface, Entity):
         return wire
 
     def create_ellipse(
-        self,
-        radius_minor: "DimensionOrItsFloatOrStringValue",
-        radius_major: "DimensionOrItsFloatOrStringValue",
+        self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
     ) -> "Wire":
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
@@ -325,9 +331,9 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        radius: "DimensionOrItsFloatOrStringValue",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
         start_point: Point
@@ -366,9 +372,9 @@ class Sketch(SketchInterface, Entity):
         #     clipped_points: list[Point] = clipped_points[:-1]
         blender_spline, curve_data, added_points = create_curve(
             self.name,
-            blender_definitions.BlenderCurveTypes.from_curve_types(self.curve_type)
+            BlenderCurveTypes.from_curve_types(self.curve_type)
             if self.curve_type is not None
-            else blender_definitions.BlenderCurveTypes.BEZIER,
+            else BlenderCurveTypes.BEZIER,
             clipped_points,
             interpolation=self.resolution,
             is_3d=False,
@@ -384,9 +390,7 @@ class Sketch(SketchInterface, Entity):
         return wire
 
     def create_rectangle(
-        self,
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "Wire":
         half_length = (
             Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
@@ -407,43 +411,43 @@ class Sketch(SketchInterface, Entity):
     def create_polygon(
         self,
         number_of_sides: "int",
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        length: "str|float|Dimension",
+        width: "str|float|Dimension",
     ) -> "Wire":
         raise NotImplementedError()
 
     def create_trapezoid(
         self,
-        length_upper: "DimensionOrItsFloatOrStringValue",
-        length_lower: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        length_upper: "str|float|Dimension",
+        length_lower: "str|float|Dimension",
+        height: "str|float|Dimension",
     ) -> "Wire":
         raise NotImplementedError()
 
     def create_spiral(
         self,
         number_of_turns: "int",
-        height: "DimensionOrItsFloatOrStringValue",
-        radius: "DimensionOrItsFloatOrStringValue",
+        height: "str|float|Dimension",
+        radius: "str|float|Dimension",
         is_clockwise: "bool" = True,
-        radius_end: "DimensionOrItsFloatOrStringValue| None" = None,
+        radius_end: "str|float|Dimension| None" = None,
     ) -> "Wire":
         raise NotImplementedError()
 
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         implementables.twist(self, angle, screw_pitch, iterations, axis)
         return self
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         implementables.mirror(
@@ -454,8 +458,8 @@ class Sketch(SketchInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
@@ -463,9 +467,9 @@ class Sketch(SketchInterface, Entity):
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         implementables.circular_pattern(
             self,
@@ -482,22 +486,22 @@ class Sketch(SketchInterface, Entity):
 
     def scale_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         implementables.scale_xyz(self, x, y, z)
         return self
 
-    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_x(self, scale: "str|float|Dimension"):
         implementables.scale_x(self, scale)
         return self
 
-    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_y(self, scale: "str|float|Dimension"):
         implementables.scale_y(self, scale)
         return self
 
-    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_z(self, scale: "str|float|Dimension"):
         implementables.scale_z(self, scale)
         return self
 
@@ -514,7 +518,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def scale_keep_aspect_ratio(
-        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
@@ -522,13 +526,11 @@ class Sketch(SketchInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         return implementables.create_landmark(self, landmark_name, x, y, z)
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)

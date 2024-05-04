@@ -6,10 +6,11 @@ from providers.blender.blender_provider.blender_actions.context import (
     update_view_layer,
 )
 from providers.blender.blender_provider.blender_actions.objects import get_object
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+
 from pathlib import Path
 
-from codetocad import get_file_extension
+from codetocad.utilities import get_file_extension
+from providers.blender.blender_provider.blender_definitions import BlenderVersions
 
 fileImportFunctions = {
     "stl": lambda file_path: bpy.ops.import_mesh.stl(filepath=file_path),
@@ -76,7 +77,7 @@ fileExportFunctions = {
     "obj": lambda file_path, scale: bpy.ops.wm.obj_export(
         filepath=file_path, export_selected_objects=True, global_scale=scale
     )
-    if get_blender_version() >= blender_definitions.BlenderVersions.THREE_DOT_ONE.value
+    if get_blender_version() >= BlenderVersions.THREE_DOT_ONE.value
     else bpy.ops.export_scene.obj(
         filepath=file_path, use_selection=True, global_scale=scale
     ),

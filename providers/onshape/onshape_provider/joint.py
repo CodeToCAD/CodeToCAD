@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.joint_interface import JointInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,10 +10,10 @@ if TYPE_CHECKING:
 
 
 class Joint(JointInterface):
-    entity1: EntityOrItsName
-    entity2: EntityOrItsName
+    entity1: str | Entity
+    entity2: str | Entity
 
-    def __init__(self, entity1: "EntityOrItsName", entity2: "EntityOrItsName"):
+    def __init__(self, entity1: "str|Entity", entity2: "str|Entity"):
         self.entity1 = entity1
         self.entity2 = entity2
 
@@ -32,58 +28,52 @@ class Joint(JointInterface):
 
     def limit_location_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue| None" = None,
-        y: "DimensionOrItsFloatOrStringValue| None" = None,
-        z: "DimensionOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Dimension| None" = None,
+        y: "str|float|Dimension| None" = None,
+        z: "str|float|Dimension| None" = None,
     ):
         return self
 
     def limit_location_x(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         return self
 
     def limit_location_y(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         return self
 
     def limit_location_z(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         return self
 
     def limit_rotation_xyz(
         self,
-        x: "AngleOrItsFloatOrStringValue| None" = None,
-        y: "AngleOrItsFloatOrStringValue| None" = None,
-        z: "AngleOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Angle| None" = None,
+        y: "str|float|Angle| None" = None,
+        z: "str|float|Angle| None" = None,
     ):
         return self
 
     def limit_rotation_x(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
     def limit_rotation_y(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
     def limit_rotation_z(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self

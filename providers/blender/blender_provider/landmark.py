@@ -1,7 +1,7 @@
 from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.utilities import format_landmark_entity_name
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.blender_actions.context import (
     select_object,
@@ -17,22 +17,19 @@ from providers.blender.blender_provider.blender_actions.objects import (
     update_object_name,
 )
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
 from codetocad.utilities.override import override
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class Landmark(LandmarkInterface, Entity):
     name: str
-    parent_entity: EntityOrItsName
+    parent_entity: str | Entity
     description: Optional[str] = None
     native_instance = None
 
     def __init__(
         self,
         name: "str",
-        parent_entity: "EntityOrItsName",
+        parent_entity: "str|Entity",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -89,8 +86,8 @@ class Landmark(LandmarkInterface, Entity):
     def clone(
         self,
         new_name: "str",
-        offset: "DimensionsOrItsListOfFloatOrString| None" = None,
-        new_parent: "EntityOrItsName| None" = None,
+        offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
+        new_parent: "str|Entity| None" = None,
     ) -> "Landmark":
         x = (
             self.get_location_local().x

@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.interfaces.sketch_interface import SketchInterface
-
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -13,11 +12,7 @@ from providers.fusion360.fusion360_provider.landmark import Landmark
 from providers.fusion360.fusion360_provider.part import Part
 from providers.fusion360.fusion360_provider.wire import Wire
 from providers.fusion360.fusion360_provider.edge import Edge
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import (
     get_body,
     get_component,
@@ -81,8 +76,8 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         from . import Part
@@ -103,8 +98,8 @@ class Sketch(SketchInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         offset = Dimension.from_dimension_or_its_float_or_string_value(offset, None)
         create_rectangular_pattern_sketch(
@@ -115,9 +110,9 @@ class Sketch(SketchInterface, Entity):
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         from . import Part
 
@@ -149,9 +144,9 @@ class Sketch(SketchInterface, Entity):
 
     def scale_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
@@ -159,17 +154,17 @@ class Sketch(SketchInterface, Entity):
         self.fusion_sketch.scale(x.value, y.value, z.value)
         return self
 
-    def scale_x(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_x(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         self.fusion_sketch.scale(scale.value, 0, 0)
         return self
 
-    def scale_y(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_y(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         self.fusion_sketch.scale(0, scale.value, 0)
         return self
 
-    def scale_z(self, scale: "DimensionOrItsFloatOrStringValue"):
+    def scale_z(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         self.fusion_sketch.scale(0, 0, scale.value)
         return self
@@ -198,7 +193,7 @@ class Sketch(SketchInterface, Entity):
     # @check behavior with axis
 
     def scale_keep_aspect_ratio(
-        self, scale: "DimensionOrItsFloatOrStringValue", axis: "AxisOrItsIndexOrItsName"
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         self.fusion_sketch.scale_uniform(scale.value)
@@ -210,9 +205,9 @@ class Sketch(SketchInterface, Entity):
 
     def revolve(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        about_entity_or_landmark: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|Entity",
+        axis: "str|int|Axis" = "z",
     ) -> "Part":
         from . import Part
 
@@ -237,15 +232,15 @@ class Sketch(SketchInterface, Entity):
 
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         print("twist called:", angle, screw_pitch, iterations, axis)
         return self
 
-    def extrude(self, length: "DimensionOrItsFloatOrStringValue") -> "Part":
+    def extrude(self, length: "str|float|Dimension") -> "Part":
         from . import Part
 
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
@@ -255,7 +250,7 @@ class Sketch(SketchInterface, Entity):
         return part
 
     def sweep(
-        self, profile_name_or_instance: "SketchOrItsName", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
     ) -> "Part":
         from . import Part
 
@@ -267,7 +262,7 @@ class Sketch(SketchInterface, Entity):
         )
         return Part(name)
 
-    def offset(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def offset(self, radius: "str|float|Dimension"):
         print("offset called:", radius)
         return self
 
@@ -278,7 +273,7 @@ class Sketch(SketchInterface, Entity):
     def create_text(
         self,
         text: "str",
-        font_size: "DimensionOrItsFloatOrStringValue" = 1.0,
+        font_size: "str|float|Dimension" = 1.0,
         bold: "bool" = False,
         italic: "bool" = False,
         underlined: "bool" = False,
@@ -305,7 +300,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "list[PointOrListOfFloatOrItsStringValueOrVertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
     ) -> "Wire":
         from . import Edge, Vertex, Wire
 
@@ -317,7 +312,9 @@ class Sketch(SketchInterface, Entity):
             edges.append(edge)
         return Wire(edges=edges, name=create_uuid_like_id(), parent_entity=self.name)
 
-    def create_point(self, point: "PointOrListOfFloatOrItsStringValue") -> "Vertex":
+    def create_point(
+        self, point: "str|list[str]|list[float]|list[Dimension]|Point"
+    ) -> "Vertex":
         from . import Vertex
 
         sketch = self.fusion_sketch.instance
@@ -326,8 +323,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
     ) -> "Edge":
         from . import Edge
 
@@ -349,7 +346,7 @@ class Sketch(SketchInterface, Entity):
         edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
         return edge
 
-    def create_circle(self, radius: "DimensionOrItsFloatOrStringValue") -> "Wire":
+    def create_circle(self, radius: "str|float|Dimension") -> "Wire":
         from . import Wire, Edge, Vertex
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
@@ -359,9 +356,7 @@ class Sketch(SketchInterface, Entity):
         return wire
 
     def create_ellipse(
-        self,
-        radius_minor: "DimensionOrItsFloatOrStringValue",
-        radius_major: "DimensionOrItsFloatOrStringValue",
+        self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
     ) -> "Wire":
         # from . import Wire
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
@@ -380,9 +375,9 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        end_at: "PointOrListOfFloatOrItsStringValueOrVertex",
-        radius: "DimensionOrItsFloatOrStringValue",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
         from . import Wire, Edge, Vertex
@@ -396,9 +391,7 @@ class Sketch(SketchInterface, Entity):
         return wire
 
     def create_rectangle(
-        self,
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "Wire":
         from . import Wire, Edge, Vertex
 
@@ -413,8 +406,8 @@ class Sketch(SketchInterface, Entity):
     def create_polygon(
         self,
         number_of_sides: "int",
-        length: "DimensionOrItsFloatOrStringValue",
-        width: "DimensionOrItsFloatOrStringValue",
+        length: "str|float|Dimension",
+        width: "str|float|Dimension",
     ) -> "Wire":
         from . import Wire, Edge
 
@@ -423,9 +416,9 @@ class Sketch(SketchInterface, Entity):
 
     def create_trapezoid(
         self,
-        length_upper: "DimensionOrItsFloatOrStringValue",
-        length_lower: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        length_upper: "str|float|Dimension",
+        length_lower: "str|float|Dimension",
+        height: "str|float|Dimension",
     ) -> "Wire":
         from . import Wire, Edge
 
@@ -435,10 +428,10 @@ class Sketch(SketchInterface, Entity):
     def create_spiral(
         self,
         number_of_turns: "int",
-        height: "DimensionOrItsFloatOrStringValue",
-        radius: "DimensionOrItsFloatOrStringValue",
+        height: "str|float|Dimension",
+        radius: "str|float|Dimension",
         is_clockwise: "bool" = True,
-        radius_end: "DimensionOrItsFloatOrStringValue| None" = None,
+        radius_end: "str|float|Dimension| None" = None,
     ) -> "Wire":
         from . import Wire, Edge
 
@@ -455,15 +448,13 @@ class Sketch(SketchInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from . import Entity
 from typing import TYPE_CHECKING
 
@@ -16,14 +12,14 @@ if TYPE_CHECKING:
 
 class Landmark(LandmarkInterface, Entity):
     name: str
-    parent_entity: EntityOrItsName
+    parent_entity: str | Entity
     description: Optional[str] = None
     native_instance = None
 
     def __init__(
         self,
         name: "str",
-        parent_entity: "EntityOrItsName",
+        parent_entity: "str|Entity",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -35,8 +31,8 @@ class Landmark(LandmarkInterface, Entity):
     def clone(
         self,
         new_name: "str",
-        offset: "DimensionsOrItsListOfFloatOrString| None" = None,
-        new_parent: "EntityOrItsName| None" = None,
+        offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
+        new_parent: "str|Entity| None" = None,
     ) -> "Landmark":
         print("clone called:", new_name, offset, new_parent)
         from . import Landmark

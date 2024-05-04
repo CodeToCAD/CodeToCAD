@@ -1,13 +1,11 @@
 from typing import Optional
-from codetocad.interfaces.joint_interface import JointInterface
 from providers.blender.blender_provider.entity import Entity
-
+from codetocad.core.angle import Angle
+from codetocad.core.dimension import Dimension
+from codetocad.interfaces.joint_interface import JointInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-from providers.blender.blender_provider import blender_definitions
 from providers.blender.blender_provider.blender_actions.constraints import (
     apply_copy_location_constraint,
     apply_copy_rotation_constraint,
@@ -18,13 +16,17 @@ from providers.blender.blender_provider.blender_actions.constraints import (
     get_constraint,
 )
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderConstraintTypes,
+    BlenderLength,
+)
 
 
 class Joint(JointInterface):
-    entity1: EntityOrItsName
-    entity2: EntityOrItsName
+    entity1: str | Entity
+    entity2: str | Entity
 
-    def __init__(self, entity1: "EntityOrItsName", entity2: "EntityOrItsName"):
+    def __init__(self, entity1: "str|Entity", entity2: "str|Entity"):
         self.entity1 = entity1
         self.entity2 = entity2
 
@@ -76,15 +78,11 @@ class Joint(JointInterface):
     def _get_limit_location_pair(min, max) -> list[Optional[Dimension]]:
         locationPair: list[Optional[Dimension]] = [None, None]
         if min is not None:
-            locationPair[
-                0
-            ] = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            locationPair[0] = BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(min)
             )
         if max is not None:
-            locationPair[
-                1
-            ] = blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
+            locationPair[1] = BlenderLength.convert_dimension_to_blender_unit(
                 Dimension.from_string(max)
             )
         return locationPair
@@ -131,13 +129,13 @@ class Joint(JointInterface):
         update_view_layer()
         locationConstraint = get_constraint(
             object_to_limit_name,
-            blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
+            BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
                 object_to_limit_name, None
             ),
         )
         rotationConstraint = get_constraint(
             object_to_limit_name,
-            blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
+            BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
                 object_to_limit_name, None
             ),
         )
@@ -146,9 +144,9 @@ class Joint(JointInterface):
 
     def limit_location_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue| None" = None,
-        y: "DimensionOrItsFloatOrStringValue| None" = None,
-        z: "DimensionOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Dimension| None" = None,
+        y: "str|float|Dimension| None" = None,
+        z: "str|float|Dimension| None" = None,
     ):
         dimensionsX = Joint._get_limit_location_pair(x, x) if x is not None else None
         dimensionsY = Joint._get_limit_location_pair(y, y) if y is not None else None
@@ -158,8 +156,8 @@ class Joint(JointInterface):
 
     def limit_location_x(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(dimensions, None, None)
@@ -167,8 +165,8 @@ class Joint(JointInterface):
 
     def limit_location_y(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(None, dimensions, None)
@@ -176,8 +174,8 @@ class Joint(JointInterface):
 
     def limit_location_z(
         self,
-        min: "DimensionOrItsFloatOrStringValue| None" = None,
-        max: "DimensionOrItsFloatOrStringValue| None" = None,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
     ):
         dimensions = Joint._get_limit_location_pair(min, max)
         self._limit_location_xyz(None, None, dimensions)
@@ -230,9 +228,9 @@ class Joint(JointInterface):
 
     def limit_rotation_xyz(
         self,
-        x: "AngleOrItsFloatOrStringValue| None" = None,
-        y: "AngleOrItsFloatOrStringValue| None" = None,
-        z: "AngleOrItsFloatOrStringValue| None" = None,
+        x: "str|float|Angle| None" = None,
+        y: "str|float|Angle| None" = None,
+        z: "str|float|Angle| None" = None,
     ):
         rotation_pair_x = (
             Joint._get_limit_rotation_pair(x, x) if x is not None else None
@@ -248,25 +246,19 @@ class Joint(JointInterface):
         )
 
     def limit_rotation_x(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(rotationPair, None, None)
 
     def limit_rotation_y(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, rotationPair, None)
 
     def limit_rotation_z(
-        self,
-        min: "AngleOrItsFloatOrStringValue| None" = None,
-        max: "AngleOrItsFloatOrStringValue| None" = None,
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, None, rotationPair)

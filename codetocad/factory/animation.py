@@ -3,31 +3,24 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-
 
 from codetocad.interfaces.animation_interface import AnimationInterface
+
+from codetocad.providers import get_provider
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-class Animation:
+def create_animation() -> AnimationInterface:
     """
     Animation related functionality.
 
-    NOTE: This is a facade-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a factory - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
+    return get_provider(AnimationInterface)()  # type: ignore
 
-    def __new__(
-        cls,
-    ) -> AnimationInterface:
-        return cls._provider()
 
-    @classmethod
-    def register(cls, provider: AnimationInterface):
-        cls._provider = provider
+def default_animation() -> "AnimationInterface":
+    return get_provider(AnimationInterface).default()

@@ -4,10 +4,9 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
+
+from codetocad.providers import get_provider
 
 from codetocad.interfaces.scene_interface import SceneInterface
 
@@ -19,15 +18,19 @@ class Scene:
     """
     Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.
 
-    NOTE: This is a facade-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
     def __new__(
         cls, name: "str| None" = None, description: "str| None" = None
     ) -> SceneInterface:
-        return cls._provider(name, description)
+        return get_provider(SceneInterface)(name, description)  # type: ignore
 
-    @classmethod
-    def register(cls, provider: SceneInterface):
-        cls._provider = provider
+    @staticmethod
+    def default() -> "SceneInterface":
+        print(
+            "default called",
+        )
+
+        return Scene()

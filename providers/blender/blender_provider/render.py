@@ -1,20 +1,28 @@
-from typing import Optional
 from codetocad.interfaces.render_interface import RenderInterface
-from codetocad.interfaces.camera_interface import CameraInterface
 from providers.blender.blender_provider.camera import Camera
-from . import blender_actions
-from . import blender_definitions
-
+from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
+from codetocad.utilities import get_absolute_filepath, get_file_extension
+from providers.blender.blender_provider.blender_actions.camera import set_scene_camera
+from providers.blender.blender_provider.blender_actions.render import (
+    render_animation,
+    render_image,
+    set_render_engine,
+    set_render_file_format,
+    set_render_frame_rate,
+    set_render_quality,
+    set_render_resolution,
+)
+from providers.blender.blender_provider.blender_definitions import (
+    FileFormat,
+    RenderEngines,
+)
 
 
 class Render(RenderInterface):
     @staticmethod
     def _set_file_format(output_file_path: str):
-        fileFormat = blender_definitions.FileFormat.from_utilities_file_format(
+        fileFormat = FileFormat.from_utilities_file_format(
             FileFormats.from_string(get_file_extension(output_file_path))
         )
         set_render_file_format(fileFormat)
@@ -72,10 +80,10 @@ class Render(RenderInterface):
         return self
 
     def set_render_engine(self, name: "str"):
-        set_render_engine(blender_definitions.RenderEngines.from_string(name))
+        set_render_engine(RenderEngines.from_string(name))
         return self
 
-    def set_camera(self, camera_name_or_instance: "CameraOrItsName"):
+    def set_camera(self, camera_name_or_instance: "str|Camera"):
         cameraName = camera_name_or_instance
         if isinstance(cameraName, CameraInterface):
             cameraName = cameraName.name

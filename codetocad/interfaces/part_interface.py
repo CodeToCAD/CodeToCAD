@@ -6,32 +6,29 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
-
-from codetocad.interfaces.material_interface import MaterialInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.material_interface import MaterialInterface
 
 from codetocad.interfaces.scalable_interface import ScalableInterface
 
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.importable_interface import ImportableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
 class PartInterface(
@@ -62,9 +59,9 @@ class PartInterface(
     @abstractmethod
     def create_cube(
         self,
-        width: "DimensionOrItsFloatOrStringValue",
-        length: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        width: "str|float|Dimension",
+        length: "str|float|Dimension",
+        height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         """
@@ -80,9 +77,9 @@ class PartInterface(
     @abstractmethod
     def create_cone(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
-        draft_radius: "DimensionOrItsFloatOrStringValue" = 0,
+        radius: "str|float|Dimension",
+        height: "str|float|Dimension",
+        draft_radius: "str|float|Dimension" = 0,
         keyword_arguments: "dict| None" = None,
     ):
         """
@@ -98,8 +95,8 @@ class PartInterface(
     @abstractmethod
     def create_cylinder(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
+        radius: "str|float|Dimension",
+        height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         """
@@ -115,8 +112,8 @@ class PartInterface(
     @abstractmethod
     def create_torus(
         self,
-        inner_radius: "DimensionOrItsFloatOrStringValue",
-        outer_radius: "DimensionOrItsFloatOrStringValue",
+        inner_radius: "str|float|Dimension",
+        outer_radius: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
         """
@@ -131,9 +128,7 @@ class PartInterface(
 
     @abstractmethod
     def create_sphere(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        keyword_arguments: "dict| None" = None,
+        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
     ):
         """
         Adds sphere geometry to a part.
@@ -148,16 +143,16 @@ class PartInterface(
     @abstractmethod
     def create_gear(
         self,
-        outer_radius: "DimensionOrItsFloatOrStringValue",
-        addendum: "DimensionOrItsFloatOrStringValue",
-        inner_radius: "DimensionOrItsFloatOrStringValue",
-        dedendum: "DimensionOrItsFloatOrStringValue",
-        height: "DimensionOrItsFloatOrStringValue",
-        pressure_angle: "AngleOrItsFloatOrStringValue" = "20d",
+        outer_radius: "str|float|Dimension",
+        addendum: "str|float|Dimension",
+        inner_radius: "str|float|Dimension",
+        dedendum: "str|float|Dimension",
+        height: "str|float|Dimension",
+        pressure_angle: "str|float|Angle" = "20d",
         number_of_teeth: "int" = 12,
-        skew_angle: "AngleOrItsFloatOrStringValue" = 0,
-        conical_angle: "AngleOrItsFloatOrStringValue" = 0,
-        crown_angle: "AngleOrItsFloatOrStringValue" = 0,
+        skew_angle: "str|float|Angle" = 0,
+        conical_angle: "str|float|Angle" = 0,
+        crown_angle: "str|float|Angle" = 0,
         keyword_arguments: "dict| None" = None,
     ):
         """
@@ -183,10 +178,10 @@ class PartInterface(
     @abstractmethod
     def hollow(
         self,
-        thickness_x: "DimensionOrItsFloatOrStringValue",
-        thickness_y: "DimensionOrItsFloatOrStringValue",
-        thickness_z: "DimensionOrItsFloatOrStringValue",
-        start_axis: "AxisOrItsIndexOrItsName" = "z",
+        thickness_x: "str|float|Dimension",
+        thickness_y: "str|float|Dimension",
+        thickness_z: "str|float|Dimension",
+        start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
     ):
         """
@@ -198,7 +193,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def thicken(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def thicken(self, radius: "str|float|Dimension"):
         """
         Uniformly add a wall around a Part.
         """
@@ -210,27 +205,27 @@ class PartInterface(
     @abstractmethod
     def hole(
         self,
-        hole_landmark: "LandmarkOrItsName",
-        radius: "DimensionOrItsFloatOrStringValue",
-        depth: "DimensionOrItsFloatOrStringValue",
-        normal_axis: "AxisOrItsIndexOrItsName" = "z",
+        hole_landmark: "str|Landmark",
+        radius: "str|float|Dimension",
+        depth: "str|float|Dimension",
+        normal_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-        initial_rotation_x: "AngleOrItsFloatOrStringValue" = 0.0,
-        initial_rotation_y: "AngleOrItsFloatOrStringValue" = 0.0,
-        initial_rotation_z: "AngleOrItsFloatOrStringValue" = 0.0,
-        mirror_about_entity_or_landmark: "EntityOrItsName| None" = None,
-        mirror_axis: "AxisOrItsIndexOrItsName" = "x",
+        initial_rotation_x: "str|float|Angle" = 0.0,
+        initial_rotation_y: "str|float|Angle" = 0.0,
+        initial_rotation_z: "str|float|Angle" = 0.0,
+        mirror_about_entity_or_landmark: "str|Entity| None" = None,
+        mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
-        circular_pattern_instance_separation: "AngleOrItsFloatOrStringValue" = 0.0,
-        circular_pattern_instance_axis: "AxisOrItsIndexOrItsName" = "z",
-        circular_pattern_about_entity_or_landmark: "EntityOrItsName| None" = None,
+        circular_pattern_instance_separation: "str|float|Angle" = 0.0,
+        circular_pattern_instance_axis: "str|int|Axis" = "z",
+        circular_pattern_about_entity_or_landmark: "str|Entity| None" = None,
         linear_pattern_instance_count: "int" = 1,
-        linear_pattern_instance_separation: "DimensionOrItsFloatOrStringValue" = 0.0,
-        linear_pattern_instance_axis: "AxisOrItsIndexOrItsName" = "x",
+        linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
+        linear_pattern_instance_axis: "str|int|Axis" = "x",
         linear_pattern2nd_instance_count: "int" = 1,
-        linear_pattern2nd_instance_separation: "DimensionOrItsFloatOrStringValue" = 0.0,
-        linear_pattern2nd_instance_axis: "AxisOrItsIndexOrItsName" = "y",
+        linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
+        linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
     ):
         """
         Create a hole.
@@ -243,10 +238,10 @@ class PartInterface(
     @abstractmethod
     def twist(
         self,
-        angle: "AngleOrItsFloatOrStringValue",
-        screw_pitch: "DimensionOrItsFloatOrStringValue",
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
-        axis: "AxisOrItsIndexOrItsName" = "z",
+        axis: "str|int|Axis" = "z",
     ):
         """
         AKA Helix, Screw. Revolve an entity
@@ -257,7 +252,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def set_material(self, material_name: "MaterialOrItsName"):
+    def set_material(self, material_name: "str|Material"):
         """
         Assign a known material to this part.
         """
@@ -269,7 +264,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def is_colliding_with_part(self, other_part: "PartOrItsName") -> "bool":
+    def is_colliding_with_part(self, other_part: "str|Part") -> "bool":
         """
         Check if this part is colliding with another.
         """
@@ -282,7 +277,7 @@ class PartInterface(
 
     @abstractmethod
     def fillet_all_edges(
-        self, radius: "DimensionOrItsFloatOrStringValue", use_width: "bool" = False
+        self, radius: "str|float|Dimension", use_width: "bool" = False
     ):
         """
         Fillet all edges.
@@ -297,8 +292,8 @@ class PartInterface(
     @abstractmethod
     def fillet_edges(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_edges: "list[LandmarkOrItsName]",
+        radius: "str|float|Dimension",
+        landmarks_near_edges: "list[str|Landmark]",
         use_width: "bool" = False,
     ):
         """
@@ -314,8 +309,8 @@ class PartInterface(
     @abstractmethod
     def fillet_faces(
         self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_faces: "list[LandmarkOrItsName]",
+        radius: "str|float|Dimension",
+        landmarks_near_faces: "list[str|Landmark]",
         use_width: "bool" = False,
     ):
         """
@@ -329,7 +324,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def chamfer_all_edges(self, radius: "DimensionOrItsFloatOrStringValue"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension"):
         """
         Chamfer all edges.
         """
@@ -342,9 +337,7 @@ class PartInterface(
 
     @abstractmethod
     def chamfer_edges(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_edges: "list[LandmarkOrItsName]",
+        self, radius: "str|float|Dimension", landmarks_near_edges: "list[str|Landmark]"
     ):
         """
         Chamfer specific edges.
@@ -358,9 +351,7 @@ class PartInterface(
 
     @abstractmethod
     def chamfer_faces(
-        self,
-        radius: "DimensionOrItsFloatOrStringValue",
-        landmarks_near_faces: "list[LandmarkOrItsName]",
+        self, radius: "str|float|Dimension", landmarks_near_faces: "list[str|Landmark]"
     ):
         """
         Chamfer specific faces.
@@ -373,9 +364,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_vertex_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_vertex_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         """
         Select the vertex closest to a Landmark on the entity (in UI).
         """
@@ -387,9 +376,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_edge_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_edge_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         """
         Select an edge closest to a landmark on the entity (in UI).
         """
@@ -401,9 +388,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_face_near_landmark(
-        self, landmark_name: "LandmarkOrItsName| None" = None
-    ):
+    def select_face_near_landmark(self, landmark_name: "str|Landmark| None" = None):
         """
         Select a face closest to a landmark on the entity (in UI).
         """

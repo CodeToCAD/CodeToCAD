@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.light_interface import LightInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from . import Entity
 
 
@@ -23,7 +19,7 @@ class Light(LightInterface, Entity):
         self.native_instance = native_instance
 
     def set_color(
-        self, r_value: "IntOrFloat", g_value: "IntOrFloat", b_value: "IntOrFloat"
+        self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
         return self
 

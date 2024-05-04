@@ -6,9 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 class BooleanableInterface(metaclass=ABCMeta):
@@ -20,7 +17,7 @@ class BooleanableInterface(metaclass=ABCMeta):
     @abstractmethod
     def union(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -35,7 +32,7 @@ class BooleanableInterface(metaclass=ABCMeta):
     @abstractmethod
     def subtract(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -50,7 +47,7 @@ class BooleanableInterface(metaclass=ABCMeta):
     @abstractmethod
     def intersect(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):

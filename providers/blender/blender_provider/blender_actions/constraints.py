@@ -16,7 +16,11 @@ from providers.blender.blender_provider.blender_actions.objects import (
 from providers.blender.blender_provider.blender_actions.transformations import (
     translate_object,
 )
-import providers.blender.blender_provider.blender_definitions as blender_definitions
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderConstraintTypes,
+    BlenderLength,
+    BlenderTranslationTypes,
+)
 
 
 def get_constraint(object_name: str, constraint_name) -> Optional[bpy.types.Constraint]:
@@ -26,7 +30,7 @@ def get_constraint(object_name: str, constraint_name) -> Optional[bpy.types.Cons
 
 def apply_constraint(
     object_name: str,
-    constraint_type: blender_definitions.BlenderConstraintTypes,
+    constraint_type: BlenderConstraintTypes,
     **kwargs,
 ):
     blenderObject = get_object(object_name)
@@ -64,7 +68,7 @@ def apply_limit_location_constraint(
 
     keywordArguments[
         "name"
-    ] = blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
+    ] = BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
         object_name, relativeToObject
     )
 
@@ -95,7 +99,7 @@ def apply_limit_location_constraint(
 
     apply_constraint(
         object_name,
-        blender_definitions.BlenderConstraintTypes.LIMIT_LOCATION,
+        BlenderConstraintTypes.LIMIT_LOCATION,
         **keywordArguments,
     )
 
@@ -120,7 +124,7 @@ def apply_limit_rotation_constraint(
 
     keywordArguments[
         "name"
-    ] = blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
+    ] = BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
         object_name, relativeToObject
     )
 
@@ -151,7 +155,7 @@ def apply_limit_rotation_constraint(
 
     apply_constraint(
         object_name,
-        blender_definitions.BlenderConstraintTypes.LIMIT_ROTATION,
+        BlenderConstraintTypes.LIMIT_ROTATION,
         **keywordArguments,
     )
 
@@ -169,8 +173,8 @@ def apply_copy_location_constraint(
 
     apply_constraint(
         object_name,
-        blender_definitions.BlenderConstraintTypes.COPY_LOCATION,
-        name=blender_definitions.BlenderConstraintTypes.COPY_LOCATION.format_constraint_name(
+        BlenderConstraintTypes.COPY_LOCATION,
+        name=BlenderConstraintTypes.COPY_LOCATION.format_constraint_name(
             object_name, copied_object_name
         ),
         target=copiedObject,
@@ -194,8 +198,8 @@ def apply_copy_rotation_constraint(
 
     apply_constraint(
         object_name,
-        blender_definitions.BlenderConstraintTypes.COPY_ROTATION,
-        name=blender_definitions.BlenderConstraintTypes.COPY_ROTATION.format_constraint_name(
+        BlenderConstraintTypes.COPY_ROTATION,
+        name=BlenderConstraintTypes.COPY_ROTATION.format_constraint_name(
             object_name, copied_object_name
         ),
         target=copiedObject,
@@ -212,8 +216,8 @@ def apply_pivot_constraint(object_name: str, pivot_object_name: str, **kwargs):
 
     apply_constraint(
         object_name,
-        blender_definitions.BlenderConstraintTypes.PIVOT,
-        name=blender_definitions.BlenderConstraintTypes.PIVOT.format_constraint_name(
+        BlenderConstraintTypes.PIVOT,
+        name=BlenderConstraintTypes.PIVOT.format_constraint_name(
             object_name, pivot_object_name
         ),
         target=pivotObject,
@@ -245,14 +249,14 @@ def translate_landmark_onto_another(
 
     translation = (object1LandmarkLocation) - (object2LandmarkLocation)
 
-    blenderDefaultUnit = blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
+    blender_default_unit = BlenderLength.DEFAULT_BLENDER_UNIT.value
 
     translate_object(
         object_to_translate_name,
         [
-            Dimension(translation.x.value, blenderDefaultUnit),
-            Dimension(translation.y.value, blenderDefaultUnit),
-            Dimension(translation.z.value, blenderDefaultUnit),
+            Dimension(translation.x.value, blender_default_unit),
+            Dimension(translation.y.value, blender_default_unit),
+            Dimension(translation.z.value, blender_default_unit),
         ],
-        blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+        BlenderTranslationTypes.ABSOLUTE,
     )

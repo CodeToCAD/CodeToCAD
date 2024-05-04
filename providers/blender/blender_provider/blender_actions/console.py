@@ -19,31 +19,42 @@ def start_debugger(host: str = "localhost", port: int = 5678):
 
 def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
-    import codetocad
-    import providers
-    import providers.blender
+    import codetocad.enums
+    import codetocad.core
+    import providers.blender.blender_provider
     import inspect
 
-    # all_providers_modules = inspect.getmembers(
-    #     providers.blender.blender_provider, predicate=inspect.ismodule
-    # )
-    # for module_name, module in all_providers_modules:
-    #     reload(module)
-
-    reload(providers.blender.blender_provider)
-
-    # all_providers_modules = inspect.getmembers(providers, predicate=inspect.ismodule)
-    # for module_name, module in all_providers_modules:
-    #     reload(module)
-
-    reload(providers)
-
-    all_providers_modules = inspect.getmembers(codetocad, predicate=inspect.ismodule)
+    all_providers_modules = inspect.getmembers(
+        codetocad.enums, predicate=inspect.ismodule
+    )
 
     for module_name, module in all_providers_modules:
+        print(f"Reloading {module_name}")
+        reload(module)
+
+    reload(codetocad.enums)
+
+    all_providers_modules = inspect.getmembers(
+        codetocad.core, predicate=inspect.ismodule
+    )
+
+    for module_name, module in all_providers_modules:
+        print(f"Reloading {module_name}")
         reload(module)
 
     reload(codetocad)
+
+    all_providers_modules = inspect.getmembers(
+        providers.blender.blender_provider, predicate=inspect.ismodule
+    )
+    for module_name, module in all_providers_modules:
+        print(f"Reloading {module_name}")
+        reload(module)
+
+    from providers.blender.blender_provider.register import register
+
+    print("Registering BlenderAddon as codetocad.factory provider.")
+    register()
 
 
 def write_to_console(message: str, text_type: str = "INFO"):
@@ -86,7 +97,7 @@ def add_codetocad_convenience_words_to_console(namespace):
 
     print("Adding Blender Console Convenience Words")
 
-    from blender_provider import (
+    from codetocad import (
         Analytics,
         Animation,
         Joint,
@@ -95,9 +106,11 @@ def add_codetocad_convenience_words_to_console(namespace):
         Part,
         Scene,
         Sketch,
+        Dimension,
+        Dimensions,
+        Angle,
     )
     from codetocad.utilities import center, max, min
-    from codetocad.core import Dimension, Dimensions, Angle
 
     namespace["Part"] = Part
     namespace["Shape"] = Part

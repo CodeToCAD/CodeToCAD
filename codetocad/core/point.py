@@ -6,8 +6,7 @@ from codetocad.enums.length_unit import LengthUnit
 
 
 if TYPE_CHECKING:
-    from codetocad.codetocad_types import PointOrListOfFloatOrItsStringValue
-    from codetocad.codetocad_types import PointOrListOfFloatOrItsStringValueOrVertex
+    from codetocad.interfaces.vertex_interface import VertexInterface
 
 
 @dataclass
@@ -53,7 +52,7 @@ class Point:
 
     @staticmethod
     def from_list_of_float_or_string(
-        point_representation: "PointOrListOfFloatOrItsStringValue",
+        point_representation: "str|list[str]|list[float]|list[Dimension]|Point",
     ) -> "Point":
         if isinstance(point_representation, (list, tuple)):
             assert (
@@ -76,7 +75,7 @@ class Point:
 
     @staticmethod
     def from_list_of_float_or_string_or_Vertex(
-        point_representation: "PointOrListOfFloatOrItsStringValueOrVertex",
+        point_representation: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "Point":
         from codetocad.interfaces.vertex_interface import VertexInterface
 

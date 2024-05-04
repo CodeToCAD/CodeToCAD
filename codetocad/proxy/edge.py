@@ -4,10 +4,9 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
+
+from codetocad.providers import get_provider
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
@@ -23,7 +22,7 @@ class Edge:
     """
     A curve bounded by two Vertices.
 
-    NOTE: This is a facade-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
@@ -34,10 +33,8 @@ class Edge:
         v2: "VertexInterface",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ) -> EdgeInterface:
-        return cls._provider(name, v1, v2, description, native_instance, parent_entity)
-
-    @classmethod
-    def register(cls, provider: EdgeInterface):
-        cls._provider = provider
+        return get_provider(EdgeInterface)(
+            name, v1, v2, description, native_instance, parent_entity
+        )  # type: ignore

@@ -1,10 +1,7 @@
 from typing import Optional
+from codetocad.core.boundary_axis import BoundaryAxis
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
-from providers.blender.blender_provider import blender_definitions
 from providers.blender.blender_provider.blender_actions.context import (
     apply_dependency_graph,
     select_object,
@@ -87,7 +84,7 @@ class Entity(EntityInterface):
         modifiers: "bool" = True,
     ):
         update_view_layer()
-        if modifiers and isinstance(self, Part):
+        if modifiers and isinstance(self, PartInterface):
             # Only apply modifiers for Blender Objects that have meshes
             apply_dependency_graph(self.name)
             remove_mesh(self.name)
@@ -114,21 +111,19 @@ class Entity(EntityInterface):
 
     @staticmethod
     def _translation_dimension_from_dimension_or_its_float_or_string_value(
-        dimension_or_its_float_or_string_value: DimensionOrItsFloatOrStringValue,
+        dimension_or_its_float_or_string_value: str | float | Dimension,
         boundary_axis: BoundaryAxis,
     ):
         dimension = Dimension.from_dimension_or_its_float_or_string_value(
             dimension_or_its_float_or_string_value, boundary_axis
         )
-        return blender_definitions.BlenderLength.convert_dimension_to_blender_unit(
-            dimension
-        )
+        return BlenderLength.convert_dimension_to_blender_unit(dimension)
 
     def translate_xyz(
         self,
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ):
         boundingBox = get_bounding_box(self.name)
         assert (
@@ -152,11 +147,11 @@ class Entity(EntityInterface):
         translate_object(
             self.name,
             [xDimension, yDimension, zDimension],
-            blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+            BlenderTranslationTypes.ABSOLUTE,
         )
         return self
 
-    def translate_x(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_x(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.x, "Could not get bounding box"
         dimension = (
@@ -165,13 +160,11 @@ class Entity(EntityInterface):
             )
         )
         translate_object(
-            self.name,
-            [dimension, None, None],
-            blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+            self.name, [dimension, None, None], BlenderTranslationTypes.ABSOLUTE
         )
         return self
 
-    def translate_y(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_y(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.y, "Could not get bounding box"
         dimension = (
@@ -180,13 +173,11 @@ class Entity(EntityInterface):
             )
         )
         translate_object(
-            self.name,
-            [None, dimension, None],
-            blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+            self.name, [None, dimension, None], BlenderTranslationTypes.ABSOLUTE
         )
         return self
 
-    def translate_z(self, amount: "DimensionOrItsFloatOrStringValue"):
+    def translate_z(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.z, "Could not get bounding box"
         dimension = (
@@ -195,53 +186,32 @@ class Entity(EntityInterface):
             )
         )
         translate_object(
-            self.name,
-            [None, None, dimension],
-            blender_definitions.BlenderTranslationTypes.ABSOLUTE,
+            self.name, [None, None, dimension], BlenderTranslationTypes.ABSOLUTE
         )
         return self
 
     def rotate_xyz(
-        self,
-        x: "AngleOrItsFloatOrStringValue",
-        y: "AngleOrItsFloatOrStringValue",
-        z: "AngleOrItsFloatOrStringValue",
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         xAngle = Angle.from_angle_or_its_float_or_string_value(x)
         yAngle = Angle.from_angle_or_its_float_or_string_value(y)
         zAngle = Angle.from_angle_or_its_float_or_string_value(z)
-        rotate_object(
-            self.name,
-            [xAngle, yAngle, zAngle],
-            blender_definitions.BlenderRotationTypes.EULER,
-        )
+        rotate_object(self.name, [xAngle, yAngle, zAngle], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    def rotate_x(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_x(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(
-            self.name,
-            [angle, None, None],
-            blender_definitions.BlenderRotationTypes.EULER,
-        )
+        rotate_object(self.name, [angle, None, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    def rotate_y(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_y(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(
-            self.name,
-            [None, angle, None],
-            blender_definitions.BlenderRotationTypes.EULER,
-        )
+        rotate_object(self.name, [None, angle, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    def rotate_z(self, rotation: "AngleOrItsFloatOrStringValue"):
+    def rotate_z(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(
-            self.name,
-            [None, None, angle],
-            blender_definitions.BlenderRotationTypes.EULER,
-        )
+        rotate_object(self.name, [None, None, angle], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
     def get_bounding_box(self) -> "BoundaryBox":
@@ -250,9 +220,7 @@ class Entity(EntityInterface):
     def get_dimensions(self) -> "Dimensions":
         dimensions = get_object(self.name).dimensions
         dimensions = [
-            Dimension.from_string(
-                dimension, blender_definitions.BlenderLength.DEFAULT_BLENDER_UNIT.value
-            )
+            Dimension.from_string(dimension, BlenderLength.DEFAULT_BLENDER_UNIT.value)
             for dimension in dimensions
         ]
         return Dimensions(dimensions[0], dimensions[1], dimensions[2])

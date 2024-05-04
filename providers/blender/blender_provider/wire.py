@@ -1,38 +1,31 @@
 from typing import Optional
-from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.vertex_interface import VertexInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
+from providers.blender.blender_provider.part import Part
+from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+from providers.blender.blender_provider.blender_definitions import BlenderTypes
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.landmark import Landmark
-from providers.blender.blender_provider.part import Part
 from providers.blender.blender_provider.edge import Edge
-
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
-from codetocad.utilities import *
 from codetocad.utilities.override import override
-from codetocad.core import *
-from codetocad.enums import *
-from providers.blender.blender_provider import blender_definitions
 from providers.blender.blender_provider.blender_actions.curve import (
     is_spline_cyclical,
     loft,
 )
 from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
 from providers.blender.blender_provider.blender_actions.normals import calculate_normal
-from providers.blender.blender_provider.blender_actions.objects import (
-    get_object,
-    get_object_or_none,
-)
+from providers.blender.blender_provider.blender_actions.objects import get_object
 
 
 class Wire(WireInterface, Entity):
     edges: "list[Edge]"
-    parent_entity: Optional[EntityOrItsName] = None
+    parent_entity: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -43,7 +36,7 @@ class Wire(WireInterface, Entity):
         edges: "list[Edge]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "EntityOrItsName| None" = None,
+        parent_entity: "str|Entity| None" = None,
     ):
         """
         NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
@@ -89,8 +82,8 @@ class Wire(WireInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "EntityOrItsName",
-        axis: "AxisOrItsIndexOrItsName",
+        mirror_across_entity: "str|Entity",
+        axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
         raise NotImplementedError()
@@ -103,8 +96,8 @@ class Wire(WireInterface, Entity):
     def linear_pattern(
         self,
         instance_count: "int",
-        offset: "DimensionOrItsFloatOrStringValue",
-        direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
         return self
@@ -112,14 +105,16 @@ class Wire(WireInterface, Entity):
     def circular_pattern(
         self,
         instance_count: "int",
-        separation_angle: "AngleOrItsFloatOrStringValue",
-        center_entity_or_landmark: "EntityOrItsName",
-        normal_direction_axis: "AxisOrItsIndexOrItsName" = "z",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|Entity",
+        normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
         return self
 
-    def loft(self, other: "WireInterface", new_part_name: "str| None" = None) -> "Part":
+    def loft(
+        self, other: "WireInterface", new_part_name: "str| None" = None
+    ) -> "PartInterface":
         blender_mesh = loft(self, other)
         part = Part(blender_mesh.name)
         if new_part_name:
@@ -131,10 +126,7 @@ class Wire(WireInterface, Entity):
                     if not isinstance(self.parent_entity, str)
                     else self.parent_entity
                 )
-                if (
-                    type(get_object(parent_name))
-                    == blender_definitions.BlenderTypes.MESH.value
-                ):
+                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
@@ -147,10 +139,7 @@ class Wire(WireInterface, Entity):
                     if not isinstance(other.parent_entity, str)
                     else other.parent_entity
                 )
-                if (
-                    type(get_object(parent_name))
-                    == blender_definitions.BlenderTypes.MESH.value
-                ):
+                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
@@ -162,22 +151,20 @@ class Wire(WireInterface, Entity):
     def create_landmark(
         self,
         landmark_name: "str",
-        x: "DimensionOrItsFloatOrStringValue",
-        y: "DimensionOrItsFloatOrStringValue",
-        z: "DimensionOrItsFloatOrStringValue",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    def get_landmark(
-        self, landmark_name: "PresetLandmarkOrItsName"
-    ) -> "LandmarkInterface":
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
     def union(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -186,7 +173,7 @@ class Wire(WireInterface, Entity):
 
     def subtract(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -197,7 +184,7 @@ class Wire(WireInterface, Entity):
 
     def intersect(
         self,
-        other: "BooleanableOrItsName",
+        other: "str|Booleanable",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):

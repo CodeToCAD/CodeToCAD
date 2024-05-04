@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.render_interface import RenderInterface
@@ -83,7 +80,7 @@ class Render(
 
         return self
 
-    def set_camera(self, camera_name_or_instance: "CameraOrItsName"):
+    def set_camera(self, camera_name_or_instance: "str|Camera"):
         print("set_camera called", f": {camera_name_or_instance}")
 
         return self

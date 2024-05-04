@@ -2,11 +2,7 @@ from typing import Optional
 from codetocad.interfaces.scene_interface import SceneInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -47,14 +43,14 @@ class Scene(SceneInterface):
     def export(
         self,
         file_path: "str",
-        entities: "list[ExportableOrItsName]",
+        entities: "list[str|Exportable]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
         print("export called:", file_path, entities, overwrite, scale)
         return self
 
-    def set_default_unit(self, unit: "LengthUnitOrItsName"):
+    def set_default_unit(self, unit: "str|LengthUnit"):
         print("set_default_unit called:", unit)
         return self
 
@@ -72,22 +68,22 @@ class Scene(SceneInterface):
 
     def assign_to_group(
         self,
-        entities: "list[EntityOrItsName]",
+        entities: "list[str|Entity]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
         print("assign_to_group called:", entities, group_name, remove_from_other_groups)
         return self
 
-    def set_visible(self, entities: "list[EntityOrItsName]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
         print("set_visible called:", entities, is_visible)
         return self
 
     def set_background_image(
         self,
         file_path: "str",
-        location_x: "DimensionOrItsFloatOrStringValue| None" = 0,
-        location_y: "DimensionOrItsFloatOrStringValue| None" = 0,
+        location_x: "str|float|Dimension| None" = 0,
+        location_y: "str|float|Dimension| None" = 0,
     ):
         print("set_background_image called:", file_path, location_x, location_y)
         return self

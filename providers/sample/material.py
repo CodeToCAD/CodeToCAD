@@ -4,9 +4,6 @@
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
 from codetocad.codetocad_types import *
-from codetocad.utilities import *
-from codetocad.core import *
-from codetocad.enums import *
 
 
 from codetocad.interfaces.material_interface import MaterialInterface
@@ -27,10 +24,10 @@ class Material(
 
     def set_color(
         self,
-        r_value: "IntOrFloat",
-        g_value: "IntOrFloat",
-        b_value: "IntOrFloat",
-        a_value: "IntOrFloat" = 1.0,
+        r_value: "int|float",
+        g_value: "int|float",
+        b_value: "int|float",
+        a_value: "int|float" = 1.0,
     ):
         print("set_color called", f": {r_value}, {g_value}, {b_value}, {a_value}")
 

@@ -34,12 +34,15 @@ def create_register_method(outpit_dir: str, class_names: list[str]):
         )
         for class_name in class_names:
             handler.write(f"from .{class_name.lower()} import {class_name}\n")
+            handler.write(
+                f"from codetocad.interfaces.{class_name.lower()}_interface import {class_name}Interface\n"
+            )
 
         handler.write("def register():\n")
 
         for class_name in class_names:
             handler.write(
-                f"    __import__('codetocad').facade.{class_name.lower()}.{class_name}.register({class_name})\n"
+                f"    __import__('codetocad').providers.register({class_name}, {class_name}Interface)\n"
             )
 
 
@@ -87,7 +90,7 @@ def generate_all_templates(
                 template_args.output_folder_path, [], ""
             )  # Generate an empty __init__.py file
 
-        if template_args.generate_facade_registration_methods:
+        if template_args.generate_registration_methods:
             create_register_method(
                 template_args.output_folder_path,
                 capabilities_loader.all_implementable_class_names,

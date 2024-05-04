@@ -25,9 +25,7 @@ class FusionCamera:
         )
         return target
 
-    def rotate(
-        self, axis_input: AxisOrItsIndexOrItsName, angle: AngleOrItsFloatOrStringValue
-    ):
+    def rotate(self, axis_input: str | int | Axis, angle: str | float | Angle):
         axis = make_axis_vector(axis_input)
         angle = Angle.from_angle_or_its_float_or_string_value(angle).to_radians().value
 
