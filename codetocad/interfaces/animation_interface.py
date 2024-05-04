@@ -5,9 +5,6 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
-
-
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
@@ -64,7 +61,9 @@ class AnimationInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_key_frame_location(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_location(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         """
         Create an animation key-frame using the location of the entity.
         """
@@ -76,7 +75,9 @@ class AnimationInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_key_frame_rotation(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_rotation(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         """
         Create an animation key-frame using the rotation of the entity.
         """

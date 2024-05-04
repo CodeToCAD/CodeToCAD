@@ -2,7 +2,6 @@ from typing import List, Sequence, Tuple, Optional, TYPE_CHECKING
 import bpy
 import mathutils
 
-from codetocad.codetocad_types import *
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point

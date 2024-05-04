@@ -1,12 +1,9 @@
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.material_interface import MaterialInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.material import Material
 from providers.fusion360.fusion360_provider.entity import Entity
 from providers.fusion360.fusion360_provider.landmark import Landmark
 from codetocad.codetocad_types import *
-from providers.fusion360.fusion360_provider.landmarkable import Landmarkable
 from .fusion_actions.actions import (
     chamfer_all_edges,
     combine,
@@ -234,7 +231,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
     ):
-        from . import Sketch
+        pass
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)

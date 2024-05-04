@@ -1,8 +1,5 @@
-from typing import Optional
 from codetocad.interfaces.animation_interface import AnimationInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

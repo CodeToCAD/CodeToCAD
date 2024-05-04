@@ -19,7 +19,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def measure_distance(
-        self, entity1: "str|Entity", entity2: "str|Entity"
+        self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
         """
         The ubiquitous ruler.
@@ -34,9 +34,9 @@ class AnalyticsInterface(metaclass=ABCMeta):
     @abstractmethod
     def measure_angle(
         self,
-        entity1: "str|Entity",
-        entity2: "str|Entity",
-        pivot: "str|Entity| None" = None,
+        entity1: "str|EntityInterface",
+        entity2: "str|EntityInterface",
+        pivot: "str|EntityInterface| None" = None,
     ) -> "list[Angle]":
         """
         The ubiquitous ruler.
@@ -49,7 +49,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_world_pose(self, entity: "str|Entity") -> "list[float]":
+    def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
         """
         Returns the world pose of an entity.
         """
@@ -61,7 +61,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_bounding_box(self, entity_name: "str|Entity") -> "BoundaryBox":
+    def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
         """
         Returns the bounding box of an entity.
         """
@@ -73,7 +73,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_dimensions(self, entity_name: "str|Entity") -> "Dimensions":
+    def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
         """
         Returns the dimensions of an entity.
         """

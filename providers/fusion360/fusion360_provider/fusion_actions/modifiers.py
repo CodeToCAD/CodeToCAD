@@ -3,7 +3,7 @@ from codetocad import *
 import adsk.core, adsk.fusion
 
 from codetocad.codetocad_types import *
-from .common import make_axis, make_axis_from_points
+from .common import make_axis_from_points
 
 
 def make_revolve(

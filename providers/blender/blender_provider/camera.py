@@ -1,6 +1,4 @@
 from typing import Optional
-from codetocad.codetocad_types import *
-from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.camera_interface import CameraInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.blender_actions.camera import (

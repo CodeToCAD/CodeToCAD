@@ -14,7 +14,7 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 def create_landmark(
     name: "str",
-    parent_entity: "str|Entity",
+    parent_entity: "str|EntityInterface",
     description: "str| None" = None,
     native_instance=None,
 ) -> LandmarkInterface:

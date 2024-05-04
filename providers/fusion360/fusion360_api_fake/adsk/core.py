@@ -964,7 +964,6 @@ class ActiveSelectionEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class APIPreferences(Base):
@@ -993,7 +992,6 @@ class APIPreferences(Base):
         Gets and sets the preference that controls which programming language
         should be used when creating a new script. One option is to prompt the user.
         """
-        pass
 
     @property
     def defaultAddInLanguage(self) -> ProgrammingLanguages:
@@ -1009,7 +1007,6 @@ class APIPreferences(Base):
         Gets and sets the preference that controls which programming language
         should be used when creating a new add-in. One option is to prompt the user.
         """
-        pass
 
     @property
     def defaultPathForScriptsAndAddIns(self) -> str:
@@ -1033,7 +1030,6 @@ class APIPreferences(Base):
         This path is also where Fusion will look for any scripts and add-ins and
         automatically display them in the "Scripts and Add-Ins" dialog.
         """
-        pass
 
     @property
     def debuggingPort(self) -> int:
@@ -1047,7 +1043,6 @@ class APIPreferences(Base):
         """
         Gets and sets the port used when connecting to Visual Studio Code.
         """
-        pass
 
     @property
     def isDeveloperToolsEnabled(self) -> bool:
@@ -1063,7 +1058,6 @@ class APIPreferences(Base):
         Gets and sets if access to "Developer Tools" should be enabled in pallets and
         BrowserCommandInputs.
         """
-        pass
 
 
 class Appearance(Base):
@@ -1123,7 +1117,6 @@ class Appearance(Base):
         Returns the name of this Appearance. This is the localized name
         shown in the UI.
         """
-        pass
 
     @property
     def parent(self) -> Base:
@@ -1287,7 +1280,6 @@ class Application(Base):
         input field and press return. A list of all of the various paths used by Fusion will be displayed in the TEXT COMMAND
         window. The line for "AppLogFilePath" has the full path to the log file.
         """
-        pass
 
     def getLastError(self) -> tuple[int, str]:
         """
@@ -1507,7 +1499,6 @@ class Application(Base):
         """
         Gets and sets if Fusion 360 is offline or not.
         """
-        pass
 
     @property
     def isStartupComplete(self) -> bool:
@@ -1731,7 +1722,6 @@ class ApplicationCommandEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing ApplicationCommandEvent.
         """
-        pass
 
 
 class ApplicationEventHandler(EventHandler):
@@ -1752,7 +1742,6 @@ class ApplicationEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class Attribute(Base):
@@ -1809,7 +1798,6 @@ class Attribute(Base):
         save data that is larger than 2MB you'll need to break the data into pieces and
         save it in multiple attributes.
         """
-        pass
 
     @property
     def parent(self) -> Base:
@@ -1998,7 +1986,6 @@ class BoundingBox2D(Base):
         """
         Gets and sets the minimum point of the box.
         """
-        pass
 
     @property
     def maxPoint(self) -> Point2D:
@@ -2012,7 +1999,6 @@ class BoundingBox2D(Base):
         """
         Gets and sets the maximum point of the box.
         """
-        pass
 
 
 class BoundingBox3D(Base):
@@ -2097,7 +2083,6 @@ class BoundingBox3D(Base):
         """
         Gets and sets the minimum point corner of the box.
         """
-        pass
 
     @property
     def maxPoint(self) -> Point3D:
@@ -2111,7 +2096,6 @@ class BoundingBox3D(Base):
         """
         Gets and sets the maximum point corner of the box.
         """
-        pass
 
 
 class Camera(Base):
@@ -2177,7 +2161,6 @@ class Camera(Base):
         """
         Gets and sets the position of the eye in world space.
         """
-        pass
 
     @property
     def target(self) -> Point3D:
@@ -2191,7 +2174,6 @@ class Camera(Base):
         """
         Gets and sets the camera target point in world space.
         """
-        pass
 
     @property
     def cameraType(self) -> CameraTypes:
@@ -2205,7 +2187,6 @@ class Camera(Base):
         """
         Gets and sets the current camera type.
         """
-        pass
 
     @property
     def perspectiveAngle(self) -> float:
@@ -2223,7 +2204,6 @@ class Camera(Base):
         property is only valid when the CameraType property is
         either Perspective or PerspectiveWithOrthoFaces.
         """
-        pass
 
     @property
     def upVector(self) -> Vector3D:
@@ -2239,7 +2219,6 @@ class Camera(Base):
         Defines the "up" direction for the camera which controls the orientation of the camera around the line
         defined between the eye and target points.
         """
-        pass
 
     @property
     def isFitView(self) -> bool:
@@ -2257,7 +2236,6 @@ class Camera(Base):
         will modify the camera such that the entire model is displayed in the viewport.
         When getting a camera from a viewport this property is always initialized to false.
         """
-        pass
 
     @property
     def isSmoothTransition(self) -> bool:
@@ -2279,7 +2257,6 @@ class Camera(Base):
         to the position defined by the camera with no intermediate steps. This is useful if
         you're providing a series of cameras to control the camera animation.
         """
-        pass
 
     @property
     def viewOrientation(self) -> ViewOrientations:
@@ -2299,7 +2276,6 @@ class Camera(Base):
         orientation defined by the ViewCube. This means, that the view orientations cannot be
         expected to be consistent from one view to another.
         """
-        pass
 
 
 class CameraEventHandler(EventHandler):
@@ -2320,7 +2296,6 @@ class CameraEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class CloudFileDialog(Base):
@@ -2366,7 +2341,6 @@ class CloudFileDialog(Base):
         """
         Gets or sets the title displayed on the dialog.
         """
-        pass
 
     @property
     def dataFile(self) -> DataFile:
@@ -2420,7 +2394,6 @@ class CloudFileDialog(Base):
         An empty string indicates that no filter should be used and all files in the current
         DataFolder should be displayed.
         """
-        pass
 
     @property
     def dataFolder(self) -> DataFolder:
@@ -2440,7 +2413,6 @@ class CloudFileDialog(Base):
 
         When using the showSave method, use this property to get the DataFolder that the user specified.
         """
-        pass
 
     @property
     def filename(self) -> str:
@@ -2466,7 +2438,6 @@ class CloudFileDialog(Base):
         can use this in combination with the dataFolder property to know where the user has specified
         to save the file.
         """
-        pass
 
     @property
     def isMultiSelectEnabled(self) -> bool:
@@ -2482,7 +2453,6 @@ class CloudFileDialog(Base):
         Gets or sets a value indicating whether the dialog allows multiple files to be selected. This
         defaults to False when a new CloudFileDialog is created. It is only used when using the showOpen method.
         """
-        pass
 
 
 class Color(Base):
@@ -2546,7 +2516,6 @@ class Color(Base):
         """
         Gets and sets the red component of the color. The value can be 0 to 255.
         """
-        pass
 
     @property
     def green(self) -> int:
@@ -2560,7 +2529,6 @@ class Color(Base):
         """
         Gets and sets the green component of the color. The value can be 0 to 255.
         """
-        pass
 
     @property
     def blue(self) -> int:
@@ -2574,7 +2542,6 @@ class Color(Base):
         """
         Gets and sets the blue component of the color. The value can be 0 to 255.
         """
-        pass
 
     @property
     def opacity(self) -> int:
@@ -2588,7 +2555,6 @@ class Color(Base):
         """
         Gets and sets the opacity of the color. The value can be 0 to 255.
         """
-        pass
 
 
 class Command(Base):
@@ -2858,7 +2824,6 @@ class Command(Base):
         "CANCEL" button text changes to "CLOSE". You can override
         the default button text using the cancelButtonText property.
         """
-        pass
 
     @property
     def okButtonText(self) -> str:
@@ -2876,7 +2841,6 @@ class Command(Base):
         buttons are displayed, this text defaults to "OK". If the Cancel button
         is not displayed the text defaults to "CLOSE".
         """
-        pass
 
     @property
     def cancelButtonText(self) -> str:
@@ -2892,7 +2856,6 @@ class Command(Base):
         Gets and sets the text displayed on the Cancel button. The value of this
         property is ignored if the isCancelButtonVisible property is false.
         """
-        pass
 
     @property
     def isRepeatable(self) -> bool:
@@ -2906,7 +2869,6 @@ class Command(Base):
         """
         Gets and Sets if this command is repeatable using the 'Repeat Last Command' option from the Fusion 360 marking menu.
         """
-        pass
 
     @property
     def isExecutedWhenPreEmpted(self) -> bool:
@@ -2924,7 +2886,6 @@ class Command(Base):
         command. If true (the default), and all of the current inputs are valid, the command will be
         executed just the same as if the user clicked the OK button. If false, the command is terminated.
         """
-        pass
 
     @property
     def helpFile(self) -> str:
@@ -2938,7 +2899,6 @@ class Command(Base):
         """
         Gets and sets the associated HTML help file for this command.
         """
-        pass
 
     @property
     def isAutoExecute(self) -> bool:
@@ -2966,7 +2926,6 @@ class Command(Base):
         The default value for this property is true so that the command will execute if no command inputs
         have been defined.
         """
-        pass
 
     @property
     def isPositionDependent(self) -> bool:
@@ -3016,7 +2975,6 @@ class Command(Base):
         If you set this property to false, (which is the default), then even if there are pending changes, the occurrences
         are left in their current positions and your command will run.
         """
-        pass
 
     @property
     def preSelect(self) -> SelectionEvent:
@@ -3119,7 +3077,6 @@ class Command(Base):
         Sets the editing feature for this command. The timeline will be rolled to the editing feature
         on activate and will the current position will be restored on deactivate.
         """
-        pass
 
     @property
     def incomingFromHTML(self) -> HTMLEvent:
@@ -3174,7 +3131,6 @@ class CommandCreatedEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing CommandEvent.
         """
-        pass
 
 
 class CommandDefinition(Base):
@@ -3251,7 +3207,6 @@ class CommandDefinition(Base):
         Gets or sets the full filename of the image file (PNG) used for the tool clip.
         The tooltip is always shown but as the user hovers over the control it will progressively display the tool clip along with the tooltip text.
         """
-        pass
 
     @property
     def tooltip(self) -> str:
@@ -3295,7 +3250,6 @@ class CommandDefinition(Base):
         to indicate there is some missing text. There is a single UNICODE character you can use the ellipsis. It is '\u2026'.
 
         """
-        pass
 
     @property
     def resourceFolder(self) -> str:
@@ -3313,7 +3267,6 @@ class CommandDefinition(Base):
         These are typically the image files that will be used for a button and the
         HTML files for a tool clip or helps and tips.
         """
-        pass
 
     @property
     def controlDefinition(self) -> ControlDefinition:
@@ -3337,7 +3290,6 @@ class CommandDefinition(Base):
         """
         Gets or sets the visible name of the command when seen in the user interface.
         """
-        pass
 
 
 class CommandDefinitions(Base):
@@ -3496,7 +3448,6 @@ class CommandEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing CommandEvent.
         """
-        pass
 
 
 class CommandInput(Base):
@@ -3557,7 +3508,6 @@ class CommandInput(Base):
         Currently, the isEnabled property does not disable SelectionCommandInput objects but
         instead has the same effect as the SelectionCommandInput.hasFocus property.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -3575,7 +3525,6 @@ class CommandInput(Base):
 
         Setting a SelectionCommandInput to be invisible will clear any selections it currently has.
         """
-        pass
 
     @property
     def parentCommand(self) -> Command:
@@ -3602,7 +3551,6 @@ class CommandInput(Base):
         The default value for this property in a new command input if false, or not to fill the width.
         This property does not apply to GroupCommandInputs or TabCommandInputs.
         """
-        pass
 
     @property
     def toolClipFilename(self) -> str:
@@ -3620,7 +3568,6 @@ class CommandInput(Base):
         The tooltip is always shown but as the user hovers over the control it will progressively display
         the tool clip and description text.
         """
-        pass
 
     @property
     def tooltip(self) -> str:
@@ -3638,7 +3585,6 @@ class CommandInput(Base):
         and/or tool clip are also specified then the tooltip will progressively display more information as the
         user hovers the mouse over the control.
         """
-        pass
 
     @property
     def tooltipDescription(self) -> str:
@@ -3658,7 +3604,6 @@ class CommandInput(Base):
         create multiple paragraphs. The tooltip is always shown but as the user hovers over the control it will
         progressively display the tool clip and description text.
         """
-        pass
 
     @property
     def parentCommandInput(self) -> CommandInput:
@@ -4178,7 +4123,6 @@ class ControlDefinition(Base):
         """
         Gets or sets if this definition is enabled or not. This has the effect of enabling and disabling any associated controls.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -4192,7 +4136,6 @@ class ControlDefinition(Base):
         """
         Gets or sets if this definition is visible or not. This has the effect of making any associated controls visible or invisible in the user interface.
         """
-        pass
 
     @property
     def name(self) -> str:
@@ -4206,7 +4149,6 @@ class ControlDefinition(Base):
         """
         Gets or sets the name for this control. This is the visible name displayed in the user interface.
         """
-        pass
 
 
 class CopyFileInput(Base):
@@ -4844,7 +4786,6 @@ class CustomEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class Data(Base):
@@ -4894,7 +4835,6 @@ class Data(Base):
         """
         Gets and sets the active DataProject. This is the project currently displayed in the Fusion 360 Data Panel.
         """
-        pass
 
     @property
     def dataProjects(self) -> DataProjects:
@@ -4922,7 +4862,6 @@ class Data(Base):
         """
         Gets the active DataHub.
         """
-        pass
 
     @property
     def isDataPanelVisible(self) -> bool:
@@ -4936,7 +4875,6 @@ class Data(Base):
         """
         Gets and sets if the data panel is visible within Fusion 360.
         """
-        pass
 
     @property
     def personalUseLimits(self) -> PersonalUseLimits:
@@ -4974,7 +4912,6 @@ class DataEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class DataFile(Base):
@@ -5065,7 +5002,6 @@ class DataFile(Base):
         """
         Gets and sets the displayed name of this item.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -5400,7 +5336,6 @@ class DataFolder(Base):
         """
         Gets and sets the displayed name of this folder.
         """
-        pass
 
     @property
     def dataFiles(self) -> DataFiles:
@@ -5637,7 +5572,6 @@ class DataProject(Base):
         """
         Gets and sets the name of the project.
         """
-        pass
 
     @property
     def rootFolder(self) -> DataFolder:
@@ -5891,7 +5825,6 @@ class Document(Base):
         with this document. However, you can edit the name of the DataFile, which
         you can obtain by using the dataFile property of the document.
         """
-        pass
 
     @property
     def isModified(self) -> bool:
@@ -6022,7 +5955,6 @@ class DocumentEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class DocumentReference(Base):
@@ -6075,7 +6007,6 @@ class DocumentReference(Base):
         Setting this property will cause all occurrences referencing this document to update to
         that version.
         """
-        pass
 
     @property
     def parentDocument(self) -> Document:
@@ -6418,7 +6349,6 @@ class FileDialog(Base):
         """
         Gets or sets the title displayed on the dialog.
         """
-        pass
 
     @property
     def filename(self) -> str:
@@ -6488,7 +6418,6 @@ class FileDialog(Base):
 
            Image Files (*.BMP;*.JPG;*.GIF);;All files (*.*)
         """
-        pass
 
     @property
     def filterIndex(self) -> int:
@@ -6508,7 +6437,6 @@ class FileDialog(Base):
         FilterIndex after showing the file dialog to perform special file operations depending upon the filter chosen.
         The first item in the filter list is index 0.
         """
-        pass
 
     @property
     def initialDirectory(self) -> str:
@@ -6522,7 +6450,6 @@ class FileDialog(Base):
         """
         Gets or sets the initial directory displayed by the file dialog box.
         """
-        pass
 
     @property
     def isMultiSelectEnabled(self) -> bool:
@@ -6536,7 +6463,6 @@ class FileDialog(Base):
         """
         Gets or sets a value indicating whether the dialog box allows multiple files to be selected.
         """
-        pass
 
     @property
     def initialFilename(self) -> str:
@@ -6562,7 +6488,6 @@ class FileDialog(Base):
         already exist in the directory specified by the initialDirectory property. If
         it doesn't exist, the initial filename will not be used.
         """
-        pass
 
 
 class FolderDialog(Base):
@@ -6598,7 +6523,6 @@ class FolderDialog(Base):
         """
         Gets or sets the title displayed on the dialog.
         """
-        pass
 
     @property
     def folder(self) -> str:
@@ -6621,7 +6545,6 @@ class FolderDialog(Base):
         """
         Gets or sets the initial directory displayed by the file dialog box.
         """
-        pass
 
 
 class GeneralPreferences(Base):
@@ -6650,7 +6573,6 @@ class GeneralPreferences(Base):
         Gets and sets the current language. Setting the language does not
         take effect until the next time Fusion 360 is started.
         """
-        pass
 
     @property
     def offlineCachePeriod(self) -> float:
@@ -6664,7 +6586,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets the length of time, in days, that the offline cache of a document will remain.
         """
-        pass
 
     @property
     def graphicsDriver(self) -> GraphicsDrivers:
@@ -6678,7 +6599,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets the graphics driver used to display the graphics.
         """
-        pass
 
     @property
     def isAutomaticSaveOnCloseEnabled(self) -> bool:
@@ -6692,7 +6612,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if the file is automatically saved on close.
         """
-        pass
 
     @property
     def isAutomaticVersioningEnabled(self) -> bool:
@@ -6706,7 +6625,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if a version of the file is automatically saved using a background thread.
         """
-        pass
 
     @property
     def automateVersioningTimeInterval(self) -> int:
@@ -6720,7 +6638,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets the interval, in minutes, for automatic versioning.
         """
-        pass
 
     @property
     def defaultModelingOrientation(self) -> DefaultModelingOrientations:
@@ -6734,7 +6651,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets the default for which direction is considered "up".
         """
-        pass
 
     @property
     def areTooltipsShown(self) -> bool:
@@ -6748,7 +6664,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if tooltips are shown.
         """
-        pass
 
     @property
     def isCommandPromptShown(self) -> bool:
@@ -6762,7 +6677,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if the command prompt is shown.
         """
-        pass
 
     @property
     def areTipsAndTricksShown(self) -> bool:
@@ -6776,7 +6690,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if in command tips and tricks are shown.
         """
-        pass
 
     @property
     def areInCommandErrorsAndWarningsShown(self) -> bool:
@@ -6790,7 +6703,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if in command errors and warnings are shown.
         """
-        pass
 
     @property
     def areAutodesk360NotificationsShown(self) -> bool:
@@ -6804,7 +6716,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if Autodesk 360 notifications are shown.
         """
-        pass
 
     @property
     def isGestureBasedViewNavigationUsed(self) -> bool:
@@ -6818,7 +6729,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if gesture based view navigation is used.
         """
-        pass
 
     @property
     def isZoomDirectionReversed(self) -> bool:
@@ -6832,7 +6742,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if the direction of the zoom is reversed.
         """
-        pass
 
     @property
     def isCameraPivotEnabled(self) -> bool:
@@ -6846,7 +6755,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if zoom and orbit commands use camera pivot point for transition.
         """
-        pass
 
     @property
     def defaultOrbit(self) -> DefaultOrbits:
@@ -6860,7 +6768,6 @@ class GeneralPreferences(Base):
         """
         Get and sets the type of orbit.
         """
-        pass
 
     @property
     def isSkipCreationWhenLiveUpdate(self) -> bool:
@@ -6874,7 +6781,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if the creation of launch items should be skipped for live update.
         """
-        pass
 
     @property
     def isDefaultMeasureShown(self) -> bool:
@@ -6888,7 +6794,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets if the default measure is shown.
         """
-        pass
 
     @property
     def panZoomOrbitShortcuts(self) -> PanZoomOrbitShortcuts:
@@ -6902,7 +6807,6 @@ class GeneralPreferences(Base):
         """
         Gets and sets how pan, zoom, and orbit should behave
         """
-        pass
 
 
 class GraphicsPreferences(Base):
@@ -6929,7 +6833,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets the minimum frames per second.
         """
-        pass
 
     @property
     def selectionDisplayStyle(self) -> SelectionDisplayStyles:
@@ -6943,7 +6846,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets the style of display to use for selections.
         """
-        pass
 
     @property
     def degradedSelectionDisplayStyle(self) -> DegradedSelectionDisplayStyles:
@@ -6957,7 +6859,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets the style of display for degraded selections.
         """
-        pass
 
     @property
     def transparencyEffects(self) -> TransparencyDisplayEffects:
@@ -6971,7 +6872,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets the style of display for transparency effects.
         """
-        pass
 
     @property
     def autoThrottleEffects(self) -> bool:
@@ -6985,7 +6885,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets if automatically disable or degrade visual effects to keep the video memory pressure under a safe threshold.
         """
-        pass
 
     @property
     def hiddenEdgeDimming(self) -> int:
@@ -7001,7 +6900,6 @@ class GraphicsPreferences(Base):
         Gets and sets the dimming percentage to use for hidden edges.
         the value is a percentage expressed by a value between 0 and 100.
         """
-        pass
 
     @property
     def isWoodBumpEnabled(self) -> bool:
@@ -7017,7 +6915,6 @@ class GraphicsPreferences(Base):
         Gets and sets whether the bump effect is enabled when supported by the Wood (Solid)
         and the graphics driver.
         """
-        pass
 
     @property
     def isLimitEffectsDuringNavigation(self) -> bool:
@@ -7033,7 +6930,6 @@ class GraphicsPreferences(Base):
         Gets and sets if effects should be temporarily disabled
         during navigation to maintain the frame rate.
         """
-        pass
 
     @property
     def isSurfaceNormalDisplayDisabled(self) -> int:
@@ -7047,7 +6943,6 @@ class GraphicsPreferences(Base):
         """
         Gets and sets whether the surface normal display is disabled.
         """
-        pass
 
 
 class GridPreferences(Base):
@@ -7074,7 +6969,6 @@ class GridPreferences(Base):
         """
         Gets and sets if the layout grid lock is enabled.
         """
-        pass
 
 
 class HTMLEventHandler(EventHandler):
@@ -7096,7 +6990,6 @@ class HTMLEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class ImportManager(Base):
@@ -7267,7 +7160,6 @@ class ImportOptions(Base):
         """
         Gets and sets the filename or URL of the file to be imported.
         """
-        pass
 
     @property
     def isViewFit(self) -> bool:
@@ -7285,7 +7177,6 @@ class ImportOptions(Base):
         This defaults to true, which will cause a change in the current view. Setting this
         to false will leave the view as-is and just import the geometry.
         """
-        pass
 
 
 class InputChangedEventHandler(EventHandler):
@@ -7306,7 +7197,6 @@ class InputChangedEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing InputChangedEvent.
         """
-        pass
 
 
 class KeyboardEventHandler(EventHandler):
@@ -7327,7 +7217,6 @@ class KeyboardEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing KeyboardEvent.
         """
-        pass
 
 
 class LinearMarkingMenu(Base):
@@ -7399,7 +7288,6 @@ class ListItem(Base):
         this control is a separator (isSeparator is true) or it's a button row,
         setting this property is ignored and getting it will return an empty string.
         """
-        pass
 
     @property
     def icon(self) -> str:
@@ -7419,7 +7307,6 @@ class ListItem(Base):
         with this item. This is only valid when this is a standard list or button row and is
         ignored for check box lists, radio control lists, and radio button groups.
         """
-        pass
 
     @property
     def isSelected(self) -> bool:
@@ -7447,7 +7334,6 @@ class ListItem(Base):
         selected. For a separator, setting this property is ignored and
         it will always return false.
         """
-        pass
 
     @property
     def index(self) -> int:
@@ -7565,7 +7451,6 @@ class MarkingMenuEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class Material(Base):
@@ -7630,7 +7515,6 @@ class Material(Base):
         Returns the name of this Material. This is the name of the material as seen in the user interface.
         The name can only be edited if the material is in a Design or the favorites list.
         """
-        pass
 
     @property
     def parent(self) -> Base:
@@ -7653,7 +7537,6 @@ class Material(Base):
         Gets and sets the description associated with this material.
         Setting the description is only valid for materials in a document or the favorites list.
         """
-        pass
 
 
 class MaterialLibraries(Base):
@@ -7805,7 +7688,6 @@ class MaterialPreferences(Base):
         """
         Gets and sets the default material.
         """
-        pass
 
     @property
     def appearanceOverride(self) -> Appearance:
@@ -7823,7 +7705,6 @@ class MaterialPreferences(Base):
         This property return null indicating that there is no override, or be set to null to remove
         the current appearance override.
         """
-        pass
 
 
 class Materials(Base):
@@ -8239,7 +8120,6 @@ class Matrix3D(Base):
         """
         Gets and sets the translation component of the matrix.
         """
-        pass
 
 
 class MeasureManager(Base):
@@ -8367,7 +8247,6 @@ class MouseEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing MouseEvent.
         """
-        pass
 
 
 class NamedValues(Base):
@@ -8490,7 +8369,6 @@ class NamedView(Base):
         acts as read-only for the four standard named views.
         This can be determined by checking to see if the isBuiltIn property is true.
         """
-        pass
 
     @property
     def camera(self) -> Camera:
@@ -8508,7 +8386,6 @@ class NamedView(Base):
         acts as read-only for the four standard named views.
         This can be determined by checking to see if the isBuiltIn property is true.
         """
-        pass
 
 
 class NamedViews(Base):
@@ -8623,7 +8500,6 @@ class NavigationEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class NetworkPreferences(Base):
@@ -8650,7 +8526,6 @@ class NetworkPreferences(Base):
         """
         Gets and sets the network proxy setting.
         """
-        pass
 
     @property
     def proxyHost(self) -> str:
@@ -8664,7 +8539,6 @@ class NetworkPreferences(Base):
         """
         Gets and sets the proxy host.
         """
-        pass
 
     @property
     def proxyPort(self) -> int:
@@ -8678,7 +8552,6 @@ class NetworkPreferences(Base):
         """
         Gets and sets the proxy host.
         """
-        pass
 
 
 class ObjectCollection(Base):
@@ -8895,7 +8768,6 @@ class OrientedBoundingBox3D(Base):
         """
         Gets and sets the centerPoint point of the oriented box.
         """
-        pass
 
     @property
     def lengthDirection(self) -> Vector3D:
@@ -8917,7 +8789,6 @@ class OrientedBoundingBox3D(Base):
         """
         Gets and sets the length of the oriented bounding box in centimeters.
         """
-        pass
 
     @property
     def widthDirection(self) -> Vector3D:
@@ -8939,7 +8810,6 @@ class OrientedBoundingBox3D(Base):
         """
         Gets and sets the width of the oriented bounding box in centimeters.
         """
-        pass
 
     @property
     def heightDirection(self) -> Vector3D:
@@ -8961,7 +8831,6 @@ class OrientedBoundingBox3D(Base):
         """
         Gets and sets the height of the oriented bounding box in centimeters.
         """
-        pass
 
 
 class Palette(Base):
@@ -9085,7 +8954,6 @@ class Palette(Base):
         """
         Gets and sets whether this palette is currently being displayed in the user interface.
         """
-        pass
 
     @property
     def htmlFileURL(self) -> str:
@@ -9107,7 +8975,6 @@ class Palette(Base):
         If you are providing the HTML content as a string, it should begin with the <html> element. Any references made
         in the HTML should be to URL's and not local files since the local path is ambiguous.
         """
-        pass
 
     @property
     def incomingFromHTML(self) -> HTMLEvent:
@@ -9143,7 +9010,6 @@ class Palette(Base):
         Gets and set the name of the palette as seen in the user interface. The name of native palettes
         cannot be set.
         """
-        pass
 
     @property
     def isNative(self) -> bool:
@@ -9166,7 +9032,6 @@ class Palette(Base):
         """
         Defines the docking behavior for this palette. This controls how the user is allowed to dock the palette.
         """
-        pass
 
     @property
     def dockingState(self) -> PaletteDockingStates:
@@ -9180,7 +9045,6 @@ class Palette(Base):
         """
         Gets and sets how the palette is currently docked.
         """
-        pass
 
     @property
     def width(self) -> int:
@@ -9196,7 +9060,6 @@ class Palette(Base):
         Gets and sets the width of the palette. Setting this property may not always set the width. Depending on
         how the palette is docked or snapped, the width may not be editable.
         """
-        pass
 
     @property
     def height(self) -> int:
@@ -9212,7 +9075,6 @@ class Palette(Base):
         Gets and sets the height of the palette. Setting this property may not always set the height. Depending on
         how the palette is docked or snapped, the height may not be editable.
         """
-        pass
 
     @property
     def left(self) -> int:
@@ -9230,7 +9092,6 @@ class Palette(Base):
         positioned outside of the Fusion 360 window, a value of zero indicates the left side of the screen and not the
         Fusion 360 window.
         """
-        pass
 
     @property
     def top(self) -> int:
@@ -9248,7 +9109,6 @@ class Palette(Base):
         positioned outside of the Fusion 360 window, a value of zero indicates the top of the screen and not the
         Fusion 360 window.
         """
-        pass
 
     @property
     def navigatingURL(self) -> NavigationEvent:
@@ -9544,7 +9404,6 @@ class Point2D(Base):
         """
         Gets and sets the X coordinate of the point.
         """
-        pass
 
     @property
     def y(self) -> float:
@@ -9558,7 +9417,6 @@ class Point2D(Base):
         """
         Gets and sets the Y coordinate of the point.
         """
-        pass
 
 
 class Point3D(Base):
@@ -9699,7 +9557,6 @@ class Point3D(Base):
         """
         Gets and sets the X coordinate of the point.
         """
-        pass
 
     @property
     def y(self) -> float:
@@ -9713,7 +9570,6 @@ class Point3D(Base):
         """
         Gets and sets the Y coordinate of the point.
         """
-        pass
 
     @property
     def z(self) -> float:
@@ -9727,7 +9583,6 @@ class Point3D(Base):
         """
         Gets and sets the Z coordinate of the point.
         """
-        pass
 
 
 class Preferences(Base):
@@ -10061,7 +9916,6 @@ class ProductUsageData(Base):
         and services that Autodesk provides. This is the preference setting
         titled "Help develop our products and services".
         """
-        pass
 
     @property
     def isTrackingToImproveCommunicationEnabled(self) -> bool:
@@ -10077,7 +9931,6 @@ class ProductUsageData(Base):
         Gets and sets if data can be collected to improve communications. This is
         the preferences setting titled "Customize our messaging".
         """
-        pass
 
     @property
     def isGoogleAnalyticsTrackingEnabled(self) -> bool:
@@ -10091,7 +9944,6 @@ class ProductUsageData(Base):
         """
         Gets and sets if Google Analytics tracking is enabled.
         """
-        pass
 
     @property
     def isLearningPanelContextEnabled(self) -> bool:
@@ -10107,7 +9959,6 @@ class ProductUsageData(Base):
         Gets and sets if data can be collected to enable the Learning Panel
         to show information based on the current context.
         """
-        pass
 
 
 class ProgressDialog(Base):
@@ -10179,7 +10030,6 @@ class ProgressDialog(Base):
         """
         Gets and sets the title of the progress dialog
         """
-        pass
 
     @property
     def message(self) -> str:
@@ -10203,7 +10053,6 @@ class ProgressDialog(Base):
         1 of 10." to be displayed if the maximum value is 10 and the current value is 1.
         Specify an empty string ("") for no message to appear along with the progress panel.
         """
-        pass
 
     @property
     def minimumValue(self) -> int:
@@ -10221,7 +10070,6 @@ class ProgressDialog(Base):
         progress value to compute the current percentage complete. This is also the initial
         progress value when the progress bar is first displayed.
         """
-        pass
 
     @property
     def maximumValue(self) -> int:
@@ -10237,7 +10085,6 @@ class ProgressDialog(Base):
         The maximum value of the progress bar. This is used along with the minimum value and the
         progress value to compute the current percentage complete.
         """
-        pass
 
     @property
     def progressValue(self) -> int:
@@ -10255,7 +10102,6 @@ class ProgressDialog(Base):
         the minimum and maximum values. This will update the values displayed
         in the message string.
         """
-        pass
 
     @property
     def isCancelButtonShown(self) -> bool:
@@ -10269,7 +10115,6 @@ class ProgressDialog(Base):
         """
         Gets and sets if the cancel button is included in the dialog. This is false by default.
         """
-        pass
 
     @property
     def wasCancelled(self) -> bool:
@@ -10290,7 +10135,6 @@ class ProgressDialog(Base):
         """
         Sets the text label on the Cancel button. The default text label is "Cancel".
         """
-        pass
 
     @property
     def isBackgroundTranslucent(self) -> bool:
@@ -10304,7 +10148,6 @@ class ProgressDialog(Base):
         """
         Gets and sets if the dialog background is translucent. This is false by default
         """
-        pass
 
     @property
     def isShowing(self) -> bool:
@@ -10456,7 +10299,6 @@ class RadialMarkingMenu(Base):
         sub marking menu. This property is not used for the main marking menu and will
         return an empty string and setting it will have no effect.
         """
-        pass
 
     @property
     def eastCommand(self) -> Base:
@@ -10480,7 +10322,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def northCommand(self) -> Base:
@@ -10504,7 +10345,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def northeastCommand(self) -> Base:
@@ -10528,7 +10368,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def westCommand(self) -> Base:
@@ -10552,7 +10391,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def northwestCommand(self) -> Base:
@@ -10576,7 +10414,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def southwestCommand(self) -> Base:
@@ -10600,7 +10437,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def southCommand(self) -> Base:
@@ -10624,7 +10460,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
     @property
     def southeastCommand(self) -> Base:
@@ -10648,7 +10483,6 @@ class RadialMarkingMenu(Base):
         New marking menus can be created using the create method and then assigned
         to the desired position in the marking menu.
         """
-        pass
 
 
 class SaveImageFileOptions(Base):
@@ -10691,7 +10525,6 @@ class SaveImageFileOptions(Base):
         Gets and sets the full filename, including the path, of the image file.
         The type of image file to be created is inferred from the extension of the filename.
         """
-        pass
 
     @property
     def height(self) -> int:
@@ -10709,7 +10542,6 @@ class SaveImageFileOptions(Base):
         is valid and indicates the current height of the viewport is to be used. When
         the SaveImageFileOptions object is initially created, this is initialized to 0.
         """
-        pass
 
     @property
     def width(self) -> int:
@@ -10727,7 +10559,6 @@ class SaveImageFileOptions(Base):
         is valid and indicates the current width of the viewport is to be used. When
         the SaveImageFileOptions object is initially created, this is initialized to 0.
         """
-        pass
 
     @property
     def isBackgroundTransparent(self) -> bool:
@@ -10745,7 +10576,6 @@ class SaveImageFileOptions(Base):
 
         When the SaveImageFileOptions object is initially created, this is initialized to false.
         """
-        pass
 
     @property
     def isAntiAliased(self) -> bool:
@@ -10763,7 +10593,6 @@ class SaveImageFileOptions(Base):
 
         When the SaveImageFileOptions object is initially created, this is initialized to true.
         """
-        pass
 
 
 class Script(Base):
@@ -10877,7 +10706,6 @@ class Script(Base):
         Fusion 360 is started. This property is only valid when the isAddIn
         property returns true.
         """
-        pass
 
     @property
     def isRunning(self) -> bool:
@@ -10906,7 +10734,6 @@ class Script(Base):
         if it is already running. Also, if it’s an add-in set to load on startup, it
         will no longer be loaded.
         """
-        pass
 
     @property
     def programmingLanguage(self) -> ProgrammingLanguages:
@@ -10976,7 +10803,6 @@ class ScriptInput(Base):
         Specifies if a script or add-in is to be created. A value of true
         indicates an add-in will be created.
         """
-        pass
 
     @property
     def programmingLanguage(self) -> ProgrammingLanguages:
@@ -10990,7 +10816,6 @@ class ScriptInput(Base):
         """
         Gets and sets which programming language the new script or add-in will use.
         """
-        pass
 
     @property
     def name(self) -> str:
@@ -11008,7 +10833,6 @@ class ScriptInput(Base):
         be unique with respect to the other scripts and add-ins in the folder
         specified by the targetFolder property.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -11024,7 +10848,6 @@ class ScriptInput(Base):
         The description of the add-in that is displayed in the "Scripts and Add-Ins"
         dialog. This defaults to an empty string.
         """
-        pass
 
     @property
     def author(self) -> str:
@@ -11040,7 +10863,6 @@ class ScriptInput(Base):
         The author of the add-in that is displayed in the "Scripts and Add-Ins"
         dialog. This defaults to an empty string.
         """
-        pass
 
     @property
     def version(self) -> str:
@@ -11056,7 +10878,6 @@ class ScriptInput(Base):
         The version of the add-in that is displayed in the "Scripts and Add-Ins"
         dialog. This defaults to an empty string.
         """
-        pass
 
     @property
     def targetOperatingSystem(self) -> OperatingSystems:
@@ -11074,7 +10895,6 @@ class ScriptInput(Base):
         in the "Scripts and Add-Ins" dialog and where it will be automatically
         run on startup, if that option is specified. Defaults to WindowsAndMacOperatingSystem
         """
-        pass
 
     @property
     def targetFolder(self) -> str:
@@ -11094,7 +10914,6 @@ class ScriptInput(Base):
         Specifying a path overrides the default and will create the script or add-in in the specified location.
         No "Scripts" or "AddIns" sub-folder is created.
         """
-        pass
 
     @property
     def runOnStartup(self) -> bool:
@@ -11110,7 +10929,6 @@ class ScriptInput(Base):
         If this Script represents an add-in and isAddIn is True, this specifies if the
         add-in should be automatically started when Fusion starts up.
         """
-        pass
 
 
 class Scripts(Base):
@@ -11240,7 +11058,6 @@ class SelectionEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing SelectionEvent.
         """
-        pass
 
 
 class Selections(Base):
@@ -11343,7 +11160,6 @@ class Selections(Base):
         """
         Gets or sets all entities currently selected.
         """
-        pass
 
 
 class SelectionSet(Base):
@@ -11391,7 +11207,6 @@ class SelectionSet(Base):
         Gets and sets the name of the SelectionSet object. If a name is assigned that is already
         used, Fusion will append a counter to the name to make it unique.
         """
-        pass
 
     @property
     def entities(self) -> list[Base]:
@@ -11415,7 +11230,6 @@ class SelectionSet(Base):
         for selection. All entities must be in the context of the root component. This means if
         the entity isn't directly owned by the root component, it must be a proxy.
         """
-        pass
 
 
 class SelectionSets(Base):
@@ -11563,7 +11377,6 @@ class StatusMessage(Base):
         Gets and sets the ID of the message being used. This is a predefined ID within the Fusion message
         string table.
         """
-        pass
 
     @property
     def message(self) -> str:
@@ -11579,7 +11392,6 @@ class StatusMessage(Base):
         The user visible message being used. Setting this message for custom feature errors or warnings is
         currently ignored.
         """
-        pass
 
     @property
     def statusMessageType(self) -> StatusMessageTypes:
@@ -12164,7 +11976,6 @@ class ToolbarControl(Base):
         """
         Gets or sets if this control is currently visible.
         """
-        pass
 
     @property
     def parent(self) -> Base:
@@ -12462,7 +12273,6 @@ class ToolbarPanel(Base):
         """
         Gets or sets the set of workspaces that this panel is displayed for.
         """
-        pass
 
     @property
     def productType(self) -> str:
@@ -12860,7 +12670,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the general precision for distance values. This
         value specifies the number of decimals to display.
         """
-        pass
 
     @property
     def angularPrecision(self) -> int:
@@ -12876,7 +12685,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the angular precision. This
         value specifies the number of decimals to display.
         """
-        pass
 
     @property
     def scientificNotationPrecision(self) -> int:
@@ -12892,7 +12700,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the number scientific notation precision. This
         value specifies the number of decimals to display.
         """
-        pass
 
     @property
     def footAndInchDisplayFormat(self) -> FootAndInchDisplayFormats:
@@ -12906,7 +12713,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets the foot and inch display format.
         """
-        pass
 
     @property
     def degreeDisplayFormat(self) -> DegreeDisplayFormats:
@@ -12920,7 +12726,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets the degree display format.
         """
-        pass
 
     @property
     def isPeriodDecimalPoint(self) -> bool:
@@ -12934,7 +12739,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets if the decimal is a period or comma.
         """
-        pass
 
     @property
     def areAbbreviationsForUnitDisplayed(self) -> bool:
@@ -12948,7 +12752,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets if abbreviations are used for units display.
         """
-        pass
 
     @property
     def areSymbolsForUnitDisplayed(self) -> bool:
@@ -12962,7 +12765,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets if symbols are used for units display.
         """
-        pass
 
     @property
     def isScientificNotationUsed(self) -> bool:
@@ -12976,7 +12778,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets if scientific notation is used when displaying numbers.
         """
-        pass
 
     @property
     def useScientficNotationAbove(self) -> int:
@@ -12992,7 +12793,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the number of whole digits that will be displayed before
         switching to scientific notation.
         """
-        pass
 
     @property
     def useScientficNotationBelow(self) -> int:
@@ -13008,7 +12808,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the number of non zero decimal places that will be
         displayed before switching to scientific notation.
         """
-        pass
 
     @property
     def areTrailingZerosHidden(self) -> bool:
@@ -13022,7 +12821,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets if trailing zeros are hidden when displaying numbers.
         """
-        pass
 
     @property
     def minimumPrecisionWhenHidingZeros(self) -> int:
@@ -13038,7 +12836,6 @@ class UnitAndValuePreferences(Base):
         Gets and sets the minimum number of digits to the right of the decimal to display
         before hiding trailing zeros.
         """
-        pass
 
     @property
     def materialDisplayUnit(self) -> MaterialDisplayUnits:
@@ -13052,7 +12849,6 @@ class UnitAndValuePreferences(Base):
         """
         Gets and sets the units types to use when displaying values.
         """
-        pass
 
 
 class UnitsManager(Base):
@@ -13632,7 +13428,6 @@ class UserInterfaceGeneralEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class ValidateInputsEventHandler(EventHandler):
@@ -13653,7 +13448,6 @@ class ValidateInputsEventHandler(EventHandler):
         This notify member is called when an event is triggered from any event that this handler has been added to.
         eventArgs : The arguments object with details about this event and the firing ValidateInputsEvent.
         """
-        pass
 
 
 class ValueInput(Base):
@@ -13924,7 +13718,6 @@ class Vector2D(Base):
         """
         Gets and sets the X coordinate of the vector.
         """
-        pass
 
     @property
     def y(self) -> float:
@@ -13938,7 +13731,6 @@ class Vector2D(Base):
         """
         Gets and sets the Y coordinate of the vector.
         """
-        pass
 
 
 class Vector3D(Base):
@@ -14102,7 +13894,6 @@ class Vector3D(Base):
         """
         The x value.
         """
-        pass
 
     @property
     def y(self) -> float:
@@ -14116,7 +13907,6 @@ class Vector3D(Base):
         """
         The y value.
         """
-        pass
 
     @property
     def z(self) -> float:
@@ -14130,7 +13920,6 @@ class Vector3D(Base):
         """
         The z value.
         """
-        pass
 
 
 class Viewport(Base):
@@ -14282,7 +14071,6 @@ class Viewport(Base):
         camera will have no affect on the viewport until the
         camera is assigned back to the viewport.
         """
-        pass
 
     @property
     def height(self) -> int:
@@ -14310,7 +14098,6 @@ class Viewport(Base):
         """
         Gets and sets if the view is in full screen mode.
         """
-        pass
 
     @property
     def visualStyle(self) -> VisualStyles:
@@ -14324,7 +14111,6 @@ class Viewport(Base):
         """
         Gets and sets the current visual style being used.
         """
-        pass
 
     @property
     def parentDocument(self) -> Document:
@@ -14374,7 +14160,6 @@ class WebRequestEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class Workspace(Base):
@@ -14457,7 +14242,6 @@ class Workspace(Base):
         """
         Gets or sets the resource folder.
         """
-        pass
 
     @property
     def productType(self) -> str:
@@ -14480,7 +14264,6 @@ class Workspace(Base):
         Gets or sets the full filename of the image file (PNG) used for the tool clip.
         the tool clip is the image shown when the user hovers the mouse over the workspace name in the workspace drop-down.
         """
-        pass
 
     @property
     def tooltip(self) -> str:
@@ -14502,7 +14285,6 @@ class Workspace(Base):
         The tooltip is only shown when the user hovers over the name and box appears providing more information
         about the workspace. For example, the name of the model workspace is "Model" and the tooltip is "Model Workspace".
         """
-        pass
 
     @property
     def tooltipDescription(self) -> str:
@@ -14522,7 +14304,6 @@ class Workspace(Base):
         the Fusion 360 toolbar drop-down. The pop-up dialog that appears contains the tooltip, the tooltip
         description, and the tool clip which is a picture.
         """
-        pass
 
     @property
     def toolbarTabs(self) -> ToolbarTabs:
@@ -14550,7 +14331,6 @@ class WorkspaceEventHandler(EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class WorkspaceList(Base):
@@ -14793,7 +14573,6 @@ class AngleValueCommandInput(CommandInput):
         the execution of a command that contains ValueCommandInput object with invalid expressions
         so you can dependably use the value in the execute event of the command.
         """
-        pass
 
     @property
     def expression(self) -> str:
@@ -14811,7 +14590,6 @@ class AngleValueCommandInput(CommandInput):
         references to parameters but must result in a valid angle expression. If units are not
         specified as part of the expression, the default user units of degrees are used.
         """
-        pass
 
     @property
     def minimumValue(self) -> float:
@@ -14837,7 +14615,6 @@ class AngleValueCommandInput(CommandInput):
         Setting this value will change the isMinimumValueInclusive to True and the hasMinimumValue
         property to True if hasMinimumValue is currently False, otherwise it will just update the value.
         """
-        pass
 
     @property
     def hasMinimumValue(self) -> bool:
@@ -14855,7 +14632,6 @@ class AngleValueCommandInput(CommandInput):
         to set it to False to remove the minimum value. Setting the minimumValue property will result in this property
         being set to True.
         """
-        pass
 
     @property
     def isMinimumValueInclusive(self) -> bool:
@@ -14877,7 +14653,6 @@ class AngleValueCommandInput(CommandInput):
         this property is set to True. The value returned by this property is only meaningful when the hasMinimumValue property
         returns True.
         """
-        pass
 
     @property
     def maximumValue(self) -> float:
@@ -14901,7 +14676,6 @@ class AngleValueCommandInput(CommandInput):
         Setting this value will change the isMaximumValueInclusive to True and the hasMaximumValue
         property to True if hasMaximumValue is currently False, otherwise it will just update the value.
         """
-        pass
 
     @property
     def hasMaximumValue(self) -> bool:
@@ -14919,7 +14693,6 @@ class AngleValueCommandInput(CommandInput):
         to set it to False to remove the maximum value. Setting the maximumValue property will result in this property
         being set to True.
         """
-        pass
 
     @property
     def isMaximumValueInclusive(self) -> bool:
@@ -14941,7 +14714,6 @@ class AngleValueCommandInput(CommandInput):
         maximumValue property, this property is set to True. The value returned by this property is only meaningful
         when the hasMaximumValue property returns True.
         """
-        pass
 
     @property
     def manipulatorOrigin(self) -> Point3D:
@@ -15006,7 +14778,6 @@ class AppearanceTextureProperty(Property):
         """
         Gets and sets this property value.
         """
-        pass
 
     @property
     def isUsed(self) -> bool:
@@ -15095,7 +14866,6 @@ class ApplicationCommandEventArgs(EventArgs):
         the command and not begin the execution.
         This property should be ignored for all events besides the commandStarting event.
         """
-        pass
 
     @property
     def terminationReason(self) -> CommandTerminationReason:
@@ -15160,7 +14930,6 @@ class ApplicationEventArgs(EventArgs):
         """
         Gets and sets if Fusion 360 is offline or not.
         """
-        pass
 
     @property
     def hasInternetAccess(self) -> bool:
@@ -15270,7 +15039,6 @@ class Arc2D(Curve2D):
         """
         Gets and sets the center position of the arc.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -15284,7 +15052,6 @@ class Arc2D(Curve2D):
         """
         Gets and sets the radius of the arc.
         """
-        pass
 
     @property
     def startAngle(self) -> float:
@@ -15298,7 +15065,6 @@ class Arc2D(Curve2D):
         """
         Gets and sets the start angle of the arc in radians, where 0 is along the x axis.
         """
-        pass
 
     @property
     def endAngle(self) -> float:
@@ -15312,7 +15078,6 @@ class Arc2D(Curve2D):
         """
         Gets and sets the end angle of the arc in radians, where 0 is along the x axis.
         """
-        pass
 
     @property
     def isClockwise(self) -> bool:
@@ -15469,7 +15234,6 @@ class Arc3D(Curve3D):
         """
         Gets and sets the center position of the arc.
         """
-        pass
 
     @property
     def normal(self) -> Vector3D:
@@ -15497,7 +15261,6 @@ class Arc3D(Curve3D):
         """
         Gets and sets the radius of the arc.
         """
-        pass
 
     @property
     def startAngle(self) -> float:
@@ -15513,7 +15276,6 @@ class Arc3D(Curve3D):
         Gets and sets the start angle of the arc in radians.
         This angle is measured from the reference vector using the right hand rule around the normal vector.
         """
-        pass
 
     @property
     def endAngle(self) -> float:
@@ -15529,7 +15291,6 @@ class Arc3D(Curve3D):
         Gets and sets the end angle of the arc in radians.
         This angle is measured from the reference vector using the right hand rule around the normal vector.
         """
-        pass
 
     @property
     def startPoint(self) -> Point3D:
@@ -15577,7 +15338,6 @@ class BooleanProperty(Property):
         """
         Gets and sets the value of this property.
         """
-        pass
 
 
 class BoolValueCommandInput(CommandInput):
@@ -15607,7 +15367,6 @@ class BoolValueCommandInput(CommandInput):
         Gets or sets the state of this input. If it's being displayed as a check box a value of true indicates the input is checked.
         If it's being displayed as a button, a value of true indicates the button is currently depressed.
         """
-        pass
 
     @property
     def resourceFolder(self) -> str:
@@ -15623,7 +15382,6 @@ class BoolValueCommandInput(CommandInput):
         Gets and sets the folder that contains the image to display on the button. Text
         can also be displayed, which is specified using the text property.
         """
-        pass
 
     @property
     def isCheckBox(self) -> bool:
@@ -15650,7 +15408,6 @@ class BoolValueCommandInput(CommandInput):
         text and the resource folder are specified then both the icon and text
         will be displayed.
         """
-        pass
 
 
 class BrowserCommandInput(CommandInput):
@@ -15691,7 +15448,6 @@ class BrowserCommandInput(CommandInput):
         """
         Gets and sets the URL to the HTML file currently being displayed. This can be local or on the web.
         """
-        pass
 
     @property
     def minimumHeight(self) -> int:
@@ -15711,7 +15467,6 @@ class BrowserCommandInput(CommandInput):
         minimum height or expand to be larger than the maximum height. If the dialog can't fit the browser at the minimum size
         a scroll bar will appear for the dialog to allow the user to scroll to access all the inputs in the dialog.
         """
-        pass
 
     @property
     def maximumHeight(self) -> int:
@@ -15735,7 +15490,6 @@ class BrowserCommandInput(CommandInput):
         the entire browser content. The default value of zero sets no maximum height, so the browser will expand to the maximum
         extent available.
         """
-        pass
 
 
 class ButtonControlDefinition(ControlDefinition):
@@ -15873,7 +15627,6 @@ class CheckBoxControlDefinition(ControlDefinition):
         Gets or sets whether the check box is checked. Changing this will result in changing any
         associated controls and will execute the associated command.
         """
-        pass
 
 
 class ChoiceProperty(Property):
@@ -15913,7 +15666,6 @@ class ChoiceProperty(Property):
         The value is a string that matches one of the predefined choices.
         The names of the available choices can be obtained using GetChoices method.
         """
-        pass
 
 
 class Circle2D(Curve2D):
@@ -15990,7 +15742,6 @@ class Circle2D(Curve2D):
         """
         Gets and sets the center position of the circle.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -16004,7 +15755,6 @@ class Circle2D(Curve2D):
         """
         Gets and sets the radius of the circle.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve2D:
@@ -16096,7 +15846,6 @@ class Circle3D(Curve3D):
         """
         Gets and sets the center position of the circle.
         """
-        pass
 
     @property
     def normal(self) -> Vector3D:
@@ -16110,7 +15859,6 @@ class Circle3D(Curve3D):
         """
         Gets and sets the normal of the circle.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -16124,7 +15872,6 @@ class Circle3D(Curve3D):
         """
         Gets and sets the radius of the circle.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve3D:
@@ -16173,7 +15920,6 @@ class ColorProperty(Property):
         true to change the definition from a simple color to a texture. You can then use the ConnectedTexture
         property to get the associated texture and modify it.
         """
-        pass
 
     @property
     def hasMultipleValues(self) -> bool:
@@ -16198,7 +15944,6 @@ class ColorProperty(Property):
         this color . If a texture is used, this property returns null. Setting this property
         when a texture is used removes the texture and changes the color definition to a simple color.
         """
-        pass
 
     @property
     def values(self) -> list[Color]:
@@ -16214,7 +15959,6 @@ class ColorProperty(Property):
         Gets and sets the values associated with this property. The HasMultipleValues property
         indicates if this property will be returning more than one value.
         """
-        pass
 
 
 class CommandControl(ToolbarControl):
@@ -16251,7 +15995,6 @@ class CommandControl(ToolbarControl):
         Gets or sets if this command has been promoted to the parent panel.
         This property is ignored in the case where this control isn't in a panel.
         """
-        pass
 
     @property
     def isPromotedByDefault(self) -> bool:
@@ -16269,7 +16012,6 @@ class CommandControl(ToolbarControl):
         This defines the default state of the panel if the UI is reset.
         This property is ignored in the case where this control isn't in a panel.
         """
-        pass
 
 
 class CommandCreatedEvent(Event):
@@ -16385,7 +16127,6 @@ class CommandEventArgs(EventArgs):
         and the commands transaction should be aborted.
         This property should be ignored for all events besides the Execute event.
         """
-        pass
 
     @property
     def executeFailedMessage(self) -> str:
@@ -16401,7 +16142,6 @@ class CommandEventArgs(EventArgs):
         Used during the execute event to get or set a description of an execute failure.
         This property should be ignored for all events besides the Execute event.
         """
-        pass
 
     @property
     def isValidResult(self) -> bool:
@@ -16419,7 +16159,6 @@ class CommandEventArgs(EventArgs):
         and the command can reuse the result when OK is hit.
         This property should be ignored for all events besides the executePreview event.
         """
-        pass
 
     @property
     def terminationReason(self) -> CommandTerminationReason:
@@ -16503,7 +16242,6 @@ class Cone(Surface):
         """
         Gets and sets the origin point (center) of the base of the cone.
         """
-        pass
 
     @property
     def axis(self) -> Vector3D:
@@ -16519,7 +16257,6 @@ class Cone(Surface):
         Gets and sets the center axis (along the length) of the cone that defines its
         normal direction.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -16533,7 +16270,6 @@ class Cone(Surface):
         """
         Gets and sets the radius of the cone.
         """
-        pass
 
     @property
     def halfAngle(self) -> float:
@@ -16553,7 +16289,6 @@ class Cone(Surface):
         axis vector, whereas a positive value indicates that it is expanding in the direction of
         the axis vector.
         """
-        pass
 
 
 class CustomEvent(Event):
@@ -16683,7 +16418,6 @@ class Cylinder(Surface):
         """
         The origin point (center) of the base of the cylinder.
         """
-        pass
 
     @property
     def axis(self) -> Vector3D:
@@ -16697,7 +16431,6 @@ class Cylinder(Surface):
         """
         The center axis (along the length) of the cylinder that defines its normal direction.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -16711,7 +16444,6 @@ class Cylinder(Surface):
         """
         The radius of the cylinder.
         """
-        pass
 
 
 class DataEvent(Event):
@@ -16869,7 +16601,6 @@ class DirectionCommandInput(CommandInput):
         Gets and sets if the direction manipulator displayed is flipped (reversed 180 degrees as compared to the
         direction defined by the manipulatorDirection property). This is false for a newly created DirectionCommandInput.
         """
-        pass
 
     @property
     def resourceFolder(self) -> str:
@@ -16885,7 +16616,6 @@ class DirectionCommandInput(CommandInput):
         Gets and sets the folder that contains the image to display on the button.
         The input is shown as a check box if set resource folder to empty.
         """
-        pass
 
 
 class DistanceValueCommandInput(CommandInput):
@@ -16949,7 +16679,6 @@ class DistanceValueCommandInput(CommandInput):
         that contains ValueCommandInput object with invalid expressions so you can
         dependably use the value in the execute event of the command.
         """
-        pass
 
     @property
     def expression(self) -> str:
@@ -16967,7 +16696,6 @@ class DistanceValueCommandInput(CommandInput):
         references to parameters but must result in a valid length expression. If units are not
         specified as part of the expression, the default units for the design are used.
         """
-        pass
 
     @property
     def minimumValue(self) -> float:
@@ -16993,7 +16721,6 @@ class DistanceValueCommandInput(CommandInput):
         Setting this value will change the isMinimumValueInclusive to True and the hasMinimumValue property to True if hasMinimumValue is currently
         False, otherwise it will just update the value.
         """
-        pass
 
     @property
     def hasMinimumValue(self) -> bool:
@@ -17011,7 +16738,6 @@ class DistanceValueCommandInput(CommandInput):
         to set it to False to remove the minimum value. Setting the minimumValue property will result in this property
         being set to True.
         """
-        pass
 
     @property
     def isMinimumValueInclusive(self) -> bool:
@@ -17033,7 +16759,6 @@ class DistanceValueCommandInput(CommandInput):
         this property is set to True. The value returned by this property is only meaningful when the hasMinimumValue property
         returns True.
         """
-        pass
 
     @property
     def maximumValue(self) -> float:
@@ -17053,7 +16778,6 @@ class DistanceValueCommandInput(CommandInput):
         applies. Also, the isMaximumValueInclusive indicates if the maximum includes this
         value or will be up to this value.
         """
-        pass
 
     @property
     def hasMaximumValue(self) -> bool:
@@ -17071,7 +16795,6 @@ class DistanceValueCommandInput(CommandInput):
         to set it to False to remove the maximum value. Setting the maximumValue property will result in this property
         being set to True.
         """
-        pass
 
     @property
     def isMaximumValueInclusive(self) -> bool:
@@ -17093,7 +16816,6 @@ class DistanceValueCommandInput(CommandInput):
         this property is set to True. The value returned by this property is only meaningful when the hasMaximumValue property
         returns True.
         """
-        pass
 
     @property
     def manipulatorOrigin(self) -> Point3D:
@@ -17198,7 +16920,6 @@ class DocumentEventArgs(EventArgs):
         with the cancelReason property.
         This is only supported for the documentSaving event.
         """
-        pass
 
     @property
     def cancelReason(self) -> str:
@@ -17214,7 +16935,6 @@ class DocumentEventArgs(EventArgs):
         Gets and sets the description of the reason why the operation is being canceled.
         This property is only used if isOperationCancelled is set to true.
         """
-        pass
 
 
 class DropDownCommandInput(CommandInput):
@@ -17266,7 +16986,6 @@ class DropDownCommandInput(CommandInput):
         """
         Gets or sets the maximum allowed size on screen of the drop down list, measured in items.
         """
-        pass
 
 
 class DropDownControl(ToolbarControl):
@@ -17300,7 +17019,6 @@ class DropDownControl(ToolbarControl):
         """
         Gets or sets the resource folder containing the image used for the icon when the drop-down is in a toolbar.
         """
-        pass
 
     @property
     def name(self) -> str:
@@ -17314,7 +17032,6 @@ class DropDownControl(ToolbarControl):
         """
         Gets or sets the Name displayed for this drop down. This isn't used when the drop-down is in a toolbar because an icon is used in that case.
         """
-        pass
 
 
 class DXF2DImportOptions(ImportOptions):
@@ -17344,7 +17061,6 @@ class DXF2DImportOptions(ImportOptions):
         Gets and sets the construction plane or planar face that defines the plane that the resulting sketches will
         be created on.
         """
-        pass
 
     @property
     def position(self) -> Point2D:
@@ -17360,7 +17076,6 @@ class DXF2DImportOptions(ImportOptions):
         Gets and sets the X,Y offset position for the origin of the imported DXF data relative to the sketch origin.
         This defaults to (0,0) in a newly created DXF2DImportOptions object.
         """
-        pass
 
     @property
     def results(self) -> ObjectCollection:
@@ -17393,7 +17108,6 @@ class DXF2DImportOptions(ImportOptions):
         where the sketch name will be the name of the layer. The default value for this
         property is false, resulting in a sketch for each layer.
         """
-        pass
 
     @property
     def layers(self) -> list[str]:
@@ -17413,7 +17127,6 @@ class DXF2DImportOptions(ImportOptions):
         By default, all layers will be imported. You can set the property using a new array that
         contains the names of only those layers you want to import.
         """
-        pass
 
     @property
     def isCreateControlPointSplines(self) -> bool:
@@ -17431,7 +17144,6 @@ class DXF2DImportOptions(ImportOptions):
         point splines. Otherwise they will be created as fixed splines that cannot be edited.
         The default for this property is false, to create fixed splines.
         """
-        pass
 
 
 class Ellipse2D(Curve2D):
@@ -17510,7 +17222,6 @@ class Ellipse2D(Curve2D):
         """
         Gets and sets the center position of the ellipse.
         """
-        pass
 
     @property
     def majorAxis(self) -> Vector2D:
@@ -17524,7 +17235,6 @@ class Ellipse2D(Curve2D):
         """
         Gets and sets the major axis of the ellipse.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -17538,7 +17248,6 @@ class Ellipse2D(Curve2D):
         """
         Gets and sets the major radius of the ellipse.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -17552,7 +17261,6 @@ class Ellipse2D(Curve2D):
         """
         Gets and sets the minor radius of the ellipse.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve2D:
@@ -17647,7 +17355,6 @@ class Ellipse3D(Curve3D):
         """
         Gets and sets the center position of the ellipse.
         """
-        pass
 
     @property
     def normal(self) -> Vector3D:
@@ -17668,7 +17375,6 @@ class Ellipse3D(Curve3D):
         """
         Gets and sets the major axis of the ellipse.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -17682,7 +17388,6 @@ class Ellipse3D(Curve3D):
         """
         Gets and sets the major radius of the ellipse.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -17696,7 +17401,6 @@ class Ellipse3D(Curve3D):
         """
         Gets and sets the minor radius of the ellipse.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve3D:
@@ -17793,7 +17497,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the center position of the elliptical arc.
         """
-        pass
 
     @property
     def majorAxis(self) -> Vector2D:
@@ -17807,7 +17510,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the major axis of the elliptical arc.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -17821,7 +17523,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the major radius of the elliptical arc.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -17835,7 +17536,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the minor radius of the elliptical arc.
         """
-        pass
 
     @property
     def startAngle(self) -> float:
@@ -17849,7 +17549,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the start angle of the elliptical arc in radians, where 0 is along the major axis.
         """
-        pass
 
     @property
     def endAngle(self) -> float:
@@ -17863,7 +17562,6 @@ class EllipticalArc2D(Curve2D):
         """
         Gets and sets the end angle of the elliptical arc in radians, where 0 is along the major axis.
         """
-        pass
 
     @property
     def isClockwise(self) -> bool:
@@ -18005,7 +17703,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the center point of the elliptical arc.
         """
-        pass
 
     @property
     def normal(self) -> Vector3D:
@@ -18026,7 +17723,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the major axis of the elliptical arc.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -18040,7 +17736,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the major radius of the elliptical arc.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -18054,7 +17749,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the minor radius of the elliptical arc.
         """
-        pass
 
     @property
     def startAngle(self) -> float:
@@ -18068,7 +17762,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the start angle of the elliptical arc.
         """
-        pass
 
     @property
     def endAngle(self) -> float:
@@ -18082,7 +17775,6 @@ class EllipticalArc3D(Curve3D):
         """
         Gets and sets the end angle of the elliptical arc.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve3D:
@@ -18201,7 +17893,6 @@ class EllipticalCone(Surface):
         """
         Gets and sets the origin point (center) of the base of the cone.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -18215,7 +17906,6 @@ class EllipticalCone(Surface):
         """
         Gets and sets the major radius of the ellipse that defines the cone.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -18229,7 +17919,6 @@ class EllipticalCone(Surface):
         """
         Gets and sets the minor radius of the ellipse that defines the cone.
         """
-        pass
 
     @property
     def halfAngle(self) -> float:
@@ -18247,7 +17936,6 @@ class EllipticalCone(Surface):
         A negative value indicates that the cone is narrowing in the direction of the axis vector,
         whereas a positive values indicates that it is expanding in the direction of the axis vector.
         """
-        pass
 
 
 class EllipticalCylinder(Surface):
@@ -18336,7 +18024,6 @@ class EllipticalCylinder(Surface):
         """
         Gets and sets the origin point (center) of the base of the cylinder.
         """
-        pass
 
     @property
     def axis(self) -> Vector3D:
@@ -18352,7 +18039,6 @@ class EllipticalCylinder(Surface):
         Gets and set the center axis (along the length) of the cylinder that defines
         its normal direction.
         """
-        pass
 
     @property
     def majorAxis(self) -> Vector3D:
@@ -18366,7 +18052,6 @@ class EllipticalCylinder(Surface):
         """
         Gets and sets the direction of the major axis of the ellipse that defines the cylinder.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -18380,7 +18065,6 @@ class EllipticalCylinder(Surface):
         """
         Gets and sets the major radius of the ellipse that defines the cylinder.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -18394,7 +18078,6 @@ class EllipticalCylinder(Surface):
         """
         Gets and sets the minor radius of the ellipse that defines the cylinder.
         """
-        pass
 
 
 class FilenameProperty(Property):
@@ -18428,7 +18111,6 @@ class FilenameProperty(Property):
         """
         Gets and sets the value of this property.
         """
-        pass
 
     @property
     def values(self) -> list[str]:
@@ -18444,7 +18126,6 @@ class FilenameProperty(Property):
         Gets and sets the values associated with this property. HasMultipleValues
         property indicates if this property will be returning more than one value.
         """
-        pass
 
 
 class FloatProperty(Property):
@@ -18487,7 +18168,6 @@ class FloatProperty(Property):
         using a texture. Setting this property to False will remove the texture so that a float
         value is used. Setting this property to True will connect a texture to this float value.
         """
-        pass
 
     @property
     def connectedTexture(self) -> AppearanceTexture:
@@ -18546,7 +18226,6 @@ class FloatProperty(Property):
         if the HasConnectedTexture property is true. Setting this will remove any
         associated texture, if there is one.
         """
-        pass
 
     @property
     def values(self) -> list[float]:
@@ -18562,7 +18241,6 @@ class FloatProperty(Property):
         Gets and sets the values associated with this property. HasMultipleValues property
         indicates if this property will be returning more than one value.
         """
-        pass
 
 
 class FloatSpinnerCommandInput(CommandInput):
@@ -18607,7 +18285,6 @@ class FloatSpinnerCommandInput(CommandInput):
         that contains ValueCommandInput object with invalid expressions so you can
         dependably use the value in the execute event of the command.
         """
-        pass
 
     @property
     def unitType(self) -> str:
@@ -18653,7 +18330,6 @@ class FloatSpinnerCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field. This can contain equations and
         references to parameters. It is evaluated using the specified unit type.
         """
-        pass
 
     @property
     def isValidExpression(self) -> bool:
@@ -18715,7 +18391,6 @@ class GroupCommandInput(CommandInput):
         If this is a sub-group of another group and the isEnabledCheckBoxDisplayed property is set to false
         then the isExpanded property must be set to true.
         """
-        pass
 
     @property
     def isEnabledCheckBoxDisplayed(self) -> bool:
@@ -18733,7 +18408,6 @@ class GroupCommandInput(CommandInput):
         If this is a sub-group of another group and the isEnabledCheckBoxDisplayed property is set to false
         then the isExpanded property must be set to true.
         """
-        pass
 
     @property
     def isEnabledCheckBoxChecked(self) -> bool:
@@ -18749,7 +18423,6 @@ class GroupCommandInput(CommandInput):
         Gets or sets if the enabled check-box is checked or not. This is only
         valid when the isEnabledCheckBoxDisplayed property is true.
         """
-        pass
 
 
 class HTMLEvent(Event):
@@ -18825,7 +18498,6 @@ class HTMLEventArgs(EventArgs):
         """
         Set this property to return data back to the JavaScript that's associated with the HTML.
         """
-        pass
 
     @property
     def browserCommandInput(self) -> BrowserCommandInput:
@@ -18878,7 +18550,6 @@ class ImageCommandInput(CommandInput):
         Supported image format is .png
         Images are displayed in the command dialog using their actual size.
         """
-        pass
 
 
 class InfiniteLine3D(Curve3D):
@@ -18970,7 +18641,6 @@ class InfiniteLine3D(Curve3D):
         """
         Gets and sets the origin point of the line.
         """
-        pass
 
     @property
     def direction(self) -> Vector3D:
@@ -18984,7 +18654,6 @@ class InfiniteLine3D(Curve3D):
         """
         Gets and sets the direction of the line.
         """
-        pass
 
 
 class InputChangedEvent(Event):
@@ -19098,7 +18767,6 @@ class IntegerProperty(Property):
         if the HasConnectedTexture property is true. Setting this will remove any
         associated texture, if there is one.
         """
-        pass
 
     @property
     def values(self) -> list[int]:
@@ -19114,7 +18782,6 @@ class IntegerProperty(Property):
         Gets and sets the values associated with this property. HasMultipleValues property
         indicates if this property will be returning more than one value.
         """
-        pass
 
 
 class IntegerSpinnerCommandInput(CommandInput):
@@ -19141,7 +18808,6 @@ class IntegerSpinnerCommandInput(CommandInput):
         """
         Gets and sets the value associated with this input.
         """
-        pass
 
     @property
     def minimumValue(self) -> int:
@@ -19284,7 +18950,6 @@ class Line2D(Curve2D):
         """
         Gets and sets the start point of the line.
         """
-        pass
 
     @property
     def endPoint(self) -> Point2D:
@@ -19298,7 +18963,6 @@ class Line2D(Curve2D):
         """
         Gets and sets the end point of the line.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve2D:
@@ -19404,7 +19068,6 @@ class Line3D(Curve3D):
         """
         Gets and sets the start point of the line.
         """
-        pass
 
     @property
     def endPoint(self) -> Point3D:
@@ -19418,7 +19081,6 @@ class Line3D(Curve3D):
         """
         Gets and sets the end point of the line.
         """
-        pass
 
     @property
     def asNurbsCurve(self) -> NurbsCurve3D:
@@ -19685,7 +19347,6 @@ class NavigationEventArgs(EventArgs):
         """
         The URL that is being navigated to.
         """
-        pass
 
     @property
     def launchExternally(self) -> bool:
@@ -19701,7 +19362,6 @@ class NavigationEventArgs(EventArgs):
         If True, the URL will be navigated to in an external browser by the operating system.
         If False, the default value, the URL will be navigated to in the palette's browser.
         """
-        pass
 
     @property
     def preventDefault(self) -> bool:
@@ -19717,7 +19377,6 @@ class NavigationEventArgs(EventArgs):
         If True, the default handling of this navigation event will not continue.
         If False, the default value, the default handling of this navigation event will continue.
         """
-        pass
 
     @property
     def browserCommandInput(self) -> BrowserCommandInput:
@@ -20443,7 +20102,6 @@ class Plane(Surface):
         """
         Gets and sets the origin point of the plane.
         """
-        pass
 
     @property
     def normal(self) -> Vector3D:
@@ -20457,7 +20115,6 @@ class Plane(Surface):
         """
         Gets and sets the normal of the plane.
         """
-        pass
 
     @property
     def uDirection(self) -> Vector3D:
@@ -20498,7 +20155,6 @@ class ProjectedTextureMapControl(TextureMapControl):
         """
         Gets and sets how the texture map is being applied onto the body.
         """
-        pass
 
     @property
     def isCapped(self) -> bool:
@@ -20518,7 +20174,6 @@ class ProjectedTextureMapControl(TextureMapControl):
         when the projectedTextureMapType returns CylindricalTextureMapProjection. The value of
         this property should be ignored in all other cases and setting the property will have no effect.
         """
-        pass
 
     @property
     def transform(self) -> Matrix3D:
@@ -20536,7 +20191,6 @@ class ProjectedTextureMapControl(TextureMapControl):
         is projected onto the body. The Z axis of the transform corresponds to the axis that is
         specified in the user-interface and is the primary direction of the texture.
         """
-        pass
 
 
 class RadioButtonGroupCommandInput(CommandInput):
@@ -20708,7 +20362,6 @@ class SelectionCommandInput(CommandInput):
         """
         Gets or sets the tooltip shown next to the cursor.
         """
-        pass
 
     @property
     def selectionFilters(self) -> list[str]:
@@ -20722,7 +20375,6 @@ class SelectionCommandInput(CommandInput):
         """
         Gets or sets the list of selection filters.
         """
-        pass
 
     @property
     def selectionCount(self) -> int:
@@ -20755,7 +20407,6 @@ class SelectionCommandInput(CommandInput):
 
         Setting hasFocus to True for a selection input whose isVisible property is false will fail.
         """
-        pass
 
 
 class SelectionEvent(Event):
@@ -20831,7 +20482,6 @@ class SelectionEventArgs(EventArgs):
         The value is initialized to true, so doing nothing will result
         in the entity being selectable.
         """
-        pass
 
     @property
     def additionalEntities(self) -> ObjectCollection:
@@ -20883,7 +20533,6 @@ class SelectionEventArgs(EventArgs):
 
         The additional entities should all be valid based on the current selection filter.
         """
-        pass
 
     @property
     def activeInput(self) -> SelectionCommandInput:
@@ -20951,7 +20600,6 @@ class SliderCommandInput(CommandInput):
         Uses an expression to set the value in the first input field. This can contain equations and
         is evaluated using the specified unit type.
         """
-        pass
 
     @property
     def expressionTwo(self) -> str:
@@ -20971,7 +20619,6 @@ class SliderCommandInput(CommandInput):
 
         This property is only available when the hasTwoSliders property returns true.
         """
-        pass
 
     @property
     def unitType(self) -> str:
@@ -20985,7 +20632,6 @@ class SliderCommandInput(CommandInput):
         """
         Gets and sets the unit type that is used when evaluating the user's input.
         """
-        pass
 
     @property
     def hasTwoSliders(self) -> bool:
@@ -21070,7 +20716,6 @@ class Sphere(Surface):
         """
         Gets and sets the origin point (center) of the sphere.
         """
-        pass
 
     @property
     def radius(self) -> float:
@@ -21084,7 +20729,6 @@ class Sphere(Surface):
         """
         Gets and sets the radius of the sphere.
         """
-        pass
 
 
 class SplitButtonControl(ToolbarControl):
@@ -21127,7 +20771,6 @@ class SplitButtonControl(ToolbarControl):
         """
         Gets or sets the command definitions used to define the buttons associated with the split button.
         """
-        pass
 
 
 class STEPImportOptions(ImportOptions):
@@ -21167,7 +20810,6 @@ class StringProperty(Property):
         """
         Gets and sets the property value.
         """
-        pass
 
 
 class StringValueCommandInput(CommandInput):
@@ -21194,7 +20836,6 @@ class StringValueCommandInput(CommandInput):
         """
         Gets or sets the value of this input.
         """
-        pass
 
     @property
     def isPassword(self) -> bool:
@@ -21214,7 +20855,6 @@ class StringValueCommandInput(CommandInput):
         If true, dots are displayed instead of the actual characters but
         the value property will get and set the actual string.
         """
-        pass
 
     @property
     def isReadOnly(self) -> bool:
@@ -21232,7 +20872,6 @@ class StringValueCommandInput(CommandInput):
         cannot edit the text. This property is initialized to False for a newly created
         StringValueCommandInput object.
         """
-        pass
 
     @property
     def isValueError(self) -> bool:
@@ -21260,7 +20899,6 @@ class StringValueCommandInput(CommandInput):
         true, Fusion 360 will change the color of the text to red to indicate to the user there is
         a problem.
         """
-        pass
 
 
 class SVGImportOptions(ImportOptions):
@@ -21301,7 +20939,6 @@ class SVGImportOptions(ImportOptions):
         and isVerticalFlop properties to define the flip. These result in flipping the geometry along
         the center of the geometry's bounding box.
         """
-        pass
 
     @property
     def isHorizontalFlip(self) -> bool:
@@ -21317,7 +20954,6 @@ class SVGImportOptions(ImportOptions):
         Gets and sets if the SVG is flipped along the sketch X axis.
         This property defaults to false in a newly created SVGImportOptions object.
         """
-        pass
 
     @property
     def isVerticalFlip(self) -> bool:
@@ -21333,7 +20969,6 @@ class SVGImportOptions(ImportOptions):
         Gets and sets if the SVG is flipped along the sketch Y axis.
         This property defaults to false in a newly created SVGImportOptions object.
         """
-        pass
 
     @property
     def isControlPointFrameDisplayed(self) -> bool:
@@ -21349,7 +20984,6 @@ class SVGImportOptions(ImportOptions):
         Gets and sets if any spline curves in the SVG should be drawn with their control
         point frames. This property defaults to false in a newly created SVGImportOptions object.
         """
-        pass
 
 
 class TabCommandInput(CommandInput):
@@ -21533,7 +21167,6 @@ class TableCommandInput(CommandInput):
         the command inputs that have been added to the table. The table automatically
         adjusts the number of rows displayed so all inputs can be seen.
         """
-        pass
 
     @property
     def columnRatio(self) -> str:
@@ -21569,7 +21202,6 @@ class TableCommandInput(CommandInput):
         but only hides them so they can be turned back on at a later time by resetting the
         column ratio.
         """
-        pass
 
     @property
     def hasGrid(self) -> bool:
@@ -21585,7 +21217,6 @@ class TableCommandInput(CommandInput):
         Gets and sets whether a grid is displayed for the table. For a newly created
         table, this property defaults to false.
         """
-        pass
 
     @property
     def rowSpacing(self) -> int:
@@ -21601,7 +21232,6 @@ class TableCommandInput(CommandInput):
         Gets and sets the spacing between rows. This is defined in pixels. For a newly
         created table, this property defaults to 1.
         """
-        pass
 
     @property
     def columnSpacing(self) -> int:
@@ -21617,7 +21247,6 @@ class TableCommandInput(CommandInput):
         Gets and sets the spacing between columns. This is defined in pixels. For a newly
         created table, this property defaults to 1.
         """
-        pass
 
     @property
     def minimumVisibleRows(self) -> int:
@@ -21635,7 +21264,6 @@ class TableCommandInput(CommandInput):
         space taken up on the command dialog, even if the table doesn't yet contain any
         rows. For a newly created table, this property defaults to 2.
         """
-        pass
 
     @property
     def maximumVisibleRows(self) -> int:
@@ -21655,7 +21283,6 @@ class TableCommandInput(CommandInput):
         of rows is reached and then a scroll bar will be displayed to allow the user to
         access all rows. For a new created table, this property defaults to 4.
         """
-        pass
 
     @property
     def tablePresentationStyle(self) -> TablePresentationStyles:
@@ -21669,7 +21296,6 @@ class TableCommandInput(CommandInput):
         """
         Gets and sets the presentation style the table is currently using for its display.
         """
-        pass
 
     @property
     def rowCount(self) -> int:
@@ -21693,7 +21319,6 @@ class TableCommandInput(CommandInput):
         Gets and sets which row is selected in the user-interface. A value of 0 indicates
         that the first row is selected. A value of -1 indicates that no row is selected.
         """
-        pass
 
 
 class TextBoxCommandInput(CommandInput):
@@ -21720,7 +21345,6 @@ class TextBoxCommandInput(CommandInput):
         """
         Gets and sets the formatted text displayed in the dialog.
         """
-        pass
 
     @property
     def text(self) -> str:
@@ -21748,7 +21372,6 @@ class TextBoxCommandInput(CommandInput):
         the text box to have the user enter HTML code so it's treated as a simple string.
 
         """
-        pass
 
     @property
     def numRows(self) -> int:
@@ -21766,7 +21389,6 @@ class TextBoxCommandInput(CommandInput):
         text that can be displayed. If the text is larger than will fit in the box
         a scroll bar will automatically be displayed.
         """
-        pass
 
     @property
     def isReadOnly(self) -> bool:
@@ -21782,7 +21404,6 @@ class TextBoxCommandInput(CommandInput):
         Gets and sets if the text box is read-only or not. If it is read-only the user
         cannot edit the text.
         """
-        pass
 
 
 class TextCommandPalette(Palette):
@@ -21841,7 +21462,6 @@ class TextureMapControl3D(TextureMapControl):
         is applied to the body. For wood grain, the Z direction of the defined coordinate system is
         the direction of the grain.
         """
-        pass
 
 
 class Torus(Surface):
@@ -21916,7 +21536,6 @@ class Torus(Surface):
         """
         Gets and sets the origin point (center) of the torus.
         """
-        pass
 
     @property
     def axis(self) -> Vector3D:
@@ -21930,7 +21549,6 @@ class Torus(Surface):
         """
         Gets and sets the center axis of the torus.
         """
-        pass
 
     @property
     def majorRadius(self) -> float:
@@ -21944,7 +21562,6 @@ class Torus(Surface):
         """
         Gets and sets the major radius of the torus.
         """
-        pass
 
     @property
     def minorRadius(self) -> float:
@@ -21958,7 +21575,6 @@ class Torus(Surface):
         """
         Gets and sets the minor radius of the torus.
         """
-        pass
 
 
 class TriadCommandInput(CommandInput):
@@ -22085,7 +21701,6 @@ class TriadCommandInput(CommandInput):
         is visible in both the graphical manipulator and in the dialog. In the manipulator,
         this is the large dot at the origin or the triad.
         """
-        pass
 
     @property
     def isXTranslationVisible(self) -> bool:
@@ -22101,7 +21716,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that supports X Translation is visible in both the
         graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isYTranslationVisible(self) -> bool:
@@ -22117,7 +21731,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the Y Translation is visible in both the
         graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isZTranslationVisible(self) -> bool:
@@ -22133,7 +21746,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the Z Translation is visible in both the
         graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isXYPlaneTranslationVisible(self) -> bool:
@@ -22149,7 +21761,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the translation in the X-Y plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isXZPlaneTranslationVisible(self) -> bool:
@@ -22165,7 +21776,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the translation in the X-Z plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isYZPlaneTranslationVisible(self) -> bool:
@@ -22181,7 +21791,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the translation in the Y-Z plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isXRotationVisible(self) -> bool:
@@ -22197,7 +21806,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the rotation around the
         X axis is visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isYRotationVisible(self) -> bool:
@@ -22213,7 +21821,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the rotation around the
         Y axis is visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isZRotationVisible(self) -> bool:
@@ -22229,7 +21836,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the rotation around the
         Z axis is visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isXScalingInXYVisible(self) -> bool:
@@ -22247,7 +21853,6 @@ class TriadCommandInput(CommandInput):
         X axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the X-Y plane of the triad.
         """
-        pass
 
     @property
     def isXScalingInXZVisible(self) -> bool:
@@ -22265,7 +21870,6 @@ class TriadCommandInput(CommandInput):
         X axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the X-Z plane of the triad.
         """
-        pass
 
     @property
     def isYScalingInXYVisible(self) -> bool:
@@ -22283,7 +21887,6 @@ class TriadCommandInput(CommandInput):
         Y axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the X-Y plane of the triad.
         """
-        pass
 
     @property
     def isYScalingInYZVisible(self) -> bool:
@@ -22301,7 +21904,6 @@ class TriadCommandInput(CommandInput):
         Y axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the Y-Z plane of the triad.
         """
-        pass
 
     @property
     def isZScalingInXZVisible(self) -> bool:
@@ -22319,7 +21921,6 @@ class TriadCommandInput(CommandInput):
         Z axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the X-Z plane of the triad.
         """
-        pass
 
     @property
     def isZScalingInYZVisible(self) -> bool:
@@ -22337,7 +21938,6 @@ class TriadCommandInput(CommandInput):
         Z axis is visible in both the graphical manipulator and in the dialog.
         This control lies on the Y-Z plane of the triad.
         """
-        pass
 
     @property
     def isXYPlaneScalingVisible(self) -> bool:
@@ -22353,7 +21953,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the scaling in the X-Y plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isXZPlaneScalingVisible(self) -> bool:
@@ -22369,7 +21968,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the scaling in the X-Z plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isYZPlaneScalingVisible(self) -> bool:
@@ -22385,7 +21983,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the scaling in the Y-Z plane is
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isUnifiedScalingVisible(self) -> bool:
@@ -22401,7 +21998,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that defines the scaling in all directions
         visible in both the graphical manipulator and in the dialog.
         """
-        pass
 
     @property
     def isHorizontalFlipVisible(self) -> bool:
@@ -22417,7 +22013,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that lets the user flip horizontally (around the Y-Z plane of the triad)
         is visible in both the graphical manipulator and the dialog.
         """
-        pass
 
     @property
     def isVerticalFlipVisible(self) -> bool:
@@ -22433,7 +22028,6 @@ class TriadCommandInput(CommandInput):
         Gets and sets if the control that lets the user flip vertical (around the X-Z plane of the triad)
         is visible in both the graphical manipulator and the dialog.
         """
-        pass
 
     @property
     def xTranslation(self) -> float:
@@ -22453,7 +22047,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the returned value.
         """
-        pass
 
     @property
     def xTranslationExpression(self) -> str:
@@ -22471,7 +22064,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression, the default user units of length are used.
         """
-        pass
 
     @property
     def yTranslation(self) -> float:
@@ -22491,7 +22083,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def yTranslationExpression(self) -> str:
@@ -22509,7 +22100,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression, the default user units of length are used.
         """
-        pass
 
     @property
     def zTranslation(self) -> float:
@@ -22529,7 +22119,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def zTranslationExpression(self) -> str:
@@ -22547,7 +22136,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression, the default user units of length are used.
         """
-        pass
 
     @property
     def xRotation(self) -> float:
@@ -22567,7 +22155,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def xRotationExpression(self) -> str:
@@ -22585,7 +22172,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression degrees are used.
         """
-        pass
 
     @property
     def yRotation(self) -> float:
@@ -22605,7 +22191,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def yRotationExpression(self) -> str:
@@ -22623,7 +22208,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression degrees are used.
         """
-        pass
 
     @property
     def zRotation(self) -> float:
@@ -22643,7 +22227,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def zRotationExpression(self) -> str:
@@ -22661,7 +22244,6 @@ class TriadCommandInput(CommandInput):
         equations and references to parameters but must result in a valid distance expression. If units
         are not specified as part of the expression degrees are used.
         """
-        pass
 
     @property
     def xScaleFactor(self) -> float:
@@ -22679,7 +22261,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def xScaleFactorExpression(self) -> str:
@@ -22695,7 +22276,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the X scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def yScaleFactor(self) -> float:
@@ -22713,7 +22293,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def yScaleFactorExpression(self) -> str:
@@ -22729,7 +22308,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the Y scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def zScaleFactor(self) -> float:
@@ -22747,7 +22325,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def zScaleFactorExpression(self) -> str:
@@ -22763,7 +22340,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the Z scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def xYPlaneScaleFactor(self) -> float:
@@ -22781,7 +22357,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def xYPlaneScaleFactorExpression(self) -> str:
@@ -22797,7 +22372,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the X-Y plane scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def yZPlaneScaleFactor(self) -> float:
@@ -22815,7 +22389,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def yZPlaneScaleFactorExpression(self) -> str:
@@ -22831,7 +22404,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the Y-Z plane scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def zXPlaneScaleFactor(self) -> float:
@@ -22849,7 +22421,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def zXPlaneScaleFactorExpression(self) -> str:
@@ -22865,7 +22436,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the Z-X plane scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def unifiedeScaleFactor(self) -> float:
@@ -22883,7 +22453,6 @@ class TriadCommandInput(CommandInput):
 
         The isValidExpressions property should be checked before using the value within the command.
         """
-        pass
 
     @property
     def unifiedScaleFactorExpression(self) -> str:
@@ -22899,7 +22468,6 @@ class TriadCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field for the unified scale. This can contain
         equations and references to parameters but must result in a valid unitless expression.
         """
-        pass
 
     @property
     def isFlippedHorizontal(self) -> bool:
@@ -22913,7 +22481,6 @@ class TriadCommandInput(CommandInput):
         """
         Gets and sets if the triad is flipped horizontally (around the around the Y-Z plane of the triad).
         """
-        pass
 
     @property
     def isFlippedVertical(self) -> bool:
@@ -22927,7 +22494,6 @@ class TriadCommandInput(CommandInput):
         """
         Gets and sets if the triad is flipped vertically (around the around the X-Z plane of the triad).
         """
-        pass
 
     @property
     def transform(self) -> Matrix3D:
@@ -22941,7 +22507,6 @@ class TriadCommandInput(CommandInput):
         """
         Gets or sets the current position, orientation, and scale of the triad using a transformation matrix.
         """
-        pass
 
     @property
     def positionTransform(self) -> Matrix3D:
@@ -23090,7 +22655,6 @@ class ValidateInputsEventArgs(EventArgs):
         selected, that requirement must be met, or if a ValueCommandInput has an invalid
         value specified, the OK button will still be disabled.
         """
-        pass
 
     @property
     def inputs(self) -> CommandInputs:
@@ -23134,7 +22698,6 @@ class ValueCommandInput(CommandInput):
         When getting the value, the current expression string is evaluated and the database value
         for the unit type is returned.
         """
-        pass
 
     @property
     def expression(self) -> str:
@@ -23150,7 +22713,6 @@ class ValueCommandInput(CommandInput):
         Gets or sets the expression displayed in the input field. This can contain equations and
         references to parameters. It is evaluated using the specified unit type.
         """
-        pass
 
     @property
     def unitType(self) -> str:
@@ -23164,7 +22726,6 @@ class ValueCommandInput(CommandInput):
         """
         Gets and sets the unit type that is used when evaluating the user's input.
         """
-        pass
 
     @property
     def isValidExpression(self) -> bool:
@@ -23195,7 +22756,6 @@ class ValueCommandInput(CommandInput):
 
         When a new ValueCommandInput is created this defaults to false so there is no limit.
         """
-        pass
 
     @property
     def minimumValue(self) -> float:
@@ -23215,7 +22775,6 @@ class ValueCommandInput(CommandInput):
         the isMinimumInclusive property to control if the minimum can be equal to this value or must
         be greater than the minimum.
         """
-        pass
 
     @property
     def isMinimumInclusive(self) -> bool:
@@ -23235,7 +22794,6 @@ class ValueCommandInput(CommandInput):
 
         When a new ValueCommandInput is created, this defaults to true.
         """
-        pass
 
     @property
     def isMaximumLimited(self) -> bool:
@@ -23257,7 +22815,6 @@ class ValueCommandInput(CommandInput):
 
         When a new ValueCommandInput is created this defaults to false so there is no limit.
         """
-        pass
 
     @property
     def maximumValue(self) -> float:
@@ -23277,7 +22834,6 @@ class ValueCommandInput(CommandInput):
         the isMaximumInclusive property to control if the maximum can be equal to this value or must
         be less than the maximum.
         """
-        pass
 
     @property
     def isMaximumInclusive(self) -> bool:
@@ -23297,7 +22853,6 @@ class ValueCommandInput(CommandInput):
 
         When a new ValueCommandInput is created, this defaults to true.
         """
-        pass
 
 
 class WebRequestEvent(Event):
@@ -23364,7 +22919,6 @@ class WebRequestEventArgs(EventArgs):
         This property should be ignored for all events besides the insertingFromURL and
         openingFromURL events.
         """
-        pass
 
     @property
     def file(self) -> str:
@@ -23489,7 +23043,6 @@ class FloatSliderCommandInput(SliderCommandInput):
         this value is in centimeters since centimeters are the database length unit. When setting the
         value it is converted into a string using the unit type and displayed in the input box.
         """
-        pass
 
     @property
     def valueTwo(self) -> float:
@@ -23513,7 +23066,6 @@ class FloatSliderCommandInput(SliderCommandInput):
 
         This property is only available when the hasTwoSliders property returns true.
         """
-        pass
 
     @property
     def minimumValue(self) -> float:
@@ -23529,7 +23081,6 @@ class FloatSliderCommandInput(SliderCommandInput):
         Gets and sets minimum value of the slider in database units.
         Gets a failure when set if the value of this command input was added by value list.
         """
-        pass
 
     @property
     def maximumValue(self) -> float:
@@ -23545,7 +23096,6 @@ class FloatSliderCommandInput(SliderCommandInput):
         Gets and sets maximum value of the slider in database units.
         Gets a failure when set if the value of this command input was added by value list.
         """
-        pass
 
     @property
     def valueList(self) -> list[float]:
@@ -23571,7 +23121,6 @@ class FloatSliderCommandInput(SliderCommandInput):
         The value should be more than zero. This is the amount the slider will advance
         when the user clicks the spin button beside the value.
         """
-        pass
 
 
 class IntegerSliderCommandInput(SliderCommandInput):
@@ -23598,7 +23147,6 @@ class IntegerSliderCommandInput(SliderCommandInput):
         """
         Gets or sets the value associated with the first slider.
         """
-        pass
 
     @property
     def valueTwo(self) -> int:
@@ -23614,7 +23162,6 @@ class IntegerSliderCommandInput(SliderCommandInput):
         If the hasTwoSliders property is true, this returns the value associated with
         the second slider.
         """
-        pass
 
     @property
     def minimumValue(self) -> int:
@@ -23630,7 +23177,6 @@ class IntegerSliderCommandInput(SliderCommandInput):
         Gets and sets minimum value of the slider. This will fail if there is a value list because the
         minimum and maximum values are defined by the value list.
         """
-        pass
 
     @property
     def maximumValue(self) -> int:
@@ -23646,7 +23192,6 @@ class IntegerSliderCommandInput(SliderCommandInput):
         Gets and sets maximum value of the slider. This will fail if there is a value list because the
         minimum and maximum values are defined by the value list.
         """
-        pass
 
     @property
     def valueList(self) -> list[int]:
@@ -23669,4 +23214,3 @@ class IntegerSliderCommandInput(SliderCommandInput):
         Gets and sets the spin step. This defines the amount the slider moves when the user clicks the spin
         button beside the value. The spin step should be more than zero.
         """
-        pass

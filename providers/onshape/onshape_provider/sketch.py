@@ -1,25 +1,17 @@
 import json
 from codetocad.interfaces.sketch_interface import SketchInterface
-from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
 from providers.onshape.onshape_provider.entity import Entity
 from providers.onshape.onshape_provider.vertex import Vertex
 from providers.onshape.onshape_provider.landmark import Landmark
-from providers.onshape.onshape_provider.part import Part
 from providers.onshape.onshape_provider.wire import Wire
 from providers.onshape.onshape_provider.edge import Edge
 from typing import Optional
 from codetocad.codetocad_types import *
 from providers.onshape.onshape_provider.onshape_actions import (
-    create_extrude,
     create_rect,
     create_tab_part_studios,
     get_first_document_url_by_name,
-    get_onshape_client_with_config_file,
 )
 from providers.onshape.onshape_provider import onshape_actions
 from providers.onshape.onshape_provider.utils import get_polygon_points
@@ -27,7 +19,6 @@ from . import Entity
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Part
     from . import Entity
     from . import Wire
     from . import Vertex
@@ -125,14 +116,6 @@ class Sketch(SketchInterface, Entity):
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         raise NotImplementedError()
 
-    def revolve(
-        self,
-        angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
-        axis: "str|int|Axis" = "z",
-    ) -> "Part":
-        raise NotImplementedError()
-
     def twist(
         self,
         angle: "str|float|Angle",
@@ -142,26 +125,7 @@ class Sketch(SketchInterface, Entity):
     ):
         return self
 
-    def extrude(self, length: "str|float|Dimension") -> "Part":
-        if self.native_instance is None:
-            raise ValueError("Native Instance is None")
-        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
-        feature_id = self.native_instance["feature"]["featureId"]
-        length_float = Dimension.from_dimension_or_its_float_or_string_value(
-            length, None
-        )
-        create_extrude(self.client, onshape_url, feature_id, str(length_float))
-        raise NotImplementedError()
-
-    def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
-    ) -> "Part":
-        raise NotImplementedError()
-
     def offset(self, radius: "str|float|Dimension"):
-        return self
-
-    def profile(self, profile_curve_name: "str"):
         return self
 
     def create_text(
@@ -195,7 +159,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
     ) -> "Wire":
         raise NotImplementedError()
 

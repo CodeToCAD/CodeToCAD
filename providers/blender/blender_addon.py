@@ -21,7 +21,6 @@ try:
         git_epoch = int(f.read())
 except Exception as e:
     print("No version file found.", e)
-    pass
 
 version = (1, 0, git_epoch)
 print("CodeToCAD Addon Version: ", version)

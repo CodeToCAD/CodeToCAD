@@ -4,7 +4,7 @@ from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Landmark
+    pass
 
 
 class Entity(EntityInterface):

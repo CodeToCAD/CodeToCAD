@@ -142,7 +142,7 @@ def update_provider_file(
                 provider_imports.append(ast_comments.unparse(definition))
         for definition in sample_definitions.body:
             if isinstance(definition, ast_comments.ImportFrom):
-                if "providers.sample" in definition.module:
+                if definition.module and "providers.sample" in definition.module:
                     # This is niche logic; if any of the imports reference sample provider specifically, change the module to point to this provider_name instead.
                     definition.module = definition.module.replace(
                         "providers.sample",

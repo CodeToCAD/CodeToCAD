@@ -976,85 +976,6 @@
                     }
                 }
             },
-            "revolve": {
-                "action": "get",
-                "return_type": "Part",
-                "information": "Revolve a Sketch around another Entity or Landmark",
-                "parameters": {
-                    "angle": {
-                        "type": "string,float,Angle"
-                    },
-                    "about_entity_or_landmark": {
-                        "type": "string,Entity"
-                    },
-                    "axis": {
-                        "type": "string,int,Axis",
-                        "default_value": "z"
-                    }
-                }
-            },
-            "twist": {
-                "action": "modify",
-                "information": "AKA Helix, Screw.",
-                "parameters": {
-                    "angle": {
-                        "type": "string,float,Angle"
-                    },
-                    "screw_pitch": {
-                        "type": "string,float,Dimension"
-                    },
-                    "iterations": {
-                        "type": "int",
-                        "default_value": 1
-                    },
-                    "axis": {
-                        "type": "string,int,Axis",
-                        "default_value": "z"
-                    }
-                }
-            },
-            "extrude": {
-                "action": "get",
-                "return_type": "Part",
-                "information": "Extrude a curve by a specified length. Returns a Part type.",
-                "parameters": {
-                    "length": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "sweep": {
-                "action": "get",
-                "return_type": "Part",
-                "information": "Extrude this Sketch along the path of another Sketch",
-                "parameters": {
-                    "profile_name_or_instance": {
-                        "type": "string,Sketch"
-                    },
-                    "fill_cap": {
-                        "type": "boolean",
-                        "default_value": true
-                    }
-                }
-            },
-            "offset": {
-                "action": "modify",
-                "information": "Uniformly add a wall around a Sketch.",
-                "parameters": {
-                    "radius": {
-                        "type": "string,float,Dimension"
-                    }
-                }
-            },
-            "profile": {
-                "action": "modify",
-                "information": "Bend this curve along the path of another",
-                "parameters": {
-                    "profile_curve_name": {
-                        "type": "string"
-                    }
-                }
-            },
             "create_text": {
                 "action": "create",
                 "information": "Adds text to a sketch.",
@@ -1376,6 +1297,85 @@
                         "type": "string",
                         "required": false,
                         "information": "If provided, the resulting part will not be merged with the parent of this wire/face."
+                    }
+                }
+            },
+            "revolve": {
+                "action": "get",
+                "return_type": "Part",
+                "information": "Revolve a Sketch around another Entity or Landmark",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "about_entity_or_landmark": {
+                        "type": "string,Entity"
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "default_value": "z"
+                    }
+                }
+            },
+            "twist": {
+                "action": "modify",
+                "information": "AKA Helix, Screw.",
+                "parameters": {
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "screw_pitch": {
+                        "type": "string,float,Dimension"
+                    },
+                    "iterations": {
+                        "type": "int",
+                        "default_value": 1
+                    },
+                    "axis": {
+                        "type": "string,int,Axis",
+                        "default_value": "z"
+                    }
+                }
+            },
+            "extrude": {
+                "action": "get",
+                "return_type": "Part",
+                "information": "Extrude a curve by a specified length. Returns a Part type.",
+                "parameters": {
+                    "length": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "sweep": {
+                "action": "get",
+                "return_type": "Part",
+                "information": "Extrude this Sketch along the path of another Sketch",
+                "parameters": {
+                    "profile_name_or_instance": {
+                        "type": "string,Sketch"
+                    },
+                    "fill_cap": {
+                        "type": "boolean",
+                        "default_value": true
+                    }
+                }
+            },
+            "offset": {
+                "action": "modify",
+                "information": "Uniformly add a wall around a Sketch.",
+                "parameters": {
+                    "radius": {
+                        "type": "string,float,Dimension"
+                    }
+                }
+            },
+            "profile": {
+                "action": "modify",
+                "information": "Bend this curve along the path of another",
+                "parameters": {
+                    "profile_curve_name": {
+                        "type": "string"
                     }
                 }
             }

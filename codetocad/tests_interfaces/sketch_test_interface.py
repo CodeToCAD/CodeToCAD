@@ -13,30 +13,6 @@ class SketchTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def test_revolve(self):
-        pass
-
-    @abstractmethod
-    def test_twist(self):
-        pass
-
-    @abstractmethod
-    def test_extrude(self):
-        pass
-
-    @abstractmethod
-    def test_sweep(self):
-        pass
-
-    @abstractmethod
-    def test_offset(self):
-        pass
-
-    @abstractmethod
-    def test_profile(self):
-        pass
-
-    @abstractmethod
     def test_create_text(self):
         pass
 

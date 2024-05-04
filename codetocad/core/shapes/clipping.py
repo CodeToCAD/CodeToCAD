@@ -1,5 +1,4 @@
 from typing import List
-from codetocad.core.dimension import Dimension
 
 from codetocad.core.point import Point
 

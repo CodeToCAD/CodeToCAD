@@ -5,9 +5,6 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
-
-
 class ExportableInterface(metaclass=ABCMeta):
 
     """

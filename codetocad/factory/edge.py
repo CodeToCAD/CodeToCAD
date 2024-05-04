@@ -11,8 +11,6 @@ from codetocad.providers import get_provider
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
@@ -22,7 +20,7 @@ def create_edge(
     v2: "VertexInterface",
     description: "str| None" = None,
     native_instance=None,
-    parent_entity: "str|Entity| None" = None,
+    parent_entity: "str|EntityInterface| None" = None,
 ) -> EdgeInterface:
     """
     A curve bounded by two Vertices.

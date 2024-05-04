@@ -10,6 +10,8 @@
 
 ## `Blender.Wire` Additions and Deletions:
 
+- Added: `from codetocad.interfaces.sketch_interface import SketchInterface`
+
 ## `Blender.Landmark` Additions and Deletions:
 
 ## `Blender.Joint` Additions and Deletions:

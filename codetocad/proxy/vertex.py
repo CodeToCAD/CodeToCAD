@@ -28,7 +28,7 @@ class Vertex:
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ) -> VertexInterface:
         return get_provider(VertexInterface)(
             name, location, description, native_instance, parent_entity

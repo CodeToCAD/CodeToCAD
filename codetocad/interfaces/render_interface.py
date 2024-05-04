@@ -5,9 +5,6 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
-
-
 from codetocad.interfaces.camera_interface import CameraInterface
 
 
@@ -123,7 +120,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_camera(self, camera_name_or_instance: "str|Camera"):
+    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
         """
         Set the rendering camera.
         """

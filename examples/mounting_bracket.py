@@ -25,4 +25,3 @@ In CodeToCAD, do the following:
 
 def createMountingBracket():
     Part("")
-    pass

@@ -1,15 +1,9 @@
 from typing import Optional
 from codetocad.interfaces.sketch_interface import SketchInterface
-from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from providers.fusion360.fusion360_provider.vertex import Vertex
 from providers.fusion360.fusion360_provider.landmark import Landmark
-from providers.fusion360.fusion360_provider.part import Part
 from providers.fusion360.fusion360_provider.wire import Wire
 from providers.fusion360.fusion360_provider.edge import Edge
 from codetocad.codetocad_types import *
@@ -23,9 +17,7 @@ from .fusion_actions.actions import (
     create_rectangular_pattern_sketch,
     create_text,
     mirror,
-    sweep,
 )
-from .fusion_actions.modifiers import make_revolve
 from .fusion_actions.curve import (
     make_arc,
     make_circle,
@@ -39,7 +31,6 @@ from . import Entity
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Part
     from . import Entity
     from . import Wire
     from . import Vertex
@@ -203,73 +194,6 @@ class Sketch(SketchInterface, Entity):
         new_sketch = clone_sketch(self.fusion_sketch.instance, new_name, copy_landmarks)
         return Sketch(new_sketch.name)
 
-    def revolve(
-        self,
-        angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
-        axis: "str|int|Axis" = "z",
-    ) -> "Part":
-        from . import Part
-
-        if isinstance(about_entity_or_landmark, str):
-            component = get_component(about_entity_or_landmark)
-            if get_body(component, about_entity_or_landmark):
-                about_entity_or_landmark = Part(about_entity_or_landmark).fusion_body
-            else:
-                about_entity_or_landmark = Sketch(
-                    about_entity_or_landmark
-                ).fusion_sketch
-        body = make_revolve(
-            self.fusion_sketch.component,
-            self.fusion_sketch.instance,
-            angle,
-            axis,
-            start=about_entity_or_landmark.center,
-        )
-        part = Part(body.name)
-        part.fusion_body.instance = body
-        return part
-
-    def twist(
-        self,
-        angle: "str|float|Angle",
-        screw_pitch: "str|float|Dimension",
-        iterations: "int" = 1,
-        axis: "str|int|Axis" = "z",
-    ):
-        print("twist called:", angle, screw_pitch, iterations, axis)
-        return self
-
-    def extrude(self, length: "str|float|Dimension") -> "Part":
-        from . import Part
-
-        length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
-        body = self.fusion_sketch.extrude(length.value)
-        part = Part(body.name)
-        part.fusion_body.instance = body
-        return part
-
-    def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
-    ) -> "Part":
-        from . import Part
-
-        name = sweep(
-            self.fusion_sketch.component,
-            self.fusion_sketch.instance,
-            profile_name_or_instance.fusion_sketch.component,
-            profile_name_or_instance.fusion_sketch.instance,
-        )
-        return Part(name)
-
-    def offset(self, radius: "str|float|Dimension"):
-        print("offset called:", radius)
-        return self
-
-    def profile(self, profile_curve_name: "str"):
-        print("profile called:", profile_curve_name)
-        return self
-
     def create_text(
         self,
         text: "str",
@@ -300,7 +224,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
     ) -> "Wire":
         from . import Edge, Vertex, Wire
 
@@ -347,7 +271,7 @@ class Sketch(SketchInterface, Entity):
         return edge
 
     def create_circle(self, radius: "str|float|Dimension") -> "Wire":
-        from . import Wire, Edge, Vertex
+        pass
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         sketch = self.fusion_sketch.instance
@@ -380,7 +304,7 @@ class Sketch(SketchInterface, Entity):
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
-        from . import Wire, Edge, Vertex
+        pass
 
         sketch = self.fusion_sketch.instance
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
@@ -393,7 +317,7 @@ class Sketch(SketchInterface, Entity):
     def create_rectangle(
         self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "Wire":
-        from . import Wire, Edge, Vertex
+        pass
 
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)

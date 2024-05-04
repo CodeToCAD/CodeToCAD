@@ -1,6 +1,5 @@
 from typing import Any, Optional
 import bpy
-from codetocad.codetocad_types import *
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
@@ -250,7 +249,6 @@ def remove_object(existing_object_name: str, remove_children=False):
                 remove_object(child.name, True)
             except Exception as e:
                 print(f"Could not remove {child.name}. {e}")
-                pass
 
     # Not all objects have data, but if they do, then deleting the data
     # deletes the object

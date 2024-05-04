@@ -9,9 +9,6 @@ from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_camera(
     name: "str", description: "str| None" = None, native_instance=None
 ) -> CameraInterface:

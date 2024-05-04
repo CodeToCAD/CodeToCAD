@@ -3,8 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
-
 
 from codetocad.providers import get_provider
 
@@ -25,7 +23,7 @@ class Landmark:
     def __new__(
         cls,
         name: "str",
-        parent_entity: "str|Entity",
+        parent_entity: "str|EntityInterface",
         description: "str| None" = None,
         native_instance=None,
     ) -> LandmarkInterface:

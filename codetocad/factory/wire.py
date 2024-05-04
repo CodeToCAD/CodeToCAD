@@ -9,23 +9,18 @@ from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 def create_wire(
     name: "str",
-    edges: "list[Edge]",
+    edges: "list[EdgeInterface]",
     description: "str| None" = None,
     native_instance=None,
-    parent_entity: "str|Entity| None" = None,
+    parent_entity: "str|EntityInterface| None" = None,
 ) -> WireInterface:
     """
     A collection of connected edges.

@@ -9,9 +9,6 @@ from codetocad.interfaces.light_interface import LightInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_light(
     name: "str", description: "str| None" = None, native_instance=None
 ) -> LightInterface:

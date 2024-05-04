@@ -3,8 +3,6 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
-
 
 from codetocad.providers import get_provider
 
@@ -22,5 +20,7 @@ class Joint:
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, entity1: "str|Entity", entity2: "str|Entity") -> JointInterface:
+    def __new__(
+        cls, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
+    ) -> JointInterface:
         return get_provider(JointInterface)(entity1, entity2)  # type: ignore

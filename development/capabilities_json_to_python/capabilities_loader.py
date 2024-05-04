@@ -34,20 +34,44 @@ class CapabilitiesLoader:
                 self._all_implementable_class_names.append(class_name)
 
     def append_interface_suffix(
-        self, class_name, surround_in_quotes: bool = True, union_none_type: bool = False
+        self,
+        class_name: str,
+        surround_in_quotes: bool = True,
+        union_none_type: bool = False,
     ):
         """
         This fills a templating need, and could likely be moved out of CapabiliesLoader.
         Adds Interface as a suffix to a class_name, and has options to add | None and surround the resulting type in quotes.
         """
-        output_name = class_name
-        if class_name in self.all_class_names:
-            output_name += "Interface"
+        output_name = self.type_to_type_interface(class_name)
+        # if class_name in self.all_class_names:
+        #     output_name += "Interface"
 
         if union_none_type:
             output_name += "| None"
 
         return output_name if not surround_in_quotes else f'"{output_name}"'
+
+    def type_to_type_interface(self, type: str):
+        """
+        For templating, turns any known CodeToCAD class names and appends Interface to them.
+        e.g. list[str|Entity] -> list[str|EntityInterface]
+        """
+        if type.startswith("list"):
+            return "list[" + self.type_to_type_interface(type[5:-1]) + "]"
+
+        return "|".join(
+            [
+                (
+                    type_pipe + "Interface"
+                    if type_pipe in self.all_class_names
+                    else type_pipe
+                )
+                if not type_pipe.startswith("list")
+                else self.type_to_type_interface(type_pipe)
+                for type_pipe in type.split("|")
+            ]
+        )
 
     def get_constructor_parameters_for_class(self, class_name: str):
         """

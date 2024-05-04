@@ -9,24 +9,31 @@ from codetocad.codetocad_types import *
 from codetocad.interfaces.wire_interface import WireInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
+from codetocad.interfaces.sketch_interface import SketchInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-from providers.sample.entity import Entity
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+
+from providers.sample.part import Part
+
 
 from providers.sample.landmark import Landmark
 
-from providers.sample.edge import Edge
+from providers.sample.entity import Entity
 
-from providers.sample.part import Part
 
 from providers.sample.vertex import Vertex
 
@@ -35,10 +42,10 @@ class Wire(WireInterface, Entity):
     def __init__(
         self,
         name: "str",
-        edges: "list[Edge]",
+        edges: "list[EdgeInterface]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.name = name
         self.edges = edges
@@ -53,7 +60,7 @@ class Wire(WireInterface, Entity):
 
     def get_vertices(
         self,
-    ) -> "list[Vertex]":
+    ) -> "list[VertexInterface]":
         print(
             "get_vertices called",
         )
@@ -76,9 +83,52 @@ class Wire(WireInterface, Entity):
 
         return Part("a part")
 
+    def revolve(
+        self,
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|EntityInterface",
+        axis: "str|int|Axis" = "z",
+    ) -> "PartInterface":
+        print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
+
+        return Part("a part")
+
+    def twist(
+        self,
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
+        iterations: "int" = 1,
+        axis: "str|int|Axis" = "z",
+    ):
+        print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
+
+        return self
+
+    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
+        print("extrude called", f": {length}")
+
+        return Part("a part")
+
+    def sweep(
+        self, profile_name_or_instance: "str|SketchInterface", fill_cap: "bool" = True
+    ) -> "PartInterface":
+        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
+
+        return Part("a part")
+
+    def offset(self, radius: "str|float|Dimension"):
+        print("offset called", f": {radius}")
+
+        return self
+
+    def profile(self, profile_curve_name: "str"):
+        print("profile called", f": {profile_curve_name}")
+
+        return self
+
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -105,7 +155,7 @@ class Wire(WireInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         print(
@@ -138,7 +188,7 @@ class Wire(WireInterface, Entity):
 
     def union(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -148,7 +198,7 @@ class Wire(WireInterface, Entity):
 
     def subtract(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -160,7 +210,7 @@ class Wire(WireInterface, Entity):
 
     def intersect(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):

@@ -117,6 +117,152 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
+    def test_revolve(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.revolve(
+            angle=Angle("90"),
+            about_entity_or_landmark=__import__("codetocad").Part("an entity"),
+            axis="z",
+        )
+
+        assert value, "Get method failed."
+
+    def test_twist(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.twist(
+            angle=Angle("90"), screw_pitch=Dimension(0, "mm"), iterations=1, axis="z"
+        )
+
+        assert value, "Modify method failed."
+
+    def test_extrude(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.extrude(length=Dimension(0, "mm"))
+
+        assert value, "Get method failed."
+
+    def test_sweep(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.sweep(
+            profile_name_or_instance=Sketch("a sketch"), fill_cap=True
+        )
+
+        assert value, "Get method failed."
+
+    def test_offset(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.offset(radius=Dimension(0, "mm"))
+
+        assert value, "Modify method failed."
+
+    def test_profile(self):
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.profile(profile_curve_name="String")
+
+        assert value, "Modify method failed."
+
     def test_mirror(self):
         instance = Wire(
             name="String",

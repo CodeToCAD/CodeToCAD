@@ -12,7 +12,9 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-def create_joint(entity1: "str|Entity", entity2: "str|Entity") -> JointInterface:
+def create_joint(
+    entity1: "str|EntityInterface", entity2: "str|EntityInterface"
+) -> JointInterface:
     """
     Joints define the relationships and constraints between entities.
 

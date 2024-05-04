@@ -3,16 +3,11 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
-
 
 from codetocad.interfaces.render_interface import RenderInterface
 
 
 from codetocad.interfaces.camera_interface import CameraInterface
-
-
-from providers.sample.camera import Camera
 
 
 class Render(
@@ -80,7 +75,7 @@ class Render(
 
         return self
 
-    def set_camera(self, camera_name_or_instance: "str|Camera"):
+    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
         print("set_camera called", f": {camera_name_or_instance}")
 
         return self

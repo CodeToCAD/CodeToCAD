@@ -1190,7 +1190,6 @@ class Analyses(core.Base):
         If this is false, all Analysis results will be hidden. If this is true, the Analysis
         objects whose isLightBulbOn property is also true will be visible.
         """
-        pass
 
 
 class Analysis(core.Base):
@@ -1226,7 +1225,6 @@ class Analysis(core.Base):
         A property that gets and sets the name of the analysis. If you use a name that is not unique,
         Fusion will automatically append a number to the name to make it unique.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -1244,7 +1242,6 @@ class Analysis(core.Base):
         this analysis will be hidden. If true and the IsLightBulbOn property of the
         Analyses object is True the Analysis will be visible.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -1596,7 +1593,6 @@ class AsBuiltJoint(core.Base):
         The name of the as-built joint as it is displayed in the timeline and the browser. The
         name can be changed.
         """
-        pass
 
     @property
     def occurrenceOne(self) -> Occurrence:
@@ -1632,7 +1628,6 @@ class AsBuiltJoint(core.Base):
         To set this property, you need to position the timeline marker to immediately before this as-built joint.
         This can be accomplished using the following code: thisAsBuiltJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def timelineObject(self) -> TimelineObject:
@@ -1680,7 +1675,6 @@ class AsBuiltJoint(core.Base):
         """
         Gets and sets if this as-built joint is suppressed.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -1702,7 +1696,6 @@ class AsBuiltJoint(core.Base):
         in the assembly context is not visible because its light bulb is off or the joints folder
         is light bulb is off.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -1872,7 +1865,6 @@ class AsBuiltJointInput(core.Base):
         """
         Specifies the first of two occurrences the joint is between.
         """
-        pass
 
     @property
     def occurrenceTwo(self) -> Occurrence:
@@ -1886,7 +1878,6 @@ class AsBuiltJointInput(core.Base):
         """
         Specifies the second of two occurrences the joint is between.
         """
-        pass
 
     @property
     def geometry(self) -> JointGeometry:
@@ -1900,7 +1891,6 @@ class AsBuiltJointInput(core.Base):
         """
         Specifies the position of the joint.
         """
-        pass
 
     @property
     def jointMotion(self) -> JointMotion:
@@ -2125,7 +2115,6 @@ class BaseComponent(core.Base):
         Property that gets and sets the name of this component. This is the name
         shown in the browser for each occurrence referencing this component.
         """
-        pass
 
     @property
     def occurrences(self) -> Occurrences:
@@ -2305,7 +2294,6 @@ class BossFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -2329,7 +2317,6 @@ class BossFeatureInput(core.Base):
         A value of null indicates that everything is in the context of a single component.
         The occurrence provided sets scope for detection of target participant bodies.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -2351,7 +2338,6 @@ class BossFeatureInput(core.Base):
         If this property has not been set (or is empty) closest visible bodies will be detected automatically
         based on proposed positions and orientation.
         """
-        pass
 
     @property
     def side1(self) -> BossFeatureSideInput:
@@ -2367,7 +2353,6 @@ class BossFeatureInput(core.Base):
         Gets or sets inputs for top side of the boss feature connection. It is the side where screw head engages with the boss.
         Default Side1 direction is considered direction of Z-axis of the parent sketch for selected position point.
         """
-        pass
 
     @property
     def side2(self) -> BossFeatureSideInput:
@@ -2383,7 +2368,6 @@ class BossFeatureInput(core.Base):
         Gets or sets inputs for bottom side of the boss feature connection. It is the side where screw thread engages with the part or metal insert.
         Default Side2 direction is considered opposite to the direction Z-axis of the parent sketch for selected position point.
         """
-        pass
 
     @property
     def isDefaultDirection(self) -> bool:
@@ -2397,7 +2381,6 @@ class BossFeatureInput(core.Base):
         """
         Get or set if the boss feature (or boss connection) goes in the default direction or is reversed.
         """
-        pass
 
     @property
     def offset(self) -> core.ValueInput:
@@ -2411,7 +2394,6 @@ class BossFeatureInput(core.Base):
         """
         Get or set offset of the parting face from the selected position point.
         """
-        pass
 
 
 class BossFeatures(core.Base):
@@ -2497,7 +2479,6 @@ class BossFeatureSideInput(core.Base):
         diameter : The outside diameter for the boss feature shank.
 
         """
-        pass
 
     def setSimple(
         self, diameter: core.ValueInput, holeDiameter: core.ValueInput
@@ -2508,7 +2489,6 @@ class BossFeatureSideInput(core.Base):
         holeDiameter : The hole diameter.
 
         """
-        pass
 
     def setCounterbore(
         self,
@@ -2526,7 +2506,6 @@ class BossFeatureSideInput(core.Base):
         under the screw head.
 
         """
-        pass
 
     def setCountersink(
         self,
@@ -2546,7 +2525,6 @@ class BossFeatureSideInput(core.Base):
         countersinkAngle : Optional parameter for hole countersink angle. If not specified it is set to 90 deg.
 
         """
-        pass
 
     def setRibExtent(self, position: core.Base, ribExtentTypes: list[int]) -> None:
         """
@@ -2555,14 +2533,12 @@ class BossFeatureSideInput(core.Base):
         ribExtentTypes : Vector of BossRibExtentTypes for individual rib based on rib count input.
 
         """
-        pass
 
     def clearRibExtent(self) -> None:
         """
         Clears rib extent types for all position points.
 
         """
-        pass
 
     @property
     def alignmentType(self) -> BossAlignmentTypes:
@@ -2576,7 +2552,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set boss alignment shape. This usually corresponds to the alignment shape of the boss counterpart.
         """
-        pass
 
     @property
     def holeExtentType(self) -> BossHoleExtentTypes:
@@ -2590,7 +2565,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set hole extent this feature represents. For top side only through hole extent is accepted.
         """
-        pass
 
     @property
     def ribType(self) -> BossRibShapeTypes:
@@ -2604,7 +2578,6 @@ class BossFeatureSideInput(core.Base):
         """
         Type of boss ribs this feature represents.
         """
-        pass
 
     @property
     def offsetClearance(self) -> core.ValueInput:
@@ -2618,7 +2591,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set offset clearance as additional small offset from the selected parting plane and position point.
         """
-        pass
 
     @property
     def diameter(self) -> core.ValueInput:
@@ -2632,7 +2604,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set boss shank diameter.
         """
-        pass
 
     @property
     def draftAngle(self) -> core.ValueInput:
@@ -2646,7 +2617,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set shank draft angle.
         """
-        pass
 
     @property
     def alignmentDiameter(self) -> core.ValueInput:
@@ -2660,7 +2630,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set alignment diameter.
         """
-        pass
 
     @property
     def alignmentDepth(self) -> core.ValueInput:
@@ -2674,7 +2643,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set alignment depth.
         """
-        pass
 
     @property
     def alignmentDraftAngle(self) -> core.ValueInput:
@@ -2688,7 +2656,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set alignment draft angle.
         """
-        pass
 
     @property
     def holeDiameter(self) -> core.ValueInput:
@@ -2702,7 +2669,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set hole diameter.
         """
-        pass
 
     @property
     def holeDraftAngle(self) -> core.ValueInput:
@@ -2716,7 +2682,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set hole draft angle.
         """
-        pass
 
     @property
     def holeDepth(self) -> core.ValueInput:
@@ -2736,7 +2701,6 @@ class BossFeatureSideInput(core.Base):
         the parameter is a distance from farthest face. If hole extent type is set to BossBlindDepth the parameter
         is a distance from start face of the hole.
         """
-        pass
 
     @property
     def holeMajorDiameter(self) -> core.ValueInput:
@@ -2752,7 +2716,6 @@ class BossFeatureSideInput(core.Base):
         Get or set major hole diameter for counterbore or countersink hole.
         This input is ignored for blank boss or boss with simple hole.
         """
-        pass
 
     @property
     def holeMajorDepth(self) -> core.ValueInput:
@@ -2768,7 +2731,6 @@ class BossFeatureSideInput(core.Base):
         Get or set major hole depth for counterbore and countersink hole or material thickness under screw head
         based on hole orientation in a boss feature. This input is ignored for blank boss or boss with simple hole.
         """
-        pass
 
     @property
     def holeMajorDraftAngle(self) -> core.ValueInput:
@@ -2784,7 +2746,6 @@ class BossFeatureSideInput(core.Base):
         Get or set major hole draft angle for counterbore and countersink hole.
         This input is ignored for blank boss or boss with simple hole.
         """
-        pass
 
     @property
     def holeCountersinkAngle(self) -> core.ValueInput:
@@ -2798,7 +2759,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set countersink angle for countersink hole. This input is used only for countersink hole.
         """
-        pass
 
     @property
     def rootRadius(self) -> core.ValueInput:
@@ -2812,7 +2772,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the boss shank and participant body.
         """
-        pass
 
     @property
     def tipRadius(self) -> core.ValueInput:
@@ -2826,7 +2785,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the boss shank top parting face.
         """
-        pass
 
     @property
     def alignmentTipRadius(self) -> core.ValueInput:
@@ -2840,7 +2798,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the boss alignment tip.
         """
-        pass
 
     @property
     def alignmentRootRadius(self) -> core.ValueInput:
@@ -2854,7 +2811,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the boss alignment root.
         """
-        pass
 
     @property
     def holeStartRadius(self) -> core.ValueInput:
@@ -2868,7 +2824,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the hole start.
         """
-        pass
 
     @property
     def holeEndRadius(self) -> core.ValueInput:
@@ -2882,7 +2837,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of the hole end.
         """
-        pass
 
     @property
     def holeMajorTipRadius(self) -> core.ValueInput:
@@ -2896,7 +2850,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of major hole counterbore.
         """
-        pass
 
     @property
     def holeMajorRootRadius(self) -> core.ValueInput:
@@ -2910,7 +2863,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set blend radius of major hole counterbore root.
         """
-        pass
 
     @property
     def ribLength(self) -> core.ValueInput:
@@ -2924,7 +2876,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set ribs length measured from the shank axis.
         """
-        pass
 
     @property
     def ribOffset(self) -> core.ValueInput:
@@ -2938,7 +2889,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set ribs offset from the top face or alignment face.
         """
-        pass
 
     @property
     def ribThickness(self) -> core.ValueInput:
@@ -2952,7 +2902,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set ribs thickness.
         """
-        pass
 
     @property
     def ribDraftAngle(self) -> core.ValueInput:
@@ -2966,7 +2915,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set ribs draft angle.
         """
-        pass
 
     @property
     def ribOuterDraftAngle(self) -> core.ValueInput:
@@ -2980,7 +2928,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set rib outer draft angle.
         """
-        pass
 
     @property
     def ribCutSize(self) -> core.ValueInput:
@@ -2994,7 +2941,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set size of rib chamfer or fillet.
         """
-        pass
 
     @property
     def ribChamferAngle(self) -> core.ValueInput:
@@ -3008,7 +2954,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set rib chamfer angle. This input is used only for rib with chamfer.
         """
-        pass
 
     @property
     def ribTipRadius(self) -> core.ValueInput:
@@ -3022,7 +2967,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set rib outer tip blend radius.
         """
-        pass
 
     @property
     def ribRootRadius(self) -> core.ValueInput:
@@ -3036,7 +2980,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set rib base root blend radius.
         """
-        pass
 
     @property
     def ribRotation(self) -> core.ValueInput:
@@ -3052,7 +2995,6 @@ class BossFeatureSideInput(core.Base):
         Get or set rotation angle of the first rib from the reference vector.
         Reference vector is X-axis of the parent sketch from selected sketch point(s).
         """
-        pass
 
     @property
     def ribTotalAngle(self) -> core.ValueInput:
@@ -3066,7 +3008,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set total angle for ribs distribution. Default is 360 deg.
         """
-        pass
 
     @property
     def ribCount(self) -> core.ValueInput:
@@ -3080,7 +3021,6 @@ class BossFeatureSideInput(core.Base):
         """
         Get or set number of ribs.
         """
-        pass
 
 
 class BossPositionDefinition(core.Base):
@@ -3141,7 +3081,6 @@ class BoundaryFillFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the boundary fill feature.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -3161,7 +3100,6 @@ class BoundaryFillFeatureInput(core.Base):
         in another component AND (the Boundary Fill) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def tools(self) -> core.ObjectCollection:
@@ -3177,7 +3115,6 @@ class BoundaryFillFeatureInput(core.Base):
         Gets and sets the collection of one or more construction planes and open or closed
         BRepBody objects that are used in calculating the possible closed boundaries.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -3205,7 +3142,6 @@ class BoundaryFillFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def isRemoveTools(self) -> bool:
@@ -3219,7 +3155,6 @@ class BoundaryFillFeatureInput(core.Base):
         """
         Gets and sets whether any BRepBodys that were used as tools should be removed as part of the feature creation.
         """
-        pass
 
 
 class BoundaryFillFeatures(core.Base):
@@ -3657,7 +3592,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -3683,7 +3617,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -3701,7 +3634,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def appearance(self) -> core.Appearance:
@@ -3723,7 +3655,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def appearanceSourceType(self) -> core.AppearanceSourceTypes:
@@ -3751,7 +3682,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def meshManager(self) -> MeshManager:
@@ -3818,7 +3748,6 @@ class BRepBody(core.Base):
 
         This property is only valid if the IsTransient property is false.
         """
-        pass
 
     @property
     def attributes(self) -> core.Attributes:
@@ -3869,7 +3798,6 @@ class BRepBody(core.Base):
 
         This is the API equivalent of the "Opacity Control" command available for the body in the browser.
         """
-        pass
 
     @property
     def visibleOpacity(self) -> float:
@@ -4019,7 +3947,6 @@ class BRepBodyDefinition(core.Base):
         B-Rep definition that you've constructed is correct then you can set this to false to skip the full
         healing process.
         """
-        pass
 
     @property
     def outcomeInfo(self) -> list[str]:
@@ -4075,7 +4002,6 @@ class BRepCell(core.Base):
         Gets and sets whether the cell is selected. For a Trim feature a selected cell is removed,
         whereas for a boundary fill feature, a selected cell is kept and used in the feature operation.
         """
-        pass
 
     @property
     def sourceTools(self) -> core.ObjectCollection:
@@ -4289,7 +4215,6 @@ class BRepCoEdgeDefinition(core.Base):
         """
         Gets and sets the BRepEdgeDefinition object associated with this BrepCoEdgeDefinition object.
         """
-        pass
 
     @property
     def isOpposedToEdge(self) -> bool:
@@ -4305,7 +4230,6 @@ class BRepCoEdgeDefinition(core.Base):
         Gets and sets if the orientation of this BRepCoEdgeDefinition object is reversed with
         respect to the associated BRepEdgeDefinition object.
         """
-        pass
 
 
 class BRepCoEdgeDefinitions(core.Base):
@@ -4623,7 +4547,6 @@ class BRepEdgeDefinition(core.Base):
         edge when the BRepBodyDefinition is used to create a BrepBody. It is used internally by Fusion360 as
         the identifier for the edge and is used for tracking this geometry for parametric recomputes.
         """
-        pass
 
     @property
     def startVertex(self) -> BRepVertexDefinition:
@@ -4637,7 +4560,6 @@ class BRepEdgeDefinition(core.Base):
         """
         Gets and sets the start vertex of the edge definition.
         """
-        pass
 
     @property
     def endVertex(self) -> BRepVertexDefinition:
@@ -4651,7 +4573,6 @@ class BRepEdgeDefinition(core.Base):
         """
         Gets and sets the end vertex of the edge definition.
         """
-        pass
 
     @property
     def modelSpaceCurve(self) -> core.Curve3D:
@@ -4665,7 +4586,6 @@ class BRepEdgeDefinition(core.Base):
         """
         Gets and sets the curve that defines the shape of the edge.
         """
-        pass
 
     @property
     def isMergeable(self) -> bool:
@@ -4693,7 +4613,6 @@ class BRepEdgeDefinition(core.Base):
         these faces can be replaced by a single face and the edges connecting the
         faces (the merged edges) are no longer part of the body.
         """
-        pass
 
 
 class BRepEdges(core.Base):
@@ -4860,7 +4779,6 @@ class BRepFace(core.Base):
         an override appearance to the face and the AppearanceSourceType property will return OverrideAppearanceSource. Setting
         this property to null will remove any override.
         """
-        pass
 
     @property
     def appearanceSourceType(self) -> core.AppearanceSourceTypes:
@@ -4982,7 +4900,6 @@ class BRepFaceDefinition(core.Base):
         face when the BRepBodyDefinition is used to create a BrepBody. It is used by Fusion360 as
         the identifier for the face and is used for tracking this geometry for parametric recomputes.
         """
-        pass
 
     @property
     def loopDefinitions(self) -> BRepLoopDefinitions:
@@ -5004,7 +4921,6 @@ class BRepFaceDefinition(core.Base):
         """
         Gets and sets the surface geometry associated with this face definition.
         """
-        pass
 
     @property
     def isParamReversed(self) -> bool:
@@ -5020,7 +4936,6 @@ class BRepFaceDefinition(core.Base):
         Gets and sets if the normal of this face is reversed with respect to the surface geometry associated
         with this face definition.
         """
-        pass
 
 
 class BRepFaceDefinitions(core.Base):
@@ -5977,7 +5892,6 @@ class BRepVertexDefinition(core.Base):
         """
         Gets and sets the position of the vertex in model space.
         """
-        pass
 
 
 class BRepVertices(core.Base):
@@ -6166,7 +6080,6 @@ class BRepWireEdgeDefinition(core.Base):
         edge when the BRepBodyDefinition is used to create a BrepBody. It is used by Fusion360 as
         the identifier for the edge and is used for tracking this geometry for parametric recomputes.
         """
-        pass
 
     @property
     def startVertex(self) -> BRepVertexDefinition:
@@ -6180,7 +6093,6 @@ class BRepWireEdgeDefinition(core.Base):
         """
         Gets and sets the start vertex of the wire edge definition.
         """
-        pass
 
     @property
     def endVertex(self) -> BRepVertexDefinition:
@@ -6194,7 +6106,6 @@ class BRepWireEdgeDefinition(core.Base):
         """
         Gets and sets the end vertex of the wire edge definition.
         """
-        pass
 
     @property
     def modelSpaceCurve(self) -> core.Curve3D:
@@ -6210,7 +6121,6 @@ class BRepWireEdgeDefinition(core.Base):
         Gets and sets the Curve3D object that defines the shape of the edge using 3D geometry in model space.
         Valid objects are an Arc3D, NurbsCurve3D, Circle3D, Ellipse3D, EllipticalArc3D, or Line3D.
         """
-        pass
 
 
 class BRepWireEdgeDefinitions(core.Base):
@@ -6374,7 +6284,6 @@ class Canvas(core.Base):
         """
         Gets and sets the name of the canvas. This is the name seen in the browser and timeline.
         """
-        pass
 
     @property
     def planarEntity(self) -> core.Base:
@@ -6392,7 +6301,6 @@ class Canvas(core.Base):
         or a construction plane. In the case where the design history is not being captured or
         the canvas is being created in a base feature, this can be a Plane object.
         """
-        pass
 
     @property
     def opacity(self) -> int:
@@ -6412,7 +6320,6 @@ class Canvas(core.Base):
         to a value outside the range of 0-100 will result in the value
         being set to the closest valid value.
         """
-        pass
 
     @property
     def isDisplayedThrough(self) -> bool:
@@ -6426,7 +6333,6 @@ class Canvas(core.Base):
         """
         Controls if the image is visible through the model or not.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -6440,7 +6346,6 @@ class Canvas(core.Base):
         """
         Controls if the canvas is selectable or not within the graphics window.
         """
-        pass
 
     @property
     def isRenderable(self) -> bool:
@@ -6454,7 +6359,6 @@ class Canvas(core.Base):
         """
         Controls if the canvas will be rendered when ray tracing within the Render workspace.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -6490,7 +6394,6 @@ class Canvas(core.Base):
         When setting this property, it is the full filename to the image to use for the canvas.
         PNG, JPEG, and TIFF files are supported.
         """
-        pass
 
     @property
     def plane(self) -> core.Plane:
@@ -6519,7 +6422,6 @@ class Canvas(core.Base):
         This is a 3x3 matrix where the third column controls the position of the canvas and
         defines the position using 2D coordinates in the model space.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -6543,7 +6445,6 @@ class Canvas(core.Base):
         has its light bulb off or if the light bulb for Canvases folder is off to turn off all
         canvases in a component.
         """
-        pass
 
     @property
     def entityToken(self) -> str:
@@ -6703,7 +6604,6 @@ class CanvasInput(core.Base):
         or a construction plane. In the case where the design history is not being captured or
         the canvas is being created in a base feature, this can be a Plane object.
         """
-        pass
 
     @property
     def opacity(self) -> int:
@@ -6727,7 +6627,6 @@ class CanvasInput(core.Base):
 
         Defaults to 50 when the input is created.
         """
-        pass
 
     @property
     def isDisplayedThrough(self) -> bool:
@@ -6745,7 +6644,6 @@ class CanvasInput(core.Base):
 
         Defaults to true when the input is created.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -6763,7 +6661,6 @@ class CanvasInput(core.Base):
 
         Defaults to false when the input is created.
         """
-        pass
 
     @property
     def isRenderable(self) -> bool:
@@ -6781,7 +6678,6 @@ class CanvasInput(core.Base):
 
         Defaults to false when the input is created.
         """
-        pass
 
     @property
     def imageFilename(self) -> str:
@@ -6801,7 +6697,6 @@ class CanvasInput(core.Base):
         When setting this property, it is the full filename to the image to use for the canvas.
         PNG, JPEG, and TIFF files are supported.
         """
-        pass
 
     @property
     def plane(self) -> core.Plane:
@@ -6833,7 +6728,6 @@ class CanvasInput(core.Base):
         This is a 3x3 matrix where the third column controls the position of the canvas and is relative to
         the parameter space of the plane defined by the specified planar face or construction plane.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -6861,7 +6755,6 @@ class CanvasInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ChamferEdgeSet(core.Base):
@@ -6898,7 +6791,6 @@ class ChamferEdgeSet(core.Base):
         """
         Gets and sets the Tangent chain for chamfer. This enables tangent chain option for chamfer.
         """
-        pass
 
 
 class ChamferEdgeSets(core.Base):
@@ -7066,7 +6958,6 @@ class ChamferFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def cornerType(self) -> ChamferCornerTypes:
@@ -7080,7 +6971,6 @@ class ChamferFeatureInput(core.Base):
         """
         Gets and sets the type of corner to be modeled when multiple edges connect at a vertex.
         """
-        pass
 
     @property
     def chamferEdgeSets(self) -> ChamferEdgeSets:
@@ -7182,7 +7072,6 @@ class CircularPatternConstraintInput(core.Base):
         Gets and sets the entities to pattern. Sketch points and curves are valid
         entities to pattern.
         """
-        pass
 
     @property
     def centerPoint(self) -> SketchPoint:
@@ -7196,7 +7085,6 @@ class CircularPatternConstraintInput(core.Base):
         """
         Gets and sets the sketch point that defines the center of the pattern.
         """
-        pass
 
     @property
     def quantity(self) -> core.ValueInput:
@@ -7210,7 +7098,6 @@ class CircularPatternConstraintInput(core.Base):
         """
         Gets and sets quantity of the elements.
         """
-        pass
 
     @property
     def totalAngle(self) -> core.ValueInput:
@@ -7228,7 +7115,6 @@ class CircularPatternConstraintInput(core.Base):
         a negative angle can be used to reverse the direction.
         An angle of 360 degrees or 2 pi radians will create a full circular pattern.
         """
-        pass
 
     @property
     def isSymmetric(self) -> bool:
@@ -7242,7 +7128,6 @@ class CircularPatternConstraintInput(core.Base):
         """
         Gets and sets if the angle extent is in one direction or is symmetric.
         """
-        pass
 
     @property
     def isSuppressed(self) -> list[bool]:
@@ -7264,7 +7149,6 @@ class CircularPatternConstraintInput(core.Base):
         not. A value of true will result in the associated instance being
         suppressed.
         """
-        pass
 
 
 class CircularPatternFeatureInput(core.Base):
@@ -7296,7 +7180,6 @@ class CircularPatternFeatureInput(core.Base):
         All of the entities must be of a single type. For example, it can't contain features and occurrences
         but only features or occurrences.
         """
-        pass
 
     @property
     def axis(self) -> core.Base:
@@ -7312,7 +7195,6 @@ class CircularPatternFeatureInput(core.Base):
         Gets and sets the axis of circular pattern. This can be a sketch line, linear edge,
         construction axis, an edge/sketch curve that defines an axis (circle, etc.) or a face that defines an axis (cylinder, cone, torus, etc.).
         """
-        pass
 
     @property
     def quantity(self) -> core.ValueInput:
@@ -7326,7 +7208,6 @@ class CircularPatternFeatureInput(core.Base):
         """
         Gets and sets quantity of the elements.
         """
-        pass
 
     @property
     def totalAngle(self) -> core.ValueInput:
@@ -7342,7 +7223,6 @@ class CircularPatternFeatureInput(core.Base):
         Gets and sets total angle. A negative angle can be used to reverse the direction.
         An angle of 360 degrees or 2 pi radians will create a full circular pattern.
         """
-        pass
 
     @property
     def isSymmetric(self) -> bool:
@@ -7356,7 +7236,6 @@ class CircularPatternFeatureInput(core.Base):
         """
         Gets and sets if the angle extent is in one direction or symmetric.
         """
-        pass
 
     @property
     def patternComputeOption(self) -> PatternComputeOptions:
@@ -7372,7 +7251,6 @@ class CircularPatternFeatureInput(core.Base):
         Gets and sets the compute option when patterning features. The default value for this is AdjustPatternCompute.
         This property only applies when patterning features and is ignored in the direct modeling environment.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -7400,7 +7278,6 @@ class CircularPatternFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class CircularPatternFeatures(core.Base):
@@ -7554,7 +7431,6 @@ class CoilFeatureInput(core.Base):
         initialized to true so a solid will be created if it's not changed.
         It only can be set to false in non-parametric modeling.
         """
-        pass
 
     @property
     def revolutions(self) -> core.ValueInput:
@@ -7603,7 +7479,6 @@ class CoilFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the coil.
         """
-        pass
 
     @property
     def basePlane(self) -> core.Base:
@@ -7617,7 +7492,6 @@ class CoilFeatureInput(core.Base):
         """
         Gets and sets the base plane.
         """
-        pass
 
     @property
     def isClockwiseRotation(self) -> bool:
@@ -7633,7 +7507,6 @@ class CoilFeatureInput(core.Base):
         Gets and sets whether the rotation is clockwise or counter-clockwise. A value of true indicates clockwise rotation.
         It defaults to true.
         """
-        pass
 
     @property
     def diameter(self) -> core.ValueInput:
@@ -7647,7 +7520,6 @@ class CoilFeatureInput(core.Base):
         """
         Gets and sets the diameter.
         """
-        pass
 
     @property
     def coilSectionType(self) -> CoilFeatureSectionTypes:
@@ -7663,7 +7535,6 @@ class CoilFeatureInput(core.Base):
         Gets the section type of the coil.
         It defaults to CircularCoilSectionType.
         """
-        pass
 
     @property
     def coilSectionPosition(self) -> CoilFeatureSectionPositions:
@@ -7679,7 +7550,6 @@ class CoilFeatureInput(core.Base):
         Gets the section position of the coil.
         It defaults to InsideCoilSectionPosition.
         """
-        pass
 
     @property
     def sectionSize(self) -> core.ValueInput:
@@ -7693,7 +7563,6 @@ class CoilFeatureInput(core.Base):
         """
         Gets and sets the section size.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -7721,7 +7590,6 @@ class CoilFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class CoilFeatures(core.Base):
@@ -7795,7 +7663,6 @@ class CombineFeatureInput(core.Base):
         """
         Gets and sets the BRep Body object that represents the blank body.
         """
-        pass
 
     @property
     def toolBodies(self) -> core.ObjectCollection:
@@ -7809,7 +7676,6 @@ class CombineFeatureInput(core.Base):
         """
         Gets and sets the BRep Body objects that represent the tool bodies.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -7827,7 +7693,6 @@ class CombineFeatureInput(core.Base):
         The valid values are JoinFeatureOperation, CutFeatureOperation and IntersectFeatureOperation.
         The default value is JoinFeatureOperation.
         """
-        pass
 
     @property
     def isNewComponent(self) -> bool:
@@ -7843,7 +7708,6 @@ class CombineFeatureInput(core.Base):
         Gets and sets a boolean value for whether or not a new component will be created with the results. The default value is false.
         In Base feature environment NewComponent does not work.
         """
-        pass
 
     @property
     def isKeepToolBodies(self) -> bool:
@@ -7857,7 +7721,6 @@ class CombineFeatureInput(core.Base):
         """
         Gets and sets a boolean value for whether or not the tool bodies are retrained after the combine results. The default value is false.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -7885,7 +7748,6 @@ class CombineFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class CombineFeatures(core.Base):
@@ -8177,7 +8039,6 @@ class ConstructionAxis(core.Base):
         """
         The name of the construction axis as it is shown in the browser.
         """
-        pass
 
     @property
     def definition(self) -> ConstructionAxisDefinition:
@@ -8218,7 +8079,6 @@ class ConstructionAxis(core.Base):
         A construction axis will only be visible if it's light bulb, and that of it's
         containing folder and parent component/s are also on.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -8462,7 +8322,6 @@ class ConstructionAxisInput(core.Base):
         (e.g. a straight edge) in another component AND (the ConstructionAxis) is not in the
         root component. The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def targetBaseOrFormFeature(self) -> core.Base:
@@ -8490,7 +8349,6 @@ class ConstructionAxisInput(core.Base):
         create the feature, and then call the finishEdit method of the base or form feature. The base or form
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ConstructionPlane(core.Base):
@@ -8542,7 +8400,6 @@ class ConstructionPlane(core.Base):
         """
         Returns the name of the construction plane as it is shown in the browser.
         """
-        pass
 
     @property
     def definition(self) -> ConstructionPlaneDefinition:
@@ -8583,7 +8440,6 @@ class ConstructionPlane(core.Base):
         A construction plane will only be visible if it's light bulb, and that of it's
         containing folder and parent component/s are also on.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -8609,7 +8465,6 @@ class ConstructionPlane(core.Base):
         box defines the min and max corners of the plane as defined in the
         2D space of the construction plane.
         """
-        pass
 
     @property
     def parent(self) -> core.Base:
@@ -8702,7 +8557,6 @@ class ConstructionPlane(core.Base):
         plane in a direct modeling model or in a base feature, this is read-write and can be
         used to reposition the constructions plane.
         """
-        pass
 
     @property
     def entityToken(self) -> str:
@@ -8911,7 +8765,6 @@ class ConstructionPlaneInput(core.Base):
         in another component AND (the ConstructionPlane) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def targetBaseOrFormFeature(self) -> core.Base:
@@ -8939,7 +8792,6 @@ class ConstructionPlaneInput(core.Base):
         create the feature, and then call the finishEdit method of the base or form feature. The base or form
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ConstructionPlanes(core.Base):
@@ -9069,7 +8921,6 @@ class ConstructionPoint(core.Base):
         """
         The name of the construction point as it is displayed in the browser.
         """
-        pass
 
     @property
     def definition(self) -> ConstructionPointDefinition:
@@ -9103,7 +8954,6 @@ class ConstructionPoint(core.Base):
         A construction point will only be visible if it's light bulb, and that of it's
         containing folder and parent component/s are also on.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -9332,7 +9182,6 @@ class ConstructionPointInput(core.Base):
         (e.g. a sketch point) in another component AND (the ConstructionPoint) is not in the
         root component. The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def targetBaseOrFormFeature(self) -> core.Base:
@@ -9360,7 +9209,6 @@ class ConstructionPointInput(core.Base):
         create the feature, and then call the finishEdit method of the base or form feature. The base or form
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ConstructionPoints(core.Base):
@@ -9472,7 +9320,6 @@ class ContactSet(core.Base):
         """
         Gets and sets the name of the contact set.
         """
-        pass
 
     @property
     def occurencesAndBodies(self) -> list[core.Base]:
@@ -9486,7 +9333,6 @@ class ContactSet(core.Base):
         """
         Gets and sets the group of Occurrence and/or BRepBody objects that are part of this contact set.
         """
-        pass
 
     @property
     def isSuppressed(self) -> bool:
@@ -9500,7 +9346,6 @@ class ContactSet(core.Base):
         """
         Gets and sets if this contact set is currently suppressed.
         """
-        pass
 
 
 class ContactSets(core.Base):
@@ -9777,7 +9622,6 @@ class CustomFeatureDefinition(core.Base):
         this custom feature. The folder should contain the image files named 16x16.png and 32x32.png
         which should be images that are 16 and 32 pixels square.
         """
-        pass
 
     @property
     def defaultName(self) -> str:
@@ -9801,7 +9645,6 @@ class CustomFeatureDefinition(core.Base):
         If you want to localize this name you can use the Application.Preferences.generalPreferences.userLanguage
         property to determine what language the user has chosen and use the corresponding name for that language.
         """
-        pass
 
     @property
     def editCommandId(self) -> str:
@@ -9817,7 +9660,6 @@ class CustomFeatureDefinition(core.Base):
         Gets and sets which command will be invoked when the feature is edited. This is the id of the
         CommandDefinition object that you have created to do the edit of the feature.
         """
-        pass
 
     @property
     def customFeatureCompute(self) -> CustomFeatureEvent:
@@ -9947,7 +9789,6 @@ class CustomFeatureDependency(core.Base):
         """
         Gets and sets the entity associated with this dependency.
         """
-        pass
 
     @property
     def parentCustomFeature(self) -> CustomFeature:
@@ -9979,7 +9820,6 @@ class CustomFeatureEventHandler(core.EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class CustomFeatureInput(core.Base):
@@ -10271,7 +10111,6 @@ class CustomGraphicsBillBoard(core.Base):
         object.
 
         """
-        pass
 
     @property
     def billBoardStyle(self) -> CustomGraphicsBillBoardStyles:
@@ -10291,7 +10130,6 @@ class CustomGraphicsBillBoard(core.Base):
         be set to an arbitrary plane by setting this to AxialBillBoardStyle and can be defined so that it never
         appear backwards by setting it to RightReadingBillBoardStyle.
         """
-        pass
 
     @property
     def axis(self) -> core.Vector3D:
@@ -10307,7 +10145,6 @@ class CustomGraphicsBillBoard(core.Base):
         When the billBoardStyle property is set to AxialBillBoardStyle, this is used to control the direction
         of the graphics. Otherwise it uses the x axis of the view.
         """
-        pass
 
 
 class CustomGraphicsColorEffect(core.Base):
@@ -10395,7 +10232,6 @@ class CustomGraphicsCoordinates(core.Base):
         Gets and sets the coordinate data associated with this CustomGraphicsCoordinates object.
         This data represents the x, y, z components of the coordinates where the unit of measure is centimeters.
         """
-        pass
 
     @property
     def coordinateCount(self) -> int:
@@ -10422,7 +10258,6 @@ class CustomGraphicsCoordinates(core.Base):
         The color at each vertex is represented by four values where they are the red, green, blue,
         and alpha values. This should contain the same number of colors as vertices.
         """
-        pass
 
 
 class CustomGraphicsEntity(core.Base):
@@ -10481,7 +10316,6 @@ class CustomGraphicsEntity(core.Base):
         Gets and sets if the graphics entity is visible in the graphics window. By
         default, when a new entity is created it is visible.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -10497,7 +10331,6 @@ class CustomGraphicsEntity(core.Base):
         Gets and sets if the graphics entity is selectable within the graphics window. By
         default, when a new entity is created it is selectable.
         """
-        pass
 
     @property
     def transform(self) -> core.Matrix3D:
@@ -10515,7 +10348,6 @@ class CustomGraphicsEntity(core.Base):
         entity is created its default transform is an identity matrix which results in the graphics entity
         being displayed in model space using the original coordinate data used to define the entity.
         """
-        pass
 
     @property
     def depthPriority(self) -> int:
@@ -10543,7 +10375,6 @@ class CustomGraphicsEntity(core.Base):
 
         When a new graphics entity is created it's default depth priority is 0.
         """
-        pass
 
     @property
     def cullMode(self) -> CustomGraphicsCullModes:
@@ -10569,7 +10400,6 @@ class CustomGraphicsEntity(core.Base):
         When a new graphics entity is created its default cull mode is CustomGraphicsCullBack which will optimize
         the rendering of "solid" meshes so the inside is not rendered.
         """
-        pass
 
     @property
     def color(self) -> CustomGraphicsColorEffect:
@@ -10585,7 +10415,6 @@ class CustomGraphicsEntity(core.Base):
         Gets and sets the current color definition for this entity. The color of custom graphics can
         be defined in many ways; solid color, simple material, and appearance.
         """
-        pass
 
     @property
     def parent(self) -> core.Base:
@@ -10611,7 +10440,6 @@ class CustomGraphicsEntity(core.Base):
         this property will return an empty string. But in cases where entities will be selected, assigning
         an id can make understanding what was selected much easier.
         """
-        pass
 
     @property
     def boundingBox(self) -> core.BoundingBox3D:
@@ -10649,7 +10477,6 @@ class CustomGraphicsEntity(core.Base):
         screen instead of model space. This is commonly used for legends and symbols that you want to
         always face the user, even as the camera is rotated.
         """
-        pass
 
     @property
     def viewPlacement(self) -> CustomGraphicsViewPlacement:
@@ -10669,7 +10496,6 @@ class CustomGraphicsEntity(core.Base):
         class. When assigned to a graphics entity the position of the graphics is defined
         relative to the view in 2D view space (pixels) rather than in 3D model space (centimeters).
         """
-        pass
 
     @property
     def viewScale(self) -> CustomGraphicsViewScale:
@@ -10689,7 +10515,6 @@ class CustomGraphicsEntity(core.Base):
         class. When assigned to a graphics entity the size of the graphics entity is defined
         in view space (pixels) instead of model space (centimeters).
         """
-        pass
 
     @property
     def name(self) -> str:
@@ -10705,7 +10530,6 @@ class CustomGraphicsEntity(core.Base):
         Gets and sets the name displayed when this entity is selected. If no name has been set,
         "Custom Graphics" will be displayed.
         """
-        pass
 
 
 class CustomGraphicsGroups(core.Base):
@@ -10808,7 +10632,6 @@ class CustomGraphicsViewPlacement(core.Base):
         Gets and sets the position within the defined graphics that serves as the anchor. This is the location
         on the graphics that is positioned at the specified view point.
         """
-        pass
 
     @property
     def viewPoint(self) -> core.Point2D:
@@ -10844,7 +10667,6 @@ class CustomGraphicsViewPlacement(core.Base):
 
         lowerRightViewCorner - The x direction is to the left and y is up.
         """
-        pass
 
     @property
     def viewCorner(self) -> ViewCorners:
@@ -10858,7 +10680,6 @@ class CustomGraphicsViewPlacement(core.Base):
         """
         Gets and sets which corner the graphics are positioned relative to.
         """
-        pass
 
 
 class CustomGraphicsViewScale(core.Base):
@@ -10907,7 +10728,6 @@ class CustomGraphicsViewScale(core.Base):
         to be 100 units long it would usually display as 100 cm long. When it is view scaled with a pixel scale of
         1 it will display as 100 pixels long.
         """
-        pass
 
     @property
     def anchorPoint(self) -> core.Point3D:
@@ -10923,7 +10743,6 @@ class CustomGraphicsViewScale(core.Base):
         Gets and sets the point in the graphics that defines the origin of the scaling. The graphics will be scaled
         up or down relative to that point.
         """
-        pass
 
 
 class CustomNamedValues(core.Base):
@@ -11264,7 +11083,6 @@ class DraftFeatureInput(core.Base):
         Gets and sets the input faces.
         If IsTangentChain is true, all the faces that are tangentially connected to the input faces (if any) will also be included.
         """
-        pass
 
     @property
     def plane(self) -> core.Base:
@@ -11278,7 +11096,6 @@ class DraftFeatureInput(core.Base):
         """
         Gets and sets the plane that defines the direction in which the draft is applied. This can be a planar BrepFace, or a ConstructionPlane.
         """
-        pass
 
     @property
     def isTangentChain(self) -> bool:
@@ -11294,7 +11111,6 @@ class DraftFeatureInput(core.Base):
         Gets and sets if any faces that are tangentially connected to any of
         the input faces will also be included in setting InputEntities. It defaults to true.
         """
-        pass
 
     @property
     def isDirectionFlipped(self) -> bool:
@@ -11308,7 +11124,6 @@ class DraftFeatureInput(core.Base):
         """
         Gets and sets if the direction of the draft is flipped.
         """
-        pass
 
     @property
     def angleOne(self) -> core.ValueInput:
@@ -11358,7 +11173,6 @@ class DraftFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class DraftFeatures(core.Base):
@@ -11626,7 +11440,6 @@ class ExportOptions(core.Base):
         Gets and sets the filename that the exported file will be written to. This can
         be empty in the case of STL export and sending the result to the mesh editor.
         """
-        pass
 
     @property
     def geometry(self) -> core.Base:
@@ -11642,7 +11455,6 @@ class ExportOptions(core.Base):
         Specifies the geometry to export. This can be an Occurrence, or the root Component.
         For STL, OBJ, and 3MF export, it can be a BRepBody. For DXF export, it can be a sketch of flat pattern.
         """
-        pass
 
 
 class ExtendFeatureInput(core.Base):
@@ -11669,7 +11481,6 @@ class ExtendFeatureInput(core.Base):
         """
         Gets and sets the edges to extend
         """
-        pass
 
     @property
     def distance(self) -> core.ValueInput:
@@ -11683,7 +11494,6 @@ class ExtendFeatureInput(core.Base):
         """
         Gets and sets the ValueInput object that defines the extend distance
         """
-        pass
 
     @property
     def extendType(self) -> SurfaceExtendTypes:
@@ -11697,7 +11507,6 @@ class ExtendFeatureInput(core.Base):
         """
         Gets and sets surface extend type to use
         """
-        pass
 
     @property
     def isChainingEnabled(self) -> bool:
@@ -11713,7 +11522,6 @@ class ExtendFeatureInput(core.Base):
         Gets and sets if all edges that are tangent or curvature continuous, and end point connected, will be found
         automatically and extended.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -11741,7 +11549,6 @@ class ExtendFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def extendAlignment(self) -> SurfaceExtendAlignment:
@@ -11755,7 +11562,6 @@ class ExtendFeatureInput(core.Base):
         """
         Gets and sets surface extend alignment to use.
         """
-        pass
 
 
 class ExtendFeatures(core.Base):
@@ -11990,7 +11796,6 @@ class ExtrudeFeatureInput(core.Base):
         methods of the Component object to create an open profile. The isSolid property of the
         ExtrudeFeatureInput property must also be False.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -12004,7 +11809,6 @@ class ExtrudeFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the extrusion.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -12024,7 +11828,6 @@ class ExtrudeFeatureInput(core.Base):
         in another component AND (the Extrusion) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def isSolid(self) -> bool:
@@ -12042,7 +11845,6 @@ class ExtrudeFeatureInput(core.Base):
         it's a surface then there aren't any end caps and it's open. When a ExtrudeFeature
         input is created, this is initialized to true so a solid will be created if it's not changed.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -12070,7 +11872,6 @@ class ExtrudeFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def startExtent(self) -> ExtentDefinition:
@@ -12092,7 +11893,6 @@ class ExtrudeFeatureInput(core.Base):
         ProfilePlaneWithOffsetStartDefinition or a EntityStartDefinition object. You can get either one
         of those objects by using the static create method on the class.
         """
-        pass
 
     @property
     def extentOne(self) -> ExtentDefinition:
@@ -12160,7 +11960,6 @@ class ExtrudeFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
     @property
     def isThinExtrude(self) -> bool:
@@ -12176,7 +11975,6 @@ class ExtrudeFeatureInput(core.Base):
         Sets or returns whether the extrude is a thin extrude.
         Setting it as false will make it a regular extrude.
         """
-        pass
 
     @property
     def thinExtrudeWallLocationOne(self) -> ThinExtrudeWallLocation:
@@ -12190,7 +11988,6 @@ class ExtrudeFeatureInput(core.Base):
         """
         Gets and sets the wall location for a one sided thin extrude or side one of a two sided thin extrude
         """
-        pass
 
     @property
     def thinExtrudeWallLocationTwo(self) -> ThinExtrudeWallLocation:
@@ -12204,7 +12001,6 @@ class ExtrudeFeatureInput(core.Base):
         """
         Gets and sets the wall location for side two of a two sided thin extrude
         """
-        pass
 
     @property
     def thinExtrudeWallThicknessOne(self) -> core.ValueInput:
@@ -12218,7 +12014,6 @@ class ExtrudeFeatureInput(core.Base):
         """
         Gets and sets the wall thickness for a one sided thin extrude or side one of a two sided thin extrude
         """
-        pass
 
     @property
     def thinExtrudeWallThicknessTwo(self) -> core.ValueInput:
@@ -12232,7 +12027,6 @@ class ExtrudeFeatureInput(core.Base):
         """
         Gets and sets the wall thickness for side two of a two sided thin extrude
         """
-        pass
 
 
 class ExtrudeFeatures(core.Base):
@@ -12373,7 +12167,6 @@ class Feature(core.Base):
         """
         Returns the name of the feature as seen in the browser (non-parametric) or in the timeline (parametric).
         """
-        pass
 
     @property
     def isSuppressed(self) -> bool:
@@ -12389,7 +12182,6 @@ class Feature(core.Base):
         Gets and sets if this feature is suppressed. This is only valid
         for parametric features.
         """
-        pass
 
     @property
     def isParametric(self) -> bool:
@@ -13078,7 +12870,6 @@ class FilletEdgeSet(core.Base):
         """
         Gets and sets the Tangent chain for fillet. This enables tangent chain option for fillet.
         """
-        pass
 
     @property
     def continuity(self) -> SurfaceContinuityTypes:
@@ -13094,7 +12885,6 @@ class FilletEdgeSet(core.Base):
         Gets and sets the continuity of the fillet edge set. Valid values are
         TangentSurfaceContinuityType and CurvatureSurfaceContinuityType.
         """
-        pass
 
     @property
     def tangencyWeight(self) -> ModelParameter:
@@ -13132,7 +12922,6 @@ class FilletEdgeSetInput(core.Base):
         Gets and sets the entities associated with this fillet edge set. For constant radius and chord length
         edge sets, this can be edges, faces, and features. For variable radius edges sets, this must be edges.
         """
-        pass
 
     @property
     def continuity(self) -> SurfaceContinuityTypes:
@@ -13150,7 +12939,6 @@ class FilletEdgeSetInput(core.Base):
         TangentSurfaceContinuityType and CurvatureSurfaceContinuityType. The default
         is TangentSurfaceContinuityType.
         """
-        pass
 
     @property
     def tangencyWeight(self) -> core.ValueInput:
@@ -13168,7 +12956,6 @@ class FilletEdgeSetInput(core.Base):
         of the continuity (G1 or G2) on the fillet. The ValueInput must be a real value between 0.1 and 2.0 inclusive,
         with no units. The default value is 1.0.
         """
-        pass
 
 
 class FilletEdgeSetInputs(core.Base):
@@ -13447,7 +13234,6 @@ class FilletFeatureInput(core.Base):
         """
         Gets and sets if a rolling ball or setback solution is to be used in any corners.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -13475,7 +13261,6 @@ class FilletFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def edgeSetInputs(self) -> FilletEdgeSetInputs:
@@ -14231,7 +14016,6 @@ class HoleFeatureInput(core.Base):
         Gets the ValueInput object that defines the angle of the tip of the hole. The default
         is "118.0 deg" but can be modified by setting it using another Value object.
         """
-        pass
 
     @property
     def isDefaultDirection(self) -> bool:
@@ -14245,7 +14029,6 @@ class HoleFeatureInput(core.Base):
         """
         Gets or sets if the hole goes in the default direction or is reversed.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -14267,7 +14050,6 @@ class HoleFeatureInput(core.Base):
         The CreationOccurrence is analogous to the active occurrence in the UI
         A value of null indicates that everything is in the context of a single component.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -14295,7 +14077,6 @@ class HoleFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -14321,7 +14102,6 @@ class HoleFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
 
 class HoleFeatures(core.Base):
@@ -14533,7 +14313,6 @@ class InCanvasRendering(core.Base):
         Gets and sets if the view should be locked during the in-canvas render. This prohibits
         the user from interacting with the view, which will cause the rendering to restart.
         """
-        pass
 
     @property
     def limitResolution(self) -> float:
@@ -14549,7 +14328,6 @@ class InCanvasRendering(core.Base):
         Sets the percentage of the full resolution to render the image. Valid
         values are between 20 and 100 inclusive. 100 is full resolution (100%).
         """
-        pass
 
     @property
     def elapsedTime(self) -> int:
@@ -14603,7 +14381,6 @@ class InCanvasRendering(core.Base):
         is not fired, and you have to use some other criteria like the number of iterations
         complete, or the time taken to determine when to stop the rendering process.
         """
-        pass
 
     @property
     def renderComplete(self) -> RenderEvent:
@@ -14647,7 +14424,6 @@ class InterferenceInput(core.Base):
         will be used when checking for interference. All entities must be in the context of
         the root component of the top-level design.
         """
-        pass
 
     @property
     def areCoincidentFacesIncluded(self) -> bool:
@@ -14663,7 +14439,6 @@ class InterferenceInput(core.Base):
         Gets and sets whether any coincident faces in the input bodies are considered as interference
         or not. This property defaults to False for a newly created InterferenceInput object.
         """
-        pass
 
 
 class InterferenceResult(core.Base):
@@ -14717,7 +14492,6 @@ class InterferenceResult(core.Base):
         the createBodies method on the interferenceResults object will result in the creation
         of the model body if this property is true.
         """
-        pass
 
 
 class InterferenceResults(core.Base):
@@ -14998,7 +14772,6 @@ class Joint(core.Base):
         """
         Gets and sets the name of the joint.
         """
-        pass
 
     @property
     def geometryOrOriginOne(self) -> core.Base:
@@ -15018,7 +14791,6 @@ class Joint(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def geometryOrOriginTwo(self) -> core.Base:
@@ -15038,7 +14810,6 @@ class Joint(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def angle(self) -> ModelParameter:
@@ -15079,7 +14850,6 @@ class Joint(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def jointMotion(self) -> JointMotion:
@@ -15127,7 +14897,6 @@ class Joint(core.Base):
         """
         Gets and sets if this joint is suppressed.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -15149,7 +14918,6 @@ class Joint(core.Base):
         in the assembly context is not visible because its light bulb is off or the joints folder
         is light bulb is off.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -15209,7 +14977,6 @@ class Joint(core.Base):
         """
         Gets and sets if the joint is locked.
         """
-        pass
 
     @property
     def entityToken(self) -> str:
@@ -15609,7 +15376,6 @@ class JointInput(core.Base):
         """
         Gets and sets the first JointGeometry or JointOrigin for this joint.
         """
-        pass
 
     @property
     def geometryOrOriginTwo(self) -> core.Base:
@@ -15623,7 +15389,6 @@ class JointInput(core.Base):
         """
         Gets and sets the second JointGeometry or JointOrigin for this joint.
         """
-        pass
 
     @property
     def angle(self) -> core.ValueInput:
@@ -15649,7 +15414,6 @@ class JointInput(core.Base):
         When using a real value to define the angle, the value is in radians. When
         using a string the expression is evaluated using the document default units for angles.
         """
-        pass
 
     @property
     def offset(self) -> core.ValueInput:
@@ -15675,7 +15439,6 @@ class JointInput(core.Base):
         When using a real value to define the offset, the value is in centimeters. When
         using a string the expression is evaluated using the document default units for distance.
         """
-        pass
 
     @property
     def isFlipped(self) -> bool:
@@ -15693,7 +15456,6 @@ class JointInput(core.Base):
         specifying if the third axis of the two input geometries is facing (false) or
         opposed (true).
         """
-        pass
 
     @property
     def jointMotion(self) -> JointMotion:
@@ -15731,7 +15493,6 @@ class JointLimits(core.Base):
         or radians depending on if the joint value this is associated with
         defines a distance or an angle.
         """
-        pass
 
     @property
     def maximumValue(self) -> float:
@@ -15749,7 +15510,6 @@ class JointLimits(core.Base):
         or radians depending on if the joint value this is associated with
         defines a distance or an angle.
         """
-        pass
 
     @property
     def restValue(self) -> float:
@@ -15767,7 +15527,6 @@ class JointLimits(core.Base):
         or radians depending on if the joint value this is associated with
         defines a distance or an angle.
         """
-        pass
 
     @property
     def isMinimumValueEnabled(self) -> bool:
@@ -15781,7 +15540,6 @@ class JointLimits(core.Base):
         """
         Gets and sets whether the minimum joint limit is enabled or not.
         """
-        pass
 
     @property
     def isMaximumValueEnabled(self) -> bool:
@@ -15795,7 +15553,6 @@ class JointLimits(core.Base):
         """
         Gets and sets whether the maximum joint limit is enabled or not.
         """
-        pass
 
     @property
     def isRestValueEnabled(self) -> bool:
@@ -15809,7 +15566,6 @@ class JointLimits(core.Base):
         """
         Gets and sets whether the resting joint value is enabled or not.
         """
-        pass
 
 
 class JointList(core.Base):
@@ -15926,7 +15682,6 @@ class JointOrigin(core.Base):
         """
         Gets and sets the name of this joint origin. This is the name seen by the user in the timeline.
         """
-        pass
 
     @property
     def geometry(self) -> JointGeometry:
@@ -15948,7 +15703,6 @@ class JointOrigin(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: joint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def angle(self) -> ModelParameter:
@@ -16000,7 +15754,6 @@ class JointOrigin(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: joint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def xAxisEntity(self) -> core.Base:
@@ -16022,7 +15775,6 @@ class JointOrigin(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: joint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def zAxisEntity(self) -> core.Base:
@@ -16044,7 +15796,6 @@ class JointOrigin(core.Base):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: joint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def primaryAxisVector(self) -> core.Vector3D:
@@ -16139,7 +15890,6 @@ class JointOrigin(core.Base):
         in the assembly context is not visible because its light bulb is off or the joint origins folder
         light bulb is off.
         """
-        pass
 
 
 class JointOriginInput(core.Base):
@@ -16170,7 +15920,6 @@ class JointOriginInput(core.Base):
         Gets and sets the joint geometry for this joint origin input. This
         defines the location of the joint origin.
         """
-        pass
 
     @property
     def angle(self) -> core.ValueInput:
@@ -16188,7 +15937,6 @@ class JointOriginInput(core.Base):
         if it's not specified. The value defines an angle and if the ValueInput is defined using
         the createByReal method the value is assumed to be radians.
         """
-        pass
 
     @property
     def offsetX(self) -> core.ValueInput:
@@ -16206,7 +15954,6 @@ class JointOriginInput(core.Base):
         if it's not specified. The value defines a distance and if the ValueInput is defined using
         the createByReal method the value is assumed to be centimeters.
         """
-        pass
 
     @property
     def offsetY(self) -> core.ValueInput:
@@ -16224,7 +15971,6 @@ class JointOriginInput(core.Base):
         if it's not specified. The value defines a distance and if the ValueInput is defined using
         the createByReal method the value is assumed to be centimeters.
         """
-        pass
 
     @property
     def offsetZ(self) -> core.ValueInput:
@@ -16242,7 +15988,6 @@ class JointOriginInput(core.Base):
         if it's not specified. The value defines a distance and if the ValueInput is defined using
         the createByReal method the value is assumed to be centimeters.
         """
-        pass
 
     @property
     def isFlipped(self) -> bool:
@@ -16256,7 +16001,6 @@ class JointOriginInput(core.Base):
         """
         Gets and sets if the joint origin direction is flipped or not.
         """
-        pass
 
     @property
     def xAxisEntity(self) -> core.Base:
@@ -16272,7 +16016,6 @@ class JointOriginInput(core.Base):
         Gets and sets the entity that defines the X axis direction. This defaults
         to null meaning the X axis is inferred from the input geometry.
         """
-        pass
 
     @property
     def zAxisEntity(self) -> core.Base:
@@ -16288,7 +16031,6 @@ class JointOriginInput(core.Base):
         Gets and sets the entity that defines the Z axis direction. This defaults
         to null meaning the Z axis is inferred from the input geometry.
         """
-        pass
 
     @property
     def primaryAxisVector(self) -> core.Vector3D:
@@ -16549,7 +16291,6 @@ class LoftCenterLineOrRail(core.Base):
         If this LoftCenterLineOrRail object is associated with a created feature, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def edgeCondition(self) -> LoftRailEdgeConditions:
@@ -16575,7 +16316,6 @@ class LoftCenterLineOrRail(core.Base):
         If this LoftCenterLineOrRail object is associated with a created feature, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class LoftCenterLineOrRails(core.Base):
@@ -16711,7 +16451,6 @@ class LoftFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the loft.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -16731,7 +16470,6 @@ class LoftFeatureInput(core.Base):
         when the loft is being created in another component AND the loft is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def isSolid(self) -> bool:
@@ -16747,7 +16485,6 @@ class LoftFeatureInput(core.Base):
         Specifies if the loft should be created as a solid or surface. This is
         initialized to true so a solid will attempt to be created if it's not changed.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -16775,7 +16512,6 @@ class LoftFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -16801,7 +16537,6 @@ class LoftFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
     @property
     def isClosed(self) -> bool:
@@ -16817,7 +16552,6 @@ class LoftFeatureInput(core.Base):
         Specifies if the loft closes back on itself. In other words, the first section is also
         used as the last section and the connection is smooth. This property defaults to false.
         """
-        pass
 
     @property
     def isTangentEdgesMerged(self) -> bool:
@@ -16835,7 +16569,6 @@ class LoftFeatureInput(core.Base):
         faces in the resulting loft surface. If true, the faces will be merged so the connecting
         edge no longer exists
         """
-        pass
 
 
 class LoftFeatures(core.Base):
@@ -17047,7 +16780,6 @@ class LoftSection(core.Base):
         If this LoftSection object is associated with a created feature, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def index(self) -> int:
@@ -17251,7 +16983,6 @@ class MeshBody(core.Base):
         """
         Gets and sets the name of the mesh body as displayed in the browser.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -17265,7 +16996,6 @@ class MeshBody(core.Base):
         """
         Gets and sets if the mesh body is selectable in the graphics window.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -17285,7 +17015,6 @@ class MeshBody(core.Base):
         the light bulb can be on and the mesh body is still invisible if the light bulb
         for all bodies or the owning component is off.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -17362,7 +17091,6 @@ class MeshBody(core.Base):
         """
         Gets and sets the physical material assigned to this mesh body.
         """
-        pass
 
     @property
     def appearance(self) -> core.Appearance:
@@ -17380,7 +17108,6 @@ class MeshBody(core.Base):
         an override appearance to the body and the AppearanceSourceType property will return OverrideAppearanceSource. Setting
         this property to null will remove any override.
         """
-        pass
 
     @property
     def appearanceSourceType(self) -> core.AppearanceSourceTypes:
@@ -17424,7 +17151,6 @@ class MeshBody(core.Base):
 
         This is the API equivalent of the "Opacity Control" command available for the body in the browser.
         """
-        pass
 
     @property
     def visibleOpacity(self) -> float:
@@ -17610,7 +17336,6 @@ class MirrorFeatureInput(core.Base):
         The input must all be of a single type. For example, you can't provide a body and a component but
         the collection must be either all bodies or all components.
         """
-        pass
 
     @property
     def mirrorPlane(self) -> core.Base:
@@ -17624,7 +17349,6 @@ class MirrorFeatureInput(core.Base):
         """
         Gets and sets the mirror plane. This can be either a planar face or construction plane.
         """
-        pass
 
     @property
     def patternComputeOption(self) -> PatternComputeOptions:
@@ -17640,7 +17364,6 @@ class MirrorFeatureInput(core.Base):
         Gets and sets the compute option when mirroring features. The default value for this is AdjustPatternCompute.
         This property only applies when mirroring features and is ignored in the direct modeling environment.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -17668,7 +17391,6 @@ class MirrorFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def isCombine(self) -> bool:
@@ -17692,7 +17414,6 @@ class MirrorFeatureInput(core.Base):
         If any input object is not a body, then this setting is ignored.
         Default is false.
         """
-        pass
 
     @property
     def stitchTolerance(self) -> core.ValueInput:
@@ -17708,7 +17429,6 @@ class MirrorFeatureInput(core.Base):
         Gets and sets the ValueInput object that defines the Stitching Tolerance (length)
         to use when doing a mirror and combine for surface bodies.
         """
-        pass
 
 
 class MirrorFeatures(core.Base):
@@ -17989,7 +17709,6 @@ class MoveFeatureInput(core.Base):
         An ObjectCollection containing the objects to move. The collection can contain
         BRepBody or BRepFace objects but not a mixture of the two types.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -18017,7 +17736,6 @@ class MoveFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class MoveFeatures(core.Base):
@@ -18235,7 +17953,6 @@ class Occurrence(core.Base):
         contents of the occurrence are displayed using there defined appearance.
         Setting the property to null will remove any override appearance for this occurrence.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -18255,7 +17972,6 @@ class Occurrence(core.Base):
         the light bulb can be on and the occurrence still invisible if a higher level occurrence
         in the assembly context is not visible because its light bulb is off.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -18305,7 +18021,6 @@ class Occurrence(core.Base):
         """
         Gets and sets whether this occurrence is grounded or not.
         """
-        pass
 
     @property
     def isSelectable(self) -> bool:
@@ -18319,7 +18034,6 @@ class Occurrence(core.Base):
         """
         Gets and sets whether this occurrence is selectable or not.
         """
-        pass
 
     @property
     def isIsolated(self) -> bool:
@@ -18341,7 +18055,6 @@ class Occurrence(core.Base):
         that is currently isolated. Setting this property to false for an occurrence that is
         current isolated will un-isolate it so that no occurrence will be isolated.
         """
-        pass
 
     @property
     def isActive(self) -> bool:
@@ -18457,7 +18170,6 @@ class Occurrence(core.Base):
         Gets and sets the 3d matrix data that defines this occurrences orientation and
         position in its assembly context
         """
-        pass
 
     @property
     def documentReference(self) -> core.DocumentReference:
@@ -18705,7 +18417,6 @@ class OffsetFeatureInput(core.Base):
         """
         An ObjectCollection containing the BRepFace objects being offset.
         """
-        pass
 
     @property
     def isChainSelection(self) -> bool:
@@ -18719,7 +18430,6 @@ class OffsetFeatureInput(core.Base):
         """
         Get and sets whether faces that are tangentially connected to the input faces will be included in the offset.
         """
-        pass
 
     @property
     def distance(self) -> core.ValueInput:
@@ -18735,7 +18445,6 @@ class OffsetFeatureInput(core.Base):
         Gets and sets the ValueInput object that defines the offset distance. A positive distance value results
         in an offset in the positive normal direction of the faces.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -18749,7 +18458,6 @@ class OffsetFeatureInput(core.Base):
         """
         Gets and sets the feature operation to perform. Can be 'NewBodyFeatureOperation' or 'NewComponentFeatureOperation'.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -18777,7 +18485,6 @@ class OffsetFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class OffsetFeatures(core.Base):
@@ -18886,7 +18593,6 @@ class Parameter(core.Base):
         Gets and sets the real value (a double) of the parameter in database units.
         Setting this property will set/reset the expression value for this parameter
         """
-        pass
 
     @property
     def expression(self) -> str:
@@ -18900,7 +18606,6 @@ class Parameter(core.Base):
         """
         Gets and sets the expression (i.e. "22.064 mm") used to calculate the value of the parameter
         """
-        pass
 
     @property
     def name(self) -> str:
@@ -18916,7 +18621,6 @@ class Parameter(core.Base):
         Gets and sets the name of the parameter. Setting the name can fail if the name
         is not unique with respect to all other parameters in the design.
         """
-        pass
 
     @property
     def unit(self) -> str:
@@ -18938,7 +18642,6 @@ class Parameter(core.Base):
         """
         The comment associated with this parameter
         """
-        pass
 
     @property
     def isFavorite(self) -> bool:
@@ -18954,7 +18657,6 @@ class Parameter(core.Base):
         Gets and sets whether this parameter is included in the Favorites list in the
         parameters dialog
         """
-        pass
 
     @property
     def dependentParameters(self) -> ParameterList:
@@ -19205,7 +18907,6 @@ class PatchFeatureInput(core.Base):
 
         If a Path is used as input, it must define a closed shape.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -19221,7 +18922,6 @@ class PatchFeatureInput(core.Base):
         Gets and sets the type of operation performed by the patch feature. Only 'NewBodyFeatureOperation' and 'NewComponentFeatureOperation' are
         valid operations for patch features.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -19249,7 +18949,6 @@ class PatchFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -19269,7 +18968,6 @@ class PatchFeatureInput(core.Base):
         in another component AND (the Patch feature) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def interiorRailsAndPoints(self) -> core.ObjectCollection:
@@ -19299,7 +18997,6 @@ class PatchFeatureInput(core.Base):
 
         Can be set to null to remove any interior rails and points from the patch.
         """
-        pass
 
     @property
     def isGroupEdges(self) -> bool:
@@ -19331,7 +19028,6 @@ class PatchFeatureInput(core.Base):
         the same continuity and weight. This is typically set to false as a side-effect
         of calling the setContinuity method.
         """
-        pass
 
     @property
     def groupContinuity(self) -> SurfaceContinuityTypes:
@@ -19349,7 +19045,6 @@ class PatchFeatureInput(core.Base):
         is used to determine how the patch connects to any B-Rep edges in the boundary. It is ignored for any sketch curves in the
         boundary. The property defaults to ConnectedSurfaceContinuityType. The value of this property is ignored if the isGroupEdges property is false.
         """
-        pass
 
     @property
     def groupWeight(self) -> float:
@@ -19365,7 +19060,6 @@ class PatchFeatureInput(core.Base):
         Gets and sets the weight to use for all edges when the isGroupEdges property is true. It is ignored for any sketch curves
         in the boundary. The property defaults to 0.5. The value of this property is ignored if the isGroupEdges property is false.
         """
-        pass
 
     @property
     def groupIsContinuityDirectionFlipped(self) -> bool:
@@ -19381,7 +19075,6 @@ class PatchFeatureInput(core.Base):
         Gets and sets the continuity direction for all edges when the isGroupEdges property is true. It is ignored for any sketch curves
         in the boundary. The property defaults to false. The value of this property is ignored if the isGroupEdges property is false.
         """
-        pass
 
 
 class PatchFeatures(core.Base):
@@ -19675,7 +19368,6 @@ class PathPatternFeatureInput(core.Base):
         All of the entities must be of a single type. For example, it can't contain features and occurrences
         but only features or occurrences.
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -19689,7 +19381,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets the path to create the pattern on path.
         """
-        pass
 
     @property
     def quantity(self) -> core.ValueInput:
@@ -19703,7 +19394,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets quantity of the elements.
         """
-        pass
 
     @property
     def distance(self) -> core.ValueInput:
@@ -19717,7 +19407,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets the distance.
         """
-        pass
 
     @property
     def startPoint(self) -> float:
@@ -19733,7 +19422,6 @@ class PathPatternFeatureInput(core.Base):
         Gets and sets the start point on the path to count the distance.
         It's between 0 and 1. 0 means start point of the path, 1 means end point of the path.
         """
-        pass
 
     @property
     def isFlipDirection(self) -> bool:
@@ -19747,7 +19435,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets if flip the direction from start point.
         """
-        pass
 
     @property
     def patternDistanceType(self) -> PatternDistanceType:
@@ -19761,7 +19448,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets how the distance between elements is computed.
         """
-        pass
 
     @property
     def isSymmetric(self) -> bool:
@@ -19775,7 +19461,6 @@ class PathPatternFeatureInput(core.Base):
         """
         Gets and sets if the pattern is in one direction or symmetric.
         """
-        pass
 
     @property
     def isOrientationAlongPath(self) -> bool:
@@ -19791,7 +19476,6 @@ class PathPatternFeatureInput(core.Base):
         Gets and sets if the orientation is along path.
         If false, the orientation is identical.
         """
-        pass
 
     @property
     def patternComputeOption(self) -> PatternComputeOptions:
@@ -19807,7 +19491,6 @@ class PathPatternFeatureInput(core.Base):
         Gets and sets the compute option when patterning features. The default value for this is AdjustPatternCompute.
         This property only applies when patterning features and is ignored in the direct modeling environment.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -19835,7 +19518,6 @@ class PathPatternFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class PathPatternFeatures(core.Base):
@@ -19965,7 +19647,6 @@ class PatternElement(core.Base):
         """
         Gets and sets whether the element is suppressed or not. A value of True indicates it is suppressed
         """
-        pass
 
     @property
     def transform(self) -> core.Matrix3D:
@@ -20167,7 +19848,6 @@ class PipeFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the Pipe.
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -20181,7 +19861,6 @@ class PipeFeatureInput(core.Base):
         """
         Gets and sets the path to create the Pipe.
         """
-        pass
 
     @property
     def sectionType(self) -> PipeSectionTypes:
@@ -20197,7 +19876,6 @@ class PipeFeatureInput(core.Base):
         Gets and sets the section type of the Pipe.
         The type can be: Circular, Square, Triangular.
         """
-        pass
 
     @property
     def sectionSize(self) -> core.ValueInput:
@@ -20211,7 +19889,6 @@ class PipeFeatureInput(core.Base):
         """
         Gets and sets the section size of the Pipe.
         """
-        pass
 
     @property
     def isHollow(self) -> bool:
@@ -20229,7 +19906,6 @@ class PipeFeatureInput(core.Base):
 
         Setting this to true will default the sectionThickness to 0.1 cm.
         """
-        pass
 
     @property
     def sectionThickness(self) -> core.ValueInput:
@@ -20247,7 +19923,6 @@ class PipeFeatureInput(core.Base):
 
         Setting this will also set the isHollow setting to true.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -20267,7 +19942,6 @@ class PipeFeatureInput(core.Base):
         in another component AND (the Pipe) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -20295,7 +19969,6 @@ class PipeFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def distanceOne(self) -> core.ValueInput:
@@ -20323,7 +19996,6 @@ class PipeFeatureInput(core.Base):
 
         This property returns null in the case where the feature is non-parametric.
         """
-        pass
 
     @property
     def distanceTwo(self) -> core.ValueInput:
@@ -20351,7 +20023,6 @@ class PipeFeatureInput(core.Base):
 
         This property returns null in the case where the feature is non-parametric.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -20377,7 +20048,6 @@ class PipeFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
 
 class PipeFeatures(core.Base):
@@ -21011,7 +20681,6 @@ class RectangularPatternConstraintInput(core.Base):
         Gets and sets the entities to pattern. Sketch points and curves are valid
         entities to pattern.
         """
-        pass
 
     @property
     def directionOneEntity(self) -> SketchLine:
@@ -21029,7 +20698,6 @@ class RectangularPatternConstraintInput(core.Base):
         to use the default which is the X-axis of the sketch. Setting this property
         to null will automatically clear directionTwoEntity, if it has been set.
         """
-        pass
 
     @property
     def directionTwoEntity(self) -> SketchLine:
@@ -21047,7 +20715,6 @@ class RectangularPatternConstraintInput(core.Base):
         to use the default which is perpendicular to direction one. The directionOneEntity
         property must be set before setting this property.
         """
-        pass
 
     @property
     def quantityOne(self) -> core.ValueInput:
@@ -21061,7 +20728,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets the number of instances in the first direction.
         """
-        pass
 
     @property
     def quantityTwo(self) -> core.ValueInput:
@@ -21075,7 +20741,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets the number of instances in the second direction.
         """
-        pass
 
     @property
     def distanceOne(self) -> core.ValueInput:
@@ -21089,7 +20754,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets the distance in the first direction.
         """
-        pass
 
     @property
     def distanceTwo(self) -> core.ValueInput:
@@ -21103,7 +20767,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets the distance in the second direction.
         """
-        pass
 
     @property
     def isSymmetricInDirectionOne(self) -> bool:
@@ -21117,7 +20780,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets if the pattern in direction one is in one direction or is symmetric.
         """
-        pass
 
     @property
     def isSymmetricInDirectionTwo(self) -> bool:
@@ -21131,7 +20793,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets if the pattern in direction two is in one direction or is symmetric.
         """
-        pass
 
     @property
     def distanceType(self) -> PatternDistanceType:
@@ -21145,7 +20806,6 @@ class RectangularPatternConstraintInput(core.Base):
         """
         Gets and sets how the distance between elements is computed.
         """
-        pass
 
     @property
     def isSuppressed(self) -> list[bool]:
@@ -21193,7 +20853,6 @@ class RectangularPatternConstraintInput(core.Base):
         will be the first element in the row next to the first row that contains the
         original geometry.
         """
-        pass
 
 
 class RectangularPatternFeatureInput(core.Base):
@@ -21245,7 +20904,6 @@ class RectangularPatternFeatureInput(core.Base):
         All of the entities must be of a single type. For example, it can't contain features and occurrences
         but only features or occurrences.
         """
-        pass
 
     @property
     def directionOneEntity(self) -> core.Base:
@@ -21263,7 +20921,6 @@ class RectangularPatternFeatureInput(core.Base):
         This can be a linear edge, construction axis, sketch line or rectangular pattern feature.
         If a rectangular pattern feature is set, the directionOneEntity and directionTwoEntity properties return the same rectangular pattern feature.
         """
-        pass
 
     @property
     def directionTwoEntity(self) -> core.Base:
@@ -21281,7 +20938,6 @@ class RectangularPatternFeatureInput(core.Base):
         This can be a linear edge, construction axis, sketch line or rectangular pattern feature.
         If a rectangular pattern feature is set, the directionOneEntity and directionTwoEntity properties return the same rectangular pattern feature.
         """
-        pass
 
     @property
     def quantityOne(self) -> core.ValueInput:
@@ -21295,7 +20951,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets the number of instances in the first direction.
         """
-        pass
 
     @property
     def quantityTwo(self) -> core.ValueInput:
@@ -21309,7 +20964,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets the number of instances in the second direction.
         """
-        pass
 
     @property
     def distanceOne(self) -> core.ValueInput:
@@ -21323,7 +20977,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets the distance in the first direction.
         """
-        pass
 
     @property
     def distanceTwo(self) -> core.ValueInput:
@@ -21337,7 +20990,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets the distance in the second direction.
         """
-        pass
 
     @property
     def directionOne(self) -> core.Vector3D:
@@ -21365,7 +21017,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets if the pattern in direction one is in one direction or symmetric.
         """
-        pass
 
     @property
     def isSymmetricInDirectionTwo(self) -> bool:
@@ -21379,7 +21030,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets if the pattern in direction two is in one direction or symmetric.
         """
-        pass
 
     @property
     def patternDistanceType(self) -> PatternDistanceType:
@@ -21393,7 +21043,6 @@ class RectangularPatternFeatureInput(core.Base):
         """
         Gets and sets how the distance between elements is computed.
         """
-        pass
 
     @property
     def patternComputeOption(self) -> PatternComputeOptions:
@@ -21409,7 +21058,6 @@ class RectangularPatternFeatureInput(core.Base):
         Gets and sets the compute option when patterning features. The default value for this is AdjustPatternCompute.
         This property only applies when patterning features and is ignored in the direct modeling environment.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -21437,7 +21085,6 @@ class RectangularPatternFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class RectangularPatternFeatures(core.Base):
@@ -21744,7 +21391,6 @@ class RenderEventHandler(core.EventHandler):
         The function called by Fusion 360 when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class RenderFuture(core.Base):
@@ -21849,7 +21495,6 @@ class Rendering(core.Base):
         The default value is the aspect ratio defined in the scene settings.
         The width and height must be between 108 and 4000 pixels.
         """
-        pass
 
     @property
     def renderQuality(self) -> int:
@@ -21867,7 +21512,6 @@ class Rendering(core.Base):
         value between 25 and 100, where 75 is the equivalent of "Final" and 100 is
         the same as "Excellent" in the user interface. The default value is 75
         """
-        pass
 
     @property
     def isBackgroundTransparent(self) -> bool:
@@ -21883,7 +21527,6 @@ class Rendering(core.Base):
         Specifies if the background of the rendering should be transparent. The default
         is false, which means it will not be transparent.
         """
-        pass
 
     @property
     def resolution(self) -> RenderResolutions:
@@ -21905,7 +21548,6 @@ class Rendering(core.Base):
         to CustomRenderResolution. Setting this to anything except CustomRenderResolution, will also have
         the side effect of setting the aspect ratio.
         """
-        pass
 
     @property
     def resolutionHeight(self) -> int:
@@ -21923,7 +21565,6 @@ class Rendering(core.Base):
         aspect ratio, the resolution width will be modified to maintain the specified aspect ratio.
         The height must be between 108 and 4000 pixels.
         """
-        pass
 
     @property
     def resolutionWidth(self) -> int:
@@ -21941,7 +21582,6 @@ class Rendering(core.Base):
         aspect ratio, the resolution height will be modified to maintain the specified aspect ratio.
         The width must be between 108 and 4000 pixels.
         """
-        pass
 
 
 class RenderManager(core.Base):
@@ -22041,7 +21681,6 @@ class ReplaceFaceFeatureInput(core.Base):
         Gets and sets the entities that define the source faces to perform replace.
         The collection can contain the faces from a solid and/or from features. All the faces must be on the same body.
         """
-        pass
 
     @property
     def targetFaces(self) -> core.Base:
@@ -22057,7 +21696,6 @@ class ReplaceFaceFeatureInput(core.Base):
         Gets and sets the entities that define the target faces. The new faces must completely intersect the part.
         The collection can contain the surface faces, surface bodies and construction planes.
         """
-        pass
 
     @property
     def isTangentChain(self) -> bool:
@@ -22073,7 +21711,6 @@ class ReplaceFaceFeatureInput(core.Base):
         Gets and sets if any faces that are tangentially connected to any of
         the input faces will also be included in setting InputEntities. It defaults to true.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -22101,7 +21738,6 @@ class ReplaceFaceFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ReplaceFaceFeatures(core.Base):
@@ -22334,7 +21970,6 @@ class RevolveFeatureInput(core.Base):
         methods of the Component object to create an open profile. The isSolid property of the
         RevolveFeatureInput property must also be False.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -22348,7 +21983,6 @@ class RevolveFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the revolve.
         """
-        pass
 
     @property
     def axis(self) -> core.Base:
@@ -22366,7 +22000,6 @@ class RevolveFeatureInput(core.Base):
         The axis can be a sketch line, construction axis, or linear edge. If it is not in
         the same plane as the profile, it is projected onto the profile plane.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -22386,7 +22019,6 @@ class RevolveFeatureInput(core.Base):
         in another component AND (the Revolve) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def isSolid(self) -> bool:
@@ -22404,7 +22036,6 @@ class RevolveFeatureInput(core.Base):
         it's a surface then there aren't any end caps and it's open. This is
         initialized to true so a solid will be created if it's not changed.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -22432,7 +22063,6 @@ class RevolveFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -22458,7 +22088,6 @@ class RevolveFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
     @property
     def isProjectAxis(self) -> bool:
@@ -22478,7 +22107,6 @@ class RevolveFeatureInput(core.Base):
         Setting this to true will use a projected axis, while setting it to false will keep it in its original location.
         This is initialized to false so the selected axis will be used in the feature.
         """
-        pass
 
 
 class RevolveFeatures(core.Base):
@@ -22667,7 +22295,6 @@ class RigidGroup(core.Base):
         """
         Gets and sets the name of the rigid group as seen in the timeline.
         """
-        pass
 
     @property
     def occurrences(self) -> OccurrenceList:
@@ -22695,7 +22322,6 @@ class RigidGroup(core.Base):
         """
         Gets and sets if this rigid group is suppressed.
         """
-        pass
 
     @property
     def nativeObject(self) -> RigidGroup:
@@ -22751,7 +22377,6 @@ class RigidGroup(core.Base):
         """
         Gets and sets whether the occurrences that are part of this rigid group are visible or not.
         """
-        pass
 
 
 class RigidGroupList(core.Base):
@@ -23015,7 +22640,6 @@ class RuledSurfaceFeatureInput(core.Base):
         Gets and sets the Profile object that defines the sketch geometry or edges that define the shape of
         the ruled surface. The Component.createBRepEdgeProfile method is useful to create a profile defined from edges.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -23035,7 +22659,6 @@ class RuledSurfaceFeatureInput(core.Base):
         in another component AND (the Ruled Surface) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def distance(self) -> core.ValueInput:
@@ -23051,7 +22674,6 @@ class RuledSurfaceFeatureInput(core.Base):
         Gets and sets the ValueInput object that defines the Ruled Surface distance. If the value input is
         a real value it will define the distance in centimeters.
         """
-        pass
 
     @property
     def angle(self) -> core.ValueInput:
@@ -23067,7 +22689,6 @@ class RuledSurfaceFeatureInput(core.Base):
         Gets and sets the ValueInput object that defines the Ruled Surface angle.
         If the input is a real value, the units are radians.
         """
-        pass
 
     @property
     def ruledSurfaceType(self) -> RuledSurfaceTypes:
@@ -23085,7 +22706,6 @@ class RuledSurfaceFeatureInput(core.Base):
         use the direction property to set the direction entity, which will automatically set
         this to DirectionRuledSurfaceType.
         """
-        pass
 
     @property
     def direction(self) -> core.Base:
@@ -23111,7 +22731,6 @@ class RuledSurfaceFeatureInput(core.Base):
         changed to DirectionRuledSurfaceType. If you get this property when the direction is not DirectionRuledSurfaceType,
         it will return null.
         """
-        pass
 
     @property
     def alternateFace(self) -> bool:
@@ -23135,7 +22754,6 @@ class RuledSurfaceFeatureInput(core.Base):
         the edge connects to two faces. This setting toggles which of the two faces will
         be used for measuring the angle.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -23163,7 +22781,6 @@ class RuledSurfaceFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -23177,7 +22794,6 @@ class RuledSurfaceFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the ruled surface.
         """
-        pass
 
     @property
     def cornerType(self) -> RuledSurfaceCornerTypes:
@@ -23193,7 +22809,6 @@ class RuledSurfaceFeatureInput(core.Base):
         Gets and sets the corner type for the ruled surface, indicating if the corners will be rounded or mitered.
         The default value is rounded.
         """
-        pass
 
 
 class RuledSurfaceFeatures(core.Base):
@@ -23364,7 +22979,6 @@ class ScaleFeatureInput(core.Base):
         It can contain sketches, BRep bodies, T-Spline bodies, mesh bodies, root component and occurrences in non-parametric modeling.
         If the scaling is non-uniform (the isUniform property is false), this collection cannot contain sketches or components.
         """
-        pass
 
     @property
     def point(self) -> core.Base:
@@ -23378,7 +22992,6 @@ class ScaleFeatureInput(core.Base):
         """
         Gets and sets the origin point of the scale. This can be a BRepVertex, a SketchPoint or a ConstructionPoint.
         """
-        pass
 
     @property
     def scaleFactor(self) -> core.ValueInput:
@@ -23394,7 +23007,6 @@ class ScaleFeatureInput(core.Base):
         Gets and sets the scale factor used for a uniform scale.
         Setting this value will cause the isUniform property to be set to true.
         """
-        pass
 
     @property
     def isUniform(self) -> bool:
@@ -23450,7 +23062,6 @@ class ScaleFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ScaleFeatures(core.Base):
@@ -23568,7 +23179,6 @@ class SceneSettings(core.Base):
         Gets and sets the brightness or luminance of the scene. This must be a value between
         0 and 100,000 and is in lux units.
         """
-        pass
 
     @property
     def groundPosition(self) -> core.Point3D:
@@ -23596,7 +23206,6 @@ class SceneSettings(core.Base):
         the offset and location of the texture on the ground. The lightAngle
         property controls the orientation of the texture.
         """
-        pass
 
     @property
     def groundOffset(self) -> float:
@@ -23624,7 +23233,6 @@ class SceneSettings(core.Base):
         the offset and location of the texture on the ground. The lightAngle
         property controls the orientation of the texture.
         """
-        pass
 
     @property
     def lightAngle(self) -> float:
@@ -23648,7 +23256,6 @@ class SceneSettings(core.Base):
         environment, this controls the rotation of the environment relative to
         the model.
         """
-        pass
 
     @property
     def backgroundSolidColor(self) -> core.Color:
@@ -23672,7 +23279,6 @@ class SceneSettings(core.Base):
         SolidColorRenderSceneBackgroundType. Setting this property will automatically
         set the background type to SolidColorRenderSceneBackgroundType.
         """
-        pass
 
     @property
     def backgroundEnvironment(self) -> RenderEnvironment:
@@ -23696,7 +23302,6 @@ class SceneSettings(core.Base):
         EnvironmentRenderSceneBackgroundType. Setting this property will automatically
         set the background type to EnvironmentRenderSceneBackgroundType.
         """
-        pass
 
     @property
     def backgroundType(self) -> RenderSceneBackgroundTypes:
@@ -23721,7 +23326,6 @@ class SceneSettings(core.Base):
         Gets and sets if the ground plane is displayed. The plane allows shadows
         on the ground and reflections if the isGroundReflections property is true.
         """
-        pass
 
     @property
     def isGroundFlattened(self) -> bool:
@@ -23737,7 +23341,6 @@ class SceneSettings(core.Base):
         Gets and sets if the ground plane is "textured" where the environment
         image is mapped as a texture.
         """
-        pass
 
     @property
     def isGroundReflections(self) -> bool:
@@ -23751,7 +23354,6 @@ class SceneSettings(core.Base):
         """
         Gets and sets if objects are reflected on the ground plane.
         """
-        pass
 
     @property
     def groundRoughness(self) -> float:
@@ -23769,7 +23371,6 @@ class SceneSettings(core.Base):
         of the reflection. This is only used when the isGroundReflections property
         is true. This is a value between 0 and 1, where 0 is smooth and 1 is rough.
         """
-        pass
 
     @property
     def cameraType(self) -> core.CameraTypes:
@@ -23783,7 +23384,6 @@ class SceneSettings(core.Base):
         """
         Gets and sets the type of camera to use when rendering the scene.
         """
-        pass
 
     @property
     def cameraFocalLength(self) -> float:
@@ -23803,7 +23403,6 @@ class SceneSettings(core.Base):
         viewport will also change the focal length. Focal length and perspective
         angle are two different ways to control the same setting.
         """
-        pass
 
     @property
     def cameraExposure(self) -> float:
@@ -23819,7 +23418,6 @@ class SceneSettings(core.Base):
         Gets and sets if the exposure of the camera as specified using the "Exposure Value" (EV). Valid
         values are between -15.0 and 25.0, inclusive.
         """
-        pass
 
     @property
     def isDepthOfFieldEnabled(self) -> bool:
@@ -23835,7 +23433,6 @@ class SceneSettings(core.Base):
         Gets and sets if the depth of field option is enabled. When setting this to true, use the
         centerOfFocus and depthOfFieldBlur properties to specify how the depth of field is defined.
         """
-        pass
 
     @property
     def centerOfFocus(self) -> core.Point3D:
@@ -23859,7 +23456,6 @@ class SceneSettings(core.Base):
         Setting this property has the side effect of setting the isDepthOfField property to true. If the
         isDepthOfFieldEnabled property is false, the value of this property is ignored.
         """
-        pass
 
     @property
     def depthOfFieldBlur(self) -> float:
@@ -23883,7 +23479,6 @@ class SceneSettings(core.Base):
         Setting this property has the side effect of setting the isDepthOfField property to true. If the
         isDepthOfFieldEnabled property is false, the value of this property is ignored.
         """
-        pass
 
     @property
     def aspectRatio(self) -> RenderAspectRatios:
@@ -23913,7 +23508,6 @@ class SceneSettings(core.Base):
         If this is set to CustomRenderAspectRatio, use the aspectRatioHeight and aspectRatioWidth to
         define the aspect ratio.
         """
-        pass
 
     @property
     def aspectRatioHeight(self) -> int:
@@ -23939,7 +23533,6 @@ class SceneSettings(core.Base):
         rendering locally or using the cloud. When setting this property the aspectRatio property is
         automatically set to CustomRenderAspectRatio.
         """
-        pass
 
     @property
     def aspectRatioWidth(self) -> int:
@@ -23965,7 +23558,6 @@ class SceneSettings(core.Base):
         rendering locally or using the cloud. When setting this property the aspectRatio property is
         automatically set to CustomRenderAspectRatio.
         """
-        pass
 
 
 class SectionAnalyses(core.Base):
@@ -24080,7 +23672,6 @@ class SectionAnalysisInput(core.Base):
         A property that gets and sets the planar entity used to define the cut plane and can be either
         a planar BRepFace or a ConstructionPlane object.
         """
-        pass
 
     @property
     def initialPosition(self) -> core.Matrix3D:
@@ -24110,7 +23701,6 @@ class SectionAnalysisInput(core.Base):
         applied to the initial position. This property allows you to get and set the
         transformation matrix.
         """
-        pass
 
     @property
     def sectionColor(self) -> core.Color:
@@ -24126,7 +23716,6 @@ class SectionAnalysisInput(core.Base):
         A property that gets and sets the color of the section. This property defaults to null,
         indicating that the component color should be used. The opacity value of the color is ignored.
         """
-        pass
 
     @property
     def isHatchShown(self) -> bool:
@@ -24142,7 +23731,6 @@ class SectionAnalysisInput(core.Base):
         A property that gets and sets if a hatch pattern should be shown on the section. This
         property defaults to true when the input is created.
         """
-        pass
 
 
 class SheetMetalRule(core.Base):
@@ -24180,7 +23768,6 @@ class SheetMetalRule(core.Base):
         The name of the sheet metal rule. When setting the name, it should be
         unique with respect to other sheet metal rules in the design or library.
         """
-        pass
 
     @property
     def thickness(self) -> SheetMetalRuleValue:
@@ -24204,7 +23791,6 @@ class SheetMetalRule(core.Base):
         The K Factor value that is used when calculating the flat pattern. It must be
         a value between 0 and 1.
         """
-        pass
 
     @property
     def gap(self) -> SheetMetalRuleValue:
@@ -24258,7 +23844,6 @@ class SheetMetalRule(core.Base):
         """
         Gets and sets the bend relief shape to use.
         """
-        pass
 
     @property
     def twoBendReliefShape(self) -> TwoBendReliefShapes:
@@ -24280,7 +23865,6 @@ class SheetMetalRule(core.Base):
         property will be set to IntersectionTwoBendReliefPlacement. For a round relief
         shape you can change the twoBendReliefPlacment property to TangentTwoBendReliefPlacement.
         """
-        pass
 
     @property
     def twoBendReliefSize(self) -> SheetMetalRuleValue:
@@ -24309,7 +23893,6 @@ class SheetMetalRule(core.Base):
         intersection is valid. For all other shapes, this property will return NoTwoBendReliefPlacement
         because the placement option is not used.
         """
-        pass
 
     @property
     def threeBendReliefShape(self) -> ThreeBendReliefShapes:
@@ -24323,7 +23906,6 @@ class SheetMetalRule(core.Base):
         """
         Gets and sets the relief shape to use when three bends intersect.
         """
-        pass
 
     @property
     def threeBendReliefRadius(self) -> SheetMetalRuleValue:
@@ -24356,7 +23938,6 @@ class SheetMetalRule(core.Base):
         This gets and sets which rule in a library is the default rule. This is only
         valid for rules in a library and will fail for rules in a design.
         """
-        pass
 
     @property
     def isUsed(self) -> bool:
@@ -24465,7 +24046,6 @@ class SheetMetalRuleValue(core.Base):
         expression of "3" will be 3 inches if the document units are inches or 3 mm if
         the document units are millimeters.
         """
-        pass
 
     @property
     def value(self) -> float:
@@ -24481,7 +24061,6 @@ class SheetMetalRuleValue(core.Base):
         Gets and sets the value of the sheet metal rule value in centimeters. Setting
         this value will create a new expression that is equivalent to the new value.
         """
-        pass
 
 
 class ShellFeatureInput(core.Base):
@@ -24513,7 +24092,6 @@ class ShellFeatureInput(core.Base):
         If IsTangentChain is true, all the faces that are tangentially connected to the input faces (if any) will also be included.
         Fails if any faces are input, and the owning bodies of the faces are also input.
         """
-        pass
 
     @property
     def isTangentChain(self) -> bool:
@@ -24529,7 +24107,6 @@ class ShellFeatureInput(core.Base):
         Gets and sets if any faces that are tangentially connected to any of
         the input faces will also be included in setting InputEntities. It defaults to true.
         """
-        pass
 
     @property
     def insideThickness(self) -> core.ValueInput:
@@ -24543,7 +24120,6 @@ class ShellFeatureInput(core.Base):
         """
         Gets and sets the inside thickness.
         """
-        pass
 
     @property
     def outsideThickness(self) -> core.ValueInput:
@@ -24557,7 +24133,6 @@ class ShellFeatureInput(core.Base):
         """
         Gets and sets the outside thickness.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -24577,7 +24152,6 @@ class ShellFeatureInput(core.Base):
         in another component AND (the shell) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -24605,7 +24179,6 @@ class ShellFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ShellFeatures(core.Base):
@@ -24703,7 +24276,6 @@ class SilhouetteSplitFeatureInput(core.Base):
         """
         Gets and sets the solid body to split.
         """
-        pass
 
     @property
     def viewDirection(self) -> core.Base:
@@ -24719,7 +24291,6 @@ class SilhouetteSplitFeatureInput(core.Base):
         Gets and sets the entity that defines the silhouette view direction, which can be a
         construction axis, linear BRepEdge, planar BRepFace or a construction plane.
         """
-        pass
 
     @property
     def operation(self) -> SilhouetteSplitOperations:
@@ -24733,7 +24304,6 @@ class SilhouetteSplitFeatureInput(core.Base):
         """
         Gets and sets the type of silhouette split operation to perform.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -24761,7 +24331,6 @@ class SilhouetteSplitFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class SilhouetteSplitFeatures(core.Base):
@@ -25065,7 +24634,6 @@ class Sketch(core.Base):
         """
         Gets and sets the name of this sketch as seen in the browser and timeline.
         """
-        pass
 
     @property
     def sketchPoints(self) -> SketchPoints:
@@ -25128,7 +24696,6 @@ class Sketch(core.Base):
         The transform is sensitive to the assembly context.
         Setting the transform will fail in the case where the sketch is parametric
         """
-        pass
 
     @property
     def isParametric(self) -> bool:
@@ -25158,7 +24725,6 @@ class Sketch(core.Base):
         bulb off which affects all of their children. This property indicates
         the final result and whether this body is actually visible or not.
         """
-        pass
 
     @property
     def areDimensionsShown(self) -> bool:
@@ -25174,7 +24740,6 @@ class Sketch(core.Base):
         Indicates if the dimensions of the sketch are displayed when the sketch is not active
         (in sketch edit mode)
         """
-        pass
 
     @property
     def areProfilesShown(self) -> bool:
@@ -25188,7 +24753,6 @@ class Sketch(core.Base):
         """
         Indicates if the profiles of the sketch are displayed
         """
-        pass
 
     @property
     def origin(self) -> core.Point3D:
@@ -25231,7 +24795,6 @@ class Sketch(core.Base):
 
         Setting this property is the equivalent of the Redefine command.
         """
-        pass
 
     @property
     def isComputeDeferred(self) -> bool:
@@ -25253,7 +24816,6 @@ class Sketch(core.Base):
         the sketch to recompute. This setting is not saved by the file and is
         always false when a file is opened.
         """
-        pass
 
     @property
     def profiles(self) -> Profiles:
@@ -25380,7 +24942,6 @@ class Sketch(core.Base):
         """
         Indicates if the constraints of the sketch are displayed when the sketch is active.
         """
-        pass
 
     @property
     def arePointsShown(self) -> bool:
@@ -25396,7 +24957,6 @@ class Sketch(core.Base):
         Indicates if the sketch points in the sketch are displayed. Points that are not connected to any other
         geometry will continue to be shown.
         """
-        pass
 
     @property
     def isLightBulbOn(self) -> bool:
@@ -25420,7 +24980,6 @@ class Sketch(core.Base):
         if all of it's parent nodes are also visible. Use the isVisible property
         to determine if it's actually visible.
         """
-        pass
 
     @property
     def entityToken(self) -> str:
@@ -25913,7 +25472,6 @@ class SketchDimension(core.Base):
         """
         Gets and sets position of the dimension text.
         """
-        pass
 
     @property
     def parentSketch(self) -> Sketch:
@@ -25953,7 +25511,6 @@ class SketchDimension(core.Base):
         Gets and sets if the dimension is Driving or is Driven. Setting this property to true for a given dimension
         may fail if the result would over constrain the sketch. Fusion 360 does not allow over-constrained sketches.
         """
-        pass
 
     @property
     def attributes(self) -> core.Attributes:
@@ -26009,7 +25566,6 @@ class SketchDimension(core.Base):
         The value is always in internal units which means that for dimensions that represent a distance, the value is in
         Centimeters and for dimensions representing an angle the value is in Radians.
         """
-        pass
 
 
 class SketchDimensionList(core.Base):
@@ -26512,7 +26068,6 @@ class SketchEntity(core.Base):
         Changing this property from true to false removes the reference.
         This property can not be set to true if it is already false.
         """
-        pass
 
     @property
     def isFixed(self) -> bool:
@@ -26526,7 +26081,6 @@ class SketchEntity(core.Base):
         """
         Indicates if this geometry is "fixed".
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -27216,7 +26770,6 @@ class SketchTextInput(core.Base):
         """
         Gets and sets the height of the text in centimeters.
         """
-        pass
 
     @property
     def text(self) -> str:
@@ -27230,7 +26783,6 @@ class SketchTextInput(core.Base):
         """
         Gets and sets the text.
         """
-        pass
 
     @property
     def fontName(self) -> str:
@@ -27244,7 +26796,6 @@ class SketchTextInput(core.Base):
         """
         Gets and sets the name of the font to use.
         """
-        pass
 
     @property
     def textStyle(self) -> TextStyles:
@@ -27260,7 +26811,6 @@ class SketchTextInput(core.Base):
         Gets and sets the text style to apply to the entire text. This is a bitwise enum so styles
         can be combined to apply multiple styles. For example you can apply bold and italic.
         """
-        pass
 
     @property
     def isHorizontalFlip(self) -> bool:
@@ -27274,7 +26824,6 @@ class SketchTextInput(core.Base):
         """
         Gets and sets if the text is flipped horizontally.
         """
-        pass
 
     @property
     def isVerticalFlip(self) -> bool:
@@ -27288,7 +26837,6 @@ class SketchTextInput(core.Base):
         """
         Gets and sets if the text is flipped vertically.
         """
-        pass
 
     @property
     def definition(self) -> SketchTextDefinition:
@@ -27391,7 +26939,6 @@ class Snapshot(core.Base):
         """
         Gets and sets the name of the snapshot as seen in the timeline.
         """
-        pass
 
     @property
     def timelineObject(self) -> TimelineObject:
@@ -27533,7 +27080,6 @@ class SplitBodyFeatureInput(core.Base):
         Gets and sets the input solid or open bodies to be split. This can be a
         single BRepBody or an ObjectCollection if multiple bodies are to be split.
         """
-        pass
 
     @property
     def splittingTool(self) -> core.Base:
@@ -27549,7 +27095,6 @@ class SplitBodyFeatureInput(core.Base):
         Gets and sets the entity that defines the splitting tool. The splitting tool is a single
         entity that can be either a solid or open BRepBody, construction plane, profile, or a face.
         """
-        pass
 
     @property
     def isSplittingToolExtended(self) -> bool:
@@ -27565,7 +27110,6 @@ class SplitBodyFeatureInput(core.Base):
         Gets and sets whether or not the splitting tool is to be automatically extended (if possible) so as to
         completely intersect the bodyToSplit.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -27593,7 +27137,6 @@ class SplitBodyFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class SplitBodyFeatures(core.Base):
@@ -27727,7 +27270,6 @@ class SplitFaceFeatureInput(core.Base):
         Gets and sets the faces to be split.
         The collection can contain one or more faces selected from solid and/or open bodies.
         """
-        pass
 
     @property
     def splittingTool(self) -> core.Base:
@@ -27745,7 +27287,6 @@ class SplitFaceFeatureInput(core.Base):
         ObjectCollection containing solid and/or open bodies, construction planes, faces, or sketch curves that partially
         or fully intersect the faces that are being split.
         """
-        pass
 
     @property
     def isSplittingToolExtended(self) -> bool:
@@ -27761,7 +27302,6 @@ class SplitFaceFeatureInput(core.Base):
         Gets and sets whether or not the splittingTool is to be automatically extended (if possible) so as to
         completely intersect the facesToSplit.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -27789,7 +27329,6 @@ class SplitFaceFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def splitType(self) -> SplitFaceSplitTypes:
@@ -27905,7 +27444,6 @@ class StitchFeatureInput(core.Base):
         """
         Gets and sets the surfaces to stitch together.
         """
-        pass
 
     @property
     def tolerance(self) -> core.ValueInput:
@@ -27919,7 +27457,6 @@ class StitchFeatureInput(core.Base):
         """
         Gets and sets the ValueInput object that defines the stitching tolerance. It must define a length.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -27935,7 +27472,6 @@ class StitchFeatureInput(core.Base):
         Gets and sets the feature operation to perform. This property value is only valid if the isSolid property returns
         true. Otherwise the value of this property is ignored.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -27963,7 +27499,6 @@ class StitchFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class StitchFeatures(core.Base):
@@ -28137,7 +27672,6 @@ class SweepFeatureInput(core.Base):
         an ObjectCollection consisting of multiple profiles and planar faces. When an
         ObjectCollection is used all of the profiles and faces must be co-planar.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -28151,7 +27685,6 @@ class SweepFeatureInput(core.Base):
         """
         Gets and sets the type of operation performed by the sweep.
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -28165,7 +27698,6 @@ class SweepFeatureInput(core.Base):
         """
         Gets and sets the path to create the sweep.
         """
-        pass
 
     @property
     def distanceOne(self) -> core.ValueInput:
@@ -28183,7 +27715,6 @@ class SweepFeatureInput(core.Base):
         The distance is a value from 0 to 1 indicating the position along the path where 0
         is at the start and 1 is at the end. The value is default to 1.0.
         """
-        pass
 
     @property
     def distanceTwo(self) -> core.ValueInput:
@@ -28205,7 +27736,6 @@ class SweepFeatureInput(core.Base):
         It is ignored if the path is only on one side of the profile or if the sweep definition includes a guide rail.
         It's always the distance against the normal of the profile if available.
         """
-        pass
 
     @property
     def orientation(self) -> SweepOrientationTypes:
@@ -28221,7 +27751,6 @@ class SweepFeatureInput(core.Base):
         Gets and sets the sweep orientation. It defaults to PerpendicularOrientationType.
         This property is ignored when a guide rail has been specified.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -28241,7 +27770,6 @@ class SweepFeatureInput(core.Base):
         in another component AND (the sweep) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
     @property
     def isSolid(self) -> bool:
@@ -28259,7 +27787,6 @@ class SweepFeatureInput(core.Base):
         it's a surface then there aren't any end caps and it's open. This is
         initialized to true so a solid will be created if it's not changed.
         """
-        pass
 
     @property
     def guideRail(self) -> Path:
@@ -28275,7 +27802,6 @@ class SweepFeatureInput(core.Base):
         Gets and sets the guide rail to create the sweep. This can be set to
         null to remove the guide rail definition and have a single path sweep feature.
         """
-        pass
 
     @property
     def isDirectionFlipped(self) -> bool:
@@ -28293,7 +27819,6 @@ class SweepFeatureInput(core.Base):
         This property only applies to sweep features that include a guide rail and whose path runs on both
         sides of the profile.
         """
-        pass
 
     @property
     def profileScaling(self) -> SweepProfileScalingOptions:
@@ -28309,7 +27834,6 @@ class SweepFeatureInput(core.Base):
         Gets and sets the sweep profile scaling option. It defaults to SweepProfileScaleOption.
         This property is only used when a guide rail has been specified.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -28337,7 +27861,6 @@ class SweepFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -28363,7 +27886,6 @@ class SweepFeatureInput(core.Base):
         This property can return null in the case where the feature has not been fully defined so that
         possible intersecting bodies can be computed.
         """
-        pass
 
     @property
     def taperAngle(self) -> core.ValueInput:
@@ -28381,7 +27903,6 @@ class SweepFeatureInput(core.Base):
         A negative angle will taper the sweep inward while a positive value will taper
         the sweep outward. This property is valid for both parametric and non-parametric extrusions.
         """
-        pass
 
     @property
     def twistAngle(self) -> core.ValueInput:
@@ -28397,7 +27918,6 @@ class SweepFeatureInput(core.Base):
         Gets and sets the twist angle of the sweep. This property is initialized with a twist angle of zero.
         This property is valid for both parametric and non-parametric extrusions.
         """
-        pass
 
     @property
     def extent(self) -> SweepExtentTypes:
@@ -28413,7 +27933,6 @@ class SweepFeatureInput(core.Base):
         Gets and sets the sweep extent type. It defaults to PerpendicularToPathExtentType.
         This property is ignored when a guide rail has not been specified.
         """
-        pass
 
 
 class SweepFeatures(core.Base):
@@ -28536,7 +28055,6 @@ class TangentRelationship(core.Base):
         """
         Gets and sets the name of the tangent relationship.
         """
-        pass
 
     @property
     def faceOne(self) -> core.Base:
@@ -28558,7 +28076,6 @@ class TangentRelationship(core.Base):
         tangent relationship. This can be accomplished using the following code:
         thisTangentRelationship.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def tangentFaces(self) -> core.Base:
@@ -28582,7 +28099,6 @@ class TangentRelationship(core.Base):
         tangent relationship. This can be accomplished using the following code:
         thisTangentRelationship.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def timelineObject(self) -> TimelineObject:
@@ -28624,7 +28140,6 @@ class TangentRelationship(core.Base):
         """
         Gets and sets if this tangent relationship is suppressed.
         """
-        pass
 
     @property
     def attributes(self) -> core.Attributes:
@@ -28704,7 +28219,6 @@ class TangentRelationshipInput(core.Base):
         """
         Gets and sets the first BRepFace object that will remain tangent to the set of specified tangent faces.
         """
-        pass
 
     @property
     def tangentFaces(self) -> core.Base:
@@ -28720,7 +28234,6 @@ class TangentRelationshipInput(core.Base):
         Gets and sets a single BRepFace object that is part of the body that faceOne will remain tangent to. All
         of the faces of the body will be used when computing the tangent relationship.
         """
-        pass
 
 
 class TangentRelationships(core.Base):
@@ -29132,7 +28645,6 @@ class ThickenFeatureInput(core.Base):
         """
         An ObjectCollection containing the face and/or patch bodies to thicken.
         """
-        pass
 
     @property
     def thickness(self) -> core.ValueInput:
@@ -29146,7 +28658,6 @@ class ThickenFeatureInput(core.Base):
         """
         Gets and sets the ValueInput object that defines the thickness distance.
         """
-        pass
 
     @property
     def isSymmetric(self) -> bool:
@@ -29160,7 +28671,6 @@ class ThickenFeatureInput(core.Base):
         """
         Gets and sets whether to add thickness symmetrically or only on one side of the face/s to thicken
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -29174,7 +28684,6 @@ class ThickenFeatureInput(core.Base):
         """
         Gets and sets the feature operation to perform.
         """
-        pass
 
     @property
     def isChainSelection(self) -> bool:
@@ -29188,7 +28697,6 @@ class ThickenFeatureInput(core.Base):
         """
         Get and sets whether faces that are tangentially connected to the input faces will be included in the thicken feature.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -29216,7 +28724,6 @@ class ThickenFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
     @property
     def creationOccurrence(self) -> Occurrence:
@@ -29236,7 +28743,6 @@ class ThickenFeatureInput(core.Base):
         in another component AND (the Thicken feature) is not in the root component.
         The CreationOccurrence is analogous to the active occurrence in the UI
         """
-        pass
 
 
 class ThickenFeatures(core.Base):
@@ -29446,7 +28952,6 @@ class ThreadFeatureInput(core.Base):
         It is recommended that you use the inputCylindricalfaces property in order to have full access to the collection of faces
         to be threaded.
         """
-        pass
 
     @property
     def isModeled(self) -> bool:
@@ -29462,7 +28967,6 @@ class ThreadFeatureInput(core.Base):
         Gets and sets if the thread is physical or cosmetic thread. A value of true indicates a physical thread.
         It defaults to false.
         """
-        pass
 
     @property
     def isFullLength(self) -> bool:
@@ -29478,7 +28982,6 @@ class ThreadFeatureInput(core.Base):
         Gets and sets if this thread is the full length of the cylinder.
         It defaults to true.
         """
-        pass
 
     @property
     def threadLength(self) -> core.ValueInput:
@@ -29494,7 +28997,6 @@ class ThreadFeatureInput(core.Base):
         Gets and sets the thread length.
         It is only used in the case where the isFullLength property is false.
         """
-        pass
 
     @property
     def threadOffset(self) -> core.ValueInput:
@@ -29514,7 +29016,6 @@ class ThreadFeatureInput(core.Base):
         It is only used in the case where the isFullLength property is false.
         Returns nothing in the case where the feature is non-parametric.
         """
-        pass
 
     @property
     def threadLocation(self) -> ThreadLocations:
@@ -29530,7 +29031,6 @@ class ThreadFeatureInput(core.Base):
         Gets and sets where the thread length is measured from.
         This property is only used in the case where the isFullLength property is false.
         """
-        pass
 
     @property
     def threadInfo(self) -> ThreadInfo:
@@ -29544,7 +29044,6 @@ class ThreadFeatureInput(core.Base):
         """
         Gets and sets the thread data.
         """
-        pass
 
     @property
     def isRightHanded(self) -> bool:
@@ -29560,7 +29059,6 @@ class ThreadFeatureInput(core.Base):
         Gets and sets if the thread is right or left-handed thread. A value of true indicates a right-handed thread.
         It defaults to true.
         """
-        pass
 
     @property
     def inputCylindricalFaces(self) -> core.ObjectCollection:
@@ -29574,7 +29072,6 @@ class ThreadFeatureInput(core.Base):
         """
         Gets and sets the cylindrical input faces.
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -29602,7 +29099,6 @@ class ThreadFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class ThreadFeatures(core.Base):
@@ -29740,7 +29236,6 @@ class ThreadInfo(core.Base):
         """
         Returns and sets the string that defines the thread type.
         """
-        pass
 
     @property
     def threadSize(self) -> str:
@@ -29761,7 +29256,6 @@ class ThreadInfo(core.Base):
         """
         Returns and sets the string that defines the thread designation.
         """
-        pass
 
     @property
     def threadClass(self) -> str:
@@ -29775,7 +29269,6 @@ class ThreadInfo(core.Base):
         """
         Returns and sets the string that defines the thread class.
         """
-        pass
 
     @property
     def isInternal(self) -> bool:
@@ -29791,7 +29284,6 @@ class ThreadInfo(core.Base):
         Returns and sets if the thread is an internal or external thread. A value of true indicates an internal thread.
         It defaults to true.
         """
-        pass
 
     @property
     def threadAngle(self) -> float:
@@ -29921,7 +29413,6 @@ class Timeline(core.Base):
         0 is at the beginning of the timeline and the value of Timeline.count is the end of the
         timeline.
         """
-        pass
 
     @property
     def count(self) -> int:
@@ -30044,7 +29535,6 @@ class TimelineObject(core.Base):
         """
         Gets and sets if this object is suppressed.
         """
-        pass
 
     @property
     def parentGroup(self) -> TimelineGroup:
@@ -30121,7 +29611,6 @@ class TimelineObject(core.Base):
         is also changed. The reverse is also true. Setting the name of an object; sketch, feature
         construction geometry, etc, will also change the name of the associated node in the timeline.
         """
-        pass
 
     @property
     def healthState(self) -> FeatureHealthStates:
@@ -30370,7 +29859,6 @@ class TriangleMeshCalculator(core.Base):
         The value is in centimeters. Smaller values can result in a much greater number
         of facets being returned and will require more processing time to calculate.
         """
-        pass
 
     @property
     def maxSideLength(self) -> float:
@@ -30386,7 +29874,6 @@ class TriangleMeshCalculator(core.Base):
         Specifies the maximum side of any triangle in the mesh. A value of 0 (the default)
         indicates that no maximum length is specified. The value is specified in centimeters.
         """
-        pass
 
     @property
     def maxAspectRatio(self) -> float:
@@ -30404,7 +29891,6 @@ class TriangleMeshCalculator(core.Base):
         This helps to avoid long skinny triangles. A value of 0 (the default)
         indicates that no maximum aspect ratio is specified.
         """
-        pass
 
     @property
     def maxNormalDeviation(self) -> float:
@@ -30422,7 +29908,6 @@ class TriangleMeshCalculator(core.Base):
         This value is the maximum angle allowed between normals and is
         specified in radians. A value of 0 (the default) indicates that no normal deviation is specified.
         """
-        pass
 
     @property
     def parentMeshManager(self) -> MeshManager:
@@ -30521,7 +30006,6 @@ class TrimFeatureInput(core.Base):
         """
         Gets and sets the entity (a patch body, B-Rep face, construction plane or sketch curve) that intersects the trim tool
         """
-        pass
 
     @property
     def targetBaseFeature(self) -> BaseFeature:
@@ -30549,7 +30033,6 @@ class TrimFeatureInput(core.Base):
         create the feature, and then call the finishEdit method of the base feature. The base
         feature must be in an "edit" state to be able to add any additional items to it.
         """
-        pass
 
 
 class TrimFeatures(core.Base):
@@ -30730,7 +30213,6 @@ class TSplineBody(core.Base):
         Gets and sets the name of the body. If setting this property, there is the side-effect
         that the B-Rep body created from this T-Spline body is also renamed.
         """
-        pass
 
     @property
     def parentFormFeature(self) -> FormFeature:
@@ -30941,7 +30423,6 @@ class UntrimFeatureInput(core.Base):
         Gets and sets the ValueInput object that defines the extension distance applied to faces when an
         external boundary is removed.
         """
-        pass
 
 
 class UntrimFeatures(core.Base):
@@ -31248,7 +30729,6 @@ class AlongEdgeRipFeatureDefinition(RipFeatureDefinition):
         """
         Gets and sets the input edge for an along edge rip.
         """
-        pass
 
     @property
     def gapDistance(self) -> ModelParameter:
@@ -31283,7 +30763,6 @@ class AlongPathTextDefinition(SketchTextDefinition):
         """
         Get and sets the entity that defines the path for the text. This can be a SketchCurve or BRepEdge object.
         """
-        pass
 
     @property
     def isAbovePath(self) -> bool:
@@ -31297,7 +30776,6 @@ class AlongPathTextDefinition(SketchTextDefinition):
         """
         Gets and sets if the text should be positioned above or below the path entity.
         """
-        pass
 
     @property
     def horizontalAlignment(self) -> core.HorizontalAlignments:
@@ -31311,7 +30789,6 @@ class AlongPathTextDefinition(SketchTextDefinition):
         """
         Gets and sets the horizontal alignment of the text with respect to the path curve.
         """
-        pass
 
     @property
     def characterSpacing(self) -> float:
@@ -31329,7 +30806,6 @@ class AlongPathTextDefinition(SketchTextDefinition):
         that is defined as a percentage of the default spacing. A spacing of 0 indicates no
         additional spacing. A spacing of 50 indicates to use the default plus 50% of the default.
         """
-        pass
 
 
 class AngleExtentDefinition(ExtentDefinition):
@@ -31360,7 +30836,6 @@ class AngleExtentDefinition(ExtentDefinition):
         Gets and sets if the angle extent is in one direction or symmetric.
         For a hole this property will always return false and setting it is ignored.
         """
-        pass
 
     @property
     def angle(self) -> ModelParameter:
@@ -31433,7 +30908,6 @@ class BallJointMotion(JointMotion):
         If there is a custom direction defined and this property is set to ZAxisJointDirection,
         the custom direction will be removed and customNormalDirectionEntity will return null.
         """
-        pass
 
     @property
     def customPitchDirectionEntity(self) -> core.Base:
@@ -31461,7 +30935,6 @@ class BallJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def pitchDirectionVector(self) -> core.Vector3D:
@@ -31493,7 +30966,6 @@ class BallJointMotion(JointMotion):
         If there is a custom direction defined and this property is set to XAxisJointDirection,
         the custom direction will be removed and customYawDirectionEntity will return null.
         """
-        pass
 
     @property
     def customYawDirectionEntity(self) -> core.Base:
@@ -31521,7 +30993,6 @@ class BallJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def yawDirectionVector(self) -> core.Vector3D:
@@ -31553,7 +31024,6 @@ class BallJointMotion(JointMotion):
         Gets and sets the pitch value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def pitchLimits(self) -> JointLimits:
@@ -31578,7 +31048,6 @@ class BallJointMotion(JointMotion):
         Gets and sets the yaw value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def yawLimits(self) -> JointLimits:
@@ -31603,7 +31072,6 @@ class BallJointMotion(JointMotion):
         Gets and sets the roll value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def rollLimits(self) -> JointLimits:
@@ -31755,7 +31223,6 @@ class BetweenPointsRipFeatureDefinition(RipFeatureDefinition):
         Gets and sets the BRepEdge or BRepVertex that defines the first point for a between points rip.
         If a BRepEdge is returned the pointOneOffset property will control the position of the point along the edge.
         """
-        pass
 
     @property
     def pointTwoEntity(self) -> core.Base:
@@ -31771,7 +31238,6 @@ class BetweenPointsRipFeatureDefinition(RipFeatureDefinition):
         Gets and sets the BRepEdge or BRepVertex that defines the second point for a between points rip.
         If a BRepEdge is returned the pointTwoOffset property will control the position of the point along the edge.
         """
-        pass
 
     @property
     def pointOneOffset(self) -> ModelParameter:
@@ -31878,7 +31344,6 @@ class BossFeature(Feature):
         """
         Gets and sets if the direction of the boss (or boss connection) is flipped.
         """
-        pass
 
     @property
     def isGeometryOpposite(self) -> bool:
@@ -32272,7 +31737,6 @@ class BoundaryFillFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def bRepCells(self) -> BRepCells:
@@ -32299,7 +31763,6 @@ class BoundaryFillFeature(Feature):
         """
         Gets and sets the type of operation performed by the boundary fill feature.
         """
-        pass
 
     @property
     def nativeObject(self) -> BoundaryFillFeature:
@@ -32329,7 +31792,6 @@ class BoundaryFillFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class BoxFeature(Feature):
@@ -32373,7 +31835,6 @@ class C3MFExportOptions(ExportOptions):
         all of the bodies within that occurrence or component or if multiple files should be created; one for each body.
         If multiple files are created, the body name is appended to the filename. The default is false.
         """
-        pass
 
     @property
     def meshRefinement(self) -> MeshRefinementSettings:
@@ -32391,7 +31852,6 @@ class C3MFExportOptions(ExportOptions):
         will reset the surfaceDeviation, normalDeviation, maximumEdgeLength, and aspectRatio
         to values that correspond to the specified mesh refinement. The default is MeshRefinementMedium.
         """
-        pass
 
     @property
     def surfaceDeviation(self) -> float:
@@ -32411,7 +31871,6 @@ class C3MFExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def normalDeviation(self) -> float:
@@ -32431,7 +31890,6 @@ class C3MFExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def maximumEdgeLength(self) -> float:
@@ -32449,7 +31907,6 @@ class C3MFExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def aspectRatio(self) -> float:
@@ -32467,7 +31924,6 @@ class C3MFExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def availablePrintUtilities(self) -> list[str]:
@@ -32497,7 +31953,6 @@ class C3MFExportOptions(ExportOptions):
         the full path to the print utility executable. The default value of this property is the last setting specified
         in the user-interface.
         """
-        pass
 
     @property
     def sendToPrintUtility(self) -> bool:
@@ -32513,7 +31968,6 @@ class C3MFExportOptions(ExportOptions):
         Gets and sets whether the created 3MF file will be sent to the print utility specified by the printUtility property. If this
         is false a filename must be defined.
         """
-        pass
 
 
 class ChamferFeature(Feature):
@@ -32560,7 +32014,6 @@ class ChamferFeature(Feature):
         """
         Gets and sets the type of corner to be modeled when multiple edges connect at a vertex.
         """
-        pass
 
     @property
     def edgeSets(self) -> ChamferEdgeSets:
@@ -32604,7 +32057,6 @@ class ChordLengthFilletEdgeSet(FilletEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def chordLength(self) -> ModelParameter:
@@ -32645,7 +32097,6 @@ class ChordLengthFilletEdgeSetInput(FilletEdgeSetInput):
         then the units can be defined as part of the string (i.e. "2 in") or if no units are
         specified it is interpreted using the current document units for length.
         """
-        pass
 
 
 class CircularPatternConstraint(GeometricConstraint):
@@ -32686,7 +32137,6 @@ class CircularPatternConstraint(GeometricConstraint):
         Gets and sets the entities to pattern. Sketch points and curves are valid
         entities to pattern.
         """
-        pass
 
     @property
     def createdEntities(self) -> list[SketchEntity]:
@@ -32709,7 +32159,6 @@ class CircularPatternConstraint(GeometricConstraint):
         """
         Gets and sets the sketch point that defines the center of the pattern.
         """
-        pass
 
     @property
     def quantity(self) -> ModelParameter:
@@ -32740,7 +32189,6 @@ class CircularPatternConstraint(GeometricConstraint):
         """
         Gets and sets if the angle extent is in one direction or is symmetric.
         """
-        pass
 
     @property
     def isSuppressed(self) -> list[bool]:
@@ -32758,7 +32206,6 @@ class CircularPatternConstraint(GeometricConstraint):
         array of Boolean values that indicates if a particular instance in the pattern is
         suppressed or not. A value of true will result in the associated instance being suppressed.
         """
-        pass
 
     @property
     def nativeObject(self) -> CircularPatternConstraint:
@@ -32817,7 +32264,6 @@ class CircularPatternFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def axis(self) -> core.Base:
@@ -32839,7 +32285,6 @@ class CircularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def totalAngle(self) -> ModelParameter:
@@ -32869,7 +32314,6 @@ class CircularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def quantity(self) -> ModelParameter:
@@ -32898,7 +32342,6 @@ class CircularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternElements(self) -> PatternElements:
@@ -32954,7 +32397,6 @@ class CircularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class CoilFeature(Feature):
@@ -33154,7 +32596,6 @@ class CombineFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def toolBodies(self) -> core.ObjectCollection:
@@ -33174,7 +32615,6 @@ class CombineFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -33196,7 +32636,6 @@ class CombineFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isNewComponent(self) -> bool:
@@ -33223,7 +32662,6 @@ class CombineFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> CombineFeature:
@@ -33392,7 +32830,6 @@ class Component(BaseComponent):
         Gets and sets if the light bulb of the origin folder as seen in the browser is on or off.
         This controls the visibility of the origin construction geometry.
         """
-        pass
 
     @property
     def isConstructionFolderLightBulbOn(self) -> bool:
@@ -33410,7 +32847,6 @@ class Component(BaseComponent):
         This controls the visibility of the (non-origin) construction geometry
         (i.e. planes, points, axes).
         """
-        pass
 
     @property
     def isSketchFolderLightBulbOn(self) -> bool:
@@ -33426,7 +32862,6 @@ class Component(BaseComponent):
         Gets and sets if the light bulb of the sketch folder as seen in the browser is on or off.
         This controls the visibility of the sketches in this component.
         """
-        pass
 
     @property
     def xYConstructionPlane(self) -> ConstructionPlane:
@@ -33491,7 +32926,6 @@ class Component(BaseComponent):
         Gets and sets the part number associated with this component. Setting this
         to an empty string will reset it to be the same as the component name.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -33505,7 +32939,6 @@ class Component(BaseComponent):
         """
         Gets and sets the description associated with this component.
         """
-        pass
 
     @property
     def joints(self) -> Joints:
@@ -33540,7 +32973,6 @@ class Component(BaseComponent):
         """
         Gets and sets the physical material assigned to this component.
         """
-        pass
 
     @property
     def physicalProperties(self) -> PhysicalProperties:
@@ -33577,7 +33009,6 @@ class Component(BaseComponent):
         folder is component specific and will turn off the joints for all occurrences referencing
         the component.
         """
-        pass
 
     @property
     def attributes(self) -> core.Attributes:
@@ -33600,7 +33031,6 @@ class Component(BaseComponent):
         Gets and sets if the light bulb of the bodies folder as seen in the browser is on or off.
         This controls the visibility of the solid/surface bodies and the mesh bodies in this component.
         """
-        pass
 
     @property
     def allJoints(self) -> list[Joint]:
@@ -33676,7 +33106,6 @@ class Component(BaseComponent):
         different instances of the same component can display using different opacity levels. To get the
         opacity that it is being displayed with use the Occurrence.visibleOpacity property.
         """
-        pass
 
     @property
     def jointOrigins(self) -> JointOrigins:
@@ -33768,7 +33197,6 @@ class Component(BaseComponent):
         Gets and sets the active sheet metal rule. This can return null in the case where
         the component has never contained any sheet metal related data.
         """
-        pass
 
     @property
     def isCanvasFolderLightBulbOn(self) -> bool:
@@ -33784,7 +33212,6 @@ class Component(BaseComponent):
         Gets and sets if the light bulb of the canvas folder as seen in the browser is on or off.
         This controls the visibility of all the canvases in the component.
         """
-        pass
 
 
 class ConcentricConstraint(GeometricConstraint):
@@ -33868,7 +33295,6 @@ class ConstantRadiusFilletEdgeSet(FilletEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def radius(self) -> ModelParameter:
@@ -33909,7 +33335,6 @@ class ConstantRadiusFilletEdgeSetInput(FilletEdgeSetInput):
         can be defined as part of the string (i.e. "2 in") or if no units are specified
         it is interpreted using the current default units for length.
         """
-        pass
 
 
 class ConstructionAxisByLineDefinition(ConstructionAxisDefinition):
@@ -33938,7 +33363,6 @@ class ConstructionAxisByLineDefinition(ConstructionAxisDefinition):
         """
         Gets and sets the infinite line that defines the position and direction of the axis
         """
-        pass
 
 
 class ConstructionAxisCircularFaceDefinition(ConstructionAxisDefinition):
@@ -33967,7 +33391,6 @@ class ConstructionAxisCircularFaceDefinition(ConstructionAxisDefinition):
         Gets and sets the cylinder, cone, or torus this work axis
         is parametrically dependent on.
         """
-        pass
 
 
 class ConstructionAxisEdgeDefinition(ConstructionAxisDefinition):
@@ -33996,7 +33419,6 @@ class ConstructionAxisEdgeDefinition(ConstructionAxisDefinition):
         Gets and sets the linear edge, construction line, or sketch line that defines
         the construction axis.
         """
-        pass
 
 
 class ConstructionAxisNormalToFaceAtPointDefinition(ConstructionAxisDefinition):
@@ -34222,7 +33644,6 @@ class ConstructionPlaneByPlaneDefinition(ConstructionPlaneDefinition):
         """
         Gets and sets the position of the construction plane.
         """
-        pass
 
 
 class ConstructionPlaneDistanceOnPathDefinition(ConstructionPlaneDefinition):
@@ -34544,7 +33965,6 @@ class ConstructionPointCenterDefinition(ConstructionPointDefinition):
         Gets and sets the spherical face (sphere or torus), circular edge or sketch arc/circle
         whose center defines the location for the construction point.
         """
-        pass
 
 
 class ConstructionPointEdgePlaneDefinition(ConstructionPointDefinition):
@@ -34613,7 +34033,6 @@ class ConstructionPointPointDefinition(ConstructionPointDefinition):
         vertex.
         Non-parametric points will always return a Point3D object
         """
-        pass
 
 
 class ConstructionPointThreePlanesDefinition(ConstructionPointDefinition):
@@ -34963,7 +34382,6 @@ class CustomGraphicsAppearanceColorEffect(CustomGraphicsColorEffect):
         Gets and sets the appearance to use. The appearance assigned must be available in the
         design where the graphics will be drawn.
         """
-        pass
 
 
 class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
@@ -35028,7 +34446,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         Gets and sets the emissiveColor associated with this CustomGraphicsBasicMaterialColorEffect object.
         The emissive color is the primary color of the entity
         """
-        pass
 
     @property
     def ambientColor(self) -> core.Color:
@@ -35044,7 +34461,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         Gets and sets the ambientColor associated with this CustomGraphicsBasicMaterialColorEffect object.
         The ambient color is the color of the light anywhere there's not a specific light source.
         """
-        pass
 
     @property
     def diffuseColor(self) -> core.Color:
@@ -35060,7 +34476,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         Gets and sets the diffuseColor associated with this CustomGraphicsBasicMaterialColorEffect object.
         The diffuse color is the color of reflected light as it scatters off of a rough surface.
         """
-        pass
 
     @property
     def specularColor(self) -> core.Color:
@@ -35078,7 +34493,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         The specular color is the color of reflected light (highlights) as it is reflected off of a shiny surface. This is
         commonly white or a lighter shade of the emissive color.
         """
-        pass
 
     @property
     def glossiness(self) -> float:
@@ -35098,7 +34512,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         A value of 0.0 will result in very large highlights like you would see with a rough surface.
         A maximum value of 128.0 will result in very small highlight as from a smooth surface.
         """
-        pass
 
     @property
     def opacity(self) -> float:
@@ -35114,7 +34527,6 @@ class CustomGraphicsBasicMaterialColorEffect(CustomGraphicsColorEffect):
         Gets and sets the opacity associated with this CustomGraphicsBasicMaterialColorEffect object.
         A value of 1.0 is completely opaque and 0.0 is completely transparent.
         """
-        pass
 
 
 class CustomGraphicsBRepBody(CustomGraphicsEntity):
@@ -35187,7 +34599,6 @@ class CustomGraphicsCurve(CustomGraphicsEntity):
         Gets and sets the curve associated with this graphics entity. Any of the curve types derived from Curve3D
         is valid except for InfiniteLine3D.
         """
-        pass
 
     @property
     def weight(self) -> float:
@@ -35201,7 +34612,6 @@ class CustomGraphicsCurve(CustomGraphicsEntity):
         """
         Defines the thickness of the curve in pixels.
         """
-        pass
 
     @property
     def lineStylePattern(self) -> LineStylePatterns:
@@ -35215,7 +34625,6 @@ class CustomGraphicsCurve(CustomGraphicsEntity):
         """
         The line style to apply to the curve. The default is to draw the curve using continuous line style.
         """
-        pass
 
     @property
     def lineStyleScale(self) -> float:
@@ -35231,7 +34640,6 @@ class CustomGraphicsCurve(CustomGraphicsEntity):
         Defines the scale as it relates to how the line style is applied. The effect is to
         shrink or expand the line style as it is applied to the line. This does not affect the line width.
         """
-        pass
 
 
 class CustomGraphicsGroup(CustomGraphicsEntity):
@@ -35429,7 +34837,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         Gets and sets the CustomGraphicsCoordinates object that defines the coordinates of the vertices of the lines.
         A CustomGraphicsCoordinates object can be created using the static create method of the CustomGraphicsCoordinates class.
         """
-        pass
 
     @property
     def indexList(self) -> list[int]:
@@ -35445,7 +34852,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         Gets and sets an array of integers that represent indices into the coordinates to define the order the coordinates are used to draw the lines.
         An empty array indicates that no index list is used and coordinates are used in the order they're provided in the provided CustomGraphicsCoordinates object.
         """
-        pass
 
     @property
     def isLineStrip(self) -> bool:
@@ -35465,7 +34871,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         the first pair of coordinates define the first line and the third coordinate defines a line that connects to the second coordinate.
         The fourth coordinate creates a line connecting to the third coordinate, and so on.
         """
-        pass
 
     @property
     def lineStripLengths(self) -> list[int]:
@@ -35481,7 +34886,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         If isLineStrip is true, this property defines the number of coordinates to use in the line strips. It is an array of integers
         that defines the number of coordinates for each line strip. An empty array indicates that a single line strip is to be drawn.
         """
-        pass
 
     @property
     def weight(self) -> float:
@@ -35495,7 +34899,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         """
         Defines the thickness of the line in pixels.
         """
-        pass
 
     @property
     def lineStyleScale(self) -> float:
@@ -35511,7 +34914,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         Defines the scale as it relates to how the line style is applied. The effect is to
         shrink or expand the line style as it is applied to the line. This does not affect the line width.
         """
-        pass
 
     @property
     def isScreenSpaceLineStyle(self) -> bool:
@@ -35533,7 +34935,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         is drawn relative to model space then the lines and spaces are defined in centimeters and
         will zooming in and out will change the apparent spacing.
         """
-        pass
 
     @property
     def lineStylePattern(self) -> LineStylePatterns:
@@ -35547,7 +34948,6 @@ class CustomGraphicsLines(CustomGraphicsEntity):
         """
         The line style to apply to the line. The default is to draw a continuous line.
         """
-        pass
 
 
 class CustomGraphicsMesh(CustomGraphicsEntity):
@@ -35574,7 +34974,6 @@ class CustomGraphicsMesh(CustomGraphicsEntity):
         """
         Gets and sets the coordinates associated with this CustomGraphicsMesh.
         """
-        pass
 
     @property
     def normalVectors(self) -> list[float]:
@@ -35592,7 +34991,6 @@ class CustomGraphicsMesh(CustomGraphicsEntity):
         vector at each node. The normals are defined as an array
         of floats where they are the x, y, z components of each vector.
         """
-        pass
 
     @property
     def vertexIndexList(self) -> list[int]:
@@ -35614,7 +35012,6 @@ class CustomGraphicsMesh(CustomGraphicsEntity):
         Indices 0, 1, and 2 define the coordinates to use for the first triangle and
         indices 3, 4, and 5 define the coordinates for the second triangle, and so on.
         """
-        pass
 
     @property
     def normalIndexList(self) -> list[int]:
@@ -35632,7 +35029,6 @@ class CustomGraphicsMesh(CustomGraphicsEntity):
         with each vertex in the mesh. This is used to look-up the normal in the
         normalVectors array.
         """
-        pass
 
     @property
     def textureCoordinates(self) -> list[float]:
@@ -35652,7 +35048,6 @@ class CustomGraphicsMesh(CustomGraphicsEntity):
         array of doubles where they are the u, v coordinates of each node.
         Defining texture coordinates for a mesh is optional.
         """
-        pass
 
 
 class CustomGraphicsPointSet(CustomGraphicsEntity):
@@ -35681,7 +35076,6 @@ class CustomGraphicsPointSet(CustomGraphicsEntity):
         Gets and sets the coordinates used to define the position of the custom graphics points.
         If no indexList is specified, every coordinate will be drawn using a custom graphics point,
         """
-        pass
 
     @property
     def indexList(self) -> list[int]:
@@ -35697,7 +35091,6 @@ class CustomGraphicsPointSet(CustomGraphicsEntity):
         An list of indices that specify which coordinates from the coordinate list to draw points for.
         If this is an empty array, then all of the coordinates are used.
         """
-        pass
 
     @property
     def pointImage(self) -> str:
@@ -35721,7 +35114,6 @@ class CustomGraphicsPointSet(CustomGraphicsEntity):
         set the pointType to UserDefinedCustomGraphicsPointType. This property can also
         return an empty string in the case where a user defined image point is not being used.
         """
-        pass
 
     @property
     def pointType(self) -> CustomGraphicsPointTypes:
@@ -35741,7 +35133,6 @@ class CustomGraphicsPointSet(CustomGraphicsEntity):
         you must set use the pointImage property to specify the image to use and this will have
         the side-effect of changing the value of this property to UserDefinedCustomGraphicsPointType.
         """
-        pass
 
 
 class CustomGraphicsShowThroughColorEffect(CustomGraphicsColorEffect):
@@ -35789,7 +35180,6 @@ class CustomGraphicsShowThroughColorEffect(CustomGraphicsColorEffect):
         Gets and sets the color associated with this CustomGraphicsShowThroughColorEffect object. The color that will be used to render
         the portion of the entity that is covered by other objects in the scene.
         """
-        pass
 
     @property
     def opacity(self) -> float:
@@ -35807,7 +35197,6 @@ class CustomGraphicsShowThroughColorEffect(CustomGraphicsColorEffect):
         the portion of the entity that is covered by other objects in the scene. This can be a value between 0 and 1, where 1 is
         fully opaque and will completely cover any other entities.
         """
-        pass
 
 
 class CustomGraphicsSolidColorEffect(CustomGraphicsColorEffect):
@@ -35852,7 +35241,6 @@ class CustomGraphicsSolidColorEffect(CustomGraphicsColorEffect):
         The color to use for the solid color display. The opacity component of the color is ignored
         because the opacity of custom graphics is controlled separately using an opacity attribute.
         """
-        pass
 
 
 class CustomGraphicsText(CustomGraphicsEntity):
@@ -35883,7 +35271,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Gets and sets the formatted text definition. This is the full string, including the
         formatting information, that's used to define the displayed text.
         """
-        pass
 
     @property
     def font(self) -> str:
@@ -35899,7 +35286,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Gets and sets the font used to display the text. This is the default font and applies to
         all of text unless there is a font override defined within the text.
         """
-        pass
 
     @property
     def isItalic(self) -> bool:
@@ -35915,7 +35301,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Specifies that the text displays using an italic style. This is the default italic style and applies to
         all of text unless there is a style override defined within the text.
         """
-        pass
 
     @property
     def isBold(self) -> bool:
@@ -35931,7 +35316,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Specifies that the text displays using a bold style. This is the default bold style and applies to
         all of text unless there is a style override defined within the text.
         """
-        pass
 
     @property
     def isUnderline(self) -> bool:
@@ -35947,7 +35331,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Specifies that the text displays using an underline style. This is the default underline style and applies to
         all of text unless there is a style override defined within the text.
         """
-        pass
 
     @property
     def isStrikeThrough(self) -> bool:
@@ -35963,7 +35346,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Specifies that the text displays using a strike through style. This is the default strike through style and applies to
         all of text unless there is a style override defined within the text.
         """
-        pass
 
     @property
     def size(self) -> float:
@@ -35979,7 +35361,6 @@ class CustomGraphicsText(CustomGraphicsEntity):
         Gets and sets the size of the text in centimeters. This is the default size and applies to
         all of text unless there is a size override defined within the text.
         """
-        pass
 
     @property
     def width(self) -> float:
@@ -36096,7 +35477,6 @@ class CylindricalJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom rotation will
         be removed and customRotationAxisEntity will return null.
         """
-        pass
 
     @property
     def rotationAxisVector(self) -> core.Vector3D:
@@ -36132,7 +35512,6 @@ class CylindricalJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def rotationValue(self) -> float:
@@ -36148,7 +35527,6 @@ class CylindricalJointMotion(JointMotion):
         Gets and sets the rotation value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def rotationLimits(self) -> JointLimits:
@@ -36173,7 +35551,6 @@ class CylindricalJointMotion(JointMotion):
         Gets and sets the slide value. This is in centimeters. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def slideLimits(self) -> JointLimits:
@@ -36238,7 +35615,6 @@ class DeleteFaceFeature(Feature):
         Setting this property can fail if Fusion 360 is unable to heal the body after
         deleting the specified faces.
         """
-        pass
 
     @property
     def nativeObject(self) -> DeleteFaceFeature:
@@ -36398,7 +35774,6 @@ class Design(core.Product):
         Changing an existing design from ParametricDesignType to DirectDesignType will result in the timeline and all design
         history being removed and further operations will not be captured in the timeline.
         """
-        pass
 
     @property
     def rootComponent(self) -> Component:
@@ -36536,7 +35911,6 @@ class Design(core.Product):
         if True then any contact analysis defined (either all or contact sets) is enabled.
         if False, then no contact analysis is performed.
         """
-        pass
 
     @property
     def isContactSetAnalysis(self) -> bool:
@@ -36560,7 +35934,6 @@ class Design(core.Product):
         is True, then contact analysis is performed between all bodies. If
         isContactAnalysisEnabled is False then no contact analysis is performed.
         """
-        pass
 
     @property
     def designSheetMetalRules(self) -> SheetMetalRules:
@@ -36626,7 +35999,6 @@ class DistanceAndAngleChamferEdgeSet(ChamferEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distance(self) -> ModelParameter:
@@ -36662,7 +36034,6 @@ class DistanceAndAngleChamferEdgeSet(ChamferEdgeSet):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class DistanceExtentDefinition(ExtentDefinition):
@@ -36786,7 +36157,6 @@ class DraftFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def plane(self) -> core.Base:
@@ -36806,7 +36176,6 @@ class DraftFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isTangentChain(self) -> bool:
@@ -36828,7 +36197,6 @@ class DraftFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isDirectionFlipped(self) -> bool:
@@ -36848,7 +36216,6 @@ class DraftFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def draftDefinition(self) -> ExtentDefinition:
@@ -36898,7 +36265,6 @@ class DXFFlatPatternExportOptions(ExportOptions):
         Specifies if splines are converted to polylines. If true, the convertToPolylineTolerance
         value is used to specify the accuracy of the conversion. Defaults to false.
         """
-        pass
 
     @property
     def convertToPolylineTolerance(self) -> float:
@@ -36916,7 +36282,6 @@ class DXFFlatPatternExportOptions(ExportOptions):
         the isSplineConvertedToPolyline property is true and otherwise it is ignored. The units for
         this value are centimeters. Defaults to 0.01 cm.
         """
-        pass
 
 
 class EqualConstraint(GeometricConstraint):
@@ -37000,7 +36365,6 @@ class EqualDistanceChamferEdgeSet(ChamferEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distance(self) -> ModelParameter:
@@ -37089,7 +36453,6 @@ class ExtendFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isChainingEnabled(self) -> bool:
@@ -37127,7 +36490,6 @@ class ExtendFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class ExtrudeFeature(Feature):
@@ -37274,7 +36636,6 @@ class ExtrudeFeature(Feature):
 
         This property returns null in the case where the feature is non-parametric.
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -37288,7 +36649,6 @@ class ExtrudeFeature(Feature):
         """
         Gets and sets the type of operation performed by the extrusion.
         """
-        pass
 
     @property
     def startFaces(self) -> BRepFaces:
@@ -37355,7 +36715,6 @@ class ExtrudeFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def extentOne(self) -> ExtentDefinition:
@@ -37379,7 +36738,6 @@ class ExtrudeFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def extentTwo(self) -> ExtentDefinition:
@@ -37407,7 +36765,6 @@ class ExtrudeFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def taperAngleOne(self) -> ModelParameter:
@@ -37452,7 +36809,6 @@ class ExtrudeFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def extentType(self) -> FeatureExtentTypes:
@@ -37488,7 +36844,6 @@ class ExtrudeFeature(Feature):
         Sets or returns whether the extrude is a thin extrude.
         Setting it as false will make it a regular extrude.
         """
-        pass
 
     @property
     def thinExtrudeWallLocationOne(self) -> ThinExtrudeWallLocation:
@@ -37502,7 +36857,6 @@ class ExtrudeFeature(Feature):
         """
         Gets and sets the wall location for a one sided thin extrude or side one of a two sided thin extrude
         """
-        pass
 
     @property
     def thinExtrudeWallLocationTwo(self) -> ThinExtrudeWallLocation:
@@ -37516,7 +36870,6 @@ class ExtrudeFeature(Feature):
         """
         Gets and sets the wall location for side two of a two sided thin extrude
         """
-        pass
 
     @property
     def thinExtrudeWallThicknessOne(self) -> ModelParameter:
@@ -37557,7 +36910,6 @@ class FaceRipFeatureDefinition(RipFeatureDefinition):
         """
         Gets and sets the input face for a face rip.
         """
-        pass
 
 
 class FilletFeature(Feature):
@@ -37607,7 +36959,6 @@ class FilletFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> FilletFeature:
@@ -37644,7 +36995,6 @@ class FitOnPathTextDefintion(SketchTextDefinition):
         """
         Get and sets the entity that defines the path for the text. This can be a SketchCurve or BRepEdge object.
         """
-        pass
 
     @property
     def isAbovePath(self) -> bool:
@@ -37658,7 +37008,6 @@ class FitOnPathTextDefintion(SketchTextDefinition):
         """
         Gets and sets if the text should be positioned above or below the path entity.
         """
-        pass
 
 
 class FlangeFeature(Feature):
@@ -37839,7 +37188,6 @@ class FromEntityStartDefinition(ExtentDefinition):
         """
         Gets and sets the entity defining the start of the feature.
         """
-        pass
 
 
 class FusionArchiveExportOptions(ExportOptions):
@@ -37879,7 +37227,6 @@ class FusionDefaultUnitsPreferences(core.DefaultUnitsPreferences):
         """
         Gets and sets the default units for length when creating a new Fusion 360 file.
         """
-        pass
 
 
 class FusionDocument(core.Document):
@@ -37926,7 +37273,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets the Active Component Visibility option
         """
-        pass
 
     @property
     def defaultDesignType(self) -> DefaultDesignTypeOptions:
@@ -37940,7 +37286,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets the Design History (default design type) setting
         """
-        pass
 
     @property
     def defaultWorkspace(self) -> DefaultWorkspaces:
@@ -37954,7 +37299,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets the Default workspace setting. (Model, Sculpt or Patch)
         """
-        pass
 
     @property
     def isJointPreviewAnimated(self) -> bool:
@@ -37968,7 +37312,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets the Animate joint preview option
         """
-        pass
 
     @property
     def is3DSketchingAllowed(self) -> bool:
@@ -37986,7 +37329,6 @@ class FusionProductPreferences(core.ProductPreferences):
         which controls if 3D sketching is allowed or if sketching is forced to
         be on the x-y plane of the sketch.
         """
-        pass
 
     @property
     def isGhostedResultBodyShown(self) -> bool:
@@ -38000,7 +37342,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets the Show ghosted result body option
         """
-        pass
 
     @property
     def isDimensionEditedWhenCreated(self) -> bool:
@@ -38014,7 +37355,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets if dimension value is edited when the dimension is created.
         """
-        pass
 
     @property
     def isAutoLookAtSketch(self) -> bool:
@@ -38028,7 +37368,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and sets if the view is re-oriented to view the newly created sketch.
         """
-        pass
 
     @property
     def isAutoProjectGeometry(self) -> bool:
@@ -38042,7 +37381,6 @@ class FusionProductPreferences(core.ProductPreferences):
         """
         Gets and Sets if geometry, not in the active sketch plane, is to be automatically projected.
         """
-        pass
 
     @property
     def isAutoProjectEdgesOnReference(self) -> bool:
@@ -38060,7 +37398,6 @@ class FusionProductPreferences(core.ProductPreferences):
         constraints and dimensions in the active sketch when the orientation is normal
         to the active sketch plane.
         """
-        pass
 
     @property
     def isAutoHideSketchOnFeatureCreation(self) -> bool:
@@ -38076,7 +37413,6 @@ class FusionProductPreferences(core.ProductPreferences):
         Gets and sets if the sketch should be automatically hidden whenever
         a feature is created from it.
         """
-        pass
 
     @property
     def isSketchScaledWithFirstDimension(self) -> bool:
@@ -38092,7 +37428,6 @@ class FusionProductPreferences(core.ProductPreferences):
         Gets and sets if the sketch geometry is automatically scaled when
         the first dimension is added.
         """
-        pass
 
     @property
     def isAllowReferencesDuringEditInPlace(self) -> bool:
@@ -38108,7 +37443,6 @@ class FusionProductPreferences(core.ProductPreferences):
         Gets and sets if you can create associative references while editing
         external components in context.
         """
-        pass
 
     @property
     def isEnableArrangeAndSimplifyTools(self) -> bool:
@@ -38126,7 +37460,6 @@ class FusionProductPreferences(core.ProductPreferences):
         Replace with Primitives commands should be added to the Modify menu
         in the Design workspace.
         """
-        pass
 
 
 class FusionUnitsManager(core.UnitsManager):
@@ -38164,7 +37497,6 @@ class FusionUnitsManager(core.UnitsManager):
         """
         Gets and sets the default distance units for this design.
         """
-        pass
 
 
 class HoleFeature(Feature):
@@ -38483,7 +37815,6 @@ class HoleFeature(Feature):
         """
         Gets and sets if the hole is in the default direction or not.
         """
-        pass
 
     @property
     def extentDefinition(self) -> ExtentDefinition:
@@ -38546,7 +37877,6 @@ class HoleFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class HorizontalConstraint(GeometricConstraint):
@@ -38881,7 +38211,6 @@ class LoftFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isSolid(self) -> bool:
@@ -38918,7 +38247,6 @@ class LoftFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isClosed(self) -> bool:
@@ -38934,7 +38262,6 @@ class LoftFeature(Feature):
         Specifies if the loft closes back on itself. In other words, the first section is also
         used as the last section.
         """
-        pass
 
     @property
     def isTangentEdgesMerged(self) -> bool:
@@ -38952,7 +38279,6 @@ class LoftFeature(Feature):
         faces in the resulting loft surface. If true, the faces will be merged so the connecting
         edge no longer exists
         """
-        pass
 
 
 class LoftFreeEndCondition(LoftEndCondition):
@@ -39157,7 +38483,6 @@ class MirrorFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def mirrorPlane(self) -> core.Base:
@@ -39179,7 +38504,6 @@ class MirrorFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternElements(self) -> PatternElements:
@@ -39226,7 +38550,6 @@ class MirrorFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isCombine(self) -> bool:
@@ -39252,7 +38575,6 @@ class MirrorFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def stitchTolerance(self) -> ModelParameter:
@@ -39475,7 +38797,6 @@ class MoveFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> MoveFeature:
@@ -39530,7 +38851,6 @@ class MoveFeatureFreeMoveDefinition(MoveFeatureDefinition):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class MoveFeaturePointToPointDefinition(MoveFeatureDefinition):
@@ -39564,7 +38884,6 @@ class MoveFeaturePointToPointDefinition(MoveFeatureDefinition):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def targetPoint(self) -> core.Base:
@@ -39584,7 +38903,6 @@ class MoveFeaturePointToPointDefinition(MoveFeatureDefinition):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class MoveFeaturePointToPositionDefinition(MoveFeatureDefinition):
@@ -39624,7 +38942,6 @@ class MoveFeaturePointToPositionDefinition(MoveFeatureDefinition):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def xDistance(self) -> ModelParameter:
@@ -39667,7 +38984,6 @@ class MoveFeaturePointToPositionDefinition(MoveFeatureDefinition):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class MoveFeatureRotateDefinition(MoveFeatureDefinition):
@@ -39705,7 +39021,6 @@ class MoveFeatureRotateDefinition(MoveFeatureDefinition):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def angle(self) -> ModelParameter:
@@ -39751,7 +39066,6 @@ class MoveFeatureTranslateAlongEntityDefinition(MoveFeatureDefinition):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distance(self) -> ModelParameter:
@@ -39819,7 +39133,6 @@ class MoveFeatureTranslateXYZDefinition(MoveFeatureDefinition):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class MultiLineTextDefinition(SketchTextDefinition):
@@ -39869,7 +39182,6 @@ class MultiLineTextDefinition(SketchTextDefinition):
         """
         Gets and sets the horizontal alignment of the text with respect to the text rectangle.
         """
-        pass
 
     @property
     def verticalAlignment(self) -> core.VerticalAlignments:
@@ -39883,7 +39195,6 @@ class MultiLineTextDefinition(SketchTextDefinition):
         """
         Gets and sets the vertical alignment of the text with respect to the text rectangle.
         """
-        pass
 
     @property
     def characterSpacing(self) -> float:
@@ -39901,7 +39212,6 @@ class MultiLineTextDefinition(SketchTextDefinition):
         that is defined as a percentage of the default spacing. A spacing of 0 indicates no
         additional spacing. A spacing of 50 indicates to use the default plus 50% of the default.
         """
-        pass
 
 
 class OBJExportOptions(ExportOptions):
@@ -39932,7 +39242,6 @@ class OBJExportOptions(ExportOptions):
         all of the bodies within that occurrence or component or if multiple files should be created; one for each body.
         If multiple files are created, the body name is appended to the filename. The default is false.
         """
-        pass
 
     @property
     def meshRefinement(self) -> MeshRefinementSettings:
@@ -39950,7 +39259,6 @@ class OBJExportOptions(ExportOptions):
         will reset the surfaceDeviation, normalDeviation, maximumEdgeLength, and aspectRatio
         to values that correspond to the specified mesh refinement. The default is MeshRefinementMedium.
         """
-        pass
 
     @property
     def surfaceDeviation(self) -> float:
@@ -39970,7 +39278,6 @@ class OBJExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def normalDeviation(self) -> float:
@@ -39990,7 +39297,6 @@ class OBJExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def maximumEdgeLength(self) -> float:
@@ -40008,7 +39314,6 @@ class OBJExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def aspectRatio(self) -> float:
@@ -40026,7 +39331,6 @@ class OBJExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def availablePrintUtilities(self) -> list[str]:
@@ -40056,7 +39360,6 @@ class OBJExportOptions(ExportOptions):
         the full path to the print utility executable. The default value of this property is the last setting specified
         in the user-interface.
         """
-        pass
 
     @property
     def sendToPrintUtility(self) -> bool:
@@ -40072,7 +39375,6 @@ class OBJExportOptions(ExportOptions):
         Gets and sets whether the created OBJ file will be sent to the print utility specified by the printUtility property. If this
         is false a filename must be defined. The default is false.
         """
-        pass
 
     @property
     def unitType(self) -> DistanceUnits:
@@ -40086,7 +39388,6 @@ class OBJExportOptions(ExportOptions):
         """
         Gets and sets the units to use for the created OBJ file. The default is Centimeters.
         """
-        pass
 
 
 class OffsetConstraint(GeometricConstraint):
@@ -40230,7 +39531,6 @@ class OffsetFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isChainSelection(self) -> bool:
@@ -40506,7 +39806,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -40559,7 +39858,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isGroupEdges(self) -> bool:
@@ -40597,7 +39895,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def groupContinuity(self) -> SurfaceContinuityTypes:
@@ -40623,7 +39920,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def groupWeight(self) -> float:
@@ -40645,7 +39941,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def groupIsContinuityDirectionFlipped(self) -> bool:
@@ -40667,7 +39962,6 @@ class PatchFeature(Feature):
         To get or set this property, you need to position the timeline marker immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class PathPatternFeature(Feature):
@@ -40714,7 +40008,6 @@ class PathPatternFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -40734,7 +40027,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def quantity(self) -> ModelParameter:
@@ -40774,7 +40066,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isFlipDirection(self) -> bool:
@@ -40794,7 +40085,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternDistanceType(self) -> PatternDistanceType:
@@ -40814,7 +40104,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isSymmetric(self) -> bool:
@@ -40834,7 +40123,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isOrientationAlongPath(self) -> bool:
@@ -40856,7 +40144,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def suppressedElementsIds(self) -> list[int]:
@@ -40876,7 +40163,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternElements(self) -> PatternElements:
@@ -40931,7 +40217,6 @@ class PathPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class PerpendicularConstraint(GeometricConstraint):
@@ -41068,7 +40353,6 @@ class PinSlotJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom rotation will
         be removed and customRotationAxisEntity will return null.
         """
-        pass
 
     @property
     def rotationAxisVector(self) -> core.Vector3D:
@@ -41104,7 +40388,6 @@ class PinSlotJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def rotationValue(self) -> float:
@@ -41120,7 +40403,6 @@ class PinSlotJointMotion(JointMotion):
         Gets and sets the rotation value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def rotationLimits(self) -> JointLimits:
@@ -41155,7 +40437,6 @@ class PinSlotJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom direction will
         be removed and customSlideDirectionEntity will return null.
         """
-        pass
 
     @property
     def slideDirectionVector(self) -> core.Vector3D:
@@ -41191,7 +40472,6 @@ class PinSlotJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def slideValue(self) -> float:
@@ -41207,7 +40487,6 @@ class PinSlotJointMotion(JointMotion):
         Gets and sets the slide value. This is in centimeters. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def slideLimits(self) -> JointLimits:
@@ -41271,7 +40550,6 @@ class PipeFeature(Feature):
         """
         Gets and sets the type of operation performed by the Pipe.
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -41301,7 +40579,6 @@ class PipeFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distanceOne(self) -> ModelParameter:
@@ -41343,7 +40620,6 @@ class PipeFeature(Feature):
         Gets and sets the section type of the Pipe.
         The type can be: Circular, Square, Triangular.
         """
-        pass
 
     @property
     def sectionSize(self) -> ModelParameter:
@@ -41368,7 +40644,6 @@ class PipeFeature(Feature):
 
         Setting this to true will default the sectionThickness to 0.1 cm.
         """
-        pass
 
     @property
     def sectionThickness(self) -> ModelParameter:
@@ -41422,7 +40697,6 @@ class PipeFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class PlanarJointMotion(JointMotion):
@@ -41461,7 +40735,6 @@ class PlanarJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom direction will
         be removed and customNormalDirectionEntity will return null.
         """
-        pass
 
     @property
     def normalDirectionVector(self) -> core.Vector3D:
@@ -41497,7 +40770,6 @@ class PlanarJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def primarySlideDirection(self) -> JointDirections:
@@ -41545,7 +40817,6 @@ class PlanarJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def secondarySlideDirectionVector(self) -> core.Vector3D:
@@ -41569,7 +40840,6 @@ class PlanarJointMotion(JointMotion):
         Gets and sets the rotation value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def rotationLimits(self) -> JointLimits:
@@ -41594,7 +40864,6 @@ class PlanarJointMotion(JointMotion):
         Gets and sets the offset value in the primary direction. This is in centimeters.
         Setting this value is the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def primarySlideLimits(self) -> JointLimits:
@@ -41619,7 +40888,6 @@ class PlanarJointMotion(JointMotion):
         Gets and sets the offset value in the secondary direction. This is in centimeters.
         Setting this value is the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def secondarySlideLimits(self) -> JointLimits:
@@ -41842,7 +41110,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         Gets and sets the entities that are patterned. Sketch points and curves are valid
         entities to pattern.
         """
-        pass
 
     @property
     def createdEntities(self) -> list[SketchEntity]:
@@ -41869,7 +41136,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         be null which indicates to use the default which is the X-axis of the sketch. Setting
         this property to null will automatically clear directionTwoEntity, if it has been set.
         """
-        pass
 
     @property
     def directionTwoEntity(self) -> SketchLine:
@@ -41887,7 +41153,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         be null which indicates to use the default direction, which is perpendicular to direction
         one. The directionOneEntity property must be set before setting this property.
         """
-        pass
 
     @property
     def quantityOne(self) -> ModelParameter:
@@ -41933,7 +41198,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         """
         Gets and sets if the pattern in direction one is in one direction or is symmetric.
         """
-        pass
 
     @property
     def isSymmetricInDirectionTwo(self) -> bool:
@@ -41947,7 +41211,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         """
         Gets and sets if the pattern in direction two is in one direction or is symmetric.
         """
-        pass
 
     @property
     def distanceType(self) -> PatternDistanceType:
@@ -41961,7 +41224,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         """
         Gets and sets how the distance between elements is computed.
         """
-        pass
 
     @property
     def isSuppressed(self) -> list[bool]:
@@ -41997,7 +41259,6 @@ class RectangularPatternConstraint(GeometricConstraint):
         will be the first element in the row next to the first row that contains the
         original geometry.
         """
-        pass
 
     @property
     def nativeObject(self) -> RectangularPatternConstraint:
@@ -42056,7 +41317,6 @@ class RectangularPatternFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def directionOneEntity(self) -> core.Base:
@@ -42080,7 +41340,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def directionTwoEntity(self) -> core.Base:
@@ -42108,7 +41367,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def directionOne(self) -> core.Vector3D:
@@ -42178,7 +41436,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isSymmetricInDirectionTwo(self) -> bool:
@@ -42198,7 +41455,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternDistanceType(self) -> PatternDistanceType:
@@ -42220,7 +41476,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def suppressedElementsIds(self) -> list[int]:
@@ -42240,7 +41495,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def patternElements(self) -> PatternElements:
@@ -42295,7 +41549,6 @@ class RectangularPatternFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class RefoldFeature(Feature):
@@ -42464,7 +41717,6 @@ class ReplaceFaceFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isTangentChain(self) -> bool:
@@ -42527,7 +41779,6 @@ class ReverseNormalFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> ReverseNormalFeature:
@@ -42576,7 +41827,6 @@ class RevoluteJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom rotation will
         be removed and customRotationAxisEntity will return null.
         """
-        pass
 
     @property
     def rotationAxisVector(self) -> core.Vector3D:
@@ -42606,7 +41856,6 @@ class RevoluteJointMotion(JointMotion):
         CustomJointDirection. Setting this property will automatically set
         the rotationAxis property to CustomJointDirection.
         """
-        pass
 
     @property
     def rotationValue(self) -> float:
@@ -42622,7 +41871,6 @@ class RevoluteJointMotion(JointMotion):
         Gets and sets the rotation value. This is in radians. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def rotationLimits(self) -> JointLimits:
@@ -42769,7 +42017,6 @@ class RevolveFeature(Feature):
 
         This property returns null in the case where the feature is non-parametric.
         """
-        pass
 
     @property
     def axis(self) -> core.Base:
@@ -42793,7 +42040,6 @@ class RevolveFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -42813,7 +42059,6 @@ class RevolveFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def extentDefinition(self) -> ExtentDefinition:
@@ -42885,7 +42130,6 @@ class RevolveFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isProjectAxis(self) -> bool:
@@ -42905,7 +42149,6 @@ class RevolveFeature(Feature):
         Setting this to true will use a projected axis, while setting it to false will keep it in its original location.
         This is initialized to false so the selected axis will be used in the feature.
         """
-        pass
 
 
 class RibFeature(Feature):
@@ -43071,7 +42314,6 @@ class RuledSurfaceFeature(Feature):
         after the feature is created. In this case, you need to reposition the timeline marker to just before this feature,
         when the profile still exists.
         """
-        pass
 
     @property
     def distance(self) -> ModelParameter:
@@ -43105,7 +42347,6 @@ class RuledSurfaceFeature(Feature):
         use the direction property to set the direction entity, which will automatically set
         this to DirectionRuledSurfaceType.
         """
-        pass
 
     @property
     def direction(self) -> core.Base:
@@ -43131,7 +42372,6 @@ class RuledSurfaceFeature(Feature):
         changed to DirectionRuledSurfaceType. If you get this property when the direction is not DirectionRuledSurfaceType,
         it will return null.
         """
-        pass
 
     @property
     def alternateFace(self) -> bool:
@@ -43155,7 +42395,6 @@ class RuledSurfaceFeature(Feature):
         the edge connects to two faces. This setting toggles which of the two faces will
         be used for measuring the angle.
         """
-        pass
 
     @property
     def nativeObject(self) -> RuledSurfaceFeature:
@@ -43181,7 +42420,6 @@ class RuledSurfaceFeature(Feature):
         Gets and sets the corner type for the ruled surface, indicating if the corners will be rounded or mitered.
         The default value is rounded.
         """
-        pass
 
 
 class RuleFilletFeature(Feature):
@@ -43285,7 +42523,6 @@ class ScaleFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def point(self) -> core.Base:
@@ -43305,7 +42542,6 @@ class ScaleFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isUniform(self) -> bool:
@@ -43396,7 +42632,6 @@ class SectionAnalysis(Analysis):
         A property that gets and sets the planar entity used to define the cut plane and can be either
         a planar BRepFace or a ConstructionPlane object.
         """
-        pass
 
     @property
     def initialPosition(self) -> core.Matrix3D:
@@ -43426,7 +42661,6 @@ class SectionAnalysis(Analysis):
         applied to the initial position. This property allows you to get and set the
         transformation matrix.
         """
-        pass
 
     @property
     def sectionColor(self) -> core.Color:
@@ -43442,7 +42676,6 @@ class SectionAnalysis(Analysis):
         A property that gets and sets the color of the section. A value of null indicates
         the component color should be used. The opacity value of the color is ignored.
         """
-        pass
 
     @property
     def isHatchShown(self) -> bool:
@@ -43456,7 +42689,6 @@ class SectionAnalysis(Analysis):
         """
         A property that gets and sets if a hatch pattern should be shown on the section.
         """
-        pass
 
 
 class ShellFeature(Feature):
@@ -43599,7 +42831,6 @@ class SilhouetteSplitFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def targetBody(self) -> BRepBody:
@@ -43619,7 +42850,6 @@ class SilhouetteSplitFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> SilhouetteSplitOperations:
@@ -43840,7 +43070,6 @@ class SketchCurve(SketchEntity):
         """
         Gets and sets whether this curve is construction geometry.
         """
-        pass
 
 
 class SketchDiameterDimension(SketchDimension):
@@ -44572,7 +43801,6 @@ class SketchText(SketchEntity):
         """
         Gets and sets the height of the text in centimeters.
         """
-        pass
 
     @property
     def text(self) -> str:
@@ -44586,7 +43814,6 @@ class SketchText(SketchEntity):
         """
         Gets and sets the text. This is a simple string and ignores any formatting defined within the text.
         """
-        pass
 
     @property
     def fontName(self) -> str:
@@ -44600,7 +43827,6 @@ class SketchText(SketchEntity):
         """
         Gets and sets the name of the font to use.
         """
-        pass
 
     @property
     def textStyle(self) -> TextStyles:
@@ -44616,7 +43842,6 @@ class SketchText(SketchEntity):
         Gets and sets the text style to apply to the entire text. This is a bitwise enum so styles
         can be combined to apply multiple styles. For example you can apply bold and underline.
         """
-        pass
 
     @property
     def isHorizontalFlip(self) -> bool:
@@ -44630,7 +43855,6 @@ class SketchText(SketchEntity):
         """
         Gets and sets if the text is flipped horizontally.
         """
-        pass
 
     @property
     def isVerticalFlip(self) -> bool:
@@ -44644,7 +43868,6 @@ class SketchText(SketchEntity):
         """
         Gets and sets if the text is flipped vertically.
         """
-        pass
 
     @property
     def definition(self) -> SketchTextDefinition:
@@ -44700,7 +43923,6 @@ class SliderJointMotion(JointMotion):
         property is set to one of the three standard axes, the custom direction will
         be removed and customSlideDirectionEntity will return null.
         """
-        pass
 
     @property
     def slideDirectionVector(self) -> core.Vector3D:
@@ -44736,7 +43958,6 @@ class SliderJointMotion(JointMotion):
         To set this property, you need to position the timeline marker to immediately before this joint.
         This can be accomplished using the following code: thisJoint.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def slideValue(self) -> float:
@@ -44752,7 +43973,6 @@ class SliderJointMotion(JointMotion):
         Gets and sets the slide value. This is in centimeters. Setting this value is
         the equivalent of using the Drive Joints command.
         """
-        pass
 
     @property
     def slideLimits(self) -> JointLimits:
@@ -44849,7 +44069,6 @@ class SMTExportOptions(ExportOptions):
         property returns by default when a new SMTExportOptions object is
         created.
         """
-        pass
 
 
 class SphereFeature(Feature):
@@ -44921,7 +44140,6 @@ class SplitBodyFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def splittingTool(self) -> core.Base:
@@ -45044,7 +44262,6 @@ class SplitFaceFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def splittingTool(self) -> core.ObjectCollection:
@@ -45125,7 +44342,6 @@ class STEPExportOptions(ExportOptions):
         Outside services can use these IDs with the findByTempId method of the BRepBody,
         which will return the given entity. The default is false.
         """
-        pass
 
 
 class StitchFeature(Feature):
@@ -45174,7 +44390,6 @@ class StitchFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def tolerance(self) -> ModelParameter:
@@ -45204,7 +44419,6 @@ class StitchFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> StitchFeature:
@@ -45241,7 +44455,6 @@ class STLExportOptions(ExportOptions):
         """
         Indicates if the STL file is to be an ASCII or binary STL format. The default is true.
         """
-        pass
 
     @property
     def isOneFilePerBody(self) -> bool:
@@ -45259,7 +44472,6 @@ class STLExportOptions(ExportOptions):
         all of the bodies within that occurrence or component or if multiple files should be created; one for each body.
         If multiple files are created, the body name is appended to the filename. The default is false.
         """
-        pass
 
     @property
     def meshRefinement(self) -> MeshRefinementSettings:
@@ -45277,7 +44489,6 @@ class STLExportOptions(ExportOptions):
         will reset the surfaceDeviation, normalDeviation, maximumEdgeLength, and aspectRatio
         to values that correspond to the specified mesh refinement. The default is MeshRefinementMedium.
         """
-        pass
 
     @property
     def surfaceDeviation(self) -> float:
@@ -45297,7 +44508,6 @@ class STLExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def normalDeviation(self) -> float:
@@ -45317,7 +44527,6 @@ class STLExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def maximumEdgeLength(self) -> float:
@@ -45335,7 +44544,6 @@ class STLExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def aspectRatio(self) -> float:
@@ -45353,7 +44561,6 @@ class STLExportOptions(ExportOptions):
         will automatically set the meshRefinement to MeshRefinementCustom. The default is the value
         associated with medium mesh refinement.
         """
-        pass
 
     @property
     def availablePrintUtilities(self) -> list[str]:
@@ -45383,7 +44590,6 @@ class STLExportOptions(ExportOptions):
         the full path to the print utility executable. The default value of this property is the last setting specified
         in the user-interface.
         """
-        pass
 
     @property
     def sendToPrintUtility(self) -> bool:
@@ -45399,7 +44605,6 @@ class STLExportOptions(ExportOptions):
         Gets and sets whether the created STL file will be sent to the print utility specified by the printUtility property. If this
         is false a filename must be defined.
         """
-        pass
 
 
 class SurfaceDeleteFaceFeature(Feature):
@@ -45451,7 +44656,6 @@ class SurfaceDeleteFaceFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> SurfaceDeleteFaceFeature:
@@ -45512,7 +44716,6 @@ class SweepFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -45526,7 +44729,6 @@ class SweepFeature(Feature):
         """
         Gets and sets the type of operation performed by the sweep.
         """
-        pass
 
     @property
     def path(self) -> Path:
@@ -45548,7 +44750,6 @@ class SweepFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distanceOne(self) -> ModelParameter:
@@ -45586,7 +44787,6 @@ class SweepFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def startFaces(self) -> BRepFaces:
@@ -45650,7 +44850,6 @@ class SweepFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isDirectionFlipped(self) -> bool:
@@ -45674,7 +44873,6 @@ class SweepFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def profileScaling(self) -> SweepProfileScalingOptions:
@@ -45696,7 +44894,6 @@ class SweepFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def participantBodies(self) -> list[BRepBody]:
@@ -45716,7 +44913,6 @@ class SweepFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def taperAngle(self) -> ModelParameter:
@@ -45748,7 +44944,6 @@ class SweepFeature(Feature):
         Gets and sets the sweep extent type. It defaults to PerpendicularToPathExtentType.
         This property is ignored when a guide rail has not been specified.
         """
-        pass
 
 
 class SymmetricExtentDefinition(ExtentDefinition):
@@ -45791,7 +44986,6 @@ class SymmetricExtentDefinition(ExtentDefinition):
         Gets and sets if the distance defines the full extent length or half the length. A value of
         True indicates if defines the full length.
         """
-        pass
 
     @property
     def distance(self) -> core.Base:
@@ -45971,7 +45165,6 @@ class ThickenFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def thickness(self) -> ModelParameter:
@@ -45999,7 +45192,6 @@ class ThickenFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def operation(self) -> FeatureOperations:
@@ -46019,7 +45211,6 @@ class ThickenFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isChainSelection(self) -> bool:
@@ -46104,7 +45295,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isModeled(self) -> bool:
@@ -46126,7 +45316,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isFullLength(self) -> bool:
@@ -46148,7 +45337,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def threadLength(self) -> ModelParameter:
@@ -46190,7 +45378,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def threadInfo(self) -> ThreadInfo:
@@ -46212,7 +45399,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def isRightHanded(self) -> bool:
@@ -46234,7 +45420,6 @@ class ThreadFeature(Feature):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def nativeObject(self) -> ThreadFeature:
@@ -46264,7 +45449,6 @@ class ThreadFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class ThroughAllExtentDefinition(ExtentDefinition):
@@ -46308,7 +45492,6 @@ class ThroughAllExtentDefinition(ExtentDefinition):
         This is only used when the extrusion is only defined in a single direction from the
         profile plane. If it's a two sided extrusion, this value is ignored.
         """
-        pass
 
 
 class TimelineGroup(TimelineObject):
@@ -46362,7 +45545,6 @@ class TimelineGroup(TimelineObject):
         """
         Indicates if the group is collapsed or expanded.
         """
-        pass
 
     @property
     def count(self) -> int:
@@ -46415,7 +45597,6 @@ class ToEntityExtentDefinition(ExtentDefinition):
         Gets and sets the entity that the feature extent is defined up to. This can be a ConstructionPlane, Profile, BrepFace,
         BrepBody, or BRepVertex.
         """
-        pass
 
     @property
     def offset(self) -> core.Base:
@@ -46441,7 +45622,6 @@ class ToEntityExtentDefinition(ExtentDefinition):
         Gets and sets whether connected faces to the input entity should also be used when calculating the extent or if the
         input entity should be extended. A value of true indicates that connected entities should be used.
         """
-        pass
 
     @property
     def directionHint(self) -> core.Vector3D:
@@ -46461,7 +45641,6 @@ class ToEntityExtentDefinition(ExtentDefinition):
         this provides the information to tell Fusion 360 which direction to go. In most cases this is not needed and
         the property will be null.
         """
-        pass
 
     @property
     def isMinimumSolution(self) -> bool:
@@ -46479,7 +45658,6 @@ class ToEntityExtentDefinition(ExtentDefinition):
         a body and defines if the extrusion to go to the near side (minimum solution) of the body or the far side.
         When a new ToEntityExtentDefinition object is created, this property defaults to True.
         """
-        pass
 
 
 class TorusFeature(Feature):
@@ -46543,7 +45721,6 @@ class TrimFeature(Feature):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def bRepCells(self) -> BRepCells:
@@ -46603,7 +45780,6 @@ class TwoDistancesChamferEdgeSet(ChamferEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def distanceOne(self) -> ModelParameter:
@@ -46639,7 +45815,6 @@ class TwoDistancesChamferEdgeSet(ChamferEdgeSet):
         To set this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
 
 class TwoSidesAngleExtentDefinition(ExtentDefinition):
@@ -46953,7 +46128,6 @@ class VariableRadiusFilletEdgeSet(FilletEdgeSet):
         To use this property, you need to position the timeline marker to immediately before this feature.
         This can be accomplished using the following code: thisFeature.timelineObject.rollTo(True)
         """
-        pass
 
     @property
     def startRadius(self) -> ModelParameter:
@@ -47049,7 +46223,6 @@ class VariableRadiusFilletEdgeSetInput(FilletEdgeSetInput):
         the units can be defined as part of the string (i.e. "2 in") or if no units are specified
         it is interpreted using the current default units for length.
         """
-        pass
 
     @property
     def endRadius(self) -> core.ValueInput:
@@ -47077,7 +46250,6 @@ class VariableRadiusFilletEdgeSetInput(FilletEdgeSetInput):
         the units can be defined as part of the string (i.e. "2 in") or if no units are specified
         it is interpreted using the current default units for length.
         """
-        pass
 
 
 class VerticalConstraint(GeometricConstraint):
@@ -47246,7 +46418,6 @@ class CustomFeatureParameter(ModelParameter):
         that are not visible will not be returned by the ModelParameters collection and are only available through
         the custom feature they're associated with.
         """
-        pass
 
     @property
     def parentCustomFeature(self) -> CustomFeature:
@@ -47362,7 +46533,6 @@ class SketchArc(SketchCurve):
         by any constraints that might exist on the circle. Setting the radius
         can fail in cases where the radius is fully defined through constraints.
         """
-        pass
 
     @property
     def geometry(self) -> core.Arc3D:
@@ -47461,7 +46631,6 @@ class SketchCircle(SketchCurve):
         Gets and sets the radius of the circle. Changing the radius is limited
         by any constraints that might exist on the circle.
         """
-        pass
 
     @property
     def nativeObject(self) -> SketchCircle:
@@ -47572,7 +46741,6 @@ class SketchConicCurve(SketchCurve):
         Get and sets the rho value for the curve. The value must be greater than
         zero and less than one.
         """
-        pass
 
 
 class SketchControlPointSpline(SketchCurve):
@@ -47702,7 +46870,6 @@ class SketchControlPointSpline(SketchCurve):
         is useful to be able to determine if the controlPoints and controlFrameLines properties will return
         useful information or not and if the addControlPoint method will succeed or not.
         """
-        pass
 
     @property
     def controlFrameLines(self) -> list[SketchLine]:
@@ -47761,7 +46928,6 @@ class SketchEllipse(SketchCurve):
         limited by any constraints that might exist on the ellipse. Setting the axis
         can fail in cases where the direction is fully defined through constraints.
         """
-        pass
 
     @property
     def majorAxisRadius(self) -> float:
@@ -47779,7 +46945,6 @@ class SketchEllipse(SketchCurve):
         limited by any constraints that might exist on the ellipse. Setting the radius
         can fail in cases where the radius is fully defined through constraints.
         """
-        pass
 
     @property
     def minorAxisRadius(self) -> float:
@@ -47797,7 +46962,6 @@ class SketchEllipse(SketchCurve):
         limited by any constraints that might exist on the ellipse. Setting the radius
         can fail in cases where the radius is fully defined through constraints.
         """
-        pass
 
     @property
     def geometry(self) -> core.Ellipse3D:
@@ -47909,7 +47073,6 @@ class SketchEllipticalArc(SketchCurve):
         limited by any constraints that might exist on the elliptical arc. Setting the axis
         can fail in cases where the direction is fully defined through constraints.
         """
-        pass
 
     @property
     def majorAxisRadius(self) -> float:
@@ -47927,7 +47090,6 @@ class SketchEllipticalArc(SketchCurve):
         limited by any constraints that might exist on the elliptical arc. Setting the radius
         can fail in cases where the radius is fully defined through constraints.
         """
-        pass
 
     @property
     def minorAxisRadius(self) -> float:
@@ -47945,7 +47107,6 @@ class SketchEllipticalArc(SketchCurve):
         limited by any constraints that might exist on the elliptical arc. Setting the radius
         can fail in cases where the radius is fully defined through constraints.
         """
-        pass
 
     @property
     def geometry(self) -> core.EllipticalArc3D:
@@ -48131,7 +47292,6 @@ class SketchFittedSpline(SketchCurve):
         to be periodic and to always remain closed even as fit points
         are deleted.
         """
-        pass
 
     @property
     def geometry(self) -> core.NurbsCurve3D:
@@ -48331,4 +47491,3 @@ class SketchLine(SketchCurve):
         """
         Gets and sets whether this line is defined as a centerline.
         """
-        pass

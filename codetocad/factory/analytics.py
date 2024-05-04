@@ -9,9 +9,6 @@ from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_analytics() -> AnalyticsInterface:
     """
     Tools for collecting data about the entities and scene.
