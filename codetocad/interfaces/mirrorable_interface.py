@@ -20,7 +20,7 @@ class MirrorableInterface(metaclass=ABCMeta):
     @abstractmethod
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):

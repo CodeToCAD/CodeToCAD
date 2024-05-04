@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import (

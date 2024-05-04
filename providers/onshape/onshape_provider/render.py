@@ -1,8 +1,5 @@
-from typing import Optional
 from codetocad.interfaces.render_interface import RenderInterface
-from codetocad.interfaces.camera_interface import CameraInterface
 from providers.onshape.onshape_provider.camera import Camera
-from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

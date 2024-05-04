@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.interfaces.edge_interface import EdgeInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.onshape.onshape_provider.entity import Entity
@@ -12,7 +11,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Vertex
-    from . import Sketch
 
 
 class Edge(EdgeInterface, Entity):

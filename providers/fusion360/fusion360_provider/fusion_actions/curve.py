@@ -1,7 +1,6 @@
 import adsk.core
 import adsk.fusion
 
-from codetocad import *
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from providers.fusion360.fusion360_provider.fusion_actions.common import make_point3d

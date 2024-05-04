@@ -1,8 +1,6 @@
 from typing import Optional
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from providers.fusion360.fusion360_provider.fusion_actions.base import get_component
-from .fusion_actions.fusion_landmark import FusionLandmark
 from .fusion_actions.fusion_body import FusionBody
 from .fusion_actions.fusion_sketch import FusionSketch
 

@@ -443,7 +443,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         Enable or disable the integration of Metadata in the 3mf.
         This is true by default.
         """
-        pass
 
     @property
     def title(self) -> str:
@@ -457,7 +456,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Title of the 3MF File
         """
-        pass
 
     @property
     def designer(self) -> str:
@@ -471,7 +469,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Designer of the 3MF File
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -485,7 +482,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Description of the 3MF File
         """
-        pass
 
     @property
     def copyright(self) -> str:
@@ -499,7 +495,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Copyright of the 3MF File
         """
-        pass
 
     @property
     def licenseTerms(self) -> str:
@@ -513,7 +508,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         License terms of the 3MF File
         """
-        pass
 
     @property
     def creationDate(self) -> str:
@@ -527,7 +521,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Creation date of the 3MF File
         """
-        pass
 
     @property
     def modificationDate(self) -> str:
@@ -541,7 +534,6 @@ class CAM3MFExportMetadataOptions(core.Base):
         """
         Modification date of the 3MF File
         """
-        pass
 
 
 class CAMAdditiveBuildExportFilter(core.Base):
@@ -653,7 +645,6 @@ class CAMExportOptions(core.Base):
         """
         The file we want to export to. Needs to contain a valid path, as no intermediate folders are created.
         """
-        pass
 
     @property
     def exportObject(self) -> core.Base:
@@ -667,7 +658,6 @@ class CAMExportOptions(core.Base):
         """
         The export object we want to export. Depending on the actual export option, this might be geometry, an operation or a setup.
         """
-        pass
 
     @property
     def thumbnailPath(self) -> str:
@@ -681,7 +671,6 @@ class CAMExportOptions(core.Base):
         """
         Path to the thumbnail for the buildfile
         """
-        pass
 
     @property
     def isThumbnailSupported(self) -> bool:
@@ -977,7 +966,6 @@ class CAMParameter(core.Base):
         """
         Gets and sets the value expression of the parameter.
         """
-        pass
 
     @property
     def isEnabled(self) -> bool:
@@ -1185,7 +1173,6 @@ class CAMTemplate(core.Base):
         """
         Gets and sets the name of the template.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -1199,7 +1186,6 @@ class CAMTemplate(core.Base):
         """
         Gets and sets the description of the template.
         """
-        pass
 
     @property
     def isHoleTemplate(self) -> bool:
@@ -1294,7 +1280,6 @@ class CreateFromCAMTemplateInput(core.Base):
         """
         Gets and sets the template to be instantiated.
         """
-        pass
 
     @property
     def mode(self) -> AutomaticGenerationModes:
@@ -1308,7 +1293,6 @@ class CreateFromCAMTemplateInput(core.Base):
         """
         Gets and sets the mode to be used for generation. Defaults to Skip Generation.
         """
-        pass
 
 
 class CurveSelections(core.Base):
@@ -1346,7 +1330,6 @@ class CurveSelections(core.Base):
         """
         Clears all entries.
         """
-        pass
 
     def createNewChainSelection(self) -> ChainSelection:
         """
@@ -1618,7 +1601,6 @@ class Machine(core.Base):
         """
         Gets and sets the vendor name of the machine.
         """
-        pass
 
     @property
     def model(self) -> str:
@@ -1632,7 +1614,6 @@ class Machine(core.Base):
         """
         Gets and sets the model name of the machine.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -1646,7 +1627,6 @@ class Machine(core.Base):
         """
         Gets and sets the description of the machine.
         """
-        pass
 
     @property
     def id(self) -> str:
@@ -1685,7 +1665,6 @@ class Machine(core.Base):
         Gets or sets the URL of the post assigned to the machine.
         Returns a string with the URL of the post assigned to the machine.
         """
-        pass
 
     @property
     def elements(self) -> MachineElements:
@@ -1719,7 +1698,6 @@ class MachineAxis(core.Base):
         """
         The name of this axis.
         """
-        pass
 
     @property
     def axisType(self) -> MachineAxisTypes:
@@ -1749,7 +1727,6 @@ class MachineAxis(core.Base):
         Specifies the value that this axis returns to when the machine is homed.
         Units are cm for linear axes or radians for rotary axes.
         """
-        pass
 
     @property
     def physicalRange(self) -> MachineAxisRange:
@@ -1765,7 +1742,6 @@ class MachineAxis(core.Base):
         Range of possible values for this axis.
         Units are cm for linear axes or radians for rotary axes.
         """
-        pass
 
 
 class MachineAxisConfiguration(core.Base):
@@ -1784,7 +1760,6 @@ class MachineAxisConfiguration(core.Base):
         """
         Delete this axis configuration from the controller configuration.
         """
-        pass
 
     @property
     def partId(self) -> str:
@@ -1814,7 +1789,6 @@ class MachineAxisConfiguration(core.Base):
         Does the axis move in the opposite direction to usual. For rotary axes this would mean it
         uses the left hand rule, and for linear axes is moves in the opposite direction.
         """
-        pass
 
     @property
     def maxNormalSpeed(self) -> float:
@@ -1832,7 +1806,6 @@ class MachineAxisConfiguration(core.Base):
         This would be called feedrate for a linear axis or rotary speed for a rotary axis.
         Units are cm/s for linear axes or rad/s for rotary axes.
         """
-        pass
 
     @property
     def maxRapidSpeed(self) -> float:
@@ -1850,7 +1823,6 @@ class MachineAxisConfiguration(core.Base):
         This would be called feedrate for a linear axis or rotary speed for a rotary axis.
         Units are cm/s for linear axes or rad/s for rotary axes.
         """
-        pass
 
     @property
     def coordinate(self) -> MachineAxisCoordinates:
@@ -1864,7 +1836,6 @@ class MachineAxisConfiguration(core.Base):
         """
         Coordinate to use for post processing.
         """
-        pass
 
 
 class MachineAxisConfigurations(core.Base):
@@ -1964,7 +1935,6 @@ class MachineAxisInput(core.Base):
         """
         The user facing name of this axis.
         """
-        pass
 
     @property
     def homePosition(self) -> float:
@@ -1980,7 +1950,6 @@ class MachineAxisInput(core.Base):
         Specifies the value that this axis returns to when the machine is homed.
         Units are cm for linear axes or radians for rotary axes.
         """
-        pass
 
     @property
     def physicalRange(self) -> MachineAxisRange:
@@ -1996,7 +1965,6 @@ class MachineAxisInput(core.Base):
         Range of possible values for this axis.
         Units are cm for linear axes or radians for rotary axes.
         """
-        pass
 
 
 class MachineAxisRange(core.Base):
@@ -2081,7 +2049,6 @@ class MachineCapabilities(core.Base):
         """
         Gets and sets if the machine is capable of subtractive milling.
         """
-        pass
 
     @property
     def isTurningSupported(self) -> bool:
@@ -2095,7 +2062,6 @@ class MachineCapabilities(core.Base):
         """
         Gets and sets if the machine is capable of subtractive turning.
         """
-        pass
 
     @property
     def isCuttingSupported(self) -> bool:
@@ -2109,7 +2075,6 @@ class MachineCapabilities(core.Base):
         """
         Gets and sets if the machine is capable of subtractive cutting.
         """
-        pass
 
     @property
     def isAdditiveSupported(self) -> bool:
@@ -2123,7 +2088,6 @@ class MachineCapabilities(core.Base):
         """
         Gets and sets if the machine is capable of additive operations.
         """
-        pass
 
     @property
     def additiveTechnology(self) -> AdditiveTechnologies:
@@ -2265,7 +2229,6 @@ class MachinePart(core.Base):
         """
         Delete this part and its children from the kinematics tree.
         """
-        pass
 
     @property
     def children(self) -> MachineParts:
@@ -2292,7 +2255,6 @@ class MachinePart(core.Base):
         collection. Setting the parent will throw an error if the new parent is this
         part or a child of this part.
         """
-        pass
 
     @property
     def partType(self) -> MachinePartTypes:
@@ -2375,7 +2337,6 @@ class MachinePartInput(core.Base):
         operations. This ID can be any string.
         This must be unique with respect to other MachineParts in the Machine.
         """
-        pass
 
     @property
     def partType(self) -> MachinePartTypes:
@@ -2398,7 +2359,6 @@ class MachinePartInput(core.Base):
         Gets or sets an axis input object to create a new MachineAxis with this part.
         Only valid when partType is Axis.
         """
-        pass
 
     @property
     def spindleInput(self) -> MachineSpindleInput:
@@ -2414,7 +2374,6 @@ class MachinePartInput(core.Base):
         Gets or sets an spindle input object to create a new MachineSpindle with this part.
         Only valid when partType is not Axis.
         """
-        pass
 
 
 class MachineParts(core.Base):
@@ -2515,7 +2474,6 @@ class MachineQuery(core.Base):
         """
         The case-insensitive vendor specifies the vendor of the machine. The default empty vendor applies to all machines.
         """
-        pass
 
     @property
     def model(self) -> str:
@@ -2529,7 +2487,6 @@ class MachineQuery(core.Base):
         """
         The case-insensitive model specifies the model of the machine. The default empty model applies to all machines.
         """
-        pass
 
     @property
     def url(self) -> core.URL:
@@ -2545,7 +2502,6 @@ class MachineQuery(core.Base):
         The URL specifies the location and folder to search for in the machine library.
         Setting the URL updates the location.
         """
-        pass
 
     @property
     def location(self) -> LibraryLocations:
@@ -2561,7 +2517,6 @@ class MachineQuery(core.Base):
         The location specifies the location to search in the machine library.
         Setting the location clears any previous specified URL.
         """
-        pass
 
 
 class MachineSpindle(core.Base):
@@ -2588,7 +2543,6 @@ class MachineSpindle(core.Base):
         """
         The description of this spindle.
         """
-        pass
 
     @property
     def maxSpeed(self) -> float:
@@ -2602,7 +2556,6 @@ class MachineSpindle(core.Base):
         """
         Specifies the maximum speed (rpm) for this spindle.
         """
-        pass
 
     @property
     def minSpeed(self) -> float:
@@ -2616,7 +2569,6 @@ class MachineSpindle(core.Base):
         """
         Specifies the minimum speed (rpm) for this spindle.
         """
-        pass
 
 
 class MachineSpindleInput(core.Base):
@@ -2643,7 +2595,6 @@ class MachineSpindleInput(core.Base):
         """
         The description of this spindle.
         """
-        pass
 
     @property
     def maxSpeed(self) -> float:
@@ -2657,7 +2608,6 @@ class MachineSpindleInput(core.Base):
         """
         Specifies the maximum speed (rpm) for this spindle.
         """
-        pass
 
     @property
     def minSpeed(self) -> float:
@@ -2671,7 +2621,6 @@ class MachineSpindleInput(core.Base):
         """
         Specifies the minimum speed (rpm) for this spindle.
         """
-        pass
 
 
 class MachiningTime(core.Base):
@@ -2786,7 +2735,6 @@ class ManufacturingModel(core.Base):
         Gets or sets the display name of the ManufacturingModel.
         This is the name that will be shown in the browser and other locations.
         """
-        pass
 
     @property
     def id(self) -> str:
@@ -2839,7 +2787,6 @@ class ManufacturingModelInput(core.Base):
         Name of the new ManufacturingModel.
         The name is displayed in the browser tree.
         """
-        pass
 
 
 class ManufacturingModels(core.Base):
@@ -2970,7 +2917,6 @@ class NCProgramInput(core.Base):
         Operations will be post processed in setup order, with operations from the same setup grouped together.
         Setting the nc_program_orderByTool BooleanParameterValue on the parameters property to true will reorder operations across multiple setups to reduce the number of tool changes.
         """
-        pass
 
     @property
     def displayName(self) -> str:
@@ -2984,7 +2930,6 @@ class NCProgramInput(core.Base):
         """
         Optionally specify the display name that appears in the browser-tree to override the default.
         """
-        pass
 
 
 class NCProgramPostProcessOptions(core.Base):
@@ -3025,7 +2970,6 @@ class NCProgramPostProcessOptions(core.Base):
         True by default. If true, an exception will be thrown if at least two tools map to the same tool number.
         If false, the post processor will not perform a tool change if the tool number is the same, which may mean that the wrong tool is used for an operation.
         """
-        pass
 
     @property
     def postProcessExecutionBehavior(self) -> PostProcessExecutionBehaviors:
@@ -3041,7 +2985,6 @@ class NCProgramPostProcessOptions(core.Base):
         Gets and sets the post process behavior with regards to the operations' error or out of date states.
         Uses PostProcessExecutionBehavior_OmitInvalidAndEmptyOperations by default.
         """
-        pass
 
 
 class NCPrograms(core.Base):
@@ -3161,7 +3104,6 @@ class OperationBase(core.Base):
         Gets and sets the name of the operation as seen in the browser.  This name is unique as compared
         to the names of all other operations in the document.
         """
-        pass
 
     @property
     def isProtected(self) -> bool:
@@ -3177,7 +3119,6 @@ class OperationBase(core.Base):
         Gets and sets the "protected" property value of the operation.
         Gets/sets true if the operation is protected.
         """
-        pass
 
     @property
     def isOptional(self) -> bool:
@@ -3193,7 +3134,6 @@ class OperationBase(core.Base):
         Gets and sets the "Optional" property value of the operation.
         Gets/sets true if the operation is optional.
         """
-        pass
 
     @property
     def isSuppressed(self) -> bool:
@@ -3209,7 +3149,6 @@ class OperationBase(core.Base):
         Gets and sets the "Suppressed" property value of the operation.
         Gets/sets true if the operation is suppressed.
         """
-        pass
 
     @property
     def parentSetup(self) -> Setup:
@@ -3237,7 +3176,6 @@ class OperationBase(core.Base):
         """
         Gets and sets the notes of the operation.
         """
-        pass
 
     @property
     def operationId(self) -> int:
@@ -3322,7 +3260,6 @@ class OperationBase(core.Base):
         if all of its parent nodes are also visible. Use the isVisible property
         to determine if it's actually visible.
         """
-        pass
 
     @property
     def isVisible(self) -> bool:
@@ -3385,7 +3322,6 @@ class OperationInput(core.Base):
         """
         Optionally specify the tool used by the operation. The ToolLibraries allows the access to Local and Fusion 360 tools.
         """
-        pass
 
     @property
     def toolPreset(self) -> ToolPreset:
@@ -3403,7 +3339,6 @@ class OperationInput(core.Base):
         The Tool provides access to available presets. Use one of those presets to override the default.
         An invalid preset will cause a failure during the creation of the operation.
         """
-        pass
 
     @property
     def displayName(self) -> str:
@@ -3417,7 +3352,6 @@ class OperationInput(core.Base):
         """
         Optionally specify the display name that appears in the browser-tree to override the default.
         """
-        pass
 
     @property
     def generationMode(self) -> AutomaticGenerationModes:
@@ -3437,7 +3371,6 @@ class OperationInput(core.Base):
         By default the newly created operation will not be generated.
         The default value is SkipGeneration.
         """
-        pass
 
 
 class Operations(core.Base):
@@ -3751,7 +3684,6 @@ class PostConfigurationQuery(core.Base):
         """
         The case-insensitive vendor specifies the vendor of the post configuration. The default empty vendor applies to all post configurations.
         """
-        pass
 
     @property
     def url(self) -> core.URL:
@@ -3767,7 +3699,6 @@ class PostConfigurationQuery(core.Base):
         The URL specifies the location and folder to search for in the post library.
         Setting the URL updates the location.
         """
-        pass
 
     @property
     def capability(self) -> PostCapabilities:
@@ -3781,7 +3712,6 @@ class PostConfigurationQuery(core.Base):
         """
         Specifies the capability to search for in the post library.
         """
-        pass
 
     @property
     def location(self) -> LibraryLocations:
@@ -3797,7 +3727,6 @@ class PostConfigurationQuery(core.Base):
         The location specifies the location to search in the post library.
         Setting the location clears any previous specified URL.
         """
-        pass
 
 
 class PostProcessInput(core.Base):
@@ -3852,7 +3781,6 @@ class PostProcessInput(core.Base):
         Gets and sets the program name or number.
         If the post configuration specifies the parameter programNameIsInteger = true, then the program name must be a number.
         """
-        pass
 
     @property
     def programComment(self) -> str:
@@ -3866,7 +3794,6 @@ class PostProcessInput(core.Base):
         """
         Gets and sets the program comment.  The default value for this property is an empty string ("").
         """
-        pass
 
     @property
     def postConfiguration(self) -> str:
@@ -3880,7 +3807,6 @@ class PostProcessInput(core.Base):
         """
         Gets and sets the full filename (including the path) for the post configuration file (.cps)
         """
-        pass
 
     @property
     def outputFolder(self) -> str:
@@ -3894,7 +3820,6 @@ class PostProcessInput(core.Base):
         """
         Gets and sets the path for the output folder where the .cnc files will be located.
         """
-        pass
 
     @property
     def outputUnits(self) -> PostOutputUnitOptions:
@@ -3910,7 +3835,6 @@ class PostProcessInput(core.Base):
         Gets and sets the units option for the CNC output.
         Valid options are DocumentUnitsOutput, InchesOutput or MillimetersOutput
         """
-        pass
 
     @property
     def isOpenInEditor(self) -> bool:
@@ -3926,7 +3850,6 @@ class PostProcessInput(core.Base):
         Gets and sets the option if opening the CNC file with the editor after it is created.
         The default value for this property is true.
         """
-        pass
 
     @property
     def areToolChangesMinimized(self) -> bool:
@@ -3946,7 +3869,6 @@ class PostProcessInput(core.Base):
         This is commonly used for tombstone machining where you have multiple setups.
         The default value for this property is false.
         """
-        pass
 
     @property
     def postProperties(self) -> core.NamedValues:
@@ -3964,7 +3886,6 @@ class PostProcessInput(core.Base):
         Each property has a string name and a ValueInput object.
         The default value for this is an empty NamedValues.
         """
-        pass
 
 
 class PrintSetting(core.Base):
@@ -4026,14 +3947,12 @@ class PrintSetting(core.Base):
         Deletes the PrintSetting item of the specified body preset. Default item cant be deleted. Throws exception when name not found.
         name : The body preset id of the parameters that has to be deleted.
         """
-        pass
 
     def setDefaultPrintSettingItem(self, name: str) -> None:
         """
         Defaults the PrintSetting item of the specified body preset. Throws exception when name not found.
         name : The body preset id of the parameters that has to be defaulted.
         """
-        pass
 
     def getDefaultPrintSettingItem(self) -> PrintSettingItem:
         """
@@ -4062,7 +3981,6 @@ class PrintSetting(core.Base):
         """
         Gets and sets the name of the PrintSetting.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -4076,7 +3994,6 @@ class PrintSetting(core.Base):
         """
         Gets and sets the description of the PrintSetting.
         """
-        pass
 
     @property
     def technology(self) -> str:
@@ -4125,7 +4042,6 @@ class PrintSettingItem(core.Base):
         """
         Body Preset get and set name.
         """
-        pass
 
     @property
     def description(self) -> str:
@@ -4139,7 +4055,6 @@ class PrintSettingItem(core.Base):
         """
         Body Preset get and set description.
         """
-        pass
 
     @property
     def parameters(self) -> CAMParameters:
@@ -4181,7 +4096,6 @@ class PrintSettingQuery(core.Base):
         """
         The case-insensitive name specifies the name of the PrintSetting.
         """
-        pass
 
     @property
     def technology(self) -> str:
@@ -4195,7 +4109,6 @@ class PrintSettingQuery(core.Base):
         """
         The case-insensitive technology specifies technology of the PrintSetting.
         """
-        pass
 
     @property
     def vendor(self) -> str:
@@ -4209,7 +4122,6 @@ class PrintSettingQuery(core.Base):
         """
         The case-insensitive vendor specifies vendor of the PrintSetting. Generic FFF PrintSetting doesnt have a vendor.
         """
-        pass
 
     @property
     def material(self) -> str:
@@ -4223,7 +4135,6 @@ class PrintSettingQuery(core.Base):
         """
         The case-insensitive material specifies material of the MPBF PrintSetting.
         """
-        pass
 
     @property
     def layerHeight(self) -> float:
@@ -4237,7 +4148,6 @@ class PrintSettingQuery(core.Base):
         """
         The layer height specifies layer height of the PrintSetting. This should match the PrintSetting layer height in cm.
         """
-        pass
 
     @property
     def url(self) -> core.URL:
@@ -4253,7 +4163,6 @@ class PrintSettingQuery(core.Base):
         The URL specifies the location and folder to search for in the PrintSetting library.
         Setting the URL updates the location.
         """
-        pass
 
     @property
     def location(self) -> LibraryLocations:
@@ -4269,7 +4178,6 @@ class PrintSettingQuery(core.Base):
         The location specifies the location to search in the PrintSetting library.
         Setting the location clears any previous specified URL.
         """
-        pass
 
 
 class RecognizedHole(core.Base):
@@ -4709,7 +4617,6 @@ class SetupChangeEventHandler(core.EventHandler):
         The function called by CAM when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class SetupEventHandler(core.EventHandler):
@@ -4730,7 +4637,6 @@ class SetupEventHandler(core.EventHandler):
         The function called by CAM when the associated event is fired.
         eventArgs : Returns an object that provides access to additional information associated with the event.
         """
-        pass
 
 
 class SetupInput(core.Base):
@@ -4761,7 +4667,6 @@ class SetupInput(core.Base):
         Name of the new setup.
         This is displayed in the browser tree and can be used to access the setup from Setups.
         """
-        pass
 
     @property
     def operationType(self) -> OperationTypes:
@@ -4788,7 +4693,6 @@ class SetupInput(core.Base):
         without needing to create a new array, populate it, and assign it using this property,
         although, that is supported too.
         """
-        pass
 
     @property
     def stockMode(self) -> SetupStockModes:
@@ -4802,7 +4706,6 @@ class SetupInput(core.Base):
         """
         StockMode for the setup.
         """
-        pass
 
     @property
     def stockSolids(self) -> list[core.Base]:
@@ -4828,7 +4731,6 @@ class SetupInput(core.Base):
         without needing to create a new array, populate it, and assign it using this property,
         although, that is supported too.
         """
-        pass
 
     @property
     def fixtureEnabled(self) -> bool:
@@ -4844,7 +4746,6 @@ class SetupInput(core.Base):
         Set this value to enable the use of fixtures for this setup.
         To then set the fixture models themselves use the `fixtures` property.
         """
-        pass
 
     @property
     def fixtures(self) -> list[core.Base]:
@@ -4868,7 +4769,6 @@ class SetupInput(core.Base):
         without needing to create a new array, populate it, and assign using this property,
         although, that is supported too.
         """
-        pass
 
     @property
     def machine(self) -> Machine:
@@ -4882,7 +4782,6 @@ class SetupInput(core.Base):
         """
         Gets and sets the Machine associated with the setup.
         """
-        pass
 
     @property
     def printSetting(self) -> PrintSetting:
@@ -4896,7 +4795,6 @@ class SetupInput(core.Base):
         """
         Gets and sets the PrintSetting associated with the setup.
         """
-        pass
 
     @property
     def parameters(self) -> CAMParameters:
@@ -5130,7 +5028,6 @@ class ToolPreset(core.Base):
         """
         Gets and sets the name of that Preset.
         """
-        pass
 
     @property
     def id(self) -> str:
@@ -5144,7 +5041,6 @@ class ToolPreset(core.Base):
         """
         Gets and sets the identifier of that Preset. The id can be used to select a Preset for a Operation.
         """
-        pass
 
     @property
     def parameters(self) -> CAMParameters:
@@ -5249,7 +5145,6 @@ class ToolQuery(core.Base):
         """
         The case-insensitive vendor specifies the vendor of the tool. The default empty vendor applies to all tools.
         """
-        pass
 
     @property
     def url(self) -> core.URL:
@@ -5267,7 +5162,6 @@ class ToolQuery(core.Base):
         Setting the URL updates the location.
         When searching inside a ToolLibrary the URL will be ignored.
         """
-        pass
 
     @property
     def location(self) -> LibraryLocations:
@@ -5285,7 +5179,6 @@ class ToolQuery(core.Base):
         Setting the location clears any previous specified URL.
         When searching inside a ToolLibrary the location will be ignored.
         """
-        pass
 
     @property
     def criteria(self) -> core.NamedValues:
@@ -5369,7 +5262,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Position of the machine home location.
         """
-        pass
 
     @property
     def parkPosition(self) -> core.Point3D:
@@ -5383,7 +5275,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Position machine moves to when "parked".
         """
-        pass
 
     @property
     def maximumBedTemperature(self) -> float:
@@ -5397,7 +5288,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Maximum bed temperature in degrees C.
         """
-        pass
 
     @property
     def maximumXYSpeed(self) -> float:
@@ -5411,7 +5301,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Maximum supported speed for motion in the X or Y axes in cm/s.
         """
-        pass
 
     @property
     def maximumZSpeed(self) -> float:
@@ -5425,7 +5314,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Maximum supported speed for motion in the Z axis in cm/s.
         """
-        pass
 
     @property
     def maximumXYAcceleration(self) -> float:
@@ -5439,7 +5327,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Maximum supported acceleration for motion in the X or Y axes in cm/s^2.
         """
-        pass
 
     @property
     def maximumZAcceleration(self) -> float:
@@ -5453,7 +5340,6 @@ class AdditiveFFFLimitsMachineElement(MachineElement):
         """
         Maximum supported acceleration for motion in the Z axis in cm/s^2.
         """
-        pass
 
 
 class AdditivePlatformMachineElement(MachineElement):
@@ -5491,7 +5377,6 @@ class AdditivePlatformMachineElement(MachineElement):
         Usable platform size.
         Units are cm.
         """
-        pass
 
     @property
     def origin(self) -> core.Point3D:
@@ -5507,7 +5392,6 @@ class AdditivePlatformMachineElement(MachineElement):
         Origin point specifying the platform coordinates that correspond to the origin of the platform mesh.
         Units are cm.
         """
-        pass
 
     @property
     def clearance(self) -> float:
@@ -5523,7 +5407,6 @@ class AdditivePlatformMachineElement(MachineElement):
         Clearance height used for automatically arranging parts and suggested height for positioning part on the build platform.
         Units are cm.
         """
-        pass
 
 
 class AdditiveSetupUtility(ModifyUtility):
@@ -5584,7 +5467,6 @@ class BooleanParameterValue(ParameterValue):
         """
         Get or set the value of the parameter.
         """
-        pass
 
 
 class CadContours2dParameterValue(ParameterValue):
@@ -5613,7 +5495,6 @@ class CadContours2dParameterValue(ParameterValue):
         If the input does not define continuous contours, the contour is amended and calculated, but only if used on Operations, not OperationInputs
         When used with OperationInputs, the contours are calculated when creating an operation out of the input.
         """
-        pass
 
 
 class CadObjectParameterValue(ParameterValue):
@@ -5644,7 +5525,6 @@ class CadObjectParameterValue(ParameterValue):
         If the value originates from a component instead of an occurrence, or an occurrence outside of the CAM environment, then the subpath is checked against the CAM model tree.
         An exception is thrown if the matching fails or the given entity does not match the expected type.
         """
-        pass
 
 
 class CAM(core.Product):
@@ -5796,7 +5676,6 @@ class CAM(core.Product):
         for instance when design changes are expected before a Manufacture API call.
         Also recommended at the beginning of a script or the beginning of an event handler.
         """
-        pass
 
     @property
     def setups(self) -> Setups:
@@ -5967,7 +5846,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def isMachineInformationIncluded(self) -> bool:
@@ -5987,7 +5865,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def isProcessSimulationDataIncluded(self) -> bool:
@@ -6005,7 +5882,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def isSimulationPostProcessingIncluded(self) -> bool:
@@ -6023,7 +5899,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def areSimulationSurrogatesSplit(self) -> bool:
@@ -6041,7 +5916,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def areSimulationThickeningStructuresKept(self) -> bool:
@@ -6059,7 +5933,6 @@ class CAM3MFExportOptions(CAMExportOptions):
         This option might not be available for all machine types.
         The default value is false.
         """
-        pass
 
     @property
     def metadata(self) -> CAM3MFExportMetadataOptions:
@@ -6108,7 +5981,6 @@ class CAMAdditiveBuildExportOptions(CAMExportOptions):
         Gets and sets the export filter to be used for the export.
         By default, this is the first entry in the print setting's filter list.
         """
-        pass
 
 
 class CAMFolder(OperationBase):
@@ -6348,7 +6220,6 @@ class ChoiceParameterValue(ParameterValue):
         Get or set the value of the parameter.
         This value will correspond to one of the available values of the parameter.
         """
-        pass
 
 
 class ControllerConfigurationMachineElement(MachineElement):
@@ -6393,7 +6264,6 @@ class ControllerConfigurationMachineElement(MachineElement):
         Global maximum non-rapid linear motion speed.
         Units are cm/s.
         """
-        pass
 
     @property
     def maxBlockProcessingSpeed(self) -> int:
@@ -6407,7 +6277,6 @@ class ControllerConfigurationMachineElement(MachineElement):
         """
         Maximum block processing rate for the controller.
         """
-        pass
 
 
 class CurveSelection(GeometrySelection):
@@ -6440,7 +6309,6 @@ class CurveSelection(GeometrySelection):
         For some child classes, this may be the same as the value property, but might also consist of fewer elements.
         Valid elements depend on the capabilities of the derived class. An exception is thrown if the matching fails or the given entity does not match the expected type.
         """
-        pass
 
 
 class DocumentToolLibrary(ToolLibrary):
@@ -6510,7 +6378,6 @@ class FloatParameterValue(ParameterValue):
         """
         Get or set the value of the parameter.
         """
-        pass
 
     @property
     def type(self) -> FloatParameterValueTypes:
@@ -6544,7 +6411,6 @@ class IntegerParameterValue(ParameterValue):
         """
         Get or set the value of the parameter.
         """
-        pass
 
 
 class KinematicsMachineElement(MachineElement):
@@ -6600,7 +6466,6 @@ class LinearMachineAxis(MachineAxis):
         """
         The unit vector that represents the direction along which the axis will move.
         """
-        pass
 
 
 class LinearMachineAxisConfiguration(MachineAxisConfiguration):
@@ -6643,7 +6508,6 @@ class LinearMachineAxisInput(MachineAxisInput):
         The unit vector that represents the direction along which the linear axis will move.
         This vector is in the machine's coordinate system (e.g. the X axis is always (1,0,0)).
         """
-        pass
 
 
 class MachineFromFileInput(MachineInput):
@@ -6693,7 +6557,6 @@ class MachineFromFileInput(MachineInput):
         Whether or not to ignore the simulation model
         when creating/loading the machine.
         """
-        pass
 
 
 class MachineFromLibraryInput(MachineInput):
@@ -6740,7 +6603,6 @@ class MachineFromLibraryInput(MachineInput):
         Gets and sets whether or not to ignore the simulation model
         when creating or loading the machine.
         """
-        pass
 
 
 class MachineFromTemplateInput(MachineInput):
@@ -6888,7 +6750,6 @@ class NCProgram(OperationBase):
         Operations will be post processed in setup order, with operations from the same setup grouped together.
         Setting the nc_program_orderByTool BooleanParameterValue on the parameters property to true will reorder operations across multiple setups to reduce the number of tool changes.
         """
-        pass
 
     @property
     def filteredOperations(self) -> list[OperationBase]:
@@ -6909,7 +6770,6 @@ class NCProgram(OperationBase):
         """
         Gets and sets the post configuration of this NC program.
         """
-        pass
 
     @property
     def machine(self) -> Machine:
@@ -6927,7 +6787,6 @@ class NCProgram(OperationBase):
         When a machine is set, "use machine configuration" is automatically set to true.
         If this machine has a default post assigned, this post will be set for the NC program as well.
         """
-        pass
 
     @property
     def postParameters(self) -> CAMParameters:
@@ -7009,7 +6868,6 @@ class Operation(OperationBase):
         To change the tool of the operation, the new tool must be assigned to the operation.
         Setting a tool will override the current preset and will fall back to the default preset of the new tool.
         """
-        pass
 
     @property
     def toolPreset(self) -> ToolPreset:
@@ -7023,7 +6881,6 @@ class Operation(OperationBase):
         """
         Get or set the tool preset to be used. Must be a valid preset of the already assigned tool. Returns null if the operation has no tool or preset.
         """
-        pass
 
 
 class OptimizedOrientationResults(GeneratedData):
@@ -7077,7 +6934,6 @@ class OptimizedOrientationResults(GeneratedData):
         Gets or sets the desired OrientationResult.
         When setting, the orientation matrix is applied to the component selected in the parent orientation operation, possibly invalidating other operations.
         """
-        pass
 
     @property
     def count(self) -> int:
@@ -7225,7 +7081,6 @@ class RotaryMachineAxis(MachineAxis):
         """
         The infinite line that defines the direction and location of the axis of rotation.
         """
-        pass
 
 
 class RotaryMachineAxisConfiguration(MachineAxisConfiguration):
@@ -7256,7 +7111,6 @@ class RotaryMachineAxisConfiguration(MachineAxisConfiguration):
         If there are no wrap around limits then wrapAroundAtRange is infinite.
         Units are radians.
         """
-        pass
 
     @property
     def reset(self) -> MachineResetOptions:
@@ -7270,7 +7124,6 @@ class RotaryMachineAxisConfiguration(MachineAxisConfiguration):
         """
         Specify when to reset the initial axis position.
         """
-        pass
 
     @property
     def useToolCenterPointControl(self) -> bool:
@@ -7284,7 +7137,6 @@ class RotaryMachineAxisConfiguration(MachineAxisConfiguration):
         """
         Specify if the axis supports Tool Center Point Control (TCP).
         """
-        pass
 
     @property
     def rotaryPreference(self) -> MachineAnglePreferences:
@@ -7298,7 +7150,6 @@ class RotaryMachineAxisConfiguration(MachineAxisConfiguration):
         """
         Specify the preferred angle direction at the beginning of an operation.
         """
-        pass
 
 
 class RotaryMachineAxisInput(MachineAxisInput):
@@ -7329,7 +7180,6 @@ class RotaryMachineAxisInput(MachineAxisInput):
         This direction is in the machine's coordinate system (e.g. an A axis would
         typically use (1,0,0) for the direction), and follows the right-hand rule.
         """
-        pass
 
 
 class Setup(OperationBase):
@@ -7431,7 +7281,6 @@ class Setup(OperationBase):
         Gets and sets the input models associated with the setup.  Passing in an empty ObjectCollection
         will remove all current inputs.  Valid collection items are Occurrence, BRepBody, or MeshBody.
         """
-        pass
 
     @property
     def fixtures(self) -> core.ObjectCollection:
@@ -7447,7 +7296,6 @@ class Setup(OperationBase):
         Gets and sets the fixtures associated with the setup.
         To be able to set models as fixtures, the fixturesEnabled property has to be set first.
         """
-        pass
 
     @property
     def stockSolids(self) -> core.ObjectCollection:
@@ -7461,7 +7309,6 @@ class Setup(OperationBase):
         """
         Gets and sets the stock solids associated with the setup. StockMode has to be set to `SolidStock` otherwise this will throw an error.
         """
-        pass
 
     @property
     def machine(self) -> Machine:
@@ -7479,7 +7326,6 @@ class Setup(OperationBase):
 
         Note: At the moment it is not possible to set an additive machine.
         """
-        pass
 
     @property
     def stockMode(self) -> SetupStockModes:
@@ -7495,7 +7341,6 @@ class Setup(OperationBase):
         Gets and sets the bodies associated with the setup.  Passing in an empty ObjectCollection
         will remove all current bodies.  Valid input is MeshBody and/or BRepBody objects.
         """
-        pass
 
     @property
     def workCoordinateSystem(self) -> core.Matrix3D:
@@ -7519,7 +7364,6 @@ class Setup(OperationBase):
         Set this value to enable the use of fixtures for this setup.
         To then set the fixture models themselves use the `fixtures` property.
         """
-        pass
 
     @property
     def printSetting(self) -> PrintSetting:
@@ -7533,7 +7377,6 @@ class Setup(OperationBase):
         """
         Gets and sets the PrintSetting associated with the setup.
         """
-        pass
 
 
 class SetupChangeEvent(core.Event):
@@ -7675,7 +7518,6 @@ class StringParameterValue(ParameterValue):
         """
         Get or set the value of the parameter.
         """
-        pass
 
 
 class ToolLibraries(CAMLibrary):
@@ -7776,7 +7618,6 @@ class ChainSelection(CurveSelection):
         Property to get or set if an open contour should be closed or not.
         If true and the input does not specify a closed contour, additional curve segments will be generated to close the contour.
         """
-        pass
 
     @property
     def isOpenAllowed(self) -> bool:
@@ -7807,7 +7648,6 @@ class ChainSelection(CurveSelection):
         The initial tool placement depends on the first input edge or sketch line and the height
         of the bordering faces or sketch boundaries, with the tool being placed outside of the higher face or sketch boundary.
         """
-        pass
 
     @property
     def extensionMethod(self) -> ExtensionMethods:
@@ -7823,7 +7663,6 @@ class ChainSelection(CurveSelection):
         Property that gets and sets extension method to use. The default is TangentExtension.
         Only applicable to open contours.
         """
-        pass
 
     @property
     def extensionType(self) -> ExtensionTypes:
@@ -7839,7 +7678,6 @@ class ChainSelection(CurveSelection):
         Property that gets and sets the desired extension type method. The default is DistanceCap.
         This is only applicable to open contours.
         """
-        pass
 
     @property
     def startExtensionLength(self) -> float:
@@ -7855,7 +7693,6 @@ class ChainSelection(CurveSelection):
         Property that gets and sets the length of the extension of an open curve at the start of the chain.
         This is only applicable to open contours and when DistanceCap is chosen as the extension cap.
         """
-        pass
 
     @property
     def endExtensionLength(self) -> float:
@@ -7873,7 +7710,6 @@ class ChainSelection(CurveSelection):
         The value is specified in centimeters. This is only applicable to open contours and when DistanceCap
         is chosen as the extension cap.
         """
-        pass
 
 
 class FaceContourSelection(CurveSelection):
@@ -7902,7 +7738,6 @@ class FaceContourSelection(CurveSelection):
         """
         Property to get and set the desired loop type. The default is AllLoops.
         """
-        pass
 
     @property
     def sideType(self) -> SideTypes:
@@ -7916,7 +7751,6 @@ class FaceContourSelection(CurveSelection):
         """
         Property to get and set the desired side type. The default is StartOutside.
         """
-        pass
 
     @property
     def isSelectingSamePlaneFaces(self) -> bool:
@@ -7930,7 +7764,6 @@ class FaceContourSelection(CurveSelection):
         """
         Property to get and set if all planar faces lying in the same plane as the selected face should be automatically selected as well.
         """
-        pass
 
 
 class PocketRecognitionSelection(CurveSelection):
@@ -7959,7 +7792,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         Flag to include all B-Rep bodies set as the setup models.
         """
-        pass
 
     @property
     def areHolesIncluded(self) -> bool:
@@ -7973,7 +7805,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         Flag to interpret holes as pockets.
         """
-        pass
 
     @property
     def minimumHoleDiameter(self) -> float:
@@ -7987,7 +7818,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         Lower bound for the diameter for the hole detection. It can only be set if areHoldeIncluded is set to true.
         """
-        pass
 
     @property
     def minimumCornerRadius(self) -> float:
@@ -8001,7 +7831,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         The smallest corner radius that can appear in a pocket to machine.
         """
-        pass
 
     @property
     def maximumCornerRadius(self) -> float:
@@ -8015,7 +7844,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         The largest corner radius that can appear in a pocket to machine.
         """
-        pass
 
     @property
     def minimumPocketDepth(self) -> float:
@@ -8029,7 +7857,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         The shallowest pocket (measured from top to bottom) to machine.
         """
-        pass
 
     @property
     def maximumPocketDepth(self) -> float:
@@ -8043,7 +7870,6 @@ class PocketRecognitionSelection(CurveSelection):
         """
         The deepest pocket (measured from top to bottom) to machine.
         """
-        pass
 
 
 class PocketSelection(CurveSelection):
@@ -8073,7 +7899,6 @@ class PocketSelection(CurveSelection):
         """
         The desired extension method. TangentExtension by default.
         """
-        pass
 
     @property
     def isSelectingSamePlaneFaces(self) -> bool:
@@ -8089,7 +7914,6 @@ class PocketSelection(CurveSelection):
         True if all planar faces lying in the same plane as the selected face should be automatically selected as well.
         False by default.
         """
-        pass
 
 
 class SilhouetteSelection(CurveSelection):
@@ -8118,7 +7942,6 @@ class SilhouetteSelection(CurveSelection):
         """
         Desired loop type. The default is AllLoops.
         """
-        pass
 
     @property
     def sideType(self) -> SideTypes:
@@ -8132,7 +7955,6 @@ class SilhouetteSelection(CurveSelection):
         """
         Desired side type. The default is StartOutside.
         """
-        pass
 
     @property
     def isSetupModelSelected(self) -> bool:
@@ -8146,7 +7968,6 @@ class SilhouetteSelection(CurveSelection):
         """
         Flag to include all B-Rep bodies set as the setup models.
         """
-        pass
 
 
 class SketchSelection(CurveSelection):
@@ -8174,7 +7995,6 @@ class SketchSelection(CurveSelection):
         """
         Property to get and set the desired loop type. The default is AllLoops.
         """
-        pass
 
     @property
     def sideType(self) -> SideTypes:
@@ -8188,4 +8008,3 @@ class SketchSelection(CurveSelection):
         """
         Property to get and set the desired side type. The default is StartOutside.
         """
-        pass

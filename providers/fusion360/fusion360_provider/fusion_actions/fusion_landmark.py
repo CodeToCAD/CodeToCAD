@@ -4,8 +4,6 @@ from .fusion_interface import FusionInterface
 
 from .base import (
     delete_occurrence,
-    get_component,
-    get_or_create_component,
     get_or_create_sketch,
 )
 

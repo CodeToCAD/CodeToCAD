@@ -10,6 +10,10 @@
 
 ## `Fusion360.Wire` Additions and Deletions:
 
+- Added: `from codetocad.interfaces.sketch_interface import SketchInterface`
+
+- Added: `from providers.fusion360.fusion360_provider.sketch import Sketch`
+
 ## `Fusion360.Landmark` Additions and Deletions:
 
 ## `Fusion360.Joint` Additions and Deletions:

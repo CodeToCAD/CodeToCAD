@@ -3,16 +3,11 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
-
 
 from codetocad.interfaces.animation_interface import AnimationInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
-
-
-from providers.sample.entity import Entity
 
 
 class Animation(
@@ -41,12 +36,16 @@ class Animation(
 
         return self
 
-    def create_key_frame_location(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_location(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         print("create_key_frame_location called", f": {entity}, {frame_number}")
 
         return self
 
-    def create_key_frame_rotation(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_rotation(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         print("create_key_frame_rotation called", f": {entity}, {frame_number}")
 
         return self

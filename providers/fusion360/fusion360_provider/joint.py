@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.interfaces.joint_interface import JointInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
@@ -10,7 +9,6 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
 
 if TYPE_CHECKING:
     from . import Entity
-    from . import Sketch
 
 
 class Joint(JointInterface):

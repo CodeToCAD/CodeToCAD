@@ -23,3 +23,27 @@ class WireTestInterface(metaclass=ABCMeta):
     @abstractmethod
     def test_loft(self):
         pass
+
+    @abstractmethod
+    def test_revolve(self):
+        pass
+
+    @abstractmethod
+    def test_twist(self):
+        pass
+
+    @abstractmethod
+    def test_extrude(self):
+        pass
+
+    @abstractmethod
+    def test_sweep(self):
+        pass
+
+    @abstractmethod
+    def test_offset(self):
+        pass
+
+    @abstractmethod
+    def test_profile(self):
+        pass

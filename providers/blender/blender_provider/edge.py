@@ -1,5 +1,4 @@
 from typing import Optional
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.vertex import Vertex
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.vertex_interface import VertexInterface

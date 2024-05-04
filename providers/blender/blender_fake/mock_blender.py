@@ -976,8 +976,6 @@ class FakeBMesh:
             :type faces: typing.List['bmesh.types.BMFace']
             """
 
-            pass
-
 
 mockBpy = Bpy()
 

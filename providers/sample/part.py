@@ -11,16 +11,18 @@ from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
+from codetocad.interfaces.material_interface import MaterialInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.material_interface import MaterialInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
 
 from providers.sample.entity import Entity
 
-from providers.sample.landmark import Landmark
 
-from providers.sample.material import Material
+from providers.sample.landmark import Landmark
 
 
 class Part(PartInterface, Entity):
@@ -136,7 +138,7 @@ class Part(PartInterface, Entity):
 
     def hole(
         self,
-        hole_landmark: "str|Landmark",
+        hole_landmark: "str|LandmarkInterface",
         radius: "str|float|Dimension",
         depth: "str|float|Dimension",
         normal_axis: "str|int|Axis" = "z",
@@ -144,13 +146,13 @@ class Part(PartInterface, Entity):
         initial_rotation_x: "str|float|Angle" = 0.0,
         initial_rotation_y: "str|float|Angle" = 0.0,
         initial_rotation_z: "str|float|Angle" = 0.0,
-        mirror_about_entity_or_landmark: "str|Entity| None" = None,
+        mirror_about_entity_or_landmark: "str|EntityInterface| None" = None,
         mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: "str|float|Angle" = 0.0,
         circular_pattern_instance_axis: "str|int|Axis" = "z",
-        circular_pattern_about_entity_or_landmark: "str|Entity| None" = None,
+        circular_pattern_about_entity_or_landmark: "str|EntityInterface| None" = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern_instance_axis: "str|int|Axis" = "x",
@@ -176,12 +178,12 @@ class Part(PartInterface, Entity):
 
         return self
 
-    def set_material(self, material_name: "str|Material"):
+    def set_material(self, material_name: "str|MaterialInterface"):
         print("set_material called", f": {material_name}")
 
         return self
 
-    def is_colliding_with_part(self, other_part: "str|Part") -> "bool":
+    def is_colliding_with_part(self, other_part: "str|PartInterface") -> "bool":
         print("is_colliding_with_part called", f": {other_part}")
 
         return True
@@ -196,7 +198,7 @@ class Part(PartInterface, Entity):
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_edges: "list[str|Landmark]",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         print("fillet_edges called", f": {radius}, {landmarks_near_edges}, {use_width}")
@@ -206,7 +208,7 @@ class Part(PartInterface, Entity):
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_faces: "list[str|Landmark]",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         print("fillet_faces called", f": {radius}, {landmarks_near_faces}, {use_width}")
@@ -219,37 +221,47 @@ class Part(PartInterface, Entity):
         return self
 
     def chamfer_edges(
-        self, radius: "str|float|Dimension", landmarks_near_edges: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
     ):
         print("chamfer_edges called", f": {radius}, {landmarks_near_edges}")
 
         return self
 
     def chamfer_faces(
-        self, radius: "str|float|Dimension", landmarks_near_faces: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
     ):
         print("chamfer_faces called", f": {radius}, {landmarks_near_faces}")
 
         return self
 
-    def select_vertex_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_vertex_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         print("select_vertex_near_landmark called", f": {landmark_name}")
 
         return self
 
-    def select_edge_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_edge_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         print("select_edge_near_landmark called", f": {landmark_name}")
 
         return self
 
-    def select_face_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_face_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         print("select_face_near_landmark called", f": {landmark_name}")
 
         return self
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -276,7 +288,7 @@ class Part(PartInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         print(
@@ -376,7 +388,7 @@ class Part(PartInterface, Entity):
 
     def union(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -386,7 +398,7 @@ class Part(PartInterface, Entity):
 
     def subtract(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -398,7 +410,7 @@ class Part(PartInterface, Entity):
 
     def intersect(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):

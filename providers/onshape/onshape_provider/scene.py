@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.interfaces.scene_interface import SceneInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from providers.onshape.onshape_provider.entity import Entity
 from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING

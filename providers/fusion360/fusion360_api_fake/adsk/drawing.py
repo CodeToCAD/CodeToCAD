@@ -2,7 +2,6 @@
 # It does not reflect the actual implementation.
 
 from __future__ import annotations
-from collections.abc import Iterator
 
 from . import core
 
@@ -78,7 +77,6 @@ class DrawingExportOptions(core.Base):
         """
         Gets and sets the filename that the exported file will be written to.
         """
-        pass
 
 
 class Drawing(core.Product):
@@ -160,7 +158,6 @@ class PDFExportOptions(DrawingExportOptions):
         To set this to RangePDFSheets, use the sheetRange property to define
         the range of sheets to print.
         """
-        pass
 
     @property
     def sheetRange(self) -> str:
@@ -180,7 +177,6 @@ class PDFExportOptions(DrawingExportOptions):
         specific sheets. Setting this property will automatically set
         the sheetsToExport setting to SelectedPDFSheets.
         """
-        pass
 
     @property
     def openPDF(self) -> bool:
@@ -194,7 +190,6 @@ class PDFExportOptions(DrawingExportOptions):
         """
         Specifies that the PDF file will be opened after export.
         """
-        pass
 
     @property
     def useLineWeights(self) -> bool:
@@ -208,4 +203,3 @@ class PDFExportOptions(DrawingExportOptions):
         """
         Specifies if line weights should be used in the exported PDF file.
         """
-        pass

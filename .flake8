@@ -4,3 +4,4 @@ exclude = .git,**/__pycache__,build,dist,development/dev_virtual_environment/**,
 per-file-ignores =
     # imported but unused
     __init__.py: F401
+    codetocad_types.py: F401

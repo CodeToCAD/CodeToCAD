@@ -1,10 +1,8 @@
 from typing import Optional
+from providers.onshape.onshape_provider.sketch import Sketch
 from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
-from codetocad.interfaces.edge_interface import EdgeInterface
 from providers.onshape.onshape_provider.entity import Entity
 from providers.onshape.onshape_provider.vertex import Vertex
 from providers.onshape.onshape_provider.landmark import Landmark
@@ -130,4 +128,48 @@ class Wire(WireInterface, Entity):
             "intersect called",
             f": {other}, {delete_after_intersect}, {is_transfer_data}",
         )
+        return self
+
+    def extrude(self, length: "str|float|Dimension") -> "Part":
+        if self.native_instance is None:
+            raise ValueError("Native Instance is None")
+        onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
+        feature_id = self.native_instance["feature"]["featureId"]
+        length_float = Dimension.from_dimension_or_its_float_or_string_value(
+            length, None
+        )
+        create_extrude(self.client, onshape_url, feature_id, str(length_float))
+        raise NotImplementedError()
+
+    def revolve(
+        self,
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|Entity",
+        axis: "str|int|Axis" = "z",
+    ) -> "PartInterface":
+        print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
+        return Part("a part")
+
+    def twist(
+        self,
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
+        iterations: "int" = 1,
+        axis: "str|int|Axis" = "z",
+    ):
+        print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
+        return self
+
+    def sweep(
+        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
+    ) -> "PartInterface":
+        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
+        return Part("a part")
+
+    def offset(self, radius: "str|float|Dimension"):
+        print("offset called", f": {radius}")
+        return self
+
+    def profile(self, profile_curve_name: "str"):
+        print("profile called", f": {profile_curve_name}")
         return self

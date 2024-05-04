@@ -39,7 +39,6 @@ def remove_collection(name: str, scene_name: str, remove_children: bool):
                 remove_object(obj.name, True)
             except Exception as e:
                 print(f"Could not remove {obj.name}. {e}")
-                pass
 
     bpy.data.collections.remove(collection)
 

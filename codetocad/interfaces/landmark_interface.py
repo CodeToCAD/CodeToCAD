@@ -21,7 +21,7 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
     def __init__(
         self,
         name: "str",
-        parent_entity: "str|Entity",
+        parent_entity: "str|EntityInterface",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -35,7 +35,7 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|Entity| None" = None,
+        new_parent: "str|EntityInterface| None" = None,
     ) -> "LandmarkInterface":
         """
         Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.

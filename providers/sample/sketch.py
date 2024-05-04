@@ -9,28 +9,27 @@ from codetocad.codetocad_types import *
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-from providers.sample.entity import Entity
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
 
 from providers.sample.wire import Wire
 
-from providers.sample.landmark import Landmark
-
 from providers.sample.edge import Edge
 
-from providers.sample.part import Part
+from providers.sample.landmark import Landmark
+
+from providers.sample.entity import Entity
 
 from providers.sample.vertex import Vertex
 
@@ -55,49 +54,6 @@ class Sketch(SketchInterface, Entity):
 
         return Sketch("a sketch")
 
-    def revolve(
-        self,
-        angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
-        axis: "str|int|Axis" = "z",
-    ) -> "PartInterface":
-        print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
-
-        return Part("a part")
-
-    def twist(
-        self,
-        angle: "str|float|Angle",
-        screw_pitch: "str|float|Dimension",
-        iterations: "int" = 1,
-        axis: "str|int|Axis" = "z",
-    ):
-        print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
-
-        return self
-
-    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
-        print("extrude called", f": {length}")
-
-        return Part("a part")
-
-    def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
-    ) -> "PartInterface":
-        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
-
-        return Part("a part")
-
-    def offset(self, radius: "str|float|Dimension"):
-        print("offset called", f": {radius}")
-
-        return self
-
-    def profile(self, profile_curve_name: "str"):
-        print("profile called", f": {profile_curve_name}")
-
-        return self
-
     def create_text(
         self,
         text: "str",
@@ -118,7 +74,8 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "WireInterface":
         print("create_from_vertices called", f": {points}")
 
@@ -146,8 +103,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "EdgeInterface":
         print("create_line called", f": {start_at}, {end_at}")
 
@@ -197,8 +154,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "WireInterface":
@@ -315,7 +272,7 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -342,7 +299,7 @@ class Sketch(SketchInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         print(

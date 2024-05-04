@@ -8,31 +8,28 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.scalable_interface import ScalableInterface
-
 from codetocad.interfaces.importable_interface import ImportableInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.interfaces.scalable_interface import ScalableInterface
 
 
 class SketchInterface(
@@ -77,79 +74,6 @@ class SketchInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def revolve(
-        self,
-        angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
-        axis: "str|int|Axis" = "z",
-    ) -> "PartInterface":
-        """
-        Revolve a Sketch around another Entity or Landmark
-        """
-
-        print("revolve is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def twist(
-        self,
-        angle: "str|float|Angle",
-        screw_pitch: "str|float|Dimension",
-        iterations: "int" = 1,
-        axis: "str|int|Axis" = "z",
-    ):
-        """
-        AKA Helix, Screw.
-        """
-
-        print("twist is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
-        """
-        Extrude a curve by a specified length. Returns a Part type.
-        """
-
-        print("extrude is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
-    ) -> "PartInterface":
-        """
-        Extrude this Sketch along the path of another Sketch
-        """
-
-        print("sweep is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def offset(self, radius: "str|float|Dimension"):
-        """
-        Uniformly add a wall around a Sketch.
-        """
-
-        print("offset is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def profile(self, profile_curve_name: "str"):
-        """
-        Bend this curve along the path of another
-        """
-
-        print("profile is called in an abstract method. Please override this method.")
-
-        raise NotImplementedError()
-
-    @abstractmethod
     def create_text(
         self,
         text: "str",
@@ -174,7 +98,8 @@ class SketchInterface(
 
     @abstractmethod
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "WireInterface":
         """
         Create a curve from 2D/3D points.
@@ -203,8 +128,8 @@ class SketchInterface(
     @abstractmethod
     def create_line(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "EdgeInterface":
         """
         Create a line between two points
@@ -245,8 +170,8 @@ class SketchInterface(
     @abstractmethod
     def create_arc(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "WireInterface":

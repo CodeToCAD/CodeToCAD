@@ -11,16 +11,19 @@ from codetocad.interfaces.edge_interface import EdgeInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 
 from providers.sample.entity import Entity
 
-from providers.sample.landmark import Landmark
-
 from providers.sample.vertex import Vertex
+
+from providers.sample.landmark import Landmark
 
 
 class Edge(EdgeInterface, Entity):
@@ -31,7 +34,7 @@ class Edge(EdgeInterface, Entity):
         v2: "VertexInterface",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.name = name
         self.v1 = v1
@@ -70,7 +73,7 @@ class Edge(EdgeInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -97,7 +100,7 @@ class Edge(EdgeInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         print(

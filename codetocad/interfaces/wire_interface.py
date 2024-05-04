@@ -8,25 +8,26 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
-from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
+from codetocad.interfaces.sketch_interface import SketchInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
 
 class WireInterface(
@@ -47,10 +48,10 @@ class WireInterface(
     def __init__(
         self,
         name: "str",
-        edges: "list[Edge]",
+        edges: "list[EdgeInterface]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.name = name
         self.edges = edges
@@ -73,7 +74,7 @@ class WireInterface(
     @abstractmethod
     def get_vertices(
         self,
-    ) -> "list[Vertex]":
+    ) -> "list[VertexInterface]":
         """
         Collapse all edges' vertices into one list.
         """
@@ -107,5 +108,78 @@ class WireInterface(
         """
 
         print("loft is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def revolve(
+        self,
+        angle: "str|float|Angle",
+        about_entity_or_landmark: "str|EntityInterface",
+        axis: "str|int|Axis" = "z",
+    ) -> "PartInterface":
+        """
+        Revolve a Sketch around another Entity or Landmark
+        """
+
+        print("revolve is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def twist(
+        self,
+        angle: "str|float|Angle",
+        screw_pitch: "str|float|Dimension",
+        iterations: "int" = 1,
+        axis: "str|int|Axis" = "z",
+    ):
+        """
+        AKA Helix, Screw.
+        """
+
+        print("twist is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
+        """
+        Extrude a curve by a specified length. Returns a Part type.
+        """
+
+        print("extrude is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def sweep(
+        self, profile_name_or_instance: "str|SketchInterface", fill_cap: "bool" = True
+    ) -> "PartInterface":
+        """
+        Extrude this Sketch along the path of another Sketch
+        """
+
+        print("sweep is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def offset(self, radius: "str|float|Dimension"):
+        """
+        Uniformly add a wall around a Sketch.
+        """
+
+        print("offset is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def profile(self, profile_curve_name: "str"):
+        """
+        Bend this curve along the path of another
+        """
+
+        print("profile is called in an abstract method. Please override this method.")
 
         raise NotImplementedError()

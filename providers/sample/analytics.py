@@ -12,14 +12,11 @@ from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from providers.sample.entity import Entity
-
-
 class Analytics(
     AnalyticsInterface,
 ):
     def measure_distance(
-        self, entity1: "str|Entity", entity2: "str|Entity"
+        self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
         print("measure_distance called", f": {entity1}, {entity2}")
 
@@ -27,25 +24,25 @@ class Analytics(
 
     def measure_angle(
         self,
-        entity1: "str|Entity",
-        entity2: "str|Entity",
-        pivot: "str|Entity| None" = None,
+        entity1: "str|EntityInterface",
+        entity2: "str|EntityInterface",
+        pivot: "str|EntityInterface| None" = None,
     ) -> "list[Angle]":
         print("measure_angle called", f": {entity1}, {entity2}, {pivot}")
 
         return [Angle("90")]
 
-    def get_world_pose(self, entity: "str|Entity") -> "list[float]":
+    def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
         print("get_world_pose called", f": {entity}")
 
         return [0.0]
 
-    def get_bounding_box(self, entity_name: "str|Entity") -> "BoundaryBox":
+    def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
         print("get_bounding_box called", f": {entity_name}")
 
         return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
 
-    def get_dimensions(self, entity_name: "str|Entity") -> "Dimensions":
+    def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
         print("get_dimensions called", f": {entity_name}")
 
         return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))

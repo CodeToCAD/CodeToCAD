@@ -10,17 +10,13 @@ from codetocad.codetocad_types import *
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.material_interface import MaterialInterface
 
-from codetocad.interfaces.scalable_interface import ScalableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
@@ -28,7 +24,11 @@ from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.scalable_interface import ScalableInterface
 
 
 class PartInterface(
@@ -205,7 +205,7 @@ class PartInterface(
     @abstractmethod
     def hole(
         self,
-        hole_landmark: "str|Landmark",
+        hole_landmark: "str|LandmarkInterface",
         radius: "str|float|Dimension",
         depth: "str|float|Dimension",
         normal_axis: "str|int|Axis" = "z",
@@ -213,13 +213,13 @@ class PartInterface(
         initial_rotation_x: "str|float|Angle" = 0.0,
         initial_rotation_y: "str|float|Angle" = 0.0,
         initial_rotation_z: "str|float|Angle" = 0.0,
-        mirror_about_entity_or_landmark: "str|Entity| None" = None,
+        mirror_about_entity_or_landmark: "str|EntityInterface| None" = None,
         mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: "str|float|Angle" = 0.0,
         circular_pattern_instance_axis: "str|int|Axis" = "z",
-        circular_pattern_about_entity_or_landmark: "str|Entity| None" = None,
+        circular_pattern_about_entity_or_landmark: "str|EntityInterface| None" = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern_instance_axis: "str|int|Axis" = "x",
@@ -252,7 +252,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def set_material(self, material_name: "str|Material"):
+    def set_material(self, material_name: "str|MaterialInterface"):
         """
         Assign a known material to this part.
         """
@@ -264,7 +264,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def is_colliding_with_part(self, other_part: "str|Part") -> "bool":
+    def is_colliding_with_part(self, other_part: "str|PartInterface") -> "bool":
         """
         Check if this part is colliding with another.
         """
@@ -293,7 +293,7 @@ class PartInterface(
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_edges: "list[str|Landmark]",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         """
@@ -310,7 +310,7 @@ class PartInterface(
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_faces: "list[str|Landmark]",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         """
@@ -337,7 +337,9 @@ class PartInterface(
 
     @abstractmethod
     def chamfer_edges(
-        self, radius: "str|float|Dimension", landmarks_near_edges: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
     ):
         """
         Chamfer specific edges.
@@ -351,7 +353,9 @@ class PartInterface(
 
     @abstractmethod
     def chamfer_faces(
-        self, radius: "str|float|Dimension", landmarks_near_faces: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
     ):
         """
         Chamfer specific faces.
@@ -364,7 +368,9 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_vertex_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_vertex_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         """
         Select the vertex closest to a Landmark on the entity (in UI).
         """
@@ -376,7 +382,9 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_edge_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_edge_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         """
         Select an edge closest to a landmark on the entity (in UI).
         """
@@ -388,7 +396,9 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def select_face_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_face_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         """
         Select a face closest to a landmark on the entity (in UI).
         """

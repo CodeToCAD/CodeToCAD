@@ -11,6 +11,8 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
 
 from providers.sample.entity import Entity
 
@@ -22,7 +24,7 @@ class Vertex(VertexInterface, Entity):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.name = name
         self.location = location
@@ -32,7 +34,7 @@ class Vertex(VertexInterface, Entity):
 
     def get_control_points(
         self,
-    ) -> "list[Vertex]":
+    ) -> "list[VertexInterface]":
         print(
             "get_control_points called",
         )

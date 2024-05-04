@@ -19,7 +19,7 @@ class Landmark(LandmarkInterface, Entity):
     def __init__(
         self,
         name: "str",
-        parent_entity: "str|Entity",
+        parent_entity: "str|EntityInterface",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -32,7 +32,7 @@ class Landmark(LandmarkInterface, Entity):
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|Entity| None" = None,
+        new_parent: "str|EntityInterface| None" = None,
     ) -> "LandmarkInterface":
         print("clone called", f": {new_name}, {offset}, {new_parent}")
 

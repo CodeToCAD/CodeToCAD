@@ -11,8 +11,7 @@ from codetocad.interfaces.scene_interface import SceneInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
-
-from providers.sample.entity import Entity
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
 class Scene(
@@ -69,7 +68,7 @@ class Scene(
     def export(
         self,
         file_path: "str",
-        entities: "list[str|Exportable]",
+        entities: "list[str|ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -99,7 +98,7 @@ class Scene(
 
     def assign_to_group(
         self,
-        entities: "list[str|Entity]",
+        entities: "list[str|EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -110,7 +109,7 @@ class Scene(
 
         return self
 
-    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
         print("set_visible called", f": {entities}, {is_visible}")
 
         return self

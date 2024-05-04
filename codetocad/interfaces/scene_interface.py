@@ -88,7 +88,7 @@ class SceneInterface(metaclass=ABCMeta):
     def export(
         self,
         file_path: "str",
-        entities: "list[str|Exportable]",
+        entities: "list[str|ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -151,7 +151,7 @@ class SceneInterface(metaclass=ABCMeta):
     @abstractmethod
     def assign_to_group(
         self,
-        entities: "list[str|Entity]",
+        entities: "list[str|EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -166,7 +166,7 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
         """
         Change the visibiltiy of the entity.
         """

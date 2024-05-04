@@ -1,4 +1,3 @@
-from codetocad.codetocad_types import *
 from codetocad.core.dimension import Dimension
 from codetocad.enums.preset_landmark import PresetLandmark
 from codetocad.interfaces.landmark_interface import LandmarkInterface

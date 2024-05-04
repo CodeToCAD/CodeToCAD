@@ -5,7 +5,6 @@ from codetocad.core.dimension import Dimension
 from codetocad.interfaces.joint_interface import JointInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.codetocad_types import *
 from providers.blender.blender_provider.blender_actions.constraints import (
     apply_copy_location_constraint,
     apply_copy_rotation_constraint,

@@ -1,21 +1,15 @@
 import math
-from codetocad.interfaces.edge_interface import EdgeInterface
-from providers.blender.blender_provider.landmark import Landmark
-from providers.blender.blender_provider.part import Part
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.wire_interface import WireInterface
-from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import create_uuid_like_id
 from providers.blender.blender_provider.blender_definitions import (
     BlenderCurveTypes,
-    BlenderLength,
 )
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
@@ -26,29 +20,17 @@ from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
 from codetocad.core.shapes.clipping import clip_spline_points
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
 from providers.blender.blender_provider.blender_actions.curve import (
-    add_bevel_object_to_curve,
     create_curve,
     create_text,
     get_curve,
     merge_touching_splines,
-    set_curve_offset_geometry,
-)
-from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
-from providers.blender.blender_provider.blender_actions.modifiers import (
-    apply_curve_modifier,
-    apply_screw_modifier,
-)
-from providers.blender.blender_provider.blender_actions.normals import (
-    project_vector_along_normal,
 )
 from providers.blender.blender_provider.blender_actions.objects_transmute import (
-    create_mesh_from_curve,
     duplicate_object,
 )
 from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
     get_edge_from_blender_edge,
     get_wire_from_blender_wire,
-    get_wires_from_blender_entity,
 )
 from codetocad.codetocad_types import *
 import providers.blender.blender_provider.implementables as implementables
@@ -92,72 +74,6 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return self
 
-    def revolve(
-        self,
-        angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
-        axis: "str|int|Axis" = "z",
-    ) -> "PartInterface":
-        if isinstance(about_entity_or_landmark, LandmarkInterface):
-            about_entity_or_landmark = (
-                about_entity_or_landmark.get_landmark_entity_name()
-            )
-        elif isinstance(about_entity_or_landmark, Entity):
-            about_entity_or_landmark = about_entity_or_landmark.name
-        axis = Axis.from_string(axis)
-        assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-        apply_screw_modifier(
-            self.name,
-            Angle.from_string(angle).to_radians(),
-            axis,
-            entity_nameToDetermineAxis=about_entity_or_landmark,
-        )
-        create_mesh_from_curve(self.name)
-        return Part(self.name, self.description).apply()
-
-    def offset(self, radius: "str|float|Dimension"):
-        radius = Dimension.from_string(radius)
-        set_curve_offset_geometry(self.name, radius)
-        return self
-
-    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
-        # We will assume that extruding a sketch will extrude all the underlying Wires.
-        # We also assume the normal is never perpendicular to the Z axis.
-        parsed_length = BlenderLength.convert_dimension_to_blender_unit(
-            Dimension.from_dimension_or_its_float_or_string_value(length)
-        ).value
-        wires = get_wires_from_blender_entity(self.get_native_instance().data)
-        for wire in wires:
-            normal = wire.get_normal()
-            # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
-            translate_vector = [0, 0, parsed_length]
-            projected_normal = project_vector_along_normal(
-                translate_vector, [p.value for p in normal.to_list()]
-            )
-            temp_sketch = Sketch(self.name + "_temp")
-            temp_wire = temp_sketch.project(wire)
-            temp_sketch.translate_xyz(*projected_normal)
-            wire.loft(temp_wire)
-        return Part(self.name, self.description)
-
-    def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
-    ) -> "PartInterface":
-        profile_curve_name = profile_name_or_instance
-        if isinstance(profile_curve_name, EntityInterface):
-            profile_curve_name = profile_curve_name.name
-        add_bevel_object_to_curve(self.name, profile_curve_name, fill_cap)
-        create_mesh_from_curve(self.name)
-        # Recalculate normals because they're usually wrong after sweeping.
-        recalculate_normals(self.name)
-        return Part(self.name, self.description).apply()
-
-    def profile(self, profile_curve_name: "str"):
-        if isinstance(profile_curve_name, Entity):
-            profile_curve_name = profile_curve_name.name
-        apply_curve_modifier(self.name, profile_curve_name)
-        return self
-
     def create_text(
         self,
         text: "str",
@@ -187,7 +103,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex]"
+        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
     ) -> "Wire":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         is_closed = False
@@ -433,16 +349,6 @@ class Sketch(SketchInterface, Entity):
         radius_end: "str|float|Dimension| None" = None,
     ) -> "Wire":
         raise NotImplementedError()
-
-    def twist(
-        self,
-        angle: "str|float|Angle",
-        screw_pitch: "str|float|Dimension",
-        iterations: "int" = 1,
-        axis: "str|int|Axis" = "z",
-    ):
-        implementables.twist(self, angle, screw_pitch, iterations, axis)
-        return self
 
     def mirror(
         self,

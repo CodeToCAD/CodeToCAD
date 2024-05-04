@@ -2,10 +2,8 @@ from typing import Optional
 import adsk.core, adsk.fusion
 
 from codetocad.core.angle import Angle
-from codetocad.core.point import Point
 from codetocad.enums.axis import Axis
 from codetocad.enums.preset_material import PresetMaterial
-from providers.sample.vertex import Vertex
 from .base import get_body, get_occurrence, get_root_component
 from .common import make_axis
 from .fusion_interface import FusionInterface

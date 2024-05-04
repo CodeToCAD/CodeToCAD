@@ -26,7 +26,7 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.name = name
         self.location = location
@@ -37,7 +37,7 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
     @abstractmethod
     def get_control_points(
         self,
-    ) -> "list[Vertex]":
+    ) -> "list[VertexInterface]":
         """
         Get a vertex's curve control points. This may not be applicable in several situations.
         """
