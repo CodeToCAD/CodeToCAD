@@ -11,20 +11,46 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.material_interface import MaterialInterface
 
 
-class Material:
+class Material(
+    MaterialInterface,
+):
     """
     Materials affect the appearance and simulation properties of the parts.
 
-    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
-    def __new__(cls, name: "str", description: "str| None" = None) -> MaterialInterface:
-        return get_provider(MaterialInterface)(name, description)  # type: ignore
+    # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
+
+    __slots__ = [
+        "__proxied",
+    ]
+
+    def __init__(self, name: "str", description: "str| None" = None):
+
+        self.__proxied = get_provider(MaterialInterface)(
+            name, description
+        )  # type: ignore
 
     @staticmethod
     def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
+        return get_provider(MaterialInterface).get_preset(material_name)
 
-        print("get_preset called", f": {material_name}")
+    def set_color(
+        self,
+        r_value: "int|float",
+        g_value: "int|float",
+        b_value: "int|float",
+        a_value: "int|float" = 1.0,
+    ):
+        return self.__proxied.set_color(r_value, g_value, b_value, a_value)
 
-        return Material("mat")
+    def set_reflectivity(self, reflectivity: "float"):
+        return self.__proxied.set_reflectivity(reflectivity)
+
+    def set_roughness(self, roughness: "float"):
+        return self.__proxied.set_roughness(roughness)
+
+    def set_image_texture(self, image_file_path: "str"):
+        return self.__proxied.set_image_texture(image_file_path)

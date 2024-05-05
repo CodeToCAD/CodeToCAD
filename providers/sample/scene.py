@@ -14,6 +14,9 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
+from codetocad.proxy.entity import Entity
+
+
 class Scene(
     SceneInterface,
 ):

@@ -12,6 +12,9 @@ from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
+from codetocad.proxy.entity import Entity
+
+
 class Analytics(
     AnalyticsInterface,
 ):

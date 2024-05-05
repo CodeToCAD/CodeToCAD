@@ -5,6 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+from codetocad.codetocad_types import *
+
+
 class ProjectableInterface(metaclass=ABCMeta):
     """
     This entity can be projected onto a surface or accept a projection

@@ -9,6 +9,9 @@ from codetocad.interfaces.render_interface import RenderInterface
 from codetocad.providers import get_provider
 
 
+from codetocad.interfaces.camera_interface import CameraInterface
+
+
 def create_render() -> RenderInterface:
     """
     Render the scene and export images or videos.

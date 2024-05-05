@@ -5,6 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+from codetocad.codetocad_types import *
+
+
 from codetocad.interfaces.camera_interface import CameraInterface
 
 

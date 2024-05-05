@@ -11,6 +11,8 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
+from codetocad.interfaces.entity_interface import EntityInterface
+
 
 from providers.sample.entity import Entity
 

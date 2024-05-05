@@ -9,6 +9,11 @@ from codetocad.interfaces.part_interface import PartInterface
 from codetocad.providers import get_provider
 
 
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.material_interface import MaterialInterface
+
+
 def create_part(
     name: "str", description: "str| None" = None, native_instance=None
 ) -> PartInterface:

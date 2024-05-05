@@ -1,0 +1,10 @@
+{%- from 'generate_method_definition.j2' import generate_method_definition -%}
+
+{%macro generate_proxy_method(capabilities_loader, capabilities_method, use_abstract_method_decorator, interface_name) -%}
+    {{generate_method_definition(capabilities_loader, capabilities_method, use_abstract_method_decorator)}}
+        return {{"self.__proxied" if not capabilities_method.is_static_method else "get_provider("+interface_name+")"}}.{{capabilities_method.name}}(
+        {%for parameter in capabilities_method.parameters -%} 
+        {{parameter.name}}
+        {{-", " if not loop.last}} 
+        {%-endfor%})
+{% endmacro %}

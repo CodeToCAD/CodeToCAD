@@ -12,6 +12,9 @@ from codetocad.interfaces.joint_interface import JointInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
+from codetocad.proxy.entity import Entity
+
+
 class Joint(
     JointInterface,
 ):

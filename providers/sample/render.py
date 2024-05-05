@@ -3,11 +3,16 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
+from codetocad.codetocad_types import *
+
 
 from codetocad.interfaces.render_interface import RenderInterface
 
 
 from codetocad.interfaces.camera_interface import CameraInterface
+
+
+from codetocad.proxy.camera import Camera
 
 
 class Render(
