@@ -5,6 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+from codetocad.codetocad_types import *
+
+
 class BooleanableInterface(metaclass=ABCMeta):
     """
     An entity that supports boolean operations: union, intersect, subtract.

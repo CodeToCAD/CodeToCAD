@@ -10,7 +10,7 @@
 
 from codetocad.interfaces.{{class_name|lower}}_interface import {{interface_name}}
 
-{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") %}
+{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") + capabilities_loader.capabilities[class_name].get_extends_class_names("Interface")  %}
 {{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
 {% endfor %}
 
@@ -19,7 +19,7 @@ from codetocad.interfaces.{{class_name|lower}}_interface import {{interface_name
 {% endfor %}
 
 {% for capabilities_class in 
-capabilities_loader.capabilities[class_name].extends%}
+capabilities_loader.capabilities[class_name].get_extends_class_names("")%}
 {{ imports.format_import_statement(capabilities_class, "providers.sample.") }}
 {% endfor %}
 

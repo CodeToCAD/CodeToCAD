@@ -11,21 +11,235 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-class Sketch:
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.wire_interface import WireInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.importable_interface import ImportableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.scalable_interface import ScalableInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
+
+from providers.sample.entity import Entity
+
+
+class Sketch(SketchInterface, Entity):
     """
     Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.
 
-    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
-    def __new__(
-        cls,
+    # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
+
+    __slots__ = [
+        "__proxied",
+    ]
+
+    def __init__(
+        self,
         name: "str",
         description: "str| None" = None,
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
-    ) -> SketchInterface:
-        return get_provider(SketchInterface)(
+    ):
+
+        self.__proxied = get_provider(SketchInterface)(
             name, description, native_instance, curve_type
         )  # type: ignore
+
+    def clone(
+        self, new_name: "str", copy_landmarks: "bool" = True
+    ) -> "SketchInterface":
+        return self.__proxied.clone(new_name, copy_landmarks)
+
+    def create_text(
+        self,
+        text: "str",
+        font_size: "str|float|Dimension" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
+        character_spacing: "int" = 1,
+        word_spacing: "int" = 1,
+        line_spacing: "int" = 1,
+        font_file_path: "str| None" = None,
+    ) -> "WireInterface":
+        return self.__proxied.create_text(
+            text,
+            font_size,
+            bold,
+            italic,
+            underlined,
+            character_spacing,
+            word_spacing,
+            line_spacing,
+            font_file_path,
+        )
+
+    def create_from_vertices(
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
+    ) -> "WireInterface":
+        return self.__proxied.create_from_vertices(points)
+
+    def create_point(
+        self, point: "str|list[str]|list[float]|list[Dimension]|Point"
+    ) -> "WireInterface":
+        return self.__proxied.create_point(point)
+
+    def create_line(
+        self,
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+    ) -> "WireInterface":
+        return self.__proxied.create_line(start_at, end_at)
+
+    def create_circle(self, radius: "str|float|Dimension") -> "WireInterface":
+        return self.__proxied.create_circle(radius)
+
+    def create_ellipse(
+        self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
+    ) -> "WireInterface":
+        return self.__proxied.create_ellipse(radius_minor, radius_major)
+
+    def create_arc(
+        self,
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        radius: "str|float|Dimension",
+        flip: "bool| None" = False,
+    ) -> "WireInterface":
+        return self.__proxied.create_arc(start_at, end_at, radius, flip)
+
+    def create_rectangle(
+        self, length: "str|float|Dimension", width: "str|float|Dimension"
+    ) -> "WireInterface":
+        return self.__proxied.create_rectangle(length, width)
+
+    def create_polygon(
+        self,
+        number_of_sides: "int",
+        length: "str|float|Dimension",
+        width: "str|float|Dimension",
+    ) -> "WireInterface":
+        return self.__proxied.create_polygon(number_of_sides, length, width)
+
+    def create_trapezoid(
+        self,
+        length_upper: "str|float|Dimension",
+        length_lower: "str|float|Dimension",
+        height: "str|float|Dimension",
+    ) -> "WireInterface":
+        return self.__proxied.create_trapezoid(length_upper, length_lower, height)
+
+    def create_spiral(
+        self,
+        number_of_turns: "int",
+        height: "str|float|Dimension",
+        radius: "str|float|Dimension",
+        is_clockwise: "bool" = True,
+        radius_end: "str|float|Dimension| None" = None,
+    ) -> "WireInterface":
+        return self.__proxied.create_spiral(
+            number_of_turns, height, radius, is_clockwise, radius_end
+        )
+
+    def mirror(
+        self,
+        mirror_across_entity: "str|EntityInterface",
+        axis: "str|int|Axis",
+        resulting_mirrored_entity_name: "str| None" = None,
+    ):
+        return self.__proxied.mirror(
+            mirror_across_entity, axis, resulting_mirrored_entity_name
+        )
+
+    def linear_pattern(
+        self,
+        instance_count: "int",
+        offset: "str|float|Dimension",
+        direction_axis: "str|int|Axis" = "z",
+    ):
+        return self.__proxied.linear_pattern(instance_count, offset, direction_axis)
+
+    def circular_pattern(
+        self,
+        instance_count: "int",
+        separation_angle: "str|float|Angle",
+        center_entity_or_landmark: "str|EntityInterface",
+        normal_direction_axis: "str|int|Axis" = "z",
+    ):
+        return self.__proxied.circular_pattern(
+            instance_count,
+            separation_angle,
+            center_entity_or_landmark,
+            normal_direction_axis,
+        )
+
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+        return self.__proxied.create_from_file(file_path, file_type)
+
+    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+        return self.__proxied.export(file_path, overwrite, scale)
+
+    def scale_xyz(
+        self,
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
+    ):
+        return self.__proxied.scale_xyz(x, y, z)
+
+    def scale_x(self, scale: "str|float|Dimension"):
+        return self.__proxied.scale_x(scale)
+
+    def scale_y(self, scale: "str|float|Dimension"):
+        return self.__proxied.scale_y(scale)
+
+    def scale_z(self, scale: "str|float|Dimension"):
+        return self.__proxied.scale_z(scale)
+
+    def scale_x_by_factor(self, scale_factor: "float"):
+        return self.__proxied.scale_x_by_factor(scale_factor)
+
+    def scale_y_by_factor(self, scale_factor: "float"):
+        return self.__proxied.scale_y_by_factor(scale_factor)
+
+    def scale_z_by_factor(self, scale_factor: "float"):
+        return self.__proxied.scale_z_by_factor(scale_factor)
+
+    def scale_keep_aspect_ratio(
+        self, scale: "str|float|Dimension", axis: "str|int|Axis"
+    ):
+        return self.__proxied.scale_keep_aspect_ratio(scale, axis)
+
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        return self.__proxied.project(project_from)
+
+    def create_landmark(
+        self,
+        landmark_name: "str",
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
+    ) -> "LandmarkInterface":
+        return self.__proxied.create_landmark(landmark_name, x, y, z)
+
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+        return self.__proxied.get_landmark(landmark_name)

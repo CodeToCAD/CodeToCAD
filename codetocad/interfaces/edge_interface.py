@@ -8,16 +8,17 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 from codetocad.interfaces.vertex_interface import VertexInterface
 
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 

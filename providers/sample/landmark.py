@@ -9,6 +9,9 @@ from codetocad.codetocad_types import *
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
+from codetocad.interfaces.entity_interface import EntityInterface
+
+
 from providers.sample.entity import Entity
 
 

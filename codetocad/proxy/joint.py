@@ -3,6 +3,8 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
+from codetocad.codetocad_types import *
+
 
 from codetocad.providers import get_provider
 
@@ -12,15 +14,87 @@ from codetocad.interfaces.joint_interface import JointInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-class Joint:
+class Joint(
+    JointInterface,
+):
     """
     Joints define the relationships and constraints between entities.
 
-    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
-    def __new__(
-        cls, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
-    ) -> JointInterface:
-        return get_provider(JointInterface)(entity1, entity2)  # type: ignore
+    # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
+
+    __slots__ = [
+        "__proxied",
+    ]
+
+    def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
+
+        self.__proxied = get_provider(JointInterface)(entity1, entity2)  # type: ignore
+
+    def translate_landmark_onto_another(
+        self,
+    ):
+        return self.__proxied.translate_landmark_onto_another()
+
+    def pivot(
+        self,
+    ):
+        return self.__proxied.pivot()
+
+    def gear_ratio(self, ratio: "float"):
+        return self.__proxied.gear_ratio(ratio)
+
+    def limit_location_xyz(
+        self,
+        x: "str|float|Dimension| None" = None,
+        y: "str|float|Dimension| None" = None,
+        z: "str|float|Dimension| None" = None,
+    ):
+        return self.__proxied.limit_location_xyz(x, y, z)
+
+    def limit_location_x(
+        self,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
+    ):
+        return self.__proxied.limit_location_x(min, max)
+
+    def limit_location_y(
+        self,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
+    ):
+        return self.__proxied.limit_location_y(min, max)
+
+    def limit_location_z(
+        self,
+        min: "str|float|Dimension| None" = None,
+        max: "str|float|Dimension| None" = None,
+    ):
+        return self.__proxied.limit_location_z(min, max)
+
+    def limit_rotation_xyz(
+        self,
+        x: "str|float|Angle| None" = None,
+        y: "str|float|Angle| None" = None,
+        z: "str|float|Angle| None" = None,
+    ):
+        return self.__proxied.limit_rotation_xyz(x, y, z)
+
+    def limit_rotation_x(
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
+    ):
+        return self.__proxied.limit_rotation_x(min, max)
+
+    def limit_rotation_y(
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
+    ):
+        return self.__proxied.limit_rotation_y(min, max)
+
+    def limit_rotation_z(
+        self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
+    ):
+        return self.__proxied.limit_rotation_z(min, max)

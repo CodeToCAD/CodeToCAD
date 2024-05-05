@@ -5,6 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+from codetocad.codetocad_types import *
+
+
 class ImportableInterface(metaclass=ABCMeta):
     """
     An entity that can be imported from a file.

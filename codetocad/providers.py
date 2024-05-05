@@ -6,6 +6,6 @@ def register(provider, interface):
     __providers[interface] = provider
 
 
-def get_provider(interface):
+def get_provider(interface) -> type:
     global __providers
     return __providers[interface]

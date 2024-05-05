@@ -3,11 +3,16 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
+from codetocad.codetocad_types import *
+
 
 from codetocad.interfaces.animation_interface import AnimationInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
+
+
+from codetocad.proxy.entity import Entity
 
 
 class Animation(

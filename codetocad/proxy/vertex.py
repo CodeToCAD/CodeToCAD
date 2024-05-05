@@ -11,22 +11,45 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-class Vertex:
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
+
+
+from providers.sample.entity import Entity
+
+
+class Vertex(VertexInterface, Entity):
     """
     A single point in space, or a control point.
 
-    NOTE: This is a proxy-factory - calling this returns an instance of a registered provider.
+    NOTE: This is a proxy - calling this returns an instance of a registered provider.
     Register a provider using the `register()` method.
     """
 
-    def __new__(
-        cls,
+    # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
+
+    __slots__ = [
+        "__proxied",
+    ]
+
+    def __init__(
+        self,
         name: "str",
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
-    ) -> VertexInterface:
-        return get_provider(VertexInterface)(
+    ):
+
+        self.__proxied = get_provider(VertexInterface)(
             name, location, description, native_instance, parent_entity
         )  # type: ignore
+
+    def get_control_points(
+        self,
+    ) -> "list[VertexInterface]":
+        return self.__proxied.get_control_points()
+
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        return self.__proxied.project(project_from)

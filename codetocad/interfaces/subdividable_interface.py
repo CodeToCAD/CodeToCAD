@@ -5,6 +5,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+from codetocad.codetocad_types import *
+
+
 class SubdividableInterface(metaclass=ABCMeta):
     """
     An entity that can be broken down or scaled up into more components.
