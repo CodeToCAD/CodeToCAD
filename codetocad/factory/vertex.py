@@ -9,9 +9,6 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_vertex(
     name: "str",
     location: "Point",

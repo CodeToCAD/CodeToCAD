@@ -6,6 +6,9 @@ from codetocad.core.point import Point
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.wire import Wire
 from codetocad.utilities import create_uuid_like_id
 from providers.blender.blender_provider.blender_definitions import BlenderLength
 

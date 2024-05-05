@@ -8,10 +8,13 @@ from abc import ABCMeta, abstractmethod
 
 
 class LandmarkableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_create_landmark(self):
+
         pass
 
     @abstractmethod
     def test_get_landmark(self):
+
         pass

@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.analytics_test_interface import AnalyticsTestInt
 
 
 class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
+
     def test_measure_distance(self):
+
         instance = Analytics()
 
         value = instance.measure_distance(
@@ -20,6 +22,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
         assert value, "Get method failed."
 
     def test_measure_angle(self):
+
         instance = Analytics()
 
         value = instance.measure_angle(
@@ -31,6 +34,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
         assert value, "Get method failed."
 
     def test_get_world_pose(self):
+
         instance = Analytics()
 
         value = instance.get_world_pose(
@@ -40,6 +44,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
         assert value, "Get method failed."
 
     def test_get_bounding_box(self):
+
         instance = Analytics()
 
         value = instance.get_bounding_box(
@@ -49,6 +54,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
         assert value, "Get method failed."
 
     def test_get_dimensions(self):
+
         instance = Analytics()
 
         value = instance.get_dimensions(
@@ -58,6 +64,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
         assert value, "Get method failed."
 
     def test_log(self):
+
         instance = Analytics()
 
         value = instance.log(message="String")

@@ -13,12 +13,14 @@ from codetocad.interfaces.camera_interface import CameraInterface
 class Render(
     RenderInterface,
 ):
+
     def render_image(
         self,
         output_file_path: "str",
         overwrite: "bool" = True,
         file_type: "str| None" = None,
     ):
+
         print("render_image called", f": {output_file_path}, {overwrite}, {file_type}")
 
         return self
@@ -31,6 +33,7 @@ class Render(
         step_frames: "int" = 1,
         overwrite: "bool" = True,
     ):
+
         print(
             "render_video_mp4 called",
             f": {output_file_path}, {start_frame_number}, {end_frame_number}, {step_frames}, {overwrite}",
@@ -48,6 +51,7 @@ class Render(
         overwrite: "bool" = True,
         file_type: "str| None" = None,
     ):
+
         print(
             "render_video_frames called",
             f": {output_folder_path}, {file_name_prefix}, {start_frame_number}, {end_frame_number}, {step_frames}, {overwrite}, {file_type}",
@@ -56,26 +60,31 @@ class Render(
         return self
 
     def set_frame_rate(self, frame_rate: "int"):
+
         print("set_frame_rate called", f": {frame_rate}")
 
         return self
 
     def set_resolution(self, x: "int", y: "int"):
+
         print("set_resolution called", f": {x}, {y}")
 
         return self
 
     def set_render_quality(self, quality: "int"):
+
         print("set_render_quality called", f": {quality}")
 
         return self
 
     def set_render_engine(self, name: "str"):
+
         print("set_render_engine called", f": {name}")
 
         return self
 
     def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
+
         print("set_camera called", f": {camera_name_or_instance}")
 
         return self

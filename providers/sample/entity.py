@@ -12,9 +12,11 @@ from codetocad.interfaces.entity_interface import EntityInterface
 class Entity(
     EntityInterface,
 ):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -22,6 +24,7 @@ class Entity(
     def is_exists(
         self,
     ) -> "bool":
+
         print(
             "is_exists called",
         )
@@ -31,11 +34,13 @@ class Entity(
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ):
+
         print("rename called", f": {new_name}, {renamelinked_entities_and_landmarks}")
 
         return self
 
     def delete(self, remove_children: "bool" = True):
+
         print("delete called", f": {remove_children}")
 
         return self
@@ -43,6 +48,7 @@ class Entity(
     def is_visible(
         self,
     ) -> "bool":
+
         print(
             "is_visible called",
         )
@@ -50,6 +56,7 @@ class Entity(
         return True
 
     def set_visible(self, is_visible: "bool"):
+
         print("set_visible called", f": {is_visible}")
 
         return self
@@ -61,6 +68,7 @@ class Entity(
         location: "bool" = False,
         modifiers: "bool" = True,
     ):
+
         print("apply called", f": {rotation}, {scale}, {location}, {modifiers}")
 
         return self
@@ -68,6 +76,7 @@ class Entity(
     def get_native_instance(
         self,
     ) -> "object":
+
         print(
             "get_native_instance called",
         )
@@ -77,6 +86,7 @@ class Entity(
     def get_location_world(
         self,
     ) -> "Point":
+
         print(
             "get_location_world called",
         )
@@ -86,6 +96,7 @@ class Entity(
     def get_location_local(
         self,
     ) -> "Point":
+
         print(
             "get_location_local called",
         )
@@ -95,6 +106,7 @@ class Entity(
     def select(
         self,
     ):
+
         print(
             "select called",
         )
@@ -107,21 +119,25 @@ class Entity(
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ):
+
         print("translate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
     def translate_x(self, amount: "str|float|Dimension"):
+
         print("translate_x called", f": {amount}")
 
         return self
 
     def translate_y(self, amount: "str|float|Dimension"):
+
         print("translate_y called", f": {amount}")
 
         return self
 
     def translate_z(self, amount: "str|float|Dimension"):
+
         print("translate_z called", f": {amount}")
 
         return self
@@ -129,21 +145,25 @@ class Entity(
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
+
         print("rotate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
     def rotate_x(self, rotation: "str|float|Angle"):
+
         print("rotate_x called", f": {rotation}")
 
         return self
 
     def rotate_y(self, rotation: "str|float|Angle"):
+
         print("rotate_y called", f": {rotation}")
 
         return self
 
     def rotate_z(self, rotation: "str|float|Angle"):
+
         print("rotate_z called", f": {rotation}")
 
         return self
@@ -151,6 +171,7 @@ class Entity(
     def get_bounding_box(
         self,
     ) -> "BoundaryBox":
+
         print(
             "get_bounding_box called",
         )
@@ -160,6 +181,7 @@ class Entity(
     def get_dimensions(
         self,
     ) -> "Dimensions":
+
         print(
             "get_dimensions called",
         )

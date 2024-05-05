@@ -8,13 +8,12 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
-
     """
     A single point in space, or a control point.
     """
@@ -28,6 +27,7 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
     ):
+
         self.name = name
         self.location = location
         self.description = description

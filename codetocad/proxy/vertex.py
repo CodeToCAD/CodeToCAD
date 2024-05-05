@@ -11,9 +11,6 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 class Vertex:
     """
     A single point in space, or a control point.

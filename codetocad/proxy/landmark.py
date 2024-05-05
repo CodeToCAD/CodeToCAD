@@ -3,13 +3,12 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
+from codetocad.codetocad_types import *
+
 
 from codetocad.providers import get_provider
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-
-
-from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class Landmark:

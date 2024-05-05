@@ -8,22 +8,28 @@ from abc import ABCMeta, abstractmethod
 
 
 class LightTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_set_color(self):
+
         pass
 
     @abstractmethod
     def test_create_sun(self):
+
         pass
 
     @abstractmethod
     def test_create_spot(self):
+
         pass
 
     @abstractmethod
     def test_create_point(self):
+
         pass
 
     @abstractmethod
     def test_create_area(self):
+
         pass

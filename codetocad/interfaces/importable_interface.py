@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 class ImportableInterface(metaclass=ABCMeta):
-
     """
     An entity that can be imported from a file.
     """

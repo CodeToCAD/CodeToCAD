@@ -11,9 +11,11 @@ from providers.sample.entity import Entity
 
 
 class Light(LightInterface, Entity):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -21,26 +23,31 @@ class Light(LightInterface, Entity):
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
+
         print("set_color called", f": {r_value}, {g_value}, {b_value}")
 
         return self
 
     def create_sun(self, energy_level: "float"):
+
         print("create_sun called", f": {energy_level}")
 
         return self
 
     def create_spot(self, energy_level: "float"):
+
         print("create_spot called", f": {energy_level}")
 
         return self
 
     def create_point(self, energy_level: "float"):
+
         print("create_point called", f": {energy_level}")
 
         return self
 
     def create_area(self, energy_level: "float"):
+
         print("create_area called", f": {energy_level}")
 
         return self

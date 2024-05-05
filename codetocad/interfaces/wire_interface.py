@@ -8,26 +8,26 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.part_interface import PartInterface
-
 from codetocad.interfaces.edge_interface import EdgeInterface
-
-
-from codetocad.interfaces.entity_interface import EntityInterface
-
-from codetocad.interfaces.sketch_interface import SketchInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class WireInterface(
@@ -37,9 +37,9 @@ class WireInterface(
     ProjectableInterface,
     LandmarkableInterface,
     BooleanableInterface,
+    SubdividableInterface,
     metaclass=ABCMeta,
 ):
-
     """
     A collection of connected edges.
     """
@@ -53,6 +53,7 @@ class WireInterface(
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
     ):
+
         self.name = name
         self.edges = edges
         self.description = description
@@ -68,6 +69,18 @@ class WireInterface(
         print(
             "get_normal is called in an abstract method. Please override this method."
         )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_edges(
+        self,
+    ) -> "list[EdgeInterface]":
+        """
+        Return references to all the edges making up this wire.
+        """
+
+        print("get_edges is called in an abstract method. Please override this method.")
 
         raise NotImplementedError()
 
@@ -119,7 +132,7 @@ class WireInterface(
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         """
-        Revolve a Sketch around another Entity or Landmark
+        Revolve a Wire around another Entity or Landmark
         """
 
         print("revolve is called in an abstract method. Please override this method.")
@@ -154,10 +167,10 @@ class WireInterface(
 
     @abstractmethod
     def sweep(
-        self, profile_name_or_instance: "str|SketchInterface", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
         """
-        Extrude this Sketch along the path of another Sketch
+        Extrude this Wire along the path of another Wire
         """
 
         print("sweep is called in an abstract method. Please override this method.")
@@ -167,7 +180,7 @@ class WireInterface(
     @abstractmethod
     def offset(self, radius: "str|float|Dimension"):
         """
-        Uniformly add a wall around a Sketch.
+        Uniformly add a wall around a Wire.
         """
 
         print("offset is called in an abstract method. Please override this method.")

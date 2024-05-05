@@ -8,22 +8,28 @@ from abc import ABCMeta, abstractmethod
 
 
 class MaterialTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_get_preset(self):
+
         pass
 
     @abstractmethod
     def test_set_color(self):
+
         pass
 
     @abstractmethod
     def test_set_reflectivity(self):
+
         pass
 
     @abstractmethod
     def test_set_roughness(self):
+
         pass
 
     @abstractmethod
     def test_set_image_texture(self):
+
         pass

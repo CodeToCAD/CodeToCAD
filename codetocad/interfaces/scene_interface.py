@@ -14,13 +14,13 @@ from codetocad.interfaces.exportable_interface import ExportableInterface
 
 
 class SceneInterface(metaclass=ABCMeta):
-
     """
     Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.
     """
 
     @abstractmethod
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
+
         self.name = name
         self.description = description
 

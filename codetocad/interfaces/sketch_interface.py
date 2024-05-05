@@ -8,28 +8,26 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.wire_interface import WireInterface
-
-from codetocad.interfaces.edge_interface import EdgeInterface
-
-
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
+from codetocad.interfaces.wire_interface import WireInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+from codetocad.interfaces.importable_interface import ImportableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.scalable_interface import ScalableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class SketchInterface(
@@ -43,7 +41,6 @@ class SketchInterface(
     LandmarkableInterface,
     metaclass=ABCMeta,
 ):
-
     """
     Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.
     """
@@ -56,6 +53,7 @@ class SketchInterface(
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -85,7 +83,7 @@ class SketchInterface(
         word_spacing: "int" = 1,
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
-    ):
+    ) -> "WireInterface":
         """
         Adds text to a sketch.
         """
@@ -114,7 +112,7 @@ class SketchInterface(
     @abstractmethod
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
-    ) -> "VertexInterface":
+    ) -> "WireInterface":
         """
         Create a point
         """
@@ -130,7 +128,7 @@ class SketchInterface(
         self,
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
-    ) -> "EdgeInterface":
+    ) -> "WireInterface":
         """
         Create a line between two points
         """

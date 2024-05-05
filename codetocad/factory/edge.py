@@ -9,8 +9,6 @@ from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 

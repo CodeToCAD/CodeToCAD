@@ -8,6 +8,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class MirrorableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_mirror(self):
+
         pass

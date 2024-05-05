@@ -66,10 +66,10 @@ def apply_limit_location_constraint(
 
     keywordArguments = kwargs or {}
 
-    keywordArguments[
-        "name"
-    ] = BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
-        object_name, relativeToObject
+    keywordArguments["name"] = (
+        BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
+            object_name, relativeToObject
+        )
     )
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"
@@ -122,10 +122,10 @@ def apply_limit_rotation_constraint(
 
     keywordArguments = kwargs or {}
 
-    keywordArguments[
-        "name"
-    ] = BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
-        object_name, relativeToObject
+    keywordArguments["name"] = (
+        BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
+            object_name, relativeToObject
+        )
     )
 
     keywordArguments["owner_space"] = "CUSTOM" if relativeToObject else "WORLD"

@@ -1,5 +1,10 @@
 from typing import Optional
-from providers.onshape.onshape_provider.sketch import Sketch
+from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.landmark import Landmark
+from codetocad.proxy.part import Part
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
@@ -15,14 +20,14 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Edge, Vertex
-    from . import Sketch
     from . import Part
 
 
 class Wire(WireInterface, Entity):
+
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -40,7 +45,7 @@ class Wire(WireInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
@@ -57,10 +62,10 @@ class Wire(WireInterface, Entity):
     def __init__(
         self,
         name: "str",
-        edges: "list[Edge]",
+        edges: "list[EdgeInterface]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.edges = edges
         self.parent_entity = parent_entity
@@ -100,7 +105,7 @@ class Wire(WireInterface, Entity):
 
     def union(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -109,7 +114,7 @@ class Wire(WireInterface, Entity):
 
     def subtract(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -120,7 +125,7 @@ class Wire(WireInterface, Entity):
 
     def intersect(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -144,7 +149,7 @@ class Wire(WireInterface, Entity):
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
+        about_entity_or_landmark: "str|EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
@@ -161,7 +166,7 @@ class Wire(WireInterface, Entity):
         return self
 
     def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
         print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
         return Part("a part")
@@ -172,4 +177,26 @@ class Wire(WireInterface, Entity):
 
     def profile(self, profile_curve_name: "str"):
         print("profile called", f": {profile_curve_name}")
+        return self
+
+    def get_edges(self) -> "list[EdgeInterface]":
+        print("get_edges called")
+        return [
+            Edge(
+                v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
+                v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
+                name="an edge",
+            )
+        ]
+
+    def remesh(self, strategy: "str", amount: "float"):
+        print("remesh called", f": {strategy}, {amount}")
+        return self
+
+    def subdivide(self, amount: "float"):
+        print("subdivide called", f": {amount}")
+        return self
+
+    def decimate(self, amount: "float"):
+        print("decimate called", f": {amount}")
         return self

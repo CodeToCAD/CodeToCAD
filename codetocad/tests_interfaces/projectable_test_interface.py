@@ -8,6 +8,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class ProjectableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_project(self):
+
         pass

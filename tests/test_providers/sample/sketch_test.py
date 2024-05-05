@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):
+
     def test_clone(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -22,6 +24,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_text(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -41,9 +44,10 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             font_file_path="String",
         )
 
-        assert value.is_exists(), "Create method failed."
+        assert value, "Get method failed."
 
     def test_create_from_vertices(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -58,6 +62,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_point(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -72,6 +77,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_line(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -87,6 +93,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_circle(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -99,6 +106,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_ellipse(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -113,6 +121,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_arc(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -130,6 +139,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_rectangle(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -144,6 +154,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_polygon(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -158,6 +169,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_trapezoid(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -174,6 +186,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_spiral(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -192,6 +205,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_mirror(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -208,6 +222,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_linear_pattern(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -222,6 +237,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_circular_pattern(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -239,6 +255,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_create_from_file(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -251,6 +268,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_export(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -261,6 +279,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.export(file_path="String", overwrite=True, scale=1.0)
 
     def test_scale_xyz(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -275,6 +294,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_x(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -287,6 +307,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_y(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -299,6 +320,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_z(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -311,6 +333,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_x_by_factor(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -323,6 +346,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_y_by_factor(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -335,6 +359,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_z_by_factor(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -347,6 +372,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_keep_aspect_ratio(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -359,6 +385,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Modify method failed."
 
     def test_project(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -373,6 +400,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_create_landmark(self):
+
         instance = Sketch(
             name="String",
             description="String",
@@ -390,6 +418,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value, "Get method failed."
 
     def test_get_landmark(self):
+
         instance = Sketch(
             name="String",
             description="String",

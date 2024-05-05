@@ -1,6 +1,7 @@
 """
 A script to generate the HTML docs from capabilities.json + jinja2 templates.
 """
+
 from development.capabilities_json_to_python.capabilities_loader import (
     CapabilitiesLoader,
 )

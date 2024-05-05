@@ -71,13 +71,15 @@ class BlenderLength(Units):
     @staticmethod
     def convert_dimensions_to_blender_unit(dimensions: list) -> list[Dimension]:
         return [
-            BlenderLength.convert_dimension_to_blender_unit(dimension)
-            if (
-                dimension.value is not None
-                and dimension.unit is not None
-                and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value
+            (
+                BlenderLength.convert_dimension_to_blender_unit(dimension)
+                if (
+                    dimension.value is not None
+                    and dimension.unit is not None
+                    and dimension.unit != BlenderLength.DEFAULT_BLENDER_UNIT.value
+                )
+                else dimension
             )
-            else dimension
             for dimension in dimensions
         ]
 

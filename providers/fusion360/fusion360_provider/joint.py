@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.proxy.entity import Entity
 from codetocad.interfaces.joint_interface import JointInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
@@ -16,7 +18,7 @@ class Joint(JointInterface):
     entity2: str | Entity
     fusion_joint: FusionJoint
 
-    def __init__(self, entity1: "str|Entity", entity2: "str|Entity"):
+    def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
         from . import Landmark
 
         if isinstance(entity1, str):

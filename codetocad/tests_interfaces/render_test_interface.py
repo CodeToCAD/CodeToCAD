@@ -8,34 +8,43 @@ from abc import ABCMeta, abstractmethod
 
 
 class RenderTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_render_image(self):
+
         pass
 
     @abstractmethod
     def test_render_video_mp4(self):
+
         pass
 
     @abstractmethod
     def test_render_video_frames(self):
+
         pass
 
     @abstractmethod
     def test_set_frame_rate(self):
+
         pass
 
     @abstractmethod
     def test_set_resolution(self):
+
         pass
 
     @abstractmethod
     def test_set_render_quality(self):
+
         pass
 
     @abstractmethod
     def test_set_render_engine(self):
+
         pass
 
     @abstractmethod
     def test_set_camera(self):
+
         pass

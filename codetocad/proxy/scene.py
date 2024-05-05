@@ -24,6 +24,7 @@ class Scene:
 
     @staticmethod
     def default() -> "SceneInterface":
+
         print(
             "default called",
         )

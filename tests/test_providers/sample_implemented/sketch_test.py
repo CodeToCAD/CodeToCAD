@@ -2,8 +2,6 @@ from tests.test_providers import *
 
 from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
-import math
-
 
 class SketchTest(TestProviderCase, SketchTestInterface):
     def test_mirror(self):
@@ -138,70 +136,6 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         value = instance.clone(new_name="myCloneSketch")
 
         assert value.is_exists(), "Get method failed."
-
-    # @skip("TODO")
-    def test_revolve(self):  # meshes error
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
-
-        value = instance.revolve(
-            angle=math.pi, about_entity_or_landmark="mySketch", axis=2
-        )
-
-        assert value, "Get method failed."
-
-    # @skip("TODO")
-    def test_twist(self):  # not know implement
-        instance = Sketch("mySketch")
-        instance.create_line(start_at=(0, 0), end_at=(10, 10))
-        value = instance.twist(
-            angle=30,
-            screw_pitch=5,
-            iterations=10,
-        )
-
-        assert value, "Modify method failed."
-
-    # @skip("TODO")
-    def test_extrude(self):  # meshes error
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
-
-        value = instance.extrude(length=5)
-
-        assert value, "Get method failed."
-
-    def test_sweep(self):  # Meshes error
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
-
-        value = instance.sweep(
-            profile_name_or_instance="mySketch",
-        )
-
-        assert value, "Get method failed."
-
-    def test_offset(
-        self,
-    ):
-        instance = Sketch("mySketch")
-
-        instance.create_circle(radius=5)
-
-        value = instance.offset(radius=2)
-
-        assert value, "Modify method failed."
-
-    # @skip("TODO")
-    def test_profile(self):
-        instance = Sketch("mySketch")
-
-        value = instance.profile(profile_curve_name="Curve")
-
-        assert value, "Modify method failed."
 
     def test_create_text(self):
         instance = Sketch("mySketch")

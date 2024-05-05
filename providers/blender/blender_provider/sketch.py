@@ -1,4 +1,7 @@
 import math
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.wire import Wire
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
@@ -8,9 +11,7 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import create_uuid_like_id
-from providers.blender.blender_provider.blender_definitions import (
-    BlenderCurveTypes,
-)
+from providers.blender.blender_provider.blender_definitions import BlenderCurveTypes
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.vertex import Vertex
 from providers.blender.blender_provider.wire import Wire
@@ -103,7 +104,8 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "Wire":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         is_closed = False
@@ -112,9 +114,11 @@ class Sketch(SketchInterface, Entity):
             parsed_points = parsed_points[:-1]
         blender_spline, curve_data, added_points = create_curve(
             self.name,
-            BlenderCurveTypes.from_curve_types(self.curve_type)
-            if self.curve_type is not None
-            else BlenderCurveTypes.BEZIER,
+            (
+                BlenderCurveTypes.from_curve_types(self.curve_type)
+                if self.curve_type is not None
+                else BlenderCurveTypes.BEZIER
+            ),
             parsed_points,
             self.resolution,
             is_3d=False,
@@ -134,9 +138,11 @@ class Sketch(SketchInterface, Entity):
     ) -> "Vertex":
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
-            curve_type=BlenderCurveTypes.from_curve_types(self.curve_type)
-            if self.curve_type is not None
-            else BlenderCurveTypes.BEZIER,
+            curve_type=(
+                BlenderCurveTypes.from_curve_types(self.curve_type)
+                if self.curve_type is not None
+                else BlenderCurveTypes.BEZIER
+            ),
             points=[point],
             is_3d=False,
         )
@@ -151,8 +157,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "Edge":
         start_point: Point
         end_point: Point
@@ -166,9 +172,11 @@ class Sketch(SketchInterface, Entity):
             end_point = Point.from_list_of_float_or_string(end_at)
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
-            curve_type=BlenderCurveTypes.from_curve_types(self.curve_type)
-            if self.curve_type is not None
-            else BlenderCurveTypes.BEZIER,
+            curve_type=(
+                BlenderCurveTypes.from_curve_types(self.curve_type)
+                if self.curve_type is not None
+                else BlenderCurveTypes.BEZIER
+            ),
             points=[start_point, end_point],
             is_3d=False,
         )
@@ -247,8 +255,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
@@ -288,9 +296,11 @@ class Sketch(SketchInterface, Entity):
         #     clipped_points: list[Point] = clipped_points[:-1]
         blender_spline, curve_data, added_points = create_curve(
             self.name,
-            BlenderCurveTypes.from_curve_types(self.curve_type)
-            if self.curve_type is not None
-            else BlenderCurveTypes.BEZIER,
+            (
+                BlenderCurveTypes.from_curve_types(self.curve_type)
+                if self.curve_type is not None
+                else BlenderCurveTypes.BEZIER
+            ),
             clipped_points,
             interpolation=self.resolution,
             is_3d=False,
@@ -352,7 +362,7 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -374,7 +384,7 @@ class Sketch(SketchInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         implementables.circular_pattern(

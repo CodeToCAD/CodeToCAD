@@ -1,6 +1,7 @@
 """
 Capabilities.json is the core of CodeToCAD. This parser understands the ins-and-outs of the json file's structure and relationships.
 """
+
 from dataclasses import dataclass, field, fields
 
 
@@ -72,9 +73,11 @@ class CapabilitiesMethod:
             name=name,
             information=method_json.get("information", ""),
             action=method_json["action"],
-            return_type=method_json.get("return_type")
-            if method_json["action"] != "get"
-            else method_json["return_type"],
+            return_type=(
+                method_json.get("return_type")
+                if method_json["action"] != "get"
+                else method_json["return_type"]
+            ),
             is_static_method=method_json.get("is_static_method", False),
             parameters=[
                 CapabilitiesParameter.from_json(parameter_name, parameter_json)

@@ -28,6 +28,11 @@ from providers.blender.blender_provider.blender_actions.transformations import (
     rotate_object,
     translate_object,
 )
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderLength,
+    BlenderRotationTypes,
+    BlenderTranslationTypes,
+)
 
 
 class Entity(EntityInterface):

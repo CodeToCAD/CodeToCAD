@@ -8,26 +8,33 @@ from abc import ABCMeta, abstractmethod
 
 
 class AnalyticsTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_measure_distance(self):
+
         pass
 
     @abstractmethod
     def test_measure_angle(self):
+
         pass
 
     @abstractmethod
     def test_get_world_pose(self):
+
         pass
 
     @abstractmethod
     def test_get_bounding_box(self):
+
         pass
 
     @abstractmethod
     def test_get_dimensions(self):
+
         pass
 
     @abstractmethod
     def test_log(self):
+
         pass

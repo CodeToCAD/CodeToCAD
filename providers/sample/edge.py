@@ -9,8 +9,6 @@ from codetocad.codetocad_types import *
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -19,14 +17,16 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 
+from codetocad.proxy.vertex import Vertex
+
+from codetocad.proxy.landmark import Landmark
+
+
 from providers.sample.entity import Entity
-
-from providers.sample.vertex import Vertex
-
-from providers.sample.landmark import Landmark
 
 
 class Edge(EdgeInterface, Entity):
+
     def __init__(
         self,
         name: "str",
@@ -36,6 +36,7 @@ class Edge(EdgeInterface, Entity):
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
     ):
+
         self.name = name
         self.v1 = v1
         self.v2 = v2
@@ -44,6 +45,7 @@ class Edge(EdgeInterface, Entity):
         self.parent_entity = parent_entity
 
     def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
+
         print("offset called", f": {distance}")
 
         return Edge(
@@ -53,11 +55,13 @@ class Edge(EdgeInterface, Entity):
         )
 
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+
         print("fillet called", f": {other_edge}, {amount}")
 
         return self
 
     def set_is_construction(self, is_construction: "bool"):
+
         print("set_is_construction called", f": {is_construction}")
 
         return self
@@ -65,6 +69,7 @@ class Edge(EdgeInterface, Entity):
     def get_is_construction(
         self,
     ) -> "bool":
+
         print(
             "get_is_construction called",
         )
@@ -77,6 +82,7 @@ class Edge(EdgeInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
+
         print(
             "mirror called",
             f": {mirror_across_entity}, {axis}, {resulting_mirrored_entity_name}",
@@ -90,6 +96,7 @@ class Edge(EdgeInterface, Entity):
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
     ):
+
         print(
             "linear_pattern called", f": {instance_count}, {offset}, {direction_axis}"
         )
@@ -103,6 +110,7 @@ class Edge(EdgeInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
+
         print(
             "circular_pattern called",
             f": {instance_count}, {separation_angle}, {center_entity_or_landmark}, {normal_direction_axis}",
@@ -111,21 +119,25 @@ class Edge(EdgeInterface, Entity):
         return self
 
     def remesh(self, strategy: "str", amount: "float"):
+
         print("remesh called", f": {strategy}, {amount}")
 
         return self
 
     def subdivide(self, amount: "float"):
+
         print("subdivide called", f": {amount}")
 
         return self
 
     def decimate(self, amount: "float"):
+
         print("decimate called", f": {amount}")
 
         return self
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+
         print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
@@ -137,11 +149,13 @@ class Edge(EdgeInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
+
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
 
         return Landmark("name", "parent")
 
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+
         print("get_landmark called", f": {landmark_name}")
 
         return Landmark("name", "parent")

@@ -1,6 +1,7 @@
 from codetocad.interfaces.analytics_interface import AnalyticsInterface
+from codetocad.proxy.entity import Entity
 from codetocad.interfaces.entity_interface import EntityInterface
-from providers.blender.blender_provider.entity import Entity
+
 from codetocad.codetocad_types import *
 from providers.blender.blender_provider.blender_actions.context import log_message
 from providers.blender.blender_provider.blender_actions.objects import (
@@ -9,6 +10,7 @@ from providers.blender.blender_provider.blender_actions.objects import (
 
 
 class Analytics(AnalyticsInterface):
+
     def __init__(self):
         pass
 
@@ -21,7 +23,7 @@ class Analytics(AnalyticsInterface):
         return entity_or_landmark
 
     def measure_distance(
-        self, entity1: "str|Entity", entity2: "str|Entity"
+        self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
         distance = (
             Analytics._get_entity_from_name_or_landmark(entity2).get_location_world()
@@ -31,25 +33,25 @@ class Analytics(AnalyticsInterface):
 
     def measure_angle(
         self,
-        entity1: "str|Entity",
-        entity2: "str|Entity",
-        pivot: "str|Entity| None" = None,
+        entity1: "str|EntityInterface",
+        entity2: "str|EntityInterface",
+        pivot: "str|EntityInterface| None" = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 
-    def get_world_pose(self, entity: "str|Entity") -> "list[float]":
+    def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name
         return get_object_world_pose(part_name)
 
-    def get_bounding_box(self, entity_name: "str|Entity") -> "BoundaryBox":
+    def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
         entity = entity_name
         if isinstance(entity, str):
             entity = Entity(entity)
         return entity.get_bounding_box()
 
-    def get_dimensions(self, entity_name: "str|Entity") -> "Dimensions":
+    def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
         if isinstance(entity_name, Entity):
             return entity_name.get_dimensions()
         if isinstance(entity_name, str):

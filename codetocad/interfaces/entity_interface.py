@@ -9,7 +9,6 @@ from codetocad.codetocad_types import *
 
 
 class EntityInterface(metaclass=ABCMeta):
-
     """
     Capabilities shared between scene objects.
     """
@@ -18,6 +17,7 @@ class EntityInterface(metaclass=ABCMeta):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance

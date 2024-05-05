@@ -53,22 +53,16 @@ class PresetLandmark(Enum):
         x = (
             min
             if self.contains(PresetLandmark.left)
-            else max
-            if self.contains(PresetLandmark.right)
-            else center
+            else max if self.contains(PresetLandmark.right) else center
         )
         y = (
             min
             if self.contains(PresetLandmark.front)
-            else max
-            if self.contains(PresetLandmark.back)
-            else center
+            else max if self.contains(PresetLandmark.back) else center
         )
         z = (
             min
             if self.contains(PresetLandmark.bottom)
-            else max
-            if self.contains(PresetLandmark.top)
-            else center
+            else max if self.contains(PresetLandmark.top) else center
         )
         return (x, y, z)

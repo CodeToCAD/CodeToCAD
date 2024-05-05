@@ -9,8 +9,6 @@ from codetocad.codetocad_types import *
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 
@@ -18,6 +16,7 @@ from providers.sample.entity import Entity
 
 
 class Vertex(VertexInterface, Entity):
+
     def __init__(
         self,
         name: "str",
@@ -26,6 +25,7 @@ class Vertex(VertexInterface, Entity):
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
     ):
+
         self.name = name
         self.location = location
         self.description = description
@@ -35,6 +35,7 @@ class Vertex(VertexInterface, Entity):
     def get_control_points(
         self,
     ) -> "list[VertexInterface]":
+
         print(
             "get_control_points called",
         )
@@ -42,6 +43,7 @@ class Vertex(VertexInterface, Entity):
         return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+
         print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")

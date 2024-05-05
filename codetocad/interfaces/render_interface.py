@@ -9,7 +9,6 @@ from codetocad.interfaces.camera_interface import CameraInterface
 
 
 class RenderInterface(metaclass=ABCMeta):
-
     """
     Render the scene and export images or videos.
     """

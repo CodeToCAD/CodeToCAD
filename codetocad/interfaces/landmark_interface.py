@@ -12,7 +12,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
-
     """
     Landmarks are named positions on an entity.
     """
@@ -25,6 +24,7 @@ class LandmarkInterface(EntityInterface, metaclass=ABCMeta):
         description: "str| None" = None,
         native_instance=None,
     ):
+
         self.name = name
         self.parent_entity = parent_entity
         self.description = description

@@ -8,6 +8,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class VertexTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_get_control_points(self):
+
         pass

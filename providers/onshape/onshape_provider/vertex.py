@@ -6,6 +6,7 @@ from codetocad.codetocad_types import *
 
 
 class Vertex(VertexInterface, Entity):
+
     def project(self, project_from: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
@@ -21,7 +22,7 @@ class Vertex(VertexInterface, Entity):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.location = location
         self.parent_entity = parent_entity

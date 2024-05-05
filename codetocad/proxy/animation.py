@@ -24,6 +24,7 @@ class Animation:
 
     @staticmethod
     def default() -> "AnimationInterface":
+
         print(
             "default called",
         )

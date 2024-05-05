@@ -1,4 +1,10 @@
 from typing import Optional
+from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.wire import Wire
+from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.fusion360.fusion360_provider.entity import Entity
@@ -67,7 +73,7 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -102,7 +108,7 @@ class Sketch(SketchInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         from . import Part
@@ -224,7 +230,8 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "Wire":
         from . import Edge, Vertex, Wire
 
@@ -247,8 +254,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "Edge":
         from . import Edge
 
@@ -271,8 +278,6 @@ class Sketch(SketchInterface, Entity):
         return edge
 
     def create_circle(self, radius: "str|float|Dimension") -> "Wire":
-        pass
-
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         sketch = self.fusion_sketch.instance
         self.curves = make_circle(sketch, radius.value, self.resolution)
@@ -299,13 +304,11 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":
-        pass
-
         sketch = self.fusion_sketch.instance
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         start = make_point3d(start_at.x, start_at.y, start_at.z)
@@ -317,8 +320,6 @@ class Sketch(SketchInterface, Entity):
     def create_rectangle(
         self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "Wire":
-        pass
-
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
         sketch = self.fusion_sketch.instance

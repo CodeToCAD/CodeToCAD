@@ -8,34 +8,43 @@ from abc import ABCMeta, abstractmethod
 
 
 class ScalableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_scale_xyz(self):
+
         pass
 
     @abstractmethod
     def test_scale_x(self):
+
         pass
 
     @abstractmethod
     def test_scale_y(self):
+
         pass
 
     @abstractmethod
     def test_scale_z(self):
+
         pass
 
     @abstractmethod
     def test_scale_x_by_factor(self):
+
         pass
 
     @abstractmethod
     def test_scale_y_by_factor(self):
+
         pass
 
     @abstractmethod
     def test_scale_z_by_factor(self):
+
         pass
 
     @abstractmethod
     def test_scale_keep_aspect_ratio(self):
+
         pass

@@ -9,7 +9,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class AnimationInterface(metaclass=ABCMeta):
-
     """
     Animation related functionality.
     """

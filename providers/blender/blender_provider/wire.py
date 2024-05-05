@@ -1,4 +1,12 @@
 from typing import Optional
+from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.entity import Entity
+from codetocad.proxy.sketch import Sketch
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.landmark import Landmark
+from codetocad.proxy.part import Part
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider import implementables
 from providers.blender.blender_provider.blender_actions.modifiers import (
@@ -11,7 +19,6 @@ from providers.blender.blender_provider.blender_actions.objects_transmute import
 from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
     get_wires_from_blender_entity,
 )
-from providers.blender.blender_provider.part import Part
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -19,11 +26,7 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderLength,
     BlenderTypes,
 )
-from providers.blender.blender_provider.entity import Entity
-from providers.blender.blender_provider.sketch import Sketch
-from providers.blender.blender_provider.vertex import Vertex
-from providers.blender.blender_provider.landmark import Landmark
-from providers.blender.blender_provider.edge import Edge
+
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override
@@ -51,10 +54,10 @@ class Wire(WireInterface, Entity):
     def __init__(
         self,
         name: "str",
-        edges: "list[Edge]",
+        edges: "list[EdgeInterface]",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
@@ -100,7 +103,7 @@ class Wire(WireInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -124,7 +127,7 @@ class Wire(WireInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
@@ -182,7 +185,7 @@ class Wire(WireInterface, Entity):
 
     def union(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -191,7 +194,7 @@ class Wire(WireInterface, Entity):
 
     def subtract(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -202,7 +205,7 @@ class Wire(WireInterface, Entity):
 
     def intersect(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -225,7 +228,7 @@ class Wire(WireInterface, Entity):
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|Entity",
+        about_entity_or_landmark: "str|EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         if isinstance(about_entity_or_landmark, LandmarkInterface):
@@ -271,7 +274,7 @@ class Wire(WireInterface, Entity):
         return Part(self.name, self.description)
 
     def sweep(
-        self, profile_name_or_instance: "str|Sketch", fill_cap: "bool" = True
+        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
         profile_curve_name = profile_name_or_instance
         if isinstance(profile_curve_name, EntityInterface):
@@ -286,4 +289,26 @@ class Wire(WireInterface, Entity):
         if isinstance(profile_curve_name, Entity):
             profile_curve_name = profile_curve_name.name
         apply_curve_modifier(self.name, profile_curve_name)
+        return self
+
+    def get_edges(self) -> "list[EdgeInterface]":
+        print("get_edges called")
+        return [
+            Edge(
+                v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
+                v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
+                name="an edge",
+            )
+        ]
+
+    def remesh(self, strategy: "str", amount: "float"):
+        print("remesh called", f": {strategy}, {amount}")
+        return self
+
+    def subdivide(self, amount: "float"):
+        print("subdivide called", f": {amount}")
+        return self
+
+    def decimate(self, amount: "float"):
+        print("decimate called", f": {amount}")
         return self

@@ -8,14 +8,18 @@ from abc import ABCMeta, abstractmethod
 
 
 class SubdividableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_remesh(self):
+
         pass
 
     @abstractmethod
     def test_subdivide(self):
+
         pass
 
     @abstractmethod
     def test_decimate(self):
+
         pass
