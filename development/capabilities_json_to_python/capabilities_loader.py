@@ -63,12 +63,14 @@ class CapabilitiesLoader:
         return "|".join(
             [
                 (
-                    type_pipe + "Interface"
-                    if type_pipe in self.all_class_names
-                    else type_pipe
+                    (
+                        type_pipe + "Interface"
+                        if type_pipe in self.all_class_names
+                        else type_pipe
+                    )
+                    if not type_pipe.startswith("list")
+                    else self.type_to_type_interface(type_pipe)
                 )
-                if not type_pipe.startswith("list")
-                else self.type_to_type_interface(type_pipe)
                 for type_pipe in type.split("|")
             ]
         )
@@ -129,21 +131,27 @@ class CapabilitiesLoader:
     def all_class_names(self):
         return self.all_implementable_class_names + self.all_interface_only_class_names
 
-    def generate_imports(self, class_name: str, exclude_class_names: list[str] | None):
+    def generate_imports(self, class_name: str, exclude_class_names: list[str] = []):
         """
         Recursively grab CodeToCAD class names from parameters and returnType fields.
 
         TODO: memoization to save some cpu cycles
         """
+
+        capabilities_class = self.capabilities[class_name]
+
+        exclude_class_names += capabilities_class.extends
+
         imports_builder = CapabilitiesImportsBuilder(
             capabilities_loader=self, exclude_class_names=exclude_class_names
         )
 
-        capabilities_class = self.capabilities[class_name]
-
-        for capabilities_class_name in capabilities_class.get_extends_class_names(
+        # for capabilities_class_name in capabilities_class.get_extends_class_names(
+        #     ""
+        # ) + capabilities_class.get_implements_class_names(""):
+        for capabilities_class_name in capabilities_class.get_implements_class_names(
             ""
-        ) + capabilities_class.get_implements_class_names(""):
+        ):
             imports_builder.add_class_name(capabilities_class_name)
 
         methods = deepcopy(capabilities_class.methods)
@@ -162,7 +170,9 @@ class CapabilitiesLoader:
         for implemented_class in capabilities_class.implements:
             # Recursively build imports from implemented classes.
             imports_builder.copy_from(
-                self.generate_imports(implemented_class, exclude_class_names)
+                self.generate_imports(
+                    implemented_class, exclude_class_names + capabilities_class.extends
+                )
             )
 
         return imports_builder

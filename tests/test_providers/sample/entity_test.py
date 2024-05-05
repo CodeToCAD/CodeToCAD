@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.entity_test_interface import EntityTestInterface
 
 
 class EntityTest(TestProviderCase, EntityTestInterface):
+
     def test_is_exists(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.is_exists()
@@ -17,6 +19,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_rename(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.rename(
@@ -26,11 +29,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_delete(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.delete(remove_children=True)
 
     def test_is_visible(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.is_visible()
@@ -38,11 +43,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_set_visible(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.set_visible(is_visible=True)
 
     def test_apply(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.apply(
@@ -52,6 +59,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_get_native_instance(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.get_native_instance()
@@ -59,6 +67,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_get_location_world(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.get_location_world()
@@ -66,6 +75,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_get_location_local(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.get_location_local()
@@ -73,11 +83,13 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_select(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.select()
 
     def test_translate_xyz(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.translate_xyz(
@@ -87,6 +99,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_translate_x(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.translate_x(amount=Dimension(0, "mm"))
@@ -94,6 +107,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_translate_y(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.translate_y(amount=Dimension(0, "mm"))
@@ -101,6 +115,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_translate_z(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.translate_z(amount=Dimension(0, "mm"))
@@ -108,6 +123,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_rotate_xyz(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.rotate_xyz(x=Angle("90"), y=Angle("90"), z=Angle("90"))
@@ -115,6 +131,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_rotate_x(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.rotate_x(rotation=Angle("90"))
@@ -122,6 +139,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_rotate_y(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.rotate_y(rotation=Angle("90"))
@@ -129,6 +147,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_rotate_z(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.rotate_z(rotation=Angle("90"))
@@ -136,6 +155,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Modify method failed."
 
     def test_get_bounding_box(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.get_bounding_box()
@@ -143,6 +163,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
         assert value, "Get method failed."
 
     def test_get_dimensions(self):
+
         instance = Entity(name="String", description="String", native_instance="value")
 
         value = instance.get_dimensions()

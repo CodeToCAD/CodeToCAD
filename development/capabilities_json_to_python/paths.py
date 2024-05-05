@@ -1,6 +1,7 @@
 """
 Paths to folders and files used by JINJA template generation.
 """
+
 import os
 
 

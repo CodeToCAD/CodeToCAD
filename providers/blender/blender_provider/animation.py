@@ -1,5 +1,4 @@
 from codetocad.interfaces.animation_interface import AnimationInterface
-from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.blender_actions.animation import (
     add_keyframe_to_object,
@@ -14,6 +13,7 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 class Animation(AnimationInterface):
+
     def __init__(self):
         pass
 
@@ -33,7 +33,9 @@ class Animation(AnimationInterface):
         set_frame_current(frame_number, None)
         return self
 
-    def create_key_frame_location(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_location(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name
@@ -42,7 +44,9 @@ class Animation(AnimationInterface):
         )
         return self
 
-    def create_key_frame_rotation(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_rotation(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name

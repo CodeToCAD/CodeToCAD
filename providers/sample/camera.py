@@ -11,9 +11,11 @@ from providers.sample.entity import Entity
 
 
 class Camera(CameraInterface, Entity):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -21,6 +23,7 @@ class Camera(CameraInterface, Entity):
     def create_perspective(
         self,
     ):
+
         print(
             "create_perspective called",
         )
@@ -30,6 +33,7 @@ class Camera(CameraInterface, Entity):
     def create_orthogonal(
         self,
     ):
+
         print(
             "create_orthogonal called",
         )
@@ -39,6 +43,7 @@ class Camera(CameraInterface, Entity):
     def create_panoramic(
         self,
     ):
+
         print(
             "create_panoramic called",
         )
@@ -46,6 +51,7 @@ class Camera(CameraInterface, Entity):
         return self
 
     def set_focal_length(self, length: "float"):
+
         print("set_focal_length called", f": {length}")
 
         return self

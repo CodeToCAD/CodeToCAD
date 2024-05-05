@@ -9,9 +9,6 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_landmark(
     name: "str",
     parent_entity: "str|EntityInterface",

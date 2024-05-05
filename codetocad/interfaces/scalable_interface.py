@@ -9,7 +9,6 @@ from codetocad.codetocad_types import *
 
 
 class ScalableInterface(metaclass=ABCMeta):
-
     """
     An entity that can be transformed by a scale.
     """

@@ -20,6 +20,7 @@ capabilities_parameter_types = {
     "string,Part": "str|Part",
     "string,Entity": "str|Entity",
     "string,Sketch": "str|Sketch",
+    "string,Wire": "str|Wire",
     "list[string,Entity]": "list[str|Entity]",
     "string,Landmark": "str|Landmark",
     "list[string,Landmark]": "list[str|Landmark]",

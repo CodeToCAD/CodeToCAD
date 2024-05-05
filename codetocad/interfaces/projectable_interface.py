@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 class ProjectableInterface(metaclass=ABCMeta):
-
     """
     This entity can be projected onto a surface or accept a projection
     """

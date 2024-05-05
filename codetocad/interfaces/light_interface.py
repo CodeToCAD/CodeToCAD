@@ -9,7 +9,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class LightInterface(EntityInterface, metaclass=ABCMeta):
-
     """
     Manipulate a light object.
     """
@@ -18,6 +17,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         self.name = name
         self.description = description
         self.native_instance = native_instance

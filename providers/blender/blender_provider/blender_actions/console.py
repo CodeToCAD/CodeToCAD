@@ -19,37 +19,37 @@ def start_debugger(host: str = "localhost", port: int = 5678):
 
 def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
-    import codetocad.enums
-    import codetocad.core
-    import providers.blender.blender_provider
-    import inspect
+    # import codetocad.enums
+    # import codetocad.core
+    # import providers.blender.blender_provider
+    # import inspect
 
-    all_providers_modules = inspect.getmembers(
-        codetocad.enums, predicate=inspect.ismodule
-    )
+    # all_providers_modules = inspect.getmembers(
+    #     codetocad.enums, predicate=inspect.ismodule
+    # )
 
-    for module_name, module in all_providers_modules:
-        print(f"Reloading {module_name}")
-        reload(module)
+    # for module_name, module in all_providers_modules:
+    #     print(f"Reloading {module_name}")
+    #     reload(module)
 
-    reload(codetocad.enums)
+    # reload(codetocad.enums)
 
-    all_providers_modules = inspect.getmembers(
-        codetocad.core, predicate=inspect.ismodule
-    )
+    # all_providers_modules = inspect.getmembers(
+    #     codetocad.core, predicate=inspect.ismodule
+    # )
 
-    for module_name, module in all_providers_modules:
-        print(f"Reloading {module_name}")
-        reload(module)
+    # for module_name, module in all_providers_modules:
+    #     print(f"Reloading {module_name}")
+    #     reload(module)
 
-    reload(codetocad)
+    # reload(codetocad)
 
-    all_providers_modules = inspect.getmembers(
-        providers.blender.blender_provider, predicate=inspect.ismodule
-    )
-    for module_name, module in all_providers_modules:
-        print(f"Reloading {module_name}")
-        reload(module)
+    # all_providers_modules = inspect.getmembers(
+    #     providers.blender.blender_provider, predicate=inspect.ismodule
+    # )
+    # for module_name, module in all_providers_modules:
+    #     print(f"Reloading {module_name}")
+    #     reload(module)
 
     from providers.blender.blender_provider.register import register
 

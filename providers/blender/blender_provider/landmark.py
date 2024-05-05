@@ -1,8 +1,9 @@
 from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.proxy.entity import Entity
 from codetocad.utilities import format_landmark_entity_name
-from providers.blender.blender_provider.entity import Entity
+
 from providers.blender.blender_provider.blender_actions.context import (
     select_object,
     update_view_layer,
@@ -29,7 +30,7 @@ class Landmark(LandmarkInterface, Entity):
     def __init__(
         self,
         name: "str",
-        parent_entity: "str|Entity",
+        parent_entity: "str|EntityInterface",
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -87,7 +88,7 @@ class Landmark(LandmarkInterface, Entity):
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|Entity| None" = None,
+        new_parent: "str|EntityInterface| None" = None,
     ) -> "Landmark":
         x = (
             self.get_location_local().x

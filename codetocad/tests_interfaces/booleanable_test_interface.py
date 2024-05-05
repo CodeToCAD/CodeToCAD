@@ -8,14 +8,18 @@ from abc import ABCMeta, abstractmethod
 
 
 class BooleanableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_union(self):
+
         pass
 
     @abstractmethod
     def test_subtract(self):
+
         pass
 
     @abstractmethod
     def test_intersect(self):
+
         pass

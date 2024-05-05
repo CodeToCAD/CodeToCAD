@@ -21,9 +21,11 @@ Sketch("كود تو كاد").create_text(
 
 yi_gothic_font_path = str(Path(__file__).parent.absolute()) + "/fonts/yu_gothic.ttc"
 Sketch("curvedTextPath").create_circle("1m").translate_xyz(-5, -5, 0).set_visible(False)
-Sketch("コオデツカアド").create_text("コオデツカアド", font_file_path=yi_gothic_font_path).profile(
-    "curvedTextPath"
-).translate_xyz(-5, -5, 0).extrude(0.1).set_material(red_material)
+Sketch("コオデツカアド").create_text(
+    "コオデツカアド", font_file_path=yi_gothic_font_path
+).profile("curvedTextPath").translate_xyz(-5, -5, 0).extrude(0.1).set_material(
+    red_material
+)
 
 Sketch("multiline").create_text(
     """Multiline

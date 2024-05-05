@@ -12,7 +12,6 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 class LandmarkableInterface(metaclass=ABCMeta):
-
     """
     An entity that can be use landmarks.
     """

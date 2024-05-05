@@ -13,8 +13,10 @@ from codetocad.interfaces.entity_interface import EntityInterface
 class Animation(
     AnimationInterface,
 ):
+
     @staticmethod
     def default() -> "AnimationInterface":
+
         print(
             "default called",
         )
@@ -22,16 +24,19 @@ class Animation(
         return Animation()
 
     def set_frame_start(self, frame_number: "int"):
+
         print("set_frame_start called", f": {frame_number}")
 
         return self
 
     def set_frame_end(self, frame_number: "int"):
+
         print("set_frame_end called", f": {frame_number}")
 
         return self
 
     def set_frame_current(self, frame_number: "int"):
+
         print("set_frame_current called", f": {frame_number}")
 
         return self
@@ -39,6 +44,7 @@ class Animation(
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):
+
         print("create_key_frame_location called", f": {entity}, {frame_number}")
 
         return self
@@ -46,6 +52,7 @@ class Animation(
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):
+
         print("create_key_frame_rotation called", f": {entity}, {frame_number}")
 
         return self

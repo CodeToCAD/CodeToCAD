@@ -977,7 +977,8 @@
                 }
             },
             "create_text": {
-                "action": "create",
+                "action": "get",
+                "return_type": "Wire",
                 "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {
@@ -1030,7 +1031,7 @@
             },
             "create_point": {
                 "action": "get",
-                "return_type": "Vertex",
+                "return_type": "Wire",
                 "information": "Create a point",
                 "parameters": {
                     "point": {
@@ -1040,7 +1041,7 @@
             },
             "create_line": {
                 "action": "get",
-                "return_type": "Edge",
+                "return_type": "Wire",
                 "information": "Create a line between two points",
                 "parameters": {
                     "start_at": {
@@ -1248,7 +1249,7 @@
         "Wire": {
             "information": "A collection of connected edges.",
             "extends": "Entity",
-            "implements": "Mirrorable,Patternable,Projectable,Landmarkable,Booleanable",
+            "implements": "Mirrorable,Patternable,Projectable,Landmarkable,Booleanable,Subdividable",
             "constructor": {
                 "parameters": {
                     "edges": {
@@ -1273,6 +1274,11 @@
                         "required": false
                     }
                 }
+            },
+            "get_edges": {
+                "information": "Return references to all the edges making up this wire.",
+                "action": "get",
+                "return_type": "list[Edge]"
             },
             "get_vertices": {
                 "information": "Collapse all edges' vertices into one list.",
@@ -1303,7 +1309,7 @@
             "revolve": {
                 "action": "get",
                 "return_type": "Part",
-                "information": "Revolve a Sketch around another Entity or Landmark",
+                "information": "Revolve a Wire around another Entity or Landmark",
                 "parameters": {
                     "angle": {
                         "type": "string,float,Angle"
@@ -1350,10 +1356,10 @@
             "sweep": {
                 "action": "get",
                 "return_type": "Part",
-                "information": "Extrude this Sketch along the path of another Sketch",
+                "information": "Extrude this Wire along the path of another Wire",
                 "parameters": {
                     "profile_name_or_instance": {
-                        "type": "string,Sketch"
+                        "type": "string,Wire"
                     },
                     "fill_cap": {
                         "type": "boolean",
@@ -1363,7 +1369,7 @@
             },
             "offset": {
                 "action": "modify",
-                "information": "Uniformly add a wall around a Sketch.",
+                "information": "Uniformly add a wall around a Wire.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"

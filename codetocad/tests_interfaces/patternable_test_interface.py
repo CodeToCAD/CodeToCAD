@@ -8,10 +8,13 @@ from abc import ABCMeta, abstractmethod
 
 
 class PatternableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_linear_pattern(self):
+
         pass
 
     @abstractmethod
     def test_circular_pattern(self):
+
         pass

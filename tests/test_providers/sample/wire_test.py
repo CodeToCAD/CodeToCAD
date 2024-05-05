@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.wire_test_interface import WireTestInterface
 
 
 class WireTest(TestProviderCase, WireTestInterface):
+
     def test_get_normal(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -32,7 +34,32 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         assert value, "Get method failed."
 
+    def test_get_edges(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.get_edges()
+
+        assert value, "Get method failed."
+
     def test_get_vertices(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -56,6 +83,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_get_is_closed(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -79,6 +107,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_loft(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -118,6 +147,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_revolve(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -145,6 +175,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_twist(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -170,6 +201,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_extrude(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -193,6 +225,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_sweep(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -212,12 +245,27 @@ class WireTest(TestProviderCase, WireTestInterface):
         )
 
         value = instance.sweep(
-            profile_name_or_instance=Sketch("a sketch"), fill_cap=True
+            profile_name_or_instance=Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            ),
+            fill_cap=True,
         )
 
         assert value, "Get method failed."
 
     def test_offset(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -241,6 +289,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_profile(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -264,6 +313,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_mirror(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -291,6 +341,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_linear_pattern(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -316,6 +367,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_circular_pattern(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -344,6 +396,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_project(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -369,6 +422,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_create_landmark(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -397,6 +451,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_get_landmark(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -420,6 +475,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Get method failed."
 
     def test_union(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -447,6 +503,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_subtract(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -474,6 +531,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         assert value, "Modify method failed."
 
     def test_intersect(self):
+
         instance = Wire(
             name="String",
             edges=[
@@ -497,5 +555,77 @@ class WireTest(TestProviderCase, WireTestInterface):
             delete_after_intersect=True,
             is_transfer_data=False,
         )
+
+        assert value, "Modify method failed."
+
+    def test_remesh(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.remesh(strategy="String", amount=0.0)
+
+        assert value, "Modify method failed."
+
+    def test_subdivide(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.subdivide(amount=0.0)
+
+        assert value, "Modify method failed."
+
+    def test_decimate(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.decimate(amount=0.0)
 
         assert value, "Modify method failed."

@@ -1,4 +1,7 @@
 from typing import Optional
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
@@ -15,9 +18,10 @@ if TYPE_CHECKING:
 
 
 class Edge(EdgeInterface, Entity):
+
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -39,7 +43,7 @@ class Edge(EdgeInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         print(
@@ -83,7 +87,7 @@ class Edge(EdgeInterface, Entity):
         v2: "VertexInterface",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         self.v1 = v1
         self.v2 = v2

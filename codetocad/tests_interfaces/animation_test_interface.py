@@ -8,26 +8,33 @@ from abc import ABCMeta, abstractmethod
 
 
 class AnimationTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_default(self):
+
         pass
 
     @abstractmethod
     def test_set_frame_start(self):
+
         pass
 
     @abstractmethod
     def test_set_frame_end(self):
+
         pass
 
     @abstractmethod
     def test_set_frame_current(self):
+
         pass
 
     @abstractmethod
     def test_create_key_frame_location(self):
+
         pass
 
     @abstractmethod
     def test_create_key_frame_rotation(self):
+
         pass

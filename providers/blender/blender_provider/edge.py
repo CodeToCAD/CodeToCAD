@@ -1,10 +1,10 @@
 from typing import Optional
-from providers.blender.blender_provider.vertex import Vertex
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.blender.blender_provider.entity import Entity
-from providers.blender.blender_provider.landmark import Landmark
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
@@ -24,7 +24,7 @@ class Edge(EdgeInterface, Entity):
         v2: "VertexInterface",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Edge requires a parent_entity and a native_instance
@@ -65,7 +65,7 @@ class Edge(EdgeInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -89,7 +89,7 @@ class Edge(EdgeInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()

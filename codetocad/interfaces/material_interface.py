@@ -9,13 +9,13 @@ from codetocad.codetocad_types import *
 
 
 class MaterialInterface(metaclass=ABCMeta):
-
     """
     Materials affect the appearance and simulation properties of the parts.
     """
 
     @abstractmethod
     def __init__(self, name: "str", description: "str| None" = None):
+
         self.name = name
         self.description = description
 

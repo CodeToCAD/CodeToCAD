@@ -74,12 +74,14 @@ fileExportFunctions = {
     "stl": lambda file_path, scale: bpy.ops.export_mesh.stl(
         filepath=file_path, use_selection=True, global_scale=scale
     ),
-    "obj": lambda file_path, scale: bpy.ops.wm.obj_export(
-        filepath=file_path, export_selected_objects=True, global_scale=scale
-    )
-    if get_blender_version() >= BlenderVersions.THREE_DOT_ONE.value
-    else bpy.ops.export_scene.obj(
-        filepath=file_path, use_selection=True, global_scale=scale
+    "obj": lambda file_path, scale: (
+        bpy.ops.wm.obj_export(
+            filepath=file_path, export_selected_objects=True, global_scale=scale
+        )
+        if get_blender_version() >= BlenderVersions.THREE_DOT_ONE.value
+        else bpy.ops.export_scene.obj(
+            filepath=file_path, use_selection=True, global_scale=scale
+        )
     ),
 }
 

@@ -1,5 +1,4 @@
 from codetocad.interfaces.render_interface import RenderInterface
-from providers.blender.blender_provider.camera import Camera
 from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import get_absolute_filepath, get_file_extension
@@ -20,6 +19,7 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 class Render(RenderInterface):
+
     @staticmethod
     def _set_file_format(output_file_path: str):
         fileFormat = FileFormat.from_utilities_file_format(
@@ -83,7 +83,7 @@ class Render(RenderInterface):
         set_render_engine(RenderEngines.from_string(name))
         return self
 
-    def set_camera(self, camera_name_or_instance: "str|Camera"):
+    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
         cameraName = camera_name_or_instance
         if isinstance(cameraName, CameraInterface):
             cameraName = cameraName.name

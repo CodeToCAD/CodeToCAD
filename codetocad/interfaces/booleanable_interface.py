@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 class BooleanableInterface(metaclass=ABCMeta):
-
     """
     An entity that supports boolean operations: union, intersect, subtract.
     """

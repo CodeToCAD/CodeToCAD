@@ -12,13 +12,13 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class JointInterface(metaclass=ABCMeta):
-
     """
     Joints define the relationships and constraints between entities.
     """
 
     @abstractmethod
     def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
+
         self.entity1 = entity1
         self.entity2 = entity2
 

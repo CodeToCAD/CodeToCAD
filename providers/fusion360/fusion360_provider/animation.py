@@ -1,12 +1,13 @@
 from codetocad.interfaces.animation_interface import AnimationInterface
-from providers.fusion360.fusion360_provider.entity import Entity
+from codetocad.interfaces.entity_interface import EntityInterface
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Entity
+    pass
 
 
 class Animation(AnimationInterface):
+
     def __init__(self):
         pass
 
@@ -26,10 +27,14 @@ class Animation(AnimationInterface):
         print("set_frame_current called:", frame_number)
         return self
 
-    def create_key_frame_location(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_location(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         print("create_key_frame_location called:", entity, frame_number)
         return self
 
-    def create_key_frame_rotation(self, entity: "str|Entity", frame_number: "int"):
+    def create_key_frame_rotation(
+        self, entity: "str|EntityInterface", frame_number: "int"
+    ):
         print("create_key_frame_rotation called:", entity, frame_number)
         return self

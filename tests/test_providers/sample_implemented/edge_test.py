@@ -80,7 +80,9 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_offset(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
+            0
+        ]
 
         value = edge.offset(distance=10)
 
@@ -89,11 +91,15 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_fillet(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
+            0
+        ]
 
         instance = Sketch("mySketch")
 
-        edge2 = instance.create_line(end_at=(5, 10, 0), start_at=(5, 5, 0))
+        edge2 = instance.create_line(end_at=(5, 10, 0), start_at=(5, 5, 0)).get_edges()[
+            0
+        ]
 
         value = edge.fillet(other_edge="edge2", amount=2)
 
@@ -102,7 +108,9 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_set_is_construction(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
+            0
+        ]
 
         value = edge.set_is_construction(is_construction=False)
 
@@ -111,7 +119,9 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_get_is_construction(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
+            0
+        ]
 
         value = edge.get_is_construction()
 

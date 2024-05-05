@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.part_test_interface import PartTestInterface
 
 
 class PartTest(TestProviderCase, PartTestInterface):
+
     def test_create_cube(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_cube(
@@ -22,6 +24,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_cone(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_cone(
@@ -34,6 +37,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_cylinder(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_cylinder(
@@ -43,6 +47,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_torus(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_torus(
@@ -54,6 +59,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_sphere(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_sphere(radius=Dimension(0, "mm"), keyword_arguments={})
@@ -61,6 +67,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_gear(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_gear(
@@ -80,6 +87,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_clone(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.clone(new_name="String", copy_landmarks=True)
@@ -87,6 +95,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_hollow(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.hollow(
@@ -100,6 +109,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_thicken(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.thicken(radius=Dimension(0, "mm"))
@@ -107,6 +117,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_hole(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.hole(
@@ -138,6 +149,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_twist(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.twist(
@@ -147,6 +159,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_set_material(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.set_material(material_name=Material("mat"))
@@ -154,6 +167,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_is_colliding_with_part(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.is_colliding_with_part(other_part=Part("a part"))
@@ -161,6 +175,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_fillet_all_edges(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.fillet_all_edges(radius=Dimension(0, "mm"), use_width=False)
@@ -168,6 +183,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_fillet_edges(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.fillet_edges(
@@ -179,6 +195,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_fillet_faces(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.fillet_faces(
@@ -190,6 +207,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_chamfer_all_edges(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.chamfer_all_edges(radius=Dimension(0, "mm"))
@@ -197,6 +215,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_chamfer_edges(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.chamfer_edges(
@@ -207,6 +226,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_chamfer_faces(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.chamfer_faces(
@@ -217,6 +237,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_select_vertex_near_landmark(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.select_vertex_near_landmark(
@@ -224,6 +245,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         )
 
     def test_select_edge_near_landmark(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.select_edge_near_landmark(
@@ -231,6 +253,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         )
 
     def test_select_face_near_landmark(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.select_face_near_landmark(
@@ -238,6 +261,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         )
 
     def test_mirror(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.mirror(
@@ -249,6 +273,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_linear_pattern(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.linear_pattern(
@@ -258,6 +283,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_circular_pattern(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.circular_pattern(
@@ -270,6 +296,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_remesh(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.remesh(strategy="String", amount=0.0)
@@ -277,6 +304,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_subdivide(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.subdivide(amount=0.0)
@@ -284,6 +312,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_decimate(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.decimate(amount=0.0)
@@ -291,6 +320,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_create_from_file(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_from_file(file_path="String", file_type="String")
@@ -298,11 +328,13 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_export(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.export(file_path="String", overwrite=True, scale=1.0)
 
     def test_scale_xyz(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_xyz(
@@ -312,6 +344,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_x(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_x(scale=Dimension(0, "mm"))
@@ -319,6 +352,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_y(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_y(scale=Dimension(0, "mm"))
@@ -326,6 +360,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_z(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_z(scale=Dimension(0, "mm"))
@@ -333,6 +368,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_x_by_factor(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_x_by_factor(scale_factor=0.0)
@@ -340,6 +376,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_y_by_factor(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_y_by_factor(scale_factor=0.0)
@@ -347,6 +384,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_z_by_factor(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_z_by_factor(scale_factor=0.0)
@@ -354,6 +392,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_scale_keep_aspect_ratio(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.scale_keep_aspect_ratio(scale=Dimension(0, "mm"), axis="x")
@@ -361,6 +400,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_create_landmark(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_landmark(
@@ -373,6 +413,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_get_landmark(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.get_landmark(landmark_name=PresetLandmark.leftTop)
@@ -380,6 +421,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_union(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.union(
@@ -391,6 +433,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_subtract(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.subtract(
@@ -402,6 +445,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_intersect(self):
+
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.intersect(

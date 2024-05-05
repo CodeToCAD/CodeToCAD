@@ -8,14 +8,18 @@ from abc import ABCMeta, abstractmethod
 
 
 class LandmarkTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_clone(self):
+
         pass
 
     @abstractmethod
     def test_get_landmark_entity_name(self):
+
         pass
 
     @abstractmethod
     def test_get_parent_entity(self):
+
         pass

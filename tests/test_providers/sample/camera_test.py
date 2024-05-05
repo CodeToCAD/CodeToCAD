@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.camera_test_interface import CameraTestInterface
 
 
 class CameraTest(TestProviderCase, CameraTestInterface):
+
     def test_create_perspective(self):
+
         instance = Camera(name="String", description="String", native_instance="value")
 
         value = instance.create_perspective()
@@ -17,6 +19,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_orthogonal(self):
+
         instance = Camera(name="String", description="String", native_instance="value")
 
         value = instance.create_orthogonal()
@@ -24,6 +27,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_panoramic(self):
+
         instance = Camera(name="String", description="String", native_instance="value")
 
         value = instance.create_panoramic()
@@ -31,6 +35,7 @@ class CameraTest(TestProviderCase, CameraTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_set_focal_length(self):
+
         instance = Camera(name="String", description="String", native_instance="value")
 
         value = instance.set_focal_length(length=0.0)

@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.render_test_interface import RenderTestInterface
 
 
 class RenderTest(TestProviderCase, RenderTestInterface):
+
     def test_render_image(self):
+
         instance = Render()
 
         value = instance.render_image(
@@ -17,6 +19,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         )
 
     def test_render_video_mp4(self):
+
         instance = Render()
 
         value = instance.render_video_mp4(
@@ -28,6 +31,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         )
 
     def test_render_video_frames(self):
+
         instance = Render()
 
         value = instance.render_video_frames(
@@ -41,6 +45,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         )
 
     def test_set_frame_rate(self):
+
         instance = Render()
 
         value = instance.set_frame_rate(frame_rate=0)
@@ -48,6 +53,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         assert value, "Modify method failed."
 
     def test_set_resolution(self):
+
         instance = Render()
 
         value = instance.set_resolution(x=0, y=0)
@@ -55,6 +61,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         assert value, "Modify method failed."
 
     def test_set_render_quality(self):
+
         instance = Render()
 
         value = instance.set_render_quality(quality=0)
@@ -62,6 +69,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         assert value, "Modify method failed."
 
     def test_set_render_engine(self):
+
         instance = Render()
 
         value = instance.set_render_engine(name="String")
@@ -69,6 +77,7 @@ class RenderTest(TestProviderCase, RenderTestInterface):
         assert value, "Modify method failed."
 
     def test_set_camera(self):
+
         instance = Render()
 
         value = instance.set_camera(camera_name_or_instance=Camera("a camera"))

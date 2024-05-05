@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 
 
 class ExportableInterface(metaclass=ABCMeta):
-
     """
     An enttiy that can be exported.
     """

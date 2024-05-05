@@ -8,18 +8,23 @@ from abc import ABCMeta, abstractmethod
 
 
 class CameraTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_create_perspective(self):
+
         pass
 
     @abstractmethod
     def test_create_orthogonal(self):
+
         pass
 
     @abstractmethod
     def test_create_panoramic(self):
+
         pass
 
     @abstractmethod
     def test_set_focal_length(self):
+
         pass

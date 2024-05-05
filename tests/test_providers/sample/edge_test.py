@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.edge_test_interface import EdgeTestInterface
 
 
 class EdgeTest(TestProviderCase, EdgeTestInterface):
+
     def test_offset(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -24,6 +26,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Get method failed."
 
     def test_fillet(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -45,6 +48,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_set_is_construction(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -59,6 +63,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_get_is_construction(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -73,6 +78,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Get method failed."
 
     def test_mirror(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -91,6 +97,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_linear_pattern(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -107,6 +114,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_circular_pattern(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -126,6 +134,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_remesh(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -140,6 +149,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_subdivide(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -154,6 +164,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_decimate(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -168,6 +179,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Modify method failed."
 
     def test_project(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -184,6 +196,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Get method failed."
 
     def test_create_landmark(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
@@ -203,6 +216,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
         assert value, "Get method failed."
 
     def test_get_landmark(self):
+
         instance = Edge(
             name="String",
             v1=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),

@@ -13,11 +13,8 @@ class TestTemplating(unittest.TestCase):
 
         assert imports._codetocad_implementable_class_names == {
             "Landmark",
-            "Entity",
-            "Edge",
             "Wire",
             "Vertex",
-            "Part",
         }
         assert imports._codetocad_interface_class_names == {
             "Projectable",
@@ -33,7 +30,6 @@ class TestTemplating(unittest.TestCase):
 
         assert imports._codetocad_implementable_class_names == {
             "Landmark",
-            "Entity",
             "Material",
         }
 
@@ -50,11 +46,7 @@ class TestTemplating(unittest.TestCase):
 
         imports = self.capabilies_loader.generate_imports("Edge", ["Edge"])
 
-        assert imports._codetocad_implementable_class_names == {
-            "Vertex",
-            "Landmark",
-            "Entity",
-        }
+        assert imports._codetocad_implementable_class_names == {"Vertex", "Landmark"}
         assert imports._codetocad_interface_class_names == {
             "Projectable",
             "Patternable",
@@ -66,7 +58,6 @@ class TestTemplating(unittest.TestCase):
         imports = self.capabilies_loader.generate_imports("Wire", ["Wire"])
 
         assert imports._codetocad_implementable_class_names == {
-            "Entity",
             "Vertex",
             "Landmark",
             "Edge",
@@ -79,6 +70,7 @@ class TestTemplating(unittest.TestCase):
             "Patternable",
             "Mirrorable",
             "Projectable",
+            "Subdividable",
         }
 
     def test_init_parameters(self):

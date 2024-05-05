@@ -1,12 +1,13 @@
 from codetocad.interfaces.render_interface import RenderInterface
-from providers.onshape.onshape_provider.camera import Camera
+from codetocad.interfaces.camera_interface import CameraInterface
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import Camera
+    pass
 
 
 class Render(RenderInterface):
+
     def render_image(
         self,
         output_file_path: "str",
@@ -49,5 +50,5 @@ class Render(RenderInterface):
     def set_render_engine(self, name: "str"):
         return self
 
-    def set_camera(self, camera_name_or_instance: "str|Camera"):
+    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
         return self

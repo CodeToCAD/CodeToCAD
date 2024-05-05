@@ -12,7 +12,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class MirrorableInterface(metaclass=ABCMeta):
-
     """
     An entity that can be mirrored.
     """

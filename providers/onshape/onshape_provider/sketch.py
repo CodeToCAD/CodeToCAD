@@ -1,4 +1,10 @@
 import json
+from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.wire import Wire
+from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.onshape.onshape_provider.entity import Entity
@@ -28,6 +34,7 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 
 
 class Sketch(SketchInterface, Entity):
+
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         print("project called:", project_from)
         from . import Sketch
@@ -36,7 +43,7 @@ class Sketch(SketchInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -54,7 +61,7 @@ class Sketch(SketchInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
@@ -116,15 +123,6 @@ class Sketch(SketchInterface, Entity):
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         raise NotImplementedError()
 
-    def twist(
-        self,
-        angle: "str|float|Angle",
-        screw_pitch: "str|float|Dimension",
-        iterations: "int" = 1,
-        axis: "str|int|Axis" = "z",
-    ):
-        return self
-
     def offset(self, radius: "str|float|Dimension"):
         return self
 
@@ -159,7 +157,8 @@ class Sketch(SketchInterface, Entity):
         return self
 
     def create_from_vertices(
-        self, points: "str|list[str]|list[float]|list[Dimension]|Point|Vertex"
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "Wire":
         raise NotImplementedError()
 
@@ -177,8 +176,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_line(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "Edge":
         start_point = Point.from_list_of_float_or_string(start_at)
         end_point = Point.from_list_of_float_or_string(end_at)
@@ -222,8 +221,8 @@ class Sketch(SketchInterface, Entity):
 
     def create_arc(
         self,
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
-        end_at: "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "Wire":

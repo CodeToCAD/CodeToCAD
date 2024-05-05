@@ -8,6 +8,8 @@ from abc import ABCMeta, abstractmethod
 
 
 class ImportableTestInterface(metaclass=ABCMeta):
+
     @abstractmethod
     def test_create_from_file(self):
+
         pass

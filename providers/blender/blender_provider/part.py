@@ -1,5 +1,6 @@
 from codetocad.interfaces.part_interface import PartInterface
-from providers.blender.blender_provider.landmark import Landmark
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.proxy.material import Material
 from codetocad.utilities import create_uuid_like_id, get_absolute_filepath
 from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -9,7 +10,6 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderLength,
 )
 from providers.blender.blender_provider.joint import Joint
-from providers.blender.blender_provider.material import Material
 from providers.blender.blender_provider.entity import Entity
 from codetocad.codetocad_types import *
 import providers.blender.blender_provider.implementables as implementables
@@ -47,6 +47,7 @@ from providers.blender.blender_provider.wire import Wire
 
 
 class Part(PartInterface, Entity):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
@@ -178,7 +179,7 @@ class Part(PartInterface, Entity):
 
     def union(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -201,7 +202,7 @@ class Part(PartInterface, Entity):
 
     def subtract(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -221,7 +222,7 @@ class Part(PartInterface, Entity):
 
     def intersect(
         self,
-        other: "str|Booleanable",
+        other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -311,7 +312,7 @@ class Part(PartInterface, Entity):
 
     def hole(
         self,
-        hole_landmark: "str|Landmark",
+        hole_landmark: "str|LandmarkInterface",
         radius: "str|float|Dimension",
         depth: "str|float|Dimension",
         normal_axis: "str|int|Axis" = "z",
@@ -319,13 +320,13 @@ class Part(PartInterface, Entity):
         initial_rotation_x: "str|float|Angle" = 0.0,
         initial_rotation_y: "str|float|Angle" = 0.0,
         initial_rotation_z: "str|float|Angle" = 0.0,
-        mirror_about_entity_or_landmark: "str|Entity| None" = None,
+        mirror_about_entity_or_landmark: "str|EntityInterface| None" = None,
         mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: "str|float|Angle" = 0.0,
         circular_pattern_instance_axis: "str|int|Axis" = "z",
-        circular_pattern_about_entity_or_landmark: "str|Entity| None" = None,
+        circular_pattern_about_entity_or_landmark: "str|EntityInterface| None" = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern_instance_axis: "str|int|Axis" = "x",
@@ -386,7 +387,7 @@ class Part(PartInterface, Entity):
         self.subtract(hole, delete_after_subtract=True, is_transfer_data=False)
         return self._apply_modifiers_only()
 
-    def set_material(self, material_name: "str|Material"):
+    def set_material(self, material_name: "str|MaterialInterface"):
         if isinstance(material_name, MaterialInterface):
             material_name = material_name.name
         elif (
@@ -401,7 +402,7 @@ class Part(PartInterface, Entity):
         set_material_to_object(material_name, self.name)
         return self
 
-    def is_colliding_with_part(self, other_part: "str|Part"):
+    def is_colliding_with_part(self, other_part: "str|PartInterface"):
         other_part_name = other_part
         if isinstance(other_part_name, PartInterface):
             other_part_name = other_part_name.name
@@ -412,8 +413,8 @@ class Part(PartInterface, Entity):
     def _bevel(
         self,
         radius: str | float | Dimension,
-        bevel_edges_nearlandmark_names: list[LandmarkOrItsName] | None = None,
-        bevel_faces_nearlandmark_names: list[LandmarkOrItsName] | None = None,
+        bevel_edges_nearlandmark_names: list[str | LandmarkInterface] | None = None,
+        bevel_faces_nearlandmark_names: list[str | LandmarkInterface] | None = None,
         use_width=False,
         chamfer=False,
         keyword_arguments: dict | None = None,
@@ -452,7 +453,7 @@ class Part(PartInterface, Entity):
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_edges: "list[str|Landmark]",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         return self._bevel(
@@ -465,7 +466,7 @@ class Part(PartInterface, Entity):
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
-        landmarks_near_faces: "list[str|Landmark]",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
         return self._bevel(
@@ -479,7 +480,9 @@ class Part(PartInterface, Entity):
         return self._bevel(radius, chamfer=True, use_width=False)
 
     def chamfer_edges(
-        self, radius: "str|float|Dimension", landmarks_near_edges: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_edges: "list[str|LandmarkInterface]",
     ):
         return self._bevel(
             radius,
@@ -489,7 +492,9 @@ class Part(PartInterface, Entity):
         )
 
     def chamfer_faces(
-        self, radius: "str|float|Dimension", landmarks_near_faces: "list[str|Landmark]"
+        self,
+        radius: "str|float|Dimension",
+        landmarks_near_faces: "list[str|LandmarkInterface]",
     ):
         return self._bevel(
             radius,
@@ -499,7 +504,9 @@ class Part(PartInterface, Entity):
         )
 
     def _add_edges_near_landmarks_to_vertex_group(
-        self, bevel_edges_nearlandmark_names: list[LandmarkOrItsName], vertex_group_name
+        self,
+        bevel_edges_nearlandmark_names: list[str | LandmarkInterface],
+        vertex_group_name,
     ):
         kdTree = create_kd_tree_for_object(self.name)
         vertexGroupObject = create_object_vertex_group(self.name, vertex_group_name)
@@ -527,7 +534,9 @@ class Part(PartInterface, Entity):
             add_verticies_to_vertex_group(vertexGroupObject, vertexIndecies)
 
     def _add_faces_near_landmarks_to_vertex_group(
-        self, bevel_faces_nearlandmark_names: list[LandmarkOrItsName], vertex_group_name
+        self,
+        bevel_faces_nearlandmark_names: list[str | LandmarkInterface],
+        vertex_group_name,
     ):
         vertex_group_object = create_object_vertex_group(self.name, vertex_group_name)
         for landmark_or_its_name in bevel_faces_nearlandmark_names:
@@ -546,15 +555,21 @@ class Part(PartInterface, Entity):
             face_indecies: list[int] = blender_polygon.vertices
             add_verticies_to_vertex_group(vertex_group_object, face_indecies)
 
-    def select_vertex_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_vertex_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         raise NotImplementedError()
         return self
 
-    def select_edge_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_edge_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         raise NotImplementedError()
         return self
 
-    def select_face_near_landmark(self, landmark_name: "str|Landmark| None" = None):
+    def select_face_near_landmark(
+        self, landmark_name: "str|LandmarkInterface| None" = None
+    ):
         raise NotImplementedError()
         return self
 
@@ -570,7 +585,7 @@ class Part(PartInterface, Entity):
 
     def mirror(
         self,
-        mirror_across_entity: "str|Entity",
+        mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
@@ -592,7 +607,7 @@ class Part(PartInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|Entity",
+        center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         implementables.circular_pattern(

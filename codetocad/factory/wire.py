@@ -12,9 +12,6 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_wire(
     name: "str",
     edges: "list[EdgeInterface]",

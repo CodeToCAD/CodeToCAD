@@ -15,8 +15,14 @@ from codetocad.interfaces.{{class_name|lower}}_interface import {{interface_name
 {% endfor %}
 
 {% for capabilities_class in imports.get_implementable_class_names("") %}
+{{ imports.format_import_statement(capabilities_class, "codetocad.proxy.") }}
+{% endfor %}
+
+{% for capabilities_class in 
+capabilities_loader.capabilities[class_name].extends%}
 {{ imports.format_import_statement(capabilities_class, "providers.sample.") }}
 {% endfor %}
+
 
 class {{class_name}}({{interface_name}}, {{capabilities_loader.capabilities[class_name].extends|join(", ")}}):
     {% include 'capabilities_to_py_class_definition.j2' %}

@@ -65,6 +65,7 @@ capabilities_parameter_types_mock_values = {
     "Edge": dummy_edge,
     "list[Edge]": f"[{dummy_edge}]",
     "Wire": f"Wire('a wire',[ {dummy_edge}])",
+    "str|Wire": f"Wire('a wire',[ {dummy_edge}])",
     "list[Vertex]": "[" + dummy_vertex + "]",
     "Animation": "Animation()",
     "Scene": "Scene()",

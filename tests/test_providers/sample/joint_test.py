@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.joint_test_interface import JointTestInterface
 
 
 class JointTest(TestProviderCase, JointTestInterface):
+
     def test_translate_landmark_onto_another(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -20,6 +22,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_pivot(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -30,6 +33,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_gear_ratio(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -40,6 +44,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_location_xyz(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -52,6 +57,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_location_x(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -64,6 +70,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_location_y(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -76,6 +83,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_location_z(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -88,6 +96,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_rotation_xyz(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -98,6 +107,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_rotation_x(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -108,6 +118,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_rotation_y(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),
@@ -118,6 +129,7 @@ class JointTest(TestProviderCase, JointTestInterface):
         assert value, "Modify method failed."
 
     def test_limit_rotation_z(self):
+
         instance = Joint(
             entity1=__import__("codetocad").Part("an entity"),
             entity2=__import__("codetocad").Part("an entity"),

@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.scene_test_interface import SceneTestInterface
 
 
 class SceneTest(TestProviderCase, SceneTestInterface):
+
     def test_default(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.default()
@@ -17,6 +19,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Get method failed."
 
     def test_create(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.create()
@@ -24,11 +27,13 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_delete(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.delete()
 
     def test_is_exists(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.is_exists()
@@ -36,6 +41,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Get method failed."
 
     def test_get_selected_entity(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.get_selected_entity()
@@ -43,6 +49,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Get method failed."
 
     def test_export(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.export(
@@ -53,6 +60,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         )
 
     def test_set_default_unit(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.set_default_unit(unit="mm")
@@ -60,6 +68,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Modify method failed."
 
     def test_create_group(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.create_group(name="String")
@@ -67,16 +76,19 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_delete_group(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.delete_group(name="String", remove_children=True)
 
     def test_remove_from_group(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.remove_from_group(entity_name="String", group_name="String")
 
     def test_assign_to_group(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.assign_to_group(
@@ -88,6 +100,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Modify method failed."
 
     def test_set_visible(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.set_visible(
@@ -97,6 +110,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         assert value, "Modify method failed."
 
     def test_set_background_image(self):
+
         instance = Scene(name="String", description="String")
 
         value = instance.set_background_image(

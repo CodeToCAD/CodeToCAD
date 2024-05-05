@@ -20,7 +20,7 @@ from abc import ABCMeta, abstractmethod
 {%set extended_classes = capabilities_loader.capabilities[class_name].get_extends_class_names( "Interface") %}
 {%set implemented_classes = capabilities_loader.capabilities[class_name].get_implements_class_names( "Interface") %}
 
-{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") %}
+{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") + extended_classes%}
 {{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
 {% endfor %}
 

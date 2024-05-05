@@ -1,4 +1,7 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.proxy.entity import Entity
 from codetocad.interfaces.scene_interface import SceneInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
@@ -6,7 +9,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Entity
-    from . import Exportable
 
 
 class Scene(SceneInterface):
@@ -42,7 +44,7 @@ class Scene(SceneInterface):
     def export(
         self,
         file_path: "str",
-        entities: "list[str|Exportable]",
+        entities: "list[str|ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -67,14 +69,14 @@ class Scene(SceneInterface):
 
     def assign_to_group(
         self,
-        entities: "list[str|Entity]",
+        entities: "list[str|EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
         print("assign_to_group called:", entities, group_name, remove_from_other_groups)
         return self
 
-    def set_visible(self, entities: "list[str|Entity]", is_visible: "bool"):
+    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
         print("set_visible called:", entities, is_visible)
         return self
 

@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.codetocad_types import *
 from codetocad.core.point import Point
 from codetocad.interfaces.vertex_interface import VertexInterface
 from providers.blender.blender_provider.entity import Entity
@@ -30,7 +31,7 @@ class Vertex(VertexInterface, Entity):
         location: "Point",
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|Entity| None" = None,
+        parent_entity: "str|EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Vertex requires a parent_entity and a native_instance

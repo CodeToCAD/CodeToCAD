@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.landmark_test_interface import LandmarkTestInter
 
 
 class LandmarkTest(TestProviderCase, LandmarkTestInterface):
+
     def test_clone(self):
+
         instance = Landmark(
             name="String",
             parent_entity=__import__("codetocad").Part("an entity"),
@@ -28,6 +30,7 @@ class LandmarkTest(TestProviderCase, LandmarkTestInterface):
         assert value, "Get method failed."
 
     def test_get_landmark_entity_name(self):
+
         instance = Landmark(
             name="String",
             parent_entity=__import__("codetocad").Part("an entity"),
@@ -40,6 +43,7 @@ class LandmarkTest(TestProviderCase, LandmarkTestInterface):
         assert value, "Get method failed."
 
     def test_get_parent_entity(self):
+
         instance = Landmark(
             name="String",
             parent_entity=__import__("codetocad").Part("an entity"),

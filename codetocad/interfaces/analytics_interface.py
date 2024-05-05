@@ -12,7 +12,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 
 
 class AnalyticsInterface(metaclass=ABCMeta):
-
     """
     Tools for collecting data about the entities and scene.
     """

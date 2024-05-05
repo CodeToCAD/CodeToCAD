@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.vertex_test_interface import VertexTestInterface
 
 
 class VertexTest(TestProviderCase, VertexTestInterface):
+
     def test_get_control_points(self):
+
         instance = Vertex(
             name="String",
             location=Point.from_list_of_float_or_string([0, 0, 0]),
@@ -23,6 +25,7 @@ class VertexTest(TestProviderCase, VertexTestInterface):
         assert value, "Get method failed."
 
     def test_project(self):
+
         instance = Vertex(
             name="String",
             location=Point.from_list_of_float_or_string([0, 0, 0]),

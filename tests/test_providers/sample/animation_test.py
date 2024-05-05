@@ -9,7 +9,9 @@ from codetocad.tests_interfaces.animation_test_interface import AnimationTestInt
 
 
 class AnimationTest(TestProviderCase, AnimationTestInterface):
+
     def test_default(self):
+
         instance = Animation()
 
         value = instance.default()
@@ -17,6 +19,7 @@ class AnimationTest(TestProviderCase, AnimationTestInterface):
         assert value, "Get method failed."
 
     def test_set_frame_start(self):
+
         instance = Animation()
 
         value = instance.set_frame_start(frame_number=0)
@@ -24,6 +27,7 @@ class AnimationTest(TestProviderCase, AnimationTestInterface):
         assert value, "Modify method failed."
 
     def test_set_frame_end(self):
+
         instance = Animation()
 
         value = instance.set_frame_end(frame_number=0)
@@ -31,6 +35,7 @@ class AnimationTest(TestProviderCase, AnimationTestInterface):
         assert value, "Modify method failed."
 
     def test_set_frame_current(self):
+
         instance = Animation()
 
         value = instance.set_frame_current(frame_number=0)
@@ -38,6 +43,7 @@ class AnimationTest(TestProviderCase, AnimationTestInterface):
         assert value, "Modify method failed."
 
     def test_create_key_frame_location(self):
+
         instance = Animation()
 
         value = instance.create_key_frame_location(
@@ -47,6 +53,7 @@ class AnimationTest(TestProviderCase, AnimationTestInterface):
         assert value, "Modify method failed."
 
     def test_create_key_frame_rotation(self):
+
         instance = Animation()
 
         value = instance.create_key_frame_rotation(
