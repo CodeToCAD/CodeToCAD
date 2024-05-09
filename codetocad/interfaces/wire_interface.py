@@ -7,26 +7,27 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
 
-from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.edge_interface import EdgeInterface
+
+from codetocad.interfaces.part_interface import PartInterface
+
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -147,7 +148,7 @@ class WireInterface(
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         """
         AKA Helix, Screw.
         """
@@ -179,9 +180,9 @@ class WireInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def offset(self, radius: "str|float|Dimension"):
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
         """
-        Uniformly add a wall around a Wire.
+        Uniformly add a wall around a Wire. This returns a new wire in the same sketch.
         """
 
         print("offset is called in an abstract method. Please override this method.")
@@ -189,7 +190,7 @@ class WireInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def profile(self, profile_curve_name: "str"):
+    def profile(self, profile_curve_name: "str") -> Self:
         """
         Bend this curve along the path of another
         """

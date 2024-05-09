@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -22,7 +24,7 @@ class MirrorableInterface(metaclass=ABCMeta):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
         """
         Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.
         """

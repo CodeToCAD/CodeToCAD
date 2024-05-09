@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 class ScalableInterface(metaclass=ABCMeta):
     """
@@ -19,7 +21,7 @@ class ScalableInterface(metaclass=ABCMeta):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
         """
         Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -29,7 +31,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> Self:
         """
         Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -39,7 +41,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> Self:
         """
         Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -49,7 +51,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> Self:
         """
         Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """
@@ -59,7 +61,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> Self:
         """
         Scale in the X direction by a multiple.
         """
@@ -71,7 +73,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> Self:
         """
         Scale in the Y direction by a multiple.
         """
@@ -83,7 +85,7 @@ class ScalableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> Self:
         """
         Scale in the X direction by a multiple.
         """
@@ -97,7 +99,7 @@ class ScalableInterface(metaclass=ABCMeta):
     @abstractmethod
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> Self:
         """
         Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.
         """

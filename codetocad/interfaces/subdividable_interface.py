@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 class SubdividableInterface(metaclass=ABCMeta):
@@ -14,7 +14,7 @@ class SubdividableInterface(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> Self:
         """
         Remeshing changes the shape of an entity.
         """
@@ -24,7 +24,7 @@ class SubdividableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> Self:
         """
         Subdivide an entity into more components.
         """
@@ -34,7 +34,7 @@ class SubdividableInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> Self:
         """
         Decimate an entity into less components.
         """

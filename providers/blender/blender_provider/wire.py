@@ -1,4 +1,5 @@
 from typing import Optional
+from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 from codetocad.proxy.edge import Edge
@@ -26,7 +27,6 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderLength,
     BlenderTypes,
 )
-
 from codetocad.codetocad_types import *
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override

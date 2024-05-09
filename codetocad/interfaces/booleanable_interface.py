@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 class BooleanableInterface(metaclass=ABCMeta):
@@ -19,7 +19,7 @@ class BooleanableInterface(metaclass=ABCMeta):
         other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         """
         Boolean union
         """
@@ -34,7 +34,7 @@ class BooleanableInterface(metaclass=ABCMeta):
         other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         """
         Boolean subtraction
         """
@@ -49,7 +49,7 @@ class BooleanableInterface(metaclass=ABCMeta):
         other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         """
         Boolean intersection
         """

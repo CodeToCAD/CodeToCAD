@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 class MaterialInterface(metaclass=ABCMeta):
     """
@@ -38,7 +40,7 @@ class MaterialInterface(metaclass=ABCMeta):
         g_value: "int|float",
         b_value: "int|float",
         a_value: "int|float" = 1.0,
-    ):
+    ) -> Self:
         """
         Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.
         """
@@ -48,7 +50,7 @@ class MaterialInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_reflectivity(self, reflectivity: "float"):
+    def set_reflectivity(self, reflectivity: "float") -> Self:
         """
         Change the surface reflectivity (metallic luster) of the material.
         """
@@ -60,7 +62,7 @@ class MaterialInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_roughness(self, roughness: "float"):
+    def set_roughness(self, roughness: "float") -> Self:
         """
         Change the surface roughness of the material.
         """
@@ -72,7 +74,7 @@ class MaterialInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_image_texture(self, image_file_path: "str"):
+    def set_image_texture(self, image_file_path: "str") -> Self:
         """
         Add a texture from an image file.
         """

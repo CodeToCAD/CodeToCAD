@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -27,7 +27,7 @@ class AnimationInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_frame_start(self, frame_number: "int"):
+    def set_frame_start(self, frame_number: "int") -> Self:
         """
         Set the start animation frame in the scene.
         """
@@ -39,7 +39,7 @@ class AnimationInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_frame_end(self, frame_number: "int"):
+    def set_frame_end(self, frame_number: "int") -> Self:
         """
         Set the end animation frame in the scene.
         """
@@ -51,7 +51,7 @@ class AnimationInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_frame_current(self, frame_number: "int"):
+    def set_frame_current(self, frame_number: "int") -> Self:
         """
         Set the current animation frame in the scene.
         """
@@ -65,7 +65,7 @@ class AnimationInterface(metaclass=ABCMeta):
     @abstractmethod
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    ) -> Self:
         """
         Create an animation key-frame using the location of the entity.
         """
@@ -79,7 +79,7 @@ class AnimationInterface(metaclass=ABCMeta):
     @abstractmethod
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    ) -> Self:
         """
         Create an animation key-frame using the rotation of the entity.
         """

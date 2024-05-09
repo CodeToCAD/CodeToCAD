@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 class ImportableInterface(metaclass=ABCMeta):
@@ -14,7 +14,7 @@ class ImportableInterface(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
         """
         Imports geometry from a file.
         """

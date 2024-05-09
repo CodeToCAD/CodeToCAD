@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.material_interface import MaterialInterface
 
@@ -31,25 +33,25 @@ class Material(
         g_value: "int|float",
         b_value: "int|float",
         a_value: "int|float" = 1.0,
-    ):
+    ) -> Self:
 
         print("set_color called", f": {r_value}, {g_value}, {b_value}, {a_value}")
 
         return self
 
-    def set_reflectivity(self, reflectivity: "float"):
+    def set_reflectivity(self, reflectivity: "float") -> Self:
 
         print("set_reflectivity called", f": {reflectivity}")
 
         return self
 
-    def set_roughness(self, roughness: "float"):
+    def set_roughness(self, roughness: "float") -> Self:
 
         print("set_roughness called", f": {roughness}")
 
         return self
 
-    def set_image_texture(self, image_file_path: "str"):
+    def set_image_texture(self, image_file_path: "str") -> Self:
 
         print("set_image_texture called", f": {image_file_path}")
 

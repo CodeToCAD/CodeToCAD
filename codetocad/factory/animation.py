@@ -9,9 +9,6 @@ from codetocad.interfaces.animation_interface import AnimationInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_animation() -> AnimationInterface:
     """
     Animation related functionality.

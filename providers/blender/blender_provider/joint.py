@@ -1,6 +1,5 @@
 from typing import Optional
 from codetocad.proxy.entity import Entity
-
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.interfaces.joint_interface import JointInterface

@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
@@ -42,10 +44,10 @@ class Entity(
 
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
-    ):
+    ) -> Self:
         return self.__proxied.rename(new_name, renamelinked_entities_and_landmarks)
 
-    def delete(self, remove_children: "bool" = True):
+    def delete(self, remove_children: "bool" = True) -> Self:
         return self.__proxied.delete(remove_children)
 
     def is_visible(
@@ -53,7 +55,7 @@ class Entity(
     ) -> "bool":
         return self.__proxied.is_visible()
 
-    def set_visible(self, is_visible: "bool"):
+    def set_visible(self, is_visible: "bool") -> Self:
         return self.__proxied.set_visible(is_visible)
 
     def apply(
@@ -62,7 +64,7 @@ class Entity(
         scale: "bool" = True,
         location: "bool" = False,
         modifiers: "bool" = True,
-    ):
+    ) -> Self:
         return self.__proxied.apply(rotation, scale, location, modifiers)
 
     def get_native_instance(
@@ -82,7 +84,7 @@ class Entity(
 
     def select(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.select()
 
     def translate_xyz(
@@ -90,30 +92,30 @@ class Entity(
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
         return self.__proxied.translate_xyz(x, y, z)
 
-    def translate_x(self, amount: "str|float|Dimension"):
+    def translate_x(self, amount: "str|float|Dimension") -> Self:
         return self.__proxied.translate_x(amount)
 
-    def translate_y(self, amount: "str|float|Dimension"):
+    def translate_y(self, amount: "str|float|Dimension") -> Self:
         return self.__proxied.translate_y(amount)
 
-    def translate_z(self, amount: "str|float|Dimension"):
+    def translate_z(self, amount: "str|float|Dimension") -> Self:
         return self.__proxied.translate_z(amount)
 
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
-    ):
+    ) -> Self:
         return self.__proxied.rotate_xyz(x, y, z)
 
-    def rotate_x(self, rotation: "str|float|Angle"):
+    def rotate_x(self, rotation: "str|float|Angle") -> Self:
         return self.__proxied.rotate_x(rotation)
 
-    def rotate_y(self, rotation: "str|float|Angle"):
+    def rotate_y(self, rotation: "str|float|Angle") -> Self:
         return self.__proxied.rotate_y(rotation)
 
-    def rotate_z(self, rotation: "str|float|Angle"):
+    def rotate_z(self, rotation: "str|float|Angle") -> Self:
         return self.__proxied.rotate_z(rotation)
 
     def get_bounding_box(

@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
@@ -42,12 +44,12 @@ class Scene(
 
     def create(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.create()
 
     def delete(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.delete()
 
     def is_exists(
@@ -66,19 +68,19 @@ class Scene(
         entities: "list[str|ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
-    ):
+    ) -> Self:
         return self.__proxied.export(file_path, entities, overwrite, scale)
 
-    def set_default_unit(self, unit: "str|LengthUnit"):
+    def set_default_unit(self, unit: "str|LengthUnit") -> Self:
         return self.__proxied.set_default_unit(unit)
 
-    def create_group(self, name: "str"):
+    def create_group(self, name: "str") -> Self:
         return self.__proxied.create_group(name)
 
-    def delete_group(self, name: "str", remove_children: "bool"):
+    def delete_group(self, name: "str", remove_children: "bool") -> Self:
         return self.__proxied.delete_group(name, remove_children)
 
-    def remove_from_group(self, entity_name: "str", group_name: "str"):
+    def remove_from_group(self, entity_name: "str", group_name: "str") -> Self:
         return self.__proxied.remove_from_group(entity_name, group_name)
 
     def assign_to_group(
@@ -86,12 +88,14 @@ class Scene(
         entities: "list[str|EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
-    ):
+    ) -> Self:
         return self.__proxied.assign_to_group(
             entities, group_name, remove_from_other_groups
         )
 
-    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
+    def set_visible(
+        self, entities: "list[str|EntityInterface]", is_visible: "bool"
+    ) -> Self:
         return self.__proxied.set_visible(entities, is_visible)
 
     def set_background_image(
@@ -99,5 +103,5 @@ class Scene(
         file_path: "str",
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
-    ):
+    ) -> Self:
         return self.__proxied.set_background_image(file_path, location_x, location_y)

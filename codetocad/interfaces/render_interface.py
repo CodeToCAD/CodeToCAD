@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 from codetocad.interfaces.camera_interface import CameraInterface
@@ -22,7 +22,7 @@ class RenderInterface(metaclass=ABCMeta):
         output_file_path: "str",
         overwrite: "bool" = True,
         file_type: "str| None" = None,
-    ):
+    ) -> Self:
         """
         Render a still image.
         """
@@ -41,7 +41,7 @@ class RenderInterface(metaclass=ABCMeta):
         end_frame_number: "int" = 100,
         step_frames: "int" = 1,
         overwrite: "bool" = True,
-    ):
+    ) -> Self:
         """
         Render an MP4 video.
         """
@@ -62,7 +62,7 @@ class RenderInterface(metaclass=ABCMeta):
         step_frames: "int" = 1,
         overwrite: "bool" = True,
         file_type: "str| None" = None,
-    ):
+    ) -> Self:
         """
         Render a video as image frame stills.
         """
@@ -74,7 +74,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_frame_rate(self, frame_rate: "int"):
+    def set_frame_rate(self, frame_rate: "int") -> Self:
         """
         Set rendering framerate.
         """
@@ -86,7 +86,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_resolution(self, x: "int", y: "int"):
+    def set_resolution(self, x: "int", y: "int") -> Self:
         """
         Set rendering resolution
         """
@@ -98,7 +98,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_render_quality(self, quality: "int"):
+    def set_render_quality(self, quality: "int") -> Self:
         """
         Set rendering quality.
         """
@@ -110,7 +110,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_render_engine(self, name: "str"):
+    def set_render_engine(self, name: "str") -> Self:
         """
         Set rendering engine name.
         """
@@ -122,7 +122,7 @@ class RenderInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
+    def set_camera(self, camera_name_or_instance: "str|CameraInterface") -> Self:
         """
         Set the rendering camera.
         """

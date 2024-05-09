@@ -3,15 +3,13 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
+
+from typing import Self
 
 
 from codetocad.providers import get_provider
 
 from codetocad.interfaces.camera_interface import CameraInterface
-
-
-from codetocad.interfaces.entity_interface import EntityInterface
 
 
 from providers.sample.entity import Entity
@@ -41,18 +39,18 @@ class Camera(CameraInterface, Entity):
 
     def create_perspective(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.create_perspective()
 
     def create_orthogonal(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.create_orthogonal()
 
     def create_panoramic(
         self,
-    ):
+    ) -> Self:
         return self.__proxied.create_panoramic()
 
-    def set_focal_length(self, length: "float"):
+    def set_focal_length(self, length: "float") -> Self:
         return self.__proxied.set_focal_length(length)

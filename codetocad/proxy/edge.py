@@ -5,25 +5,21 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -62,10 +58,10 @@ class Edge(EdgeInterface, Entity):
     def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
         return self.__proxied.offset(distance)
 
-    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle") -> Self:
         return self.__proxied.fillet(other_edge, amount)
 
-    def set_is_construction(self, is_construction: "bool"):
+    def set_is_construction(self, is_construction: "bool") -> Self:
         return self.__proxied.set_is_construction(is_construction)
 
     def get_is_construction(
@@ -78,7 +74,7 @@ class Edge(EdgeInterface, Entity):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
         return self.__proxied.mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
@@ -88,7 +84,7 @@ class Edge(EdgeInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.linear_pattern(instance_count, offset, direction_axis)
 
     def circular_pattern(
@@ -97,7 +93,7 @@ class Edge(EdgeInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.circular_pattern(
             instance_count,
             separation_angle,
@@ -105,13 +101,13 @@ class Edge(EdgeInterface, Entity):
             normal_direction_axis,
         )
 
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> Self:
         return self.__proxied.remesh(strategy, amount)
 
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> Self:
         return self.__proxied.subdivide(amount)
 
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> Self:
         return self.__proxied.decimate(amount)
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":

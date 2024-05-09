@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -37,7 +39,7 @@ class SceneInterface(metaclass=ABCMeta):
     @abstractmethod
     def create(
         self,
-    ):
+    ) -> Self:
         """
         Creates a new scene.
         """
@@ -49,7 +51,7 @@ class SceneInterface(metaclass=ABCMeta):
     @abstractmethod
     def delete(
         self,
-    ):
+    ) -> Self:
         """
         Deletes a scene.
         """
@@ -91,7 +93,7 @@ class SceneInterface(metaclass=ABCMeta):
         entities: "list[str|ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
-    ):
+    ) -> Self:
         """
         Export the entire scene or specific entities.
         """
@@ -101,7 +103,7 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_default_unit(self, unit: "str|LengthUnit"):
+    def set_default_unit(self, unit: "str|LengthUnit") -> Self:
         """
         Set the document's default measurements system.
         """
@@ -113,7 +115,7 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_group(self, name: "str"):
+    def create_group(self, name: "str") -> Self:
         """
         Create a new group
         """
@@ -125,7 +127,7 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def delete_group(self, name: "str", remove_children: "bool"):
+    def delete_group(self, name: "str", remove_children: "bool") -> Self:
         """
         Delete a new group
         """
@@ -137,7 +139,7 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def remove_from_group(self, entity_name: "str", group_name: "str"):
+    def remove_from_group(self, entity_name: "str", group_name: "str") -> Self:
         """
         Removes an existing entity from a group
         """
@@ -154,7 +156,7 @@ class SceneInterface(metaclass=ABCMeta):
         entities: "list[str|EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
-    ):
+    ) -> Self:
         """
         Assigns an existing entity to a new group
         """
@@ -166,7 +168,9 @@ class SceneInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
+    def set_visible(
+        self, entities: "list[str|EntityInterface]", is_visible: "bool"
+    ) -> Self:
         """
         Change the visibiltiy of the entity.
         """
@@ -183,7 +187,7 @@ class SceneInterface(metaclass=ABCMeta):
         file_path: "str",
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
-    ):
+    ) -> Self:
         """
         Set the scene background image. This can be an image or an HDRI texture.
         """
