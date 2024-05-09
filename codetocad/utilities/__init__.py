@@ -13,21 +13,8 @@ from codetocad.core.boundary_box import BoundaryBox
 from codetocad.core.dimension import Dimension
 
 from codetocad.enums.angle_unit import AngleUnit
+from codetocad.enums.axis import Axis
 from codetocad.enums.length_unit import LengthUnit
-
-
-min = "min"
-max = "max"
-center = "center"
-
-reservedWords = [min, max, center]
-
-
-def is_reserved_word_in_string(string_to_check: str) -> bool:
-    for word in reservedWords:
-        if word in string_to_check:
-            return True
-    return False
 
 
 def get_filename(relative_file_path: str):
@@ -103,6 +90,9 @@ def replace_min_max_center_with_respective_value(
 ):
     dimension = dimension.lower()
 
+    # This is a bit ambigious, but Axis is an enum whose string representation is Axis.MIN. So we need to remove any "Axis."
+    dimension.replace("Axis.", "")
+
     while "min" in dimension:
         dimension = dimension.replace(
             "min",
@@ -146,7 +136,7 @@ def get_unit_in_string(dimension_string):
 
     return (
         unitInString
-        if unitInString and not is_reserved_word_in_string(unitInString)
+        if unitInString and not Axis.is_axis_name_in_string(unitInString)
         else None
     )
 

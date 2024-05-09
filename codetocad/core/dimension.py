@@ -2,6 +2,7 @@ import re
 from typing import Optional, Union
 from codetocad.core.boundary_axis import BoundaryAxis
 
+from codetocad.enums.axis import Axis
 from codetocad.enums.length_unit import LengthUnit
 
 
@@ -185,7 +186,6 @@ class Dimension:
 
         from codetocad.utilities import (
             get_unit_in_string,
-            is_reserved_word_in_string,
             replace_min_max_center_with_respective_value,
         )
 
@@ -197,7 +197,7 @@ class Dimension:
             unit = unitInString or unit
 
         # if min,max,center is used, try to parse those words into their respective values.
-        if is_reserved_word_in_string(value):
+        if Axis.is_axis_name_in_string(value):
             assert (
                 boundary_axis is not None
             ), "min,max,center keywords used, but boundary_axis is not known."
