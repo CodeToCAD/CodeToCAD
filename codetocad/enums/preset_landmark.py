@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Optional
 
+from codetocad.enums.axis import Axis
+
 
 class PresetLandmark(Enum):
     left = 2
@@ -48,21 +50,20 @@ class PresetLandmark(Enum):
         return None
 
     def get_xyz(self):
-        from codetocad.utilities import center, min, max
 
         x = (
-            min
+            Axis.MIN
             if self.contains(PresetLandmark.left)
-            else max if self.contains(PresetLandmark.right) else center
+            else Axis.MAX if self.contains(PresetLandmark.right) else Axis.CENTER
         )
         y = (
-            min
+            Axis.MIN
             if self.contains(PresetLandmark.front)
-            else max if self.contains(PresetLandmark.back) else center
+            else Axis.MAX if self.contains(PresetLandmark.back) else Axis.CENTER
         )
         z = (
-            min
+            Axis.MIN
             if self.contains(PresetLandmark.bottom)
-            else max if self.contains(PresetLandmark.top) else center
+            else Axis.MAX if self.contains(PresetLandmark.top) else Axis.CENTER
         )
         return (x, y, z)
