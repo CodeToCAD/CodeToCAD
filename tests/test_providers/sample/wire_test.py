@@ -286,7 +286,7 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         value = instance.offset(radius=Dimension(0, "mm"))
 
-        assert value, "Modify method failed."
+        assert value, "Get method failed."
 
     def test_profile(self):
 

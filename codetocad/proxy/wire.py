@@ -5,31 +5,27 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
 from codetocad.interfaces.wire_interface import WireInterface
 
 
-from codetocad.interfaces.part_interface import PartInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.edge_interface import EdgeInterface
 
+from codetocad.interfaces.part_interface import PartInterface
+
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -101,7 +97,7 @@ class Wire(WireInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.twist(angle, screw_pitch, iterations, axis)
 
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
@@ -112,10 +108,10 @@ class Wire(WireInterface, Entity):
     ) -> "PartInterface":
         return self.__proxied.sweep(profile_name_or_instance, fill_cap)
 
-    def offset(self, radius: "str|float|Dimension"):
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
         return self.__proxied.offset(radius)
 
-    def profile(self, profile_curve_name: "str"):
+    def profile(self, profile_curve_name: "str") -> Self:
         return self.__proxied.profile(profile_curve_name)
 
     def mirror(
@@ -123,7 +119,7 @@ class Wire(WireInterface, Entity):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
         return self.__proxied.mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
@@ -133,7 +129,7 @@ class Wire(WireInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.linear_pattern(instance_count, offset, direction_axis)
 
     def circular_pattern(
@@ -142,7 +138,7 @@ class Wire(WireInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.circular_pattern(
             instance_count,
             separation_angle,
@@ -170,7 +166,7 @@ class Wire(WireInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         return self.__proxied.union(other, delete_after_union, is_transfer_data)
 
     def subtract(
@@ -178,7 +174,7 @@ class Wire(WireInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         return self.__proxied.subtract(other, delete_after_subtract, is_transfer_data)
 
     def intersect(
@@ -186,14 +182,14 @@ class Wire(WireInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
         return self.__proxied.intersect(other, delete_after_intersect, is_transfer_data)
 
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> Self:
         return self.__proxied.remesh(strategy, amount)
 
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> Self:
         return self.__proxied.subdivide(amount)
 
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> Self:
         return self.__proxied.decimate(amount)

@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -28,7 +28,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
     @abstractmethod
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
-    ):
+    ) -> Self:
         """
         Set the color of an existing light.
         """
@@ -38,7 +38,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_sun(self, energy_level: "float"):
+    def create_sun(self, energy_level: "float") -> Self:
         """
         Create a Sun-type light.
         """
@@ -50,7 +50,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_spot(self, energy_level: "float"):
+    def create_spot(self, energy_level: "float") -> Self:
         """
         Create a Spot-type light.
         """
@@ -62,7 +62,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_point(self, energy_level: "float"):
+    def create_point(self, energy_level: "float") -> Self:
         """
         Create a Point-type light.
         """
@@ -74,7 +74,7 @@ class LightInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_area(self, energy_level: "float"):
+    def create_area(self, energy_level: "float") -> Self:
         """
         Create an Area-type light.
         """

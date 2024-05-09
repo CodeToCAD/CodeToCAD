@@ -1210,7 +1210,7 @@
                 }
             },
             "offset": {
-                "information": "Clone and offset this edge a distance away from this one.",
+                "information": "Clone and offset this edge a distance away from this one. This returns a new edge in the same sketch.",
                 "action": "get",
                 "return_type": "Edge",
                 "parameters": {
@@ -1368,8 +1368,9 @@
                 }
             },
             "offset": {
-                "action": "modify",
-                "information": "Uniformly add a wall around a Wire.",
+                "action": "get",
+                "return_type": "Wire",
+                "information": "Uniformly add a wall around a Wire. This returns a new wire in the same sketch.",
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"

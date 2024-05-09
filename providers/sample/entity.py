@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -33,13 +35,13 @@ class Entity(
 
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
-    ):
+    ) -> Self:
 
         print("rename called", f": {new_name}, {renamelinked_entities_and_landmarks}")
 
         return self
 
-    def delete(self, remove_children: "bool" = True):
+    def delete(self, remove_children: "bool" = True) -> Self:
 
         print("delete called", f": {remove_children}")
 
@@ -55,7 +57,7 @@ class Entity(
 
         return True
 
-    def set_visible(self, is_visible: "bool"):
+    def set_visible(self, is_visible: "bool") -> Self:
 
         print("set_visible called", f": {is_visible}")
 
@@ -67,7 +69,7 @@ class Entity(
         scale: "bool" = True,
         location: "bool" = False,
         modifiers: "bool" = True,
-    ):
+    ) -> Self:
 
         print("apply called", f": {rotation}, {scale}, {location}, {modifiers}")
 
@@ -105,7 +107,7 @@ class Entity(
 
     def select(
         self,
-    ):
+    ) -> Self:
 
         print(
             "select called",
@@ -118,25 +120,25 @@ class Entity(
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
 
         print("translate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def translate_x(self, amount: "str|float|Dimension"):
+    def translate_x(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_x called", f": {amount}")
 
         return self
 
-    def translate_y(self, amount: "str|float|Dimension"):
+    def translate_y(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_y called", f": {amount}")
 
         return self
 
-    def translate_z(self, amount: "str|float|Dimension"):
+    def translate_z(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_z called", f": {amount}")
 
@@ -144,25 +146,25 @@ class Entity(
 
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
-    ):
+    ) -> Self:
 
         print("rotate_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def rotate_x(self, rotation: "str|float|Angle"):
+    def rotate_x(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_x called", f": {rotation}")
 
         return self
 
-    def rotate_y(self, rotation: "str|float|Angle"):
+    def rotate_y(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_y called", f": {rotation}")
 
         return self
 
-    def rotate_z(self, rotation: "str|float|Angle"):
+    def rotate_z(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_z called", f": {rotation}")
 

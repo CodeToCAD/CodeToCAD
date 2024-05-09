@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.onshape.onshape_provider.entity import Entity
 from codetocad.codetocad_types import *

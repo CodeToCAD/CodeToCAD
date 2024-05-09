@@ -5,14 +5,13 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.joint_interface import JointInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
-
-
-from codetocad.proxy.entity import Entity
 
 
 class Joint(
@@ -26,7 +25,7 @@ class Joint(
 
     def translate_landmark_onto_another(
         self,
-    ):
+    ) -> Self:
 
         print(
             "translate_landmark_onto_another called",
@@ -36,7 +35,7 @@ class Joint(
 
     def pivot(
         self,
-    ):
+    ) -> Self:
 
         print(
             "pivot called",
@@ -44,7 +43,7 @@ class Joint(
 
         return self
 
-    def gear_ratio(self, ratio: "float"):
+    def gear_ratio(self, ratio: "float") -> Self:
 
         print("gear_ratio called", f": {ratio}")
 
@@ -55,7 +54,7 @@ class Joint(
         x: "str|float|Dimension| None" = None,
         y: "str|float|Dimension| None" = None,
         z: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
 
         print("limit_location_xyz called", f": {x}, {y}, {z}")
 
@@ -65,7 +64,7 @@ class Joint(
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
 
         print("limit_location_x called", f": {min}, {max}")
 
@@ -75,7 +74,7 @@ class Joint(
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
 
         print("limit_location_y called", f": {min}, {max}")
 
@@ -85,7 +84,7 @@ class Joint(
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
 
         print("limit_location_z called", f": {min}, {max}")
 
@@ -96,7 +95,7 @@ class Joint(
         x: "str|float|Angle| None" = None,
         y: "str|float|Angle| None" = None,
         z: "str|float|Angle| None" = None,
-    ):
+    ) -> Self:
 
         print("limit_rotation_xyz called", f": {x}, {y}, {z}")
 
@@ -104,7 +103,7 @@ class Joint(
 
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
 
         print("limit_rotation_x called", f": {min}, {max}")
 
@@ -112,7 +111,7 @@ class Joint(
 
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
 
         print("limit_rotation_y called", f": {min}, {max}")
 
@@ -120,7 +119,7 @@ class Joint(
 
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
 
         print("limit_rotation_z called", f": {min}, {max}")
 

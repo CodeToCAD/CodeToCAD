@@ -7,26 +7,28 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.material_interface import MaterialInterface
 
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
 from codetocad.interfaces.importable_interface import ImportableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
-from codetocad.interfaces.scalable_interface import ScalableInterface
-
 from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -63,7 +65,7 @@ class PartInterface(
         length: "str|float|Dimension",
         height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
         """
         Adds cuboid geometry to a part.
         """
@@ -81,7 +83,7 @@ class PartInterface(
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
         """
         Adds cone geometry to a part.
         """
@@ -98,7 +100,7 @@ class PartInterface(
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
         """
         Adds cylinder geometry to a part.
         """
@@ -115,7 +117,7 @@ class PartInterface(
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
         """
         Adds torus geometry to a part.
         """
@@ -129,7 +131,7 @@ class PartInterface(
     @abstractmethod
     def create_sphere(
         self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
-    ):
+    ) -> Self:
         """
         Adds sphere geometry to a part.
         """
@@ -154,7 +156,7 @@ class PartInterface(
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
         """
         Adds gear geometry to a part.
         """
@@ -183,7 +185,7 @@ class PartInterface(
         thickness_z: "str|float|Dimension",
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-    ):
+    ) -> Self:
         """
         Remove vertices, if necessary, until the part has a specified wall thickness.
         """
@@ -193,7 +195,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def thicken(self, radius: "str|float|Dimension"):
+    def thicken(self, radius: "str|float|Dimension") -> Self:
         """
         Uniformly add a wall around a Part.
         """
@@ -226,7 +228,7 @@ class PartInterface(
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
-    ):
+    ) -> Self:
         """
         Create a hole.
         """
@@ -242,7 +244,7 @@ class PartInterface(
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         """
         AKA Helix, Screw. Revolve an entity
         """
@@ -252,7 +254,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def set_material(self, material_name: "str|MaterialInterface"):
+    def set_material(self, material_name: "str|MaterialInterface") -> Self:
         """
         Assign a known material to this part.
         """
@@ -278,7 +280,7 @@ class PartInterface(
     @abstractmethod
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
-    ):
+    ) -> Self:
         """
         Fillet all edges.
         """
@@ -295,7 +297,7 @@ class PartInterface(
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> Self:
         """
         Fillet specific edges.
         """
@@ -312,7 +314,7 @@ class PartInterface(
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> Self:
         """
         Fillet specific faces.
         """
@@ -324,7 +326,7 @@ class PartInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def chamfer_all_edges(self, radius: "str|float|Dimension"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension") -> Self:
         """
         Chamfer all edges.
         """
@@ -340,7 +342,7 @@ class PartInterface(
         self,
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
-    ):
+    ) -> Self:
         """
         Chamfer specific edges.
         """
@@ -356,7 +358,7 @@ class PartInterface(
         self,
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
-    ):
+    ) -> Self:
         """
         Chamfer specific faces.
         """
@@ -370,7 +372,7 @@ class PartInterface(
     @abstractmethod
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
         """
         Select the vertex closest to a Landmark on the entity (in UI).
         """
@@ -384,7 +386,7 @@ class PartInterface(
     @abstractmethod
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
         """
         Select an edge closest to a landmark on the entity (in UI).
         """
@@ -398,7 +400,7 @@ class PartInterface(
     @abstractmethod
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
         """
         Select a face closest to a landmark on the entity (in UI).
         """

@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -84,7 +86,7 @@ class AnalyticsInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def log(self, message: "str"):
+    def log(self, message: "str") -> Self:
         """
         Write a message
         """

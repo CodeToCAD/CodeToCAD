@@ -1,4 +1,5 @@
 from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 from codetocad.proxy.landmark import Landmark

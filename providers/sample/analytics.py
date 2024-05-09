@@ -5,14 +5,13 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.analytics_interface import AnalyticsInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
-
-
-from codetocad.proxy.entity import Entity
 
 
 class Analytics(
@@ -56,7 +55,7 @@ class Analytics(
 
         return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
-    def log(self, message: "str"):
+    def log(self, message: "str") -> Self:
 
         print("log called", f": {message}")
 

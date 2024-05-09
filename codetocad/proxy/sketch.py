@@ -5,31 +5,23 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.wire_interface import WireInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -165,7 +157,7 @@ class Sketch(SketchInterface, Entity):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
         return self.__proxied.mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
@@ -175,7 +167,7 @@ class Sketch(SketchInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.linear_pattern(instance_count, offset, direction_axis)
 
     def circular_pattern(
@@ -184,7 +176,7 @@ class Sketch(SketchInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         return self.__proxied.circular_pattern(
             instance_count,
             separation_angle,
@@ -192,10 +184,12 @@ class Sketch(SketchInterface, Entity):
             normal_direction_axis,
         )
 
-    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
         return self.__proxied.create_from_file(file_path, file_type)
 
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> Self:
         return self.__proxied.export(file_path, overwrite, scale)
 
     def scale_xyz(
@@ -203,30 +197,30 @@ class Sketch(SketchInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
         return self.__proxied.scale_xyz(x, y, z)
 
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> Self:
         return self.__proxied.scale_x(scale)
 
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> Self:
         return self.__proxied.scale_y(scale)
 
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> Self:
         return self.__proxied.scale_z(scale)
 
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> Self:
         return self.__proxied.scale_x_by_factor(scale_factor)
 
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> Self:
         return self.__proxied.scale_y_by_factor(scale_factor)
 
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> Self:
         return self.__proxied.scale_z_by_factor(scale_factor)
 
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> Self:
         return self.__proxied.scale_keep_aspect_ratio(scale, axis)
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":

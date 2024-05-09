@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.proxy.vertex import Vertex
 from codetocad.proxy.landmark import Landmark

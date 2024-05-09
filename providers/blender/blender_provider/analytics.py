@@ -1,7 +1,6 @@
 from codetocad.interfaces.analytics_interface import AnalyticsInterface
 from codetocad.proxy.entity import Entity
 from codetocad.interfaces.entity_interface import EntityInterface
-
 from codetocad.codetocad_types import *
 from providers.blender.blender_provider.blender_actions.context import log_message
 from providers.blender.blender_provider.blender_actions.objects import (

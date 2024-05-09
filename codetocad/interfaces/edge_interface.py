@@ -7,20 +7,21 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
+
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -59,7 +60,7 @@ class EdgeInterface(
     @abstractmethod
     def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
         """
-        Clone and offset this edge a distance away from this one.
+        Clone and offset this edge a distance away from this one. This returns a new edge in the same sketch.
         """
 
         print("offset is called in an abstract method. Please override this method.")
@@ -67,7 +68,7 @@ class EdgeInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle") -> Self:
         """
         Fillet this and another edge.
         """
@@ -77,7 +78,7 @@ class EdgeInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def set_is_construction(self, is_construction: "bool"):
+    def set_is_construction(self, is_construction: "bool") -> Self:
         """
         Mark this edge for construction only.
         """

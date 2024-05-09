@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -22,7 +24,7 @@ class PatternableInterface(metaclass=ABCMeta):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         """
         Pattern in a uniform direction.
         """
@@ -40,7 +42,7 @@ class PatternableInterface(metaclass=ABCMeta):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
         """
         Pattern in a circular direction.
         """

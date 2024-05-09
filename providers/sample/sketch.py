@@ -5,39 +5,31 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.sketch_interface import SketchInterface
 
-
-from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.wire_interface import WireInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
-
-from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
 from codetocad.proxy.edge import Edge
-from codetocad.proxy.landmark import Landmark
-
 from codetocad.proxy.vertex import Vertex
 
 from codetocad.proxy.wire import Wire
+
+from codetocad.proxy.landmark import Landmark
 
 
 from providers.sample.entity import Entity
@@ -333,7 +325,7 @@ class Sketch(SketchInterface, Entity):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "mirror called",
@@ -347,7 +339,7 @@ class Sketch(SketchInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
 
         print(
             "linear_pattern called", f": {instance_count}, {offset}, {direction_axis}"
@@ -361,7 +353,7 @@ class Sketch(SketchInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
 
         print(
             "circular_pattern called",
@@ -370,13 +362,15 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
-    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
 
         print("create_from_file called", f": {file_path}, {file_type}")
 
         return self
 
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> Self:
 
         print("export called", f": {file_path}, {overwrite}, {scale}")
 
@@ -387,43 +381,43 @@ class Sketch(SketchInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
 
         print("scale_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_x called", f": {scale}")
 
         return self
 
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_y called", f": {scale}")
 
         return self
 
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_z called", f": {scale}")
 
         return self
 
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_x_by_factor called", f": {scale_factor}")
 
         return self
 
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_y_by_factor called", f": {scale_factor}")
 
         return self
 
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_z_by_factor called", f": {scale_factor}")
 
@@ -431,7 +425,7 @@ class Sketch(SketchInterface, Entity):
 
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> Self:
 
         print("scale_keep_aspect_ratio called", f": {scale}, {axis}")
 

@@ -5,7 +5,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-from codetocad.codetocad_types import *
+from typing import Self
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -28,7 +28,7 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
     @abstractmethod
     def create_perspective(
         self,
-    ):
+    ) -> Self:
         """
         Create a perspective camera in the scene.
         """
@@ -42,7 +42,7 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
     @abstractmethod
     def create_orthogonal(
         self,
-    ):
+    ) -> Self:
         """
         Create an orthogonal camera in the scene.
         """
@@ -56,7 +56,7 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
     @abstractmethod
     def create_panoramic(
         self,
-    ):
+    ) -> Self:
         """
         Create a panorama camera in the scene.
         """
@@ -68,7 +68,7 @@ class CameraInterface(EntityInterface, metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_focal_length(self, length: "float"):
+    def set_focal_length(self, length: "float") -> Self:
         """
         Set the focal length of the camera.
         """

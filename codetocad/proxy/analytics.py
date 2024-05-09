@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.providers import get_provider
 
@@ -58,5 +60,5 @@ class Analytics(
     def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
         return self.__proxied.get_dimensions(entity_name)
 
-    def log(self, message: "str"):
+    def log(self, message: "str") -> Self:
         return self.__proxied.log(message)

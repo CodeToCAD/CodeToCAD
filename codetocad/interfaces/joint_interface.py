@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -25,7 +27,7 @@ class JointInterface(metaclass=ABCMeta):
     @abstractmethod
     def translate_landmark_onto_another(
         self,
-    ):
+    ) -> Self:
         """
         Transforms one landmark onto another
         """
@@ -39,7 +41,7 @@ class JointInterface(metaclass=ABCMeta):
     @abstractmethod
     def pivot(
         self,
-    ):
+    ) -> Self:
         """
         Constraint the rotation origin of entity B to entity A's landmark.
         """
@@ -49,7 +51,7 @@ class JointInterface(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def gear_ratio(self, ratio: "float"):
+    def gear_ratio(self, ratio: "float") -> Self:
         """
         Constraint the rotation of entity B to be a percentage of entity A's
         """
@@ -66,7 +68,7 @@ class JointInterface(metaclass=ABCMeta):
         x: "str|float|Dimension| None" = None,
         y: "str|float|Dimension| None" = None,
         z: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
         """
         Constraint the translation of entity B, relative to entity A's landmark.
         """
@@ -82,7 +84,7 @@ class JointInterface(metaclass=ABCMeta):
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
         """
         Constraint the translation of entity B, relative to entity A's landmark.
         """
@@ -98,7 +100,7 @@ class JointInterface(metaclass=ABCMeta):
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
         """
         Constraint the translation of entity B, relative to entity A's landmark.
         """
@@ -114,7 +116,7 @@ class JointInterface(metaclass=ABCMeta):
         self,
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
-    ):
+    ) -> Self:
         """
         Constraint the translation of entity B, relative to entity A's landmark.
         """
@@ -131,7 +133,7 @@ class JointInterface(metaclass=ABCMeta):
         x: "str|float|Angle| None" = None,
         y: "str|float|Angle| None" = None,
         z: "str|float|Angle| None" = None,
-    ):
+    ) -> Self:
         """
         Constraint the rotation of entity B, relative to entity A's landmark.
         """
@@ -145,7 +147,7 @@ class JointInterface(metaclass=ABCMeta):
     @abstractmethod
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
         """
         Constraint the rotation of entity B, relative to entity A's landmark.
         """
@@ -159,7 +161,7 @@ class JointInterface(metaclass=ABCMeta):
     @abstractmethod
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
         """
         Constraint the rotation of entity B, relative to entity A's landmark.
         """
@@ -173,7 +175,7 @@ class JointInterface(metaclass=ABCMeta):
     @abstractmethod
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
-    ):
+    ) -> Self:
         """
         Constraint the rotation of entity B, relative to entity A's landmark.
         """

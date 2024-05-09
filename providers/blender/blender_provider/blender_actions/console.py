@@ -1,7 +1,6 @@
 import bpy
 from console_python import replace_help
 from functools import wraps
-from importlib import reload
 
 
 def start_debugger(host: str = "localhost", port: int = 5678):

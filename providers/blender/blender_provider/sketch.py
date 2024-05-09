@@ -1,4 +1,5 @@
 import math
+from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.edge import Edge
 from codetocad.proxy.vertex import Vertex
 from codetocad.proxy.wire import Wire

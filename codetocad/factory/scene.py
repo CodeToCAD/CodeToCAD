@@ -9,9 +9,6 @@ from codetocad.interfaces.scene_interface import SceneInterface
 from codetocad.providers import get_provider
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
-
-
 def create_scene(
     name: "str| None" = None, description: "str| None" = None
 ) -> SceneInterface:

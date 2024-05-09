@@ -3,7 +3,8 @@
 # Please run development/capabilities_json_to_python/capabilities_to_py.sh to generate this file.
 # Copy this file and remove this header to create a new CodeToCAD Provider.
 
-from codetocad.codetocad_types import *
+
+from typing import Self
 
 
 from codetocad.providers import get_provider
@@ -40,21 +41,21 @@ class Animation(
     def default() -> "AnimationInterface":
         return get_provider(AnimationInterface).default()
 
-    def set_frame_start(self, frame_number: "int"):
+    def set_frame_start(self, frame_number: "int") -> Self:
         return self.__proxied.set_frame_start(frame_number)
 
-    def set_frame_end(self, frame_number: "int"):
+    def set_frame_end(self, frame_number: "int") -> Self:
         return self.__proxied.set_frame_end(frame_number)
 
-    def set_frame_current(self, frame_number: "int"):
+    def set_frame_current(self, frame_number: "int") -> Self:
         return self.__proxied.set_frame_current(frame_number)
 
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    ) -> Self:
         return self.__proxied.create_key_frame_location(entity, frame_number)
 
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    ) -> Self:
         return self.__proxied.create_key_frame_rotation(entity, frame_number)

@@ -5,36 +5,24 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.part_interface import PartInterface
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.material_interface import MaterialInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.scalable_interface import ScalableInterface
-
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
 from codetocad.proxy.landmark import Landmark
-
-from codetocad.proxy.material import Material
 
 
 from providers.sample.entity import Entity
@@ -56,7 +44,7 @@ class Part(PartInterface, Entity):
         length: "str|float|Dimension",
         height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "create_cube called", f": {width}, {length}, {height}, {keyword_arguments}"
@@ -70,7 +58,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "create_cone called",
@@ -84,7 +72,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
 
         print("create_cylinder called", f": {radius}, {height}, {keyword_arguments}")
 
@@ -95,7 +83,7 @@ class Part(PartInterface, Entity):
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "create_torus called",
@@ -106,7 +94,7 @@ class Part(PartInterface, Entity):
 
     def create_sphere(
         self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
-    ):
+    ) -> Self:
 
         print("create_sphere called", f": {radius}, {keyword_arguments}")
 
@@ -125,7 +113,7 @@ class Part(PartInterface, Entity):
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
         keyword_arguments: "dict| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "create_gear called",
@@ -147,7 +135,7 @@ class Part(PartInterface, Entity):
         thickness_z: "str|float|Dimension",
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-    ):
+    ) -> Self:
 
         print(
             "hollow called",
@@ -156,7 +144,7 @@ class Part(PartInterface, Entity):
 
         return self
 
-    def thicken(self, radius: "str|float|Dimension"):
+    def thicken(self, radius: "str|float|Dimension") -> Self:
 
         print("thicken called", f": {radius}")
 
@@ -185,7 +173,7 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
-    ):
+    ) -> Self:
 
         print(
             "hole called",
@@ -200,13 +188,13 @@ class Part(PartInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
 
         print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
 
         return self
 
-    def set_material(self, material_name: "str|MaterialInterface"):
+    def set_material(self, material_name: "str|MaterialInterface") -> Self:
 
         print("set_material called", f": {material_name}")
 
@@ -220,7 +208,7 @@ class Part(PartInterface, Entity):
 
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
-    ):
+    ) -> Self:
 
         print("fillet_all_edges called", f": {radius}, {use_width}")
 
@@ -231,7 +219,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> Self:
 
         print("fillet_edges called", f": {radius}, {landmarks_near_edges}, {use_width}")
 
@@ -242,13 +230,13 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> Self:
 
         print("fillet_faces called", f": {radius}, {landmarks_near_faces}, {use_width}")
 
         return self
 
-    def chamfer_all_edges(self, radius: "str|float|Dimension"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension") -> Self:
 
         print("chamfer_all_edges called", f": {radius}")
 
@@ -258,7 +246,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
-    ):
+    ) -> Self:
 
         print("chamfer_edges called", f": {radius}, {landmarks_near_edges}")
 
@@ -268,7 +256,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
-    ):
+    ) -> Self:
 
         print("chamfer_faces called", f": {radius}, {landmarks_near_faces}")
 
@@ -276,7 +264,7 @@ class Part(PartInterface, Entity):
 
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
 
         print("select_vertex_near_landmark called", f": {landmark_name}")
 
@@ -284,7 +272,7 @@ class Part(PartInterface, Entity):
 
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
 
         print("select_edge_near_landmark called", f": {landmark_name}")
 
@@ -292,7 +280,7 @@ class Part(PartInterface, Entity):
 
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    ) -> Self:
 
         print("select_face_near_landmark called", f": {landmark_name}")
 
@@ -303,7 +291,7 @@ class Part(PartInterface, Entity):
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
-    ):
+    ) -> Self:
 
         print(
             "mirror called",
@@ -317,7 +305,7 @@ class Part(PartInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
 
         print(
             "linear_pattern called", f": {instance_count}, {offset}, {direction_axis}"
@@ -331,7 +319,7 @@ class Part(PartInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> Self:
 
         print(
             "circular_pattern called",
@@ -340,31 +328,33 @@ class Part(PartInterface, Entity):
 
         return self
 
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> Self:
 
         print("remesh called", f": {strategy}, {amount}")
 
         return self
 
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> Self:
 
         print("subdivide called", f": {amount}")
 
         return self
 
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> Self:
 
         print("decimate called", f": {amount}")
 
         return self
 
-    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
+    def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
 
         print("create_from_file called", f": {file_path}, {file_type}")
 
         return self
 
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> Self:
 
         print("export called", f": {file_path}, {overwrite}, {scale}")
 
@@ -375,43 +365,43 @@ class Part(PartInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> Self:
 
         print("scale_xyz called", f": {x}, {y}, {z}")
 
         return self
 
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_x called", f": {scale}")
 
         return self
 
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_y called", f": {scale}")
 
         return self
 
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_z called", f": {scale}")
 
         return self
 
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_x_by_factor called", f": {scale_factor}")
 
         return self
 
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_y_by_factor called", f": {scale_factor}")
 
         return self
 
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_z_by_factor called", f": {scale_factor}")
 
@@ -419,7 +409,7 @@ class Part(PartInterface, Entity):
 
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> Self:
 
         print("scale_keep_aspect_ratio called", f": {scale}, {axis}")
 
@@ -448,7 +438,7 @@ class Part(PartInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
 
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
 
@@ -459,7 +449,7 @@ class Part(PartInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
 
         print(
             "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
@@ -472,7 +462,7 @@ class Part(PartInterface, Entity):
         other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> Self:
 
         print(
             "intersect called",
