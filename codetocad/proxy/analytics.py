@@ -28,6 +28,24 @@ class Analytics(
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -36,12 +54,17 @@ class Analytics(
         self,
     ):
 
-        self.__proxied = get_provider(AnalyticsInterface)()  # type: ignore
+        object.__setattr__(
+            self, "__proxied", get_provider(AnalyticsInterface)()  # type: ignore
+        )
 
     def measure_distance(
         self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
-        return self.__proxied.measure_distance(entity1, entity2)
+
+        return object.__getattribute__(self, "__proxied").measure_distance(
+            entity1, entity2
+        )
 
     def measure_angle(
         self,
@@ -49,16 +72,23 @@ class Analytics(
         entity2: "str|EntityInterface",
         pivot: "str|EntityInterface| None" = None,
     ) -> "list[Angle]":
-        return self.__proxied.measure_angle(entity1, entity2, pivot)
+
+        return object.__getattribute__(self, "__proxied").measure_angle(
+            entity1, entity2, pivot
+        )
 
     def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
-        return self.__proxied.get_world_pose(entity)
+
+        return object.__getattribute__(self, "__proxied").get_world_pose(entity)
 
     def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
-        return self.__proxied.get_bounding_box(entity_name)
+
+        return object.__getattribute__(self, "__proxied").get_bounding_box(entity_name)
 
     def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
-        return self.__proxied.get_dimensions(entity_name)
+
+        return object.__getattribute__(self, "__proxied").get_dimensions(entity_name)
 
     def log(self, message: "str") -> Self:
-        return self.__proxied.log(message)
+
+        return object.__getattribute__(self, "__proxied").log(message)

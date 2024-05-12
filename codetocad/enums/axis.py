@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Union
 
 
-class Axis(Enum):
+class Axis(str, Enum):
     X = 0
     Y = 1
     Z = 2
@@ -12,7 +12,7 @@ class Axis(Enum):
     CENTER = 5
 
     @staticmethod
-    def max_min_center():
+    def _max_min_center():
         return [Axis.MIN, Axis.MAX, Axis.CENTER]
 
     def _arithmetic_check(self, other):
@@ -20,8 +20,8 @@ class Axis(Enum):
         if not isinstance(other, (str, Axis)):
             raise TypeError("Axis name can only be concatenated with a string or Axis.")
 
-        if self not in Axis.max_min_center():
-            raise TypeError(f"Only {Axis.max_min_center()} can be concatenated.")
+        if self not in Axis._max_min_center():
+            raise TypeError(f"Only {Axis._max_min_center()} can be concatenated.")
 
     def __add__(self, other):
         self._arithmetic_check(other)
@@ -33,7 +33,7 @@ class Axis(Enum):
         """
         Used to check if min, max or center are in a string, for example "min + 2mm" -> returns True.
         """
-        for word in [axis.name.lower() for axis in Axis.max_min_center()]:
+        for word in [axis.name.lower() for axis in Axis._max_min_center()]:
             if word in string_to_check.lower():
                 return True
         return False

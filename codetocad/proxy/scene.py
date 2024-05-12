@@ -30,37 +30,64 @@ class Scene(
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
 
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
 
-        self.__proxied = get_provider(SceneInterface)(name, description)  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(SceneInterface)(name, description),  # type: ignore
+        )
 
     @staticmethod
     def default() -> "SceneInterface":
+
         return get_provider(SceneInterface).default()
 
     def create(
         self,
     ) -> Self:
-        return self.__proxied.create()
+
+        return object.__getattribute__(self, "__proxied").create()
 
     def delete(
         self,
     ) -> Self:
-        return self.__proxied.delete()
+
+        return object.__getattribute__(self, "__proxied").delete()
 
     def is_exists(
         self,
     ) -> "bool":
-        return self.__proxied.is_exists()
+
+        return object.__getattribute__(self, "__proxied").is_exists()
 
     def get_selected_entity(
         self,
     ) -> "EntityInterface":
-        return self.__proxied.get_selected_entity()
+
+        return object.__getattribute__(self, "__proxied").get_selected_entity()
 
     def export(
         self,
@@ -69,19 +96,30 @@ class Scene(
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ) -> Self:
-        return self.__proxied.export(file_path, entities, overwrite, scale)
+
+        return object.__getattribute__(self, "__proxied").export(
+            file_path, entities, overwrite, scale
+        )
 
     def set_default_unit(self, unit: "str|LengthUnit") -> Self:
-        return self.__proxied.set_default_unit(unit)
+
+        return object.__getattribute__(self, "__proxied").set_default_unit(unit)
 
     def create_group(self, name: "str") -> Self:
-        return self.__proxied.create_group(name)
+
+        return object.__getattribute__(self, "__proxied").create_group(name)
 
     def delete_group(self, name: "str", remove_children: "bool") -> Self:
-        return self.__proxied.delete_group(name, remove_children)
+
+        return object.__getattribute__(self, "__proxied").delete_group(
+            name, remove_children
+        )
 
     def remove_from_group(self, entity_name: "str", group_name: "str") -> Self:
-        return self.__proxied.remove_from_group(entity_name, group_name)
+
+        return object.__getattribute__(self, "__proxied").remove_from_group(
+            entity_name, group_name
+        )
 
     def assign_to_group(
         self,
@@ -89,14 +127,18 @@ class Scene(
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ) -> Self:
-        return self.__proxied.assign_to_group(
+
+        return object.__getattribute__(self, "__proxied").assign_to_group(
             entities, group_name, remove_from_other_groups
         )
 
     def set_visible(
         self, entities: "list[str|EntityInterface]", is_visible: "bool"
     ) -> Self:
-        return self.__proxied.set_visible(entities, is_visible)
+
+        return object.__getattribute__(self, "__proxied").set_visible(
+            entities, is_visible
+        )
 
     def set_background_image(
         self,
@@ -104,4 +146,7 @@ class Scene(
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
     ) -> Self:
-        return self.__proxied.set_background_image(file_path, location_x, location_y)
+
+        return object.__getattribute__(self, "__proxied").set_background_image(
+            file_path, location_x, location_y
+        )

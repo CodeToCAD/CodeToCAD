@@ -13,12 +13,11 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
 from codetocad.interfaces.wire_interface import WireInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
@@ -39,6 +38,24 @@ class Sketch(SketchInterface, Entity):
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -51,14 +68,21 @@ class Sketch(SketchInterface, Entity):
         curve_type: "CurveTypes| None" = None,
     ):
 
-        self.__proxied = get_provider(SketchInterface)(
-            name, description, native_instance, curve_type
-        )  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(SketchInterface)(
+                name, description, native_instance, curve_type
+            ),  # type: ignore
+        )
 
     def clone(
         self, new_name: "str", copy_landmarks: "bool" = True
     ) -> "SketchInterface":
-        return self.__proxied.clone(new_name, copy_landmarks)
+
+        return object.__getattribute__(self, "__proxied").clone(
+            new_name, copy_landmarks
+        )
 
     def create_text(
         self,
@@ -72,7 +96,8 @@ class Sketch(SketchInterface, Entity):
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
     ) -> "WireInterface":
-        return self.__proxied.create_text(
+
+        return object.__getattribute__(self, "__proxied").create_text(
             text,
             font_size,
             bold,
@@ -88,27 +113,34 @@ class Sketch(SketchInterface, Entity):
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "WireInterface":
-        return self.__proxied.create_from_vertices(points)
+
+        return object.__getattribute__(self, "__proxied").create_from_vertices(points)
 
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
     ) -> "WireInterface":
-        return self.__proxied.create_point(point)
+
+        return object.__getattribute__(self, "__proxied").create_point(point)
 
     def create_line(
         self,
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
     ) -> "WireInterface":
-        return self.__proxied.create_line(start_at, end_at)
+
+        return object.__getattribute__(self, "__proxied").create_line(start_at, end_at)
 
     def create_circle(self, radius: "str|float|Dimension") -> "WireInterface":
-        return self.__proxied.create_circle(radius)
+
+        return object.__getattribute__(self, "__proxied").create_circle(radius)
 
     def create_ellipse(
         self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
     ) -> "WireInterface":
-        return self.__proxied.create_ellipse(radius_minor, radius_major)
+
+        return object.__getattribute__(self, "__proxied").create_ellipse(
+            radius_minor, radius_major
+        )
 
     def create_arc(
         self,
@@ -117,12 +149,18 @@ class Sketch(SketchInterface, Entity):
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
     ) -> "WireInterface":
-        return self.__proxied.create_arc(start_at, end_at, radius, flip)
+
+        return object.__getattribute__(self, "__proxied").create_arc(
+            start_at, end_at, radius, flip
+        )
 
     def create_rectangle(
         self, length: "str|float|Dimension", width: "str|float|Dimension"
     ) -> "WireInterface":
-        return self.__proxied.create_rectangle(length, width)
+
+        return object.__getattribute__(self, "__proxied").create_rectangle(
+            length, width
+        )
 
     def create_polygon(
         self,
@@ -130,7 +168,10 @@ class Sketch(SketchInterface, Entity):
         length: "str|float|Dimension",
         width: "str|float|Dimension",
     ) -> "WireInterface":
-        return self.__proxied.create_polygon(number_of_sides, length, width)
+
+        return object.__getattribute__(self, "__proxied").create_polygon(
+            number_of_sides, length, width
+        )
 
     def create_trapezoid(
         self,
@@ -138,7 +179,10 @@ class Sketch(SketchInterface, Entity):
         length_lower: "str|float|Dimension",
         height: "str|float|Dimension",
     ) -> "WireInterface":
-        return self.__proxied.create_trapezoid(length_upper, length_lower, height)
+
+        return object.__getattribute__(self, "__proxied").create_trapezoid(
+            length_upper, length_lower, height
+        )
 
     def create_spiral(
         self,
@@ -148,7 +192,8 @@ class Sketch(SketchInterface, Entity):
         is_clockwise: "bool" = True,
         radius_end: "str|float|Dimension| None" = None,
     ) -> "WireInterface":
-        return self.__proxied.create_spiral(
+
+        return object.__getattribute__(self, "__proxied").create_spiral(
             number_of_turns, height, radius, is_clockwise, radius_end
         )
 
@@ -158,7 +203,8 @@ class Sketch(SketchInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ) -> Self:
-        return self.__proxied.mirror(
+
+        return object.__getattribute__(self, "__proxied").mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
 
@@ -168,7 +214,10 @@ class Sketch(SketchInterface, Entity):
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
     ) -> Self:
-        return self.__proxied.linear_pattern(instance_count, offset, direction_axis)
+
+        return object.__getattribute__(self, "__proxied").linear_pattern(
+            instance_count, offset, direction_axis
+        )
 
     def circular_pattern(
         self,
@@ -177,7 +226,8 @@ class Sketch(SketchInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ) -> Self:
-        return self.__proxied.circular_pattern(
+
+        return object.__getattribute__(self, "__proxied").circular_pattern(
             instance_count,
             separation_angle,
             center_entity_or_landmark,
@@ -185,12 +235,18 @@ class Sketch(SketchInterface, Entity):
         )
 
     def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
-        return self.__proxied.create_from_file(file_path, file_type)
+
+        return object.__getattribute__(self, "__proxied").create_from_file(
+            file_path, file_type
+        )
 
     def export(
         self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
     ) -> Self:
-        return self.__proxied.export(file_path, overwrite, scale)
+
+        return object.__getattribute__(self, "__proxied").export(
+            file_path, overwrite, scale
+        )
 
     def scale_xyz(
         self,
@@ -198,33 +254,50 @@ class Sketch(SketchInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> Self:
-        return self.__proxied.scale_xyz(x, y, z)
+
+        return object.__getattribute__(self, "__proxied").scale_xyz(x, y, z)
 
     def scale_x(self, scale: "str|float|Dimension") -> Self:
-        return self.__proxied.scale_x(scale)
+
+        return object.__getattribute__(self, "__proxied").scale_x(scale)
 
     def scale_y(self, scale: "str|float|Dimension") -> Self:
-        return self.__proxied.scale_y(scale)
+
+        return object.__getattribute__(self, "__proxied").scale_y(scale)
 
     def scale_z(self, scale: "str|float|Dimension") -> Self:
-        return self.__proxied.scale_z(scale)
+
+        return object.__getattribute__(self, "__proxied").scale_z(scale)
 
     def scale_x_by_factor(self, scale_factor: "float") -> Self:
-        return self.__proxied.scale_x_by_factor(scale_factor)
+
+        return object.__getattribute__(self, "__proxied").scale_x_by_factor(
+            scale_factor
+        )
 
     def scale_y_by_factor(self, scale_factor: "float") -> Self:
-        return self.__proxied.scale_y_by_factor(scale_factor)
+
+        return object.__getattribute__(self, "__proxied").scale_y_by_factor(
+            scale_factor
+        )
 
     def scale_z_by_factor(self, scale_factor: "float") -> Self:
-        return self.__proxied.scale_z_by_factor(scale_factor)
+
+        return object.__getattribute__(self, "__proxied").scale_z_by_factor(
+            scale_factor
+        )
 
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ) -> Self:
-        return self.__proxied.scale_keep_aspect_ratio(scale, axis)
+
+        return object.__getattribute__(self, "__proxied").scale_keep_aspect_ratio(
+            scale, axis
+        )
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
-        return self.__proxied.project(project_from)
+
+        return object.__getattribute__(self, "__proxied").project(project_from)
 
     def create_landmark(
         self,
@@ -233,7 +306,11 @@ class Sketch(SketchInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
-        return self.__proxied.create_landmark(landmark_name, x, y, z)
+
+        return object.__getattribute__(self, "__proxied").create_landmark(
+            landmark_name, x, y, z
+        )
 
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
-        return self.__proxied.get_landmark(landmark_name)
+
+        return object.__getattribute__(self, "__proxied").get_landmark(landmark_name)

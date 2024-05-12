@@ -25,6 +25,24 @@ class Light(LightInterface, Entity):
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -33,23 +51,34 @@ class Light(LightInterface, Entity):
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
 
-        self.__proxied = get_provider(LightInterface)(
-            name, description, native_instance
-        )  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(LightInterface)(
+                name, description, native_instance
+            ),  # type: ignore
+        )
 
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ) -> Self:
-        return self.__proxied.set_color(r_value, g_value, b_value)
+
+        return object.__getattribute__(self, "__proxied").set_color(
+            r_value, g_value, b_value
+        )
 
     def create_sun(self, energy_level: "float") -> Self:
-        return self.__proxied.create_sun(energy_level)
+
+        return object.__getattribute__(self, "__proxied").create_sun(energy_level)
 
     def create_spot(self, energy_level: "float") -> Self:
-        return self.__proxied.create_spot(energy_level)
+
+        return object.__getattribute__(self, "__proxied").create_spot(energy_level)
 
     def create_point(self, energy_level: "float") -> Self:
-        return self.__proxied.create_point(energy_level)
+
+        return object.__getattribute__(self, "__proxied").create_point(energy_level)
 
     def create_area(self, energy_level: "float") -> Self:
-        return self.__proxied.create_area(energy_level)
+
+        return object.__getattribute__(self, "__proxied").create_area(energy_level)
