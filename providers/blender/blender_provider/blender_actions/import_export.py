@@ -14,12 +14,12 @@ from providers.blender.blender_provider.blender_definitions import BlenderVersio
 
 fileImportFunctions = {
     "stl": lambda file_path: bpy.ops.import_mesh.stl(filepath=file_path),
-    "ply": lambda file_path: bpy.ops.import_mesh.ply(filepath=file_path),
+    "ply": lambda file_path: bpy.ops.wm.ply_import(filepath=file_path),
     "svg": lambda file_path: bpy.ops.import_curve.svg(filepath=file_path),
     "png": lambda file_path: bpy.ops.image.open(filepath=file_path),
     "fbx": lambda file_path: bpy.ops.import_scene.fbx(filepath=file_path),
     "gltf": lambda file_path: bpy.ops.import_scene.gltf(filepath=file_path),
-    "obj": lambda file_path: bpy.ops.import_scene.obj(
+    "obj": lambda file_path: bpy.ops.wm.obj_import(
         filepath=file_path, use_split_objects=False
     ),
     "x3d": lambda file_path: bpy.ops.import_scene.x3d(filepath=file_path),
@@ -79,9 +79,7 @@ fileExportFunctions = {
             filepath=file_path, export_selected_objects=True, global_scale=scale
         )
         if get_blender_version() >= BlenderVersions.THREE_DOT_ONE.value
-        else bpy.ops.export_scene.obj(
-            filepath=file_path, use_selection=True, global_scale=scale
-        )
+        else bpy.ops.wm.obj_export(filepath=file_path, global_scale=scale)
     ),
 }
 

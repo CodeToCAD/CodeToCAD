@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.light_interface import LightInterface
 from providers.blender.blender_provider.blender_actions.light import (
     create_light,
@@ -8,9 +7,6 @@ from providers.blender.blender_provider.entity import Entity
 
 
 class Light(LightInterface, Entity):
-    name: str
-    description: Optional[str] = None
-
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

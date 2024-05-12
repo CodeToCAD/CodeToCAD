@@ -1,8 +1,6 @@
-from typing import Optional
 from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.proxy.entity import Entity
 from codetocad.utilities import format_landmark_entity_name
 from providers.blender.blender_provider.blender_actions.context import (
     select_object,
@@ -21,11 +19,10 @@ from codetocad.codetocad_types import *
 from codetocad.utilities.override import override
 
 
+from providers.blender.blender_provider.entity import Entity
+
+
 class Landmark(LandmarkInterface, Entity):
-    name: str
-    parent_entity: str | Entity
-    description: Optional[str] = None
-    native_instance = None
 
     def __init__(
         self,

@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.camera_interface import CameraInterface
 from providers.blender.blender_provider.entity import Entity
 from providers.blender.blender_provider.blender_actions.camera import (
@@ -8,8 +7,6 @@ from providers.blender.blender_provider.blender_actions.camera import (
 
 
 class Camera(CameraInterface, Entity):
-    name: str
-    description: Optional[str] = None
 
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None

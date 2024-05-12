@@ -1,5 +1,6 @@
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.proxy.material import Material
 from codetocad.utilities import create_uuid_like_id, get_absolute_filepath
 from codetocad.interfaces.material_interface import MaterialInterface
@@ -43,7 +44,6 @@ from providers.blender.blender_provider.blender_actions.transformations import (
     scale_object,
 )
 from providers.blender.blender_provider.sketch import Sketch
-from providers.blender.blender_provider.wire import Wire
 
 
 class Part(PartInterface, Entity):
@@ -76,8 +76,8 @@ class Part(PartInterface, Entity):
         from providers.blender.blender_provider.sketch import Sketch
 
         cube_sketch = Sketch(self.name)
-        cube_sketch.create_rectangle(length, width)
-        cube_sketch.extrude(height)
+        rect = cube_sketch.create_rectangle(length, width)
+        rect.extrude(height)
         return self
 
     def create_cone(
@@ -89,7 +89,7 @@ class Part(PartInterface, Entity):
     ):
         base = Sketch(self.name).create_circle(radius)
         top = Sketch(self.name + "_temp_top")
-        top_wire: Wire
+        top_wire: WireInterface
         if draft_radius == Dimension(0):
             top_wire = top.create_from_vertices([(0, 0, 0)])
         else:
@@ -105,8 +105,8 @@ class Part(PartInterface, Entity):
         keyword_arguments: "dict| None" = None,
     ):
         sketch = Sketch(self.name)
-        sketch.create_circle(radius)
-        sketch.extrude(height)
+        circle = sketch.create_circle(radius)
+        circle.extrude(height)
         return self
 
     def create_torus(
@@ -125,18 +125,18 @@ class Part(PartInterface, Entity):
         origin = Sketch(self.name + "_temp_origin")
         origin.create_from_vertices([(0, 0, 0)])
         sketch = Sketch(self.name)
-        sketch.create_circle(circle_radius)
+        circle = sketch.create_circle(circle_radius)
         sketch.rotate_x(90)
         sketch.translate_x(inner_radius + outer_radius / 2)
-        sketch.revolve(360, origin, "z")
+        circle.revolve(360, origin, "z")
         origin.delete()
 
     def create_sphere(
         self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
     ):
         sketch = Sketch(self.name)
-        sketch.create_circle(radius)
-        sketch.revolve(360, sketch.get_landmark("center"), "x")
+        circle = sketch.create_circle(radius)
+        circle.revolve(360, sketch.get_landmark("center"), "x")
         return self
 
     def create_gear(
@@ -250,10 +250,9 @@ class Part(PartInterface, Entity):
     ):
         axis = Axis.from_string(start_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-        from codetocad.utilities import center, min, max
 
-        start_landmark_location = [center, center, center]
-        start_landmark_location[axis.value] = min if flip_axis else max
+        start_landmark_location = ["center", "center", "center"]
+        start_landmark_location[axis.value] = "min" if flip_axis else "max"
         start_axis_landmark = self.create_landmark(
             create_uuid_like_id(),
             start_landmark_location[0],
@@ -336,11 +335,10 @@ class Part(PartInterface, Entity):
     ):
         axis = Axis.from_string(normal_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-        from codetocad.utilities import center, min, max
 
         hole = Part(create_uuid_like_id()).create_cylinder(radius, depth)
         hole_head = hole.create_landmark(
-            "hole", center, center, min if flip_axis else max
+            "hole", "center", "center", "min" if flip_axis else "max"
         )
         axisRotation = Angle(-90, AngleUnit.DEGREES)
         if axis is Axis.X:

@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import get_absolute_filepath
@@ -13,9 +12,6 @@ from providers.blender.blender_provider.blender_actions.material import (
 
 
 class Material(MaterialInterface):
-    name: str
-    description: Optional[str] = None
-
     def __init__(self, name: "str", description: "str| None" = None):
         self.name = name
         self.description = description

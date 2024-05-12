@@ -1,7 +1,7 @@
-from typing import Optional
 from codetocad.core.boundary_axis import BoundaryAxis
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
+from codetocad.interfaces.part_interface import PartInterface
 from providers.blender.blender_provider.blender_actions.context import (
     apply_dependency_graph,
     select_object,
@@ -36,10 +36,6 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 class Entity(EntityInterface):
-    name: str
-    description: Optional[str] = None
-    native_instance = None
-
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

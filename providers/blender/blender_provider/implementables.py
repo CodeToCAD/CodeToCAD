@@ -14,6 +14,7 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderLength,
     BlenderModifiers,
     BlenderRotationTypes,
+    BlenderTranslationTypes,
 )
 from providers.blender.blender_provider.entity import Entity
 
@@ -59,7 +60,7 @@ def export(self: "Entity", file_path: str, overwrite: bool = True, scale: float 
 
 def mirror(
     self: "Entity",
-    mirror_across_entity: str | Entity,
+    mirror_across_entity: str | EntityInterface,
     axis: str | int | Axis,
     resulting_mirrored_entity_name: Optional[str],
 ):
@@ -107,7 +108,7 @@ def circular_pattern(
     self: "Entity",
     instance_count: "int",
     separation_angle: str | float | Angle,
-    center_entity_or_landmark: str | Entity,
+    center_entity_or_landmark: str | EntityInterface,
     normal_direction_axis: str | int | Axis = "z",
 ):
     center_entity_or_landmark_name = center_entity_or_landmark
@@ -350,7 +351,9 @@ def create_landmark(
     )
     # Parent the landmark to the object
     make_parent(landmarkObjectName, self.name)
-    translate_object(landmarkObjectName, localPositions, BlenderTranslationTypes.ABSOLUTE)  # type: ignore
+    translate_object(
+        landmarkObjectName, localPositions, BlenderTranslationTypes.ABSOLUTE
+    )
     return landmark
 
 

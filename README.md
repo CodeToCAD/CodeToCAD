@@ -52,7 +52,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 ## Getting started
 
-> Pre-requisites: [Python 3.10 or newer](https://www.python.org/downloads/).
+> Pre-requisites: [Python 3.11 or newer](https://www.python.org/downloads/).
 
 1. Install the [CodeToCAD PIP Package](https://pypi.org/project/CodeToCAD/) to get intellisense syntax highlighting.
 
@@ -85,7 +85,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 ## Supported Applications
 #### Alpha/Beta Support
-- [Blender](https://www.blender.org/) - Digital Modeling Software
+- [Blender 4.0](https://www.blender.org/) - Digital Modeling Software
    - [Instructions](#blender)
 - [Fusion 360](https://www.autodesk.com/products/fusion-360/overview) - M-CAD, E-CAD and CAE Software developed by Autodesk
    - [Instructions](#fusion-360)
@@ -104,7 +104,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 > Remember to first follow the getting [started instructions](#getting-started)
 
 ### Compatible software
-1. [Blender](#blender)
+1. [Blender 4.0](#blender)
 2. [Fusion360](#fusion-360)
 2. [Onshape](#onshape)
 
