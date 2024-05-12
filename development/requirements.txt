@@ -5,6 +5,8 @@ autoflake
 wheel
 twine
 
+debugpy
+
 # Templating Dev Dependencies:
 jinja2-cli
 ast-comments

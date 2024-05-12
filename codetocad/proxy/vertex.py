@@ -29,6 +29,24 @@ class Vertex(VertexInterface, Entity):
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -42,14 +60,20 @@ class Vertex(VertexInterface, Entity):
         parent_entity: "str|EntityInterface| None" = None,
     ):
 
-        self.__proxied = get_provider(VertexInterface)(
-            name, location, description, native_instance, parent_entity
-        )  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(VertexInterface)(
+                name, location, description, native_instance, parent_entity
+            ),  # type: ignore
+        )
 
     def get_control_points(
         self,
     ) -> "list[VertexInterface]":
-        return self.__proxied.get_control_points()
+
+        return object.__getattribute__(self, "__proxied").get_control_points()
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
-        return self.__proxied.project(project_from)
+
+        return object.__getattribute__(self, "__proxied").project(project_from)

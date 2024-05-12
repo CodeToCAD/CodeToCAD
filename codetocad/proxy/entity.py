@@ -25,6 +25,24 @@ class Entity(
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -33,30 +51,41 @@ class Entity(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
 
-        self.__proxied = get_provider(EntityInterface)(
-            name, description, native_instance
-        )  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(EntityInterface)(
+                name, description, native_instance
+            ),  # type: ignore
+        )
 
     def is_exists(
         self,
     ) -> "bool":
-        return self.__proxied.is_exists()
+
+        return object.__getattribute__(self, "__proxied").is_exists()
 
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ) -> Self:
-        return self.__proxied.rename(new_name, renamelinked_entities_and_landmarks)
+
+        return object.__getattribute__(self, "__proxied").rename(
+            new_name, renamelinked_entities_and_landmarks
+        )
 
     def delete(self, remove_children: "bool" = True) -> Self:
-        return self.__proxied.delete(remove_children)
+
+        return object.__getattribute__(self, "__proxied").delete(remove_children)
 
     def is_visible(
         self,
     ) -> "bool":
-        return self.__proxied.is_visible()
+
+        return object.__getattribute__(self, "__proxied").is_visible()
 
     def set_visible(self, is_visible: "bool") -> Self:
-        return self.__proxied.set_visible(is_visible)
+
+        return object.__getattribute__(self, "__proxied").set_visible(is_visible)
 
     def apply(
         self,
@@ -65,27 +94,34 @@ class Entity(
         location: "bool" = False,
         modifiers: "bool" = True,
     ) -> Self:
-        return self.__proxied.apply(rotation, scale, location, modifiers)
+
+        return object.__getattribute__(self, "__proxied").apply(
+            rotation, scale, location, modifiers
+        )
 
     def get_native_instance(
         self,
     ) -> "object":
-        return self.__proxied.get_native_instance()
+
+        return object.__getattribute__(self, "__proxied").get_native_instance()
 
     def get_location_world(
         self,
     ) -> "Point":
-        return self.__proxied.get_location_world()
+
+        return object.__getattribute__(self, "__proxied").get_location_world()
 
     def get_location_local(
         self,
     ) -> "Point":
-        return self.__proxied.get_location_local()
+
+        return object.__getattribute__(self, "__proxied").get_location_local()
 
     def select(
         self,
     ) -> Self:
-        return self.__proxied.select()
+
+        return object.__getattribute__(self, "__proxied").select()
 
     def translate_xyz(
         self,
@@ -93,37 +129,47 @@ class Entity(
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> Self:
-        return self.__proxied.translate_xyz(x, y, z)
+
+        return object.__getattribute__(self, "__proxied").translate_xyz(x, y, z)
 
     def translate_x(self, amount: "str|float|Dimension") -> Self:
-        return self.__proxied.translate_x(amount)
+
+        return object.__getattribute__(self, "__proxied").translate_x(amount)
 
     def translate_y(self, amount: "str|float|Dimension") -> Self:
-        return self.__proxied.translate_y(amount)
+
+        return object.__getattribute__(self, "__proxied").translate_y(amount)
 
     def translate_z(self, amount: "str|float|Dimension") -> Self:
-        return self.__proxied.translate_z(amount)
+
+        return object.__getattribute__(self, "__proxied").translate_z(amount)
 
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ) -> Self:
-        return self.__proxied.rotate_xyz(x, y, z)
+
+        return object.__getattribute__(self, "__proxied").rotate_xyz(x, y, z)
 
     def rotate_x(self, rotation: "str|float|Angle") -> Self:
-        return self.__proxied.rotate_x(rotation)
+
+        return object.__getattribute__(self, "__proxied").rotate_x(rotation)
 
     def rotate_y(self, rotation: "str|float|Angle") -> Self:
-        return self.__proxied.rotate_y(rotation)
+
+        return object.__getattribute__(self, "__proxied").rotate_y(rotation)
 
     def rotate_z(self, rotation: "str|float|Angle") -> Self:
-        return self.__proxied.rotate_z(rotation)
+
+        return object.__getattribute__(self, "__proxied").rotate_z(rotation)
 
     def get_bounding_box(
         self,
     ) -> "BoundaryBox":
-        return self.__proxied.get_bounding_box()
+
+        return object.__getattribute__(self, "__proxied").get_bounding_box()
 
     def get_dimensions(
         self,
     ) -> "Dimensions":
-        return self.__proxied.get_dimensions()
+
+        return object.__getattribute__(self, "__proxied").get_dimensions()

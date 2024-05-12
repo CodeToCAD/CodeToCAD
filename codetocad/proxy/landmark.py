@@ -27,6 +27,24 @@ class Landmark(LandmarkInterface, Entity):
 
     # References OBJECT PROXYING (PYTHON RECIPE) https://code.activestate.com/recipes/496741-object-proxying/
 
+    def __getattribute__(self, name):
+        return getattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __delattr__(self, name):
+        delattr(object.__getattribute__(self, "__proxied"), name)
+
+    def __setattr__(self, name, value):
+        setattr(object.__getattribute__(self, "__proxied"), name, value)
+
+    def __nonzero__(self):
+        return bool(object.__getattribute__(self, "__proxied"))
+
+    def __str__(self):
+        return str(object.__getattribute__(self, "__proxied"))
+
+    def __repr__(self):
+        return repr(object.__getattribute__(self, "__proxied"))
+
     __slots__ = [
         "__proxied",
     ]
@@ -39,9 +57,13 @@ class Landmark(LandmarkInterface, Entity):
         native_instance=None,
     ):
 
-        self.__proxied = get_provider(LandmarkInterface)(
-            name, parent_entity, description, native_instance
-        )  # type: ignore
+        object.__setattr__(
+            self,
+            "__proxied",
+            get_provider(LandmarkInterface)(
+                name, parent_entity, description, native_instance
+            ),  # type: ignore
+        )
 
     def clone(
         self,
@@ -49,14 +71,19 @@ class Landmark(LandmarkInterface, Entity):
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
         new_parent: "str|EntityInterface| None" = None,
     ) -> "LandmarkInterface":
-        return self.__proxied.clone(new_name, offset, new_parent)
+
+        return object.__getattribute__(self, "__proxied").clone(
+            new_name, offset, new_parent
+        )
 
     def get_landmark_entity_name(
         self,
     ) -> "str":
-        return self.__proxied.get_landmark_entity_name()
+
+        return object.__getattribute__(self, "__proxied").get_landmark_entity_name()
 
     def get_parent_entity(
         self,
     ) -> "EntityInterface":
-        return self.__proxied.get_parent_entity()
+
+        return object.__getattribute__(self, "__proxied").get_parent_entity()
