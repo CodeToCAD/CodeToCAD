@@ -53,6 +53,7 @@ class StartDebugger(Operator):
     bl_idname = operatorIds["StartDebugger"]
     bl_label = "Start a debugpy server"
     bl_options = {"REGISTER"}
+    bl_description = "Start a debugpy server. Warning: If debugpy is not installed, this will try to automatically pip install debugpy."
 
     def execute(self, context):
         from providers.blender.blender_provider.blender_actions.console import (

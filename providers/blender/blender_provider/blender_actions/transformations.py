@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 import bpy
 import mathutils
 from codetocad.core.angle import Angle
@@ -82,7 +82,7 @@ def rotate_object(
 
 def translate_object(
     object_name: str,
-    translation_dimensions: list[Optional[Dimension]],
+    translation_dimensions: Sequence[Dimension | None],
     translation_type: BlenderTranslationTypes,
 ):
     blenderObject = get_object(object_name)

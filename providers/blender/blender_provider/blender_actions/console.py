@@ -3,8 +3,32 @@ from console_python import replace_help
 from functools import wraps
 
 
+def install_debugpy(uninstall: bool = False):
+    """
+    Attempts to pip install debugpy inside Blender
+    """
+    # references https://github.com/hextantstudios/hextant_python_debugger/blob/main/__init__.py
+    import os
+    import sys
+    import subprocess
+
+    python = os.path.abspath(sys.executable)
+
+    if uninstall:
+        subprocess.call([python, "-m", "pip", "uninstall", "debugpy", "--yes"])
+        return
+
+    subprocess.call([python, "-m", "pip", "install", "debugpy"])
+
+
 def start_debugger(host: str = "localhost", port: int = 5678):
-    import debugpy
+    try:
+        import debugpy
+    except Exception as e:
+        print("debugpy is not installed, will try to auto-install.", e)
+        install_debugpy()
+        __import__("time").sleep(5)
+        return start_debugger(host, port)
 
     try:
         debugpy.listen((host, port))
@@ -109,7 +133,8 @@ def add_codetocad_convenience_words_to_console(namespace):
         Dimensions,
         Angle,
     )
-    from codetocad.utilities import center, max, min
+
+    from codetocad.enums.axis import Axis
 
     namespace["Part"] = Part
     namespace["Shape"] = Part
@@ -121,9 +146,7 @@ def add_codetocad_convenience_words_to_console(namespace):
     namespace["Joint"] = Joint
     namespace["Material"] = Material
     namespace["Animation"] = Animation
-    namespace["min"] = min
-    namespace["max"] = max
-    namespace["center"] = center
+    namespace["Axis"] = Axis
     namespace["Dimension"] = Dimension
     namespace["Dimensions"] = Dimensions
     namespace["Angle"] = Angle

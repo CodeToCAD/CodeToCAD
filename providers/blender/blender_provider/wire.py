@@ -1,9 +1,8 @@
-from typing import Optional
-from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.proxy.edge import Edge
-from codetocad.proxy.entity import Entity
 from codetocad.proxy.sketch import Sketch
 from codetocad.proxy.vertex import Vertex
 from codetocad.proxy.landmark import Landmark
@@ -16,9 +15,6 @@ from providers.blender.blender_provider.blender_actions.modifiers import (
 )
 from providers.blender.blender_provider.blender_actions.objects_transmute import (
     create_mesh_from_curve,
-)
-from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
-    get_wires_from_blender_entity,
 )
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.part_interface import PartInterface
@@ -43,14 +39,10 @@ from providers.blender.blender_provider.blender_actions.normals import (
 )
 from providers.blender.blender_provider.blender_actions.objects import get_object
 
+from providers.blender.blender_provider.entity import Entity
+
 
 class Wire(WireInterface, Entity):
-    edges: "list[Edge]"
-    parent_entity: Optional[str | Entity] = None
-    name: str
-    description: Optional[str] = None
-    native_instance = None
-
     def __init__(
         self,
         name: "str",
@@ -65,11 +57,11 @@ class Wire(WireInterface, Entity):
         assert (
             parent_entity is not None and native_instance is not None
         ), "Blender Provider's Wire requires a parent_entity and a native_instance"
-        self.edges = edges
-        self.parent_entity = parent_entity
         self.name = name
         self.description = description
         self.native_instance = native_instance
+        self.edges = edges
+        self.parent_entity = parent_entity
 
     @override
     def get_native_instance(self) -> object:
@@ -86,7 +78,7 @@ class Wire(WireInterface, Entity):
         )
         return Point.from_list_of_float_or_string(normal)
 
-    def get_vertices(self) -> list["Vertex"]:
+    def get_vertices(self) -> list["VertexInterface"]:
         if len(self.edges) == 0:
             return []
         all_vertices = [self.edges[0].v1, self.edges[0].v2]
@@ -222,7 +214,12 @@ class Wire(WireInterface, Entity):
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
     ):
-        implementables.twist(self, angle, screw_pitch, iterations, axis)
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+
+        implementables.twist(parent, angle, screw_pitch, iterations, axis)
         return self
 
     def revolve(
@@ -254,24 +251,31 @@ class Wire(WireInterface, Entity):
         return self
 
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
-        # We will assume that extruding a sketch will extrude all the underlying Wires.
-        # We also assume the normal is never perpendicular to the Z axis.
+        # We assume the normal is never perpendicular to the Z axis.
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+        assert isinstance(
+            parent, SketchInterface
+        ), "Extrude only works on wires in a sketch."
+
         parsed_length = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_dimension_or_its_float_or_string_value(length)
         ).value
-        wires = get_wires_from_blender_entity(self.get_native_instance().data)
-        for wire in wires:
-            normal = wire.get_normal()
-            # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
-            translate_vector = [0, 0, parsed_length]
-            projected_normal = project_vector_along_normal(
-                translate_vector, [p.value for p in normal.to_list()]
-            )
-            temp_sketch = Sketch(self.name + "_temp")
-            temp_wire = temp_sketch.project(wire)
-            temp_sketch.translate_xyz(*projected_normal)
-            wire.loft(temp_wire)
-        return Part(self.name, self.description)
+
+        normal = self.get_normal()
+        # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
+        translate_vector = [0, 0, parsed_length]
+        projected_normal = project_vector_along_normal(
+            translate_vector, [p.value for p in normal.to_list()]
+        )
+        temp_sketch = Sketch(parent.name + "_temp")
+        temp_wire = temp_sketch.project(self)
+        temp_sketch.translate_xyz(*projected_normal)
+        self.loft(temp_wire)
+        return Part(parent.name, self.description)
 
     def sweep(
         self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True

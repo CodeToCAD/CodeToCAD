@@ -1,8 +1,7 @@
 import math
+from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.proxy.edge import Edge
 from codetocad.proxy.vertex import Vertex
-from codetocad.proxy.wire import Wire
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
@@ -14,10 +13,6 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import create_uuid_like_id
 from providers.blender.blender_provider.blender_definitions import BlenderCurveTypes
 from providers.blender.blender_provider.entity import Entity
-from providers.blender.blender_provider.vertex import Vertex
-from providers.blender.blender_provider.wire import Wire
-from providers.blender.blender_provider.edge import Edge
-from typing import Optional
 from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
 from codetocad.core.shapes.clipping import clip_spline_points
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
@@ -39,10 +34,6 @@ import providers.blender.blender_provider.implementables as implementables
 
 
 class Sketch(SketchInterface, Entity):
-    name: str
-    curve_type: Optional[CurveTypes] = None
-    description: Optional[str] = None
-
     def __init__(
         self,
         name: "str",
@@ -107,7 +98,7 @@ class Sketch(SketchInterface, Entity):
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-    ) -> "Wire":
+    ) -> "WireInterface":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         is_closed = False
         if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
@@ -160,7 +151,7 @@ class Sketch(SketchInterface, Entity):
         self,
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
-    ) -> "Edge":
+    ) -> "EdgeInterface":
         start_point: Point
         end_point: Point
         if isinstance(start_at, VertexInterface):
@@ -189,7 +180,7 @@ class Sketch(SketchInterface, Entity):
         return edge
 
     @staticmethod
-    def _set_bezier_circular_handlers(wire: Wire, radius: Dimension):
+    def _set_bezier_circular_handlers(wire: WireInterface, radius: Dimension):
         all_vertices = wire.get_vertices()
         num_verts = len(all_vertices)
         index = 1
@@ -225,7 +216,7 @@ class Sketch(SketchInterface, Entity):
             )
             index += 1
 
-    def create_circle(self, radius: "str|float|Dimension") -> "Wire":
+    def create_circle(self, radius: "str|float|Dimension") -> "WireInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         points = get_circle_points(radius, self.resolution)
         wire = self.create_from_vertices(
@@ -238,7 +229,7 @@ class Sketch(SketchInterface, Entity):
 
     def create_ellipse(
         self, radius_minor: "str|float|Dimension", radius_major: "str|float|Dimension"
-    ) -> "Wire":
+    ) -> "WireInterface":
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
         )
@@ -260,7 +251,7 @@ class Sketch(SketchInterface, Entity):
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         flip: "bool| None" = False,
-    ) -> "Wire":
+    ) -> "WireInterface":
         start_point: Point
         end_point: Point
         if isinstance(start_at, VertexInterface):
@@ -318,7 +309,7 @@ class Sketch(SketchInterface, Entity):
 
     def create_rectangle(
         self, length: "str|float|Dimension", width: "str|float|Dimension"
-    ) -> "Wire":
+    ) -> "WireInterface":
         half_length = (
             Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
         )
@@ -340,7 +331,7 @@ class Sketch(SketchInterface, Entity):
         number_of_sides: "int",
         length: "str|float|Dimension",
         width: "str|float|Dimension",
-    ) -> "Wire":
+    ) -> "WireInterface":
         raise NotImplementedError()
 
     def create_trapezoid(
@@ -348,7 +339,7 @@ class Sketch(SketchInterface, Entity):
         length_upper: "str|float|Dimension",
         length_lower: "str|float|Dimension",
         height: "str|float|Dimension",
-    ) -> "Wire":
+    ) -> "WireInterface":
         raise NotImplementedError()
 
     def create_spiral(
@@ -358,7 +349,7 @@ class Sketch(SketchInterface, Entity):
         radius: "str|float|Dimension",
         is_clockwise: "bool" = True,
         radius_end: "str|float|Dimension| None" = None,
-    ) -> "Wire":
+    ) -> "WireInterface":
         raise NotImplementedError()
 
     def mirror(

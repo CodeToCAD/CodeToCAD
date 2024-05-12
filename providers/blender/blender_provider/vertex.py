@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.core.point import Point
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -11,17 +10,12 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
 
 
 class Vertex(VertexInterface, Entity):
-    parent_entity: Optional[str | Entity] = None
-    name: str
-    description: Optional[str] = None
-    native_instance = None
-
     @override
     def get_native_instance(self) -> object:
         return self.native_instance
 
-    @override
     @property
+    @override
     def location(self) -> Point:
         return get_vertex_location_from_blender_point(self.get_native_instance())
 

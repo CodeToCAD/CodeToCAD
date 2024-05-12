@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.exportable_interface import ExportableInterface
 from codetocad.proxy.entity import Entity
 from codetocad.interfaces.scene_interface import SceneInterface
@@ -28,9 +27,6 @@ from codetocad.codetocad_types import *
 
 class Scene(SceneInterface):
     # Blender's default Scene name is "Scene"
-    name: str = "Scene"
-    description: Optional[str] = None
-
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
         self.name = name or self.name
         self.description = description
