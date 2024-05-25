@@ -1190,10 +1190,21 @@
                 }
             },
             "get_control_points": {
-                "information": "Get a vertex's curve control points. This may not be applicable in several situations.",
+                "information": "Get a vertex's curve control points. This may not be applicable for some curve types.",
                 "action": "get",
-                "return_type": "list[Vertex]",
+                "return_type": "list[Point]",
                 "is_static_method": false
+            },
+            "set_control_points": {
+                "information": "Set a vertex's curve control points. This may not be applicable for some curve types.",
+                "action": "modify",
+                "parameters": {
+                    "points":{
+                        "information": "A list of Points or coordinates describing the control points. The list must be the same size as the list returned by get_control_points().",
+                        "type": "list[string,list[string],list[float],list[Dimension],Point]",
+                        "required": true
+                    }
+                }
             }
         },
         "Edge": {

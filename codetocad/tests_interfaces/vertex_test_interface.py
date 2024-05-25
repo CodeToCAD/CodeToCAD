@@ -13,3 +13,8 @@ class VertexTestInterface(metaclass=ABCMeta):
     def test_get_control_points(self):
 
         pass
+
+    @abstractmethod
+    def test_set_control_points(self):
+
+        pass

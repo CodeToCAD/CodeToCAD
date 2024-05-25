@@ -46,6 +46,7 @@ capabilities_parameter_types_mock_values = {
     "str|float|Angle": "Angle('90')",
     "list[Angle]": "[Angle('90')]",
     "Point": dummy_point,
+    "list[Point]": [dummy_point],
     "str|list[str]|list[float]|list[Dimension]|Point": dummy_point,
     "list[str|list[str]|list[float]|list[Dimension]|Point]": [dummy_point],
     "str|list[str]|list[float]|list[Dimension]|Point|Vertex": dummy_point,

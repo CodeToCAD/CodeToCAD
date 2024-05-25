@@ -1,5 +1,4 @@
 import cmath
-from codetocad.proxy.wire import Wire
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.vertex import Vertex
@@ -30,6 +29,7 @@ from providers.blender.blender_provider.blender_actions.objects_transmute import
 from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
     get_edge_from_blender_edge,
     get_wire_from_blender_wire,
+    get_wires_from_blender_entity,
 )
 from codetocad.codetocad_types import *
 import providers.blender.blender_provider.implementables as implementables
@@ -449,20 +449,6 @@ class Sketch(SketchInterface, Entity):
         return implementables.get_landmark(self, landmark_name)
 
     def get_wires(self) -> "list[WireInterface]":
-        print("get_wires called")
-        return [
-            Wire(
-                "a wire",
-                [
-                    Edge(
-                        v1=Vertex(
-                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                        ),
-                        v2=Vertex(
-                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                        ),
-                        name="an edge",
-                    )
-                ],
-            )
-        ]
+        return get_wires_from_blender_entity(
+            self.get_native_instance().data
+        )  # type:ignore

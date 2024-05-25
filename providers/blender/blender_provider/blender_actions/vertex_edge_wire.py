@@ -131,10 +131,8 @@ def get_wire_from_blender_wire(
 
 def get_wires_from_blender_entity(
     entity: Union[bpy.types.Curve, bpy.types.Mesh]
-) -> "List[Wire]":
-    from providers.blender.blender_provider.wire import Wire
-
-    wires: List[Wire]
+) -> "List[WireInterface]":
+    wires: List[WireInterface]
 
     if isinstance(entity, bpy.types.Curve):
         wires = [
@@ -150,3 +148,42 @@ def get_wires_from_blender_entity(
         raise Exception(f"Entity type {type(entity)} is not supported.")
 
     return wires
+
+
+def get_control_points(
+    vertex: bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
+) -> list[Point]:
+    if isinstance(vertex, bpy.types.BezierSplinePoint):
+        return [
+            Point.from_list(
+                BlenderLength.convert_dimensions_to_blender_unit(
+                    [
+                        Dimension(vertex.handle_left[0]),
+                        Dimension(vertex.handle_left[1]),
+                        Dimension(vertex.handle_left[2]),
+                    ]
+                )
+            ),
+            Point.from_list(
+                BlenderLength.convert_dimensions_to_blender_unit(
+                    [
+                        Dimension(vertex.handle_right[0]),
+                        Dimension(vertex.handle_right[1]),
+                        Dimension(vertex.handle_right[2]),
+                    ]
+                )
+            ),
+        ]
+    return []
+
+
+def set_control_points(
+    vertex: bpy.types.SplinePoint | bpy.types.BezierSplinePoint, points: list[Point]
+):
+    if isinstance(vertex, bpy.types.BezierSplinePoint):
+        vertex.handle_left = points[0].to_tuple_float(
+            BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )
+        vertex.handle_right = points[1].to_tuple_float(
+            BlenderLength.DEFAULT_BLENDER_UNIT.value
+        )

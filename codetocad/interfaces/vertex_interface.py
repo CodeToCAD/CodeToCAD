@@ -7,6 +7,8 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
@@ -37,13 +39,27 @@ class VertexInterface(EntityInterface, ProjectableInterface, metaclass=ABCMeta):
     @abstractmethod
     def get_control_points(
         self,
-    ) -> "list[VertexInterface]":
+    ) -> "list[Point]":
         """
-        Get a vertex's curve control points. This may not be applicable in several situations.
+        Get a vertex's curve control points. This may not be applicable for some curve types.
         """
 
         print(
             "get_control_points is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def set_control_points(
+        self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
+    ) -> Self:
+        """
+        Set a vertex's curve control points. This may not be applicable for some curve types.
+        """
+
+        print(
+            "set_control_points is called in an abstract method. Please override this method."
         )
 
         raise NotImplementedError()

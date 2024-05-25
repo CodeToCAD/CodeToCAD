@@ -1,4 +1,5 @@
 from typing import Optional
+from typing import Self
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -42,3 +43,9 @@ class Vertex(VertexInterface, Entity):
     def get_control_points(self) -> "list[Vertex]":
         print("get_control_points called:", parameter)
         return [Vertex(location=(0, 0), name="myVertex")]
+
+    def set_control_points(
+        self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
+    ) -> Self:
+        print("set_control_points called", f": {points}")
+        return self

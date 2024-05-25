@@ -5,6 +5,8 @@
 
 from codetocad.codetocad_types import *
 
+from typing import Self
+
 
 from codetocad.interfaces.vertex_interface import VertexInterface
 
@@ -36,13 +38,21 @@ class Vertex(VertexInterface, Entity):
 
     def get_control_points(
         self,
-    ) -> "list[VertexInterface]":
+    ) -> "list[Point]":
 
         print(
             "get_control_points called",
         )
 
-        return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]
+        return ["Point.from_list_of_float_or_string([0,0,0])"]
+
+    def set_control_points(
+        self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
+    ) -> Self:
+
+        print("set_control_points called", f": {points}")
+
+        return self
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
 
