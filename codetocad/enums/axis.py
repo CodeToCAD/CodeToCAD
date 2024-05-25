@@ -3,13 +3,13 @@ from typing import Union
 
 
 class Axis(str, Enum):
-    X = 0
-    Y = 1
-    Z = 2
+    X = "x"
+    Y = "y"
+    Z = "z"
 
-    MAX = 3
-    MIN = 4
-    CENTER = 5
+    MAX = "max"
+    MIN = "min"
+    CENTER = "center"
 
     @staticmethod
     def _max_min_center():
