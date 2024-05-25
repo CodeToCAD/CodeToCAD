@@ -1,4 +1,5 @@
-import math
+import cmath
+from codetocad.proxy.wire import Wire
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.vertex import Vertex
@@ -21,6 +22,7 @@ from providers.blender.blender_provider.blender_actions.curve import (
     create_text,
     get_curve,
     merge_touching_splines,
+    set_curve_resolution_u,
 )
 from providers.blender.blender_provider.blender_actions.objects_transmute import (
     duplicate_object,
@@ -34,6 +36,7 @@ import providers.blender.blender_provider.implementables as implementables
 
 
 class Sketch(SketchInterface, Entity):
+
     def __init__(
         self,
         name: "str",
@@ -41,6 +44,7 @@ class Sketch(SketchInterface, Entity):
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
     ):
+        curve_type = curve_type or CurveTypes.BEZIER
         self.name = name
         self.curve_type = curve_type
         self.description = description
@@ -195,11 +199,11 @@ class Sketch(SketchInterface, Entity):
             p2 = all_vertices[index]
             p2x: float = p2.location.x.value
             p2y: float = p2.location.y.value
-            u1 = math.asin(p1y / radius.value)
-            u2 = math.asin(p2y / radius.value)
+            u1 = cmath.asin(p1y / radius.value).real
+            u2 = cmath.asin(p2y / radius.value).real
             if p1x > 0 and p2x < 0 or (p1x < 0 and p2x > 0):
-                u1 = math.acos(p1x / radius.value)
-                u2 = math.acos(p2x / radius.value)
+                u1 = cmath.acos(p1x / radius.value).real
+                u2 = cmath.acos(p2x / radius.value).real
             u = u2 - u1
             if u < 0:
                 u = -u
@@ -207,7 +211,7 @@ class Sketch(SketchInterface, Entity):
             v2 = mathutils.Vector((p2y * -1, p2x, 0))
             v1.normalize()
             v2.normalize()
-            length = 4 / 3 * math.tan(1 / 4 * u) * radius.value
+            length = 4 / 3 * cmath.tan(1 / 4 * u).real * radius.value
             p1.get_native_instance().handle_right = (
                 mathutils.Vector((p1x, p1y, 0)) + v1 * length
             )
@@ -224,6 +228,7 @@ class Sketch(SketchInterface, Entity):
         )
         if self.curve_type == CurveTypes.BEZIER:
             Sketch._set_bezier_circular_handlers(wire, radius)
+            set_curve_resolution_u(self.name, 12)
         update_view_layer()
         return wire
 
@@ -442,3 +447,22 @@ class Sketch(SketchInterface, Entity):
 
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)
+
+    def get_wires(self) -> "list[WireInterface]":
+        print("get_wires called")
+        return [
+            Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            )
+        ]

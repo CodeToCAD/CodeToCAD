@@ -6,37 +6,84 @@
 
 - Added: `from typing import Self`
 
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
 - Added: `from codetocad.proxy.landmark import Landmark`
 
 ## `Blender.Sketch` Additions and Deletions:
 
+
+- Added:
+    ```python
+    def get_wires(self) -> 'list[WireInterface]':
+    print('get_wires called')
+    return [Wire('a wire', [Edge(v1=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), v2=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), name='an edge')])]
+    ```
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
+- Added: `from codetocad.proxy.wire import Wire`
 
 - Added: `from codetocad.proxy.landmark import Landmark`
 
 ## `Blender.Vertex` Additions and Deletions:
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.codetocad_types import *`
+
+- Added: `from typing import Self`
 
 ## `Blender.Edge` Additions and Deletions:
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
+- Added: `from codetocad.proxy.vertex import Vertex`
 
 ## `Blender.Wire` Additions and Deletions:
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.vertex_interface import VertexInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
-- Added: `from providers.blender.blender_provider.entity import Entity`
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 ## `Blender.Landmark` Additions and Deletions:
 
-- Added: `from providers.blender.blender_provider.entity import Entity`
+- Added: `from typing import Self`
 
 ## `Blender.Joint` Additions and Deletions:
 
@@ -44,25 +91,41 @@
 
 - Added: `from typing import Self`
 
+- Added: `from codetocad.proxy.entity import Entity`
+
 ## `Blender.Material` Additions and Deletions:
 
 - Added: `from typing import Self`
 
 ## `Blender.Animation` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.proxy.entity import Entity`
 
 ## `Blender.Light` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
 
 ## `Blender.Camera` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
 
 ## `Blender.Render` Additions and Deletions:
 
 - Added: `from typing import Self`
+
+- Added: `from codetocad.proxy.camera import Camera`
 
 ## `Blender.Scene` Additions and Deletions:
 

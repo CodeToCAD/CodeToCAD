@@ -7,6 +7,7 @@ from providers.blender.blender_provider.entity import Entity
 
 
 class Light(LightInterface, Entity):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

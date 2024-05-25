@@ -10,6 +10,7 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
 
 
 class Vertex(VertexInterface, Entity):
+
     @override
     def get_native_instance(self) -> object:
         return self.native_instance

@@ -18,7 +18,6 @@ from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-
 from codetocad.interfaces.entity_interface import EntityInterface
 
 

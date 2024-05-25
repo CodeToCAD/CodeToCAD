@@ -38,11 +38,11 @@ from providers.blender.blender_provider.blender_actions.normals import (
     project_vector_along_normal,
 )
 from providers.blender.blender_provider.blender_actions.objects import get_object
-
 from providers.blender.blender_provider.entity import Entity
 
 
 class Wire(WireInterface, Entity):
+
     def __init__(
         self,
         name: "str",
@@ -168,6 +168,7 @@ class Wire(WireInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
+        raise NotImplementedError()
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
@@ -181,6 +182,7 @@ class Wire(WireInterface, Entity):
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        raise NotImplementedError()
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
         return self
 
@@ -190,6 +192,7 @@ class Wire(WireInterface, Entity):
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        raise NotImplementedError()
         print(
             "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
         )
@@ -201,6 +204,7 @@ class Wire(WireInterface, Entity):
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        raise NotImplementedError()
         print(
             "intersect called",
             f": {other}, {delete_after_intersect}, {is_transfer_data}",
@@ -218,7 +222,6 @@ class Wire(WireInterface, Entity):
         parent = self.parent_entity
         if isinstance(parent, str):
             parent = Sketch(parent)
-
         implementables.twist(parent, angle, screw_pitch, iterations, axis)
         return self
 
@@ -228,6 +231,10 @@ class Wire(WireInterface, Entity):
         about_entity_or_landmark: "str|EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+        if isinstance(parent, str):
+            parent = Sketch(parent)
         if isinstance(about_entity_or_landmark, LandmarkInterface):
             about_entity_or_landmark = (
                 about_entity_or_landmark.get_landmark_entity_name()
@@ -237,34 +244,38 @@ class Wire(WireInterface, Entity):
         axis = Axis.from_string(axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
         apply_screw_modifier(
-            self.name,
+            parent.name,
             Angle.from_string(angle).to_radians(),
             axis,
             entity_nameToDetermineAxis=about_entity_or_landmark,
         )
-        create_mesh_from_curve(self.name)
-        return Part(self.name, self.description).apply()
+        create_mesh_from_curve(parent.name)
+        # Recalculate normals because they're usually wrong after revolving.
+        recalculate_normals(parent.name)
+        return Part(parent.name, description=parent.description).apply()
 
     def offset(self, radius: "str|float|Dimension"):
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+        # TODO: Make a vertex group around this wire, and apply the offset only to this vertex group
         radius = Dimension.from_string(radius)
-        set_curve_offset_geometry(self.name, radius)
+        set_curve_offset_geometry(parent.name, radius)
         return self
 
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We assume the normal is never perpendicular to the Z axis.
         assert self.parent_entity, "This wire is not associated with a parent entity."
         parent = self.parent_entity
-
         if isinstance(parent, str):
             parent = Sketch(parent)
         assert isinstance(
             parent, SketchInterface
         ), "Extrude only works on wires in a sketch."
-
         parsed_length = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_dimension_or_its_float_or_string_value(length)
         ).value
-
         normal = self.get_normal()
         # TODO: add the translation component of the wire's initial rotation. For example, if a rectangle of length 1x1 is rotated 45 degrees, then there is a 0.355 translation in the z axis that needs to be accounted for.
         translate_vector = [0, 0, parsed_length]
@@ -274,25 +285,35 @@ class Wire(WireInterface, Entity):
         temp_sketch = Sketch(parent.name + "_temp")
         temp_wire = temp_sketch.project(self)
         temp_sketch.translate_xyz(*projected_normal)
-        self.loft(temp_wire)
-        return Part(parent.name, self.description)
+        # self.loft(temp_wire)
+        # return Part(parent.name, self.description)
 
     def sweep(
         self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+        # TODO: This logic was moved from Sketch.py. Sweeping should be applied to a vertex group containing this wire only.
         profile_curve_name = profile_name_or_instance
         if isinstance(profile_curve_name, EntityInterface):
             profile_curve_name = profile_curve_name.name
-        add_bevel_object_to_curve(self.name, profile_curve_name, fill_cap)
-        create_mesh_from_curve(self.name)
+        add_bevel_object_to_curve(parent.name, profile_curve_name, fill_cap)
+        create_mesh_from_curve(parent.name)
         # Recalculate normals because they're usually wrong after sweeping.
-        recalculate_normals(self.name)
-        return Part(self.name, self.description).apply()
+        recalculate_normals(parent.name)
+        return Part(parent.name, parent.description).apply()
 
     def profile(self, profile_curve_name: "str"):
+        assert self.parent_entity, "This wire is not associated with a parent entity."
+        parent = self.parent_entity
+        if isinstance(parent, str):
+            parent = Sketch(parent)
+        # TODO: this logic was moved from Sketch.py. Profiling should be applied to a vertex group containing this wire only.
         if isinstance(profile_curve_name, Entity):
             profile_curve_name = profile_curve_name.name
-        apply_curve_modifier(self.name, profile_curve_name)
+        apply_curve_modifier(parent.name, profile_curve_name)
         return self
 
     def get_edges(self) -> "list[EdgeInterface]":
@@ -306,13 +327,16 @@ class Wire(WireInterface, Entity):
         ]
 
     def remesh(self, strategy: "str", amount: "float"):
+        raise NotImplementedError()
         print("remesh called", f": {strategy}, {amount}")
         return self
 
     def subdivide(self, amount: "float"):
+        raise NotImplementedError()
         print("subdivide called", f": {amount}")
         return self
 
     def decimate(self, amount: "float"):
+        raise NotImplementedError()
         print("decimate called", f": {amount}")
         return self

@@ -173,6 +173,7 @@ def apply_screw_modifier(
     screw_pitch: Dimension = Dimension(0),
     iterations=1,
     entity_nameToDetermineAxis=None,
+    resolution=16,
     **kwargs,
 ):
     # https://docs.blender.org/api/current/bpy.types.ScrewModifier.html
@@ -182,8 +183,8 @@ def apply_screw_modifier(
         "screw_offset": BlenderLength.convert_dimension_to_blender_unit(
             screw_pitch
         ).value,
-        "steps": 64,
-        "render_steps": 64,
+        "steps": resolution,
+        "render_steps": resolution,
         "use_merge_vertices": True,
         "iterations": iterations,
     }

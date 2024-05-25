@@ -36,6 +36,7 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 class Entity(EntityInterface):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

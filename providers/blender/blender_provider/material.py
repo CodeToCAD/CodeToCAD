@@ -12,6 +12,7 @@ from providers.blender.blender_provider.blender_actions.material import (
 
 
 class Material(MaterialInterface):
+
     def __init__(self, name: "str", description: "str| None" = None):
         self.name = name
         self.description = description

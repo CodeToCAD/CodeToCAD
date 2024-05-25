@@ -21,6 +21,7 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 class Joint(JointInterface):
+
     def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
         self.entity1 = entity1
         self.entity2 = entity2
