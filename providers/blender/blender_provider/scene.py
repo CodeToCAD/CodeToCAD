@@ -27,6 +27,7 @@ from codetocad.codetocad_types import *
 
 class Scene(SceneInterface):
     # Blender's default Scene name is "Scene"
+
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
         self.name = name or self.name
         self.description = description

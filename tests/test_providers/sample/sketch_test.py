@@ -10,6 +10,19 @@ from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
 class SketchTest(TestProviderCase, SketchTestInterface):
 
+    def test_get_wires(self):
+
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance="value",
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.get_wires()
+
+        assert value, "Get method failed."
+
     def test_clone(self):
 
         instance = Sketch(

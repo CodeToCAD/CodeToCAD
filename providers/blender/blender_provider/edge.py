@@ -9,6 +9,7 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 
 class Edge(EdgeInterface, Entity):
+
     def __init__(
         self,
         name: "str",

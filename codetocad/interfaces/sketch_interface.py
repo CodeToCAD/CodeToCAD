@@ -8,24 +8,24 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.wire_interface import WireInterface
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
-from codetocad.interfaces.projectable_interface import ProjectableInterface
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+from codetocad.interfaces.exportable_interface import ExportableInterface
 
 from codetocad.interfaces.patternable_interface import PatternableInterface
 
+from codetocad.interfaces.scalable_interface import ScalableInterface
+
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
 from codetocad.interfaces.importable_interface import ImportableInterface
-
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -58,6 +58,18 @@ class SketchInterface(
         self.description = description
         self.native_instance = native_instance
         self.curve_type = curve_type
+
+    @abstractmethod
+    def get_wires(
+        self,
+    ) -> "list[WireInterface]":
+        """
+        Get a list of Wires in this Sketch.
+        """
+
+        print("get_wires is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
 
     @abstractmethod
     def clone(

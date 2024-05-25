@@ -13,12 +13,12 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.projectable_interface import ProjectableInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 

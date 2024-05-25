@@ -962,6 +962,11 @@
                     }
                 }
             },
+            "get_wires": {
+                "action": "get",
+                "return_type": "list[Wire]",
+                "information": "Get a list of Wires in this Sketch."
+            },
             "clone": {
                 "action": "get",
                 "return_type": "Sketch",

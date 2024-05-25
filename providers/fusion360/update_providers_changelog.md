@@ -6,25 +6,62 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.proxy.material import Material`
 
 ## `Fusion360.Sketch` Additions and Deletions:
 
+
+- Added:
+    ```python
+    def get_wires(self) -> 'list[WireInterface]':
+    print('get_wires called')
+    return [Wire('a wire', [Edge(v1=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), v2=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), name='an edge')])]
+    ```
 - Added: `from typing import Self`
 
 - Added: `from codetocad.interfaces.wire_interface import WireInterface`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
 
 ## `Fusion360.Vertex` Additions and Deletions:
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from typing import Self`
 
 ## `Fusion360.Edge` Additions and Deletions:
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 ## `Fusion360.Wire` Additions and Deletions:
 
@@ -34,11 +71,17 @@
 
 - Added: `from codetocad.interfaces.part_interface import PartInterface`
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
+
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 ## `Fusion360.Landmark` Additions and Deletions:
 
-- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+- Added: `from typing import Self`
 
 ## `Fusion360.Joint` Additions and Deletions:
 
@@ -50,19 +93,33 @@
 
 ## `Fusion360.Animation` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.proxy.entity import Entity`
 
 ## `Fusion360.Light` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
 
 ## `Fusion360.Camera` Additions and Deletions:
 
 - Added: `from typing import Self`
 
+- Added: `from codetocad.interfaces.entity_interface import EntityInterface`
+
 ## `Fusion360.Render` Additions and Deletions:
 
+- Added: `from codetocad.codetocad_types import *`
+
 - Added: `from typing import Self`
+
+- Added: `from codetocad.proxy.camera import Camera`
 
 ## `Fusion360.Scene` Additions and Deletions:
 
@@ -71,4 +128,6 @@
 ## `Fusion360.Analytics` Additions and Deletions:
 
 - Added: `from typing import Self`
+
+- Added: `from codetocad.proxy.entity import Entity`
 

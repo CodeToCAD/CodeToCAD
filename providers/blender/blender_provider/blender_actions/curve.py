@@ -201,17 +201,6 @@ def create_curve(
     return spline, curve_data, added_points
 
 
-def clone_spline(spline_to_clone: bpy.types.Spline):
-    """
-    Create an empty spline with the properties of another.
-    """
-    return create_spline(
-        blender_curve=spline_to_clone.id_data,
-        curve_type=BlenderCurveTypes[spline_to_clone.type],
-        order_u=spline_to_clone.order_u,
-    )
-
-
 def create_spline(
     blender_curve: bpy.types.Curve,
     curve_type: BlenderCurveTypes,
@@ -431,7 +420,11 @@ def add_points_to_curve(
         or last_point_touching_spline_end
     ):
         # Create a new spline
-        spline_to_add_points_to = clone_spline(reference_spline)
+        spline_to_add_points_to = create_spline(
+            blender_curve=reference_spline.id_data,
+            curve_type=BlenderCurveTypes[reference_spline.type],
+            order_u=reference_spline.order_u,
+        )
         overwrite_first_point = True
     else:
         if first_point_touching_spline_start or last_point_touching_spline_start:

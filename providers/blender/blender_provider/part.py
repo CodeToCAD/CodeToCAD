@@ -136,7 +136,7 @@ class Part(PartInterface, Entity):
     ):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
-        circle.revolve(360, sketch.get_landmark("center"), "x")
+        circle.revolve(180, sketch.get_landmark("center"), "x")
         return self
 
     def create_gear(
@@ -250,7 +250,6 @@ class Part(PartInterface, Entity):
     ):
         axis = Axis.from_string(start_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-
         start_landmark_location = ["center", "center", "center"]
         start_landmark_location[axis.value] = "min" if flip_axis else "max"
         start_axis_landmark = self.create_landmark(
@@ -335,7 +334,6 @@ class Part(PartInterface, Entity):
     ):
         axis = Axis.from_string(normal_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-
         hole = Part(create_uuid_like_id()).create_cylinder(radius, depth)
         hole_head = hole.create_landmark(
             "hole", "center", "center", "min" if flip_axis else "max"

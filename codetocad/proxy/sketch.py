@@ -13,11 +13,12 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.wire_interface import WireInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
@@ -75,6 +76,12 @@ class Sketch(SketchInterface, Entity):
                 name, description, native_instance, curve_type
             ),  # type: ignore
         )
+
+    def get_wires(
+        self,
+    ) -> "list[WireInterface]":
+
+        return object.__getattribute__(self, "__proxied").get_wires()
 
     def clone(
         self, new_name: "str", copy_landmarks: "bool" = True

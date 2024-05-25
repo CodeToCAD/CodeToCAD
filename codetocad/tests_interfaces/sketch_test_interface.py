@@ -10,6 +10,11 @@ from abc import ABCMeta, abstractmethod
 class SketchTestInterface(metaclass=ABCMeta):
 
     @abstractmethod
+    def test_get_wires(self):
+
+        pass
+
+    @abstractmethod
     def test_clone(self):
 
         pass

@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
@@ -384,3 +385,22 @@ class Sketch(SketchInterface, Entity):
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
+
+    def get_wires(self) -> "list[WireInterface]":
+        print("get_wires called")
+        return [
+            Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            )
+        ]

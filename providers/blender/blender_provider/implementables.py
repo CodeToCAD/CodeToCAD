@@ -269,7 +269,7 @@ def scale_keep_aspect_ratio(
 
 
 def twist(
-    self: "Entity",
+    self: "EntityInterface",
     angle: str | float | Angle,
     screw_pitch: str | float | Dimension,
     iterations: "int" = 1,

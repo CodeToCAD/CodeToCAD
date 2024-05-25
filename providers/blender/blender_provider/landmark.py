@@ -17,8 +17,6 @@ from providers.blender.blender_provider.blender_actions.objects import (
 )
 from codetocad.codetocad_types import *
 from codetocad.utilities.override import override
-
-
 from providers.blender.blender_provider.entity import Entity
 
 
