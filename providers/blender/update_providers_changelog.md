@@ -6,44 +6,37 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
-
 - Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
-- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
-
-- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
 - Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
 
 - Added: `from codetocad.proxy.landmark import Landmark`
 
 ## `Blender.Sketch` Additions and Deletions:
 
-
-- Added:
-    ```python
-    def get_wires(self) -> 'list[WireInterface]':
-    print('get_wires called')
-    return [Wire('a wire', [Edge(v1=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), v2=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), name='an edge')])]
-    ```
 - Added: `from typing import Self`
-
-- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
-
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
-
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
 - Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.proxy.wire import Wire`
 
@@ -51,6 +44,13 @@
 
 ## `Blender.Vertex` Additions and Deletions:
 
+
+- Added:
+    ```python
+    def set_control_points(self, points: 'list[str|list[str]|list[float]|list[Dimension]|Point]') -> Self:
+    print('set_control_points called', f': {points}')
+    return self
+    ```
 - Added: `from codetocad.codetocad_types import *`
 
 - Added: `from typing import Self`
@@ -59,13 +59,13 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.proxy.vertex import Vertex`
 
@@ -73,13 +73,13 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 ## `Blender.Landmark` Additions and Deletions:
 

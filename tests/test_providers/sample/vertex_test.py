@@ -24,6 +24,22 @@ class VertexTest(TestProviderCase, VertexTestInterface):
 
         assert value, "Get method failed."
 
+    def test_set_control_points(self):
+
+        instance = Vertex(
+            name="String",
+            location=Point.from_list_of_float_or_string([0, 0, 0]),
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.set_control_points(
+            points=["Point.from_list_of_float_or_string([0,0,0])"]
+        )
+
+        assert value, "Modify method failed."
+
     def test_project(self):
 
         instance = Vertex(

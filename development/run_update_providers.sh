@@ -11,3 +11,5 @@ if code -v &> /dev/null; then
     code providers/onshape/update_providers_changelog.md
     code providers/fusion360/update_providers_changelog.md
 fi
+
+sh "$SCRIPT_DIR/run_lint.sh" --autofix

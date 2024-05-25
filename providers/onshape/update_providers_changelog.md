@@ -6,62 +6,60 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
-
 - Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
-- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
-
-- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
+- Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
 - Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
 
 - Added: `from codetocad.proxy.material import Material`
 
 ## `Onshape.Sketch` Additions and Deletions:
 
-
-- Added:
-    ```python
-    def get_wires(self) -> 'list[WireInterface]':
-    print('get_wires called')
-    return [Wire('a wire', [Edge(v1=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), v2=Vertex('a vertex', Point.from_list_of_float_or_string([0, 0, 0])), name='an edge')])]
-    ```
 - Added: `from typing import Self`
-
-- Added: `from codetocad.interfaces.wire_interface import WireInterface`
-
-- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
-
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
-
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+
 - Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 ## `Onshape.Vertex` Additions and Deletions:
 
+
+- Added:
+    ```python
+    def set_control_points(self, points: 'list[str|list[str]|list[float]|list[Dimension]|Point]') -> Self:
+    print('set_control_points called', f': {points}')
+    return self
+    ```
 - Added: `from typing import Self`
 
 ## `Onshape.Edge` Additions and Deletions:
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 ## `Onshape.Wire` Additions and Deletions:
 
@@ -69,13 +67,13 @@
 
 - Added: `from codetocad.interfaces.vertex_interface import VertexInterface`
 
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 ## `Onshape.Landmark` Additions and Deletions:
 
