@@ -71,7 +71,7 @@ class Part(PartInterface, Entity):
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         from providers.blender.blender_provider.sketch import Sketch
 
@@ -85,7 +85,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         base = Sketch(self.name).create_circle(radius)
         top = Sketch(self.name + "_temp_top")
@@ -102,7 +102,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
@@ -113,7 +113,7 @@ class Part(PartInterface, Entity):
         self,
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
             inner_radius
@@ -132,7 +132,7 @@ class Part(PartInterface, Entity):
         origin.delete()
 
     def create_sphere(
-        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
+        self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
@@ -151,7 +151,7 @@ class Part(PartInterface, Entity):
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         create_gear(
             self.name,

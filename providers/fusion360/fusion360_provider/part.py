@@ -173,7 +173,7 @@ class Part(PartInterface, Entity):
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
@@ -188,7 +188,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         from . import Sketch
 
@@ -233,7 +233,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
@@ -246,7 +246,7 @@ class Part(PartInterface, Entity):
         self,
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         from . import Sketch
         import math
@@ -273,7 +273,7 @@ class Part(PartInterface, Entity):
         return self
 
     def create_sphere(
-        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
+        self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ):
         from . import Sketch
         import math
@@ -304,7 +304,7 @@ class Part(PartInterface, Entity):
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ):
         print(
             "create_gear called:",
