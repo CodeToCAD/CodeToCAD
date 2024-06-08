@@ -5,6 +5,9 @@ on:
 
 name: Create a release and provider bundles.
 
+env:
+  MAJOR_MINOR_VERSION: 0.4
+
 jobs:
   create_release_tag:
     if: github.base_ref == 'develop'
@@ -22,7 +25,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
+              ref: 'refs/tags/v$MAJOR_MINOR_VERSION.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
               sha: context.sha
             })
       - name: Create Release
@@ -31,9 +34,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          release_name: Release v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
+          tag_name: v$MAJOR_MINOR_VERSION.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          release_name: Release v$MAJOR_MINOR_VERSION.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/$MAJOR_MINOR_VERSION.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
           draft: false
           prerelease: true
       - name: Build Blender Addon Zip File
@@ -44,7 +47,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: CodeToCADBlenderAddon.zip
           asset_name: CodeToCADBlenderAddon.zip
-          tag: v0.3.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          tag: v$MAJOR_MINOR_VERSION.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
           overwrite: true
       - name: Set up Python
         uses: actions/setup-python@v3
