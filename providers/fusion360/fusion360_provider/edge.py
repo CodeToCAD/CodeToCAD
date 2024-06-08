@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.proxy.vertex import Vertex
@@ -20,6 +22,7 @@ if TYPE_CHECKING:
 
 class Edge(EdgeInterface, Entity):
 
+    @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -31,6 +34,7 @@ class Edge(EdgeInterface, Entity):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -40,6 +44,7 @@ class Edge(EdgeInterface, Entity):
         print("linear_pattern called:", instance_count, offset, direction_axis)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def circular_pattern(
         self,
         instance_count: "int",
@@ -56,18 +61,22 @@ class Edge(EdgeInterface, Entity):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def remesh(self, strategy: "str", amount: "float"):
         print("remesh called:", strategy, amount)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def subdivide(self, amount: "float"):
         print("subdivide called:", amount)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def decimate(self, amount: "float"):
         print("decimate called:", amount)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "Projectable":
         from . import Sketch
 
@@ -97,22 +106,27 @@ class Edge(EdgeInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def offset(self, distance: "str|float|Dimension") -> "Edge":
         print("offset called:", distance)
         return Edge.get_dummy_edge()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
         print("fillet called:", other_edge, amount)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_is_construction(self, is_construction: "bool"):
         print("set_is_construction called:", is_construction)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_is_construction(self) -> bool:
         print("get_is_construction called:")
         return True
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -123,6 +137,7 @@ class Edge(EdgeInterface, Entity):
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

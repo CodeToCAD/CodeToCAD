@@ -1,4 +1,6 @@
 from codetocad.interfaces.render_interface import RenderInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.camera_interface import CameraInterface
 from codetocad.codetocad_types import *
 from codetocad.utilities import get_absolute_filepath, get_file_extension
@@ -27,6 +29,7 @@ class Render(RenderInterface):
         )
         set_render_file_format(fileFormat)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def render_image(
         self,
         output_file_path: "str",
@@ -38,6 +41,7 @@ class Render(RenderInterface):
         render_image(absoluteFilePath, overwrite or True)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def render_video_mp4(
         self,
         output_file_path: "str",
@@ -51,6 +55,7 @@ class Render(RenderInterface):
         render_animation(absoluteFilePath, overwrite or True)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def render_video_frames(
         self,
         output_folder_path: "str",
@@ -65,24 +70,29 @@ class Render(RenderInterface):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_frame_rate(self, frame_rate: "int"):
         set_render_frame_rate(int(frame_rate))
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_resolution(self, x: "int", y: "int"):
         set_render_resolution(x, y)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_render_quality(self, quality: "int"):
         percentage = quality * 100 if quality < 1.0 else quality
         percentage = int(percentage)
         set_render_quality(percentage)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_render_engine(self, name: "str"):
         set_render_engine(RenderEngines.from_string(name))
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
         cameraName = camera_name_or_instance
         if isinstance(cameraName, CameraInterface):

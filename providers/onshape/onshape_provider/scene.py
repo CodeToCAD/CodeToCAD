@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.exportable_interface import ExportableInterface
 from codetocad.proxy.entity import Entity
@@ -20,22 +22,28 @@ class Scene(SceneInterface):
         self.description = description
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED)
     def default() -> "Scene":
         return Scene()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def delete(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self) -> bool:
         raise NotImplementedError()
         return
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_selected_entity(self) -> "Entity":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def export(
         self,
         file_path: "str",
@@ -45,18 +53,23 @@ class Scene(SceneInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_default_unit(self, unit: "str|LengthUnit"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_group(self, name: "str"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def delete_group(self, name: "str", remove_children: "bool"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def remove_from_group(self, entity_name: "str", group_name: "str"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def assign_to_group(
         self,
         entities: "list[str|EntityInterface]",
@@ -65,9 +78,11 @@ class Scene(SceneInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_background_image(
         self,
         file_path: "str",

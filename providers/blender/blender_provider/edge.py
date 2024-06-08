@@ -1,4 +1,6 @@
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -32,30 +34,38 @@ class Edge(EdgeInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def offset(self, distance: "str|float|Dimension") -> "Edge":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_is_construction(self, is_construction: "bool"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_is_construction(self) -> bool:
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def remesh(self, strategy: "str", amount: "float"):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def subdivide(self, amount: "float"):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def decimate(self, amount: "float"):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -65,10 +75,12 @@ class Edge(EdgeInterface, Entity):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -78,6 +90,7 @@ class Edge(EdgeInterface, Entity):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def circular_pattern(
         self,
         instance_count: "int",
@@ -88,6 +101,7 @@ class Edge(EdgeInterface, Entity):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -98,6 +112,7 @@ class Edge(EdgeInterface, Entity):
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")

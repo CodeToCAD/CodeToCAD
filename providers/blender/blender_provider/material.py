@@ -1,4 +1,6 @@
 from codetocad.interfaces.material_interface import MaterialInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.codetocad_types import *
 from codetocad.utilities import get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.material import (
@@ -21,6 +23,7 @@ class Material(MaterialInterface):
         except:  # noqa: E722
             create_material(self.name)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_color(
         self,
         r_value: "int|float",
@@ -31,20 +34,24 @@ class Material(MaterialInterface):
         set_material_color(self.name, r_value, g_value, b_value, a_value)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_reflectivity(self, reflectivity: "float"):
         set_material_metallicness(self.name, reflectivity)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_roughness(self, roughness: "float"):
         set_material_roughness(self.name, roughness)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_image_texture(self, image_file_path: "str"):
         absoluteFilePath = get_absolute_filepath(image_file_path)
         add_texture_to_material(self.name, absoluteFilePath)
         return self
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED)
     def get_preset(material_name: "PresetMaterial"):
         if isinstance(material_name, str):
             try:

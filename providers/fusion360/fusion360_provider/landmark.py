@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.fusion360.fusion360_provider.entity import Entity
@@ -36,6 +38,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def clone(
         self,
         new_name: "str",
@@ -54,9 +57,11 @@ class Landmark(LandmarkInterface, Entity):
         sketch = self.fusion_landmark.clone(new_name, True)
         return Landmark(sketch.name, parent)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark_entity_name(self) -> str:
         return self.fusion_landmark.instance.name
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_parent_entity(self) -> "Entity":
         if isinstance(self.parent_entity, str):
             return Entity(self.parent_entity)

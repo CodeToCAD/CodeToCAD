@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from typing import Self
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 
 class Vertex(VertexInterface, Entity):
 
+    @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "Projectable":
         from . import Sketch
 
@@ -40,10 +43,12 @@ class Vertex(VertexInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_control_points(self) -> "list[Vertex]":
         print("get_control_points called:", parameter)
         return [Vertex(location=(0, 0), name="myVertex")]
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:

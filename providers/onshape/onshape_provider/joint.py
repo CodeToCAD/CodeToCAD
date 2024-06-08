@@ -1,4 +1,6 @@
 from codetocad.interfaces.joint_interface import JointInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.entity import Entity
 from providers.onshape.onshape_provider.entity import Entity
@@ -17,15 +19,19 @@ class Joint(JointInterface):
         self.entity1 = entity1
         self.entity2 = entity2
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_landmark_onto_another(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def pivot(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def gear_ratio(self, ratio: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_xyz(
         self,
         x: "str|float|Dimension| None" = None,
@@ -34,6 +40,7 @@ class Joint(JointInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_x(
         self,
         min: "str|float|Dimension| None" = None,
@@ -41,6 +48,7 @@ class Joint(JointInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_y(
         self,
         min: "str|float|Dimension| None" = None,
@@ -48,6 +56,7 @@ class Joint(JointInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_z(
         self,
         min: "str|float|Dimension| None" = None,
@@ -55,6 +64,7 @@ class Joint(JointInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_xyz(
         self,
         x: "str|float|Angle| None" = None,
@@ -63,16 +73,19 @@ class Joint(JointInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):

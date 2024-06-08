@@ -1,4 +1,6 @@
 from codetocad.interfaces.animation_interface import AnimationInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from providers.blender.blender_provider.blender_actions.animation import (
     add_keyframe_to_object,
@@ -18,21 +20,26 @@ class Animation(AnimationInterface):
         pass
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED)
     def default() -> "Animation":
         return Animation()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_frame_start(self, frame_number: "int"):
         set_frame_start(frame_number, None)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_frame_end(self, frame_number: "int"):
         set_frame_end(frame_number, None)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_frame_current(self, frame_number: "int"):
         set_frame_current(frame_number, None)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):
@@ -44,6 +51,7 @@ class Animation(AnimationInterface):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):

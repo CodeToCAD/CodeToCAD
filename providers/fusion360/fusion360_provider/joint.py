@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.entity import Entity
 from codetocad.interfaces.joint_interface import JointInterface
@@ -29,6 +31,7 @@ class Joint(JointInterface):
         self.entity2 = entity2
         self.fusion_joint = FusionJoint(entity1, entity2)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_landmark_onto_another(self):
         if not isinstance(self.entity1, LandmarkInterface) or not isinstance(
             self.entity2, LandmarkInterface
@@ -41,9 +44,11 @@ class Joint(JointInterface):
         entityForLandmark2.translate_xyz(translation.x, translation.y, translation.z)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def pivot(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def gear_ratio(self, ratio: "float"):
         print("gear_ratio called:", ratio)
         return self
@@ -90,6 +95,7 @@ class Joint(JointInterface):
             self.fusion_joint.limit_location("z", z[0].value, z[1].value)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_x(
         self,
         min: "str|float|Dimension| None" = None,
@@ -99,6 +105,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(dimensions, None, None)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_y(
         self,
         min: "str|float|Dimension| None" = None,
@@ -108,6 +115,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(None, dimensions, None)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_z(
         self,
         min: "str|float|Dimension| None" = None,
@@ -117,6 +125,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(None, None, dimensions)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_location_xyz(
         self,
         x: "str|float|Dimension| None" = None,
@@ -159,6 +168,7 @@ class Joint(JointInterface):
             )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_xyz(
         self,
         x: "str|float|Angle| None" = None,
@@ -171,18 +181,21 @@ class Joint(JointInterface):
         self._limit_rotation_xyz(rotation_pair_x, rotation_pair_y, rotation_pair_z)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(rotationPair, None, None)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, rotationPair, None)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):

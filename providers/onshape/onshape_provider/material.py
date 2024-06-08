@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
@@ -15,6 +17,7 @@ class Material(MaterialInterface):
         self.name = name
         self.description = description
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_color(
         self,
         r_value: "int|float",
@@ -24,16 +27,20 @@ class Material(MaterialInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_reflectivity(self, reflectivity: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_roughness(self, roughness: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_image_texture(self, image_file_path: "str"):
         return self
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED)
     def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
         print("get_preset called", f": {parameter}")
         return Material("mat")

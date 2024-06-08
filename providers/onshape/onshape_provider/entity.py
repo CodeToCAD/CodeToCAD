@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
 from typing import TYPE_CHECKING
@@ -19,23 +21,29 @@ class Entity(EntityInterface):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self) -> bool:
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def delete(self, remove_children: "bool" = True):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def is_visible(self) -> bool:
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_visible(self, is_visible: "bool"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def apply(
         self,
         rotation: "bool" = True,
@@ -45,18 +53,23 @@ class Entity(EntityInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_native_instance(self) -> object:
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_location_world(self) -> "Point":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_location_local(self) -> "Point":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def select(self):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -65,31 +78,40 @@ class Entity(EntityInterface):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_x(self, amount: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_y(self, amount: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def translate_z(self, amount: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def rotate_x(self, rotation: "str|float|Angle"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def rotate_y(self, rotation: "str|float|Angle"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def rotate_z(self, rotation: "str|float|Angle"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_bounding_box(self) -> "BoundaryBox":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_dimensions(self) -> "Dimensions":
         raise NotImplementedError()

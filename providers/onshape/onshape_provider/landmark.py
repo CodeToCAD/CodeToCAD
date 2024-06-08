@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.onshape.onshape_provider.entity import Entity
@@ -28,6 +30,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def clone(
         self,
         new_name: "str",
@@ -39,8 +42,10 @@ class Landmark(LandmarkInterface, Entity):
 
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark_entity_name(self) -> str:
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_parent_entity(self) -> "Entity":
         raise NotImplementedError()

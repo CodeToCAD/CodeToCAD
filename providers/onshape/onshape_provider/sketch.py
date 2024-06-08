@@ -1,4 +1,6 @@
 import json
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
@@ -37,12 +39,14 @@ onshape_document_name = "CodeToCAD-onshape_actions"
 
 class Sketch(SketchInterface, Entity):
 
+    @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         print("project called:", project_from)
         from . import Sketch
 
         return Sketch("a projected sketch")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -51,6 +55,7 @@ class Sketch(SketchInterface, Entity):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -59,6 +64,7 @@ class Sketch(SketchInterface, Entity):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def circular_pattern(
         self,
         instance_count: "int",
@@ -68,12 +74,15 @@ class Sketch(SketchInterface, Entity):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -82,24 +91,31 @@ class Sketch(SketchInterface, Entity):
     ):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_x(self, scale: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_y(self, scale: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_z(self, scale: "str|float|Dimension"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_x_by_factor(self, scale_factor: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_y_by_factor(self, scale_factor: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
@@ -122,9 +138,11 @@ class Sketch(SketchInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_text(
         self,
         text: "str",
@@ -157,6 +175,7 @@ class Sketch(SketchInterface, Entity):
         self.native_instance = json_native_data
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -164,6 +183,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "Wire":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_point(
         self,
         point: "str|list[str]|list[float]|list[Dimension]|Point",
@@ -178,6 +198,7 @@ class Sketch(SketchInterface, Entity):
             location=point, native_instance=json_native_data["feature"]["entities"][0]
         )
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_line(
         self,
         length: "str|float|Dimension",
@@ -198,6 +219,7 @@ class Sketch(SketchInterface, Entity):
             native_instance=json_native_data["feature"]["entities"][0],
         )
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_circle(
         self,
         radius: "str|float|Dimension",
@@ -211,6 +233,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
@@ -234,6 +257,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
@@ -257,6 +281,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_rectangle(
         self,
         length: "str|float|Dimension",
@@ -293,6 +318,7 @@ class Sketch(SketchInterface, Entity):
         self.native_instance = json.loads(sketch_info.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_polygon(
         self,
         number_of_sides: "int",
@@ -317,6 +343,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_trapezoid(
         self,
         length_upper: "str|float|Dimension",
@@ -331,6 +358,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -363,6 +391,7 @@ class Sketch(SketchInterface, Entity):
         json_native_data = json.loads(api_resp.data)
         return Wire(native_instance=json_native_data["feature"])
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -373,10 +402,12 @@ class Sketch(SketchInterface, Entity):
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_wires(self) -> "list[WireInterface]":
         print("get_wires called")
         return [
@@ -396,6 +427,7 @@ class Sketch(SketchInterface, Entity):
             )
         ]
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",

@@ -1,4 +1,6 @@
 from providers.blender.blender_provider.entity import Entity
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.utilities import format_landmark_entity_name
@@ -34,6 +36,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark_entity_name(self) -> str:
         parent_entityName = self.parent_entity
         if isinstance(parent_entityName, EntityInterface):
@@ -41,6 +44,7 @@ class Landmark(LandmarkInterface, Entity):
         entityName = format_landmark_entity_name(parent_entityName, self.name)
         return entityName
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_parent_entity(self) -> "EntityInterface":
         if isinstance(self.parent_entity, str):
             return Entity(self.parent_entity)
@@ -79,6 +83,7 @@ class Landmark(LandmarkInterface, Entity):
         update_view_layer()
         return get_object_local_location(self.get_landmark_entity_name())
 
+    @supported(SupportLevel.UNSUPPORTED)
     def clone(
         self,
         new_name: "str",
