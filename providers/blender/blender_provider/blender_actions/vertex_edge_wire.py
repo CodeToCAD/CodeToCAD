@@ -156,22 +156,33 @@ def get_control_points(
     if isinstance(vertex, bpy.types.BezierSplinePoint):
         return [
             Point.from_list(
-                BlenderLength.convert_dimensions_to_blender_unit(
-                    [
-                        Dimension(vertex.handle_left[0]),
-                        Dimension(vertex.handle_left[1]),
-                        Dimension(vertex.handle_left[2]),
-                    ]
-                )
+                [
+                    Dimension(
+                        vertex.handle_left[0],
+                        BlenderLength.DEFAULT_BLENDER_UNIT.value,
+                    ),
+                    Dimension(
+                        vertex.handle_left[1],
+                        BlenderLength.DEFAULT_BLENDER_UNIT.value,
+                    ),
+                    Dimension(
+                        vertex.handle_left[2],
+                        BlenderLength.DEFAULT_BLENDER_UNIT.value,
+                    ),
+                ]
             ),
             Point.from_list(
-                BlenderLength.convert_dimensions_to_blender_unit(
-                    [
-                        Dimension(vertex.handle_right[0]),
-                        Dimension(vertex.handle_right[1]),
-                        Dimension(vertex.handle_right[2]),
-                    ]
-                )
+                [
+                    Dimension(
+                        vertex.handle_right[0], BlenderLength.DEFAULT_BLENDER_UNIT.value
+                    ),
+                    Dimension(
+                        vertex.handle_right[1], BlenderLength.DEFAULT_BLENDER_UNIT.value
+                    ),
+                    Dimension(
+                        vertex.handle_right[2], BlenderLength.DEFAULT_BLENDER_UNIT.value
+                    ),
+                ]
             ),
         ]
     return []

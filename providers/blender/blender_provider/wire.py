@@ -285,8 +285,8 @@ class Wire(WireInterface, Entity):
         temp_sketch = Sketch(parent.name + "_temp")
         temp_wire = temp_sketch.project(self)
         temp_sketch.translate_xyz(*projected_normal)
-        # self.loft(temp_wire)
-        # return Part(parent.name, self.description)
+        self.loft(temp_wire)
+        return Part(parent.name, self.description)
 
     def sweep(
         self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True

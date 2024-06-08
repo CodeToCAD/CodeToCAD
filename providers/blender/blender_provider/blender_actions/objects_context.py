@@ -4,6 +4,7 @@ from providers.blender.blender_provider.blender_actions.context import (
 )
 from providers.blender.blender_provider.blender_actions.objects import get_object
 from providers.blender.blender_provider.blender_definitions import BlenderTypes
+import bpy
 
 
 def convert_object_using_ops(existing_object_name: str, convert_to_type: BlenderTypes):

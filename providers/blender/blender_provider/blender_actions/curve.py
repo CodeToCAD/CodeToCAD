@@ -21,6 +21,9 @@ from providers.blender.blender_provider.blender_actions.objects import (
 from providers.blender.blender_provider.blender_actions.objects_context import (
     convert_object_using_ops,
 )
+from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
+    get_wires_from_blender_entity,
+)
 from providers.blender.blender_provider.blender_definitions import (
     BlenderCurvePrimitiveTypes,
     BlenderCurveTypes,
@@ -444,6 +447,45 @@ def add_points_to_curve(
     return spline_to_add_points_to, added_points
 
 
+def subdivide_bezier_points(
+    bezier_spline: bpy.types.Spline,
+    resolution: int,
+    start_at_index: int = 0,
+    end_at_index: int | None = None,
+    is_cyclic: bool = False,
+) -> list[mathutils.Vector]:
+    if bezier_spline.type != "BEZIER":
+        raise Exception("Spline must be a bezier spline for interpolation.")
+
+    bezier_points = bezier_spline.bezier_points[start_at_index:end_at_index]
+
+    poly_points: list[mathutils.Vector] = []
+
+    for i in range(len(bezier_points) - 1):
+        bp0 = bezier_points[i]
+        bp1 = bezier_points[i + 1]
+
+        co = mathutils.geometry.interpolate_bezier(
+            bp0.co, bp0.handle_right, bp1.handle_left, bp1.co, resolution
+        )
+
+        poly_points += co[0:-1]
+
+    if is_cyclic:
+        bp0 = bezier_points[-1]
+        bp1 = bezier_points[0]
+
+        co = mathutils.geometry.interpolate_bezier(
+            bp0.co, bp0.handle_right, bp1.handle_left, bp1.co, resolution
+        )
+
+        poly_points += co[0:-1]
+    else:
+        poly_points.append(co[-1])
+
+    return poly_points
+
+
 def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     update_view_layer()
 
@@ -454,51 +496,106 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     create_object(name, mesh)
     assign_object_to_collection(name)
 
-    wire_1_world_matrix = (
-        mathutils.Matrix()
-        if wire_1.parent_entity is None
-        else get_object(
-            wire_1.parent_entity.name
-            if not isinstance(wire_1.parent_entity, str)
-            else wire_1.parent_entity
-        ).matrix_world
+    wire_1_parent = get_object(
+        wire_1.parent_entity.name
+        if not isinstance(wire_1.parent_entity, str)
+        else wire_1.parent_entity
     )
-    wire_2_world_matrix = (
-        mathutils.Matrix()
-        if wire_2.parent_entity is None
-        else get_object(
-            wire_2.parent_entity.name
-            if not isinstance(wire_2.parent_entity, str)
-            else wire_2.parent_entity
-        ).matrix_world
+    wire_2_parent = get_object(
+        wire_2.parent_entity.name
+        if not isinstance(wire_2.parent_entity, str)
+        else wire_2.parent_entity
     )
+
+    wire_1_world_matrix = wire_1_parent.matrix_world
+    wire_2_world_matrix = wire_2_parent.matrix_world
+
+    # wire_1_mesh = bpy.data.meshes.new_from_object(wire_1_parent)
+    # wire_2_mesh = bpy.data.meshes.new_from_object(wire_2_parent)
+
+    # edges_1_from_mesh = [
+    #     edge
+    #     for wire in get_wires_from_blender_entity(wire_1_mesh)
+    #     for edge in wire.edges
+    # ]
+    # edges_2_from_mesh = [
+    #     edge
+    #     for wire in get_wires_from_blender_entity(wire_2_mesh)
+    #     for edge in wire.edges
+    # ]
+
+    # wire_1_edges = edges_1_from_mesh
+    # wire_2_edges = edges_2_from_mesh
+
+    def get_vertices_from_edges(edges, world_matrix):
+        vertices = []
+        for edge in edges:
+            v1 = edge.v1.location.to_tuple_float(
+                BlenderLength.DEFAULT_BLENDER_UNIT.value
+            )
+            v2 = edge.v2.location.to_tuple_float(
+                BlenderLength.DEFAULT_BLENDER_UNIT.value
+            )
+            v1 = world_matrix @ mathutils.Vector(v1)
+            v2 = world_matrix @ mathutils.Vector(v2)
+
+            vertices.append(v1.to_tuple())
+            vertices.append(v2.to_tuple())
+
+        vertices = list(dict.fromkeys(vertices))
+
+        return vertices
+
+    def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix):
+        NUM_BEZIER_POINTS = 32
+
+        vertices = []
+
+        vertices_len = len(spline.bezier_points)
+        resolution = int(NUM_BEZIER_POINTS / vertices_len) - 3
+        if resolution < 2:
+            resolution = 2
+        end_index = (
+            None
+            if NUM_BEZIER_POINTS - vertices_len > vertices_len
+            else NUM_BEZIER_POINTS - vertices_len
+        )
+
+        vertices = subdivide_bezier_points(
+            spline, 2 + resolution, end_at_index=end_index, is_cyclic=(not end_index)
+        )
+
+        vertices = [world_matrix @ point for point in vertices]
+
+        vertices_len = len(vertices)
+
+        return vertices
 
     spline_1_vertices: List[Tuple[float, float, float]] = []
-    for edge in wire_1.edges:
-        v1 = edge.v1.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
-        v2 = edge.v2.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
-        v1 = wire_1_world_matrix @ mathutils.Vector(v1)
-        v2 = wire_1_world_matrix @ mathutils.Vector(v2)
-        spline_1_vertices.append(v1.to_tuple())
-        spline_1_vertices.append(v2.to_tuple())
     spline_2_vertices: List[Tuple[float, float, float]] = []
-    for edge in wire_2.edges:
-        v1 = edge.v1.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
-        v2 = edge.v2.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
 
-        v1 = wire_2_world_matrix @ mathutils.Vector(v1)
-        v2 = wire_2_world_matrix @ mathutils.Vector(v2)
+    wire_1_edges = wire_1.edges
+    wire_2_edges = wire_2.edges
 
-        spline_2_vertices.append(v1.to_tuple())
-        spline_2_vertices.append(v2.to_tuple())
+    if wire_1.get_native_instance().type == "BEZIER":
+        spline = wire_1.get_native_instance()
+        spline_1_vertices = get_vertices_from_bezier_curve(spline, wire_1_world_matrix)
+    else:
+        spline_1_vertices = get_vertices_from_edges(wire_1_edges, wire_1_world_matrix)
 
-    # TODO: subdivide the lower resolution curve until they're equal
-
-    spline_1_vertices = list(dict.fromkeys(spline_1_vertices))
-    spline_2_vertices = list(dict.fromkeys(spline_2_vertices))
+    if wire_2.get_native_instance().type == "BEZIER":
+        spline = wire_2.get_native_instance()
+        spline_2_vertices = get_vertices_from_bezier_curve(spline, wire_2_world_matrix)
+    else:
+        spline_2_vertices = get_vertices_from_edges(wire_2_edges, wire_2_world_matrix)
 
     spline1_len = len(spline_1_vertices)
     spline2_len = len(spline_2_vertices)
+
+    if spline1_len != spline2_len:
+        raise Exception(
+            "Splines don't have the same number of vertices and cannot be lofted."
+        )
 
     spline1_edges = [(i, i + 1) for i in range(spline1_len - 1)] + [
         (0, spline1_len - 1)

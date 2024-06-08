@@ -53,10 +53,10 @@ class Sketch(SketchInterface, Entity):
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         if isinstance(project_from, WireInterface):
             points = project_from.get_vertices()
-            points = [point.location for point in points]
-            points.append(points[0].copy())
+            points.append(points[0])
             wire = self.create_from_vertices(points)
             wire.name = project_from.name
+
             return wire
         raise NotImplementedError(f"Type {type(project_from)} is not supported.")
 
@@ -103,7 +103,9 @@ class Sketch(SketchInterface, Entity):
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
     ) -> "WireInterface":
-        parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
+        parsed_points = [
+            Point.from_list_of_float_or_string_or_Vertex(point) for point in points
+        ]
         is_closed = False
         if len(parsed_points) > 1 and parsed_points[0] == parsed_points[-1]:
             is_closed = True
@@ -120,6 +122,12 @@ class Sketch(SketchInterface, Entity):
             is_3d=False,
             order_u=4,
         )
+        wire = get_wire_from_blender_wire(self.get_native_instance(), blender_spline)
+        for index, vertex in enumerate(wire.get_vertices()):
+            point = points[index]
+            if isinstance(point, VertexInterface):
+                vertex.set_control_points(point.get_control_points())
+
         merge_touching_splines(curve=curve_data, reference_spline_index=0)
         if is_closed:
             blender_spline.use_cyclic_u = True
