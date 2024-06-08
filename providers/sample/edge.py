@@ -14,9 +14,9 @@ from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.edge_interface import EdgeInterface
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
+
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
@@ -25,9 +25,9 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.proxy.landmark import Landmark
-
 from codetocad.proxy.vertex import Vertex
+
+from codetocad.proxy.landmark import Landmark
 
 
 from providers.sample.entity import Entity
@@ -52,7 +52,7 @@ class Edge(EdgeInterface, Entity):
         self.native_instance = native_instance
         self.parent_entity = parent_entity
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
 
         print("offset called", f": {distance}")
@@ -63,21 +63,21 @@ class Edge(EdgeInterface, Entity):
             name="an edge",
         )
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle") -> Self:
 
         print("fillet called", f": {other_edge}, {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_is_construction(self, is_construction: "bool") -> Self:
 
         print("set_is_construction called", f": {is_construction}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_is_construction(
         self,
     ) -> "bool":
@@ -88,7 +88,7 @@ class Edge(EdgeInterface, Entity):
 
         return True
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -103,7 +103,7 @@ class Edge(EdgeInterface, Entity):
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
@@ -117,7 +117,7 @@ class Edge(EdgeInterface, Entity):
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
@@ -133,35 +133,35 @@ class Edge(EdgeInterface, Entity):
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def remesh(self, strategy: "str", amount: "float") -> Self:
 
         print("remesh called", f": {strategy}, {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subdivide(self, amount: "float") -> Self:
 
         print("subdivide called", f": {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def decimate(self, amount: "float") -> Self:
 
         print("decimate called", f": {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
 
         print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
         landmark_name: "str",
@@ -174,7 +174,7 @@ class Edge(EdgeInterface, Entity):
 
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
 
         print("get_landmark called", f": {landmark_name}")

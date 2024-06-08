@@ -15,6 +15,8 @@ def supported(
     def supported_wrap(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            if supportedLevel.value < SupportLevel.PARTIAL.value:
+                raise Exception("This method is not supported yet.")
             return func(*args, **kwargs)
 
         return wrapper
