@@ -16,7 +16,7 @@
 
 3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
 
-4. Install the Blender Addon at [providers/blender/CodeToCADBlenderAddon.py](./providers/blender/CodeToCADBlenderAddon.py) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+4. Install the Blender Addon from from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 ## Running Scripts
 

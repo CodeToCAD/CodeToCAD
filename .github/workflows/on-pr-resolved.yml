@@ -3,11 +3,11 @@ on:
     types:
       - closed
 
-name: Release Version and Blender Addon
+name: Create a release and provider bundles.
 
 jobs:
   create_release_tag:
-    if: github.base_ref == 'develop' && github.head_ref == 'release/blenderAddonZipFile'
+    if: github.base_ref == 'develop'
     name: Create release tag
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,9 @@ jobs:
           body: "[PYPI Release](https://pypi.org/project/CodeToCAD/0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
           draft: false
           prerelease: true
-      - name: Upload binaries to release
+      - name: Build Blender Addon Zip File
+        run: bash ./development/create_blender_addon.sh
+      - name: Upload provider bundles to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -63,22 +65,3 @@ jobs:
           packages-dir: dist/
 
 
-  create_blender_addon_zip:
-    if: github.base_ref == 'develop' && github.head_ref != 'release/blenderAddonZipFile' 
-    name: Create Blender Addon Zip File
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Build Blender Addon Zip File
-        run: bash ./development/create_blender_addon.sh
-      - run: git checkout -b release/blenderAddonZipFile
-      - run: git add .
-      - run: git config user.name ${{ vars.COMMIT_BOT_NAME }}
-      - run: git config user.email ${{ vars.COMMIT_BOT_EMAIL }}
-      - run: git commit -m "Release Blender Addon Zip File"
-      - run: git push -u origin release/blenderAddonZipFile --force
-      - name: create pull request
-        run: gh pr create -B develop -H release/blenderAddonZipFile --title 'Blender Addon Zip File Release' --body 'Auto-created by Github action'
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
