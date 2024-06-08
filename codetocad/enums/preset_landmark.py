@@ -12,6 +12,8 @@ class PresetLandmark(Enum):
     front = 32
     back = 64
     center = 128
+    start = 256
+    end = 512
     leftTop = left | top
     leftBottom = left | bottom
     leftFront = left | front

@@ -9,3 +9,4 @@ from .preset_landmark import PresetLandmark
 from .preset_material import PresetMaterial
 from .scaling_methods import ScalingMethods
 from .units import Units
+from .boolean_operation import BooleanOperation

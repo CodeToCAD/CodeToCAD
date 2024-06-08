@@ -86,7 +86,7 @@
                 }
             }
         },
-        "Booleanable":{
+        "Booleanable": {
             "information": "An entity that supports boolean operations: union, intersect, subtract.",
             "is_interface_only": true,
             "union": {
@@ -540,10 +540,9 @@
                     "height": {
                         "type": "string,float,Dimension"
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -561,10 +560,9 @@
                         "type": "string,float,Dimension",
                         "default_value": 0
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -578,10 +576,9 @@
                     "height": {
                         "type": "string,float,Dimension"
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -595,10 +592,9 @@
                     "outer_radius": {
                         "type": "string,float,Dimension"
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -609,10 +605,9 @@
                     "radius": {
                         "type": "string,float,Dimension"
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -655,10 +650,9 @@
                         "type": "string,float,Angle",
                         "default_value": 0
                     },
-                    "keyword_arguments": {
-                        "type": "object",
-                        "required": false,
-                        "information": "key-value pairs to pass onto the native api"
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
                     }
                 }
             },
@@ -1021,6 +1015,14 @@
                         "type": "string",
                         "default_value": null,
                         "required": false
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1031,6 +1033,10 @@
                 "parameters": {
                     "points": {
                         "type": "list[string,list[string],list[float],list[Dimension],Point,Vertex]"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1041,6 +1047,10 @@
                 "parameters": {
                     "point": {
                         "type": "string,list[string],list[float],list[Dimension],Point"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1049,11 +1059,39 @@
                 "return_type": "Wire",
                 "information": "Create a line between two points",
                 "parameters": {
-                    "start_at": {
-                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex"
+                    "length": {
+                        "type": "string,float,Dimension"
                     },
-                    "end_at": {
-                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex"
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false,
+                        "default_value": "PresetLandmark.end"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
+                    }
+                }
+            },
+            "create_line_to": {
+                "action": "get",
+                "return_type": "Wire",
+                "information": "Create a line between two points",
+                "parameters": {
+                    "to": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark"
+                    },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false,
+                        "default_value": "PresetLandmark.end"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1064,6 +1102,14 @@
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1077,6 +1123,14 @@
                     },
                     "radius_major": {
                         "type": "string,float,Dimension"
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1085,9 +1139,6 @@
                 "return_type": "Wire",
                 "information": "Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                 "parameters": {
-                    "start_at": {
-                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex"
-                    },
                     "end_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex"
                     },
@@ -1095,10 +1146,19 @@
                         "information": "The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                         "type": "string,float,Dimension"
                     },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "default_value": "PresetLandmark.end",
+                        "required": false
+                    },
                     "flip": {
                         "type": "boolean",
                         "required": false,
                         "default_value": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1112,6 +1172,14 @@
                     },
                     "width": {
                         "type": "string,float,Dimension"
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1128,6 +1196,14 @@
                     },
                     "width": {
                         "type": "string,float,Dimension"
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1144,6 +1220,14 @@
                     },
                     "height": {
                         "type": "string,float,Dimension"
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             },
@@ -1168,6 +1252,14 @@
                     "radius_end": {
                         "information": "Specify a radiusEnd to make a conical or drafted spiral. Pass None to make a cylindrical spiral.",
                         "type": "string,float,Dimension",
+                        "required": false
+                    },
+                    "center_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
                         "required": false
                     }
                 }
@@ -1199,7 +1291,7 @@
                 "information": "Set a vertex's curve control points. This may not be applicable for some curve types.",
                 "action": "modify",
                 "parameters": {
-                    "points":{
+                    "points": {
                         "information": "A list of Points or coordinates describing the control points. The list must be the same size as the list returned by get_control_points().",
                         "type": "list[string,list[string],list[float],list[Dimension],Point]",
                         "required": true
@@ -1283,7 +1375,7 @@
                 "action": "get",
                 "return_type": "Point",
                 "parameters": {
-                    "flip":{
+                    "flip": {
                         "information": "Flip the normal direction.",
                         "type": "boolean",
                         "default_value": false,
@@ -1399,6 +1491,98 @@
                 "parameters": {
                     "profile_curve_name": {
                         "type": "string"
+                    }
+                }
+            },
+            "create_from_vertices": {
+                "action": "modify",
+                "information": "Create a curve from 2D/3D points.",
+                "parameters": {
+                    "points": {
+                        "type": "list[string,list[string],list[float],list[Dimension],Point,Vertex]"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
+                    }
+                }
+            },
+            "create_point": {
+                "action": "modify",
+                "information": "Create a point",
+                "parameters": {
+                    "point": {
+                        "type": "string,list[string],list[float],list[Dimension],Point"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
+                    }
+                }
+            },
+            "create_line": {
+                "action": "modify",
+                "information": "Create a line between two points",
+                "parameters": {
+                    "length": {
+                        "type": "string,float,Dimension"
+                    },
+                    "angle": {
+                        "type": "string,float,Angle"
+                    },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false,
+                        "default_value": "PresetLandmark.end"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
+                    }
+                }
+            },
+            "create_line_to": {
+                "action": "modify",
+                "information": "Create a line between two points",
+                "parameters": {
+                    "to": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark"
+                    },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false,
+                        "default_value": "PresetLandmark.end"
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
+                    }
+                }
+            },
+            "create_arc": {
+                "action": "modify",
+                "information": "Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
+                "parameters": {
+                    "end_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex"
+                    },
+                    "radius": {
+                        "information": "The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
+                        "type": "string,float,Dimension"
+                    },
+                    "start_at": {
+                        "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "default_value": "PresetLandmark.end",
+                        "required": false
+                    },
+                    "flip": {
+                        "type": "boolean",
+                        "required": false,
+                        "default_value": false
+                    },
+                    "options": {
+                        "type": "SketchOptions",
+                        "required": false
                     }
                 }
             }
