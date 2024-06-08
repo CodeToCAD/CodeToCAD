@@ -26,7 +26,7 @@ class Entity(
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_exists(
         self,
     ) -> "bool":
@@ -37,7 +37,7 @@ class Entity(
 
         return True
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ) -> Self:
@@ -46,14 +46,14 @@ class Entity(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete(self, remove_children: "bool" = True) -> Self:
 
         print("delete called", f": {remove_children}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_visible(
         self,
     ) -> "bool":
@@ -64,14 +64,14 @@ class Entity(
 
         return True
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_visible(self, is_visible: "bool") -> Self:
 
         print("set_visible called", f": {is_visible}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def apply(
         self,
         rotation: "bool" = True,
@@ -84,7 +84,7 @@ class Entity(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_native_instance(
         self,
     ) -> "object":
@@ -95,7 +95,7 @@ class Entity(
 
         return "instance"
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_world(
         self,
     ) -> "Point":
@@ -106,7 +106,7 @@ class Entity(
 
         return Point.from_list_of_float_or_string([0, 0, 0])
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_local(
         self,
     ) -> "Point":
@@ -117,7 +117,7 @@ class Entity(
 
         return Point.from_list_of_float_or_string([0, 0, 0])
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select(
         self,
     ) -> Self:
@@ -128,7 +128,7 @@ class Entity(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -140,28 +140,28 @@ class Entity(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_x(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_x called", f": {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_y(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_y called", f": {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_z(self, amount: "str|float|Dimension") -> Self:
 
         print("translate_z called", f": {amount}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ) -> Self:
@@ -170,28 +170,28 @@ class Entity(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_x(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_x called", f": {rotation}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_y(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_y called", f": {rotation}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_z(self, rotation: "str|float|Angle") -> Self:
 
         print("rotate_z called", f": {rotation}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_bounding_box(
         self,
     ) -> "BoundaryBox":
@@ -202,7 +202,7 @@ class Entity(
 
         return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_dimensions(
         self,
     ) -> "Dimensions":

@@ -34,7 +34,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",
@@ -46,7 +46,7 @@ class Landmark(LandmarkInterface, Entity):
 
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark_entity_name(
         self,
     ) -> "str":
@@ -57,7 +57,7 @@ class Landmark(LandmarkInterface, Entity):
 
         return "String"
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_parent_entity(
         self,
     ) -> "EntityInterface":

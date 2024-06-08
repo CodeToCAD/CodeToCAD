@@ -39,7 +39,7 @@ class Vertex(VertexInterface, Entity):
         self.native_instance = native_instance
         self.parent_entity = parent_entity
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_control_points(
         self,
     ) -> "list[Point]":
@@ -50,7 +50,7 @@ class Vertex(VertexInterface, Entity):
 
         return ["Point.from_list_of_float_or_string([0,0,0])"]
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
@@ -59,7 +59,7 @@ class Vertex(VertexInterface, Entity):
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
 
         print("project called", f": {project_from}")

@@ -29,7 +29,7 @@ class Scene(
         self.description = description
 
     @staticmethod
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def default() -> "SceneInterface":
 
         print(
@@ -38,7 +38,7 @@ class Scene(
 
         return Scene()
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create(
         self,
     ) -> Self:
@@ -49,7 +49,7 @@ class Scene(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete(
         self,
     ) -> Self:
@@ -60,7 +60,7 @@ class Scene(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_exists(
         self,
     ) -> "bool":
@@ -71,7 +71,7 @@ class Scene(
 
         return True
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_selected_entity(
         self,
     ) -> "EntityInterface":
@@ -82,7 +82,7 @@ class Scene(
 
         return __import__("codetocad").Part("an entity")
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def export(
         self,
         file_path: "str",
@@ -95,35 +95,35 @@ class Scene(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_default_unit(self, unit: "str|LengthUnit") -> Self:
 
         print("set_default_unit called", f": {unit}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_group(self, name: "str") -> Self:
 
         print("create_group called", f": {name}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete_group(self, name: "str", remove_children: "bool") -> Self:
 
         print("delete_group called", f": {name}, {remove_children}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def remove_from_group(self, entity_name: "str", group_name: "str") -> Self:
 
         print("remove_from_group called", f": {entity_name}, {group_name}")
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def assign_to_group(
         self,
         entities: "list[str|EntityInterface]",
@@ -138,7 +138,7 @@ class Scene(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_visible(
         self, entities: "list[str|EntityInterface]", is_visible: "bool"
     ) -> Self:
@@ -147,7 +147,7 @@ class Scene(
 
         return self
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_background_image(
         self,
         file_path: "str",

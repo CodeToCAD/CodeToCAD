@@ -21,7 +21,7 @@ class Analytics(
     AnalyticsInterface,
 ):
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def measure_distance(
         self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
@@ -30,7 +30,7 @@ class Analytics(
 
         return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def measure_angle(
         self,
         entity1: "str|EntityInterface",
@@ -42,28 +42,28 @@ class Analytics(
 
         return [Angle(90)]
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
 
         print("get_world_pose called", f": {entity}")
 
         return [0.0]
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
 
         print("get_bounding_box called", f": {entity_name}")
 
         return BoundaryBox(BoundaryAxis(0, 0), BoundaryAxis(0, 0), BoundaryAxis(0, 0))
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
 
         print("get_dimensions called", f": {entity_name}")
 
         return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))
 
-    @supported(SupportLevel.UNSUPPORTED, notes="")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def log(self, message: "str") -> Self:
 
         print("log called", f": {message}")
