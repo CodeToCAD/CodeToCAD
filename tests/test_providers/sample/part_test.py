@@ -18,7 +18,7 @@ class PartTest(TestProviderCase, PartTestInterface):
             width=Dimension(0, "mm"),
             length=Dimension(0, "mm"),
             height=Dimension(0, "mm"),
-            keyword_arguments={},
+            options=PartOptions(),
         )
 
         assert value.is_exists(), "Create method failed."
@@ -31,7 +31,7 @@ class PartTest(TestProviderCase, PartTestInterface):
             radius=Dimension(0, "mm"),
             height=Dimension(0, "mm"),
             draft_radius=0,
-            keyword_arguments={},
+            options=PartOptions(),
         )
 
         assert value.is_exists(), "Create method failed."
@@ -41,7 +41,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.create_cylinder(
-            radius=Dimension(0, "mm"), height=Dimension(0, "mm"), keyword_arguments={}
+            radius=Dimension(0, "mm"), height=Dimension(0, "mm"), options=PartOptions()
         )
 
         assert value.is_exists(), "Create method failed."
@@ -53,7 +53,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         value = instance.create_torus(
             inner_radius=Dimension(0, "mm"),
             outer_radius=Dimension(0, "mm"),
-            keyword_arguments={},
+            options=PartOptions(),
         )
 
         assert value.is_exists(), "Create method failed."
@@ -62,7 +62,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance = Part(name="String", description="String", native_instance="value")
 
-        value = instance.create_sphere(radius=Dimension(0, "mm"), keyword_arguments={})
+        value = instance.create_sphere(radius=Dimension(0, "mm"), options=PartOptions())
 
         assert value.is_exists(), "Create method failed."
 
@@ -81,7 +81,7 @@ class PartTest(TestProviderCase, PartTestInterface):
             skew_angle=0,
             conical_angle=0,
             crown_angle=0,
-            keyword_arguments={},
+            options=PartOptions(),
         )
 
         assert value.is_exists(), "Create method failed."
@@ -153,7 +153,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance = Part(name="String", description="String", native_instance="value")
 
         value = instance.twist(
-            angle=Angle("90"), screw_pitch=Dimension(0, "mm"), iterations=1, axis="z"
+            angle=Angle(90), screw_pitch=Dimension(0, "mm"), iterations=1, axis="z"
         )
 
         assert value, "Modify method failed."
@@ -288,7 +288,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         value = instance.circular_pattern(
             instance_count=0,
-            separation_angle=Angle("90"),
+            separation_angle=Angle(90),
             center_entity_or_landmark=__import__("codetocad").Part("an entity"),
             normal_direction_axis="z",
         )

@@ -11,9 +11,9 @@ from typing import Self
 from codetocad.interfaces.part_interface import PartInterface
 
 
-from codetocad.interfaces.material_interface import MaterialInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.material_interface import MaterialInterface
 
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
@@ -43,12 +43,10 @@ class Part(PartInterface, Entity):
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
-        print(
-            "create_cube called", f": {width}, {length}, {height}, {keyword_arguments}"
-        )
+        print("create_cube called", f": {width}, {length}, {height}, {options}")
 
         return self
 
@@ -57,13 +55,10 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
-        print(
-            "create_cone called",
-            f": {radius}, {height}, {draft_radius}, {keyword_arguments}",
-        )
+        print("create_cone called", f": {radius}, {height}, {draft_radius}, {options}")
 
         return self
 
@@ -71,10 +66,10 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
-        print("create_cylinder called", f": {radius}, {height}, {keyword_arguments}")
+        print("create_cylinder called", f": {radius}, {height}, {options}")
 
         return self
 
@@ -82,21 +77,18 @@ class Part(PartInterface, Entity):
         self,
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
-        print(
-            "create_torus called",
-            f": {inner_radius}, {outer_radius}, {keyword_arguments}",
-        )
+        print("create_torus called", f": {inner_radius}, {outer_radius}, {options}")
 
         return self
 
     def create_sphere(
-        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
+        self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ) -> Self:
 
-        print("create_sphere called", f": {radius}, {keyword_arguments}")
+        print("create_sphere called", f": {radius}, {options}")
 
         return self
 
@@ -112,12 +104,12 @@ class Part(PartInterface, Entity):
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         print(
             "create_gear called",
-            f": {outer_radius}, {addendum}, {inner_radius}, {dedendum}, {height}, {pressure_angle}, {number_of_teeth}, {skew_angle}, {conical_angle}, {crown_angle}, {keyword_arguments}",
+            f": {outer_radius}, {addendum}, {inner_radius}, {dedendum}, {height}, {pressure_angle}, {number_of_teeth}, {skew_angle}, {conical_angle}, {crown_angle}, {options}",
         )
 
         return self

@@ -102,7 +102,7 @@ class JointTest(TestProviderCase, JointTestInterface):
             entity2=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.limit_rotation_xyz(x=Angle("90"), y=Angle("90"), z=Angle("90"))
+        value = instance.limit_rotation_xyz(x=Angle(90), y=Angle(90), z=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -113,7 +113,7 @@ class JointTest(TestProviderCase, JointTestInterface):
             entity2=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.limit_rotation_x(min=Angle("90"), max=Angle("90"))
+        value = instance.limit_rotation_x(min=Angle(90), max=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -124,7 +124,7 @@ class JointTest(TestProviderCase, JointTestInterface):
             entity2=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.limit_rotation_y(min=Angle("90"), max=Angle("90"))
+        value = instance.limit_rotation_y(min=Angle(90), max=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -135,6 +135,6 @@ class JointTest(TestProviderCase, JointTestInterface):
             entity2=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.limit_rotation_z(min=Angle("90"), max=Angle("90"))
+        value = instance.limit_rotation_z(min=Angle(90), max=Angle(90))
 
         assert value, "Modify method failed."

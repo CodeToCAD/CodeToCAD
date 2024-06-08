@@ -178,9 +178,22 @@ class SketchTest(TestProviderCase, SketchTestInterface):
     def test_create_line(self):
         instance = Sketch("mySketch")
 
-        instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        value = instance.create_line(
+            length=Dimension(2, "mm"),
+            angle=Angle(90),
+            start_at="PresetLandmark.end",
+            options=SketchOptions(),
+        )
 
-        assert instance.is_exists(), "Create method failed."
+        assert value, "Get method failed."
+
+    def test_create_line_to(self):
+
+        instance = Sketch("mySketch")
+
+        value = instance.create_line_to(to=[0, 5, 0])
+
+        assert value, "Get method failed."
 
     def test_create_circle(self):
         instance = Sketch("myCircle")
@@ -226,12 +239,9 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
-    # @skip("TODO")
     def test_create_spiral(self):
         instance = Sketch("mySketch")
 
-        value = instance.create_spiral(
-            "number_of_turns", "height", "radius", "is_clockwise", "radius_end"
-        )
+        value = instance.create_spiral(5, 1, 1, True)
 
         assert value.is_exists(), "Create method failed."

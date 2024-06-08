@@ -63,3 +63,28 @@ class WireTestInterface(metaclass=ABCMeta):
     def test_profile(self):
 
         pass
+
+    @abstractmethod
+    def test_create_from_vertices(self):
+
+        pass
+
+    @abstractmethod
+    def test_create_point(self):
+
+        pass
+
+    @abstractmethod
+    def test_create_line(self):
+
+        pass
+
+    @abstractmethod
+    def test_create_line_to(self):
+
+        pass
+
+    @abstractmethod
+    def test_create_arc(self):
+
+        pass

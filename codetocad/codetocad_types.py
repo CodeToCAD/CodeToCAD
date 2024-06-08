@@ -8,6 +8,8 @@ from codetocad.core.dimensions import Dimensions
 from codetocad.core.point import Point
 from codetocad.core.boundary_box import BoundaryBox
 from codetocad.core.boundary_axis import BoundaryAxis
+from codetocad.core.part_options import PartOptions
+from codetocad.core.sketch_options import SketchOptions
 from codetocad.enums.angle_unit import AngleUnit
 from codetocad.enums.axis import Axis
 from codetocad.enums.constraint_types import ConstraintTypes
@@ -19,6 +21,7 @@ from codetocad.enums.file_formats import FileFormats
 from codetocad.enums.preset_material import PresetMaterial
 from codetocad.enums.scaling_methods import ScalingMethods
 from codetocad.enums.units import Units
+from codetocad.enums.boolean_operation import BooleanOperation
 
 # from codetocad.interfaces.booleanable_interface import BooleanableInterface
 # from codetocad.interfaces.camera_interface import CameraInterface

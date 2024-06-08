@@ -21,9 +21,6 @@ from providers.blender.blender_provider.blender_actions.objects import (
 from providers.blender.blender_provider.blender_actions.objects_context import (
     convert_object_using_ops,
 )
-from providers.blender.blender_provider.blender_actions.vertex_edge_wire import (
-    get_wires_from_blender_entity,
-)
 from providers.blender.blender_provider.blender_definitions import (
     BlenderCurvePrimitiveTypes,
     BlenderCurveTypes,

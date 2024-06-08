@@ -42,15 +42,18 @@ capabilities_parameter_types_mock_values = {
     "Dimension": "Dimension(0,'mm')",
     "str|float|Dimension": "Dimension(0,'mm')",
     "str|list[str]|list[float]|list[Dimension]|Dimensions": "Dimensions(Dimension(0,'mm'),Dimension(0,'mm'),Dimension(0,'mm'))",
-    "Angle": "Angle('90')",
-    "str|float|Angle": "Angle('90')",
-    "list[Angle]": "[Angle('90')]",
+    "Angle": "Angle(90)",
+    "str|float|Angle": "Angle(90)",
+    "list[Angle]": "[Angle(90)]",
     "Point": dummy_point,
     "list[Point]": [dummy_point],
     "str|list[str]|list[float]|list[Dimension]|Point": dummy_point,
     "list[str|list[str]|list[float]|list[Dimension]|Point]": [dummy_point],
     "str|list[str]|list[float]|list[Dimension]|Point|Vertex": dummy_point,
     "list[str|list[str]|list[float]|list[Dimension]|Point|Vertex]": [dummy_point],
+    "str|list[str]|list[float]|list[Dimension]|Point|Vertex|Landmark|PresetLandmark": [
+        dummy_point
+    ],
     "str|LengthUnit": "'mm'",
     "PresetLandmark": "PresetLandmark.leftTop",
     "str|PresetLandmark": "PresetLandmark.leftTop",
@@ -74,4 +77,6 @@ capabilities_parameter_types_mock_values = {
     "str|Booleanable": f"{importable_codetocad}Part('a booleanable part')",
     "str|Landmarkable": f"{importable_codetocad}Part('a landmarkable part')",
     "CurveTypes": "CurveTypes.NURBS",
+    "PartOptions": "PartOptions()",
+    "SketchOptions": "SketchOptions()",
 }

@@ -40,6 +40,11 @@ class SketchTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def test_create_line_to(self):
+
+        pass
+
+    @abstractmethod
     def test_create_circle(self):
 
         pass
