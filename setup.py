@@ -18,7 +18,7 @@ except:  # noqa
 
 setup(
     name="codetocad",
-    version=f"0.3.{git_commit_epoch}",
+    version=f"0.4.{git_commit_epoch}",
     description="3D modeling automation in your favorite modeling software.",
     long_description=long_description,
     long_description_content_type="text/markdown",

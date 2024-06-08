@@ -22,7 +22,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v0.3.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
+              ref: 'refs/tags/v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
               sha: context.sha
             })
       - name: Create Release
@@ -31,9 +31,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v0.3.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          release_name: Release v0.3.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/0.3.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
+          tag_name: v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          release_name: Release v0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/0.4.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
           draft: false
           prerelease: true
       - name: Upload binaries to release
