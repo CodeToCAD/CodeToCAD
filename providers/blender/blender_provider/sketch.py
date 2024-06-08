@@ -1,4 +1,6 @@
 import cmath
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.proxy.edge import Edge
 from codetocad.proxy.wire import Wire
 from codetocad.interfaces.edge_interface import EdgeInterface
@@ -52,6 +54,7 @@ class Sketch(SketchInterface, Entity):
         self.description = description
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
 
+    @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         if isinstance(project_from, WireInterface):
             points = project_from.get_vertices()
@@ -61,6 +64,7 @@ class Sketch(SketchInterface, Entity):
             return wire
         raise NotImplementedError(f"Type {type(project_from)} is not supported.")
 
+    @supported(SupportLevel.UNSUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
@@ -68,10 +72,12 @@ class Sketch(SketchInterface, Entity):
             new_name, curve_type=self.curve_type, description=self.description
         )
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_text(
         self,
         text: "str",
@@ -102,6 +108,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -140,6 +147,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_point(
         self,
         point: "str|list[str]|list[float]|list[Dimension]|Point",
@@ -164,6 +172,7 @@ class Sketch(SketchInterface, Entity):
             native_instance=blender_spline,
         )
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_line(
         self,
         length: "str|float|Dimension",
@@ -235,6 +244,7 @@ class Sketch(SketchInterface, Entity):
             )
             index += 1
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_circle(
         self,
         radius: "str|float|Dimension",
@@ -252,6 +262,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
@@ -274,6 +285,7 @@ class Sketch(SketchInterface, Entity):
             self.scale_x(radius_minor * 2)
         return wire
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
@@ -337,6 +349,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_rectangle(
         self,
         length: "str|float|Dimension",
@@ -360,6 +373,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_polygon(
         self,
         number_of_sides: "int",
@@ -370,6 +384,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_trapezoid(
         self,
         length_upper: "str|float|Dimension",
@@ -380,6 +395,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -392,6 +408,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         raise NotImplementedError()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -403,6 +420,7 @@ class Sketch(SketchInterface, Entity):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -412,6 +430,7 @@ class Sketch(SketchInterface, Entity):
         implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def circular_pattern(
         self,
         instance_count: "int",
@@ -428,10 +447,12 @@ class Sketch(SketchInterface, Entity):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         implementables.export(self, file_path, overwrite, scale)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -441,36 +462,44 @@ class Sketch(SketchInterface, Entity):
         implementables.scale_xyz(self, x, y, z)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_x(self, scale: "str|float|Dimension"):
         implementables.scale_x(self, scale)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_y(self, scale: "str|float|Dimension"):
         implementables.scale_y(self, scale)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_z(self, scale: "str|float|Dimension"):
         implementables.scale_z(self, scale)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_x_by_factor(self, scale_factor: "float"):
         implementables.scale_x_by_factor(self, scale_factor)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_y_by_factor(self, scale_factor: "float"):
         implementables.scale_y_by_factor(self, scale_factor)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
         implementables.scale_z_by_factor(self, scale_factor)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -480,14 +509,17 @@ class Sketch(SketchInterface, Entity):
     ) -> "LandmarkInterface":
         return implementables.create_landmark(self, landmark_name, x, y, z)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_wires(self) -> "list[WireInterface]":
         return get_wires_from_blender_entity(
             self.get_native_instance().data
         )  # type:ignore
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",

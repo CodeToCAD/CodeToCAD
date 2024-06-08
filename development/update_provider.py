@@ -9,6 +9,9 @@ from development.capabilities_json_to_python.capabilities_to_py import (
     create_register_method,
 )
 
+from codetocad.utilities.supported import supported  # noqa don't remove this
+from codetocad.enums.support_level import SupportLevel  # noqa don't remove this
+
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -67,7 +70,7 @@ def update_provider_directory(
         update_provider_file(
             provider_name=provider_name,
             class_name=class_name,
-            is_remove_non_compliant_methods=is_remove_non_compliant_methods,
+            is_remove_non_compliant_methods_and_add_supported_decorator=is_remove_non_compliant_methods,
             is_dump_imports=is_dump_imports,
             is_write=is_write,
         )
@@ -76,7 +79,7 @@ def update_provider_directory(
 def update_provider_file(
     provider_name: str,
     class_name: str,
-    is_remove_non_compliant_methods=True,
+    is_remove_non_compliant_methods_and_add_supported_decorator=True,
     is_dump_imports: bool = True,
     is_write: bool = True,
 ):
@@ -159,7 +162,7 @@ def update_provider_file(
                     f"- Added: `{ast_comments.unparse(definition)}`\n\n"
                 )
 
-    if is_remove_non_compliant_methods:
+    if is_remove_non_compliant_methods_and_add_supported_decorator:
         method_names = capabilities_loader.get_implementable_method_names_for_class(
             class_name
         )
@@ -167,8 +170,18 @@ def update_provider_file(
             if isinstance(definition, ast_comments.FunctionDef):
                 if definition.name[0] == "_":
                     continue
-                if "override" in [dec.id for dec in definition.decorator_list]:
+                decorators = [
+                    dec.id if hasattr(dec, "id") else dec.func.id
+                    for dec in definition.decorator_list
+                ]
+                if "override" in decorators:
                     continue
+                if "supported" not in decorators and definition.name in method_names:
+                    definition.decorator_list.append(
+                        ast_comments.ast.parse("supported(SupportLevel.UNSUPPORTED)")
+                        .body[0]
+                        .value
+                    )
                 if definition.name not in method_names:
                     provider_class.body.remove(definition)
                     log_markdown_file_content += f"""
@@ -233,7 +246,7 @@ def main():
         return update_provider_file(
             provider_name=provider_name,
             class_name=class_name,
-            is_remove_non_compliant_methods=True,
+            is_remove_non_compliant_methods_and_add_supported_decorator=True,
             is_dump_imports=True,
             is_write=is_write,
         )

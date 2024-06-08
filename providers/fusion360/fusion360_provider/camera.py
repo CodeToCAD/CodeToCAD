@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.camera_interface import CameraInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
@@ -34,18 +36,22 @@ class Camera(CameraInterface, Entity):
             self.fusion_camera.rotate(Axis.Z, zAngle)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_perspective(self):
         print("create_perspective called:")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_orthogonal(self):
         print("create_orthogonal called:")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_panoramic(self):
         print("create_panoramic called")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_focal_length(self, length: "float"):
         print("set_focal_length called:", length)
         return self

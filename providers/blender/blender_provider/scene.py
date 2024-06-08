@@ -1,4 +1,6 @@
 from codetocad.interfaces.exportable_interface import ExportableInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from codetocad.proxy.entity import Entity
 from codetocad.interfaces.scene_interface import SceneInterface
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -33,24 +35,30 @@ class Scene(SceneInterface):
         self.description = description
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED)
     def default() -> "Scene":
         return Scene()
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create(self):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def delete(self):
         raise NotImplementedError()
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self) -> bool:
         raise NotImplementedError()
         return
 
+    @supported(SupportLevel.UNSUPPORTED)
     def get_selected_entity(self) -> "EntityInterface":
         return Entity(get_selected_object_name())
 
+    @supported(SupportLevel.UNSUPPORTED)
     def export(
         self,
         file_path: "str",
@@ -65,6 +73,7 @@ class Scene(SceneInterface):
             part.export(file_path, overwrite, scale)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_default_unit(self, unit: "str|LengthUnit"):
         if isinstance(unit, str):
             unit = LengthUnit.from_string(unit)
@@ -72,16 +81,19 @@ class Scene(SceneInterface):
         blender_actions_set_default_unit(blenderUnit, self.name)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_group(self, name: "str"):
         create_collection(name, self.name)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def delete_group(self, name: "str", remove_children: "bool"):
         remove_collection(
             name=name, scene_name=self.name, remove_children=remove_children
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def remove_from_group(self, entity_name: "str", group_name: "str"):
         if isinstance(entity_name, Entity):
             entity_name = entity_name.name
@@ -92,6 +104,7 @@ class Scene(SceneInterface):
         )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def assign_to_group(
         self,
         entities: "list[str|EntityInterface]",
@@ -107,6 +120,7 @@ class Scene(SceneInterface):
             )
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
         for entity in entities:
             if isinstance(entity, EntityInterface):
@@ -114,6 +128,7 @@ class Scene(SceneInterface):
             set_object_visibility(entity, is_visible)
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_background_image(
         self,
         file_path: "str",

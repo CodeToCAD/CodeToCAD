@@ -1,4 +1,6 @@
 from codetocad.interfaces.light_interface import LightInterface
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
 from providers.blender.blender_provider.blender_actions.light import (
     create_light,
     set_light_color,
@@ -14,22 +16,27 @@ class Light(LightInterface, Entity):
         self.name = name
         self.description = description
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_sun(self, energy_level: "float"):
         create_light(self.name, energy_level, type="SUN")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_point(self, energy_level: "float"):
         create_light(self.name, energy_level, type="POINT")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_spot(self, energy_level: "float"):
         create_light(self.name, energy_level, type="SPOT")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def create_area(self, energy_level: "float"):
         create_light(self.name, energy_level, type="AREA")
         return self
 
+    @supported(SupportLevel.UNSUPPORTED)
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
