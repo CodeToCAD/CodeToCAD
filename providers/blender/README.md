@@ -6,7 +6,7 @@ This is the CodeToCAD Blender Provider, that allows CodeToCAD to talk to Blender
 
 > Pre-requisites: Blender 4.0 or newer is required.
 
-1. Download a release of the Blender Addon from [CodeToCADBlenderAddon.zip](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/CodeToCADBlenderAddon.zip) or from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases)
+1. Download a release of the Blender Addon from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases)
    > Note for developers: instead of downloading a release, you can clone this repository, then import [blender_addon.py](./blender_addon.py) and set to CodeToCAD path in the addon to the root of this repository. Please watch this guide to get set up: [Video Guide](https://youtu.be/YD_4nj0QUJ4)
 
 2. Install the Blender Addon in the blender software
