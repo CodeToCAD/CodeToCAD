@@ -8,13 +8,13 @@
 
 
 {%for capabilities_method in capabilities_loader.capabilities[class_name].methods %}
-    {{generate_method(capabilities_loader, capabilities_method, use_abstract_method_decorator)}}
+    {{generate_method(capabilities_loader, capabilities_method, use_abstract_method_decorator, template_args.use_supported_decorator)}}
 {%endfor%}
 
 {%if template_args.generate_interface_only_capabilities_in_a_separate_file == false %}
 {%for implements_class_names in capabilities_loader.capabilities[class_name].implements %}
     {%for capabilities_method in capabilities_loader.capabilities[implements_class_names].methods %}
-    {{generate_method(capabilities_loader, capabilities_method, use_abstract_method_decorator)}}
+    {{generate_method(capabilities_loader, capabilities_method, use_abstract_method_decorator, template_args.use_supported_decorator)}}
     {%endfor%}
 {%endfor%}
 {%endif%}

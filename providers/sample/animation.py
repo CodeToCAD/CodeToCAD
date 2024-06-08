@@ -6,6 +6,9 @@
 
 from typing import Self
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.animation_interface import AnimationInterface
 
@@ -18,6 +21,7 @@ class Animation(
 ):
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def default() -> "AnimationInterface":
 
         print(
@@ -26,24 +30,28 @@ class Animation(
 
         return Animation()
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_frame_start(self, frame_number: "int") -> Self:
 
         print("set_frame_start called", f": {frame_number}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_frame_end(self, frame_number: "int") -> Self:
 
         print("set_frame_end called", f": {frame_number}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_frame_current(self, frame_number: "int") -> Self:
 
         print("set_frame_current called", f": {frame_number}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
     ) -> Self:
@@ -52,6 +60,7 @@ class Animation(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
     ) -> Self:

@@ -7,6 +7,9 @@ from codetocad.codetocad_types import *
 
 from typing import Self
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.joint_interface import JointInterface
 
@@ -23,6 +26,7 @@ class Joint(
         self.entity1 = entity1
         self.entity2 = entity2
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def translate_landmark_onto_another(
         self,
     ) -> Self:
@@ -33,6 +37,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def pivot(
         self,
     ) -> Self:
@@ -43,12 +48,14 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def gear_ratio(self, ratio: "float") -> Self:
 
         print("gear_ratio called", f": {ratio}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_location_xyz(
         self,
         x: "str|float|Dimension| None" = None,
@@ -60,6 +67,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_location_x(
         self,
         min: "str|float|Dimension| None" = None,
@@ -70,6 +78,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_location_y(
         self,
         min: "str|float|Dimension| None" = None,
@@ -80,6 +89,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_location_z(
         self,
         min: "str|float|Dimension| None" = None,
@@ -90,6 +100,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_rotation_xyz(
         self,
         x: "str|float|Angle| None" = None,
@@ -101,6 +112,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:
@@ -109,6 +121,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:
@@ -117,6 +130,7 @@ class Joint(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:

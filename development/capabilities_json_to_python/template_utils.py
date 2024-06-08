@@ -29,6 +29,7 @@ class TemplateArgs:
     generate_interface_only_capabilities_in_a_separate_file: bool
     generate_init_file_imports: bool
     generate_registration_methods: bool
+    use_supported_decorator: bool
 
 
 def get_templates_to_generate() -> list[TemplateArgs]:
@@ -60,6 +61,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=True,
             generate_init_file_imports=False,
             generate_registration_methods=False,
+            use_supported_decorator=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_factory,
@@ -68,6 +70,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=False,
             generate_registration_methods=False,
+            use_supported_decorator=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_proxy,
@@ -76,6 +79,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=True,
             generate_registration_methods=False,
+            use_supported_decorator=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_provider,
@@ -84,6 +88,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=False,
             generate_registration_methods=True,
+            use_supported_decorator=True,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_test_interface,
@@ -92,6 +97,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=True,
             generate_init_file_imports=False,
             generate_registration_methods=False,
+            use_supported_decorator=False,
         ),
         TemplateArgs(
             template_path=capabilities_to_py_test,
@@ -100,6 +106,7 @@ def get_templates_to_generate() -> list[TemplateArgs]:
             generate_interface_only_capabilities_in_a_separate_file=False,
             generate_init_file_imports=True,
             generate_registration_methods=False,
+            use_supported_decorator=False,
         ),
     ]
 

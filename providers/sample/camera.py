@@ -6,6 +6,9 @@
 
 from typing import Self
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.camera_interface import CameraInterface
 
@@ -23,6 +26,7 @@ class Camera(CameraInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_perspective(
         self,
     ) -> Self:
@@ -33,6 +37,7 @@ class Camera(CameraInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_orthogonal(
         self,
     ) -> Self:
@@ -43,6 +48,7 @@ class Camera(CameraInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_panoramic(
         self,
     ) -> Self:
@@ -53,6 +59,7 @@ class Camera(CameraInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_focal_length(self, length: "float") -> Self:
 
         print("set_focal_length called", f": {length}")
