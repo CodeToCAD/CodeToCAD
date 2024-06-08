@@ -6,6 +6,9 @@
 
 from typing import Self
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.render_interface import RenderInterface
 
@@ -17,6 +20,7 @@ class Render(
     RenderInterface,
 ):
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def render_image(
         self,
         output_file_path: "str",
@@ -28,6 +32,7 @@ class Render(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def render_video_mp4(
         self,
         output_file_path: "str",
@@ -44,6 +49,7 @@ class Render(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def render_video_frames(
         self,
         output_folder_path: "str",
@@ -62,30 +68,35 @@ class Render(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_frame_rate(self, frame_rate: "int") -> Self:
 
         print("set_frame_rate called", f": {frame_rate}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_resolution(self, x: "int", y: "int") -> Self:
 
         print("set_resolution called", f": {x}, {y}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_render_quality(self, quality: "int") -> Self:
 
         print("set_render_quality called", f": {quality}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_render_engine(self, name: "str") -> Self:
 
         print("set_render_engine called", f": {name}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_camera(self, camera_name_or_instance: "str|CameraInterface") -> Self:
 
         print("set_camera called", f": {camera_name_or_instance}")

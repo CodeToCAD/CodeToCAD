@@ -7,15 +7,19 @@ from codetocad.codetocad_types import *
 
 from typing import Self
 
+from codetocad.proxy.edge import Edge
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 from codetocad.interfaces.wire_interface import WireInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
@@ -24,12 +28,11 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.proxy.edge import Edge
-from codetocad.proxy.vertex import Vertex
+from codetocad.proxy.landmark import Landmark
 
 from codetocad.proxy.wire import Wire
 
-from codetocad.proxy.landmark import Landmark
+from codetocad.proxy.vertex import Vertex
 
 
 from providers.sample.entity import Entity
@@ -50,6 +53,7 @@ class Sketch(SketchInterface, Entity):
         self.native_instance = native_instance
         self.curve_type = curve_type
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def get_wires(
         self,
     ) -> "list[WireInterface]":
@@ -75,6 +79,7 @@ class Sketch(SketchInterface, Entity):
             )
         ]
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def clone(
         self, new_name: "str", copy_landmarks: "bool" = True
     ) -> "SketchInterface":
@@ -83,6 +88,7 @@ class Sketch(SketchInterface, Entity):
 
         return Sketch("a sketch")
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_text(
         self,
         text: "str",
@@ -118,6 +124,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -141,6 +148,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_point(
         self,
         point: "str|list[str]|list[float]|list[Dimension]|Point",
@@ -164,6 +172,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_line(
         self,
         length: "str|float|Dimension",
@@ -189,6 +198,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
@@ -213,6 +223,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_circle(
         self,
         radius: "str|float|Dimension",
@@ -237,6 +248,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
@@ -265,6 +277,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
@@ -293,6 +306,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_rectangle(
         self,
         length: "str|float|Dimension",
@@ -318,6 +332,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_polygon(
         self,
         number_of_sides: "int",
@@ -347,6 +362,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_trapezoid(
         self,
         length_upper: "str|float|Dimension",
@@ -376,6 +392,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -407,6 +424,7 @@ class Sketch(SketchInterface, Entity):
             ],
         )
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -421,6 +439,7 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
@@ -434,6 +453,7 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
@@ -449,12 +469,14 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
 
         print("create_from_file called", f": {file_path}, {file_type}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def export(
         self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
     ) -> Self:
@@ -463,6 +485,7 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -474,42 +497,49 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_x(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_x called", f": {scale}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_y(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_y called", f": {scale}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_z(self, scale: "str|float|Dimension") -> Self:
 
         print("scale_z called", f": {scale}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_x_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_x_by_factor called", f": {scale_factor}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_y_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_y_by_factor called", f": {scale_factor}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_z_by_factor(self, scale_factor: "float") -> Self:
 
         print("scale_z_by_factor called", f": {scale_factor}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ) -> Self:
@@ -518,12 +548,14 @@ class Sketch(SketchInterface, Entity):
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
 
         print("project called", f": {project_from}")
 
         return __import__("codetocad").Sketch("a projected sketch")
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def create_landmark(
         self,
         landmark_name: "str",
@@ -536,6 +568,7 @@ class Sketch(SketchInterface, Entity):
 
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
 
         print("get_landmark called", f": {landmark_name}")

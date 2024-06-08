@@ -12,9 +12,10 @@
         {{-" = "+ default_value if (not parameter.required) or parameter.default_value is not none -}} 
 {%- endmacro %}
 
-{%macro generate_method_definition(capabilities_loader, capabilities_method, use_abstract_method_decorator) -%}
+{%macro generate_method_definition(capabilities_loader, capabilities_method, use_abstract_method_decorator, use_supported_decorator) -%}
     {{"@abstractmethod\n" if use_abstract_method_decorator and not capabilities_method.is_static_method}}
     {{"@staticmethod\n" if capabilities_method.is_static_method}}
+    {{"@supported(SupportLevel.UNSUPPORTED, notes=\"\")" if use_supported_decorator}}
     def {{capabilities_method.name}}(
         {{"self, " if not capabilities_method.is_static_method}}
         {%for parameter in capabilities_method.parameters -%} 

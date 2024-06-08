@@ -7,6 +7,9 @@ from codetocad.codetocad_types import *
 
 from typing import Self
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
 
 from codetocad.interfaces.material_interface import MaterialInterface
 
@@ -21,12 +24,14 @@ class Material(
         self.description = description
 
     @staticmethod
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
 
         print("get_preset called", f": {material_name}")
 
         return Material("mat")
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_color(
         self,
         r_value: "int|float",
@@ -39,18 +44,21 @@ class Material(
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_reflectivity(self, reflectivity: "float") -> Self:
 
         print("set_reflectivity called", f": {reflectivity}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_roughness(self, roughness: "float") -> Self:
 
         print("set_roughness called", f": {roughness}")
 
         return self
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_image_texture(self, image_file_path: "str") -> Self:
 
         print("set_image_texture called", f": {image_file_path}")

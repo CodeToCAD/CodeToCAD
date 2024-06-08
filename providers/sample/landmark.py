@@ -6,6 +6,10 @@
 from codetocad.codetocad_types import *
 
 
+from codetocad.utilities.supported import supported
+from codetocad.enums.support_level import SupportLevel
+
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
@@ -30,6 +34,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",
@@ -41,6 +46,7 @@ class Landmark(LandmarkInterface, Entity):
 
         return Landmark("name", "parent")
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def get_landmark_entity_name(
         self,
     ) -> "str":
@@ -51,6 +57,7 @@ class Landmark(LandmarkInterface, Entity):
 
         return "String"
 
+    @supported(SupportLevel.UNSUPPORTED, notes="")
     def get_parent_entity(
         self,
     ) -> "EntityInterface":
