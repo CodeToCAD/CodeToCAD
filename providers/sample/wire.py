@@ -11,30 +11,30 @@ from typing import Self
 from codetocad.interfaces.wire_interface import WireInterface
 
 
-from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
 
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.proxy.edge import Edge
+from codetocad.proxy.vertex import Vertex
 
 from codetocad.proxy.part import Part
 
-from codetocad.proxy.vertex import Vertex
-
 from codetocad.proxy.landmark import Landmark
+
+from codetocad.proxy.edge import Edge
 
 
 from providers.sample.entity import Entity
@@ -166,6 +166,64 @@ class Wire(WireInterface, Entity):
     def profile(self, profile_curve_name: "str") -> Self:
 
         print("profile called", f": {profile_curve_name}")
+
+        return self
+
+    def create_from_vertices(
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+
+        print("create_from_vertices called", f": {points}, {options}")
+
+        return self
+
+    def create_point(
+        self,
+        point: "str|list[str]|list[float]|list[Dimension]|Point",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+
+        print("create_point called", f": {point}, {options}")
+
+        return self
+
+    def create_line(
+        self,
+        length: "str|float|Dimension",
+        angle: "str|float|Angle",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+
+        print("create_line called", f": {length}, {angle}, {start_at}, {options}")
+
+        return self
+
+    def create_line_to(
+        self,
+        to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+
+        print("create_line_to called", f": {to}, {start_at}, {options}")
+
+        return self
+
+    def create_arc(
+        self,
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        radius: "str|float|Dimension",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        flip: "bool| None" = False,
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+
+        print(
+            "create_arc called", f": {end_at}, {radius}, {start_at}, {flip}, {options}"
+        )
 
         return self
 

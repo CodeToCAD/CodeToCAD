@@ -126,7 +126,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         instance = Entity(name="String", description="String", native_instance="value")
 
-        value = instance.rotate_xyz(x=Angle("90"), y=Angle("90"), z=Angle("90"))
+        value = instance.rotate_xyz(x=Angle(90), y=Angle(90), z=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -134,7 +134,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         instance = Entity(name="String", description="String", native_instance="value")
 
-        value = instance.rotate_x(rotation=Angle("90"))
+        value = instance.rotate_x(rotation=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -142,7 +142,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         instance = Entity(name="String", description="String", native_instance="value")
 
-        value = instance.rotate_y(rotation=Angle("90"))
+        value = instance.rotate_y(rotation=Angle(90))
 
         assert value, "Modify method failed."
 
@@ -150,7 +150,7 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         instance = Entity(name="String", description="String", native_instance="value")
 
-        value = instance.rotate_z(rotation=Angle("90"))
+        value = instance.rotate_z(rotation=Angle(90))
 
         assert value, "Modify method failed."
 

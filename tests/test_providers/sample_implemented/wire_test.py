@@ -124,7 +124,7 @@ class WireTest(TestProviderCase, WireTestInterface):
 
     def test_twist(self):  # not know implement
         instance = Sketch("mySketch")
-        instance = instance.create_line(start_at=(0, 0), end_at=(10, 10))
+        instance = instance.create_line_to(start_at=(0, 0), to=(10, 10))
         value = instance.twist(
             angle=30,
             screw_pitch=5,
@@ -169,5 +169,145 @@ class WireTest(TestProviderCase, WireTestInterface):
         instance = Sketch("mySketch")
 
         value = instance.create_circle(2).profile(profile_curve_name="Curve")
+
+        assert value, "Modify method failed."
+
+    def test_create_from_vertices(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.create_from_vertices(
+            points=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
+        )
+
+        assert value, "Modify method failed."
+
+    def test_create_point(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.create_point(
+            point=Point.from_list_of_float_or_string([0, 0, 0]), options=SketchOptions()
+        )
+
+        assert value, "Modify method failed."
+
+    def test_create_line(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.create_line(
+            length=Dimension(0, "mm"),
+            angle=Angle(90),
+            start_at="PresetLandmark.end",
+            options=SketchOptions(),
+        )
+
+        assert value, "Modify method failed."
+
+    def test_create_line_to(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.create_line_to(
+            to=["Point.from_list_of_float_or_string([0,0,0])"],
+            start_at="PresetLandmark.end",
+            options=SketchOptions(),
+        )
+
+        assert value, "Modify method failed."
+
+    def test_create_arc(self):
+
+        instance = Wire(
+            name="String",
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            description="String",
+            native_instance="value",
+            parent_entity=__import__("codetocad").Part("an entity"),
+        )
+
+        value = instance.create_arc(
+            end_at=Point.from_list_of_float_or_string([0, 0, 0]),
+            radius=Dimension(0, "mm"),
+            start_at="PresetLandmark.end",
+            flip=False,
+            options=SketchOptions(),
+        )
 
         assert value, "Modify method failed."

@@ -10,24 +10,25 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+from codetocad.interfaces.edge_interface import EdgeInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -196,5 +197,91 @@ class WireInterface(
         """
 
         print("profile is called in an abstract method. Please override this method.")
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_from_vertices(
+        self,
+        points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+        """
+        Create a curve from 2D/3D points.
+        """
+
+        print(
+            "create_from_vertices is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_point(
+        self,
+        point: "str|list[str]|list[float]|list[Dimension]|Point",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+        """
+        Create a point
+        """
+
+        print(
+            "create_point is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_line(
+        self,
+        length: "str|float|Dimension",
+        angle: "str|float|Angle",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+        """
+        Create a line between two points
+        """
+
+        print(
+            "create_line is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_line_to(
+        self,
+        to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+        """
+        Create a line between two points
+        """
+
+        print(
+            "create_line_to is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_arc(
+        self,
+        end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
+        radius: "str|float|Dimension",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        flip: "bool| None" = False,
+        options: "SketchOptions| None" = None,
+    ) -> Self:
+        """
+        Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.
+        """
+
+        print(
+            "create_arc is called in an abstract method. Please override this method."
+        )
 
         raise NotImplementedError()

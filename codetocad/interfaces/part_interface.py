@@ -10,25 +10,25 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.material_interface import MaterialInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.mirrorable_interface import MirrorableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
-
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+from codetocad.interfaces.material_interface import MaterialInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
 
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
+from codetocad.interfaces.scalable_interface import ScalableInterface
+
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.scalable_interface import ScalableInterface
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -64,7 +64,7 @@ class PartInterface(
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
         """
         Adds cuboid geometry to a part.
@@ -82,7 +82,7 @@ class PartInterface(
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
         """
         Adds cone geometry to a part.
@@ -99,7 +99,7 @@ class PartInterface(
         self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
         """
         Adds cylinder geometry to a part.
@@ -116,7 +116,7 @@ class PartInterface(
         self,
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
         """
         Adds torus geometry to a part.
@@ -130,7 +130,7 @@ class PartInterface(
 
     @abstractmethod
     def create_sphere(
-        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
+        self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ) -> Self:
         """
         Adds sphere geometry to a part.
@@ -155,7 +155,7 @@ class PartInterface(
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
         """
         Adds gear geometry to a part.

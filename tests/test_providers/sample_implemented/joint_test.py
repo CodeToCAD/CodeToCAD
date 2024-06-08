@@ -5,11 +5,11 @@ from codetocad.tests_interfaces.joint_test_interface import JointTestInterface
 def get_dummy_obj():
     instance = Sketch("mySketch")
 
-    edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+    edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
     instance = Sketch("mySketch")
 
-    edge2 = instance.create_line(end_at=(5, 10, 0), start_at=(5, 5, 0))
+    edge2 = instance.create_line_to(to=(5, 10, 0), start_at=(5, 5, 0))
 
     return Joint(
         entity1="mySketch",

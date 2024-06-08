@@ -33,6 +33,7 @@ capabilities_parameter_types = {
     "string,list[string],list[float],list[Dimension],Point": "str|list[str]|list[float]|list[Dimension]|Point",
     "list[string,list[string],list[float],list[Dimension],Point]": "list[str|list[str]|list[float]|list[Dimension]|Point]",
     "string,list[string],list[float],list[Dimension],Point,Vertex": "str|list[str]|list[float]|list[Dimension]|Point|Vertex",
+    "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark": "str|list[str]|list[float]|list[Dimension]|Point|Vertex|Landmark|PresetLandmark",
     "list[string,list[string],list[float],list[Dimension],Point,Vertex]": "list[str|list[str]|list[float]|list[Dimension]|Point|Vertex]",
     "string,LengthUnit": "str|LengthUnit",
     "string,PresetLandmark": "str|PresetLandmark",

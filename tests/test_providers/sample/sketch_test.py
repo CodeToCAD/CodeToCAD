@@ -55,6 +55,8 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             word_spacing=1,
             line_spacing=1,
             font_file_path="String",
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -69,7 +71,8 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_from_vertices(
-            points=["Point.from_list_of_float_or_string([0,0,0])"]
+            points=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -84,7 +87,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_point(
-            point=Point.from_list_of_float_or_string([0, 0, 0])
+            point=Point.from_list_of_float_or_string([0, 0, 0]), options=SketchOptions()
         )
 
         assert value, "Get method failed."
@@ -99,8 +102,27 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_line(
-            start_at=Point.from_list_of_float_or_string([0, 0, 0]),
-            end_at=Point.from_list_of_float_or_string([0, 0, 0]),
+            length=Dimension(0, "mm"),
+            angle=Angle(90),
+            start_at="PresetLandmark.end",
+            options=SketchOptions(),
+        )
+
+        assert value, "Get method failed."
+
+    def test_create_line_to(self):
+
+        instance = Sketch(
+            name="String",
+            description="String",
+            native_instance="value",
+            curve_type=CurveTypes.NURBS,
+        )
+
+        value = instance.create_line_to(
+            to=["Point.from_list_of_float_or_string([0,0,0])"],
+            start_at="PresetLandmark.end",
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -114,7 +136,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             curve_type=CurveTypes.NURBS,
         )
 
-        value = instance.create_circle(radius=Dimension(0, "mm"))
+        value = instance.create_circle(
+            radius=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
+        )
 
         assert value, "Get method failed."
 
@@ -128,7 +154,10 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_ellipse(
-            radius_minor=Dimension(0, "mm"), radius_major=Dimension(0, "mm")
+            radius_minor=Dimension(0, "mm"),
+            radius_major=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -143,10 +172,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_arc(
-            start_at=Point.from_list_of_float_or_string([0, 0, 0]),
             end_at=Point.from_list_of_float_or_string([0, 0, 0]),
             radius=Dimension(0, "mm"),
+            start_at="PresetLandmark.end",
             flip=False,
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -161,7 +191,10 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_rectangle(
-            length=Dimension(0, "mm"), width=Dimension(0, "mm")
+            length=Dimension(0, "mm"),
+            width=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -176,7 +209,11 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         )
 
         value = instance.create_polygon(
-            number_of_sides=0, length=Dimension(0, "mm"), width=Dimension(0, "mm")
+            number_of_sides=0,
+            length=Dimension(0, "mm"),
+            width=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -194,6 +231,8 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             length_upper=Dimension(0, "mm"),
             length_lower=Dimension(0, "mm"),
             height=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -213,6 +252,8 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             radius=Dimension(0, "mm"),
             is_clockwise=True,
             radius_end=Dimension(0, "mm"),
+            center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            options=SketchOptions(),
         )
 
         assert value, "Get method failed."
@@ -260,7 +301,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
 
         value = instance.circular_pattern(
             instance_count=0,
-            separation_angle=Angle("90"),
+            separation_angle=Angle(90),
             center_entity_or_landmark=__import__("codetocad").Part("an entity"),
             normal_direction_axis="z",
         )

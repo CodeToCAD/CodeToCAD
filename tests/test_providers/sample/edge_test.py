@@ -42,7 +42,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
                 v2=Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0])),
                 name="an edge",
             ),
-            amount=Angle("90"),
+            amount=Angle(90),
         )
 
         assert value, "Modify method failed."
@@ -126,7 +126,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
 
         value = instance.circular_pattern(
             instance_count=0,
-            separation_angle=Angle("90"),
+            separation_angle=Angle(90),
             center_entity_or_landmark=__import__("codetocad").Part("an entity"),
             normal_direction_axis="z",
         )

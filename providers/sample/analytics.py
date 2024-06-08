@@ -35,7 +35,7 @@ class Analytics(
 
         print("measure_angle called", f": {entity1}, {entity2}, {pivot}")
 
-        return [Angle("90")]
+        return [Angle(90)]
 
     def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
 

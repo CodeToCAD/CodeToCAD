@@ -13,9 +13,9 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.part_interface import PartInterface
 
 
-from codetocad.interfaces.material_interface import MaterialInterface
-
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.material_interface import MaterialInterface
 
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
@@ -76,11 +76,11 @@ class Part(PartInterface, Entity):
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         return object.__getattribute__(self, "__proxied").create_cube(
-            width, length, height, keyword_arguments
+            width, length, height, options
         )
 
     def create_cone(
@@ -88,42 +88,40 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         return object.__getattribute__(self, "__proxied").create_cone(
-            radius, height, draft_radius, keyword_arguments
+            radius, height, draft_radius, options
         )
 
     def create_cylinder(
         self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         return object.__getattribute__(self, "__proxied").create_cylinder(
-            radius, height, keyword_arguments
+            radius, height, options
         )
 
     def create_torus(
         self,
         inner_radius: "str|float|Dimension",
         outer_radius: "str|float|Dimension",
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         return object.__getattribute__(self, "__proxied").create_torus(
-            inner_radius, outer_radius, keyword_arguments
+            inner_radius, outer_radius, options
         )
 
     def create_sphere(
-        self, radius: "str|float|Dimension", keyword_arguments: "dict| None" = None
+        self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ) -> Self:
 
-        return object.__getattribute__(self, "__proxied").create_sphere(
-            radius, keyword_arguments
-        )
+        return object.__getattribute__(self, "__proxied").create_sphere(radius, options)
 
     def create_gear(
         self,
@@ -137,7 +135,7 @@ class Part(PartInterface, Entity):
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
-        keyword_arguments: "dict| None" = None,
+        options: "PartOptions| None" = None,
     ) -> Self:
 
         return object.__getattribute__(self, "__proxied").create_gear(
@@ -151,7 +149,7 @@ class Part(PartInterface, Entity):
             skew_angle,
             conical_angle,
             crown_angle,
-            keyword_arguments,
+            options,
         )
 
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "PartInterface":

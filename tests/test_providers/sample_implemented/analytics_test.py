@@ -10,7 +10,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance = Sketch("mySketch2")
 
-        instance.create_line(start_at=(0, 0, 0), end_at=(1, 1, 0))
+        instance.create_line_to(start_at=(0, 0, 0), to=(1, 1, 0))
 
         analytics = Analytics()
 
@@ -25,7 +25,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance = Sketch("mySketch2")
 
-        instance.create_line(start_at=(0, 0, 0), end_at=(1, 1, 0))
+        instance.create_line_to(start_at=(0, 0, 0), to=(1, 1, 0))
 
         analytics = Analytics()
 

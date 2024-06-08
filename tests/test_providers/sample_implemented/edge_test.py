@@ -6,7 +6,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_mirror(self):
         instance = Sketch("mySketch")
 
-        instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = instance.mirror(
             mirror_across_entity="mySketch",
@@ -18,7 +18,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_linear_pattern(self):
         instance = Sketch("mySketch")
 
-        instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = instance.linear_pattern(
             instance_count=2,
@@ -30,7 +30,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_circular_pattern(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = edge.circular_pattern(
             instance_count=4,
@@ -44,7 +44,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_remesh(self):  # Not implemented
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = edge.remesh(strategy="smooth", amount=100)
 
@@ -53,7 +53,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_subdivide(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = edge.subdivide(amount=10)
 
@@ -62,7 +62,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_decimate(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = edge.decimate(amount=0.5)
 
@@ -71,7 +71,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_project(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0))
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0))
 
         value = edge.project(project_from="test-project")
 
@@ -80,9 +80,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_offset(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
-            0
-        ]
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[0]
 
         value = edge.offset(distance=10)
 
@@ -91,13 +89,11 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_fillet(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
-            0
-        ]
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[0]
 
         instance = Sketch("mySketch")
 
-        edge2 = instance.create_line(end_at=(5, 10, 0), start_at=(5, 5, 0)).get_edges()[
+        edge2 = instance.create_line_to(to=(5, 10, 0), start_at=(5, 5, 0)).get_edges()[
             0
         ]
 
@@ -108,9 +104,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_set_is_construction(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
-            0
-        ]
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[0]
 
         value = edge.set_is_construction(is_construction=False)
 
@@ -119,9 +113,7 @@ class EdgeTest(TestProviderCase, EdgeTestInterface):
     def test_get_is_construction(self):
         instance = Sketch("mySketch")
 
-        edge = instance.create_line(end_at=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[
-            0
-        ]
+        edge = instance.create_line_to(to=(0, 5, 0), start_at=(5, 10, 0)).get_edges()[0]
 
         value = edge.get_is_construction()
 
