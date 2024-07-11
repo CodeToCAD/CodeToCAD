@@ -36,6 +36,8 @@ mkdir -p $BLENDER_ADDON_PATH/providers/blender/blender_provider
 cp -r ./providers/blender/blender_provider $BLENDER_ADDON_PATH/providers/blender
 cp -r ./codetocad $BLENDER_ADDON_PATH/
 cp ./providers/blender/blender_addon.py $BLENDER_ADDON_PATH/__init__.py
+touch ./providers/__init__.py
+touch ./providers/blender/__init__.py
 
 # Make blender_provider the main provider in CodeToCAD module
 # echo "from blender_provider import *" >> $BLENDER_ADDON_PATH/codetocad/__init__.py

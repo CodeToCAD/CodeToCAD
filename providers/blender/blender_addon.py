@@ -397,7 +397,7 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
 
     root_path = CodeToCADAddonPreferences.get_codetocad_file_path_from_preferences(
         context
-    ) or str(Path(__file__).parent.parent.absolute())
+    ) or str(Path(__file__).parent.absolute())
 
     if not root_path or not os.path.exists(root_path):
         print("The CodeToCAD base module path that you provided does not exist.")
@@ -408,7 +408,7 @@ def add_codetocad_to_path(context=bpy.context, return_blender_operation_status=F
     blender_path = root_path / "providers/blender"
     blender_provider_path = blender_path / "blender_provider"
 
-    if not Path(blender_provider_path / "py").is_file():
+    if not Path(blender_provider_path).is_dir():
         print(
             "Could not find blender_provider files. Please reconfigure the CodeToCAD Blender Addon.",
             "Searching in: ",
