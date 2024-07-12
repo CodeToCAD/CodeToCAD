@@ -10,7 +10,7 @@ env:
 
 jobs:
   create_release_tag:
-    if: github.base_ref == 'develop'
+    if: github.base_ref == 'release'
     name: Create release tag
     runs-on: ubuntu-latest
     steps:
