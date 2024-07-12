@@ -19,7 +19,7 @@ from codetocad.interfaces.{{class_name|lower}}_interface import {{interface_name
 
 {% for capabilities_class in 
 capabilities_loader.capabilities[class_name].get_extends_class_names("")%}
-{{ imports.format_import_statement(capabilities_class, "providers.sample.") }}
+{{ imports.format_import_statement(capabilities_class, "codetocad.proxy.") }}
 {% endfor %}
 
 {% set parameters = capabilities_loader.get_constructor_parameters_for_class(class_name)%}
