@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from codetocad.core.angle import Angle
 from codetocad.enums.boolean_operation import BooleanOperation
 from codetocad.enums.preset_landmark import PresetLandmark
-from codetocad.proxy.landmark import Landmark
+from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 @dataclass
@@ -17,8 +17,8 @@ class PartOptions:
     :param boolean_operation: "Union merge by default. Available options: union, subtract, intersect. default_value: BooleanOperation.UNION
     """
 
-    merge_at: str | Landmark | PresetLandmark = PresetLandmark.bottom
-    merge_with: str | Landmark | PresetLandmark = PresetLandmark.top
+    merge_at: str | LandmarkInterface | PresetLandmark = PresetLandmark.bottom
+    merge_with: str | LandmarkInterface | PresetLandmark = PresetLandmark.top
     rotation_x: str | float | Angle | None = None
     rotation_y: str | float | Angle | None = None
     rotation_z: str | float | Angle | None = None

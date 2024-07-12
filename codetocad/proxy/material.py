@@ -48,7 +48,6 @@ class Material(
     ]
 
     def __init__(self, name: "str", description: "str| None" = None):
-
         object.__setattr__(
             self,
             "__proxied",
@@ -57,7 +56,6 @@ class Material(
 
     @staticmethod
     def get_preset(material_name: "PresetMaterial") -> "MaterialInterface":
-
         return get_provider(MaterialInterface).get_preset(material_name)
 
     def set_color(
@@ -67,21 +65,17 @@ class Material(
         b_value: "int|float",
         a_value: "int|float" = 1.0,
     ) -> Self:
-
         return object.__getattribute__(self, "__proxied").set_color(
             r_value, g_value, b_value, a_value
         )
 
     def set_reflectivity(self, reflectivity: "float") -> Self:
-
         return object.__getattribute__(self, "__proxied").set_reflectivity(reflectivity)
 
     def set_roughness(self, roughness: "float") -> Self:
-
         return object.__getattribute__(self, "__proxied").set_roughness(roughness)
 
     def set_image_texture(self, image_file_path: "str") -> Self:
-
         return object.__getattribute__(self, "__proxied").set_image_texture(
             image_file_path
         )
