@@ -46,14 +46,14 @@ class Entity(EntityInterface):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Checks for Objects with the same name.")
     def is_exists(self) -> bool:
         try:
             return get_object(self.name) is not None
         except:  # noqa: E722
             return False
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Renames an object and its underlying data with the same name.")
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ):
@@ -65,16 +65,16 @@ class Entity(EntityInterface):
         self.name = new_name
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Deletes an object and its data with the same name. Meaning it will also delete a Mesh Object's underlying mesh. Does not check if the Mesh is being used by another Object.")
     def delete(self, remove_children: "bool" = True):
         remove_object(self.name, remove_children)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Checks if the object is visible in the 3D viewport, taking into account all visibility settings")
     def is_visible(self) -> bool:
         return get_object_visibility(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_visible(self, is_visible: "bool"):
         set_object_visibility(self.name, is_visible)
         return self
@@ -104,7 +104,7 @@ class Entity(EntityInterface):
             apply_object_transformations(self.name, rotation, scale, location)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self) -> object:
         return get_object(self.name)
 
@@ -133,7 +133,7 @@ class Entity(EntityInterface):
         )
         return BlenderLength.convert_dimension_to_blender_unit(dimension)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def translate_xyz(
         self,
         x: "str|float|Dimension",
