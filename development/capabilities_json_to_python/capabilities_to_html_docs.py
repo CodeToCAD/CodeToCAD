@@ -10,6 +10,17 @@ from development.capabilities_json_to_python.paths import (
     capabilities_to_python_documentation_html,
     capabilities_to_python_documentation_html_out,
 )
+from development.get_provider_supported_decorators import get_provider_supported_decorators
+
+HTML_DOCS_PROVIDERS = ["Blender", "Fusion360", "Onshape"]
+
+def _get_provider_supports():
+    supports = {}
+
+    for provider_name in HTML_DOCS_PROVIDERS:
+        supports[provider_name]= get_provider_supported_decorators(provider_name)
+
+    return supports
 
 if __name__ == "__main__":
     print("Generating", capabilities_to_python_documentation_html)
@@ -19,6 +30,7 @@ if __name__ == "__main__":
     )
     output_from_parsed_template = template.render(
         capabilities_loader=CapabilitiesLoader(),
+        provider_supports = _get_provider_supports()
     )
     with open(capabilities_to_python_documentation_html_out, "w") as fh:
         fh.write(output_from_parsed_template)
