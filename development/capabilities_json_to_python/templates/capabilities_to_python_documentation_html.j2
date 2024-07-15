@@ -125,7 +125,7 @@
         }
 
         .notSupportedChip {
-            background: #b92e29 !important;
+            background: #b8504c !important;
             background-position: bottom center !important;
         }
 
@@ -175,6 +175,27 @@
         #scrollToTopBtn:hover {
             background-color: #0056b3;
             transform: scale(1.1);
+        }
+
+
+        .legend {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-left: 5px;
+            margin-right: 5px;
+            border-radius: 3px;
         }
     </style>
 
@@ -253,7 +274,7 @@
     {% for capabilities_method in capabilities_class.methods %}
 
     <a href="#{{class_name}}_{{capabilities_method.name}}" class="chip chipsItem"
-        id="chip_{{class_name}}_{{capabilities_method.name}}">{{capabilities_method.name}}()</a>
+        id="chip_{{class_name}}_{{capabilities_method.name}}" title="{{capabilities_method.information}}">{{capabilities_method.name}}()</a>
 
     {% endfor %}
 
@@ -320,14 +341,33 @@
     <button id="scrollToTopBtn" onclick="scrollToTop()">▲</button>
 
 
-    <div class="grid-container">
-
-        <div class="grid-item">
+    <div style="margin-bottom: 20px;">
+        <div>
             Filter:
             {% for key in supported_providers %}
             <a href="?provider={{key}}" class="chip" id="filter-{{key}}">{{key}}</a>
             {%endfor%}
 
+        </div>
+
+        <div class="legend">
+            Legend: 
+            <div class="legend-item">
+                <span class="color-box notSupportedChip"></span>
+                <span class="label">Unsupported</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box plannedSupportChip"></span>
+                <span class="label">Planned</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box supportedPartialChip"></span>
+                <span class="label">Partial</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box supportedChip"></span>
+                <span class="label">Supported</span>
+            </div>
         </div>
     </div>
 

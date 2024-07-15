@@ -125,7 +125,7 @@
         }
 
         .notSupportedChip {
-            background: #b92e29 !important;
+            background: #b8504c !important;
             background-position: bottom center !important;
         }
 
@@ -175,6 +175,27 @@
         #scrollToTopBtn:hover {
             background-color: #0056b3;
             transform: scale(1.1);
+        }
+
+
+        .legend {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-left: 5px;
+            margin-right: 5px;
+            border-radius: 3px;
         }
     </style>
 
@@ -268,9 +289,8 @@
     <button id="scrollToTopBtn" onclick="scrollToTop()">▲</button>
 
 
-    <div class="grid-container">
-
-        <div class="grid-item">
+    <div style="margin-bottom: 20px;">
+        <div>
             Filter:
             
             <a href="?provider=Blender" class="chip" id="filter-Blender">Blender</a>
@@ -280,6 +300,26 @@
             <a href="?provider=Onshape" class="chip" id="filter-Onshape">Onshape</a>
             
 
+        </div>
+
+        <div class="legend">
+            Legend: 
+            <div class="legend-item">
+                <span class="color-box notSupportedChip"></span>
+                <span class="label">Unsupported</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box plannedSupportChip"></span>
+                <span class="label">Planned</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box supportedPartialChip"></span>
+                <span class="label">Partial</span>
+            </div>
+            <div class="legend-item">
+                <span class="color-box supportedChip"></span>
+                <span class="label">Supported</span>
+            </div>
         </div>
     </div>
 
@@ -315,112 +355,112 @@
             
 
     <a href="#Part_create_cube" class="chip chipsItem"
-        id="chip_Part_create_cube">create_cube()</a>
+        id="chip_Part_create_cube" title="Adds cuboid geometry to a part.">create_cube()</a>
 
     
 
     <a href="#Part_create_cone" class="chip chipsItem"
-        id="chip_Part_create_cone">create_cone()</a>
+        id="chip_Part_create_cone" title="Adds cone geometry to a part.">create_cone()</a>
 
     
 
     <a href="#Part_create_cylinder" class="chip chipsItem"
-        id="chip_Part_create_cylinder">create_cylinder()</a>
+        id="chip_Part_create_cylinder" title="Adds cylinder geometry to a part.">create_cylinder()</a>
 
     
 
     <a href="#Part_create_torus" class="chip chipsItem"
-        id="chip_Part_create_torus">create_torus()</a>
+        id="chip_Part_create_torus" title="Adds torus geometry to a part.">create_torus()</a>
 
     
 
     <a href="#Part_create_sphere" class="chip chipsItem"
-        id="chip_Part_create_sphere">create_sphere()</a>
+        id="chip_Part_create_sphere" title="Adds sphere geometry to a part.">create_sphere()</a>
 
     
 
     <a href="#Part_create_gear" class="chip chipsItem"
-        id="chip_Part_create_gear">create_gear()</a>
+        id="chip_Part_create_gear" title="Adds gear geometry to a part.">create_gear()</a>
 
     
 
     <a href="#Part_clone" class="chip chipsItem"
-        id="chip_Part_clone">clone()</a>
+        id="chip_Part_clone" title="Clone an existing Part with its geometry and properties. Returns the new Part.">clone()</a>
 
     
 
     <a href="#Part_hollow" class="chip chipsItem"
-        id="chip_Part_hollow">hollow()</a>
+        id="chip_Part_hollow" title="Remove vertices, if necessary, until the part has a specified wall thickness.">hollow()</a>
 
     
 
     <a href="#Part_thicken" class="chip chipsItem"
-        id="chip_Part_thicken">thicken()</a>
+        id="chip_Part_thicken" title="Uniformly add a wall around a Part.">thicken()</a>
 
     
 
     <a href="#Part_hole" class="chip chipsItem"
-        id="chip_Part_hole">hole()</a>
+        id="chip_Part_hole" title="Create a hole.">hole()</a>
 
     
 
     <a href="#Part_twist" class="chip chipsItem"
-        id="chip_Part_twist">twist()</a>
+        id="chip_Part_twist" title="AKA Helix, Screw. Revolve an entity">twist()</a>
 
     
 
     <a href="#Part_set_material" class="chip chipsItem"
-        id="chip_Part_set_material">set_material()</a>
+        id="chip_Part_set_material" title="Assign a known material to this part.">set_material()</a>
 
     
 
     <a href="#Part_is_colliding_with_part" class="chip chipsItem"
-        id="chip_Part_is_colliding_with_part">is_colliding_with_part()</a>
+        id="chip_Part_is_colliding_with_part" title="Check if this part is colliding with another.">is_colliding_with_part()</a>
 
     
 
     <a href="#Part_fillet_all_edges" class="chip chipsItem"
-        id="chip_Part_fillet_all_edges">fillet_all_edges()</a>
+        id="chip_Part_fillet_all_edges" title="Fillet all edges.">fillet_all_edges()</a>
 
     
 
     <a href="#Part_fillet_edges" class="chip chipsItem"
-        id="chip_Part_fillet_edges">fillet_edges()</a>
+        id="chip_Part_fillet_edges" title="Fillet specific edges.">fillet_edges()</a>
 
     
 
     <a href="#Part_fillet_faces" class="chip chipsItem"
-        id="chip_Part_fillet_faces">fillet_faces()</a>
+        id="chip_Part_fillet_faces" title="Fillet specific faces.">fillet_faces()</a>
 
     
 
     <a href="#Part_chamfer_all_edges" class="chip chipsItem"
-        id="chip_Part_chamfer_all_edges">chamfer_all_edges()</a>
+        id="chip_Part_chamfer_all_edges" title="Chamfer all edges.">chamfer_all_edges()</a>
 
     
 
     <a href="#Part_chamfer_edges" class="chip chipsItem"
-        id="chip_Part_chamfer_edges">chamfer_edges()</a>
+        id="chip_Part_chamfer_edges" title="Chamfer specific edges.">chamfer_edges()</a>
 
     
 
     <a href="#Part_chamfer_faces" class="chip chipsItem"
-        id="chip_Part_chamfer_faces">chamfer_faces()</a>
+        id="chip_Part_chamfer_faces" title="Chamfer specific faces.">chamfer_faces()</a>
 
     
 
     <a href="#Part_select_vertex_near_landmark" class="chip chipsItem"
-        id="chip_Part_select_vertex_near_landmark">select_vertex_near_landmark()</a>
+        id="chip_Part_select_vertex_near_landmark" title="Select the vertex closest to a Landmark on the entity (in UI).">select_vertex_near_landmark()</a>
 
     
 
     <a href="#Part_select_edge_near_landmark" class="chip chipsItem"
-        id="chip_Part_select_edge_near_landmark">select_edge_near_landmark()</a>
+        id="chip_Part_select_edge_near_landmark" title="Select an edge closest to a landmark on the entity (in UI).">select_edge_near_landmark()</a>
 
     
 
     <a href="#Part_select_face_near_landmark" class="chip chipsItem"
-        id="chip_Part_select_face_near_landmark">select_face_near_landmark()</a>
+        id="chip_Part_select_face_near_landmark" title="Select a face closest to a landmark on the entity (in UI).">select_face_near_landmark()</a>
 
     
 
@@ -431,102 +471,102 @@
             
 
     <a href="#Part-Entity_is_exists" class="chip chipsItem"
-        id="chip_Part-Entity_is_exists">is_exists()</a>
+        id="chip_Part-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Part-Entity_rename" class="chip chipsItem"
-        id="chip_Part-Entity_rename">rename()</a>
+        id="chip_Part-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Part-Entity_delete" class="chip chipsItem"
-        id="chip_Part-Entity_delete">delete()</a>
+        id="chip_Part-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Part-Entity_is_visible" class="chip chipsItem"
-        id="chip_Part-Entity_is_visible">is_visible()</a>
+        id="chip_Part-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Part-Entity_set_visible" class="chip chipsItem"
-        id="chip_Part-Entity_set_visible">set_visible()</a>
+        id="chip_Part-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Part-Entity_apply" class="chip chipsItem"
-        id="chip_Part-Entity_apply">apply()</a>
+        id="chip_Part-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Part-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Part-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Part-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Part-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Part-Entity_get_location_world">get_location_world()</a>
+        id="chip_Part-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Part-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Part-Entity_get_location_local">get_location_local()</a>
+        id="chip_Part-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Part-Entity_select" class="chip chipsItem"
-        id="chip_Part-Entity_select">select()</a>
+        id="chip_Part-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Part-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Part-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Part-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Part-Entity_translate_x" class="chip chipsItem"
-        id="chip_Part-Entity_translate_x">translate_x()</a>
+        id="chip_Part-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Part-Entity_translate_y" class="chip chipsItem"
-        id="chip_Part-Entity_translate_y">translate_y()</a>
+        id="chip_Part-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Part-Entity_translate_z" class="chip chipsItem"
-        id="chip_Part-Entity_translate_z">translate_z()</a>
+        id="chip_Part-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Part-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Part-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Part-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Part-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Part-Entity_rotate_x">rotate_x()</a>
+        id="chip_Part-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Part-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Part-Entity_rotate_y">rotate_y()</a>
+        id="chip_Part-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Part-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Part-Entity_rotate_z">rotate_z()</a>
+        id="chip_Part-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Part-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Part-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Part-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Part-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Part-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Part-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -538,7 +578,7 @@
             
 
     <a href="#Part_mirror" class="chip chipsItem"
-        id="chip_Part_mirror">mirror()</a>
+        id="chip_Part_mirror" title="Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.">mirror()</a>
 
     
 
@@ -547,12 +587,12 @@
             
 
     <a href="#Part_linear_pattern" class="chip chipsItem"
-        id="chip_Part_linear_pattern">linear_pattern()</a>
+        id="chip_Part_linear_pattern" title="Pattern in a uniform direction.">linear_pattern()</a>
 
     
 
     <a href="#Part_circular_pattern" class="chip chipsItem"
-        id="chip_Part_circular_pattern">circular_pattern()</a>
+        id="chip_Part_circular_pattern" title="Pattern in a circular direction.">circular_pattern()</a>
 
     
 
@@ -561,17 +601,17 @@
             
 
     <a href="#Part_remesh" class="chip chipsItem"
-        id="chip_Part_remesh">remesh()</a>
+        id="chip_Part_remesh" title="Remeshing changes the shape of an entity.">remesh()</a>
 
     
 
     <a href="#Part_subdivide" class="chip chipsItem"
-        id="chip_Part_subdivide">subdivide()</a>
+        id="chip_Part_subdivide" title="Subdivide an entity into more components.">subdivide()</a>
 
     
 
     <a href="#Part_decimate" class="chip chipsItem"
-        id="chip_Part_decimate">decimate()</a>
+        id="chip_Part_decimate" title="Decimate an entity into less components.">decimate()</a>
 
     
 
@@ -580,7 +620,7 @@
             
 
     <a href="#Part_create_from_file" class="chip chipsItem"
-        id="chip_Part_create_from_file">create_from_file()</a>
+        id="chip_Part_create_from_file" title="Imports geometry from a file.">create_from_file()</a>
 
     
 
@@ -589,7 +629,7 @@
             
 
     <a href="#Part_export" class="chip chipsItem"
-        id="chip_Part_export">export()</a>
+        id="chip_Part_export" title="Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'">export()</a>
 
     
 
@@ -598,42 +638,42 @@
             
 
     <a href="#Part_scale_xyz" class="chip chipsItem"
-        id="chip_Part_scale_xyz">scale_xyz()</a>
+        id="chip_Part_scale_xyz" title="Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_xyz()</a>
 
     
 
     <a href="#Part_scale_x" class="chip chipsItem"
-        id="chip_Part_scale_x">scale_x()</a>
+        id="chip_Part_scale_x" title="Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_x()</a>
 
     
 
     <a href="#Part_scale_y" class="chip chipsItem"
-        id="chip_Part_scale_y">scale_y()</a>
+        id="chip_Part_scale_y" title="Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_y()</a>
 
     
 
     <a href="#Part_scale_z" class="chip chipsItem"
-        id="chip_Part_scale_z">scale_z()</a>
+        id="chip_Part_scale_z" title="Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_z()</a>
 
     
 
     <a href="#Part_scale_x_by_factor" class="chip chipsItem"
-        id="chip_Part_scale_x_by_factor">scale_x_by_factor()</a>
+        id="chip_Part_scale_x_by_factor" title="Scale in the X direction by a multiple.">scale_x_by_factor()</a>
 
     
 
     <a href="#Part_scale_y_by_factor" class="chip chipsItem"
-        id="chip_Part_scale_y_by_factor">scale_y_by_factor()</a>
+        id="chip_Part_scale_y_by_factor" title="Scale in the Y direction by a multiple.">scale_y_by_factor()</a>
 
     
 
     <a href="#Part_scale_z_by_factor" class="chip chipsItem"
-        id="chip_Part_scale_z_by_factor">scale_z_by_factor()</a>
+        id="chip_Part_scale_z_by_factor" title="Scale in the X direction by a multiple.">scale_z_by_factor()</a>
 
     
 
     <a href="#Part_scale_keep_aspect_ratio" class="chip chipsItem"
-        id="chip_Part_scale_keep_aspect_ratio">scale_keep_aspect_ratio()</a>
+        id="chip_Part_scale_keep_aspect_ratio" title="Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_keep_aspect_ratio()</a>
 
     
 
@@ -642,12 +682,12 @@
             
 
     <a href="#Part_create_landmark" class="chip chipsItem"
-        id="chip_Part_create_landmark">create_landmark()</a>
+        id="chip_Part_create_landmark" title="Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.">create_landmark()</a>
 
     
 
     <a href="#Part_get_landmark" class="chip chipsItem"
-        id="chip_Part_get_landmark">get_landmark()</a>
+        id="chip_Part_get_landmark" title="Get the landmark by name">get_landmark()</a>
 
     
 
@@ -656,17 +696,17 @@
             
 
     <a href="#Part_union" class="chip chipsItem"
-        id="chip_Part_union">union()</a>
+        id="chip_Part_union" title="Boolean union">union()</a>
 
     
 
     <a href="#Part_subtract" class="chip chipsItem"
-        id="chip_Part_subtract">subtract()</a>
+        id="chip_Part_subtract" title="Boolean subtraction">subtract()</a>
 
     
 
     <a href="#Part_intersect" class="chip chipsItem"
-        id="chip_Part_intersect">intersect()</a>
+        id="chip_Part_intersect" title="Boolean intersection">intersect()</a>
 
     
 
@@ -681,72 +721,72 @@
             
 
     <a href="#Sketch_get_wires" class="chip chipsItem"
-        id="chip_Sketch_get_wires">get_wires()</a>
+        id="chip_Sketch_get_wires" title="Get a list of Wires in this Sketch.">get_wires()</a>
 
     
 
     <a href="#Sketch_clone" class="chip chipsItem"
-        id="chip_Sketch_clone">clone()</a>
+        id="chip_Sketch_clone" title="Clone an existing sketch with its geometry and properties. Returns the new Sketch.">clone()</a>
 
     
 
     <a href="#Sketch_create_text" class="chip chipsItem"
-        id="chip_Sketch_create_text">create_text()</a>
+        id="chip_Sketch_create_text" title="Adds text to a sketch.">create_text()</a>
 
     
 
     <a href="#Sketch_create_from_vertices" class="chip chipsItem"
-        id="chip_Sketch_create_from_vertices">create_from_vertices()</a>
+        id="chip_Sketch_create_from_vertices" title="Create a curve from 2D/3D points.">create_from_vertices()</a>
 
     
 
     <a href="#Sketch_create_point" class="chip chipsItem"
-        id="chip_Sketch_create_point">create_point()</a>
+        id="chip_Sketch_create_point" title="Create a point">create_point()</a>
 
     
 
     <a href="#Sketch_create_line" class="chip chipsItem"
-        id="chip_Sketch_create_line">create_line()</a>
+        id="chip_Sketch_create_line" title="Create a line between two points">create_line()</a>
 
     
 
     <a href="#Sketch_create_line_to" class="chip chipsItem"
-        id="chip_Sketch_create_line_to">create_line_to()</a>
+        id="chip_Sketch_create_line_to" title="Create a line between two points">create_line_to()</a>
 
     
 
     <a href="#Sketch_create_circle" class="chip chipsItem"
-        id="chip_Sketch_create_circle">create_circle()</a>
+        id="chip_Sketch_create_circle" title="Create a circle">create_circle()</a>
 
     
 
     <a href="#Sketch_create_ellipse" class="chip chipsItem"
-        id="chip_Sketch_create_ellipse">create_ellipse()</a>
+        id="chip_Sketch_create_ellipse" title="Create an ellipse">create_ellipse()</a>
 
     
 
     <a href="#Sketch_create_arc" class="chip chipsItem"
-        id="chip_Sketch_create_arc">create_arc()</a>
+        id="chip_Sketch_create_arc" title="Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.">create_arc()</a>
 
     
 
     <a href="#Sketch_create_rectangle" class="chip chipsItem"
-        id="chip_Sketch_create_rectangle">create_rectangle()</a>
+        id="chip_Sketch_create_rectangle" title="Create a rectangle">create_rectangle()</a>
 
     
 
     <a href="#Sketch_create_polygon" class="chip chipsItem"
-        id="chip_Sketch_create_polygon">create_polygon()</a>
+        id="chip_Sketch_create_polygon" title="Create an n-gon">create_polygon()</a>
 
     
 
     <a href="#Sketch_create_trapezoid" class="chip chipsItem"
-        id="chip_Sketch_create_trapezoid">create_trapezoid()</a>
+        id="chip_Sketch_create_trapezoid" title="Create a trapezoid">create_trapezoid()</a>
 
     
 
     <a href="#Sketch_create_spiral" class="chip chipsItem"
-        id="chip_Sketch_create_spiral">create_spiral()</a>
+        id="chip_Sketch_create_spiral" title="Create a spiral or helix">create_spiral()</a>
 
     
 
@@ -757,102 +797,102 @@
             
 
     <a href="#Sketch-Entity_is_exists" class="chip chipsItem"
-        id="chip_Sketch-Entity_is_exists">is_exists()</a>
+        id="chip_Sketch-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Sketch-Entity_rename" class="chip chipsItem"
-        id="chip_Sketch-Entity_rename">rename()</a>
+        id="chip_Sketch-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Sketch-Entity_delete" class="chip chipsItem"
-        id="chip_Sketch-Entity_delete">delete()</a>
+        id="chip_Sketch-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Sketch-Entity_is_visible" class="chip chipsItem"
-        id="chip_Sketch-Entity_is_visible">is_visible()</a>
+        id="chip_Sketch-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Sketch-Entity_set_visible" class="chip chipsItem"
-        id="chip_Sketch-Entity_set_visible">set_visible()</a>
+        id="chip_Sketch-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Sketch-Entity_apply" class="chip chipsItem"
-        id="chip_Sketch-Entity_apply">apply()</a>
+        id="chip_Sketch-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Sketch-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Sketch-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Sketch-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Sketch-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Sketch-Entity_get_location_world">get_location_world()</a>
+        id="chip_Sketch-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Sketch-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Sketch-Entity_get_location_local">get_location_local()</a>
+        id="chip_Sketch-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Sketch-Entity_select" class="chip chipsItem"
-        id="chip_Sketch-Entity_select">select()</a>
+        id="chip_Sketch-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Sketch-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Sketch-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Sketch-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Sketch-Entity_translate_x" class="chip chipsItem"
-        id="chip_Sketch-Entity_translate_x">translate_x()</a>
+        id="chip_Sketch-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Sketch-Entity_translate_y" class="chip chipsItem"
-        id="chip_Sketch-Entity_translate_y">translate_y()</a>
+        id="chip_Sketch-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Sketch-Entity_translate_z" class="chip chipsItem"
-        id="chip_Sketch-Entity_translate_z">translate_z()</a>
+        id="chip_Sketch-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Sketch-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Sketch-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Sketch-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Sketch-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Sketch-Entity_rotate_x">rotate_x()</a>
+        id="chip_Sketch-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Sketch-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Sketch-Entity_rotate_y">rotate_y()</a>
+        id="chip_Sketch-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Sketch-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Sketch-Entity_rotate_z">rotate_z()</a>
+        id="chip_Sketch-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Sketch-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Sketch-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Sketch-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Sketch-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Sketch-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Sketch-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -864,7 +904,7 @@
             
 
     <a href="#Sketch_mirror" class="chip chipsItem"
-        id="chip_Sketch_mirror">mirror()</a>
+        id="chip_Sketch_mirror" title="Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.">mirror()</a>
 
     
 
@@ -873,12 +913,12 @@
             
 
     <a href="#Sketch_linear_pattern" class="chip chipsItem"
-        id="chip_Sketch_linear_pattern">linear_pattern()</a>
+        id="chip_Sketch_linear_pattern" title="Pattern in a uniform direction.">linear_pattern()</a>
 
     
 
     <a href="#Sketch_circular_pattern" class="chip chipsItem"
-        id="chip_Sketch_circular_pattern">circular_pattern()</a>
+        id="chip_Sketch_circular_pattern" title="Pattern in a circular direction.">circular_pattern()</a>
 
     
 
@@ -887,7 +927,7 @@
             
 
     <a href="#Sketch_create_from_file" class="chip chipsItem"
-        id="chip_Sketch_create_from_file">create_from_file()</a>
+        id="chip_Sketch_create_from_file" title="Imports geometry from a file.">create_from_file()</a>
 
     
 
@@ -896,7 +936,7 @@
             
 
     <a href="#Sketch_export" class="chip chipsItem"
-        id="chip_Sketch_export">export()</a>
+        id="chip_Sketch_export" title="Export Entity. Use the filePath to control the export type, e.g. '/path/to/cube.obj' or '/path/to/curve.svg'">export()</a>
 
     
 
@@ -905,42 +945,42 @@
             
 
     <a href="#Sketch_scale_xyz" class="chip chipsItem"
-        id="chip_Sketch_scale_xyz">scale_xyz()</a>
+        id="chip_Sketch_scale_xyz" title="Scale in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_xyz()</a>
 
     
 
     <a href="#Sketch_scale_x" class="chip chipsItem"
-        id="chip_Sketch_scale_x">scale_x()</a>
+        id="chip_Sketch_scale_x" title="Scale in the X direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_x()</a>
 
     
 
     <a href="#Sketch_scale_y" class="chip chipsItem"
-        id="chip_Sketch_scale_y">scale_y()</a>
+        id="chip_Sketch_scale_y" title="Scale in the Y direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_y()</a>
 
     
 
     <a href="#Sketch_scale_z" class="chip chipsItem"
-        id="chip_Sketch_scale_z">scale_z()</a>
+        id="chip_Sketch_scale_z" title="Scale in the Z direction. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_z()</a>
 
     
 
     <a href="#Sketch_scale_x_by_factor" class="chip chipsItem"
-        id="chip_Sketch_scale_x_by_factor">scale_x_by_factor()</a>
+        id="chip_Sketch_scale_x_by_factor" title="Scale in the X direction by a multiple.">scale_x_by_factor()</a>
 
     
 
     <a href="#Sketch_scale_y_by_factor" class="chip chipsItem"
-        id="chip_Sketch_scale_y_by_factor">scale_y_by_factor()</a>
+        id="chip_Sketch_scale_y_by_factor" title="Scale in the Y direction by a multiple.">scale_y_by_factor()</a>
 
     
 
     <a href="#Sketch_scale_z_by_factor" class="chip chipsItem"
-        id="chip_Sketch_scale_z_by_factor">scale_z_by_factor()</a>
+        id="chip_Sketch_scale_z_by_factor" title="Scale in the X direction by a multiple.">scale_z_by_factor()</a>
 
     
 
     <a href="#Sketch_scale_keep_aspect_ratio" class="chip chipsItem"
-        id="chip_Sketch_scale_keep_aspect_ratio">scale_keep_aspect_ratio()</a>
+        id="chip_Sketch_scale_keep_aspect_ratio" title="Scale in one axis and maintain the others. Pass a Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">scale_keep_aspect_ratio()</a>
 
     
 
@@ -949,7 +989,7 @@
             
 
     <a href="#Sketch_project" class="chip chipsItem"
-        id="chip_Sketch_project">project()</a>
+        id="chip_Sketch_project" title="Project another entity onto this one.">project()</a>
 
     
 
@@ -958,12 +998,12 @@
             
 
     <a href="#Sketch_create_landmark" class="chip chipsItem"
-        id="chip_Sketch_create_landmark">create_landmark()</a>
+        id="chip_Sketch_create_landmark" title="Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.">create_landmark()</a>
 
     
 
     <a href="#Sketch_get_landmark" class="chip chipsItem"
-        id="chip_Sketch_get_landmark">get_landmark()</a>
+        id="chip_Sketch_get_landmark" title="Get the landmark by name">get_landmark()</a>
 
     
 
@@ -978,12 +1018,12 @@
             
 
     <a href="#Vertex_get_control_points" class="chip chipsItem"
-        id="chip_Vertex_get_control_points">get_control_points()</a>
+        id="chip_Vertex_get_control_points" title="Get a vertex's curve control points. This may not be applicable for some curve types.">get_control_points()</a>
 
     
 
     <a href="#Vertex_set_control_points" class="chip chipsItem"
-        id="chip_Vertex_set_control_points">set_control_points()</a>
+        id="chip_Vertex_set_control_points" title="Set a vertex's curve control points. This may not be applicable for some curve types.">set_control_points()</a>
 
     
 
@@ -994,102 +1034,102 @@
             
 
     <a href="#Vertex-Entity_is_exists" class="chip chipsItem"
-        id="chip_Vertex-Entity_is_exists">is_exists()</a>
+        id="chip_Vertex-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Vertex-Entity_rename" class="chip chipsItem"
-        id="chip_Vertex-Entity_rename">rename()</a>
+        id="chip_Vertex-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Vertex-Entity_delete" class="chip chipsItem"
-        id="chip_Vertex-Entity_delete">delete()</a>
+        id="chip_Vertex-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Vertex-Entity_is_visible" class="chip chipsItem"
-        id="chip_Vertex-Entity_is_visible">is_visible()</a>
+        id="chip_Vertex-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Vertex-Entity_set_visible" class="chip chipsItem"
-        id="chip_Vertex-Entity_set_visible">set_visible()</a>
+        id="chip_Vertex-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Vertex-Entity_apply" class="chip chipsItem"
-        id="chip_Vertex-Entity_apply">apply()</a>
+        id="chip_Vertex-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Vertex-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Vertex-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Vertex-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Vertex-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Vertex-Entity_get_location_world">get_location_world()</a>
+        id="chip_Vertex-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Vertex-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Vertex-Entity_get_location_local">get_location_local()</a>
+        id="chip_Vertex-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Vertex-Entity_select" class="chip chipsItem"
-        id="chip_Vertex-Entity_select">select()</a>
+        id="chip_Vertex-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Vertex-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Vertex-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Vertex-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Vertex-Entity_translate_x" class="chip chipsItem"
-        id="chip_Vertex-Entity_translate_x">translate_x()</a>
+        id="chip_Vertex-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Vertex-Entity_translate_y" class="chip chipsItem"
-        id="chip_Vertex-Entity_translate_y">translate_y()</a>
+        id="chip_Vertex-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Vertex-Entity_translate_z" class="chip chipsItem"
-        id="chip_Vertex-Entity_translate_z">translate_z()</a>
+        id="chip_Vertex-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Vertex-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Vertex-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Vertex-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Vertex-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Vertex-Entity_rotate_x">rotate_x()</a>
+        id="chip_Vertex-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Vertex-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Vertex-Entity_rotate_y">rotate_y()</a>
+        id="chip_Vertex-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Vertex-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Vertex-Entity_rotate_z">rotate_z()</a>
+        id="chip_Vertex-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Vertex-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Vertex-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Vertex-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Vertex-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Vertex-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Vertex-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -1101,7 +1141,7 @@
             
 
     <a href="#Vertex_project" class="chip chipsItem"
-        id="chip_Vertex_project">project()</a>
+        id="chip_Vertex_project" title="Project another entity onto this one.">project()</a>
 
     
 
@@ -1116,22 +1156,22 @@
             
 
     <a href="#Edge_offset" class="chip chipsItem"
-        id="chip_Edge_offset">offset()</a>
+        id="chip_Edge_offset" title="Clone and offset this edge a distance away from this one. This returns a new edge in the same sketch.">offset()</a>
 
     
 
     <a href="#Edge_fillet" class="chip chipsItem"
-        id="chip_Edge_fillet">fillet()</a>
+        id="chip_Edge_fillet" title="Fillet this and another edge.">fillet()</a>
 
     
 
     <a href="#Edge_set_is_construction" class="chip chipsItem"
-        id="chip_Edge_set_is_construction">set_is_construction()</a>
+        id="chip_Edge_set_is_construction" title="Mark this edge for construction only.">set_is_construction()</a>
 
     
 
     <a href="#Edge_get_is_construction" class="chip chipsItem"
-        id="chip_Edge_get_is_construction">get_is_construction()</a>
+        id="chip_Edge_get_is_construction" title="Check if this edge is for construction only.">get_is_construction()</a>
 
     
 
@@ -1142,102 +1182,102 @@
             
 
     <a href="#Edge-Entity_is_exists" class="chip chipsItem"
-        id="chip_Edge-Entity_is_exists">is_exists()</a>
+        id="chip_Edge-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Edge-Entity_rename" class="chip chipsItem"
-        id="chip_Edge-Entity_rename">rename()</a>
+        id="chip_Edge-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Edge-Entity_delete" class="chip chipsItem"
-        id="chip_Edge-Entity_delete">delete()</a>
+        id="chip_Edge-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Edge-Entity_is_visible" class="chip chipsItem"
-        id="chip_Edge-Entity_is_visible">is_visible()</a>
+        id="chip_Edge-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Edge-Entity_set_visible" class="chip chipsItem"
-        id="chip_Edge-Entity_set_visible">set_visible()</a>
+        id="chip_Edge-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Edge-Entity_apply" class="chip chipsItem"
-        id="chip_Edge-Entity_apply">apply()</a>
+        id="chip_Edge-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Edge-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Edge-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Edge-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Edge-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Edge-Entity_get_location_world">get_location_world()</a>
+        id="chip_Edge-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Edge-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Edge-Entity_get_location_local">get_location_local()</a>
+        id="chip_Edge-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Edge-Entity_select" class="chip chipsItem"
-        id="chip_Edge-Entity_select">select()</a>
+        id="chip_Edge-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Edge-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Edge-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Edge-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Edge-Entity_translate_x" class="chip chipsItem"
-        id="chip_Edge-Entity_translate_x">translate_x()</a>
+        id="chip_Edge-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Edge-Entity_translate_y" class="chip chipsItem"
-        id="chip_Edge-Entity_translate_y">translate_y()</a>
+        id="chip_Edge-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Edge-Entity_translate_z" class="chip chipsItem"
-        id="chip_Edge-Entity_translate_z">translate_z()</a>
+        id="chip_Edge-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Edge-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Edge-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Edge-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Edge-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Edge-Entity_rotate_x">rotate_x()</a>
+        id="chip_Edge-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Edge-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Edge-Entity_rotate_y">rotate_y()</a>
+        id="chip_Edge-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Edge-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Edge-Entity_rotate_z">rotate_z()</a>
+        id="chip_Edge-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Edge-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Edge-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Edge-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Edge-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Edge-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Edge-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -1249,7 +1289,7 @@
             
 
     <a href="#Edge_mirror" class="chip chipsItem"
-        id="chip_Edge_mirror">mirror()</a>
+        id="chip_Edge_mirror" title="Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.">mirror()</a>
 
     
 
@@ -1258,12 +1298,12 @@
             
 
     <a href="#Edge_linear_pattern" class="chip chipsItem"
-        id="chip_Edge_linear_pattern">linear_pattern()</a>
+        id="chip_Edge_linear_pattern" title="Pattern in a uniform direction.">linear_pattern()</a>
 
     
 
     <a href="#Edge_circular_pattern" class="chip chipsItem"
-        id="chip_Edge_circular_pattern">circular_pattern()</a>
+        id="chip_Edge_circular_pattern" title="Pattern in a circular direction.">circular_pattern()</a>
 
     
 
@@ -1272,17 +1312,17 @@
             
 
     <a href="#Edge_remesh" class="chip chipsItem"
-        id="chip_Edge_remesh">remesh()</a>
+        id="chip_Edge_remesh" title="Remeshing changes the shape of an entity.">remesh()</a>
 
     
 
     <a href="#Edge_subdivide" class="chip chipsItem"
-        id="chip_Edge_subdivide">subdivide()</a>
+        id="chip_Edge_subdivide" title="Subdivide an entity into more components.">subdivide()</a>
 
     
 
     <a href="#Edge_decimate" class="chip chipsItem"
-        id="chip_Edge_decimate">decimate()</a>
+        id="chip_Edge_decimate" title="Decimate an entity into less components.">decimate()</a>
 
     
 
@@ -1291,7 +1331,7 @@
             
 
     <a href="#Edge_project" class="chip chipsItem"
-        id="chip_Edge_project">project()</a>
+        id="chip_Edge_project" title="Project another entity onto this one.">project()</a>
 
     
 
@@ -1300,12 +1340,12 @@
             
 
     <a href="#Edge_create_landmark" class="chip chipsItem"
-        id="chip_Edge_create_landmark">create_landmark()</a>
+        id="chip_Edge_create_landmark" title="Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.">create_landmark()</a>
 
     
 
     <a href="#Edge_get_landmark" class="chip chipsItem"
-        id="chip_Edge_get_landmark">get_landmark()</a>
+        id="chip_Edge_get_landmark" title="Get the landmark by name">get_landmark()</a>
 
     
 
@@ -1320,82 +1360,82 @@
             
 
     <a href="#Wire_get_normal" class="chip chipsItem"
-        id="chip_Wire_get_normal">get_normal()</a>
+        id="chip_Wire_get_normal" title="Get the normal created by this wire. Must be a closed wire.">get_normal()</a>
 
     
 
     <a href="#Wire_get_edges" class="chip chipsItem"
-        id="chip_Wire_get_edges">get_edges()</a>
+        id="chip_Wire_get_edges" title="Return references to all the edges making up this wire.">get_edges()</a>
 
     
 
     <a href="#Wire_get_vertices" class="chip chipsItem"
-        id="chip_Wire_get_vertices">get_vertices()</a>
+        id="chip_Wire_get_vertices" title="Collapse all edges' vertices into one list.">get_vertices()</a>
 
     
 
     <a href="#Wire_get_is_closed" class="chip chipsItem"
-        id="chip_Wire_get_is_closed">get_is_closed()</a>
+        id="chip_Wire_get_is_closed" title="Checks if a wire is closed. Note: A closed wire is a Face or Surface.">get_is_closed()</a>
 
     
 
     <a href="#Wire_loft" class="chip chipsItem"
-        id="chip_Wire_loft">loft()</a>
+        id="chip_Wire_loft" title="Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.">loft()</a>
 
     
 
     <a href="#Wire_revolve" class="chip chipsItem"
-        id="chip_Wire_revolve">revolve()</a>
+        id="chip_Wire_revolve" title="Revolve a Wire around another Entity or Landmark">revolve()</a>
 
     
 
     <a href="#Wire_twist" class="chip chipsItem"
-        id="chip_Wire_twist">twist()</a>
+        id="chip_Wire_twist" title="AKA Helix, Screw.">twist()</a>
 
     
 
     <a href="#Wire_extrude" class="chip chipsItem"
-        id="chip_Wire_extrude">extrude()</a>
+        id="chip_Wire_extrude" title="Extrude a curve by a specified length. Returns a Part type.">extrude()</a>
 
     
 
     <a href="#Wire_sweep" class="chip chipsItem"
-        id="chip_Wire_sweep">sweep()</a>
+        id="chip_Wire_sweep" title="Extrude this Wire along the path of another Wire">sweep()</a>
 
     
 
     <a href="#Wire_offset" class="chip chipsItem"
-        id="chip_Wire_offset">offset()</a>
+        id="chip_Wire_offset" title="Uniformly add a wall around a Wire. This returns a new wire in the same sketch.">offset()</a>
 
     
 
     <a href="#Wire_profile" class="chip chipsItem"
-        id="chip_Wire_profile">profile()</a>
+        id="chip_Wire_profile" title="Bend this curve along the path of another">profile()</a>
 
     
 
     <a href="#Wire_create_from_vertices" class="chip chipsItem"
-        id="chip_Wire_create_from_vertices">create_from_vertices()</a>
+        id="chip_Wire_create_from_vertices" title="Create a curve from 2D/3D points.">create_from_vertices()</a>
 
     
 
     <a href="#Wire_create_point" class="chip chipsItem"
-        id="chip_Wire_create_point">create_point()</a>
+        id="chip_Wire_create_point" title="Create a point">create_point()</a>
 
     
 
     <a href="#Wire_create_line" class="chip chipsItem"
-        id="chip_Wire_create_line">create_line()</a>
+        id="chip_Wire_create_line" title="Create a line between two points">create_line()</a>
 
     
 
     <a href="#Wire_create_line_to" class="chip chipsItem"
-        id="chip_Wire_create_line_to">create_line_to()</a>
+        id="chip_Wire_create_line_to" title="Create a line between two points">create_line_to()</a>
 
     
 
     <a href="#Wire_create_arc" class="chip chipsItem"
-        id="chip_Wire_create_arc">create_arc()</a>
+        id="chip_Wire_create_arc" title="Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.">create_arc()</a>
 
     
 
@@ -1406,102 +1446,102 @@
             
 
     <a href="#Wire-Entity_is_exists" class="chip chipsItem"
-        id="chip_Wire-Entity_is_exists">is_exists()</a>
+        id="chip_Wire-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Wire-Entity_rename" class="chip chipsItem"
-        id="chip_Wire-Entity_rename">rename()</a>
+        id="chip_Wire-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Wire-Entity_delete" class="chip chipsItem"
-        id="chip_Wire-Entity_delete">delete()</a>
+        id="chip_Wire-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Wire-Entity_is_visible" class="chip chipsItem"
-        id="chip_Wire-Entity_is_visible">is_visible()</a>
+        id="chip_Wire-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Wire-Entity_set_visible" class="chip chipsItem"
-        id="chip_Wire-Entity_set_visible">set_visible()</a>
+        id="chip_Wire-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Wire-Entity_apply" class="chip chipsItem"
-        id="chip_Wire-Entity_apply">apply()</a>
+        id="chip_Wire-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Wire-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Wire-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Wire-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Wire-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Wire-Entity_get_location_world">get_location_world()</a>
+        id="chip_Wire-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Wire-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Wire-Entity_get_location_local">get_location_local()</a>
+        id="chip_Wire-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Wire-Entity_select" class="chip chipsItem"
-        id="chip_Wire-Entity_select">select()</a>
+        id="chip_Wire-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Wire-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Wire-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Wire-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Wire-Entity_translate_x" class="chip chipsItem"
-        id="chip_Wire-Entity_translate_x">translate_x()</a>
+        id="chip_Wire-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Wire-Entity_translate_y" class="chip chipsItem"
-        id="chip_Wire-Entity_translate_y">translate_y()</a>
+        id="chip_Wire-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Wire-Entity_translate_z" class="chip chipsItem"
-        id="chip_Wire-Entity_translate_z">translate_z()</a>
+        id="chip_Wire-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Wire-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Wire-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Wire-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Wire-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Wire-Entity_rotate_x">rotate_x()</a>
+        id="chip_Wire-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Wire-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Wire-Entity_rotate_y">rotate_y()</a>
+        id="chip_Wire-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Wire-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Wire-Entity_rotate_z">rotate_z()</a>
+        id="chip_Wire-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Wire-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Wire-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Wire-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Wire-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Wire-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Wire-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -1513,7 +1553,7 @@
             
 
     <a href="#Wire_mirror" class="chip chipsItem"
-        id="chip_Wire_mirror">mirror()</a>
+        id="chip_Wire_mirror" title="Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.">mirror()</a>
 
     
 
@@ -1522,12 +1562,12 @@
             
 
     <a href="#Wire_linear_pattern" class="chip chipsItem"
-        id="chip_Wire_linear_pattern">linear_pattern()</a>
+        id="chip_Wire_linear_pattern" title="Pattern in a uniform direction.">linear_pattern()</a>
 
     
 
     <a href="#Wire_circular_pattern" class="chip chipsItem"
-        id="chip_Wire_circular_pattern">circular_pattern()</a>
+        id="chip_Wire_circular_pattern" title="Pattern in a circular direction.">circular_pattern()</a>
 
     
 
@@ -1536,7 +1576,7 @@
             
 
     <a href="#Wire_project" class="chip chipsItem"
-        id="chip_Wire_project">project()</a>
+        id="chip_Wire_project" title="Project another entity onto this one.">project()</a>
 
     
 
@@ -1545,12 +1585,12 @@
             
 
     <a href="#Wire_create_landmark" class="chip chipsItem"
-        id="chip_Wire_create_landmark">create_landmark()</a>
+        id="chip_Wire_create_landmark" title="Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.">create_landmark()</a>
 
     
 
     <a href="#Wire_get_landmark" class="chip chipsItem"
-        id="chip_Wire_get_landmark">get_landmark()</a>
+        id="chip_Wire_get_landmark" title="Get the landmark by name">get_landmark()</a>
 
     
 
@@ -1559,17 +1599,17 @@
             
 
     <a href="#Wire_union" class="chip chipsItem"
-        id="chip_Wire_union">union()</a>
+        id="chip_Wire_union" title="Boolean union">union()</a>
 
     
 
     <a href="#Wire_subtract" class="chip chipsItem"
-        id="chip_Wire_subtract">subtract()</a>
+        id="chip_Wire_subtract" title="Boolean subtraction">subtract()</a>
 
     
 
     <a href="#Wire_intersect" class="chip chipsItem"
-        id="chip_Wire_intersect">intersect()</a>
+        id="chip_Wire_intersect" title="Boolean intersection">intersect()</a>
 
     
 
@@ -1578,17 +1618,17 @@
             
 
     <a href="#Wire_remesh" class="chip chipsItem"
-        id="chip_Wire_remesh">remesh()</a>
+        id="chip_Wire_remesh" title="Remeshing changes the shape of an entity.">remesh()</a>
 
     
 
     <a href="#Wire_subdivide" class="chip chipsItem"
-        id="chip_Wire_subdivide">subdivide()</a>
+        id="chip_Wire_subdivide" title="Subdivide an entity into more components.">subdivide()</a>
 
     
 
     <a href="#Wire_decimate" class="chip chipsItem"
-        id="chip_Wire_decimate">decimate()</a>
+        id="chip_Wire_decimate" title="Decimate an entity into less components.">decimate()</a>
 
     
 
@@ -1603,17 +1643,17 @@
             
 
     <a href="#Landmark_clone" class="chip chipsItem"
-        id="chip_Landmark_clone">clone()</a>
+        id="chip_Landmark_clone" title="Clone an existing Landmark with an optional offset, and reassignment to a different parent. Returns the new Landmark.">clone()</a>
 
     
 
     <a href="#Landmark_get_landmark_entity_name" class="chip chipsItem"
-        id="chip_Landmark_get_landmark_entity_name">get_landmark_entity_name()</a>
+        id="chip_Landmark_get_landmark_entity_name" title="Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.">get_landmark_entity_name()</a>
 
     
 
     <a href="#Landmark_get_parent_entity" class="chip chipsItem"
-        id="chip_Landmark_get_parent_entity">get_parent_entity()</a>
+        id="chip_Landmark_get_parent_entity" title="Get the name of the entity this landmark belongs to.">get_parent_entity()</a>
 
     
 
@@ -1624,102 +1664,102 @@
             
 
     <a href="#Landmark-Entity_is_exists" class="chip chipsItem"
-        id="chip_Landmark-Entity_is_exists">is_exists()</a>
+        id="chip_Landmark-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Landmark-Entity_rename" class="chip chipsItem"
-        id="chip_Landmark-Entity_rename">rename()</a>
+        id="chip_Landmark-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Landmark-Entity_delete" class="chip chipsItem"
-        id="chip_Landmark-Entity_delete">delete()</a>
+        id="chip_Landmark-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Landmark-Entity_is_visible" class="chip chipsItem"
-        id="chip_Landmark-Entity_is_visible">is_visible()</a>
+        id="chip_Landmark-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Landmark-Entity_set_visible" class="chip chipsItem"
-        id="chip_Landmark-Entity_set_visible">set_visible()</a>
+        id="chip_Landmark-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Landmark-Entity_apply" class="chip chipsItem"
-        id="chip_Landmark-Entity_apply">apply()</a>
+        id="chip_Landmark-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Landmark-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Landmark-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Landmark-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Landmark-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Landmark-Entity_get_location_world">get_location_world()</a>
+        id="chip_Landmark-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Landmark-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Landmark-Entity_get_location_local">get_location_local()</a>
+        id="chip_Landmark-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Landmark-Entity_select" class="chip chipsItem"
-        id="chip_Landmark-Entity_select">select()</a>
+        id="chip_Landmark-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Landmark-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Landmark-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Landmark-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Landmark-Entity_translate_x" class="chip chipsItem"
-        id="chip_Landmark-Entity_translate_x">translate_x()</a>
+        id="chip_Landmark-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Landmark-Entity_translate_y" class="chip chipsItem"
-        id="chip_Landmark-Entity_translate_y">translate_y()</a>
+        id="chip_Landmark-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Landmark-Entity_translate_z" class="chip chipsItem"
-        id="chip_Landmark-Entity_translate_z">translate_z()</a>
+        id="chip_Landmark-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Landmark-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Landmark-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Landmark-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Landmark-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Landmark-Entity_rotate_x">rotate_x()</a>
+        id="chip_Landmark-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Landmark-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Landmark-Entity_rotate_y">rotate_y()</a>
+        id="chip_Landmark-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Landmark-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Landmark-Entity_rotate_z">rotate_z()</a>
+        id="chip_Landmark-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Landmark-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Landmark-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Landmark-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Landmark-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Landmark-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Landmark-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -1737,57 +1777,57 @@
             
 
     <a href="#Joint_translate_landmark_onto_another" class="chip chipsItem"
-        id="chip_Joint_translate_landmark_onto_another">translate_landmark_onto_another()</a>
+        id="chip_Joint_translate_landmark_onto_another" title="Transforms one landmark onto another">translate_landmark_onto_another()</a>
 
     
 
     <a href="#Joint_pivot" class="chip chipsItem"
-        id="chip_Joint_pivot">pivot()</a>
+        id="chip_Joint_pivot" title="Constraint the rotation origin of entity B to entity A's landmark.">pivot()</a>
 
     
 
     <a href="#Joint_gear_ratio" class="chip chipsItem"
-        id="chip_Joint_gear_ratio">gear_ratio()</a>
+        id="chip_Joint_gear_ratio" title="Constraint the rotation of entity B to be a percentage of entity A's">gear_ratio()</a>
 
     
 
     <a href="#Joint_limit_location_xyz" class="chip chipsItem"
-        id="chip_Joint_limit_location_xyz">limit_location_xyz()</a>
+        id="chip_Joint_limit_location_xyz" title="Constraint the translation of entity B, relative to entity A's landmark.">limit_location_xyz()</a>
 
     
 
     <a href="#Joint_limit_location_x" class="chip chipsItem"
-        id="chip_Joint_limit_location_x">limit_location_x()</a>
+        id="chip_Joint_limit_location_x" title="Constraint the translation of entity B, relative to entity A's landmark.">limit_location_x()</a>
 
     
 
     <a href="#Joint_limit_location_y" class="chip chipsItem"
-        id="chip_Joint_limit_location_y">limit_location_y()</a>
+        id="chip_Joint_limit_location_y" title="Constraint the translation of entity B, relative to entity A's landmark.">limit_location_y()</a>
 
     
 
     <a href="#Joint_limit_location_z" class="chip chipsItem"
-        id="chip_Joint_limit_location_z">limit_location_z()</a>
+        id="chip_Joint_limit_location_z" title="Constraint the translation of entity B, relative to entity A's landmark.">limit_location_z()</a>
 
     
 
     <a href="#Joint_limit_rotation_xyz" class="chip chipsItem"
-        id="chip_Joint_limit_rotation_xyz">limit_rotation_xyz()</a>
+        id="chip_Joint_limit_rotation_xyz" title="Constraint the rotation of entity B, relative to entity A's landmark.">limit_rotation_xyz()</a>
 
     
 
     <a href="#Joint_limit_rotation_x" class="chip chipsItem"
-        id="chip_Joint_limit_rotation_x">limit_rotation_x()</a>
+        id="chip_Joint_limit_rotation_x" title="Constraint the rotation of entity B, relative to entity A's landmark.">limit_rotation_x()</a>
 
     
 
     <a href="#Joint_limit_rotation_y" class="chip chipsItem"
-        id="chip_Joint_limit_rotation_y">limit_rotation_y()</a>
+        id="chip_Joint_limit_rotation_y" title="Constraint the rotation of entity B, relative to entity A's landmark.">limit_rotation_y()</a>
 
     
 
     <a href="#Joint_limit_rotation_z" class="chip chipsItem"
-        id="chip_Joint_limit_rotation_z">limit_rotation_z()</a>
+        id="chip_Joint_limit_rotation_z" title="Constraint the rotation of entity B, relative to entity A's landmark.">limit_rotation_z()</a>
 
     
 
@@ -1807,27 +1847,27 @@
             
 
     <a href="#Material_get_preset" class="chip chipsItem"
-        id="chip_Material_get_preset">get_preset()</a>
+        id="chip_Material_get_preset" title="Get a material from a preset">get_preset()</a>
 
     
 
     <a href="#Material_set_color" class="chip chipsItem"
-        id="chip_Material_set_color">set_color()</a>
+        id="chip_Material_set_color" title="Set the RGBA color of an entity. Supports 0-255 int or 0.0-1.0 float values.">set_color()</a>
 
     
 
     <a href="#Material_set_reflectivity" class="chip chipsItem"
-        id="chip_Material_set_reflectivity">set_reflectivity()</a>
+        id="chip_Material_set_reflectivity" title="Change the surface reflectivity (metallic luster) of the material.">set_reflectivity()</a>
 
     
 
     <a href="#Material_set_roughness" class="chip chipsItem"
-        id="chip_Material_set_roughness">set_roughness()</a>
+        id="chip_Material_set_roughness" title="Change the surface roughness of the material.">set_roughness()</a>
 
     
 
     <a href="#Material_set_image_texture" class="chip chipsItem"
-        id="chip_Material_set_image_texture">set_image_texture()</a>
+        id="chip_Material_set_image_texture" title="Add a texture from an image file.">set_image_texture()</a>
 
     
 
@@ -1847,32 +1887,32 @@
             
 
     <a href="#Animation_default" class="chip chipsItem"
-        id="chip_Animation_default">default()</a>
+        id="chip_Animation_default" title="Get an Animation instance for the current scene.">default()</a>
 
     
 
     <a href="#Animation_set_frame_start" class="chip chipsItem"
-        id="chip_Animation_set_frame_start">set_frame_start()</a>
+        id="chip_Animation_set_frame_start" title="Set the start animation frame in the scene.">set_frame_start()</a>
 
     
 
     <a href="#Animation_set_frame_end" class="chip chipsItem"
-        id="chip_Animation_set_frame_end">set_frame_end()</a>
+        id="chip_Animation_set_frame_end" title="Set the end animation frame in the scene.">set_frame_end()</a>
 
     
 
     <a href="#Animation_set_frame_current" class="chip chipsItem"
-        id="chip_Animation_set_frame_current">set_frame_current()</a>
+        id="chip_Animation_set_frame_current" title="Set the current animation frame in the scene.">set_frame_current()</a>
 
     
 
     <a href="#Animation_create_key_frame_location" class="chip chipsItem"
-        id="chip_Animation_create_key_frame_location">create_key_frame_location()</a>
+        id="chip_Animation_create_key_frame_location" title="Create an animation key-frame using the location of the entity.">create_key_frame_location()</a>
 
     
 
     <a href="#Animation_create_key_frame_rotation" class="chip chipsItem"
-        id="chip_Animation_create_key_frame_rotation">create_key_frame_rotation()</a>
+        id="chip_Animation_create_key_frame_rotation" title="Create an animation key-frame using the rotation of the entity.">create_key_frame_rotation()</a>
 
     
 
@@ -1892,27 +1932,27 @@
             
 
     <a href="#Light_set_color" class="chip chipsItem"
-        id="chip_Light_set_color">set_color()</a>
+        id="chip_Light_set_color" title="Set the color of an existing light.">set_color()</a>
 
     
 
     <a href="#Light_create_sun" class="chip chipsItem"
-        id="chip_Light_create_sun">create_sun()</a>
+        id="chip_Light_create_sun" title="Create a Sun-type light.">create_sun()</a>
 
     
 
     <a href="#Light_create_spot" class="chip chipsItem"
-        id="chip_Light_create_spot">create_spot()</a>
+        id="chip_Light_create_spot" title="Create a Spot-type light.">create_spot()</a>
 
     
 
     <a href="#Light_create_point" class="chip chipsItem"
-        id="chip_Light_create_point">create_point()</a>
+        id="chip_Light_create_point" title="Create a Point-type light.">create_point()</a>
 
     
 
     <a href="#Light_create_area" class="chip chipsItem"
-        id="chip_Light_create_area">create_area()</a>
+        id="chip_Light_create_area" title="Create an Area-type light.">create_area()</a>
 
     
 
@@ -1923,102 +1963,102 @@
             
 
     <a href="#Light-Entity_is_exists" class="chip chipsItem"
-        id="chip_Light-Entity_is_exists">is_exists()</a>
+        id="chip_Light-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Light-Entity_rename" class="chip chipsItem"
-        id="chip_Light-Entity_rename">rename()</a>
+        id="chip_Light-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Light-Entity_delete" class="chip chipsItem"
-        id="chip_Light-Entity_delete">delete()</a>
+        id="chip_Light-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Light-Entity_is_visible" class="chip chipsItem"
-        id="chip_Light-Entity_is_visible">is_visible()</a>
+        id="chip_Light-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Light-Entity_set_visible" class="chip chipsItem"
-        id="chip_Light-Entity_set_visible">set_visible()</a>
+        id="chip_Light-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Light-Entity_apply" class="chip chipsItem"
-        id="chip_Light-Entity_apply">apply()</a>
+        id="chip_Light-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Light-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Light-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Light-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Light-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Light-Entity_get_location_world">get_location_world()</a>
+        id="chip_Light-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Light-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Light-Entity_get_location_local">get_location_local()</a>
+        id="chip_Light-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Light-Entity_select" class="chip chipsItem"
-        id="chip_Light-Entity_select">select()</a>
+        id="chip_Light-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Light-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Light-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Light-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Light-Entity_translate_x" class="chip chipsItem"
-        id="chip_Light-Entity_translate_x">translate_x()</a>
+        id="chip_Light-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Light-Entity_translate_y" class="chip chipsItem"
-        id="chip_Light-Entity_translate_y">translate_y()</a>
+        id="chip_Light-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Light-Entity_translate_z" class="chip chipsItem"
-        id="chip_Light-Entity_translate_z">translate_z()</a>
+        id="chip_Light-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Light-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Light-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Light-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Light-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Light-Entity_rotate_x">rotate_x()</a>
+        id="chip_Light-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Light-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Light-Entity_rotate_y">rotate_y()</a>
+        id="chip_Light-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Light-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Light-Entity_rotate_z">rotate_z()</a>
+        id="chip_Light-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Light-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Light-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Light-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Light-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Light-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Light-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -2036,22 +2076,22 @@
             
 
     <a href="#Camera_create_perspective" class="chip chipsItem"
-        id="chip_Camera_create_perspective">create_perspective()</a>
+        id="chip_Camera_create_perspective" title="Create a perspective camera in the scene.">create_perspective()</a>
 
     
 
     <a href="#Camera_create_orthogonal" class="chip chipsItem"
-        id="chip_Camera_create_orthogonal">create_orthogonal()</a>
+        id="chip_Camera_create_orthogonal" title="Create an orthogonal camera in the scene.">create_orthogonal()</a>
 
     
 
     <a href="#Camera_create_panoramic" class="chip chipsItem"
-        id="chip_Camera_create_panoramic">create_panoramic()</a>
+        id="chip_Camera_create_panoramic" title="Create a panorama camera in the scene.">create_panoramic()</a>
 
     
 
     <a href="#Camera_set_focal_length" class="chip chipsItem"
-        id="chip_Camera_set_focal_length">set_focal_length()</a>
+        id="chip_Camera_set_focal_length" title="Set the focal length of the camera.">set_focal_length()</a>
 
     
 
@@ -2062,102 +2102,102 @@
             
 
     <a href="#Camera-Entity_is_exists" class="chip chipsItem"
-        id="chip_Camera-Entity_is_exists">is_exists()</a>
+        id="chip_Camera-Entity_is_exists" title="Check if an entity exists">is_exists()</a>
 
     
 
     <a href="#Camera-Entity_rename" class="chip chipsItem"
-        id="chip_Camera-Entity_rename">rename()</a>
+        id="chip_Camera-Entity_rename" title="Rename the entity, with an option to rename linked landmarks and underlying data.">rename()</a>
 
     
 
     <a href="#Camera-Entity_delete" class="chip chipsItem"
-        id="chip_Camera-Entity_delete">delete()</a>
+        id="chip_Camera-Entity_delete" title="Delete the entity from the scene. You may need to delete an associated joint or other features.">delete()</a>
 
     
 
     <a href="#Camera-Entity_is_visible" class="chip chipsItem"
-        id="chip_Camera-Entity_is_visible">is_visible()</a>
+        id="chip_Camera-Entity_is_visible" title="Returns whether the entity is visible in the scene.">is_visible()</a>
 
     
 
     <a href="#Camera-Entity_set_visible" class="chip chipsItem"
-        id="chip_Camera-Entity_set_visible">set_visible()</a>
+        id="chip_Camera-Entity_set_visible" title="Toggles visibility of an entity in the scene.">set_visible()</a>
 
     
 
     <a href="#Camera-Entity_apply" class="chip chipsItem"
-        id="chip_Camera-Entity_apply">apply()</a>
+        id="chip_Camera-Entity_apply" title="Apply any modifications. This is application specific, but a general function is that it finalizes any changes made to an entity.">apply()</a>
 
     
 
     <a href="#Camera-Entity_get_native_instance" class="chip chipsItem"
-        id="chip_Camera-Entity_get_native_instance">get_native_instance()</a>
+        id="chip_Camera-Entity_get_native_instance" title="Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.">get_native_instance()</a>
 
     
 
     <a href="#Camera-Entity_get_location_world" class="chip chipsItem"
-        id="chip_Camera-Entity_get_location_world">get_location_world()</a>
+        id="chip_Camera-Entity_get_location_world" title="Get the entities XYZ location relative to World Space.">get_location_world()</a>
 
     
 
     <a href="#Camera-Entity_get_location_local" class="chip chipsItem"
-        id="chip_Camera-Entity_get_location_local">get_location_local()</a>
+        id="chip_Camera-Entity_get_location_local" title="Get the entities XYZ location relative to Local Space.">get_location_local()</a>
 
     
 
     <a href="#Camera-Entity_select" class="chip chipsItem"
-        id="chip_Camera-Entity_select">select()</a>
+        id="chip_Camera-Entity_select" title="Select the entity (in UI).">select()</a>
 
     
 
     <a href="#Camera-Entity_translate_xyz" class="chip chipsItem"
-        id="chip_Camera-Entity_translate_xyz">translate_xyz()</a>
+        id="chip_Camera-Entity_translate_xyz" title="Translate in the XYZ directions. Pass a number, Dimension or Dimension-String (e.g. '2cm') to scale to a specific length.">translate_xyz()</a>
 
     
 
     <a href="#Camera-Entity_translate_x" class="chip chipsItem"
-        id="chip_Camera-Entity_translate_x">translate_x()</a>
+        id="chip_Camera-Entity_translate_x" title="Translate in the X direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_x()</a>
 
     
 
     <a href="#Camera-Entity_translate_y" class="chip chipsItem"
-        id="chip_Camera-Entity_translate_y">translate_y()</a>
+        id="chip_Camera-Entity_translate_y" title="Translate in the Y direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_y()</a>
 
     
 
     <a href="#Camera-Entity_translate_z" class="chip chipsItem"
-        id="chip_Camera-Entity_translate_z">translate_z()</a>
+        id="chip_Camera-Entity_translate_z" title="Translate in the z direction. Pass a number or Dimension or Dimension-String (e.g. '2cm') to translate to a specific length.">translate_z()</a>
 
     
 
     <a href="#Camera-Entity_rotate_xyz" class="chip chipsItem"
-        id="chip_Camera-Entity_rotate_xyz">rotate_xyz()</a>
+        id="chip_Camera-Entity_rotate_xyz" title="Rotate in the XYZ direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_xyz()</a>
 
     
 
     <a href="#Camera-Entity_rotate_x" class="chip chipsItem"
-        id="chip_Camera-Entity_rotate_x">rotate_x()</a>
+        id="chip_Camera-Entity_rotate_x" title="Rotate in the X direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_x()</a>
 
     
 
     <a href="#Camera-Entity_rotate_y" class="chip chipsItem"
-        id="chip_Camera-Entity_rotate_y">rotate_y()</a>
+        id="chip_Camera-Entity_rotate_y" title="Rotate in the Y direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_y()</a>
 
     
 
     <a href="#Camera-Entity_rotate_z" class="chip chipsItem"
-        id="chip_Camera-Entity_rotate_z">rotate_z()</a>
+        id="chip_Camera-Entity_rotate_z" title="Rotate in the Z direction. Default units is degrees. Pass in a number, Angle or Angle-String (e.g. 'PI/4radians' or 'PI/4r' or '90d'">rotate_z()</a>
 
     
 
     <a href="#Camera-Entity_get_bounding_box" class="chip chipsItem"
-        id="chip_Camera-Entity_get_bounding_box">get_bounding_box()</a>
+        id="chip_Camera-Entity_get_bounding_box" title="Get the Boundary Box around the entity.">get_bounding_box()</a>
 
     
 
     <a href="#Camera-Entity_get_dimensions" class="chip chipsItem"
-        id="chip_Camera-Entity_get_dimensions">get_dimensions()</a>
+        id="chip_Camera-Entity_get_dimensions" title="Get the bounding-box dimensions in each axis (X,Y,Z).">get_dimensions()</a>
 
     
 
@@ -2175,42 +2215,42 @@
             
 
     <a href="#Render_render_image" class="chip chipsItem"
-        id="chip_Render_render_image">render_image()</a>
+        id="chip_Render_render_image" title="Render a still image.">render_image()</a>
 
     
 
     <a href="#Render_render_video_mp4" class="chip chipsItem"
-        id="chip_Render_render_video_mp4">render_video_mp4()</a>
+        id="chip_Render_render_video_mp4" title="Render an MP4 video.">render_video_mp4()</a>
 
     
 
     <a href="#Render_render_video_frames" class="chip chipsItem"
-        id="chip_Render_render_video_frames">render_video_frames()</a>
+        id="chip_Render_render_video_frames" title="Render a video as image frame stills.">render_video_frames()</a>
 
     
 
     <a href="#Render_set_frame_rate" class="chip chipsItem"
-        id="chip_Render_set_frame_rate">set_frame_rate()</a>
+        id="chip_Render_set_frame_rate" title="Set rendering framerate.">set_frame_rate()</a>
 
     
 
     <a href="#Render_set_resolution" class="chip chipsItem"
-        id="chip_Render_set_resolution">set_resolution()</a>
+        id="chip_Render_set_resolution" title="Set rendering resolution">set_resolution()</a>
 
     
 
     <a href="#Render_set_render_quality" class="chip chipsItem"
-        id="chip_Render_set_render_quality">set_render_quality()</a>
+        id="chip_Render_set_render_quality" title="Set rendering quality.">set_render_quality()</a>
 
     
 
     <a href="#Render_set_render_engine" class="chip chipsItem"
-        id="chip_Render_set_render_engine">set_render_engine()</a>
+        id="chip_Render_set_render_engine" title="Set rendering engine name.">set_render_engine()</a>
 
     
 
     <a href="#Render_set_camera" class="chip chipsItem"
-        id="chip_Render_set_camera">set_camera()</a>
+        id="chip_Render_set_camera" title="Set the rendering camera.">set_camera()</a>
 
     
 
@@ -2230,67 +2270,67 @@
             
 
     <a href="#Scene_default" class="chip chipsItem"
-        id="chip_Scene_default">default()</a>
+        id="chip_Scene_default" title="Get a Scene instance for the current scene.">default()</a>
 
     
 
     <a href="#Scene_create" class="chip chipsItem"
-        id="chip_Scene_create">create()</a>
+        id="chip_Scene_create" title="Creates a new scene.">create()</a>
 
     
 
     <a href="#Scene_delete" class="chip chipsItem"
-        id="chip_Scene_delete">delete()</a>
+        id="chip_Scene_delete" title="Deletes a scene.">delete()</a>
 
     
 
     <a href="#Scene_is_exists" class="chip chipsItem"
-        id="chip_Scene_is_exists">is_exists()</a>
+        id="chip_Scene_is_exists" title="Check if the scene exists">is_exists()</a>
 
     
 
     <a href="#Scene_get_selected_entity" class="chip chipsItem"
-        id="chip_Scene_get_selected_entity">get_selected_entity()</a>
+        id="chip_Scene_get_selected_entity" title="Get the selected entity in the Scene.">get_selected_entity()</a>
 
     
 
     <a href="#Scene_export" class="chip chipsItem"
-        id="chip_Scene_export">export()</a>
+        id="chip_Scene_export" title="Export the entire scene or specific entities.">export()</a>
 
     
 
     <a href="#Scene_set_default_unit" class="chip chipsItem"
-        id="chip_Scene_set_default_unit">set_default_unit()</a>
+        id="chip_Scene_set_default_unit" title="Set the document's default measurements system.">set_default_unit()</a>
 
     
 
     <a href="#Scene_create_group" class="chip chipsItem"
-        id="chip_Scene_create_group">create_group()</a>
+        id="chip_Scene_create_group" title="Create a new group">create_group()</a>
 
     
 
     <a href="#Scene_delete_group" class="chip chipsItem"
-        id="chip_Scene_delete_group">delete_group()</a>
+        id="chip_Scene_delete_group" title="Delete a new group">delete_group()</a>
 
     
 
     <a href="#Scene_remove_from_group" class="chip chipsItem"
-        id="chip_Scene_remove_from_group">remove_from_group()</a>
+        id="chip_Scene_remove_from_group" title="Removes an existing entity from a group">remove_from_group()</a>
 
     
 
     <a href="#Scene_assign_to_group" class="chip chipsItem"
-        id="chip_Scene_assign_to_group">assign_to_group()</a>
+        id="chip_Scene_assign_to_group" title="Assigns an existing entity to a new group">assign_to_group()</a>
 
     
 
     <a href="#Scene_set_visible" class="chip chipsItem"
-        id="chip_Scene_set_visible">set_visible()</a>
+        id="chip_Scene_set_visible" title="Change the visibiltiy of the entity.">set_visible()</a>
 
     
 
     <a href="#Scene_set_background_image" class="chip chipsItem"
-        id="chip_Scene_set_background_image">set_background_image()</a>
+        id="chip_Scene_set_background_image" title="Set the scene background image. This can be an image or an HDRI texture.">set_background_image()</a>
 
     
 
@@ -2310,32 +2350,32 @@
             
 
     <a href="#Analytics_measure_distance" class="chip chipsItem"
-        id="chip_Analytics_measure_distance">measure_distance()</a>
+        id="chip_Analytics_measure_distance" title="The ubiquitous ruler.">measure_distance()</a>
 
     
 
     <a href="#Analytics_measure_angle" class="chip chipsItem"
-        id="chip_Analytics_measure_angle">measure_angle()</a>
+        id="chip_Analytics_measure_angle" title="The ubiquitous ruler.">measure_angle()</a>
 
     
 
     <a href="#Analytics_get_world_pose" class="chip chipsItem"
-        id="chip_Analytics_get_world_pose">get_world_pose()</a>
+        id="chip_Analytics_get_world_pose" title="Returns the world pose of an entity.">get_world_pose()</a>
 
     
 
     <a href="#Analytics_get_bounding_box" class="chip chipsItem"
-        id="chip_Analytics_get_bounding_box">get_bounding_box()</a>
+        id="chip_Analytics_get_bounding_box" title="Returns the bounding box of an entity.">get_bounding_box()</a>
 
     
 
     <a href="#Analytics_get_dimensions" class="chip chipsItem"
-        id="chip_Analytics_get_dimensions">get_dimensions()</a>
+        id="chip_Analytics_get_dimensions" title="Returns the dimensions of an entity.">get_dimensions()</a>
 
     
 
     <a href="#Analytics_log" class="chip chipsItem"
-        id="chip_Analytics_log">log()</a>
+        id="chip_Analytics_log" title="Write a message">log()</a>
 
     
 
