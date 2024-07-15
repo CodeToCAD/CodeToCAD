@@ -152,6 +152,30 @@
             background-position: right bottom;
             text-decoration: underline;
         }
+
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
     </style>
 
     <script>
@@ -207,10 +231,16 @@
 
                     addSupportedClassToChip(className, supported_providers[provider][className])
 
-                    addSupportedClassToEntityChip(className+"-"+"Entity", supported_providers[provider]["Entity"])
+                    addSupportedClassToEntityChip(className + "-" + "Entity", supported_providers[provider]["Entity"])
 
                 }
             }
+        }
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
     </script>
 </head>
@@ -235,16 +265,22 @@
         </div>
     </header>
 
-    <div>
+    <button id="scrollToTopBtn" onclick="scrollToTop()">▲</button>
 
-        
-        <a href="?provider=Blender" class="chip" id="filter-Blender">Blender</a>
-        
-        <a href="?provider=Fusion360" class="chip" id="filter-Fusion360">Fusion360</a>
-        
-        <a href="?provider=Onshape" class="chip" id="filter-Onshape">Onshape</a>
-        
 
+    <div class="grid-container">
+
+        <div class="grid-item">
+            Filter:
+            
+            <a href="?provider=Blender" class="chip" id="filter-Blender">Blender</a>
+            
+            <a href="?provider=Fusion360" class="chip" id="filter-Fusion360">Fusion360</a>
+            
+            <a href="?provider=Onshape" class="chip" id="filter-Onshape">Onshape</a>
+            
+
+        </div>
     </div>
 
     
