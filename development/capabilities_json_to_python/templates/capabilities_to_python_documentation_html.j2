@@ -13,7 +13,7 @@
         body {
             -webkit-text-size-adjust: 100%;
             font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
-            color:#555;
+            color: #555;
         }
 
         header {
@@ -24,7 +24,11 @@
         .grid-container {
             display: grid;
             gap: 2rem;
-            {# grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); #}
+
+                {
+                # grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                #
+            }
         }
 
         .grid-container-parameters {
@@ -105,6 +109,31 @@
             color: inherit;
         }
 
+        .selectedChip {
+            background: #2980b9 !important;
+            background-position: bottom center !important;
+        }
+
+        .supportedChip {
+            background: #29b933 !important;
+            background-position: bottom center !important;
+        }
+
+        .supportedPartialChip {
+            background: #b9aa29 !important;
+            background-position: bottom center !important;
+        }
+
+        .notSupportedChip {
+            background: #b92e29 !important;
+            background-position: bottom center !important;
+        }
+
+        .plannedSupportChip {
+            background: #b96529 !important;
+            background-position: bottom center !important;
+        }
+
         .chip {
             display: inline-block;
             padding: 0 10px;
@@ -124,6 +153,66 @@
             text-decoration: underline;
         }
     </style>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const provider = urlParams.get('provider');
+
+        const supported_providers = {{ supported_providers| tojson | safe }}
+
+        const support_map = {
+            UNSUPPORTED: "notSupportedChip",
+            PLANNED: "plannedSupportChip",
+            PARTIAL: "supportedPartialChip",
+            SUPPORTED: "supportedChip"
+        }
+
+        function addSupportedClassToChip(className, methods) {
+
+            for (const method in methods) {
+
+                const chip = document.getElementById("chip_" + className + "_" + method)
+
+                const supportedLevel = supported_providers[provider][className][method].SupportLevel
+
+                chip.classList.value = "chip chipsItem " + support_map[supportedLevel]
+            }
+
+        }
+
+        function addSupportedClassToEntityChip(className, methods) {
+            // A goofy cheat to target the extended methods from Entity
+
+            for (const method in methods) {
+
+                const chip = document.getElementById("chip_" + className + "_" + method)
+
+                if (!chip) continue
+
+                const supportedLevel = supported_providers[provider]["Entity"][method].SupportLevel
+
+                chip.classList.value = "chip chipsItem " + support_map[supportedLevel]
+            }
+
+        }
+
+        window.onload = function () {
+
+            if (provider) {
+                document.getElementById(`filter-${provider}`).classList.add("selectedChip")
+
+                for (const className in supported_providers[provider]) {
+
+                    if (className == "Entity") continue
+
+                    addSupportedClassToChip(className, supported_providers[provider][className])
+
+                    addSupportedClassToEntityChip(className+"-"+"Entity", supported_providers[provider]["Entity"])
+
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -133,7 +222,8 @@
 
     {% for capabilities_method in capabilities_class.methods %}
 
-    <a href=#{{class_name}}_{{capabilities_method.name}} class="chip">{{capabilities_method.name}}()</a>
+    <a href="#{{class_name}}_{{capabilities_method.name}}" class="chip chipsItem"
+        id="chip_{{class_name}}_{{capabilities_method.name}}">{{capabilities_method.name}}()</a>
 
     {% endfor %}
 
@@ -145,7 +235,9 @@
 
     {% for capabilities_method in capabilities_class.methods %}
 
-    {{class_name}}::<span class="subHeading" id={{class_name}}_{{capabilities_method.name}}>{{capabilities_method.name}}({{ capabilities_method.parameters_names|join(',
+    {{class_name}}::<span class="subHeading"
+        id={{class_name}}_{{capabilities_method.name}}>{{capabilities_method.name}}({{
+        capabilities_method.parameters_names|join(',
         ') }})</span>
 
     {% if capabilities_method.information -%}
@@ -195,6 +287,14 @@
         </div>
     </header>
 
+    <div>
+
+        {% for key in supported_providers %}
+        <a href="?provider={{key}}" class="chip" id="filter-{{key}}">{{key}}</a>
+        {%endfor%}
+
+    </div>
+
     {# MARK: Cheat Sheet grids: #}
 
     <div class="grid-container">
@@ -214,9 +314,18 @@
             {{methodsChipsView(class_name, capabilities_class)}}
 
 
+
+            {%for extends_class_name in capabilities_class.extends %}
+
+            {{methodsChipsView(class_name+"-"+extends_class_name, capabilities_loader.capabilities[extends_class_name]
+            )}}
+
+            {%endfor%}
+
+
             {%for implements_class_names in capabilities_class.implements %}
 
-                {{methodsChipsView(class_name, capabilities_loader.capabilities[implements_class_names] )}}
+            {{methodsChipsView(class_name, capabilities_loader.capabilities[implements_class_names] )}}
 
             {%endfor%}
 
@@ -251,15 +360,19 @@
 
                 {{methodsParametersView(class_name, capabilities_class)}}
 
-                {% if class_name == "Part" or class_name == "Sketch" %}
 
+                {%for extends_class_name in capabilities_class.extends %}
 
-            {%for implements_class_names in capabilities_class.implements %}
+                {{methodsParametersView(class_name+"-"+extends_class_name,
+                capabilities_loader.capabilities[extends_class_name] )}}
+
+                {%endfor%}
+
+                {%for implements_class_names in capabilities_class.implements %}
                 {{methodsParametersView(class_name, capabilities_loader.capabilities[implements_class_names] )}}
-            {%endfor%}
-            
+                {%endfor%}
 
-                {%-endif-%}
+
             </div>
 
         </div>
