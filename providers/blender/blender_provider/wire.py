@@ -70,7 +70,7 @@ class Wire(WireInterface, Entity):
     def get_native_instance(self) -> object:
         return self.native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         # Note: 3D surfaces will not provide a good result here.
         vertices = self.get_vertices()
@@ -82,7 +82,7 @@ class Wire(WireInterface, Entity):
         )
         return Point.from_list_of_float_or_string(normal)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_vertices(self) -> list["VertexInterface"]:
         if len(self.edges) == 0:
             return []
@@ -135,7 +135,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.")
     def loft(
         self, other: "WireInterface", new_part_name: "str| None" = None
     ) -> "PartInterface":
@@ -283,7 +283,7 @@ class Wire(WireInterface, Entity):
         set_curve_offset_geometry(parent.name, radius)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We assume the normal is never perpendicular to the Z axis.
         assert self.parent_entity, "This wire is not associated with a parent entity."

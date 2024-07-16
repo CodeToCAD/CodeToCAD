@@ -54,7 +54,7 @@ class Sketch(SketchInterface, Entity):
         self.description = description
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, notes="Tries to copy a curve's shape onto another projectable.")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         if isinstance(project_from, WireInterface):
             points = project_from.get_vertices()
@@ -108,7 +108,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -349,7 +349,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_rectangle(
         self,
         length: "str|float|Dimension",

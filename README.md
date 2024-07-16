@@ -1,8 +1,7 @@
 <div align="center">
     <a href="https://pypi.org/project/codetocad/0.2.1688153771/">
-        <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/CodeToCADtempLogo.PNG" width="500" height="256">
+    <h1>CodeToCAD</h1>
     </a>
-    <h1></h1>
     <p><strong>One language for all your CAD needs</p>
 </div>
 <p align="center">
@@ -15,18 +14,24 @@
 
 ## Table of Contents
 
-1. [What is CodeToCAD](#what-is-CodeToCAD)
-2. [Why CodeToCAD](#why-CodeToCAD)
-3. [Getting Started](#getting-started)
-4. [Supported Applications](#supported-applications)
-5. [Working with the software of your choice](#working-with-the-software-of-your-choice)
-   1. [Blender support](#blender)
-   2. [Fusion 360 support](#fusion-360) 
-   3. [Onshape support](#onshape) 
-6. [What's next](#whats-next)
-7. [For the developers](#for-the-developers)
-8. [Additional resources](#additional-resources)
-9. [Support us](#support-us-❤️)
+- [Table of Contents](#table-of-contents)
+- [What is CodeToCAD](#what-is-codetocad)
+- [Why CodeToCAD?](#why-codetocad)
+- [Getting started](#getting-started)
+- [Supported Applications](#supported-applications)
+    - [Alpha/Beta Support](#alphabeta-support)
+    - [To Be Developed](#to-be-developed)
+- [Working with the software of your choice](#working-with-the-software-of-your-choice)
+  - [Compatible software](#compatible-software)
+  - [Blender](#blender)
+    - [Sidebar Panel](#sidebar-panel)
+    - [Fusion 360](#fusion-360)
+    - [Onshape](#onshape)
+- [What's next](#whats-next)
+- [For the developers](#for-the-developers)
+- [Additional Resources](#additional-resources)
+- [Contributors](#contributors)
+- [Support us ❤️](#support-us-️)
 
 
 ## What is CodeToCAD
@@ -85,7 +90,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 ## Supported Applications
 #### Alpha/Beta Support
-- [Blender 4.0](https://www.blender.org/) - Digital Modeling Software
+- [Blender 4.1](https://www.blender.org/) - Digital Modeling Software
    - [Instructions](#blender)
 - [Fusion 360](https://www.autodesk.com/products/fusion-360/overview) - M-CAD, E-CAD and CAE Software developed by Autodesk
    - [Instructions](#fusion-360)
@@ -104,7 +109,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 > Remember to first follow the getting [started instructions](#getting-started)
 
 ### Compatible software
-1. [Blender 4.0](#blender)
+1. [Blender 4.1](#blender)
 2. [Fusion360](#fusion-360)
 2. [Onshape](#onshape)
 

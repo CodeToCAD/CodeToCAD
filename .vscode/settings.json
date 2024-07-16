@@ -1,7 +1,8 @@
 {
     "[jinja-html]": {
         "editor.formatOnPaste": false,
-        "editor.formatOnSave": false
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": "vscode.html-language-features"
     },
     "[jinjahtml]": {
         "editor.formatOnPaste": false,

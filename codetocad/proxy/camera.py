@@ -12,7 +12,7 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.camera_interface import CameraInterface
 
 
-from providers.sample.entity import Entity
+from codetocad.proxy.entity import Entity
 
 
 class Camera(CameraInterface, Entity):
@@ -50,7 +50,6 @@ class Camera(CameraInterface, Entity):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
-
         object.__setattr__(
             self,
             "__proxied",
@@ -62,21 +61,17 @@ class Camera(CameraInterface, Entity):
     def create_perspective(
         self,
     ) -> Self:
-
         return object.__getattribute__(self, "__proxied").create_perspective()
 
     def create_orthogonal(
         self,
     ) -> Self:
-
         return object.__getattribute__(self, "__proxied").create_orthogonal()
 
     def create_panoramic(
         self,
     ) -> Self:
-
         return object.__getattribute__(self, "__proxied").create_panoramic()
 
     def set_focal_length(self, length: "float") -> Self:
-
         return object.__getattribute__(self, "__proxied").set_focal_length(length)

@@ -14,9 +14,10 @@
 
 2. It's good practice to run tests and linting before committing. Please run `sh ./development/install_git_hooks.sh` to instll Git Hooks.
 
-3. Install Blender 3.1+, this is the first Blender version with Python 3.10.
-
-4. Install the Blender Addon from from the latest [release](https://github.com/CodeToCAD/CodeToCAD/releases) [Video Guide](https://youtu.be/YD_4nj0QUJ4)
+3. Read the README for each provider for information on setting them up:
+   - Blender: [providers/blender/README.md](../providers/blender/README.md)
+   - Fusion360: [providers/fusion360/README.md](../providers/fusion360/README.md)
+   - Onshape: [providers/onshape/README.md](../providers/onshape/README.md)
 
 ## Running Scripts
 
@@ -25,11 +26,19 @@ Run scripts using `sh development/{script_name}.sh`.
 The following are the available scripts:
 
 - [run_tests.sh](./run_tests.sh) - Executes tests using pyunittest.
-- [run_lint.sh](./run_lint.sh) - Uses Flake8 to generate a lint report of the project
+- [run_lint.sh](./run_lint.sh) - Uses Flake8 to generate a lint report of the project. Use the --autofix flag to fix link and formatting.
 - [create_blender_addon.sh](./create_blender_addon.sh) - Generates the BlenderAddon zip file
 - [create_python_virtual_environment.sh](./create_python_virtual_environment.sh) - Creates a pyenv on your local machine and installs development related packages.
 - [pip_package_create.sh](./pip_package_create.sh) - Builds a python package using setup.py.
 - [pip_package_upload.sh](./pip_package_upload.sh) - Builds a python package and uploads it to pypi using twine. You will need a `.pypirc` file in the root directory for this to work.
+
+
+## Nightly/dev builds
+
+We don't currently automatically release a nightly/dev build. However, here are some instructions on generating release files:
+
+- pypi python release: run the [pip_package_create.sh](./pip_package_create.sh) script
+- Blender Addon zip file: run the [create_blender_addon.sh](./create_blender_addon.sh) script
 
 ## Capabilities.json and Jinja2 templates
 

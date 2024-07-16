@@ -18,7 +18,7 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from providers.sample.entity import Entity
+from codetocad.proxy.entity import Entity
 
 
 class Vertex(VertexInterface, Entity):
@@ -61,7 +61,6 @@ class Vertex(VertexInterface, Entity):
         native_instance=None,
         parent_entity: "str|EntityInterface| None" = None,
     ):
-
         object.__setattr__(
             self,
             "__proxied",
@@ -73,15 +72,12 @@ class Vertex(VertexInterface, Entity):
     def get_control_points(
         self,
     ) -> "list[Point]":
-
         return object.__getattribute__(self, "__proxied").get_control_points()
 
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
-
         return object.__getattribute__(self, "__proxied").set_control_points(points)
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
-
         return object.__getattribute__(self, "__proxied").project(project_from)

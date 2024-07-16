@@ -50,11 +50,11 @@ class Vertex(VertexInterface, Entity):
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_control_points(self) -> "list[Point]":
         return get_control_points(self.get_native_instance())  # type:ignore
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:

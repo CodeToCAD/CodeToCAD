@@ -3,14 +3,11 @@ on:
     types:
       - closed
 
-name: Create a release and provider bundles.
-
-env:
-  MAJOR_MINOR_VERSION: 0.4
+name: Create release and provider bundles.
 
 jobs:
   create_release_tag:
-    if: github.base_ref == 'develop'
+    if: github.base_ref == 'release'
     name: Create release tag
     runs-on: ubuntu-latest
     steps:
@@ -19,13 +16,35 @@ jobs:
       - name: Assign Git Commit Epoch to $GITHUB_OUTPUT
         id: git_commit_epoch
         run: echo "GIT_COMMIT_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_OUTPUT"
+    - name: Get the latest tag
+      id: get_tag
+      run: |
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+        echo "Latest tag: $latest_tag"
+        echo "::set-output name=latest_tag::$latest_tag"
+    - name: Extract and increment the minor version
+      id: new_tag
+      run: |
+        latest_tag=${{ steps.get_tag.outputs.latest_tag }}
+        if [[ $latest_tag =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+          major=${BASH_REMATCH[1]}
+          minor=${BASH_REMATCH[2]}
+          patch=${BASH_REMATCH[3]}
+          new_minor=$((minor + 1))
+          TAG="v${major}.${new_minor}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}"
+          echo "New tag: $TAG"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
+        else
+          echo "Error: Latest tag does not match the expected format"
+          exit 1
+        fi
       - uses: actions/github-script@v5
         with:
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v${{ env.MAJOR_MINOR_VERSION }}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}',
+              ref: 'refs/tags/${{ steps.new_tag.outputs.TAG }}',
               sha: context.sha
             })
       - name: Create Release
@@ -34,9 +53,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ env.MAJOR_MINOR_VERSION }}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          release_name: Release v${{ env.MAJOR_MINOR_VERSION }}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
-          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/${{ env.MAJOR_MINOR_VERSION }}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}/)"
+          tag_name: ${{ steps.new_tag.outputs.TAG }}
+          release_name: Release ${{ steps.new_tag.outputs.TAG }}
+          body: "[PYPI Release](https://pypi.org/project/CodeToCAD/${{ steps.new_tag.outputs.TAG }}/)"
           draft: false
           prerelease: true
       - name: Build Blender Addon Zip File
@@ -47,7 +66,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: CodeToCADBlenderAddon.zip
           asset_name: CodeToCADBlenderAddon.zip
-          tag: v${{ env.MAJOR_MINOR_VERSION }}.${{ steps.git_commit_epoch.outputs.GIT_COMMIT_EPOCH }}
+          tag: ${{ steps.new_tag.outputs.TAG }}
           overwrite: true
       - name: Set up Python
         uses: actions/setup-python@v3
