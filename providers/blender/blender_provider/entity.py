@@ -46,14 +46,14 @@ class Entity(EntityInterface):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Checks for Objects with the same name.")
     def is_exists(self) -> bool:
         try:
             return get_object(self.name) is not None
         except:  # noqa: E722
             return False
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Renames an object and its underlying data with the same name.")
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ):
@@ -65,16 +65,16 @@ class Entity(EntityInterface):
         self.name = new_name
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Deletes an object and its data with the same name. Meaning it will also delete a Mesh Object's underlying mesh. Does not check if the Mesh is being used by another Object.")
     def delete(self, remove_children: "bool" = True):
         remove_object(self.name, remove_children)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Checks if the object is visible in the 3D viewport, taking into account all visibility settings")
     def is_visible(self) -> bool:
         return get_object_visibility(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_visible(self, is_visible: "bool"):
         set_object_visibility(self.name, is_visible)
         return self
@@ -85,7 +85,7 @@ class Entity(EntityInterface):
     def _apply_rotation_and_scale_only(self):
         return self.apply(rotation=True, scale=True, location=False, modifiers=False)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def apply(
         self,
         rotation: "bool" = True,
@@ -104,21 +104,21 @@ class Entity(EntityInterface):
             apply_object_transformations(self.name, rotation, scale, location)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self) -> object:
         return get_object(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Gets object's location in world coordinate")
     def get_location_world(self) -> "Point":
         update_view_layer()
         return get_object_world_location(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Gets object's location in local coordinate")
     def get_location_local(self) -> "Point":
         update_view_layer()
         return get_object_local_location(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Selects object depend on object's name")
     def select(self):
         select_object(self.name)
         return self
@@ -133,7 +133,7 @@ class Entity(EntityInterface):
         )
         return BlenderLength.convert_dimension_to_blender_unit(dimension)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Translate object for axis")
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -166,7 +166,7 @@ class Entity(EntityInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Translate object for axis X")
     def translate_x(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.x, "Could not get bounding box"
@@ -180,7 +180,7 @@ class Entity(EntityInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Translate object for axis X")
     def translate_y(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.y, "Could not get bounding box"
@@ -194,7 +194,7 @@ class Entity(EntityInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Translate object for axis X")
     def translate_z(self, amount: "str|float|Dimension"):
         boundingBox = get_bounding_box(self.name)
         assert boundingBox.z, "Could not get bounding box"
@@ -208,7 +208,7 @@ class Entity(EntityInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Rotate object for axis X, Y, Z")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
@@ -218,29 +218,29 @@ class Entity(EntityInterface):
         rotate_object(self.name, [xAngle, yAngle, zAngle], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Rotate object for axis X")
     def rotate_x(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
         rotate_object(self.name, [angle, None, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Rotate object for axis Y")
     def rotate_y(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
         rotate_object(self.name, [None, angle, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Rotate object for axis Z")
     def rotate_z(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
         rotate_object(self.name, [None, None, angle], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Gets value for object's bounding box")
     def get_bounding_box(self) -> "BoundaryBox":
         return get_bounding_box(self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Gets value for object's dimensions")
     def get_dimensions(self) -> "Dimensions":
         dimensions = get_object(self.name).dimensions
         dimensions = [
