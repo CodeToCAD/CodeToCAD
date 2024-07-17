@@ -3,7 +3,7 @@ import adsk.core
 import os
 from ...lib import fusion360utils as futil
 from ... import config
-from ...load_codetocad import reload_codetocad_modules
+from ...load_codetocad import register_fusion360_provider, reload_codetocad_modules
 
 from codetocad.utilities import get_file_extension
 
@@ -151,6 +151,9 @@ def command_execute(args: adsk.core.CommandEventArgs):
         return
 
     reload_codetocad_modules()
+    
+    register_fusion360_provider()
+    
 
     runpy.run_path(file_path, run_name="__main__")
 
