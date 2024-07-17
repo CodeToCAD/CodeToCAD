@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.proxy.part import Part
+from codetocad.utilities import create_uuid_like_id
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.wire_interface import WireInterface
@@ -12,10 +14,6 @@ from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.fusion360.fusion360_provider.entity import Entity
-from providers.fusion360.fusion360_provider.vertex import Vertex
-from providers.fusion360.fusion360_provider.landmark import Landmark
-from providers.fusion360.fusion360_provider.wire import Wire
-from providers.fusion360.fusion360_provider.edge import Edge
 from codetocad.codetocad_types import *
 from providers.fusion360.fusion360_provider.fusion_actions.base import (
     get_body,
@@ -37,14 +35,6 @@ from .fusion_actions.curve import (
 )
 from .fusion_actions.fusion_sketch import FusionSketch
 from .fusion_actions.common import make_point3d
-from . import Entity
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity
-    from . import Wire
-    from . import Vertex
-    from . import Edge
 
 
 class Sketch(SketchInterface, Entity):
@@ -71,10 +61,8 @@ class Sketch(SketchInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
-        print("project called:", project_from)
-        from . import Sketch
-
-        return Sketch("a projected sketch")
+        raise NotImplementedError()
+        return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def mirror(
@@ -83,7 +71,6 @@ class Sketch(SketchInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
-        from . import Part
 
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
@@ -119,8 +106,6 @@ class Sketch(SketchInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
-        from . import Part
-
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
             if get_body(component, center_entity_or_landmark):
@@ -141,12 +126,12 @@ class Sketch(SketchInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
-        print("create_from_file called:", file_path, file_type)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
-        print("export called:", file_path, overwrite, scale)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -257,7 +242,6 @@ class Sketch(SketchInterface, Entity):
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-        from . import Edge, Vertex, Wire
 
         edges = []
         for index in range(len(points) - 1):
@@ -273,7 +257,6 @@ class Sketch(SketchInterface, Entity):
         point: "str|list[str]|list[float]|list[Dimension]|Point",
         options: "SketchOptions| None" = None,
     ) -> "Vertex":
-        from . import Vertex
 
         sketch = self.fusion_sketch.instance
         make_point(sketch, point.x, point.y, point.z)
@@ -287,7 +270,6 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "Edge":
-        from . import Edge
 
         sketch = self.fusion_sketch.instance
         start = make_point3d(start_at.x, start_at.y, start_at.z)
@@ -385,9 +367,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-        from . import Wire, Edge
-
-        print("create_polygon called:", number_of_sides, length, width)
+        raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -399,9 +379,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-        from . import Wire, Edge
-
-        print("create_trapezoid called:", length_upper, length_lower, height)
+        raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -415,16 +393,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-        from . import Wire, Edge
-
-        print(
-            "create_spiral called:",
-            number_of_turns,
-            height,
-            radius,
-            is_clockwise,
-            radius_end,
-        )
+        raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -435,17 +404,17 @@ class Sketch(SketchInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
-        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
+        raise NotImplementedError()
         return Landmark("name", "parent")
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
-        print("get_landmark called", f": {landmark_name}")
+        raise NotImplementedError()
         return Landmark("name", "parent")
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_wires(self) -> "list[WireInterface]":
-        print("get_wires called")
+        raise NotImplementedError()
         return [
             Wire(
                 "a wire",
@@ -470,7 +439,7 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
-        print("create_line_to called", f": {to}, {start_at}, {options}")
+        raise NotImplementedError()
         return Wire(
             "a wire",
             [

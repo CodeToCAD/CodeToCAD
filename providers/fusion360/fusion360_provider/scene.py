@@ -7,10 +7,6 @@ from codetocad.proxy.entity import Entity
 from codetocad.interfaces.scene_interface import SceneInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity
 
 
 class Scene(SceneInterface):
@@ -28,24 +24,17 @@ class Scene(SceneInterface):
 
     @supported(SupportLevel.UNSUPPORTED)
     def create(self):
-        print("create called:")
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def delete(self):
-        print("delete called:")
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def is_exists(self) -> bool:
+    def get_selected_entity(self) -> "EntityInterface":
         raise NotImplementedError()
-        return
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_selected_entity(self) -> "Entity":
-        from . import Entity
-
-        print("get_selected_entity called:")
         return Entity("an entity")
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -56,27 +45,27 @@ class Scene(SceneInterface):
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
-        print("export called:", file_path, entities, overwrite, scale)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def set_default_unit(self, unit: "str|LengthUnit"):
-        print("set_default_unit called:", unit)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def create_group(self, name: "str"):
-        print("create_group called:", name)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def delete_group(self, name: "str", remove_children: "bool"):
-        print("delete_group called:", name, remove_children)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def remove_from_group(self, entity_name: "str", group_name: "str"):
-        print("remove_from_group called:", entity_name, group_name)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -86,12 +75,12 @@ class Scene(SceneInterface):
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
-        print("assign_to_group called:", entities, group_name, remove_from_other_groups)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
-        print("set_visible called:", entities, is_visible)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -101,10 +90,10 @@ class Scene(SceneInterface):
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
     ):
-        print("set_background_image called:", file_path, location_x, location_y)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self):
-        print("is_exists called")
+        raise NotImplementedError()
         return True

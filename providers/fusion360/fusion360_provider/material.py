@@ -48,7 +48,7 @@ class Material(MaterialInterface):
 
     @supported(SupportLevel.UNSUPPORTED)
     def set_image_texture(self, image_file_path: "str"):
-        print("set_image_texture called:", image_file_path)
+        raise NotImplementedError()
         return self
 
     @staticmethod

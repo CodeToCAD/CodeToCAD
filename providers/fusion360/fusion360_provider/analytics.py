@@ -3,10 +3,6 @@ from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.codetocad_types import *
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
 
 
 class Analytics(AnalyticsInterface):

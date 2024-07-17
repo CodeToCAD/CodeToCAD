@@ -147,7 +147,7 @@ class FusionSketch(FusionInterface):
 
         scale = scales.add(scaleInput)
 
-    def extrude(self, length: float) -> str:
+    def extrude(self, length: float):
         sketch = self.instance
 
         prof = sketch.profiles.item(0)
