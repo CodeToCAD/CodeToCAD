@@ -5,6 +5,14 @@ on:
     branches: [ "develop", "release" ]
   pull_request:
     branches: [ "develop", "release" ]
+    types:
+      - closed
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -35,15 +43,19 @@ jobs:
       run: |
         . "development/dev_virtual_environment/bin/activate"
         python -m development.capabilities_json_to_python.capabilities_to_html_docs
-        
+        python -m development.examples_json_to_html.examples_to_html
+
     - name: Setup Pages
-      uses: actions/configure-pages@v3
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/configure-pages@v5
+    - name: Build with Jekyll
+      uses: actions/jekyll-build-pages@v1
       with:
-        path: 'docs/'
+        source: ./docs
+        destination: ./_site
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v1
+      uses: actions/deploy-pages@v4
       env:  
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
