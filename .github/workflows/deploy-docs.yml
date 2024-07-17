@@ -30,8 +30,12 @@ jobs:
         
     - name: Install VENV
       run: bash ./development/create_python_virtual_environment.sh
+
     - name: Generate docs
-      run: python -m development.capabilities_json_to_python.capabilities_to_html_docs
+      run: |
+        . "development/dev_virtual_environment/bin/activate"
+        python -m development.capabilities_json_to_python.capabilities_to_html_docs
+        
     - name: Setup Pages
       uses: actions/configure-pages@v3
     - name: Upload artifact

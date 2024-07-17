@@ -15,4 +15,6 @@ jobs:
         run: bash ./development/create_python_virtual_environment.sh
 
       - name: Run Tests
-        run: bash ./development/run_tests.sh
+        run: |
+          . "development/dev_virtual_environment/bin/activate"
+          bash ./development/run_tests.sh
