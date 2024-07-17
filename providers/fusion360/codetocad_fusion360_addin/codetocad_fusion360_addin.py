@@ -9,9 +9,9 @@ from .lib import fusion360utils as futil
 
 def run(context):
     try:
-        register_fusion360_provider()
-
         reload_codetocad_modules()
+
+        register_fusion360_provider()
 
         futil.log("CodeToCAD add-in has been loaded.")
 
