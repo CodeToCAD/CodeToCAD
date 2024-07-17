@@ -1,0 +1,45 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [ "develop", "release" ]
+  pull_request:
+    branches: [ "develop", "release" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      pages: 'write'
+      actions: 'write'
+      checks: 'write'
+      deployments: 'write'
+    steps:
+    - uses: actions/checkout@v3   
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.11'
+        
+    - name: Install VENV
+      run: bash ./development/create_python_virtual_environment.sh
+    - name: Generate docs
+      run: python -m development.capabilities_json_to_python.capabilities_to_html_docs
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: 'docs/'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
+      env:  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
