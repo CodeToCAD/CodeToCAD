@@ -2,10 +2,6 @@ from codetocad.interfaces.animation_interface import AnimationInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
 
 
 class Animation(AnimationInterface):

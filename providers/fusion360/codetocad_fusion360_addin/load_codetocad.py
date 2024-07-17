@@ -3,9 +3,16 @@ import inspect
 import sys
 from pathlib import Path
 
+from .lib import fusion360utils as futil
+
+def register_fusion360_provider():
+    from fusion360_provider.register import register
+
+    register()
 
 def reload_codetocad_modules():
-    print("Reloading CodeToCAD modules")
+    
+    futil.log("Reloading CodeToCAD modules")
     import codetocad
     import fusion360_provider
     import fusion360_provider.fusion_actions
@@ -50,22 +57,22 @@ def add_codetocad_to_path():
             f"Could not find fusion360_provider files at {fusion360_provider_path}. codetocad_path: {codetocad_path}"
         )
 
-    print("Adding {} to path".format(codetocad_path))
+    futil.log("Adding {} to path".format(codetocad_path))
 
     sys.path.append(str(codetocad_path))
 
-    print("Adding {} to path".format(core_path))
+    futil.log("Adding {} to path".format(core_path))
 
     sys.path.append(str(core_path))
 
-    print("Adding {} to path".format(fusion360_path))
+    futil.log("Adding {} to path".format(fusion360_path))
 
     sys.path.append(str(fusion360_path))
 
-    print("Adding {} to path".format(fusion360_provider_path))
+    futil.log("Adding {} to path".format(fusion360_provider_path))
 
     sys.path.append(str(fusion360_provider_path))
 
-    print("Adding {} to path".format(fusion360_provider_actions_path))
+    futil.log("Adding {} to path".format(fusion360_provider_actions_path))
 
     sys.path.append(str(fusion360_provider_actions_path))

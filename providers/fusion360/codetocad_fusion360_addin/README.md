@@ -6,6 +6,8 @@ An add-in to allow CodeToCAD scripts to run in Fusion360. For more information v
 
 Use the "Import CodeToCAD" button under Utilities -> Add-Ins to run a CodeToCAD script.
 
+<img src="./fusion360_addin.png" width=500/>
+
 ## Installation
 
 1. Download Fusion360
@@ -14,6 +16,10 @@ Use the "Import CodeToCAD" button under Utilities -> Add-Ins to run a CodeToCAD 
 4. Click the "+" button next to "My Add-ins", and choose this folder: [`providers\fusion360\codetocad_fusion360_addin`](./)
 
 <img src="./addin_install_instructions.png" width=500/>
+
+5. The add-in is now installed. Before importing scripts, it may be helpful to enable the Text Commands view: 
+
+<img src="./show_text_commands.png" width=500/>
 
 ## Development
 

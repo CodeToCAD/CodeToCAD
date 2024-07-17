@@ -5,7 +5,9 @@ from codetocad.interfaces.camera_interface import CameraInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
 from codetocad.utilities.override import override
-from .fusion_actions.fusion_camera import FusionCamera
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_camera import (
+    FusionCamera,
+)
 
 
 class Camera(CameraInterface, Entity):

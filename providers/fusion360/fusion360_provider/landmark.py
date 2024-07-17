@@ -8,11 +8,6 @@ from codetocad.codetocad_types import *
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark import (
     FusionLandmark,
 )
-from . import Entity
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Entity
 
 
 class Landmark(LandmarkInterface, Entity):

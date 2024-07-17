@@ -12,12 +12,6 @@ from providers.fusion360.fusion360_provider.entity import Entity
 from providers.fusion360.fusion360_provider.vertex import Vertex
 from providers.fusion360.fusion360_provider.landmark import Landmark
 from codetocad.codetocad_types import *
-from . import Entity
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from . import Vertex
-    from . import Entity
 
 
 class Edge(EdgeInterface, Entity):
@@ -29,9 +23,7 @@ class Edge(EdgeInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
-        print(
-            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
-        )
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -41,7 +33,7 @@ class Edge(EdgeInterface, Entity):
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
     ):
-        print("linear_pattern called:", instance_count, offset, direction_axis)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -52,43 +44,28 @@ class Edge(EdgeInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
-        print(
-            "circular_pattern called:",
-            instance_count,
-            separation_angle,
-            center_entity_or_landmark,
-            normal_direction_axis,
-        )
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def remesh(self, strategy: "str", amount: "float"):
-        print("remesh called:", strategy, amount)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def subdivide(self, amount: "float"):
-        print("subdivide called:", amount)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def decimate(self, amount: "float"):
-        print("decimate called:", amount)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def project(self, project_from: "ProjectableInterface") -> "Projectable":
-        from . import Sketch
-
-        print("project called:", project_from)
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+        raise NotImplementedError()
         return Sketch("a projected sketch")
-
-    v1: "Vertex"
-    v2: "Vertex"
-    parent_entity: Optional[str | Entity] = None
-    name: str
-    description: Optional[str] = None
-    native_instance = None
 
     def __init__(
         self,
@@ -108,22 +85,22 @@ class Edge(EdgeInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def offset(self, distance: "str|float|Dimension") -> "Edge":
-        print("offset called:", distance)
+        raise NotImplementedError()
         return Edge.get_dummy_edge()
 
     @supported(SupportLevel.UNSUPPORTED)
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
-        print("fillet called:", other_edge, amount)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def set_is_construction(self, is_construction: "bool"):
-        print("set_is_construction called:", is_construction)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_is_construction(self) -> bool:
-        print("get_is_construction called:")
+        raise NotImplementedError()
         return True
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -134,10 +111,10 @@ class Edge(EdgeInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
-        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
+        raise NotImplementedError()
         return Landmark("name", "parent")
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
-        print("get_landmark called", f": {landmark_name}")
+        raise NotImplementedError()
         return Landmark("name", "parent")

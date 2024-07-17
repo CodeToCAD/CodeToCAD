@@ -8,6 +8,7 @@ from codetocad.proxy.landmark import Landmark
 from codetocad.interfaces.part_interface import PartInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from providers.fusion360.fusion360_provider.landmark import Landmark
+from providers.fusion360.fusion360_provider.sketch import Sketch
 from codetocad.codetocad_types import *
 from .fusion_actions.actions import (
     chamfer_all_edges,
@@ -47,8 +48,6 @@ class Part(PartInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
-        from . import Sketch
-
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
             if get_body(component, mirror_across_entity):
@@ -81,8 +80,6 @@ class Part(PartInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
-        from . import Sketch
-
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
             if get_body(component, center_entity_or_landmark):
@@ -210,8 +207,6 @@ class Part(PartInterface, Entity):
         draft_radius: "str|float|Dimension" = 0,
         options: "PartOptions| None" = None,
     ):
-        from . import Sketch
-
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
         draft_radius = Dimension.from_dimension_or_its_float_or_string_value(
@@ -270,7 +265,6 @@ class Part(PartInterface, Entity):
         outer_radius: "str|float|Dimension",
         options: "PartOptions| None" = None,
     ):
-        from . import Sketch
         import math
 
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
@@ -298,7 +292,6 @@ class Part(PartInterface, Entity):
     def create_sphere(
         self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ):
-        from . import Sketch
         import math
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
@@ -330,20 +323,7 @@ class Part(PartInterface, Entity):
         crown_angle: "str|float|Angle" = 0,
         options: "PartOptions| None" = None,
     ):
-        print(
-            "create_gear called:",
-            outer_radius,
-            addendum,
-            inner_radius,
-            dedendum,
-            height,
-            pressure_angle,
-            number_of_teeth,
-            skew_angle,
-            conical_angle,
-            crown_angle,
-            keyword_arguments,
-        )
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -363,7 +343,7 @@ class Part(PartInterface, Entity):
     ):
         combine(
             self.fusion_body.instance,
-            with_part.fusion_body.instance,
+            other.fusion_body.instance,
             delete_after_union,
         )
         return self
@@ -377,7 +357,7 @@ class Part(PartInterface, Entity):
     ):
         subtract(
             self.fusion_body.instance,
-            with_part.fusion_body.instance,
+            other.fusion_body.instance,
             delete_after_subtract,
         )
         return self
@@ -391,7 +371,7 @@ class Part(PartInterface, Entity):
     ):
         intersect(
             self.fusion_body.instance,
-            with_part.fusion_body.instance,
+            other.fusion_body.instance,
             delete_after_intersect,
         )
         return self
@@ -410,7 +390,7 @@ class Part(PartInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def thicken(self, radius: "str|float|Dimension"):
-        print("thicken called:", radius)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -438,8 +418,6 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
     ):
-        from . import Sketch
-
         if isinstance(hole_landmark, str):
             component = get_component(hole_landmark)
             if get_body(component, hole_landmark):
@@ -496,7 +474,7 @@ class Part(PartInterface, Entity):
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
-        print("fillet_edges called:", radius, landmarks_near_edges, use_width)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -506,7 +484,7 @@ class Part(PartInterface, Entity):
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ):
-        print("fillet_faces called:", radius, landmarks_near_faces, use_width)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -531,28 +509,28 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
     ):
-        print("chamfer_faces called:", radius, landmarks_near_faces)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
-        print("select_vertex_near_landmark called:", landmark_name)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
-        print("select_edge_near_landmark called:", landmark_name)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
-        print("select_face_near_landmark called:", landmark_name)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -563,10 +541,10 @@ class Part(PartInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
-        print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
+        raise NotImplementedError()
         return Landmark("name", "parent")
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
-        print("get_landmark called", f": {landmark_name}")
+        raise NotImplementedError()
         return Landmark("name", "parent")

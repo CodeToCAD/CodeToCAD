@@ -1,5 +1,5 @@
 # Assuming you have not changed the general structure of the template no modification is needed in this file.
-from .load_codetocad import add_codetocad_to_path, reload_codetocad_modules
+from .load_codetocad import add_codetocad_to_path, reload_codetocad_modules,register_fusion360_provider
 
 add_codetocad_to_path()
 
@@ -9,7 +9,12 @@ from .lib import fusion360utils as futil
 
 def run(context):
     try:
+        register_fusion360_provider()
+
         reload_codetocad_modules()
+
+        futil.log("CodeToCAD add-in has been loaded.")
+
         # This will run the start function in each of your commands as defined in commands/__init__.py
         commands.start()
 

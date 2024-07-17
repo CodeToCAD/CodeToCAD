@@ -1,4 +1,7 @@
 from typing import Optional
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -23,47 +26,41 @@ class Entity(EntityInterface):
 
     @property
     def _center(self):
-        from . import Part, Sketch
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             return self.fusion_body.center
-        if isinstance(self, Sketch):
+        if isinstance(self, SketchInterface):
             return self.fusion_sketch.center
 
     @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self) -> bool:
-        print("is_exists called:")
+        raise NotImplementedError()
         return True
 
     @supported(SupportLevel.UNSUPPORTED)
     def rename(
         self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
     ):
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.rename(new_name)
-        if isinstance(self, Sketch):
+        if isinstance(self, SketchInterface):
             self.fusion_sketch.rename(new_name)
-        if isinstance(self, Landmark):
+        if isinstance(self, LandmarkInterface):
             self.fusion_landmark.rename(new_name)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def delete(self, remove_children: "bool" = True):
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.delete()
-        if isinstance(self, Sketch):
+        if isinstance(self, SketchInterface):
             self.fusion_sketch.delete()
-        if isinstance(self, Landmark):
+        if isinstance(self, LandmarkInterface):
             self.fusion_landmark.delete()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def is_visible(self) -> bool:
-        print("is_visible called:")
+        raise NotImplementedError()
         return True
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -79,35 +76,32 @@ class Entity(EntityInterface):
         location: "bool" = False,
         modifiers: "bool" = True,
     ):
-        print("apply called:", rotation, scale, location, modifiers)
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_native_instance(self) -> object:
-        print("get_native_instance called:")
+        raise NotImplementedError()
         return "instance"
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_location_world(self) -> "Point":
-        print("get_location_world called:")
+        raise NotImplementedError()
         return Point.from_list_of_float_or_string([0, 0, 0])
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_location_local(self) -> "Point":
-        # check the correct behavior
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             pos = self.fusion_body.center
-        elif isinstance(self, Sketch):
+        elif isinstance(self, SketchInterface):
             pos = self.fusion_sketch.center
-        elif isinstance(self, Landmark):
+        elif isinstance(self, LandmarkInterface):
             pos = self.fusion_landmark.get_point()
         return Point(pos.x, pos.y, pos.z)
 
     @supported(SupportLevel.UNSUPPORTED)
     def select(self):
-        print("select called:")
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -117,49 +111,42 @@ class Entity(EntityInterface):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ):
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.translate(x, y, z)
-        elif isinstance(self, Sketch):
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.translate(x, y, z)
-        elif isinstance(self, Landmark):
+        elif isinstance(self, LandmarkInterface):
             self.fusion_landmark.translate(x, y, z)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def translate_x(self, amount: "str|float|Dimension"):
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.translate(amount, 0, 0)
-        elif isinstance(self, Sketch):
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.translate(amount, 0, 0)
-        elif isinstance(self, Landmark):
+        elif isinstance(self, LandmarkInterface):
             self.fusion_landmark.translate(amount, 0, 0)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def translate_y(self, amount: "str|float|Dimension"):
-        from . import Part, Sketch, Landmark
-
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.translate(0, amount, 0)
-        elif isinstance(self, Sketch):
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.translate(0, amount, 0)
-        elif isinstance(self, Landmark):
+        elif isinstance(self, LandmarkInterface):
             self.fusion_landmark.translate(0, amount, 0)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def translate_z(self, amount: "str|float|Dimension"):
-        from . import Part, Sketch, Landmark
 
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.translate(0, 0, amount)
-        elif isinstance(self, Sketch):
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.translate(0, 0, amount)
-        elif isinstance(self, Landmark):
+        elif isinstance(self, LandmarkInterface):
             self.fusion_landmark.translate(0, 0, amount)
         return self
 
@@ -172,45 +159,49 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.UNSUPPORTED)
     def rotate_x(self, rotation: "str|float|Angle"):
-        from . import Part
 
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.rotate("x", rotation)
-        else:
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.rotate("x", rotation)
+        else:
+            raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def rotate_y(self, rotation: "str|float|Angle"):
-        from . import Part
 
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.rotate("y", rotation)
-        else:
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.rotate("y", rotation)
+        else:
+            raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def rotate_z(self, rotation: "str|float|Angle"):
-        from . import Part
 
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             self.fusion_body.rotate("z", rotation)
-        else:
+        elif isinstance(self, SketchInterface):
             self.fusion_sketch.rotate("z", rotation)
+        else:
+            raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_bounding_box(self) -> "BoundaryBox":
-        from . import Part
 
-        if isinstance(self, Part):
+        if isinstance(self, PartInterface):
             boundaryBox = self.fusion_body.get_bounding_box()
-        else:
+        elif isinstance(self, SketchInterface):
             boundaryBox = self.fusion_sketch.get_bounding_box()
+        else:
+            raise NotImplementedError()
         return boundaryBox
 
     @supported(SupportLevel.UNSUPPORTED)
     def get_dimensions(self) -> "Dimensions":
-        print("get_dimensions called:")
+        raise NotImplementedError()
         return Dimensions.from_point(Point.from_list_of_float_or_string([0, 0, 0]))

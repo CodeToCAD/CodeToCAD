@@ -138,7 +138,7 @@ You can use the side-panel to import CodeToCAD files or start a debugger server.
 
 To use CodeToCAD with Fusion 360, please install the Add-In. Please check out the [README](./providers/fusion360/codetocad_fusion360_addin/README.md) for more information.
 
-   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/fusion360_addin.png" width=400 />
+   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/providers/fusion360/codetocad_fusion360_addin/fusion360_addin.png" width=400 />
 
 #### Onshape
 

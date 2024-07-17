@@ -1,4 +1,6 @@
 from typing import Optional
+from codetocad.interfaces.landmark_interface import LandmarkInterface
+from codetocad.proxy.landmark import Landmark
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -6,23 +8,13 @@ from codetocad.proxy.entity import Entity
 from codetocad.interfaces.joint_interface import JointInterface
 from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
-from typing import TYPE_CHECKING
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
     FusionJoint,
 )
 
-if TYPE_CHECKING:
-    from . import Entity
-
 
 class Joint(JointInterface):
-    entity1: str | Entity
-    entity2: str | Entity
-    fusion_joint: FusionJoint
-
     def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
-        from . import Landmark
-
         if isinstance(entity1, str):
             entity1 = Landmark(entity1)
         if isinstance(entity2, str):
@@ -46,11 +38,12 @@ class Joint(JointInterface):
 
     @supported(SupportLevel.UNSUPPORTED)
     def pivot(self):
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def gear_ratio(self, ratio: "float"):
-        print("gear_ratio called:", ratio)
+        raise NotImplementedError()
         return self
 
     @staticmethod
