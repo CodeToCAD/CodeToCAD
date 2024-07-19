@@ -3,6 +3,9 @@ from functools import wraps
 from codetocad.enums.support_level import SupportLevel
 
 
+class UnsupportedError(Exception): ...
+
+
 def supported(
     supportedLevel: SupportLevel,
     notes: str | None = None,
@@ -16,7 +19,7 @@ def supported(
         @wraps(func)
         def wrapper(*args, **kwargs):
             if supportedLevel.value < SupportLevel.PARTIAL.value:
-                raise Exception("This method is not supported yet.")
+                raise UnsupportedError(f"The method {func.__name__} is not supported.")
             return func(*args, **kwargs)
 
         return wrapper

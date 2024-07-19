@@ -3,10 +3,6 @@ from codetocad.enums.length_unit import LengthUnit
 
 
 class BoundaryAxis:
-    min: float
-    max: float
-    unit: Optional[LengthUnit]
-
     @property
     def center(self) -> float:
         return (self.max + self.min) / 2.0
@@ -14,6 +10,7 @@ class BoundaryAxis:
     def __init__(self, min: float, max: float, unit=None) -> None:
         self.min = min
         self.max = max
+        self.unit = None
 
         if unit is None:
             return
