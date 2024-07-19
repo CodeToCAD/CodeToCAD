@@ -111,3 +111,13 @@ class Dimensions:
             return self.length
         if key == "height":
             return self.height
+
+    def __str__(self):
+        return f"""    value   unit
+x   {self.x}  {self.x and self.x.unit and self.x.unit.name+'(s)'}
+y   {self.y}  {self.y and self.y.unit and self.y.unit.name+'(s)'}
+z   {self.z}  {self.z and self.z.unit and self.z.unit.name+'(s)'}
+"""
+
+    def __repr__(self) -> str:
+        return self.__str__()

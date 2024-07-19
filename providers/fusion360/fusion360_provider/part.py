@@ -183,7 +183,7 @@ class Part(PartInterface, Entity):
         self.fusion_body.scale_uniform(scale.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_cube(
         self,
         width: "str|float|Dimension",

@@ -178,3 +178,14 @@ class FusionBody(FusionInterface):
             BoundaryAxis(minPoint.y, maxPoint.y),
             BoundaryAxis(minPoint.z, maxPoint.z),
         )
+
+    def get_dimensions(self):
+        minPoint = self.instance.boundingBox.minPoint
+        maxPoint = self.instance.boundingBox.maxPoint
+        return Dimensions.from_list(
+            [
+                Dimension.from_string(maxPoint.x - minPoint.x),
+                Dimension.from_string(maxPoint.y - minPoint.y),
+                Dimension.from_string(maxPoint.z - minPoint.z),
+            ]
+        )
