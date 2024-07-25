@@ -36,7 +36,7 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_landmark_entity_name(self) -> str:
         parent_entityName = self.parent_entity
         if isinstance(parent_entityName, EntityInterface):

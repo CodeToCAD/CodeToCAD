@@ -64,7 +64,7 @@ class Sketch(SketchInterface, Entity):
             return wire
         raise NotImplementedError(f"Type {type(project_from)} is not supported.")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Clone the sketch")
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
@@ -72,12 +72,12 @@ class Sketch(SketchInterface, Entity):
             new_name, curve_type=self.curve_type, description=self.description
         )
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Draw text")
     def create_text(
         self,
         text: "str",
@@ -108,7 +108,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Draw shape with vertex")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -244,7 +244,7 @@ class Sketch(SketchInterface, Entity):
             )
             index += 1
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.UNSUPPORTED, notes="Center point not implemented")
     def create_circle(
         self,
         radius: "str|float|Dimension",
@@ -253,7 +253,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         points = get_circle_points(radius, self.resolution)
-        wire = self.create_from_vertices(
+        wire: WireInterface = self.create_from_vertices(
             [Point.from_list_of_float_or_string(point) for point in points]
         )
         if self.curve_type == CurveTypes.BEZIER:
@@ -262,7 +262,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.UNSUPPORTED, notes="Center point not implemented")
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
@@ -285,7 +285,7 @@ class Sketch(SketchInterface, Entity):
             self.scale_x(radius_minor * 2)
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Draw arc")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
@@ -349,7 +349,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Create Rectangle with width and height")
     def create_rectangle(
         self,
         length: "str|float|Dimension",
@@ -373,7 +373,7 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_polygon(
         self,
         number_of_sides: "int",
@@ -384,7 +384,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_trapezoid(
         self,
         length_upper: "str|float|Dimension",
@@ -395,7 +395,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "WireInterface":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -447,12 +447,12 @@ class Sketch(SketchInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.UNSUPPORTED, notes="Only output as OBJ file is possible")
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         implementables.export(self, file_path, overwrite, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.UNSUPPORTED, notes="Founded an error that division by 0 is not possible because the Z value does not exist in the sketch.")
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -462,32 +462,32 @@ class Sketch(SketchInterface, Entity):
         implementables.scale_xyz(self, x, y, z)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale on the X-axis")
     def scale_x(self, scale: "str|float|Dimension"):
         implementables.scale_x(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale on the Y-axis")
     def scale_y(self, scale: "str|float|Dimension"):
         implementables.scale_y(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale on the Z-axis")
     def scale_z(self, scale: "str|float|Dimension"):
         implementables.scale_z(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale by factor on the X-axis")
     def scale_x_by_factor(self, scale_factor: "float"):
         implementables.scale_x_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale by factor on the Y-axis")
     def scale_y_by_factor(self, scale_factor: "float"):
         implementables.scale_y_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Scale by factor on the Z-axis")
     def scale_z_by_factor(self, scale_factor: "float"):
         implementables.scale_z_by_factor(self, scale_factor)
         return self
@@ -499,7 +499,7 @@ class Sketch(SketchInterface, Entity):
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Create landmark for Sketch")
     def create_landmark(
         self,
         landmark_name: "str",
@@ -509,11 +509,11 @@ class Sketch(SketchInterface, Entity):
     ) -> "LandmarkInterface":
         return implementables.create_landmark(self, landmark_name, x, y, z)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Get landmark by landmark name")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="Get all wires")
     def get_wires(self) -> "list[WireInterface]":
         return get_wires_from_blender_entity(
             self.get_native_instance().data
