@@ -17,17 +17,6 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
 
 class Vertex(VertexInterface, Entity):
 
-    @override
-    @supported(SupportLevel.SUPPORTED)
-    def get_native_instance(self) -> object:
-        return self.native_instance
-
-    @property
-    @override
-    @supported(SupportLevel.SUPPORTED)
-    def location(self) -> Point:
-        return get_vertex_location_from_blender_point(self.get_native_instance())
-
     def __init__(
         self,
         name: "str",
@@ -47,6 +36,17 @@ class Vertex(VertexInterface, Entity):
         self.name = name
         self.description = description
         self.native_instance = native_instance
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def get_native_instance(self) -> object:
+        return self.native_instance
+
+    @property
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def location(self) -> Point:
+        return get_vertex_location_from_blender_point(self.get_native_instance())
 
     @supported(SupportLevel.UNSUPPORTED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":

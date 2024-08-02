@@ -166,7 +166,7 @@ class Part(PartInterface, Entity):
         FusionBody(self.name).scale_by_factor(1, scale_factor, 1)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
         FusionBody(self.name).scale_by_factor(1, 1, scale_factor)
         return self

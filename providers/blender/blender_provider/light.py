@@ -16,27 +16,27 @@ class Light(LightInterface, Entity):
         self.name = name
         self.description = description
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_sun(self, energy_level: "float"):
         create_light(self.name, energy_level, type="SUN")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_point(self, energy_level: "float"):
         create_light(self.name, energy_level, type="POINT")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_spot(self, energy_level: "float"):
         create_light(self.name, energy_level, type="SPOT")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_area(self, energy_level: "float"):
         create_light(self.name, energy_level, type="AREA")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):

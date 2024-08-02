@@ -57,7 +57,7 @@ class Part(PartInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Only stl, ply, obj types are supported.")
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         assert self.is_exists() is False, f"{self.name} already exists."
         absoluteFilePath = get_absolute_filepath(file_path)
@@ -84,7 +84,7 @@ class Part(PartInterface, Entity):
         rect.extrude(height)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_cone(
         self,
         radius: "str|float|Dimension",
@@ -103,7 +103,7 @@ class Part(PartInterface, Entity):
         base.loft(top_wire)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_cylinder(
         self,
         radius: "str|float|Dimension",
@@ -115,7 +115,7 @@ class Part(PartInterface, Entity):
         circle.extrude(height)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_torus(
         self,
         inner_radius: "str|float|Dimension",
@@ -138,7 +138,7 @@ class Part(PartInterface, Entity):
         circle.revolve(360, origin, "z")
         origin.delete()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_sphere(
         self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ):
@@ -147,7 +147,7 @@ class Part(PartInterface, Entity):
         circle.revolve(180, sketch.get_landmark("center"), "x")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_gear(
         self,
         outer_radius: "str|float|Dimension",
@@ -181,13 +181,13 @@ class Part(PartInterface, Entity):
         Part("Gear").rename(self.name, True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "PartInterface":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
         return Part(new_name, self.description)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def union(
         self,
         other: "str|BooleanableInterface",
@@ -211,7 +211,7 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def subtract(
         self,
         other: "str|BooleanableInterface",
@@ -232,7 +232,7 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def intersect(
         self,
         other: "str|BooleanableInterface",
@@ -253,7 +253,10 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "This implementation works with simple geometry like cubes and cylinders. This implementation fails when working with geometry that has splines or curves in one or more edges.",
+    )
     def hollow(
         self,
         thickness_x: "str|float|Dimension",
@@ -317,13 +320,13 @@ class Part(PartInterface, Entity):
         start_axis_landmark.delete()
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def thicken(self, radius: "str|float|Dimension") -> "PartInterface":
         radius = Dimension.from_string(radius)
         apply_solidify_modifier(self.name, radius)
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def hole(
         self,
         hole_landmark: "str|LandmarkInterface",
@@ -399,7 +402,7 @@ class Part(PartInterface, Entity):
         self.subtract(hole, delete_after_subtract=True, is_transfer_data=False)
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_material(self, material_name: "str|MaterialInterface"):
         if isinstance(material_name, MaterialInterface):
             material_name = material_name.name
@@ -415,7 +418,7 @@ class Part(PartInterface, Entity):
         set_material_to_object(material_name, self.name)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def is_colliding_with_part(self, other_part: "str|PartInterface"):
         other_part_name = other_part
         if isinstance(other_part_name, PartInterface):
@@ -459,13 +462,13 @@ class Part(PartInterface, Entity):
         )
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
     ):
         return self._bevel(radius, chamfer=False, use_width=use_width)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
@@ -479,7 +482,7 @@ class Part(PartInterface, Entity):
             use_width=use_width,
         )
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
@@ -493,11 +496,11 @@ class Part(PartInterface, Entity):
             use_width=use_width,
         )
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def chamfer_all_edges(self, radius: "str|float|Dimension"):
         return self._bevel(radius, chamfer=True, use_width=False)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def chamfer_edges(
         self,
         radius: "str|float|Dimension",
@@ -510,7 +513,7 @@ class Part(PartInterface, Entity):
             use_width=False,
         )
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def chamfer_faces(
         self,
         radius: "str|float|Dimension",
@@ -575,28 +578,28 @@ class Part(PartInterface, Entity):
             face_indecies: list[int] = blender_polygon.vertices
             add_verticies_to_vertex_group(vertex_group_object, face_indecies)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def twist(
         self,
         angle: "str|float|Angle",
@@ -607,7 +610,7 @@ class Part(PartInterface, Entity):
         implementables.twist(self, angle, screw_pitch, iterations, axis)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
@@ -619,7 +622,7 @@ class Part(PartInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -629,7 +632,7 @@ class Part(PartInterface, Entity):
         implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def circular_pattern(
         self,
         instance_count: "int",
@@ -646,12 +649,12 @@ class Part(PartInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         implementables.export(self, file_path, overwrite, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -661,59 +664,62 @@ class Part(PartInterface, Entity):
         implementables.scale_xyz(self, x, y, z)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x(self, scale: "str|float|Dimension"):
         implementables.scale_x(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y(self, scale: "str|float|Dimension"):
         implementables.scale_y(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z(self, scale: "str|float|Dimension"):
         implementables.scale_z(self, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x_by_factor(self, scale_factor: "float"):
         implementables.scale_x_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y_by_factor(self, scale_factor: "float"):
         implementables.scale_y_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
         implementables.scale_z_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "The strategy parameter will probably be broken down into remesh_[strategy] methods in the future.",
+    )
     def remesh(self, strategy: "str", amount: "float"):
         implementables.remesh(self, strategy, amount)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def subdivide(self, amount: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def decimate(self, amount: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -723,6 +729,6 @@ class Part(PartInterface, Entity):
     ) -> "LandmarkInterface":
         return implementables.create_landmark(self, landmark_name, x, y, z)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)
