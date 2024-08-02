@@ -10,16 +10,13 @@ from codetocad.codetocad_types import *
 
 
 class Material(MaterialInterface):
-    name: str
-    description: Optional[str] = None
-
     def __init__(self, name: "str", description: "str| None" = None):
         self.name = name
         self.description = description
         self.color = (0, 0, 0, 1)
         self.roughness = 1
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Implementation needs improvement.")
     def set_color(
         self,
         r_value: "int|float",
@@ -36,23 +33,23 @@ class Material(MaterialInterface):
         self.color = (r_value, g_value, b_value, a_value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def set_reflectivity(self, reflectivity: "float"):
         print("set_reflectivity called:", reflectivity)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def set_roughness(self, roughness: "float"):
         self.roughness = roughness
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def set_image_texture(self, image_file_path: "str"):
         raise NotImplementedError()
         return self
 
     @staticmethod
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def get_preset(material_name: "PresetMaterial"):
         if isinstance(material_name, str):
             try:

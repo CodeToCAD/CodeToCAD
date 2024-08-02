@@ -11,8 +11,15 @@ from codetocad.codetocad_types import *
 
 class FusionSketch(FusionInterface):
     def __init__(self, name):
-        self.component = get_or_create_component(name)
-        self.instance = get_or_create_sketch(self.component, name)
+        self.name = name
+
+    @property
+    def component(self):
+        return get_or_create_component(self.name)
+
+    @property
+    def instance(self):
+        return get_or_create_sketch(self.component, self.name)
 
     def translate(self, x: float, y: float, z: float):
         matrix = make_matrix()

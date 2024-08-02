@@ -6,9 +6,6 @@ from providers.fusion360.fusion360_provider.entity import Entity
 
 
 class Light(LightInterface, Entity):
-    name: str
-    description: Optional[str] = None
-    native_instance = None
 
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
@@ -17,29 +14,29 @@ class Light(LightInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_sun(self, energy_level: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_spot(self, energy_level: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_point(self, energy_level: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_area(self, energy_level: "float"):
         raise NotImplementedError()
         return self

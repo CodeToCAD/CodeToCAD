@@ -180,17 +180,15 @@ def command_input_changed(args: adsk.core.InputChangedEventArgs):
 # This event handler is called when the user interacts with any of the inputs in the dialog
 # which allows you to verify that all of the inputs are valid and enables the OK button.
 def command_validate_input(args: adsk.core.ValidateInputsEventArgs):
-    # General logging for debug.
-    futil.log(f"{CMD_NAME} Validate Input Event")
-
     inputs = args.inputs
 
+    args.areInputsValid = True
     # Verify the validity of the input values. This controls if the OK button is enabled or not.
-    valueInput = inputs.itemById("value_input")
-    if valueInput.value >= 0:
-        args.areInputsValid = True
-    else:
-        args.areInputsValid = False
+    # valueInput = inputs.itemById("value_input")
+    # if valueInput and valueInput.value >= 0:
+    #     args.areInputsValid = True
+    # else:
+    #     args.areInputsValid = False
 
 
 # This event handler is called when the command terminates.

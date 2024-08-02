@@ -1,5 +1,3 @@
-from typing import Optional
-from codetocad.proxy.part import Part
 from codetocad.utilities import create_uuid_like_id
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
@@ -19,6 +17,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.base import (
     get_body,
     get_component,
 )
+from providers.fusion360.fusion360_provider.fusion_actions.fusion_body import FusionBody
 from .fusion_actions.actions import (
     clone_sketch,
     create_circular_pattern_sketch,
@@ -38,11 +37,6 @@ from .fusion_actions.common import make_point3d
 
 
 class Sketch(SketchInterface, Entity):
-    name: str
-    curve_type: Optional["CurveTypes"] = None
-    description: Optional[str] = None
-    native_instance = None
-    curves = None
 
     def __init__(
         self,
@@ -51,41 +45,40 @@ class Sketch(SketchInterface, Entity):
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
     ):
-        self.fusion_sketch = FusionSketch(name)
-        # self.name = name
-        self.name = self.fusion_sketch.instance.name
+        self.name = name
         self.curve_type = curve_type
         self.description = description
         self.native_instance = native_instance
         self.resolution = 4
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        notes="Attempts to mirror a sketch using another sketch or part. Other reference mirroring entities are not yet supported.",
+    )
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
-
+        fusionMirrorEntity = FusionBody(self.name)
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
-            if get_body(component, mirror_across_entity):
-                mirror_across_entity = Part(mirror_across_entity).fusion_body
-            else:
-                mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
+            if not get_body(component, mirror_across_entity):
+                fusionMirrorEntity = FusionSketch(mirror_across_entity)
         sketch, newPosition = mirror(
-            self.fusion_sketch, mirror_across_entity.center, axis
+            FusionSketch(self.name), fusionMirrorEntity.center, axis
         )
         part = self.__class__(sketch.name)
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -94,11 +87,17 @@ class Sketch(SketchInterface, Entity):
     ):
         offset = Dimension.from_dimension_or_its_float_or_string_value(offset, None)
         create_rectangular_pattern_sketch(
-            self.fusion_sketch.component, instance_count, offset.value, direction_axis
+            FusionSketch(self.name).component,
+            instance_count,
+            offset.value,
+            direction_axis,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        notes="Center entity can be a Part or another Sketch. Other entities are not yet supported.",
+    )
     def circular_pattern(
         self,
         instance_count: "int",
@@ -106,35 +105,32 @@ class Sketch(SketchInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
+        fusionEntity = FusionBody(self.name)
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
-            if get_body(component, center_entity_or_landmark):
-                center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
-            else:
-                center_entity_or_landmark = Sketch(
-                    center_entity_or_landmark
-                ).fusion_sketch
-        center = center_entity_or_landmark.center
+            if not get_body(component, center_entity_or_landmark):
+                fusionEntity = FusionSketch(center_entity_or_landmark)
+
         create_circular_pattern_sketch(
-            self.fusion_sketch,
-            center,
+            FusionSketch(self.name),
+            fusionEntity.center,
             instance_count,
             separation_angle,
             normal_direction_axis,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -144,67 +140,58 @@ class Sketch(SketchInterface, Entity):
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
         z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
-        self.fusion_sketch.scale(x.value, y.value, z.value)
+        FusionSketch(self.name).scale(x.value, y.value, z.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_sketch.scale(scale.value, 0, 0)
+        FusionSketch(self.name).scale(scale.value, 0, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_sketch.scale(0, scale.value, 0)
+        FusionSketch(self.name).scale(0, scale.value, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_sketch.scale(0, 0, scale.value)
+        FusionSketch(self.name).scale(0, 0, scale.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_sketch.scale_by_factor(scale_factor.value, 0, 0)
+        FusionSketch(self.name).scale_by_factor(scale_factor, 0, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_sketch.scale_by_factor(0, scale_factor.value, 0)
+        FusionSketch(self.name).scale_by_factor(0, scale_factor, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_sketch.scale_by_factor(0, 0, scale_factor.value)
+        FusionSketch(self.name).scale_by_factor(0, 0, scale_factor)
         return self
 
-    # @check behavior with axis
-
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "The axis parameter may not be working correctly.")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_sketch.scale_uniform(scale.value)
+        FusionSketch(self.name).scale_uniform(scale.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
-        new_sketch = clone_sketch(self.fusion_sketch.instance, new_name, copy_landmarks)
+        new_sketch = clone_sketch(
+            FusionSketch(self.name).instance, new_name, copy_landmarks
+        )
         return Sketch(new_sketch.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options, and center_at are not supported")
     def create_text(
         self,
         text: "str",
@@ -223,7 +210,7 @@ class Sketch(SketchInterface, Entity):
             font_size, None
         )
         create_text(
-            self.fusion_sketch.instance,
+            FusionSketch(self.name).instance,
             text,
             font_size.value,
             bold,
@@ -236,44 +223,42 @@ class Sketch(SketchInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options are not supported")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-
         edges = []
         for index in range(len(points) - 1):
-            start = Vertex(points[index], "vertex")
-            end = Vertex(points[index + 1], "vertex")
+            start = Vertex(location=points[index], name="vertex")
+            end = Vertex(location=points[index + 1], name="vertex")
             edge = Edge(v1=start, v2=end, name=self.name, parent_entity=self.name)
             edges.append(edge)
         return Wire(edges=edges, name=create_uuid_like_id(), parent_entity=self.name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options are not supported")
     def create_point(
         self,
         point: "str|list[str]|list[float]|list[Dimension]|Point",
         options: "SketchOptions| None" = None,
     ) -> "Vertex":
 
-        sketch = self.fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         make_point(sketch, point.x, point.y, point.z)
         return Vertex(location=point, name=create_uuid_like_id(), parent_entity=self)
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def create_line(
+    @supported(SupportLevel.PARTIAL, "Options, length and angle are not supported.")
+    def create_line_to(
         self,
-        length: "str|float|Dimension",
-        angle: "str|float|Angle",
+        to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
-    ) -> "Edge":
+    ) -> "WireInterface":
 
-        sketch = self.fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         start = make_point3d(start_at.x, start_at.y, start_at.z)
-        end = make_point3d(end_at.x, end_at.y, end_at.z)
+        end = make_point3d(to.x, to.y, to.z)
         self.curves = make_line(sketch, start, end)
         line = self.curves[0]
         start = Point(
@@ -289,7 +274,18 @@ class Sketch(SketchInterface, Entity):
         edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
         return edge
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
+    def create_line(
+        self,
+        length: "str|float|Dimension",
+        angle: "str|float|Angle",
+        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
+        options: "SketchOptions| None" = None,
+    ) -> "Edge":
+
+        raise NotImplementedError()
+
+    @supported(SupportLevel.PARTIAL, "Options and center_at are not supported")
     def create_circle(
         self,
         radius: "str|float|Dimension",
@@ -297,12 +293,12 @@ class Sketch(SketchInterface, Entity):
         options: "SketchOptions| None" = None,
     ) -> "Wire":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
-        sketch = self.fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         self.curves = make_circle(sketch, radius.value, self.resolution)
         wire = self.create_from_vertices(self.curves)
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options and center_at are not supported")
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
@@ -325,7 +321,7 @@ class Sketch(SketchInterface, Entity):
             self.scale_x(radius_minor.value * 2)
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options and flip are not supported")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
@@ -334,7 +330,7 @@ class Sketch(SketchInterface, Entity):
         flip: "bool| None" = False,
         options: "SketchOptions| None" = None,
     ) -> "Wire":
-        sketch = self.fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(end_at.x, end_at.y, end_at.z)
@@ -342,7 +338,7 @@ class Sketch(SketchInterface, Entity):
         wire = self.create_from_vertices(self.curves)
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Options and center_at are not supported")
     def create_rectangle(
         self,
         length: "str|float|Dimension",
@@ -352,13 +348,13 @@ class Sketch(SketchInterface, Entity):
     ) -> "Wire":
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
-        sketch = self.fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         self.curves = make_rectangle(sketch, length.value, width.value)
         self.name = sketch.name
         wire = self.create_from_vertices(self.curves)
         return wire
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_polygon(
         self,
         number_of_sides: "int",
@@ -370,7 +366,7 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_trapezoid(
         self,
         length_upper: "str|float|Dimension",
@@ -382,7 +378,7 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_spiral(
         self,
         number_of_turns: "int",
@@ -396,7 +392,7 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -407,50 +403,11 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         raise NotImplementedError()
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def get_wires(self) -> "list[WireInterface]":
         raise NotImplementedError()
-        return [
-            Wire(
-                "a wire",
-                [
-                    Edge(
-                        v1=Vertex(
-                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                        ),
-                        v2=Vertex(
-                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                        ),
-                        name="an edge",
-                    )
-                ],
-            )
-        ]
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def create_line_to(
-        self,
-        to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
-        start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-        options: "SketchOptions| None" = None,
-    ) -> "WireInterface":
-        raise NotImplementedError()
-        return Wire(
-            "a wire",
-            [
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
-        )

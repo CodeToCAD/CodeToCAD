@@ -14,14 +14,17 @@ from .base import (
 
 
 class FusionBody(FusionInterface):
-    component: adsk.fusion.Component
-    instance: adsk.fusion.BRepBody = None
-    sketch: adsk.fusion.Sketch
 
     def __init__(self, name):
+        self.name = name
         self.component = get_or_create_component(name)
         self.sketch = get_or_create_sketch(self.component, name)
-        self.instance = get_body(self.component, name)
+
+    @property
+    def instance(self):
+        fusion_instance = get_body(self.component, self.name)
+        assert fusion_instance, f"Body {self.name} does not exist."
+        return fusion_instance
 
     def translate(self, x: float, y: float, z: float):
         features = self.component.features
