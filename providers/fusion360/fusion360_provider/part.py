@@ -36,31 +36,31 @@ class Part(PartInterface, Entity):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
-        self.fusion_body = FusionBody(name)
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Cannot give mirrored object a new name via the resulting_mirrored_entity_name parameter. Can only mirror across Part and Sketch entities.",
+    )
     def mirror(
         self,
         mirror_across_entity: "str|EntityInterface",
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ):
+        fusionEntity = FusionBody(mirror_across_entity)
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
-            if get_body(component, mirror_across_entity):
-                mirror_across_entity = Part(mirror_across_entity).fusion_body
-            else:
-                mirror_across_entity = Sketch(mirror_across_entity).fusion_sketch
-        body, newPosition = mirror(self.fusion_body, mirror_across_entity.center, axis)
+            if not get_body(component, mirror_across_entity):
+                fusionEntity = FusionSketch(mirror_across_entity)
+        body, newPosition = mirror(FusionBody(self.name), fusionEntity.center, axis)
         part = self.__class__(body.name)
-        part.fusion_body.instance = body
         part.translate_xyz(newPosition.x, newPosition.y, newPosition.z)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def linear_pattern(
         self,
         instance_count: "int",
@@ -68,11 +68,14 @@ class Part(PartInterface, Entity):
         direction_axis: "str|int|Axis" = "z",
     ):
         create_rectangular_pattern(
-            self.fusion_body.component, instance_count, offset, direction_axis
+            FusionBody(self.name).component, instance_count, offset, direction_axis
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Patterning is only supported around Part or Sketch entities.",
+    )
     def circular_pattern(
         self,
         instance_count: "int",
@@ -80,18 +83,16 @@ class Part(PartInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
+        fusionPatternEntity = FusionBody(self.name)
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
             if get_body(component, center_entity_or_landmark):
-                center_entity_or_landmark = Part(center_entity_or_landmark).fusion_body
+                fusionPatternEntity = FusionBody(center_entity_or_landmark)
             else:
-                center_entity_or_landmark = Sketch(
-                    center_entity_or_landmark
-                ).fusion_sketch
-        center = center_entity_or_landmark.center
+                fusionPatternEntity = FusionSketch(center_entity_or_landmark)
         create_circular_pattern_sketch(
-            self.fusion_body,
-            center,
+            FusionBody(self.name),
+            fusionPatternEntity.center,
             instance_count,
             separation_angle,
             normal_direction_axis,
@@ -113,74 +114,69 @@ class Part(PartInterface, Entity):
         print("decimate called:", amount)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_from_file(self, file_path: "str", file_type: "str| None" = None):
         print("create_from_file called:", file_path, file_type)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         print("export called:", file_path, overwrite, scale)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ):
-        self.fusion_body.scale(x, y, z)
+
+        x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
+        y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
+        z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
+        FusionBody(self.name).scale(x, y, z)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_body.scale(scale.value, 0, 0)
+        FusionBody(self.name).scale(scale.value, 0, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_body.scale(0, scale.value, 0)
+        FusionBody(self.name).scale(0, scale.value, 0)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_z(self, scale: "str|float|Dimension"):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_body.scale(0, 0, scale.value)
+        FusionBody(self.name).scale(0, 0, scale.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_x_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_body.scale_by_factor(scale_factor.value, 1, 1)
+        FusionBody(self.name).scale_by_factor(scale_factor, 1, 1)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def scale_y_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_body.scale_by_factor(1, scale_factor.value, 1)
+        FusionBody(self.name).scale_by_factor(1, scale_factor, 1)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def scale_z_by_factor(self, scale_factor: "float"):
-        scale_factor = Dimension.from_dimension_or_its_float_or_string_value(
-            scale_factor, None
-        )
-        self.fusion_body.scale_by_factor(1, 1, scale_factor.value)
+        FusionBody(self.name).scale_by_factor(1, 1, scale_factor)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "The axis parameter is not yet supported.")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
-        self.fusion_body.scale_uniform(scale.value)
+        FusionBody(self.name).scale_uniform(scale.value)
         return self
 
     @supported(SupportLevel.SUPPORTED)
@@ -194,12 +190,12 @@ class Part(PartInterface, Entity):
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
-        sketch = FusionSketch(self.fusion_body.sketch.name)
+        sketch = FusionSketch(FusionBody(self.name).sketch.name)
         _ = make_rectangle(sketch.instance, width.value, length.value)
-        self.fusion_body.instance = sketch.extrude(height.value)
+        FusionBody(self.name).instance = sketch.extrude(height.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_cone(
         self,
         radius: "str|float|Dimension",
@@ -221,27 +217,27 @@ class Part(PartInterface, Entity):
                 make_point3d(radius.value, 0, 0),
                 make_point3d(0, 0, 0),
             ]
-            _ = make_lines(self.fusion_body.sketch, points)
-            self.fusion_body.instance = make_revolve(
-                self.fusion_body.component,
-                self.fusion_body.sketch,
+            _ = make_lines(FusionBody(self.name).sketch, points)
+            FusionBody(self.name).instance = make_revolve(
+                FusionBody(self.name).component,
+                FusionBody(self.name).sketch,
                 math.pi * 2,
                 make_point3d(0, 0, 0),
                 make_point3d(0, 0, radius.value),
             )
         else:
-            base = Sketch(self.fusion_body.sketch.name + "_temp_base")
+            base = Sketch(FusionBody(self.name).sketch.name + "_temp_base")
             _ = base.create_circle(radius)
-            top = Sketch(self.fusion_body.sketch.name + "_temp_top")
+            top = Sketch(FusionBody(self.name).sketch.name + "_temp_top")
             _ = top.create_circle(draft_radius)
             top.translate_z(height.value)
-            self.fusion_body.instance = make_loft(
-                self.fusion_body.component,
-                base.fusion_sketch.instance,
-                top.fusion_sketch.instance,
+            base_instance = FusionSketch(base.name).instance
+            top_instance = FusionSketch(top.name).instance
+            FusionBody(self.name).instance = make_loft(
+                FusionBody(self.name).component, base_instance, top_instance
             )
-            delete_occurrence(base.fusion_sketch.instance.name)
-            delete_occurrence(top.fusion_sketch.instance.name)
+            delete_occurrence(base_instance.name)
+            delete_occurrence(top_instance.name)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -253,12 +249,12 @@ class Part(PartInterface, Entity):
     ):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
-        sketch = FusionSketch(self.fusion_body.sketch.name)
+        sketch = FusionSketch(FusionBody(self.name).sketch.name)
         _ = make_circle(sketch.instance, radius.value, 4)
-        self.fusion_body.instance = sketch.extrude(height.value)
+        FusionBody(self.name).instance = sketch.extrude(height.value)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_torus(
         self,
         inner_radius: "str|float|Dimension",
@@ -273,13 +269,14 @@ class Part(PartInterface, Entity):
         outer_radius = Dimension.from_dimension_or_its_float_or_string_value(
             outer_radius
         )
-        sketch = Sketch(self.fusion_body.sketch.name).fusion_sketch.instance
+        sketch = FusionSketch(self.name).instance
         circles = sketch.sketchCurves.sketchCircles
+        # TODO: move adsk reference to a FusionActions method
         _ = circles.addByCenterRadius(
             adsk.core.Point3D.create(0, 0, 0), inner_radius.value
         )
-        self.fusion_body.instance = make_revolve(
-            self.fusion_body.component,
+        FusionBody(self.name).instance = make_revolve(
+            FusionBody(self.name).component,
             sketch,
             math.pi * 2,
             "x",
@@ -288,7 +285,7 @@ class Part(PartInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_sphere(
         self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ):
@@ -297,18 +294,19 @@ class Part(PartInterface, Entity):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         start = make_point3d(radius.value, 0, 0)
         end = make_point3d(-radius.value, 0, 0)
-        sketch = Sketch(self.fusion_body.sketch.name)
-        make_arc(sketch.fusion_sketch.instance, start, end, radius.value, True)
-        self.fusion_body.instance = make_revolve(
-            self.fusion_body.component,
-            sketch.fusion_sketch.instance,
+        sketch = Sketch(FusionBody(self.name).sketch.name)
+        sketch_instance = FusionSketch(sketch.name).instance
+        make_arc(sketch_instance, start, end, radius.value, True)
+        FusionBody(self.name).instance = make_revolve(
+            FusionBody(self.name).component,
+            sketch_instance,
             math.pi * 2,
             start=make_point3d(0, 0, 0),
             end=end,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_gear(
         self,
         outer_radius: "str|float|Dimension",
@@ -326,57 +324,70 @@ class Part(PartInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Part":
-        body, sketch = self.fusion_body.clone(new_name, copy_landmarks)
+        body, sketch = FusionBody(self.name).clone(new_name, copy_landmarks)
         part = Part(body.name)
-        part.fusion_body.instance = body
-        part.fusion_body.sketch = sketch
         return part
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Other has to be the name of the other booleanable. is_transfer_data is not yet supported.",
+    )
     def union(
         self,
         other: "str|BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        if not isinstance(other, str):
+            raise NotImplementedError()
         combine(
-            self.fusion_body.instance,
-            other.fusion_body.instance,
+            FusionBody(self.name).instance,
+            FusionBody(other).instance,
             delete_after_union,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Other has to be the name of the other booleanable. is_transfer_data is not yet supported.",
+    )
     def subtract(
         self,
         other: "str|BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        if not isinstance(other, str):
+            raise NotImplementedError()
         subtract(
-            self.fusion_body.instance,
-            other.fusion_body.instance,
+            FusionBody(self.name).instance,
+            FusionBody(other).instance,
             delete_after_subtract,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Other has to be the name of the other booleanable. is_transfer_data is not yet supported.",
+    )
     def intersect(
         self,
         other: "str|BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
+        if not isinstance(other, str):
+            raise NotImplementedError()
         intersect(
-            self.fusion_body.instance,
-            other.fusion_body.instance,
+            FusionBody(self.name).instance,
+            FusionBody(other).instance,
             delete_after_intersect,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Only x-thickness is supported.")
     def hollow(
         self,
         thickness_x: "str|float|Dimension",
@@ -385,15 +396,17 @@ class Part(PartInterface, Entity):
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
     ):
-        hollow(self.fusion_body.component, self.fusion_body.instance, thickness_x)
+        hollow(
+            FusionBody(self.name).component, FusionBody(self.name).instance, thickness_x
+        )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def thicken(self, radius: "str|float|Dimension"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Only simple z-direction holes are supported.")
     def hole(
         self,
         hole_landmark: "str|LandmarkInterface",
@@ -418,25 +431,25 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
     ):
+        fusion_entity = FusionBody(self.name)
         if isinstance(hole_landmark, str):
             component = get_component(hole_landmark)
             if get_body(component, hole_landmark):
-                hole_landmark = Part(hole_landmark).fusion_body
+                fusion_entity = FusionBody(hole_landmark)
             else:
-                hole_landmark = Sketch(hole_landmark).fusion_sketch
+                fusion_entity = FusionSketch(hole_landmark)
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         depth = Dimension.from_dimension_or_its_float_or_string_value(depth, None)
-        point = hole_landmark.center
         hole(
-            self.fusion_body.component,
-            self.fusion_body.instance,
-            point,
+            FusionBody(self.name).component,
+            FusionBody(self.name).instance,
+            fusion_entity.center,
             radius.value,
             depth.value,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def twist(
         self,
         angle: "str|float|Angle",
@@ -447,27 +460,29 @@ class Part(PartInterface, Entity):
         print("twist called:", angle, screw_pitch, iterations, axis)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "Only a PresetMaterial is supported.")
     def set_material(self, material_name: "str|MaterialInterface"):
-        set_material(self.fusion_body, material_name)
+        set_material(FusionBody(self.name), material_name)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def is_colliding_with_part(self, other_part: "str|PartInterface") -> bool:
         print("is_colliding_with_part called:", other_part)
         return True
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PARTIAL, "use_width option is not supported")
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
     ):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         fillet_all_edges(
-            self.fusion_body.component, self.fusion_body.instance, radius.value
+            FusionBody(self.name).component,
+            FusionBody(self.name).instance,
+            radius.value,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
@@ -477,7 +492,7 @@ class Part(PartInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
@@ -487,15 +502,17 @@ class Part(PartInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def chamfer_all_edges(self, radius: "str|float|Dimension"):
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         chamfer_all_edges(
-            self.fusion_body.component, self.fusion_body.instance, radius.value
+            FusionBody(self.name).component,
+            FusionBody(self.name).instance,
+            radius.value,
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def chamfer_edges(
         self,
         radius: "str|float|Dimension",
@@ -503,7 +520,7 @@ class Part(PartInterface, Entity):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def chamfer_faces(
         self,
         radius: "str|float|Dimension",
@@ -512,28 +529,28 @@ class Part(PartInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_landmark(
         self,
         landmark_name: "str",
@@ -544,7 +561,7 @@ class Part(PartInterface, Entity):
         raise NotImplementedError()
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         raise NotImplementedError()
         return Landmark("name", "parent")

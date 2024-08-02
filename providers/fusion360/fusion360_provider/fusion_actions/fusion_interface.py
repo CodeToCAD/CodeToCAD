@@ -20,3 +20,6 @@ class FusionInterface(ABC):
 
     @property
     def center(self): ...
+
+    @property
+    def instance(self): ...

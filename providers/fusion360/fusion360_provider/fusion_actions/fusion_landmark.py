@@ -13,9 +13,13 @@ import adsk.core
 class FusionLandmark(FusionInterface):
     def __init__(self, name: str, parent_component: adsk.fusion.Component):
         # self.component = get_or_create_component(name)
+        self.name = name
         self.component = parent_component
-        self.instance = get_or_create_sketch(self.component, name)
         self.point = self.instance.sketchPoints.item(0)
+
+    @property
+    def instance(self):
+        return get_or_create_sketch(self.component, self.name)
 
     def create_landmark(self, x: float, y: float, z: float):
         self.point_ = make_point3d(x, y, z)
