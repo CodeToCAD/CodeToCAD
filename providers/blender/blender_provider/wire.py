@@ -67,6 +67,7 @@ class Wire(WireInterface, Entity):
         self.parent_entity = parent_entity
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self) -> object:
         return self.native_instance
 
@@ -135,7 +136,10 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PARTIAL, "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.")
+    @supported(
+        SupportLevel.PARTIAL,
+        "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.",
+    )
     def loft(
         self, other: "WireInterface", new_part_name: "str| None" = None
     ) -> "PartInterface":
