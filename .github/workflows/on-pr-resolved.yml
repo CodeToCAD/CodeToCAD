@@ -13,6 +13,8 @@ jobs:
     steps:
         - name: Checkout code
           uses: actions/checkout@v3
+          with:
+            fetch-tags: true
         - name: Assign Git Commit Epoch to $GITHUB_OUTPUT
           id: git_commit_epoch
           run: echo "GIT_COMMIT_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_OUTPUT"
