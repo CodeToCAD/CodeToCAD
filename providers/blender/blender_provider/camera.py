@@ -16,22 +16,22 @@ class Camera(CameraInterface, Entity):
         self.name = name
         self.description = description
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_perspective(self):
         create_camera(self.name, type="PERSP")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_orthogonal(self):
         create_camera(self.name, type="ORTHO")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_focal_length(self, length: "float"):
         set_focal_length(self.name, length)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_panoramic(self):
         create_camera(self.name, type="PANO")
         return self

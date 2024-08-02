@@ -16,30 +16,27 @@ from providers.blender.blender_provider.blender_definitions import (
 
 class Animation(AnimationInterface):
 
-    def __init__(self):
-        pass
-
     @staticmethod
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def default() -> "Animation":
         return Animation()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_frame_start(self, frame_number: "int"):
         set_frame_start(frame_number, None)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_frame_end(self, frame_number: "int"):
         set_frame_end(frame_number, None)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def set_frame_current(self, frame_number: "int"):
         set_frame_current(frame_number, None)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):
@@ -51,7 +48,7 @@ class Animation(AnimationInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
     ):

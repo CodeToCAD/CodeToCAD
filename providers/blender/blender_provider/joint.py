@@ -28,7 +28,7 @@ class Joint(JointInterface):
         self.entity1 = entity1
         self.entity2 = entity2
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def translate_landmark_onto_another(self):
         if not isinstance(self.entity1, LandmarkInterface) or not isinstance(
             self.entity2, LandmarkInterface
@@ -61,14 +61,17 @@ class Joint(JointInterface):
             return entity_or_landmark.name
         raise TypeError("Only Entity or Landmark types are allowed.")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def pivot(self):
         objectToPivotName = Joint._get_entity_or_landmark_name(self.entity2)
         objectToPivotAboutName = Joint._get_entity_or_landmark_name(self.entity1)
         apply_pivot_constraint(objectToPivotName, objectToPivotAboutName)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(
+        SupportLevel.SUPPORTED,
+        "Creates driven constraints to imitate gear relationships.",
+    )
     def gear_ratio(self, ratio: "float"):
         object1 = Joint._get_entity_or_landmark_name(self.entity2)
         object2 = Joint._get_entity_or_landmark_name(self.entity1)
@@ -143,7 +146,7 @@ class Joint(JointInterface):
         if locationConstraint and rotationConstraint:
             apply_pivot_constraint(object_to_limit_name, pivot_object_name)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, "Sets a location constraint on the object.")
     def limit_location_xyz(
         self,
         x: "str|float|Dimension| None" = None,
@@ -156,7 +159,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(dimensionsX, dimensionsY, dimensionsZ)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_location_x(
         self,
         min: "str|float|Dimension| None" = None,
@@ -166,7 +169,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(dimensions, None, None)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_location_y(
         self,
         min: "str|float|Dimension| None" = None,
@@ -176,7 +179,7 @@ class Joint(JointInterface):
         self._limit_location_xyz(None, dimensions, None)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_location_z(
         self,
         min: "str|float|Dimension| None" = None,
@@ -231,7 +234,7 @@ class Joint(JointInterface):
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, "Sets a rotation constaint on the object.")
     def limit_rotation_xyz(
         self,
         x: "str|float|Angle| None" = None,
@@ -251,21 +254,21 @@ class Joint(JointInterface):
             rotation_pair_x, rotation_pair_y, rotation_pair_z
         )
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(rotationPair, None, None)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         rotationPair = Joint._get_limit_rotation_pair(min, max)
         return self._limit_rotation_xyz(None, rotationPair, None)
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED)
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
