@@ -51,6 +51,7 @@ class Landmark(LandmarkInterface, Entity):
         return self.parent_entity
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def rename(self, new_name: str):
         assert (
             Landmark(new_name, self.parent_entity).is_exists() is False
@@ -66,19 +67,23 @@ class Landmark(LandmarkInterface, Entity):
         return self
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def is_visible(self) -> bool:
         return get_object_visibility(self.get_landmark_entity_name())
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self):
         return get_object(self.get_landmark_entity_name())
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def get_location_world(self) -> "Point":
         update_view_layer()
         return get_object_world_location(self.get_landmark_entity_name())
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def get_location_local(self) -> "Point":
         update_view_layer()
         return get_object_local_location(self.get_landmark_entity_name())
@@ -114,6 +119,7 @@ class Landmark(LandmarkInterface, Entity):
         return landmark
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def is_exists(self) -> bool:
         try:
             return get_object(self.get_landmark_entity_name()) is not None
@@ -121,16 +127,19 @@ class Landmark(LandmarkInterface, Entity):
             return False
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def delete(self):
         remove_object(self.get_landmark_entity_name())
         return self
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def set_visible(self, is_visible: bool):
         set_object_visibility(self.get_landmark_entity_name(), is_visible)
         return self
 
     @override
+    @supported(SupportLevel.SUPPORTED)
     def select(self):
         select_object(self.get_landmark_entity_name())
         return self
