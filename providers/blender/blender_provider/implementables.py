@@ -324,35 +324,45 @@ def remesh(self: "Entity", strategy: str, amount: float):
 
 
 def create_landmark(
-    self,
+    self: EntityInterface,
     landmark_name: str,
     x: str | float | Dimension,
     y: str | float | Dimension,
     z: str | float | Dimension,
 ) -> "Landmark":
-    boundingBox = get_bounding_box(self.name)
-    localPositions = [
-        Dimension.from_dimension_or_its_float_or_string_value(x, boundingBox.x),
-        Dimension.from_dimension_or_its_float_or_string_value(y, boundingBox.y),
-        Dimension.from_dimension_or_its_float_or_string_value(z, boundingBox.z),
+    bounding_box = get_bounding_box(self.name)
+    local_positions = [
+        Dimension.from_dimension_or_its_float_or_string_value(x, bounding_box.x),
+        Dimension.from_dimension_or_its_float_or_string_value(y, bounding_box.y),
+        Dimension.from_dimension_or_its_float_or_string_value(z, bounding_box.z),
     ]
-    localPositions = BlenderLength.convert_dimensions_to_blender_unit(localPositions)
+    local_positions = BlenderLength.convert_dimensions_to_blender_unit(local_positions)
+
+    if self.get_location_local().magnitude().value != 0:
+        # If we're trying to create a landmark to an object that's not at origin, then we need to offset the landmark by the geometric center.
+
+        local_location = self.get_location_local()
+
+        local_positions[0] -= local_location.x
+        local_positions[1] -= local_location.y
+        local_positions[2] -= local_location.z
+
     landmark = Landmark(landmark_name, self.name)
-    landmarkObjectName = landmark.get_landmark_entity_name()
+    landmark_object_name = landmark.get_landmark_entity_name()
     # Create an Empty object to represent the landmark
     # Using an Empty object allows us to parent the object to this Empty.
     # Parenting inherently transforms the landmark whenever the object is translated/rotated/scaled.
     # This might not work in other CodeToCAD implementations, but it does in Blender
-    empty_object = create_object(landmarkObjectName, None)
+    empty_object = create_object(landmark_object_name, None)
     empty_object.empty_display_size = 0
     # Assign the landmark to the parent's collection
     assign_object_to_collection(
-        landmarkObjectName, get_object_collection_name(self.name)
+        landmark_object_name, get_object_collection_name(self.name)
     )
     # Parent the landmark to the object
-    make_parent(landmarkObjectName, self.name)
+    make_parent(landmark_object_name, self.name)
     translate_object(
-        landmarkObjectName, localPositions, BlenderTranslationTypes.ABSOLUTE
+        landmark_object_name, local_positions, BlenderTranslationTypes.ABSOLUTE
     )
     return landmark
 

@@ -84,7 +84,10 @@ class Part(PartInterface, Entity):
         rect.extrude(height)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(
+        SupportLevel.PARTIAL,
+        "Only cones with a draft_radius > 0 can be created at the moment. Options is not implemented.",
+    )
     def create_cone(
         self,
         radius: "str|float|Dimension",
@@ -128,15 +131,18 @@ class Part(PartInterface, Entity):
         outer_radius = Dimension.from_dimension_or_its_float_or_string_value(
             outer_radius
         )
-        circle_radius = outer_radius - inner_radius
+        inner_radius = BlenderLength.convert_dimension_to_blender_unit(inner_radius)
+        outer_radius = BlenderLength.convert_dimension_to_blender_unit(outer_radius)
+        circle_radius = (outer_radius - inner_radius) / 2
         origin = Sketch(self.name + "_temp_origin")
         origin.create_from_vertices([(0, 0, 0)])
         sketch = Sketch(self.name)
         circle = sketch.create_circle(circle_radius)
         sketch.rotate_x(90)
-        sketch.translate_x(inner_radius + outer_radius / 2)
+        sketch.translate_x(inner_radius + circle_radius)
         circle.revolve(360, origin, "z")
         origin.delete()
+        return self
 
     @supported(SupportLevel.SUPPORTED)
     def create_sphere(

@@ -173,15 +173,15 @@ def get_bounding_box(
     # z (-1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0)
     zipped = zip("xyz", zip(*coords))
 
-    boundingBox = BoundaryBox(None, None, None)
+    boundingBox = {}
 
     for axis, _list in zipped:
         minVal = min(_list)
         maxVal = max(_list)
 
-        setattr(boundingBox, axis, BoundaryAxis(minVal, maxVal, "m"))
+        boundingBox[axis] = BoundaryAxis(minVal, maxVal, "m")
 
-    return boundingBox
+    return BoundaryBox(boundingBox["x"], boundingBox["y"], boundingBox["z"])
 
 
 def separate_object(object_name):
