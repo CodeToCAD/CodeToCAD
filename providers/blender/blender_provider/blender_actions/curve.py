@@ -251,7 +251,7 @@ def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
     """
     Iterates through all the splines in a curve. If any splines share the same start and end points, their points get merged into the same spline.
     """
-    if reference_spline_index >= len(curve.splines):
+    if reference_spline_index >= len(curve.splines) - 1:
         return
 
     for spline in curve.splines[reference_spline_index:]:

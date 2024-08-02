@@ -15,7 +15,10 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import create_uuid_like_id
-from providers.blender.blender_provider.blender_definitions import BlenderCurveTypes
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderCurveTypes,
+    BlenderLength,
+)
 from providers.blender.blender_provider.entity import Entity
 from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
 from codetocad.core.shapes.clipping import clip_spline_points
@@ -274,6 +277,7 @@ class Sketch(SketchInterface, Entity):
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
+        radius = BlenderLength.convert_dimension_to_blender_unit(radius)
         points = get_circle_points(radius, self.resolution)
         wire: WireInterface = self.create_from_vertices(
             [Point.from_list_of_float_or_string(point) for point in points]
@@ -301,6 +305,7 @@ class Sketch(SketchInterface, Entity):
         radius_major = Dimension.from_dimension_or_its_float_or_string_value(
             radius_major
         )
+
         is_minor_lesser = radius_minor < radius_major
         wire = self.create_circle(radius_minor if is_minor_lesser else radius_major)
         update_view_layer()

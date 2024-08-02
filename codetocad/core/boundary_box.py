@@ -4,15 +4,12 @@ from codetocad.core.boundary_axis import BoundaryAxis
 
 
 class BoundaryBox:
-    x: Optional[BoundaryAxis]
-    y: Optional[BoundaryAxis]
-    z: Optional[BoundaryAxis]
 
     def __init__(
         self,
-        x: Optional[BoundaryAxis],
-        y: Optional[BoundaryAxis],
-        z: Optional[BoundaryAxis],
+        x: BoundaryAxis,
+        y: BoundaryAxis,
+        z: BoundaryAxis,
     ):
         self.x = x
         self.y = y
