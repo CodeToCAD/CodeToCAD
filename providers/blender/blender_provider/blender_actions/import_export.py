@@ -13,7 +13,7 @@ from codetocad.utilities import get_file_extension
 from providers.blender.blender_provider.blender_definitions import BlenderVersions
 
 fileImportFunctions = {
-    "stl": lambda file_path: bpy.ops.import_mesh.stl(filepath=file_path),
+    "stl": lambda file_path: bpy.ops.wm.stl_import(filepath=file_path),
     "ply": lambda file_path: bpy.ops.wm.ply_import(filepath=file_path),
     "svg": lambda file_path: bpy.ops.import_curve.svg(filepath=file_path),
     "png": lambda file_path: bpy.ops.image.open(filepath=file_path),
@@ -22,7 +22,6 @@ fileImportFunctions = {
     "obj": lambda file_path: bpy.ops.wm.obj_import(
         filepath=file_path, use_split_objects=False
     ),
-    "x3d": lambda file_path: bpy.ops.import_scene.x3d(filepath=file_path),
 }
 
 
@@ -71,8 +70,8 @@ def import_file(file_path: str, file_type: Optional[str] = None) -> str:
 
 
 fileExportFunctions = {
-    "stl": lambda file_path, scale: bpy.ops.export_mesh.stl(
-        filepath=file_path, use_selection=True, global_scale=scale
+    "stl": lambda file_path, scale: bpy.ops.wm.stl_export(
+        filepath=file_path, export_selected_objects=True, global_scale=scale
     ),
     "obj": lambda file_path, scale: (
         bpy.ops.wm.obj_export(
