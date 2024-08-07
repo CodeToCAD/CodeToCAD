@@ -12,7 +12,7 @@ jinja2-cli
 ast-comments
 
 # Blender Dev Dependencies:
-fake-bpy-module-latest==20240801
+fake-bpy-module-latest==20240807
 numpy
 
 # Onshape Dev Dependencies:
