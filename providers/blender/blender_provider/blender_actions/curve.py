@@ -139,6 +139,8 @@ def create_text(
 
     curveData.use_path = False
 
+    return curveData
+
 
 def create_curve(
     curve_name: str,
