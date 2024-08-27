@@ -10,7 +10,6 @@ def createDoubleuniversal_joint():
     pin_arm_length = Dimension.from_string("13mm")
     pin_hole_radius = Dimension.from_string("2mm")
     set_screw_radius = Dimension.from_string("3mm")
-
     yoke_center = Yoke(
         shaft_radius=shaft_radius,
         wall_thickness=wall_thickness,
@@ -32,7 +31,6 @@ def createDoubleuniversal_joint():
         yoke_center_pin_top_location.y,
         yoke_center_pin_top_location.z * -1 + yoke_center_bottom_z * 2,
     )
-
     yoke_top = Yoke(
         shaft_radius=shaft_radius,
         wall_thickness=wall_thickness,
@@ -43,7 +41,6 @@ def createDoubleuniversal_joint():
     ).create("yokeTop")
     yoke_top.rotate_y(180)
     yoke_top.rotate_z(90)
-
     yokeBottom = Yoke(
         shaft_radius=shaft_radius,
         wall_thickness=wall_thickness,
@@ -53,39 +50,33 @@ def createDoubleuniversal_joint():
         set_screw_radius=set_screw_radius,
     ).create("yokeBottom")
     yokeBottom.rotate_z(90)
-
     cross1 = Cross(
         width=shaft_radius,
         pin_radius=pin_hole_radius,
         pin_length=shaft_radius / 2 + wall_thickness,
     ).create("cross1")
-
     cross2 = Cross(
         width=shaft_radius,
         pin_radius=pin_hole_radius,
         pin_length=shaft_radius / 2 + wall_thickness,
     ).create("cross2")
-
     Joint(
         cross1.get_landmark(PresetLandmark.right),
         yoke_top.get_landmark("pinArm_pin"),
     ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(
         0, 0, 0
     )
-
     Joint(
         cross1.get_landmark(PresetLandmark.front), yoke_center_pin_top
     ).limit_rotation_xyz(0, None, 0).limit_rotation_y(-45, 45).limit_location_xyz(
         0, 0, 0
     )
-
     Joint(
         yoke_center_pin_bottom,
         cross2.get_landmark(PresetLandmark.front),
     ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(
         0, 0, 0
     )
-
     Joint(
         cross2.get_landmark(PresetLandmark.right), yokeBottom.get_landmark("pinArm_pin")
     ).limit_rotation_xyz(None, 0, 0).limit_rotation_x(-45, 45).limit_location_xyz(
@@ -93,5 +84,5 @@ def createDoubleuniversal_joint():
     )
 
 
-if __name__ == "__main__":
-    createDoubleuniversal_joint()
+# if __name__ == "__main__":
+createDoubleuniversal_joint()

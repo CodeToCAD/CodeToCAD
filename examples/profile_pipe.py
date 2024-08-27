@@ -25,5 +25,4 @@ circle.create_circle("1in")
 circle.set_visible(False)
 
 profile = Sketch("profile")
-profile.create_from_vertices(profile_vertices)
-profile.sweep("circle", fill_cap=False)
+profile.create_from_vertices(profile_vertices).sweep("circle", fill_cap=False)

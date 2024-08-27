@@ -86,7 +86,7 @@ class Sketch(SketchInterface, Entity):
         return self
 
     @supported(
-        SupportLevel.PARTIAL, notes="Options, center_at parameters are not supported."
+        SupportLevel.SUPPORTED, notes="center_at parameters are not supported."
     )
     def create_text(
         self,
@@ -100,7 +100,6 @@ class Sketch(SketchInterface, Entity):
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
-        options: "SketchOptions| None" = None,
     ):
         size = Dimension.from_string(font_size)
         create_text(
@@ -118,11 +117,10 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return self
 
-    @supported(SupportLevel.PARTIAL, notes="The options parameter is not supported.")
+    @supported(SupportLevel.SUPPORTED, notes="Create wire")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-        options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         parsed_points = [
             Point.from_list_of_float_or_string_or_Vertex(point) for point in points
@@ -157,11 +155,10 @@ class Sketch(SketchInterface, Entity):
         update_view_layer()
         return wire
 
-    @supported(SupportLevel.PARTIAL, notes="The Options parameters is not supported.")
+    @supported(SupportLevel.SUPPORTED, notes="Create point")
     def create_point(
         self,
         point: "str|list[str]|list[float]|list[Dimension]|Point",
-        options: "SketchOptions| None" = None,
     ) -> "Vertex":
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
@@ -183,8 +180,8 @@ class Sketch(SketchInterface, Entity):
         )
 
     @supported(
-        SupportLevel.PARTIAL,
-        notes="The Options parameters is not supported. Returns an Edge entity instead of a Wire.",
+        SupportLevel.SUPPORTED,
+        notes="Create line using points",
     )
     def create_line_to(
         self,
@@ -267,14 +264,13 @@ class Sketch(SketchInterface, Entity):
             index += 1
 
     @supported(
-        SupportLevel.PARTIAL,
+        SupportLevel.SUPPORTED,
         notes="center_at and Options are not implemented. This method uses a custom implementation, i.e. not Blender's implementation of creating this shape.",
     )
     def create_circle(
         self,
         radius: "str|float|Dimension",
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
-        options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         radius = BlenderLength.convert_dimension_to_blender_unit(radius)
@@ -289,15 +285,14 @@ class Sketch(SketchInterface, Entity):
         return wire
 
     @supported(
-        SupportLevel.PARTIAL,
-        notes="center_at and Options are not implemented. This method uses a custom implementation, i.e. not Blender's implementation of creating this shape.",
+        SupportLevel.SUPPORTED,
+        notes="Create ellipse wire",
     )
     def create_ellipse(
         self,
         radius_minor: "str|float|Dimension",
         radius_major: "str|float|Dimension",
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
-        options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
@@ -315,14 +310,13 @@ class Sketch(SketchInterface, Entity):
             self.scale_x(radius_minor * 2)
         return wire
 
-    @supported(SupportLevel.PARTIAL, notes="The options parameter is not implemented.")
+    @supported(SupportLevel.SUPPORTED, notes="Create arc wire")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         flip: "bool| None" = False,
-        options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         start_point: Point
         end_point: Point
@@ -384,7 +378,7 @@ class Sketch(SketchInterface, Entity):
         self,
         length: "str|float|Dimension",
         width: "str|float|Dimension",
-        center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
+        # center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
         half_length = (

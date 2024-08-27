@@ -14,8 +14,6 @@ c1.translate_z(2)
 
 hollow_cube_left = hollow_cube.get_landmark(PresetLandmark.left)
 hollow_cube_left_inner = hollow_cube_left.clone("left_inner")
-hollow_cube_left_inner = hollow_cube_left.clone(
-    "left_inner_2", offset=[wall_thickness, 0, 0]
-)
+hollow_cube_left_inner = hollow_cube_left.clone("left_inner_2", offset=[wall_thickness, 0, 0])
 
 hollow_cube_left_inner = hollow_cube_left.clone("left_inner_3", new_parent=c1)

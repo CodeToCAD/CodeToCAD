@@ -76,7 +76,7 @@ def mirror(
     axis = Axis.from_string(axis)
 
     assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-
+    
     apply_mirror_modifier(self.name, mirrorAcrossEntityName, axis)
 
     return self._apply_modifiers_only()
@@ -141,7 +141,8 @@ def circular_pattern(
     elif isinstance(angle, (float, int)):
         angle = Angle(angle)
 
-    angles[axis.value] = angle
+    direction_map = {"x": 0, "y": 1, "z": 2}
+    angles[direction_map[axis.value]] = angle
 
     rotate_object(
         pivotLandmarkEntityName,

@@ -15,7 +15,8 @@ def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
 
 
 def create_knob(radius):
-    knob = Sketch("knob").create_polygon(7, radius, radius).extrude(radius * 0.2)
+    knob_wire = Sketch("knob").create_polygon(7, radius, radius).get_wires()[0]
+    knob = knob_wire.extrude(radius * 0.2)
 
     return knob
 
@@ -42,8 +43,8 @@ if __name__ == "__main__":
     knob = create_knob(sleeve.get_dimensions().x)
 
     Joint(
-        sleeve.create_landmark("top", center, center, max),
-        knob.create_landmark("bottom", center, center, min),
+        sleeve.create_landmark("top", "center", "center", "max"),
+        knob.create_landmark("bottom", "center", "center", "min"),
     ).limit_location_xyz(0, 0, 0)
 
     sleeve.union(knob)

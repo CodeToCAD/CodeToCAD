@@ -1,6 +1,6 @@
 from codetocad import Sketch
 
-circle = Sketch("circ").create_circle(0.5)
+circle = Sketch("cylinder").create_circle(0.5).extrude("2cm")
 
 # new_circle = circle.clone("new_circle")
 

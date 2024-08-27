@@ -69,7 +69,9 @@ def apply_linear_pattern(
 ):
     offsetArray = [0.0, 0.0, 0.0]
 
-    offsetArray[direction.value] = offset
+    direction_map = {"x": 0, "y": 1, "z": 2}
+    offsetArray[direction_map[direction.value]] = offset
+    # offsetArray[direction.value] = offset
 
     apply_modifier(
         entity_name,
@@ -152,7 +154,8 @@ def apply_mirror_modifier(
     entity_name: str, mirror_across_entity_name: str, axis: Axis, **kwargs
 ):
     axisList = [False, False, False]
-    axisList[axis.value] = True
+    direction_map = {"x": 0, "y": 1, "z": 2}
+    axisList[direction_map[axis.value]] = True
 
     blenderMirrorAcrossObject = get_object(mirror_across_entity_name)
 
