@@ -6,10 +6,18 @@ material = Material("material").set_color(169, 76, 181, 255)
 
 def create_cube(name, size):
     calibartion_cube = Part(name).create_cube(size, size, size)
-    calibration_cube_x = calibartion_cube.create_landmark("x", "min+5mm", "max-7mm", "max")
-    calibration_cube_y = calibartion_cube.create_landmark("y", "max-5mm", "min+5mm", "max")
-    calibration_cube_z = calibartion_cube.create_landmark("z", "center", "min", "center")
-    calibration_cube_size = calibartion_cube.create_landmark("size", "min+1mm", "min+2mm", "max")
+    calibration_cube_x = calibartion_cube.create_landmark(
+        "x", "min+5mm", "max-7mm", "max"
+    )
+    calibration_cube_y = calibartion_cube.create_landmark(
+        "y", "max-5mm", "min+5mm", "max"
+    )
+    calibration_cube_z = calibartion_cube.create_landmark(
+        "z", "center", "min", "center"
+    )
+    calibration_cube_size = calibartion_cube.create_landmark(
+        "size", "min+1mm", "min+2mm", "max"
+    )
     z_wire = Sketch("Z").create_text("Z", "10mm").get_wires()[0]
     z = z_wire.extrude("1.5mm").rotate_xyz(90, 0, 0)
     z_center = z.create_landmark("center", "center", "center", "center")
@@ -37,6 +45,12 @@ def create_cube(name, size):
 tolerance = "0.2mm"
 size = Dimension(20, "mm")
 
-create_cube("calibration_cube19_9", size - tolerance).export("./calibration_cube19_8mm.stl", scale=1000).translate_xyz("-25mm", 0, 0)
-create_cube("calibration_cube20mm", size).export("./calibration_cube20mm.stl", scale=1000)
-create_cube("calibration_cube20_2", size + tolerance).export("./calibration_cube20_2mm.stl", scale=1000).translate_xyz("25mm", 0, 0)
+create_cube("calibration_cube19_9", size - tolerance).export(
+    "./calibration_cube19_8mm.stl", scale=1000
+).translate_xyz("-25mm", 0, 0)
+create_cube("calibration_cube20mm", size).export(
+    "./calibration_cube20mm.stl", scale=1000
+)
+create_cube("calibration_cube20_2", size + tolerance).export(
+    "./calibration_cube20_2mm.stl", scale=1000
+).translate_xyz("25mm", 0, 0)

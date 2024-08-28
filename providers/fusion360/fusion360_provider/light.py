@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.light_interface import LightInterface

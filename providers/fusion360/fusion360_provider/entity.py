@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.sketch_interface import SketchInterface

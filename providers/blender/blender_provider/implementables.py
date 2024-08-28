@@ -76,7 +76,7 @@ def mirror(
     axis = Axis.from_string(axis)
 
     assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-    
+
     apply_mirror_modifier(self.name, mirrorAcrossEntityName, axis)
 
     return self._apply_modifiers_only()

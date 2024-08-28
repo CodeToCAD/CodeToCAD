@@ -9,6 +9,7 @@ class DShaft:
     d_profile_radius: Dimension
     d_profile_length: Dimension
     tolerance: Dimension
+
     def create(self, name, is_d_shaft_both_sides=False):
         shaft_length = self.shaft_length
         radius = self.radius - self.tolerance

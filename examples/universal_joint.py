@@ -19,6 +19,7 @@ class Yoke:
          ^             ^
       setScrew       pinHole
     """
+
     shaft_radius: Dimension
     wall_thickness: Dimension
     shaft_length: Dimension
@@ -26,6 +27,7 @@ class Yoke:
     pin_hole_radius: Dimension
     set_screw_radius: Dimension
     is_hollowed: bool = True
+
     def _createHollowRod(self, name: str, length: Dimension) -> Part:
         outerRadius = self.shaft_radius + self.wall_thickness
         rod = Part(name).create_cylinder(outerRadius, length)
@@ -36,10 +38,9 @@ class Yoke:
                 self.wall_thickness / 2,
                 flip_axis=True,
             )
-        _ = rod.create_landmark(
-            "wallFront", "center", "min", "max"
-        )
+        _ = rod.create_landmark("wallFront", "center", "min", "max")
         return rod
+
     def _create_shaft_coupling(self) -> Part:
         shaft_coupling = self._createHollowRod("shaftCoupling", self.shaft_length)
         if self.is_hollowed:
@@ -50,6 +51,7 @@ class Yoke:
                 normal_axis="y",
             )
         return shaft_coupling
+
     def _create_pin_arm(self) -> Part:
         pin_arm = self._createHollowRod("pinArm", self.pin_arm_length)
         pin_arm_size = pin_arm.get_dimensions()
@@ -79,6 +81,7 @@ class Yoke:
         #     [pinArm.get_landmark(PresetLandmark.top)]
         # )
         return pin_arm
+
     def create(self, name: str) -> Part:
         shaft_coupling = self._create_shaft_coupling()
         pin_arm = self._create_pin_arm()
@@ -94,11 +97,13 @@ class Yoke:
         yoke.set_material(blue_metallic_material)
         return yoke
 
+
 @dataclass
 class Cross:
     width: Dimension
     pin_radius: Dimension
     pin_length: Dimension
+
     def create(self, name: str) -> Part:
         core = Part(name).create_cube(self.width, self.width, self.width)
         pin = Part("pin").create_cylinder(self.pin_radius, self.pin_length)

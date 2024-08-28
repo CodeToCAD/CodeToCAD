@@ -275,7 +275,9 @@ class Part(PartInterface, Entity):
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
         start_landmark_location = ["center", "center", "center"]
         direction_map = {"x": 0, "y": 1, "z": 2}
-        start_landmark_location[direction_map[axis.value]] = "min" if flip_axis else "max"
+        start_landmark_location[direction_map[axis.value]] = (
+            "min" if flip_axis else "max"
+        )
         start_axis_landmark = self.create_landmark(
             create_uuid_like_id(),
             start_landmark_location[0],

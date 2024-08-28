@@ -1,8 +1,6 @@
 import cmath
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
-from codetocad.proxy.edge import Edge
-from codetocad.proxy.wire import Wire
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.vertex import Vertex
@@ -85,9 +83,7 @@ class Sketch(SketchInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(
-        SupportLevel.SUPPORTED, notes="center_at parameters are not supported."
-    )
+    @supported(SupportLevel.SUPPORTED, notes="center_at parameters are not supported.")
     def create_text(
         self,
         text: "str",

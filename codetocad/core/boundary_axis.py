@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.enums.length_unit import LengthUnit
 
 

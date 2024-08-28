@@ -7,8 +7,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
-from codetocad.proxy.edge import Edge
-from codetocad.proxy.vertex import Vertex
 from codetocad.proxy.landmark import Landmark
 from codetocad.proxy.part import Part
 from providers.fusion360.fusion360_provider.fusion_actions.actions import sweep
@@ -20,7 +18,6 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_body import Fu
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_sketch import (
     FusionSketch,
 )
-from providers.fusion360.fusion360_provider.sketch import Sketch
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.fusion360.fusion360_provider.entity import Entity

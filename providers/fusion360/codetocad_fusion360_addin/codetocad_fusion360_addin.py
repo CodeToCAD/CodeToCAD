@@ -1,5 +1,9 @@
 # Assuming you have not changed the general structure of the template no modification is needed in this file.
-from .load_codetocad import add_codetocad_to_path, reload_codetocad_modules,register_fusion360_provider
+from .load_codetocad import (
+    add_codetocad_to_path,
+    reload_codetocad_modules,
+    register_fusion360_provider,
+)
 
 add_codetocad_to_path()
 

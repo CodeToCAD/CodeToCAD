@@ -1,5 +1,3 @@
-from typing import Optional
-
 from codetocad.core.boundary_axis import BoundaryAxis
 
 
