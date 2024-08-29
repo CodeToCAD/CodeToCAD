@@ -31,12 +31,14 @@ setup(
     },
     packages=[
         "codetocad",
-        "codetocad.interfaces",
-        "providers.sample",
         "codetocad.core",
         "codetocad.core.shapes",
         "codetocad.enums",
+        "codetocad.interfaces",
         "codetocad.launchers",
+        "codetocad.proxy",
+        "codetocad.utilities",
+        "providers.sample",
     ],
     install_requires=[],
     classifiers=[
