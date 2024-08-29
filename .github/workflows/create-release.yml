@@ -3,6 +3,8 @@ on:
     branches:
       - release
   pull_request:
+    branches:
+      - release
     types:
       - closed
 
@@ -10,7 +12,6 @@ name: Create release and provider bundles.
 
 jobs:
   create_release_tag:
-    if: github.base_ref == 'release'
     name: Create release tag
     runs-on: ubuntu-latest
     steps:
