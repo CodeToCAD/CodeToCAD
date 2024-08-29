@@ -12,7 +12,12 @@ def execute_launcher():
 
     # Sample/Dummy/Mock launcher:
     if args.is_sample_launcher():
-        print("Running script with the sample provider.")
+        print(
+            """Running script with the sample provider. 
+            NOTE: This will show the execution path, but will not generate any models. To generate models, you should run CodeToCAD in a modeling software, e.g. Blender or Fusion360. 
+            See https://github.com/CodeToCAD/CodeToCAD/README.md for more information.
+            """
+        )
         run_with_sample(args)
         return
 
