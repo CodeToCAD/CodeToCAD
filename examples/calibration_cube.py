@@ -1,14 +1,16 @@
 from codetocad import *
+from codetocad.shortcuts import *
 
 
-material = Material("material").set_color(169, 76, 181, 255)
+material = Material("material")
+material.set_color(169, 76, 181, 255)
 
 
 def create_cube(name, size):
     calibartion_cube = Part(name).create_cube(size, size, size)
 
     calibration_cube_x = calibartion_cube.create_landmark(
-        "x", "min+5mm", "max-7mm", max
+        "x", min + "5mm", max - "7mm", max
     )
     calibration_cube_y = calibartion_cube.create_landmark(
         "y", "max-5mm", "min+5mm", max

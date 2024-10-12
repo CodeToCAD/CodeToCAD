@@ -26,6 +26,6 @@ Joint(socket_center, ball).limit_rotation_x(-30, 30).limit_rotation_y(
 
 blue_material = Material("blue").set_color(0.0826006, 0.214978, 0.406714, 1.0)
 green_material = Material("socket").set_color(0.249275, 0.709804, 0.392972, 0.8)
-# ball.set_material(blue_material)
-# link.set_material(blue_material)
-# socket.set_material(green_material)
+ball.set_material(blue_material)
+link.set_material(blue_material)
+socket.set_material(green_material)

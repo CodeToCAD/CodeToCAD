@@ -656,6 +656,59 @@
                     }
                 }
             },
+            "create_text": {
+                "action": "create",
+                "information": "Add 3D text. This is a shortcut for quickly extruding Sktech.create_text. Use a sketch for more flexibility.",
+                "parameters": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "extrude_amount": {
+                        "type": "string,float,Dimension"
+                    },
+                    "font_size": {
+                        "type": "string,float,Dimension",
+                        "default_value": 1.0
+                    },
+                    "bold": {
+                        "type": "boolean",
+                        "default_value": false
+                    },
+                    "italic": {
+                        "type": "boolean",
+                        "default_value": false
+                    },
+                    "underlined": {
+                        "type": "boolean",
+                        "default_value": false
+                    },
+                    "character_spacing": {
+                        "type": "int",
+                        "default_value": 1
+                    },
+                    "word_spacing": {
+                        "type": "int",
+                        "default_value": 1
+                    },
+                    "line_spacing": {
+                        "type": "int",
+                        "default_value": 1
+                    },
+                    "font_file_path": {
+                        "type": "string",
+                        "default_value": null,
+                        "required": false
+                    },
+                    "profile_curve_name": {
+                        "type": "string,Wire,Sketch",
+                        "required": false
+                    },
+                    "options": {
+                        "type": "PartOptions",
+                        "required": false
+                    }
+                }
+            },
             "clone": {
                 "action": "get",
                 "return_type": "Part",
@@ -976,7 +1029,7 @@
                 }
             },
             "create_text": {
-                "action": "modify",
+                "action": "create",
                 "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {
@@ -1017,6 +1070,10 @@
                     },
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
+                        "required": false
+                    },
+                    "profile_curve_name": {
+                        "type": "string,Wire,Sketch",
                         "required": false
                     },
                     "options": {
@@ -1489,7 +1546,7 @@
                 "information": "Bend this curve along the path of another",
                 "parameters": {
                     "profile_curve_name": {
-                        "type": "string"
+                        "type": "string,Wire,Sketch"
                     }
                 }
             },

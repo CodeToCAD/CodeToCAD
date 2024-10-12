@@ -42,4 +42,5 @@ capabilities_parameter_types = {
     "list[string,Exportable]": "list[str|Exportable]",
     "string,Booleanable": "str|Booleanable",
     "string,Landmarkable": "str|Landmarkable",
+    "string,Wire,Sketch": "str|Wire|Sketch",
 }

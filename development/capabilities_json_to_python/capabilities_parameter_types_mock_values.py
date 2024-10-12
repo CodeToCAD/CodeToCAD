@@ -79,4 +79,5 @@ capabilities_parameter_types_mock_values = {
     "CurveTypes": "CurveTypes.NURBS",
     "PartOptions": "PartOptions()",
     "SketchOptions": "SketchOptions()",
+    "str|Wire|Sketch": f"Wire('a wire',[ {dummy_edge}])",
 }
