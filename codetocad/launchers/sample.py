@@ -9,4 +9,4 @@ def run_with_sample(launcher_args: LauncherArgs):
     Launches the script with the providers.sample module.
     """
     register.register()
-    return runpy.run_path(launcher_args.script_file_path, run_name="__main__")
+    return runpy.run_path(launcher_args.script_file_path_or_action, run_name="__main__")

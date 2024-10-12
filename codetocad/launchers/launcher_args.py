@@ -1,13 +1,32 @@
 from dataclasses import asdict, dataclass
 import argparse
+from enum import Enum
 from typing import Optional
 
 from codetocad.utilities import get_absolute_filepath
 
 
+class CliActions(Enum):
+    VERSION = 0
+    UPDATE = 1
+    UNINSTALL = 2
+
+    @staticmethod
+    def get_action_from_string(action: str) -> "CliActions|None":
+        try:
+            action = action.upper()
+            return CliActions[action]
+        except KeyError as e:
+            return None
+
+    @staticmethod
+    def isAction(action: str):
+        return CliActions.get_action_from_string(action) != None
+
+
 @dataclass
 class LauncherArgs:
-    script_file_path: str
+    script_file_path_or_action: str
     launcher: str
     launcher_location: Optional[str] = None
     background: Optional[bool] = None
@@ -47,11 +66,20 @@ class LauncherArgs:
     @staticmethod
     def from_cli_args():
         parser = argparse.ArgumentParser(
-            description="Welcome to the CodeToCAD cli tool. Visit https://github.com/CodeToCAD/CodeToCAD for help or information."
+            description="Welcome to the CodeToCAD cli tool. Visit https://github.com/CodeToCAD/CodeToCAD for help or information",
+            usage="""
+codetocad --help => displayed help
+codetocad version => displays pip package version
+codetocad update => updates pip package
+codetocad uninstall => uninstalls pip package
+codetocad /path/to/script ...args => runs a codetocad script
+""",
         )
 
         parser.add_argument(
-            "script_file_path", type=str, help="CodeToCAD script to execute"
+            "script_file_path_or_action",
+            type=str,
+            help="CodeToCAD script to execute, or action like version, update, uninstall.",
         )
 
         parser.add_argument(
@@ -88,7 +116,11 @@ class LauncherArgs:
         args = parser.parse_args()
 
         return LauncherArgs(
-            script_file_path=get_absolute_filepath(args.script_file_path, True),
+            script_file_path_or_action=(
+                get_absolute_filepath(args.script_file_path_or_action, True)
+                if not CliActions.isAction(args.script_file_path_or_action)
+                else args.script_file_path_or_action
+            ),
             launcher=args.launcher,
             launcher_location=args.launcher_location,
             background=args.background,
