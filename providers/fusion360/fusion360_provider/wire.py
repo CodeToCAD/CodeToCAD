@@ -1,4 +1,5 @@
 from codetocad.interfaces.part_interface import PartInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from typing import Self
@@ -7,8 +8,6 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
-from codetocad.proxy.edge import Edge
-from codetocad.proxy.vertex import Vertex
 from codetocad.proxy.landmark import Landmark
 from codetocad.proxy.part import Part
 from providers.fusion360.fusion360_provider.fusion_actions.actions import sweep
@@ -20,7 +19,6 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_body import Fu
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_sketch import (
     FusionSketch,
 )
-from providers.fusion360.fusion360_provider.sketch import Sketch
 from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from providers.fusion360.fusion360_provider.entity import Entity
@@ -35,6 +33,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.normals import (
 
 
 class Wire(WireInterface, Entity):
+
     def __init__(
         self,
         name: "str",
@@ -84,7 +83,6 @@ class Wire(WireInterface, Entity):
         component = FusionSketch(self.parent_entity.name).component
         sketch = FusionSketch(self.parent_entity.name).instance
         other_sketch = FusionSketch(other.parent_entity.name).instance
-
         part = Part(new_name)
         part.fusion_body.instance = make_loft(component, sketch, other_sketch)
         return part
@@ -196,7 +194,7 @@ class Wire(WireInterface, Entity):
         return self
 
     @supported(SupportLevel.PLANNED)
-    def profile(self, profile_curve_name: "str"):
+    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
         raise NotImplementedError()
         return self
 

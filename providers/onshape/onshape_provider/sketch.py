@@ -142,7 +142,7 @@ class Sketch(SketchInterface, Entity):
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.PLANNED)
     def create_text(
         self,
         text: "str",
@@ -155,6 +155,7 @@ class Sketch(SketchInterface, Entity):
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
         options: "SketchOptions| None" = None,
     ):
         pointLocation1 = Dimension(0.0, "mm")

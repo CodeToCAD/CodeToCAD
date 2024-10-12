@@ -331,7 +331,7 @@ class Wire(WireInterface, Entity):
         return Part(parent.name, parent.description).apply()
 
     @supported(SupportLevel.SUPPORTED, notes="Get profile of the wire")
-    def profile(self, profile_curve_name: "str"):
+    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
         assert self.parent_entity, "This wire is not associated with a parent entity."
         parent = self.parent_entity
         if isinstance(parent, str):

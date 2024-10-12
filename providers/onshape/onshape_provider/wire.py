@@ -1,4 +1,5 @@
 from typing import Optional
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from typing import Self
@@ -199,7 +200,7 @@ class Wire(WireInterface, Entity):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def profile(self, profile_curve_name: "str"):
+    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
         print("profile called", f": {profile_curve_name}")
         return self
 

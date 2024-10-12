@@ -1,4 +1,6 @@
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+from typing import Self
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -131,7 +133,6 @@ class Part(PartInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ):
-
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
         z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
@@ -565,3 +566,25 @@ class Part(PartInterface, Entity):
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         raise NotImplementedError()
         return Landmark("name", "parent")
+
+    @supported(SupportLevel.PLANNED, notes="")
+    def create_text(
+        self,
+        text: "str",
+        extrude_amount: "str|float|Dimension",
+        font_size: "str|float|Dimension" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
+        character_spacing: "int" = 1,
+        word_spacing: "int" = 1,
+        line_spacing: "int" = 1,
+        font_file_path: "str| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        options: "PartOptions| None" = None,
+    ) -> Self:
+        print(
+            "create_text called",
+            f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve_name}, {options}",
+        )
+        return self
