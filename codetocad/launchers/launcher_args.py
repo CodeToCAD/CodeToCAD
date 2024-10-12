@@ -68,7 +68,7 @@ class LauncherArgs:
         parser = argparse.ArgumentParser(
             description="Welcome to the CodeToCAD cli tool. Visit https://github.com/CodeToCAD/CodeToCAD for help or information",
             usage="""
-codetocad --help => displayed help
+codetocad --help => displays help
 codetocad version => displays pip package version
 codetocad update => updates pip package
 codetocad uninstall => uninstalls pip package

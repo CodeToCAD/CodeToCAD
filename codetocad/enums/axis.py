@@ -23,11 +23,6 @@ class Axis(str, Enum):
         if self not in Axis._max_min_center():
             raise TypeError(f"Only {Axis._max_min_center()} can be concatenated.")
 
-    def __add__(self, other):
-        self._arithmetic_check(other)
-
-        return self.name + (other if isinstance(other, str) else other.name)
-
     @staticmethod
     def is_axis_name_in_string(string_to_check: str) -> bool:
         """
@@ -57,3 +52,15 @@ class Axis(str, Enum):
             return Axis.CENTER
 
         assert False, f"Invalid axis {axis}"
+
+    def __add__(self, other):
+        return f"{self.value}+{other}"
+
+    def __sub__(self, other):
+        return f"{self.value}-{other}"
+
+    def __mul__(self, other):
+        return f"{self.value}*{other}"
+
+    def __truediv__(self, other):
+        return f"{self.value}/{other}"
