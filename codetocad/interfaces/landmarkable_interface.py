@@ -8,7 +8,19 @@ from abc import ABCMeta, abstractmethod
 from codetocad.codetocad_types import *
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+from typing import TYPE_CHECKING
+
+
+# Implementable dependencies:
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
 
 
 class LandmarkableInterface(metaclass=ABCMeta):

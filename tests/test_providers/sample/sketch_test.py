@@ -56,10 +56,24 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             line_spacing=1,
             font_file_path="String",
             center_at=["Point.from_list_of_float_or_string([0,0,0])"],
+            profile_curve_name=Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            ),
             options=SketchOptions(),
         )
 
-        assert value, "Modify method failed."
+        assert value.is_exists(), "Create method failed."
 
     def test_create_from_vertices(self):
 

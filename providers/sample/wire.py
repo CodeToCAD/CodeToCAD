@@ -14,30 +14,33 @@ from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.wire_interface import WireInterface
 
 
-from codetocad.interfaces.part_interface import PartInterface
-
-from codetocad.interfaces.edge_interface import EdgeInterface
-
 from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
+from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
+from codetocad.interfaces.sketch_interface import SketchInterface
+
+from codetocad.interfaces.edge_interface import EdgeInterface
+
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.proxy.part import Part
-
-from codetocad.proxy.edge import Edge
-
 from codetocad.proxy.vertex import Vertex
 
 from codetocad.proxy.landmark import Landmark
+
+from codetocad.proxy.part import Part
+
+
+from codetocad.proxy.edge import Edge
 
 
 from providers.sample.entity import Entity
@@ -177,7 +180,7 @@ class Wire(WireInterface, Entity):
         )
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def profile(self, profile_curve_name: "str") -> Self:
+    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface") -> Self:
 
         print("profile called", f": {profile_curve_name}")
 

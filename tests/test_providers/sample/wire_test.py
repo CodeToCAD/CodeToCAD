@@ -308,7 +308,22 @@ class WireTest(TestProviderCase, WireTestInterface):
             parent_entity=__import__("codetocad").Part("an entity"),
         )
 
-        value = instance.profile(profile_curve_name="String")
+        value = instance.profile(
+            profile_curve_name=Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            )
+        )
 
         assert value, "Modify method failed."
 

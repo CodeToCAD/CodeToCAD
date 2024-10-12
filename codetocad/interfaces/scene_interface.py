@@ -10,9 +10,21 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
+from typing import TYPE_CHECKING
+
+
+# Implementable dependencies:
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.entity_interface import EntityInterface
+
+
+# Interface dependencies:
 
 from codetocad.interfaces.exportable_interface import ExportableInterface
+
+
+# Extended dependencies:
 
 
 class SceneInterface(metaclass=ABCMeta):

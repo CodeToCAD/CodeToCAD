@@ -8,6 +8,15 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class BooleanableInterface(metaclass=ABCMeta):
     """
     An entity that supports boolean operations: union, intersect, subtract.

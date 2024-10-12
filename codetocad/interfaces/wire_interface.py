@@ -10,25 +10,43 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+from typing import TYPE_CHECKING
 
-from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+# Implementable dependencies:
 
-from codetocad.interfaces.edge_interface import EdgeInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.part_interface import PartInterface
 
-from codetocad.interfaces.booleanable_interface import BooleanableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.sketch_interface import SketchInterface
 
-from codetocad.interfaces.projectable_interface import ProjectableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.edge_interface import EdgeInterface
+
+
+# Interface dependencies:
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
 from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+
+# Extended dependencies:
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -191,7 +209,7 @@ class WireInterface(
         raise NotImplementedError()
 
     @abstractmethod
-    def profile(self, profile_curve_name: "str") -> Self:
+    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface") -> Self:
         """
         Bend this curve along the path of another
         """

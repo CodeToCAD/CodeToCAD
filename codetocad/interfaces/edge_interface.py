@@ -10,18 +10,32 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
+from typing import TYPE_CHECKING
 
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+# Implementable dependencies:
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.projectable_interface import ProjectableInterface
+if TYPE_CHECKING:
+    pass
+
+
+# Interface dependencies:
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
+
 from codetocad.interfaces.patternable_interface import PatternableInterface
+
+from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+
+# Extended dependencies:
 
 from codetocad.interfaces.entity_interface import EntityInterface
 

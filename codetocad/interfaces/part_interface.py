@@ -10,25 +10,41 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+from typing import TYPE_CHECKING
 
-from codetocad.interfaces.material_interface import MaterialInterface
 
-from codetocad.interfaces.importable_interface import ImportableInterface
+# Implementable dependencies:
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.material_interface import MaterialInterface
 
-from codetocad.interfaces.subdividable_interface import SubdividableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.sketch_interface import SketchInterface
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+
+# Interface dependencies:
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
+
+from codetocad.interfaces.subdividable_interface import SubdividableInterface
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
+from codetocad.interfaces.importable_interface import ImportableInterface
+
+
+# Extended dependencies:
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -163,6 +179,32 @@ class PartInterface(
 
         print(
             "create_gear is called in an abstract method. Please override this method."
+        )
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def create_text(
+        self,
+        text: "str",
+        extrude_amount: "str|float|Dimension",
+        font_size: "str|float|Dimension" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
+        character_spacing: "int" = 1,
+        word_spacing: "int" = 1,
+        line_spacing: "int" = 1,
+        font_file_path: "str| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        options: "PartOptions| None" = None,
+    ) -> Self:
+        """
+        Add 3D text. This is a shortcut for quickly extruding Sktech.create_text. Use a sketch for more flexibility.
+        """
+
+        print(
+            "create_text is called in an abstract method. Please override this method."
         )
 
         raise NotImplementedError()

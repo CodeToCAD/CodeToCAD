@@ -8,6 +8,15 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class ExportableInterface(metaclass=ABCMeta):
     """
     An enttiy that can be exported.

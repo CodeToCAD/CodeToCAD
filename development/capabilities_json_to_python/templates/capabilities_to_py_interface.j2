@@ -14,13 +14,27 @@ from abc import ABCMeta, abstractmethod
 
 {% include 'common_imports.j2' %}
 
+from typing import TYPE_CHECKING
+
 {%set interface_name = class_name + "Interface" %}
 {% set imports = capabilities_loader.generate_imports(class_name, [class_name]) %}
 
 {%set extended_classes = capabilities_loader.capabilities[class_name].get_extends_class_names( "Interface") %}
 {%set implemented_classes = capabilities_loader.capabilities[class_name].get_implements_class_names( "Interface") %}
 
-{% for capabilities_class in imports.get_implementable_class_names("Interface") + imports.get_interface_class_names("Interface") + extended_classes%}
+# Implementable dependencies:
+{% for capabilities_class in imports.get_implementable_class_names("Interface")%}
+if TYPE_CHECKING:
+    {{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
+{% endfor %}
+
+# Interface dependencies:
+{% for capabilities_class in imports.get_interface_class_names("Interface")%}
+{{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
+{% endfor %}
+
+# Extended dependencies:
+{% for capabilities_class in extended_classes%}
 {{ imports.format_import_statement(capabilities_class, "codetocad.interfaces.") }}
 {% endfor %}
 

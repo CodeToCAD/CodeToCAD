@@ -40,6 +40,11 @@ class PartTestInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def test_create_text(self):
+
+        pass
+
+    @abstractmethod
     def test_clone(self):
 
         pass

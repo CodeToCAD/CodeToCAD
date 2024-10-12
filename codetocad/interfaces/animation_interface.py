@@ -8,7 +8,19 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
-from codetocad.interfaces.entity_interface import EntityInterface
+from typing import TYPE_CHECKING
+
+
+# Implementable dependencies:
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.entity_interface import EntityInterface
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
 
 
 class AnimationInterface(metaclass=ABCMeta):

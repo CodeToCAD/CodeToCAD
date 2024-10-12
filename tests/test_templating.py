@@ -29,6 +29,7 @@ class TestTemplating(unittest.TestCase):
         imports = self.capabilies_loader.generate_imports("Part", ["Part"])
 
         assert imports._codetocad_implementable_class_names == {
+            "Sketch",
             "Landmark",
             "Material",
         }
@@ -59,6 +60,7 @@ class TestTemplating(unittest.TestCase):
 
         assert imports._codetocad_implementable_class_names == {
             "Vertex",
+            "Sketch",
             "Landmark",
             "Edge",
             "Part",

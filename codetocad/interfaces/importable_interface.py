@@ -8,6 +8,15 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class ImportableInterface(metaclass=ABCMeta):
     """
     An entity that can be imported from a file.

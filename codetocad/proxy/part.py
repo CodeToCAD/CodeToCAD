@@ -15,6 +15,8 @@ from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.material_interface import MaterialInterface
 
+from codetocad.interfaces.sketch_interface import SketchInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
@@ -62,6 +64,7 @@ class Part(PartInterface, Entity):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -77,6 +80,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         options: "PartOptions| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_cube(
             width, length, height, options
         )
@@ -88,6 +92,7 @@ class Part(PartInterface, Entity):
         draft_radius: "str|float|Dimension" = 0,
         options: "PartOptions| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_cone(
             radius, height, draft_radius, options
         )
@@ -98,6 +103,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         options: "PartOptions| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_cylinder(
             radius, height, options
         )
@@ -108,6 +114,7 @@ class Part(PartInterface, Entity):
         outer_radius: "str|float|Dimension",
         options: "PartOptions| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_torus(
             inner_radius, outer_radius, options
         )
@@ -115,6 +122,7 @@ class Part(PartInterface, Entity):
     def create_sphere(
         self, radius: "str|float|Dimension", options: "PartOptions| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_sphere(radius, options)
 
     def create_gear(
@@ -131,6 +139,7 @@ class Part(PartInterface, Entity):
         crown_angle: "str|float|Angle" = 0,
         options: "PartOptions| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_gear(
             outer_radius,
             addendum,
@@ -145,7 +154,39 @@ class Part(PartInterface, Entity):
             options,
         )
 
+    def create_text(
+        self,
+        text: "str",
+        extrude_amount: "str|float|Dimension",
+        font_size: "str|float|Dimension" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
+        character_spacing: "int" = 1,
+        word_spacing: "int" = 1,
+        line_spacing: "int" = 1,
+        font_file_path: "str| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        options: "PartOptions| None" = None,
+    ) -> Self:
+
+        return object.__getattribute__(self, "__proxied").create_text(
+            text,
+            extrude_amount,
+            font_size,
+            bold,
+            italic,
+            underlined,
+            character_spacing,
+            word_spacing,
+            line_spacing,
+            font_file_path,
+            profile_curve_name,
+            options,
+        )
+
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "PartInterface":
+
         return object.__getattribute__(self, "__proxied").clone(
             new_name, copy_landmarks
         )
@@ -158,11 +199,13 @@ class Part(PartInterface, Entity):
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").hollow(
             thickness_x, thickness_y, thickness_z, start_axis, flip_axis
         )
 
     def thicken(self, radius: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").thicken(radius)
 
     def hole(
@@ -189,6 +232,7 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").hole(
             hole_landmark,
             radius,
@@ -220,14 +264,17 @@ class Part(PartInterface, Entity):
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").twist(
             angle, screw_pitch, iterations, axis
         )
 
     def set_material(self, material_name: "str|MaterialInterface") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_material(material_name)
 
     def is_colliding_with_part(self, other_part: "str|PartInterface") -> "bool":
+
         return object.__getattribute__(self, "__proxied").is_colliding_with_part(
             other_part
         )
@@ -235,6 +282,7 @@ class Part(PartInterface, Entity):
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").fillet_all_edges(
             radius, use_width
         )
@@ -245,6 +293,7 @@ class Part(PartInterface, Entity):
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").fillet_edges(
             radius, landmarks_near_edges, use_width
         )
@@ -255,11 +304,13 @@ class Part(PartInterface, Entity):
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").fillet_faces(
             radius, landmarks_near_faces, use_width
         )
 
     def chamfer_all_edges(self, radius: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").chamfer_all_edges(radius)
 
     def chamfer_edges(
@@ -267,6 +318,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").chamfer_edges(
             radius, landmarks_near_edges
         )
@@ -276,6 +328,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").chamfer_faces(
             radius, landmarks_near_faces
         )
@@ -283,6 +336,7 @@ class Part(PartInterface, Entity):
     def select_vertex_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").select_vertex_near_landmark(
             landmark_name
         )
@@ -290,6 +344,7 @@ class Part(PartInterface, Entity):
     def select_edge_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").select_edge_near_landmark(
             landmark_name
         )
@@ -297,6 +352,7 @@ class Part(PartInterface, Entity):
     def select_face_near_landmark(
         self, landmark_name: "str|LandmarkInterface| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").select_face_near_landmark(
             landmark_name
         )
@@ -307,6 +363,7 @@ class Part(PartInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
@@ -317,6 +374,7 @@ class Part(PartInterface, Entity):
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").linear_pattern(
             instance_count, offset, direction_axis
         )
@@ -328,6 +386,7 @@ class Part(PartInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").circular_pattern(
             instance_count,
             separation_angle,
@@ -336,15 +395,19 @@ class Part(PartInterface, Entity):
         )
 
     def remesh(self, strategy: "str", amount: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").remesh(strategy, amount)
 
     def subdivide(self, amount: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").subdivide(amount)
 
     def decimate(self, amount: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").decimate(amount)
 
     def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_from_file(
             file_path, file_type
         )
@@ -352,6 +415,7 @@ class Part(PartInterface, Entity):
     def export(
         self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").export(
             file_path, overwrite, scale
         )
@@ -362,28 +426,35 @@ class Part(PartInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_xyz(x, y, z)
 
     def scale_x(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_x(scale)
 
     def scale_y(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_y(scale)
 
     def scale_z(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_z(scale)
 
     def scale_x_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_x_by_factor(
             scale_factor
         )
 
     def scale_y_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_y_by_factor(
             scale_factor
         )
 
     def scale_z_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_z_by_factor(
             scale_factor
         )
@@ -391,6 +462,7 @@ class Part(PartInterface, Entity):
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_keep_aspect_ratio(
             scale, axis
         )
@@ -402,11 +474,13 @@ class Part(PartInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
+
         return object.__getattribute__(self, "__proxied").create_landmark(
             landmark_name, x, y, z
         )
 
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+
         return object.__getattribute__(self, "__proxied").get_landmark(landmark_name)
 
     def union(
@@ -415,6 +489,7 @@ class Part(PartInterface, Entity):
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").union(
             other, delete_after_union, is_transfer_data
         )
@@ -425,6 +500,7 @@ class Part(PartInterface, Entity):
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").subtract(
             other, delete_after_subtract, is_transfer_data
         )
@@ -435,6 +511,7 @@ class Part(PartInterface, Entity):
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").intersect(
             other, delete_after_intersect, is_transfer_data
         )

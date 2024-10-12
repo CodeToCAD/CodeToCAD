@@ -10,25 +10,39 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
-from codetocad.interfaces.wire_interface import WireInterface
+from typing import TYPE_CHECKING
 
-from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.landmark_interface import LandmarkInterface
+# Implementable dependencies:
 
-from codetocad.interfaces.exportable_interface import ExportableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.vertex_interface import VertexInterface
 
-from codetocad.interfaces.patternable_interface import PatternableInterface
+if TYPE_CHECKING:
+    from codetocad.interfaces.wire_interface import WireInterface
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+
+# Interface dependencies:
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
-from codetocad.interfaces.scalable_interface import ScalableInterface
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
-from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+from codetocad.interfaces.scalable_interface import ScalableInterface
 
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
+
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+
+# Extended dependencies:
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -99,6 +113,7 @@ class SketchInterface(
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
         options: "SketchOptions| None" = None,
     ) -> Self:
         """

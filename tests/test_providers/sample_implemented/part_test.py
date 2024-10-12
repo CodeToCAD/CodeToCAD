@@ -229,6 +229,14 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
+    def test_create_text(self):
+
+        instance = Part(name="myPart")
+
+        value = instance.create_text(text="My string", extrude_amount="10mm")
+
+        assert value.is_exists(), "Create method failed."
+
     def test_clone(self):
         instance = Part("myCube")
 

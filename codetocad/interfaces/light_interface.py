@@ -8,6 +8,14 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
 from codetocad.interfaces.entity_interface import EntityInterface
 
 

@@ -8,6 +8,15 @@ from abc import ABCMeta, abstractmethod
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class SubdividableInterface(metaclass=ABCMeta):
     """
     An entity that can be broken down or scaled up into more components.

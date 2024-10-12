@@ -10,6 +10,15 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class MaterialInterface(metaclass=ABCMeta):
     """
     Materials affect the appearance and simulation properties of the parts.

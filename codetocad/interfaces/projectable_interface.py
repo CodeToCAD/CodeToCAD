@@ -5,6 +5,15 @@
 from abc import ABCMeta, abstractmethod
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class ProjectableInterface(metaclass=ABCMeta):
     """
     This entity can be projected onto a surface or accept a projection

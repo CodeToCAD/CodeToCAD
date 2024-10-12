@@ -16,10 +16,13 @@ from codetocad.interfaces.part_interface import PartInterface
 
 from codetocad.interfaces.material_interface import MaterialInterface
 
+from codetocad.interfaces.sketch_interface import SketchInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
 
 from codetocad.interfaces.booleanable_interface import BooleanableInterface
+
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -118,6 +121,30 @@ class Part(PartInterface, Entity):
         print(
             "create_gear called",
             f": {outer_radius}, {addendum}, {inner_radius}, {dedendum}, {height}, {pressure_angle}, {number_of_teeth}, {skew_angle}, {conical_angle}, {crown_angle}, {options}",
+        )
+
+        return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_text(
+        self,
+        text: "str",
+        extrude_amount: "str|float|Dimension",
+        font_size: "str|float|Dimension" = 1.0,
+        bold: "bool" = False,
+        italic: "bool" = False,
+        underlined: "bool" = False,
+        character_spacing: "int" = 1,
+        word_spacing: "int" = 1,
+        line_spacing: "int" = 1,
+        font_file_path: "str| None" = None,
+        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        options: "PartOptions| None" = None,
+    ) -> Self:
+
+        print(
+            "create_text called",
+            f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve_name}, {options}",
         )
 
         return self

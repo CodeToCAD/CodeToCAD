@@ -10,6 +10,15 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
+
+# Extended dependencies:
+
+
 class EntityInterface(metaclass=ABCMeta):
     """
     Capabilities shared between scene objects.

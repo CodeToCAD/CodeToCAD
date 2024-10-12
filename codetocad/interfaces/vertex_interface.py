@@ -10,7 +10,15 @@ from codetocad.codetocad_types import *
 from typing import Self
 
 
+# Implementable dependencies:
+
+
+# Interface dependencies:
+
 from codetocad.interfaces.projectable_interface import ProjectableInterface
+
+
+# Extended dependencies:
 
 from codetocad.interfaces.entity_interface import EntityInterface
 

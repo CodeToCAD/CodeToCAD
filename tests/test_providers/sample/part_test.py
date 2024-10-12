@@ -86,6 +86,40 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         assert value.is_exists(), "Create method failed."
 
+    def test_create_text(self):
+
+        instance = Part(name="String", description="String", native_instance="value")
+
+        value = instance.create_text(
+            text="String",
+            extrude_amount=Dimension(0, "mm"),
+            font_size=1.0,
+            bold=False,
+            italic=False,
+            underlined=False,
+            character_spacing=1,
+            word_spacing=1,
+            line_spacing=1,
+            font_file_path="String",
+            profile_curve_name=Wire(
+                "a wire",
+                [
+                    Edge(
+                        v1=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        v2=Vertex(
+                            "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                        ),
+                        name="an edge",
+                    )
+                ],
+            ),
+            options=PartOptions(),
+        )
+
+        assert value.is_exists(), "Create method failed."
+
     def test_clone(self):
 
         instance = Part(name="String", description="String", native_instance="value")
