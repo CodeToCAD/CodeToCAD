@@ -59,7 +59,7 @@ class SketchTest(TestProviderCase, SketchTestInterface):
             options=SketchOptions(),
         )
 
-        assert value, "Get method failed."
+        assert value, "Modify method failed."
 
     def test_create_from_vertices(self):
 

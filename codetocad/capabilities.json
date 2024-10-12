@@ -976,8 +976,7 @@
                 }
             },
             "create_text": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "modify",
                 "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {

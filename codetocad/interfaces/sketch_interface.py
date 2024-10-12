@@ -7,12 +7,18 @@ from abc import ABCMeta, abstractmethod
 
 from codetocad.codetocad_types import *
 
+from typing import Self
 
-from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.wire_interface import WireInterface
 
+from codetocad.interfaces.vertex_interface import VertexInterface
+
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+
+from codetocad.interfaces.exportable_interface import ExportableInterface
+
+from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.mirrorable_interface import MirrorableInterface
 
@@ -23,10 +29,6 @@ from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 
 from codetocad.interfaces.importable_interface import ImportableInterface
-
-from codetocad.interfaces.exportable_interface import ExportableInterface
-
-from codetocad.interfaces.patternable_interface import PatternableInterface
 
 from codetocad.interfaces.entity_interface import EntityInterface
 
@@ -98,7 +100,7 @@ class SketchInterface(
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
-    ) -> "WireInterface":
+    ) -> Self:
         """
         Adds text to a sketch.
         """

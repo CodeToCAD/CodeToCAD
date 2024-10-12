@@ -1,8 +1,6 @@
 import cmath
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
-from codetocad.proxy.edge import Edge
-from codetocad.proxy.wire import Wire
 from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.vertex import Vertex
@@ -70,9 +68,7 @@ class Sketch(SketchInterface, Entity):
             return wire
         raise NotImplementedError(f"Type {type(project_from)} is not supported.")
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
@@ -305,7 +301,6 @@ class Sketch(SketchInterface, Entity):
         radius_major = Dimension.from_dimension_or_its_float_or_string_value(
             radius_major
         )
-
         is_minor_lesser = radius_minor < radius_major
         wire = self.create_circle(radius_minor if is_minor_lesser else radius_major)
         update_view_layer()
@@ -482,9 +477,7 @@ class Sketch(SketchInterface, Entity):
         implementables.export(self, file_path, overwrite, scale)
         return self
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def scale_xyz(
         self,
         x: "str|float|Dimension",

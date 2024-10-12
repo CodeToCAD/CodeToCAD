@@ -110,7 +110,6 @@ class Sketch(SketchInterface, Entity):
             component = get_component(center_entity_or_landmark)
             if not get_body(component, center_entity_or_landmark):
                 fusionEntity = FusionSketch(center_entity_or_landmark)
-
         create_circular_pattern_sketch(
             FusionSketch(self.name),
             fusionEntity.center,
@@ -243,7 +242,6 @@ class Sketch(SketchInterface, Entity):
         point: "str|list[str]|list[float]|list[Dimension]|Point",
         options: "SketchOptions| None" = None,
     ) -> "Vertex":
-
         sketch = FusionSketch(self.name).instance
         make_point(sketch, point.x, point.y, point.z)
         return Vertex(location=point, name=create_uuid_like_id(), parent_entity=self)
@@ -255,7 +253,6 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
-
         sketch = FusionSketch(self.name).instance
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(to.x, to.y, to.z)
@@ -282,7 +279,6 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "Edge":
-
         raise NotImplementedError()
 
     @supported(SupportLevel.PARTIAL, "Options and center_at are not supported")

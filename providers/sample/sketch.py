@@ -15,9 +15,9 @@ from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
 from codetocad.interfaces.wire_interface import WireInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
@@ -28,9 +28,9 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 
 
-from codetocad.proxy.vertex import Vertex
-
 from codetocad.proxy.wire import Wire
+
+from codetocad.proxy.vertex import Vertex
 
 from codetocad.proxy.landmark import Landmark
 
@@ -102,27 +102,14 @@ class Sketch(SketchInterface, Entity):
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
-    ) -> "WireInterface":
+    ) -> Self:
 
         print(
             "create_text called",
             f": {text}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {center_at}, {options}",
         )
 
-        return Wire(
-            "a wire",
-            [
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
-        )
+        return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def create_from_vertices(
