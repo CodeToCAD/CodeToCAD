@@ -20,7 +20,7 @@ def build_blender_subprocess_args(launcher_args: LauncherArgs):
     if launcher_args.background:
         args.append("--background")
 
-    args += ["--", "--codetocad", launcher_args.script_file_path]
+    args += ["--", "--codetocad", launcher_args.script_file_path_or_action]
 
     return args
 
