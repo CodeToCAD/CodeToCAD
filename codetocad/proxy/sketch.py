@@ -13,9 +13,9 @@ from codetocad.providers import get_provider
 from codetocad.interfaces.sketch_interface import SketchInterface
 
 
-from codetocad.interfaces.vertex_interface import VertexInterface
-
 from codetocad.interfaces.wire_interface import WireInterface
+
+from codetocad.interfaces.vertex_interface import VertexInterface
 
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
@@ -68,6 +68,7 @@ class Sketch(SketchInterface, Entity):
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
     ):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -79,11 +80,13 @@ class Sketch(SketchInterface, Entity):
     def get_wires(
         self,
     ) -> "list[WireInterface]":
+
         return object.__getattribute__(self, "__proxied").get_wires()
 
     def clone(
         self, new_name: "str", copy_landmarks: "bool" = True
     ) -> "SketchInterface":
+
         return object.__getattribute__(self, "__proxied").clone(
             new_name, copy_landmarks
         )
@@ -101,7 +104,8 @@ class Sketch(SketchInterface, Entity):
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
-    ) -> "WireInterface":
+    ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_text(
             text,
             font_size,
@@ -121,6 +125,7 @@ class Sketch(SketchInterface, Entity):
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_from_vertices(
             points, options
         )
@@ -130,6 +135,7 @@ class Sketch(SketchInterface, Entity):
         point: "str|list[str]|list[float]|list[Dimension]|Point",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_point(point, options)
 
     def create_line(
@@ -139,6 +145,7 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_line(
             length, angle, start_at, options
         )
@@ -149,6 +156,7 @@ class Sketch(SketchInterface, Entity):
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_line_to(
             to, start_at, options
         )
@@ -159,6 +167,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_circle(
             radius, center_at, options
         )
@@ -170,6 +179,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_ellipse(
             radius_minor, radius_major, center_at, options
         )
@@ -182,6 +192,7 @@ class Sketch(SketchInterface, Entity):
         flip: "bool| None" = False,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_arc(
             end_at, radius, start_at, flip, options
         )
@@ -193,6 +204,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_rectangle(
             length, width, center_at, options
         )
@@ -205,6 +217,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_polygon(
             number_of_sides, length, width, center_at, options
         )
@@ -217,6 +230,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_trapezoid(
             length_upper, length_lower, height, center_at, options
         )
@@ -231,6 +245,7 @@ class Sketch(SketchInterface, Entity):
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
         options: "SketchOptions| None" = None,
     ) -> "WireInterface":
+
         return object.__getattribute__(self, "__proxied").create_spiral(
             number_of_turns,
             height,
@@ -247,6 +262,7 @@ class Sketch(SketchInterface, Entity):
         axis: "str|int|Axis",
         resulting_mirrored_entity_name: "str| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").mirror(
             mirror_across_entity, axis, resulting_mirrored_entity_name
         )
@@ -257,6 +273,7 @@ class Sketch(SketchInterface, Entity):
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").linear_pattern(
             instance_count, offset, direction_axis
         )
@@ -268,6 +285,7 @@ class Sketch(SketchInterface, Entity):
         center_entity_or_landmark: "str|EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").circular_pattern(
             instance_count,
             separation_angle,
@@ -276,6 +294,7 @@ class Sketch(SketchInterface, Entity):
         )
 
     def create_from_file(self, file_path: "str", file_type: "str| None" = None) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_from_file(
             file_path, file_type
         )
@@ -283,6 +302,7 @@ class Sketch(SketchInterface, Entity):
     def export(
         self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").export(
             file_path, overwrite, scale
         )
@@ -293,28 +313,35 @@ class Sketch(SketchInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_xyz(x, y, z)
 
     def scale_x(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_x(scale)
 
     def scale_y(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_y(scale)
 
     def scale_z(self, scale: "str|float|Dimension") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_z(scale)
 
     def scale_x_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_x_by_factor(
             scale_factor
         )
 
     def scale_y_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_y_by_factor(
             scale_factor
         )
 
     def scale_z_by_factor(self, scale_factor: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_z_by_factor(
             scale_factor
         )
@@ -322,11 +349,13 @@ class Sketch(SketchInterface, Entity):
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").scale_keep_aspect_ratio(
             scale, axis
         )
 
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
+
         return object.__getattribute__(self, "__proxied").project(project_from)
 
     def create_landmark(
@@ -336,9 +365,11 @@ class Sketch(SketchInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
+
         return object.__getattribute__(self, "__proxied").create_landmark(
             landmark_name, x, y, z
         )
 
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+
         return object.__getattribute__(self, "__proxied").get_landmark(landmark_name)
