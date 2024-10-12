@@ -53,6 +53,7 @@ class Scene(
     ]
 
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -61,26 +62,31 @@ class Scene(
 
     @staticmethod
     def default() -> "SceneInterface":
+
         return get_provider(SceneInterface).default()
 
     def create(
         self,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create()
 
     def delete(
         self,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").delete()
 
     def is_exists(
         self,
     ) -> "bool":
+
         return object.__getattribute__(self, "__proxied").is_exists()
 
     def get_selected_entity(
         self,
     ) -> "EntityInterface":
+
         return object.__getattribute__(self, "__proxied").get_selected_entity()
 
     def export(
@@ -90,22 +96,27 @@ class Scene(
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").export(
             file_path, entities, overwrite, scale
         )
 
     def set_default_unit(self, unit: "str|LengthUnit") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_default_unit(unit)
 
     def create_group(self, name: "str") -> Self:
+
         return object.__getattribute__(self, "__proxied").create_group(name)
 
     def delete_group(self, name: "str", remove_children: "bool") -> Self:
+
         return object.__getattribute__(self, "__proxied").delete_group(
             name, remove_children
         )
 
     def remove_from_group(self, entity_name: "str", group_name: "str") -> Self:
+
         return object.__getattribute__(self, "__proxied").remove_from_group(
             entity_name, group_name
         )
@@ -116,6 +127,7 @@ class Scene(
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").assign_to_group(
             entities, group_name, remove_from_other_groups
         )
@@ -123,6 +135,7 @@ class Scene(
     def set_visible(
         self, entities: "list[str|EntityInterface]", is_visible: "bool"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").set_visible(
             entities, is_visible
         )
@@ -133,6 +146,7 @@ class Scene(
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").set_background_image(
             file_path, location_x, location_y
         )

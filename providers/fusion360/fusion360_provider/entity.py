@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.sketch_interface import SketchInterface
@@ -42,7 +41,6 @@ class Entity(EntityInterface):
                 return get_body(component, self.name) != None
             elif isinstance(self, SketchInterface):
                 return get_sketch(component, self.name) != None
-
             raise NotImplementedError()
         except:
             return False
@@ -62,7 +60,6 @@ class Entity(EntityInterface):
             FusionLandmark(
                 self.name, self.get_parent_entity().get_native_instance()
             ).rename(new_name)
-
         self.name = new_name
         return self
 
@@ -109,7 +106,6 @@ class Entity(EntityInterface):
             return FusionLandmark(
                 self.name, self.get_parent_entity().get_native_instance()
             )
-
         raise NotImplementedError()
 
     @supported(SupportLevel.PLANNED)
@@ -177,7 +173,6 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
     def translate_z(self, amount: "str|float|Dimension"):
-
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(0, 0, amount)
         elif isinstance(self, SketchInterface):
@@ -199,7 +194,6 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
     def rotate_x(self, rotation: "str|float|Angle"):
-
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("x", rotation)
         elif isinstance(self, SketchInterface):
@@ -210,7 +204,6 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
     def rotate_y(self, rotation: "str|float|Angle"):
-
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("y", rotation)
         elif isinstance(self, SketchInterface):
@@ -221,7 +214,6 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
     def rotate_z(self, rotation: "str|float|Angle"):
-
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("z", rotation)
         elif isinstance(self, SketchInterface):
@@ -232,7 +224,6 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def get_bounding_box(self) -> "BoundaryBox":
-
         if isinstance(self, PartInterface):
             boundaryBox = FusionBody(self.name).get_bounding_box()
         elif isinstance(self, SketchInterface):

@@ -1,12 +1,9 @@
 from typing import Optional
 from codetocad.interfaces.landmark_interface import LandmarkInterface
-from codetocad.proxy.landmark import Landmark
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
-from codetocad.proxy.entity import Entity
 from codetocad.interfaces.joint_interface import JointInterface
-from providers.fusion360.fusion360_provider.entity import Entity
 from codetocad.codetocad_types import *
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_body import FusionBody
 from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
@@ -15,6 +12,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
 
 
 class Joint(JointInterface):
+
     def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
         self.entity1 = entity1
         self.entity2 = entity2

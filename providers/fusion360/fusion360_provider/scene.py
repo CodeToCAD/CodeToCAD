@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -10,6 +9,7 @@ from codetocad.codetocad_types import *
 
 
 class Scene(SceneInterface):
+
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
         self.name = name
         self.description = description

@@ -50,6 +50,7 @@ class Light(LightInterface, Entity):
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -61,18 +62,23 @@ class Light(LightInterface, Entity):
     def set_color(
         self, r_value: "int|float", g_value: "int|float", b_value: "int|float"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").set_color(
             r_value, g_value, b_value
         )
 
     def create_sun(self, energy_level: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").create_sun(energy_level)
 
     def create_spot(self, energy_level: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").create_spot(energy_level)
 
     def create_point(self, energy_level: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").create_point(energy_level)
 
     def create_area(self, energy_level: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").create_area(energy_level)

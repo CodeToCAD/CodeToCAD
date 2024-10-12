@@ -32,7 +32,6 @@ class Scene(SceneInterface):
     def __init__(self, name: "str| None" = None, description: "str| None" = None):
         # Blender's default Scene name is "Scene"
         self.name = name or "Scene"
-
         self.description = description
 
     @staticmethod

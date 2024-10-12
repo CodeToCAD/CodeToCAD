@@ -5,13 +5,15 @@ from pathlib import Path
 
 from .lib import fusion360utils as futil
 
+
 def register_fusion360_provider():
     from fusion360_provider.register import register
 
     register()
 
+
 def reload_codetocad_modules():
-    
+
     futil.log("Reloading CodeToCAD modules")
     import codetocad
     import fusion360_provider

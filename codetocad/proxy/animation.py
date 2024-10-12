@@ -52,21 +52,26 @@ class Animation(
     def __init__(
         self,
     ):
+
         object.__setattr__(
             self, "__proxied", get_provider(AnimationInterface)()  # type: ignore
         )
 
     @staticmethod
     def default() -> "AnimationInterface":
+
         return get_provider(AnimationInterface).default()
 
     def set_frame_start(self, frame_number: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_frame_start(frame_number)
 
     def set_frame_end(self, frame_number: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_frame_end(frame_number)
 
     def set_frame_current(self, frame_number: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_frame_current(
             frame_number
         )
@@ -74,6 +79,7 @@ class Animation(
     def create_key_frame_location(
         self, entity: "str|EntityInterface", frame_number: "int"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_key_frame_location(
             entity, frame_number
         )
@@ -81,6 +87,7 @@ class Animation(
     def create_key_frame_rotation(
         self, entity: "str|EntityInterface", frame_number: "int"
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").create_key_frame_rotation(
             entity, frame_number
         )

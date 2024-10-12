@@ -239,31 +239,23 @@ class Entity(EntityInterface):
         rotate_object(self.name, [angle, None, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def rotate_y(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
         rotate_object(self.name, [None, angle, None], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def rotate_z(self, rotation: "str|float|Angle"):
         angle = Angle.from_angle_or_its_float_or_string_value(rotation)
         rotate_object(self.name, [None, None, angle], BlenderRotationTypes.EULER)
         return self._apply_rotation_and_scale_only()
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def get_bounding_box(self) -> "BoundaryBox":
         return get_bounding_box(self.name)
 
-    @supported(
-        SupportLevel.SUPPORTED,
-    )
+    @supported(SupportLevel.SUPPORTED)
     def get_dimensions(self) -> "Dimensions":
         dimensions = get_object(self.name).dimensions
         dimensions = [

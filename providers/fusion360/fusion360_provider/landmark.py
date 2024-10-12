@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -12,6 +11,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark impor
 
 
 class Landmark(LandmarkInterface, Entity):
+
     def __init__(
         self,
         name: "str",

@@ -53,6 +53,7 @@ class Analytics(
     def __init__(
         self,
     ):
+
         object.__setattr__(
             self, "__proxied", get_provider(AnalyticsInterface)()  # type: ignore
         )
@@ -60,6 +61,7 @@ class Analytics(
     def measure_distance(
         self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
     ) -> "Dimensions":
+
         return object.__getattribute__(self, "__proxied").measure_distance(
             entity1, entity2
         )
@@ -70,18 +72,23 @@ class Analytics(
         entity2: "str|EntityInterface",
         pivot: "str|EntityInterface| None" = None,
     ) -> "list[Angle]":
+
         return object.__getattribute__(self, "__proxied").measure_angle(
             entity1, entity2, pivot
         )
 
     def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
+
         return object.__getattribute__(self, "__proxied").get_world_pose(entity)
 
     def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
+
         return object.__getattribute__(self, "__proxied").get_bounding_box(entity_name)
 
     def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
+
         return object.__getattribute__(self, "__proxied").get_dimensions(entity_name)
 
     def log(self, message: "str") -> Self:
+
         return object.__getattribute__(self, "__proxied").log(message)

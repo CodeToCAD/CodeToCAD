@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.material_interface import MaterialInterface
@@ -10,6 +9,7 @@ from codetocad.codetocad_types import *
 
 
 class Material(MaterialInterface):
+
     def __init__(self, name: "str", description: "str| None" = None):
         self.name = name
         self.description = description

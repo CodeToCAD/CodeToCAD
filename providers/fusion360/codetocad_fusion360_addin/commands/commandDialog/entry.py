@@ -151,9 +151,8 @@ def command_execute(args: adsk.core.CommandEventArgs):
         return
 
     reload_codetocad_modules()
-    
+
     register_fusion360_provider()
-    
 
     runpy.run_path(file_path, run_name="__main__")
 

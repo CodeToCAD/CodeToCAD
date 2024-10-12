@@ -56,6 +56,7 @@ class Landmark(LandmarkInterface, Entity):
         description: "str| None" = None,
         native_instance=None,
     ):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -70,6 +71,7 @@ class Landmark(LandmarkInterface, Entity):
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
         new_parent: "str|EntityInterface| None" = None,
     ) -> "LandmarkInterface":
+
         return object.__getattribute__(self, "__proxied").clone(
             new_name, offset, new_parent
         )
@@ -77,9 +79,11 @@ class Landmark(LandmarkInterface, Entity):
     def get_landmark_entity_name(
         self,
     ) -> "str":
+
         return object.__getattribute__(self, "__proxied").get_landmark_entity_name()
 
     def get_parent_entity(
         self,
     ) -> "EntityInterface":
+
         return object.__getattribute__(self, "__proxied").get_parent_entity()

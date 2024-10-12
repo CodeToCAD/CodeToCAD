@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.camera_interface import CameraInterface
@@ -11,6 +10,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_camera import 
 
 
 class Camera(CameraInterface, Entity):
+
     def __init__(
         self, name: "str", description: "str| None" = None, native_instance=None
     ):

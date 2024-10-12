@@ -51,6 +51,7 @@ class Joint(
     ]
 
     def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
+
         object.__setattr__(
             self,
             "__proxied",
@@ -60,6 +61,7 @@ class Joint(
     def translate_landmark_onto_another(
         self,
     ) -> Self:
+
         return object.__getattribute__(
             self, "__proxied"
         ).translate_landmark_onto_another()
@@ -67,9 +69,11 @@ class Joint(
     def pivot(
         self,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").pivot()
 
     def gear_ratio(self, ratio: "float") -> Self:
+
         return object.__getattribute__(self, "__proxied").gear_ratio(ratio)
 
     def limit_location_xyz(
@@ -78,6 +82,7 @@ class Joint(
         y: "str|float|Dimension| None" = None,
         z: "str|float|Dimension| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_location_xyz(x, y, z)
 
     def limit_location_x(
@@ -85,6 +90,7 @@ class Joint(
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_location_x(min, max)
 
     def limit_location_y(
@@ -92,6 +98,7 @@ class Joint(
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_location_y(min, max)
 
     def limit_location_z(
@@ -99,6 +106,7 @@ class Joint(
         min: "str|float|Dimension| None" = None,
         max: "str|float|Dimension| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_location_z(min, max)
 
     def limit_rotation_xyz(
@@ -107,19 +115,23 @@ class Joint(
         y: "str|float|Angle| None" = None,
         z: "str|float|Angle| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_rotation_xyz(x, y, z)
 
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_rotation_x(min, max)
 
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_rotation_y(min, max)
 
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").limit_rotation_z(min, max)

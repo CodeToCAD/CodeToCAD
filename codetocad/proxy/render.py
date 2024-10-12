@@ -52,6 +52,7 @@ class Render(
     def __init__(
         self,
     ):
+
         object.__setattr__(
             self, "__proxied", get_provider(RenderInterface)()  # type: ignore
         )
@@ -62,6 +63,7 @@ class Render(
         overwrite: "bool" = True,
         file_type: "str| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").render_image(
             output_file_path, overwrite, file_type
         )
@@ -74,6 +76,7 @@ class Render(
         step_frames: "int" = 1,
         overwrite: "bool" = True,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").render_video_mp4(
             output_file_path,
             start_frame_number,
@@ -92,6 +95,7 @@ class Render(
         overwrite: "bool" = True,
         file_type: "str| None" = None,
     ) -> Self:
+
         return object.__getattribute__(self, "__proxied").render_video_frames(
             output_folder_path,
             file_name_prefix,
@@ -103,18 +107,23 @@ class Render(
         )
 
     def set_frame_rate(self, frame_rate: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_frame_rate(frame_rate)
 
     def set_resolution(self, x: "int", y: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_resolution(x, y)
 
     def set_render_quality(self, quality: "int") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_render_quality(quality)
 
     def set_render_engine(self, name: "str") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_render_engine(name)
 
     def set_camera(self, camera_name_or_instance: "str|CameraInterface") -> Self:
+
         return object.__getattribute__(self, "__proxied").set_camera(
             camera_name_or_instance
         )
