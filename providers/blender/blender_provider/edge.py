@@ -1,4 +1,6 @@
+from typing import Self
 from codetocad.interfaces.entity_interface import EntityInterface
+from codetocad.utilities.override import override
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.proxy.landmark import Landmark
@@ -40,10 +42,12 @@ class Edge(EdgeInterface, Entity):
 
     @supported(SupportLevel.PLANNED)
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.PLANNED)
     def set_is_construction(self, is_construction: "bool"):
+        raise NotImplementedError()
         return self
 
     @supported(SupportLevel.PLANNED)
@@ -109,10 +113,44 @@ class Edge(EdgeInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> "LandmarkInterface":
+        raise NotImplementedError()
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
     @supported(SupportLevel.PLANNED)
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+        raise NotImplementedError()
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
+
+    @override
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def translate_xyz(
+        self,
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
+    ) -> Self:
+
+        self.v1.translate_xyz(x, y, z)
+        self.v2.translate_xyz(x, y, z)
+
+        return self
+
+    @override
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def translate_x(self, amount: "str|float|Dimension") -> Self:
+
+        return self.translate_xyz(amount, 0, 0)
+
+    @override
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def translate_y(self, amount: "str|float|Dimension") -> Self:
+
+        return self.translate_xyz(0, amount, 0)
+
+    @override
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def translate_z(self, amount: "str|float|Dimension") -> Self:
+
+        return self.translate_xyz(0, 0, amount)
