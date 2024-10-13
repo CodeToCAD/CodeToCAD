@@ -86,6 +86,17 @@ class Vertex(VertexInterface, Entity):
         native_instance.co.y += y.value
         native_instance.co.z += z.value
 
+        control_points = self.get_control_points()
+        if len(control_points) >= 2:
+            for index in range(len(control_points)):
+                point = control_points[index]
+                point.x += x
+                point.y += y
+                point.z += z
+                control_points[index] = point
+
+            self.set_control_points(control_points)
+
         return self
 
     @override
