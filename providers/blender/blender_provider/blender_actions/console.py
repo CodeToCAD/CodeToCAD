@@ -42,37 +42,24 @@ def start_debugger(host: str = "localhost", port: int = 5678):
 
 def reload_codetocad_modules():
     print("Reloading CodeToCAD modules")
-    # import codetocad.enums
-    # import codetocad.core
-    # import providers.blender.blender_provider
-    # import inspect
 
-    # all_providers_modules = inspect.getmembers(
-    #     codetocad.enums, predicate=inspect.ismodule
-    # )
+    import inspect
+    from importlib import reload
 
-    # for module_name, module in all_providers_modules:
-    #     print(f"Reloading {module_name}")
-    #     reload(module)
+    import codetocad
 
-    # reload(codetocad.enums)
+    reload(codetocad)
 
-    # all_providers_modules = inspect.getmembers(
-    #     codetocad.core, predicate=inspect.ismodule
-    # )
+    import providers.blender.blender_provider
 
-    # for module_name, module in all_providers_modules:
-    #     print(f"Reloading {module_name}")
-    #     reload(module)
+    reload(providers.blender.blender_provider)
 
-    # reload(codetocad)
-
-    # all_providers_modules = inspect.getmembers(
-    #     providers.blender.blender_provider, predicate=inspect.ismodule
-    # )
-    # for module_name, module in all_providers_modules:
-    #     print(f"Reloading {module_name}")
-    #     reload(module)
+    all_providers_modules = inspect.getmembers(
+        providers.blender.blender_provider, predicate=inspect.ismodule
+    )
+    for module_name, module in all_providers_modules:
+        print(f"Reloading {module_name}")
+        reload(module)
 
     from providers.blender.blender_provider.register import register
 
