@@ -154,3 +154,8 @@ class Edge(EdgeInterface, Entity):
     def translate_z(self, amount: "str|float|Dimension") -> Self:
 
         return self.translate_xyz(0, 0, amount)
+
+    @override
+    @supported(SupportLevel.UNSUPPORTED, notes="")
+    def set_visible(self, is_visible: "bool") -> Self:
+        raise NotImplementedError()
