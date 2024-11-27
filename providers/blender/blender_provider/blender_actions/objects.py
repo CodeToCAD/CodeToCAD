@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Type
 import bpy
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
@@ -241,7 +241,37 @@ def update_object_landmark_names(
             )
 
 
-def remove_object(existing_object_name: str, remove_children=False):
+def remove_data(
+    blender_data: (
+        bpy.types.Armature
+        | bpy.types.Camera
+        | bpy.types.Curve
+        | bpy.types.Curves
+        | bpy.types.GreasePencil
+        | bpy.types.GreasePencilv3
+        | bpy.types.Lattice
+        | bpy.types.Light
+        | bpy.types.LightProbe
+        | bpy.types.Mesh
+        | bpy.types.MetaBall
+        | bpy.types.PointCloud
+        | bpy.types.Speaker
+        | bpy.types.SurfaceCurve
+        | bpy.types.TextCurve
+        | bpy.types.Volume
+    ),
+):
+    if isinstance(blender_data, bpy.types.Mesh):
+        bpy.data.meshes.remove(blender_data)
+    elif isinstance(blender_data, (bpy.types.Curve, bpy.types.TextCurve)):
+        bpy.data.curves.remove(blender_data)
+    else:
+        raise NotImplementedError(f"{type(blender_data)} is not supported yet.")
+
+
+def remove_object(
+    existing_object_name: str, remove_children=False, is_remove_data=True
+):
     blender_object = get_object(existing_object_name)
 
     if remove_children:
@@ -254,17 +284,16 @@ def remove_object(existing_object_name: str, remove_children=False):
 
     # Not all objects have data, but if they do, then deleting the data
     # deletes the object
-    if blender_object.data and isinstance(blender_object.data, bpy.types.Mesh):
-        bpy.data.meshes.remove(blender_object.data)
-    elif blender_object.data and isinstance(blender_object.data, bpy.types.Curve):
-        bpy.data.curves.remove(blender_object.data)
-    elif blender_object.data and isinstance(blender_object.data, bpy.types.TextCurve):
-        bpy.data.curves.remove(blender_object.data)
+    if blender_object.data and is_remove_data:
+        remove_data(blender_object.data)
     else:
         bpy.data.objects.remove(blender_object)
 
 
 def create_object(name: str, data: Optional[Any] = None):
+    """
+    Creates an object in Blender. The object will exist in data, but will not appear in the scene until `assign_object_to_collection()` is called.
+    """
     blender_object = bpy.data.objects.get(name)
 
     assert blender_object is None, f"Object {name} already exists"
@@ -346,8 +375,9 @@ def get_object_world_pose(
 
 def get_object(
     object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
 ) -> bpy.types.Object:
-    blender_object = bpy.data.objects.get(object_name)
+    blender_object = get_object_or_none(object_name, of_type)
 
     assert blender_object is not None, f"Object {object_name} does not exists"
 
@@ -356,8 +386,15 @@ def get_object(
 
 def get_object_or_none(
     object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
 ) -> Optional[bpy.types.Object]:
-    return bpy.data.objects.get(object_name)
+    blender_object = bpy.data.objects.get(object_name)
+
+    if blender_object and of_type is not None:
+        if not blender_object.type == of_type:
+            return None
+
+    return blender_object
 
 
 def get_objectType(object_name: str) -> BlenderObjectTypes:

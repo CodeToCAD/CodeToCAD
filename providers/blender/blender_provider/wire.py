@@ -32,8 +32,9 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override
 from providers.blender.blender_provider.blender_actions.curve import (
     add_bevel_object_to_curve,
+    get_curve_or_none,
     is_spline_cyclical,
-    loft,
+    custom_codetocad_loft,
     set_curve_offset_geometry,
 )
 from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
@@ -41,7 +42,10 @@ from providers.blender.blender_provider.blender_actions.normals import (
     calculate_normal,
     project_vector_along_normal,
 )
-from providers.blender.blender_provider.blender_actions.objects import get_object
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object,
+    get_object_or_none,
+)
 from providers.blender.blender_provider.entity import Entity
 
 
@@ -144,7 +148,7 @@ class Wire(WireInterface, Entity):
     def loft(
         self, other: "WireInterface", new_part_name: "str| None" = None
     ) -> "PartInterface":
-        blender_mesh = loft(self, other)
+        blender_mesh = custom_codetocad_loft(self, other)
         part = Part(blender_mesh.name)
         if new_part_name:
             part.rename(new_part_name)
@@ -155,12 +159,11 @@ class Wire(WireInterface, Entity):
                     if not isinstance(self.parent_entity, str)
                     else self.parent_entity
                 )
-                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
+                if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-                else:
-                    Entity(parent_name).delete()
+
                 part.rename(parent_name)
             if other.parent_entity:
                 parent_name = (
@@ -168,12 +171,11 @@ class Wire(WireInterface, Entity):
                     if not isinstance(other.parent_entity, str)
                     else other.parent_entity
                 )
-                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
+                if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-                else:
-                    Entity(parent_name).delete()
+
         recalculate_normals(part.name)
         return part
 
@@ -258,6 +260,20 @@ class Wire(WireInterface, Entity):
         parent = self.parent_entity
         if isinstance(parent, str):
             parent = Sketch(parent)
+
+        possible_sketch: SketchInterface | None = None
+        possible_sketch_was_visible = False
+
+        if isinstance(about_entity_or_landmark, str):
+            if get_curve_or_none(about_entity_or_landmark) is not None:
+                possible_sketch = Sketch(about_entity_or_landmark)
+        elif isinstance(about_entity_or_landmark, SketchInterface):
+            possible_sketch = about_entity_or_landmark
+
+        if possible_sketch:
+            possible_sketch_was_visible = possible_sketch.is_visible()
+            possible_sketch.set_visible(True)
+
         if isinstance(about_entity_or_landmark, LandmarkInterface):
             about_entity_or_landmark = (
                 about_entity_or_landmark.get_landmark_entity_name()
@@ -273,6 +289,10 @@ class Wire(WireInterface, Entity):
             entity_name_to_determine_axis=about_entity_or_landmark,
         )
         create_mesh_from_curve(parent.name)
+
+        if not possible_sketch_was_visible and possible_sketch:
+            possible_sketch.set_visible(False)
+
         # Recalculate normals because they're usually wrong after revolving.
         recalculate_normals(parent.name)
         return Part(parent.name, description=parent.description).apply()
@@ -307,14 +327,21 @@ class Wire(WireInterface, Entity):
         projected_normal = project_vector_along_normal(
             translate_vector, [p.value for p in normal.to_list()]
         )
-        temp_sketch_1 = Sketch(parent.name + create_uuid_like_id())
+        temp_sketch_1 = Sketch(parent.name + "_" + create_uuid_like_id())
         temp_sketch_1.project(self)
-        temp_sketch_1.translate_xyz(*projected_normal)
+        for wire in temp_sketch_1.get_wires():
+            wire.translate_xyz(*projected_normal)
+
         wire_name = parent.name + "_" + self.name
         temp_sketch_2 = Sketch(wire_name)
         temp_sketch_2.project(self)
+
         part = temp_sketch_2.get_wires()[0].loft(temp_sketch_1.get_wires()[0])
         part.description = self.description
+
+        temp_sketch_1.delete()
+        temp_sketch_2.delete()
+
         return part
 
     @supported(SupportLevel.SUPPORTED, notes="Sweep the wire")

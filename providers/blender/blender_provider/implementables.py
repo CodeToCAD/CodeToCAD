@@ -161,10 +161,8 @@ def circular_pattern(
 
     assert boundingBox.z, "Could not get bounding box"
 
-    dimension = (
-        Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-            amount, boundingBox.z
-        )
+    dimension = Entity._parse_and_convert_dimension_to_blender_units(
+        amount, boundingBox.z
     )
 
     translate_object(

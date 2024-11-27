@@ -1,4 +1,5 @@
 import cmath
+from functools import wraps
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.edge_interface import EdgeInterface
@@ -13,12 +14,23 @@ from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities import create_uuid_like_id
+from codetocad.utilities.override import override
+from providers.blender.blender_provider.blender_actions.collections import (
+    assign_object_to_collection,
+)
 from providers.blender.blender_provider.blender_actions.modifiers import (
     apply_curve_modifier,
+)
+from providers.blender.blender_provider.blender_actions.objects import (
+    create_object,
+    get_object_or_none,
+    get_object_visibility,
+    remove_object,
 )
 from providers.blender.blender_provider.blender_definitions import (
     BlenderCurveTypes,
     BlenderLength,
+    BlenderTypes,
 )
 from providers.blender.blender_provider.entity import Entity
 from codetocad.core.shapes.circle import get_center_of_circle, get_circle_points
@@ -57,6 +69,40 @@ class Sketch(SketchInterface, Entity):
         self.curve_type = curve_type
         self.description = description
         self.resolution = 4 if curve_type == CurveTypes.BEZIER else 64
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def set_visible(self, is_visible: "bool"):
+        """
+        BlenderProvider sketch.set_visible surfaces the Curve object when necessary, otherwise keeps it hidden.
+        Note: is_visible is reliant on this implementation
+        """
+        if is_visible:
+            if get_object_or_none(self.name, BlenderTypes.CURVE.value) is not None:
+                return self
+            create_object(self.name, get_curve(self.name))
+            assign_object_to_collection(self.name)
+        else:
+            remove_object(self.name, is_remove_data=False)
+
+        update_view_layer()
+
+        return self
+
+    @override
+    @supported(
+        SupportLevel.SUPPORTED,
+        notes="Checks if the object is visible in the 3D viewport, taking into account all visibility settings",
+    )
+    def is_visible(self) -> bool:
+        """
+        BlenderProvider sketch.set_visible surfaces the Curve object when necessary, otherwise keeps it hidden. This is_visible hooks into this logic.
+        """
+        sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
+        if self.is_exists() and sketch_object is None:
+            return False
+
+        return get_object_visibility(self.name)
 
     @supported(
         SupportLevel.PARTIAL,
@@ -158,7 +204,7 @@ class Sketch(SketchInterface, Entity):
         if is_closed:
             blender_spline.use_cyclic_u = True
         wire = get_wire_from_blender_wire(
-            entity=self.get_native_instance().data, wire=blender_spline
+            entity=get_curve(self.name), wire=blender_spline
         )
         update_view_layer()
         return wire
@@ -534,9 +580,138 @@ class Sketch(SketchInterface, Entity):
         return implementables.create_landmark(self, landmark_name, x, y, z)
 
     @supported(SupportLevel.SUPPORTED)
-    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
-        return implementables.get_landmark(self, landmark_name)
-
-    @supported(SupportLevel.SUPPORTED)
     def get_wires(self) -> "list[WireInterface]":
-        return get_wires_from_blender_entity(self.get_native_instance().data)
+        return get_wires_from_blender_entity(get_curve(self.name))
+
+    def _translate_child_wires_xyz(
+        self,
+        x: "str|float|Dimension|None",
+        y: "str|float|Dimension|None",
+        z: "str|float|Dimension|None",
+    ):
+        x = Entity._parse_and_convert_dimension_to_blender_units(x) if x else 0
+        y = Entity._parse_and_convert_dimension_to_blender_units(y) if y else 0
+        z = Entity._parse_and_convert_dimension_to_blender_units(z) if z else 0
+
+        for wire in self.get_wires():
+            wire.translate_xyz(x, y, z)
+
+        return self
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def translate_xyz(
+        self,
+        x: "str|float|Dimension",
+        y: "str|float|Dimension",
+        z: "str|float|Dimension",
+    ):
+        self.set_visible(True)
+        return super().translate_xyz(x, y, z)
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def translate_x(self, amount: "str|float|Dimension"):
+        self.set_visible(True)
+        return super().translate_x(amount)
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def translate_y(self, amount: "str|float|Dimension"):
+        self.set_visible(True)
+        return super().translate_y(amount)
+
+    @override
+    @supported(SupportLevel.SUPPORTED)
+    def translate_z(self, amount: "str|float|Dimension"):
+        self.set_visible(True)
+        return super().translate_z(amount)
+
+    @staticmethod
+    def _create_blender_object_and_run(func):
+        """
+        Sketches are normally not added as Objects unless set_visibility(True) is called.
+        However, some operations, like rotate, need the object.
+        We'll toggle the object just to apply the rotation, then remove it.
+        """
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+
+            self = args[0]
+
+            if self.is_visible():
+                return func(*args, **kwargs)
+
+            self.set_visible(True)
+
+            value = func(*args, **kwargs)
+
+            self.set_visible(False)
+
+            return value
+
+        return wrapper
+
+    @override
+    @_create_blender_object_and_run
+    def rotate_xyz(
+        self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
+    ):
+        return super().rotate_xyz(x, y, z)
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def rotate_x(self, rotation: "str|float|Angle"):
+        return super().rotate_x(rotation)
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def rotate_y(self, rotation: "str|float|Angle"):
+        return super().rotate_y(rotation)
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def rotate_z(self, rotation: "str|float|Angle"):
+        return super().rotate_z(rotation)
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def get_bounding_box(self) -> "BoundaryBox":
+        return super().get_bounding_box()
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def get_dimensions(self) -> "Dimensions":
+        return super().get_dimensions()
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def get_location_world(self) -> "Point":
+        return super().get_location_world()
+
+    @override
+    @_create_blender_object_and_run
+    @supported(SupportLevel.SUPPORTED)
+    def get_location_local(self) -> "Point":
+        return super().get_location_local()
+
+    @override
+    @supported(
+        SupportLevel.SUPPORTED,
+        notes="Selects the object in the viewport using the object's name",
+    )
+    def select(self):
+        self.set_visible(True)
+        return super().get_location_world()
+
+    @override
+    def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
+        self.set_visible(True)
+        return implementables.get_landmark(self, landmark_name)

@@ -2,10 +2,13 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.codetocad_types import *
-from typing import Self
+from typing import Self, Sequence
 from codetocad.core.point import Point
 from codetocad.interfaces.vertex_interface import VertexInterface
-from providers.blender.blender_provider.blender_definitions import BlenderLength
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderLength,
+    BlenderTypes,
+)
 from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override
@@ -40,7 +43,7 @@ class Vertex(VertexInterface, Entity):
 
     @override
     @supported(SupportLevel.SUPPORTED)
-    def get_native_instance(self) -> object:
+    def get_native_instance(self) -> BlenderTypes.POINT.value:
         return self.native_instance
 
     @property
@@ -59,7 +62,7 @@ class Vertex(VertexInterface, Entity):
 
     @supported(SupportLevel.SUPPORTED)
     def set_control_points(
-        self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
+        self, points: "Sequence[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         set_control_points(self.get_native_instance(), parsed_points)  # type:ignore
@@ -73,12 +76,9 @@ class Vertex(VertexInterface, Entity):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ) -> Self:
-        x = Dimension.from_dimension_or_its_float_or_string_value(x)
-        x = BlenderLength.convert_dimension_to_blender_unit(x)
-        y = Dimension.from_dimension_or_its_float_or_string_value(y)
-        y = BlenderLength.convert_dimension_to_blender_unit(y)
-        z = Dimension.from_dimension_or_its_float_or_string_value(z)
-        z = BlenderLength.convert_dimension_to_blender_unit(z)
+        x = Entity._parse_and_convert_dimension_to_blender_units(x)
+        y = Entity._parse_and_convert_dimension_to_blender_units(y)
+        z = Entity._parse_and_convert_dimension_to_blender_units(z)
         native_instance = self.get_native_instance()
         native_instance.co.x += x.value
         native_instance.co.y += y.value

@@ -9,6 +9,7 @@ class BlenderTypes(Enum):
     MESH = bpy.types.Mesh
     CURVE = bpy.types.Curve
     TEXT = bpy.types.TextCurve
+    POINT = bpy.types.SplinePoint | bpy.types.BezierSplinePoint
 
 
 class BlenderObjectTypes(Enum):

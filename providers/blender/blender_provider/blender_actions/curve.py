@@ -176,11 +176,7 @@ def create_curve(
         for point in points_parsed
     ]
 
-    if get_object_or_none(curve_name) is None:
-        create_object(curve_name, curve_data)
-
-        assign_object_to_collection(curve_name)
-
+    if len(curve_data.splines) == 0:
         reference_spline = create_spline(
             blender_curve=curve_data,
             curve_type=curve_type,
@@ -485,7 +481,10 @@ def subdivide_bezier_points(
     return poly_points
 
 
-def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
+def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
+    """
+    This is a loft implemented in CodeToCAD. Mileage may vary.
+    """
     update_view_layer()
 
     name = create_uuid_like_id()
@@ -495,19 +494,24 @@ def loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     create_object(name, mesh)
     assign_object_to_collection(name)
 
-    wire_1_parent = get_object(
+    wire_1_parent = get_object_or_none(
         wire_1.parent_entity.name
         if not isinstance(wire_1.parent_entity, str)
         else wire_1.parent_entity
     )
-    wire_2_parent = get_object(
+    wire_2_parent = get_object_or_none(
         wire_2.parent_entity.name
         if not isinstance(wire_2.parent_entity, str)
         else wire_2.parent_entity
     )
+    from mathutils import Matrix
 
-    wire_1_world_matrix = wire_1_parent.matrix_world
-    wire_2_world_matrix = wire_2_parent.matrix_world
+    wire_1_world_matrix = (
+        wire_1_parent.matrix_world if wire_1_parent else Matrix.Identity(3)
+    )
+    wire_2_world_matrix = (
+        wire_2_parent.matrix_world if wire_2_parent else Matrix.Identity(3)
+    )
 
     # wire_1_mesh = bpy.data.meshes.new_from_object(wire_1_parent)
     # wire_2_mesh = bpy.data.meshes.new_from_object(wire_2_parent)

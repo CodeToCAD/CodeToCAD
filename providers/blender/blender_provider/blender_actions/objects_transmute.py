@@ -13,6 +13,7 @@ from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
     get_object,
     get_object_collection_name,
+    get_object_or_none,
     get_object_world_location,
     remove_object,
     update_object_name,
@@ -94,16 +95,17 @@ def transfer_landmarks(
 def duplicate_object(
     existing_object_name: str, new_object_name: str, copy_landmarks: bool = True
 ):
-    clonedObject = bpy.data.objects.get(new_object_name)
 
-    assert clonedObject is None, f"Object with name {new_object_name} already exists."
+    assert (
+        get_object_or_none(new_object_name) is None
+    ), f"Object with name {new_object_name} already exists."
 
     blender_object = get_object(existing_object_name)
 
-    clonedObject: bpy.types.Object = blender_object.copy()
-    clonedObject.name = new_object_name
-    clonedObject.data = blender_object.data.copy()
-    clonedObject.data.name = new_object_name
+    cloned_object: bpy.types.Object = blender_object.copy()
+    cloned_object.name = new_object_name
+    cloned_object.data = blender_object.data.copy()
+    cloned_object.data.name = new_object_name
 
     # Link clonedObject to the original object's collection.
     defaultCollection = get_object_collection_name(existing_object_name)
@@ -118,5 +120,5 @@ def duplicate_object(
                 newChild.name = child.name.replace(
                     existing_object_name, new_object_name
                 )
-                newChild.parent = clonedObject
+                newChild.parent = cloned_object
                 assign_object_to_collection(newChild.name, defaultCollection)

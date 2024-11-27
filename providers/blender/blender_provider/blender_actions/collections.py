@@ -64,6 +64,10 @@ def assign_object_to_collection(
     remove_from_other_groups=True,
     move_children=True,
 ):
+    """
+    Assigns the existing_object_name to a collection.
+    Defaults to using Scene Collection under the default Scene scene.
+    """
     blender_object = get_object(existing_object_name)
 
     collection = bpy.data.collections.get(collection_name)

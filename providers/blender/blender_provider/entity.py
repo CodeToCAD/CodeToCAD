@@ -1,4 +1,5 @@
 from codetocad.core.boundary_axis import BoundaryAxis
+from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -9,16 +10,23 @@ from providers.blender.blender_provider.blender_actions.context import (
     select_object,
     update_view_layer,
 )
+from providers.blender.blender_provider.blender_actions.curve import (
+    get_curve,
+    get_curve_or_none,
+)
 from providers.blender.blender_provider.blender_actions.mesh import (
     get_bounding_box,
+    get_mesh,
     remove_mesh,
 )
 from providers.blender.blender_provider.blender_actions.modifiers import clear_modifiers
 from providers.blender.blender_provider.blender_actions.objects import (
     get_object,
     get_object_local_location,
+    get_object_or_none,
     get_object_visibility,
     get_object_world_location,
+    remove_data,
     remove_object,
     set_object_visibility,
     update_object_data_name,
@@ -34,6 +42,7 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderLength,
     BlenderRotationTypes,
     BlenderTranslationTypes,
+    BlenderTypes,
 )
 
 
@@ -48,10 +57,10 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.SUPPORTED, notes="Checks for Objects with the same name.")
     def is_exists(self) -> bool:
-        try:
-            return get_object(self.name) is not None
-        except:  # noqa: E722
-            return False
+        if isinstance(self, SketchInterface):
+            return get_curve_or_none(self.name) is not None
+
+        return get_object_or_none(self.name) is not None
 
     @supported(
         SupportLevel.SUPPORTED,
@@ -73,6 +82,14 @@ class Entity(EntityInterface):
         notes="Deletes an object and its data with the same name. Meaning it will also delete a Mesh Object's underlying mesh. Does not check if the Mesh is being used by another Object.",
     )
     def delete(self, remove_children: "bool" = True):
+        if isinstance(self, SketchInterface):
+            sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
+
+            if sketch_object is None:
+                curve_data = get_curve(self.name)
+                remove_data(curve_data)
+                return
+
         remove_object(self.name, remove_children)
         return self
 
@@ -118,7 +135,17 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self) -> object:
-        return get_object(self.name)
+        blender_object = get_object_or_none(self.name)
+        if blender_object:
+            return blender_object
+
+        if isinstance(self, SketchInterface):
+            return get_curve(self.name)
+
+        if isinstance(self, PartInterface):
+            return get_mesh(self.name)
+
+        raise NotImplementedError("get_native_instance is not supported")
 
     @supported(SupportLevel.SUPPORTED)
     def get_location_world(self) -> "Point":
@@ -139,14 +166,46 @@ class Entity(EntityInterface):
         return self
 
     @staticmethod
-    def _translation_dimension_from_dimension_or_its_float_or_string_value(
+    def _parse_and_convert_dimension_to_blender_units(
         dimension_or_its_float_or_string_value: str | float | Dimension,
-        boundary_axis: BoundaryAxis,
+        boundary_axis: BoundaryAxis | None = None,
     ):
         dimension = Dimension.from_dimension_or_its_float_or_string_value(
             dimension_or_its_float_or_string_value, boundary_axis
         )
         return BlenderLength.convert_dimension_to_blender_unit(dimension)
+
+    def _translate_xyz(
+        self,
+        x: "str|float|Dimension|None",
+        y: "str|float|Dimension|None",
+        z: "str|float|Dimension|None",
+    ):
+        boundingBox = get_bounding_box(self.name)
+        assert (
+            boundingBox.x and boundingBox.y and boundingBox.z
+        ), "Could not get bounding box"
+        x_dimension = (
+            Entity._parse_and_convert_dimension_to_blender_units(x, boundingBox.x)
+            if x
+            else None
+        )
+        y_dimension = (
+            Entity._parse_and_convert_dimension_to_blender_units(y, boundingBox.y)
+            if y
+            else None
+        )
+        z_dimension = (
+            Entity._parse_and_convert_dimension_to_blender_units(z, boundingBox.z)
+            if z
+            else None
+        )
+        translate_object(
+            self.name,
+            [x_dimension, y_dimension, z_dimension],
+            BlenderTranslationTypes.ABSOLUTE,
+        )
+        return self
 
     @supported(SupportLevel.SUPPORTED)
     def translate_xyz(
@@ -155,101 +214,54 @@ class Entity(EntityInterface):
         y: "str|float|Dimension",
         z: "str|float|Dimension",
     ):
-        boundingBox = get_bounding_box(self.name)
-        assert (
-            boundingBox.x and boundingBox.y and boundingBox.z
-        ), "Could not get bounding box"
-        xDimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                x, boundingBox.x
-            )
-        )
-        yDimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                y, boundingBox.y
-            )
-        )
-        zDimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                z, boundingBox.z
-            )
-        )
-        translate_object(
-            self.name,
-            [xDimension, yDimension, zDimension],
-            BlenderTranslationTypes.ABSOLUTE,
-        )
-        return self
+        return self._translate_xyz(x, y, z)
 
     @supported(SupportLevel.SUPPORTED)
     def translate_x(self, amount: "str|float|Dimension"):
-        boundingBox = get_bounding_box(self.name)
-        assert boundingBox.x, "Could not get bounding box"
-        dimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                amount, boundingBox.x
-            )
-        )
-        translate_object(
-            self.name, [dimension, None, None], BlenderTranslationTypes.ABSOLUTE
-        )
-        return self
+        return self._translate_xyz(amount, None, None)
 
     @supported(SupportLevel.SUPPORTED)
     def translate_y(self, amount: "str|float|Dimension"):
-        boundingBox = get_bounding_box(self.name)
-        assert boundingBox.y, "Could not get bounding box"
-        dimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                amount, boundingBox.y
-            )
-        )
-        translate_object(
-            self.name, [None, dimension, None], BlenderTranslationTypes.ABSOLUTE
-        )
-        return self
+        return self._translate_xyz(None, amount, None)
 
     @supported(SupportLevel.SUPPORTED)
     def translate_z(self, amount: "str|float|Dimension"):
-        boundingBox = get_bounding_box(self.name)
-        assert boundingBox.z, "Could not get bounding box"
-        dimension = (
-            Entity._translation_dimension_from_dimension_or_its_float_or_string_value(
-                amount, boundingBox.z
-            )
+        return self._translate_xyz(None, None, amount)
+
+    def _rotate_xyz(
+        self,
+        x: "str|float|Angle|None",
+        y: "str|float|Angle|None",
+        z: "str|float|Angle|None",
+        use_object_name: str | None = None,
+    ):
+        x_angle = Angle.from_angle_or_its_float_or_string_value(x) if x else None
+        y_angle = Angle.from_angle_or_its_float_or_string_value(y) if y else None
+        z_angle = Angle.from_angle_or_its_float_or_string_value(z) if z else None
+        rotate_object(
+            use_object_name or self.name,
+            [x_angle, y_angle, z_angle],
+            BlenderRotationTypes.EULER,
         )
-        translate_object(
-            self.name, [None, None, dimension], BlenderTranslationTypes.ABSOLUTE
-        )
-        return self
+        return self._apply_rotation_and_scale_only()
 
     @supported(SupportLevel.SUPPORTED)
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
-        xAngle = Angle.from_angle_or_its_float_or_string_value(x)
-        yAngle = Angle.from_angle_or_its_float_or_string_value(y)
-        zAngle = Angle.from_angle_or_its_float_or_string_value(z)
-        rotate_object(self.name, [xAngle, yAngle, zAngle], BlenderRotationTypes.EULER)
-        return self._apply_rotation_and_scale_only()
+        return self._rotate_xyz(x, y, z)
 
     @supported(SupportLevel.SUPPORTED)
     def rotate_x(self, rotation: "str|float|Angle"):
-        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(self.name, [angle, None, None], BlenderRotationTypes.EULER)
-        return self._apply_rotation_and_scale_only()
+        return self._rotate_xyz(rotation, None, None)
 
     @supported(SupportLevel.SUPPORTED)
     def rotate_y(self, rotation: "str|float|Angle"):
-        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(self.name, [None, angle, None], BlenderRotationTypes.EULER)
-        return self._apply_rotation_and_scale_only()
+        return self._rotate_xyz(None, rotation, None)
 
     @supported(SupportLevel.SUPPORTED)
     def rotate_z(self, rotation: "str|float|Angle"):
-        angle = Angle.from_angle_or_its_float_or_string_value(rotation)
-        rotate_object(self.name, [None, None, angle], BlenderRotationTypes.EULER)
-        return self._apply_rotation_and_scale_only()
+        return self._rotate_xyz(None, None, rotation)
 
     @supported(SupportLevel.SUPPORTED)
     def get_bounding_box(self) -> "BoundaryBox":

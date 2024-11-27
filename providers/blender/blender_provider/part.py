@@ -79,13 +79,12 @@ class Part(PartInterface, Entity):
         length: "str|float|Dimension",
         height: "str|float|Dimension",
     ):
-        from providers.blender.blender_provider.sketch import Sketch
-
-        cube_sketch = Sketch(self.name)
-        rect = cube_sketch.create_rectangle(length, width)
-
-        cube_sketch.set_visible(False)
-        return rect.extrude(height)
+        return (
+            Sketch(self.name)
+            .create_rectangle(length, width)
+            .extrude(height)
+            .rename(self.name)
+        )
 
     @supported(
         SupportLevel.PARTIAL,
@@ -100,8 +99,6 @@ class Part(PartInterface, Entity):
         base_sketch = Sketch(self.name)
         base = base_sketch.create_circle(radius)
 
-        base_sketch.set_visible(False)
-
         top = Sketch(self.name + "_temp_top")
         top_wire: WireInterface
         if draft_radius == Dimension(0):
@@ -110,9 +107,9 @@ class Part(PartInterface, Entity):
             top_wire = top.create_circle(0.0001)
         else:
             top_wire = top.create_circle(draft_radius)
-        top.translate_z(height)
+        top_wire.translate_z(height)
 
-        new_part = base.loft(top_wire)
+        new_part = base.loft(top_wire, self.name)
 
         top.delete()
 
@@ -122,12 +119,7 @@ class Part(PartInterface, Entity):
     def create_cylinder(
         self, radius: "str|float|Dimension", height: "str|float|Dimension"
     ):
-        sketch = Sketch(self.name)
-        circle = sketch.create_circle(radius)
-
-        sketch.set_visible(False)
-
-        return circle.extrude(height)
+        return Sketch(self.name).create_circle(radius).extrude(height).rename(self.name)
 
     @supported(SupportLevel.SUPPORTED)
     def create_torus(
@@ -157,7 +149,7 @@ class Part(PartInterface, Entity):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
         new_part = circle.revolve(180, sketch.get_landmark("center"), "x")
-        return new_part
+        return new_part.rename(self.name)
 
     @supported(SupportLevel.SUPPORTED)
     def create_gear(
