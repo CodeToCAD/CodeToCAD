@@ -1,10 +1,12 @@
 from typing import List, Sequence, Tuple, Optional, TYPE_CHECKING
 import bpy
 import mathutils
+from mathutils import Matrix
 
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
+from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.utilities import create_uuid_like_id
 from providers.blender.blender_provider.blender_actions.addons import (
     enable_curve_extra_objects_addon,
@@ -15,8 +17,6 @@ from providers.blender.blender_provider.blender_actions.collections import (
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
 from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
-    get_object,
-    get_object_or_none,
 )
 from providers.blender.blender_provider.blender_actions.objects_context import (
     convert_object_using_ops,
@@ -25,6 +25,7 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderCurvePrimitiveTypes,
     BlenderCurveTypes,
     BlenderLength,
+    BlenderObjectTypes,
     BlenderTypes,
 )
 
@@ -73,12 +74,8 @@ def set_curve_offset_geometry(curve_name: str, offset: Dimension):
     curve.offset = length.value
 
 
-def set_curve_use_path(curve_name: str, is_use_path: bool):
-    curveObject = get_object(curve_name)
-
-    curve: bpy.types.Curve = curveObject.data
-
-    curve.use_path = is_use_path
+def set_curve_use_path(curve_object: bpy.types.Curve, is_use_path: bool):
+    curve_object.use_path = is_use_path
 
 
 def set_curve_resolution_u(curve_name: str, resolution: int):
@@ -122,7 +119,7 @@ def create_text(
         setattr(curveData, "font", fontData)
 
     if bold or italic or underlined:
-        curveDataBodyFormat = curveData.body_format
+        curveDataBodyFormat = curveData.body_format  # type: ignore
         for index in range(len(text)):
             curveDataBodyFormat[index].use_underline = underlined
             curveDataBodyFormat[index].use_bold = bold
@@ -130,12 +127,11 @@ def create_text(
 
         # setattr(curveData, "body_format", curveDataBodyFormat)
 
-    create_object(curve_name, curveData)
-
-    assign_object_to_collection(curve_name)
+    curve_object = create_object(curve_name, curveData)
+    assign_object_to_collection(curve_object)
 
     # issue-160: scaling doesn't work well for TextCurves, so we'll convert it to a normal Curve.
-    convert_object_using_ops(curve_name, BlenderTypes.CURVE)
+    convert_object_using_ops(curve_object, BlenderObjectTypes.CURVE)
 
     curveData.use_path = False
 
@@ -163,18 +159,20 @@ def create_curve(
     curve_data.dimensions = "3D" if is_3d else "2D"
     curve_data.resolution_u = interpolation
     curve_data.use_path = False
-    curve_data.fill_mode = "FULL" if is_3d else "BOTH"
+    curve_data.fill_mode = "FULL" if is_3d else "BOTH"  # type: ignore
     points_parsed: List[Point] = [
         Point.from_list_of_float_or_string(point) for point in points
     ]
 
-    points_expanded: List[List[float]] = [
+    points_expanded: List = [
         [
             BlenderLength.convert_dimension_to_blender_unit(dimension).value
             for dimension in point.to_list()
         ]
         for point in points_parsed
     ]
+
+    points_expanded = [mathutils.Vector(p) for p in points_expanded]
 
     if len(curve_data.splines) == 0:
         reference_spline = create_spline(
@@ -256,24 +254,24 @@ def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
         reference_spline = curve.splines[reference_spline_index]
 
         reference_spline_points = get_spline_points(reference_spline)
-        reference_first_point: mathutils.Vector = reference_spline_points[0]
-        reference_last_point: mathutils.Vector = reference_spline_points[-1]
+        reference_first_point: mathutils.Vector = reference_spline_points[0].co
+        reference_last_point: mathutils.Vector = reference_spline_points[-1].co
 
         spline_points = get_spline_points(spline)
         points_first_point: mathutils.Vector = spline_points[0].co
         points_last_point: mathutils.Vector = spline_points[-1].co
 
         first_point_touching_spline_start = is_points_touching(
-            points_first_point, reference_first_point.co
+            points_first_point, reference_first_point
         )
         last_point_touching_spline_start = is_points_touching(
-            points_last_point, reference_first_point.co
+            points_last_point, reference_first_point
         )
         first_point_touching_spline_end = is_points_touching(
-            points_first_point, reference_last_point.co
+            points_first_point, reference_last_point
         )
         last_point_touching_spline_end = is_points_touching(
-            points_last_point, reference_last_point.co
+            points_last_point, reference_last_point
         )
 
         if spline != reference_spline and (
@@ -316,15 +314,14 @@ def get_spline_points(
 
 def set_spline_point(
     spline_points: bpy.types.SplineBezierPoints | bpy.types.SplinePoints,
-    new_coord: List[float],
+    new_coord: tuple[float, float, float],
     index: int,
-    curve_type: BlenderCurveTypes,
 ):
     """
     Replace a splint point with the given coordinate.
     NOTE: this does not copy bezier control point handle data.
     """
-    if curve_type == BlenderCurveTypes.BEZIER:
+    if isinstance(spline_points, bpy.types.SplineBezierPoints):
         spline_points[index].co = new_coord
         spline_points[index].handle_left = new_coord
         spline_points[index].handle_right = new_coord
@@ -337,7 +334,7 @@ def set_spline_point(
 
 def add_points_to_spline(
     spline: bpy.types.Spline,
-    points: List[List[float]],
+    points: List[mathutils.Vector],
     overwrite_first_point: bool = False,
 ) -> list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]:
     """
@@ -349,10 +346,7 @@ def add_points_to_spline(
 
     if overwrite_first_point:
         set_spline_point(
-            spline_points=spline_points,
-            new_coord=points[0],
-            index=0,
-            curve_type=BlenderCurveTypes[spline.type],
+            spline_points=spline_points, new_coord=points[0].to_tuple(), index=0
         )
         points = points[1:]
         added_points.append(spline_points[0])
@@ -367,9 +361,8 @@ def add_points_to_spline(
 
         set_spline_point(
             spline_points=spline_points,
-            new_coord=coord,
+            new_coord=coord.to_tuple(),
             index=new_point_index,
-            curve_type=BlenderCurveTypes[spline.type],
         )
 
         added_points.append(spline_points[new_point_index])
@@ -379,7 +372,7 @@ def add_points_to_spline(
 
 def add_points_to_curve(
     reference_spline: bpy.types.Spline,
-    points: List[List[float]],
+    points: List[mathutils.Vector],
 ) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
     """
     Adds points to a curve. If the points are touching the start or end points of the `reference_spline`, then the points will be appended to this spline. Otherwise, a new spline will be created and the points added to that instead.
@@ -481,6 +474,48 @@ def subdivide_bezier_points(
     return poly_points
 
 
+def get_vertices_from_edges(edges: list[EdgeInterface], world_matrix: Matrix):
+    vertices = []
+    for edge in edges:
+        v1 = edge.v1.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        v2 = edge.v2.location.to_tuple_float(BlenderLength.DEFAULT_BLENDER_UNIT.value)
+        v1 = world_matrix @ mathutils.Vector(v1)
+        v2 = world_matrix @ mathutils.Vector(v2)
+
+        vertices.append(v1.to_tuple())
+        vertices.append(v2.to_tuple())
+
+    vertices = list(dict.fromkeys(vertices))
+
+    return vertices
+
+
+def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix: Matrix):
+    NUM_BEZIER_POINTS = 32
+
+    vertices = []
+
+    vertices_len = len(spline.bezier_points)
+    resolution = int(NUM_BEZIER_POINTS / vertices_len) - 3
+    if resolution < 2:
+        resolution = 2
+    end_index = (
+        None
+        if NUM_BEZIER_POINTS - vertices_len > vertices_len
+        else NUM_BEZIER_POINTS - vertices_len
+    )
+
+    vertices = subdivide_bezier_points(
+        spline, 2 + resolution, end_at_index=end_index, is_cyclic=(not end_index)
+    )
+
+    vertices = [world_matrix @ point for point in vertices]
+
+    vertices_len = len(vertices)
+
+    return vertices
+
+
 def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     """
     This is a loft implemented in CodeToCAD. Mileage may vary.
@@ -491,27 +526,20 @@ def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
 
     mesh = bpy.data.meshes.new(name=name)
 
-    create_object(name, mesh)
-    assign_object_to_collection(name)
+    blender_object = create_object(name, mesh)
+    assign_object_to_collection(blender_object)
 
-    wire_1_parent = get_object_or_none(
-        wire_1.parent_entity.name
-        if not isinstance(wire_1.parent_entity, str)
-        else wire_1.parent_entity
-    )
-    wire_2_parent = get_object_or_none(
-        wire_2.parent_entity.name
-        if not isinstance(wire_2.parent_entity, str)
-        else wire_2.parent_entity
-    )
-    from mathutils import Matrix
+    wire_1_world_matrix = Matrix.Identity(3)
+    wire_2_world_matrix = Matrix.Identity(3)
 
-    wire_1_world_matrix = (
-        wire_1_parent.matrix_world if wire_1_parent else Matrix.Identity(3)
-    )
-    wire_2_world_matrix = (
-        wire_2_parent.matrix_world if wire_2_parent else Matrix.Identity(3)
-    )
+    if wire_1.parent_entity:
+        parent_object = wire_1.parent_entity.get_native_instance()
+        if isinstance(parent_object, bpy.types.Object):
+            wire_1_world_matrix = parent_object.matrix_world
+    if wire_2.parent_entity:
+        parent_object = wire_2.parent_entity.get_native_instance()
+        if isinstance(parent_object, bpy.types.Object):
+            wire_2_world_matrix = parent_object.matrix_world
 
     # wire_1_mesh = bpy.data.meshes.new_from_object(wire_1_parent)
     # wire_2_mesh = bpy.data.meshes.new_from_object(wire_2_parent)
@@ -530,65 +558,31 @@ def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     # wire_1_edges = edges_1_from_mesh
     # wire_2_edges = edges_2_from_mesh
 
-    def get_vertices_from_edges(edges, world_matrix):
-        vertices = []
-        for edge in edges:
-            v1 = edge.v1.location.to_tuple_float(
-                BlenderLength.DEFAULT_BLENDER_UNIT.value
-            )
-            v2 = edge.v2.location.to_tuple_float(
-                BlenderLength.DEFAULT_BLENDER_UNIT.value
-            )
-            v1 = world_matrix @ mathutils.Vector(v1)
-            v2 = world_matrix @ mathutils.Vector(v2)
-
-            vertices.append(v1.to_tuple())
-            vertices.append(v2.to_tuple())
-
-        vertices = list(dict.fromkeys(vertices))
-
-        return vertices
-
-    def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix):
-        NUM_BEZIER_POINTS = 32
-
-        vertices = []
-
-        vertices_len = len(spline.bezier_points)
-        resolution = int(NUM_BEZIER_POINTS / vertices_len) - 3
-        if resolution < 2:
-            resolution = 2
-        end_index = (
-            None
-            if NUM_BEZIER_POINTS - vertices_len > vertices_len
-            else NUM_BEZIER_POINTS - vertices_len
-        )
-
-        vertices = subdivide_bezier_points(
-            spline, 2 + resolution, end_at_index=end_index, is_cyclic=(not end_index)
-        )
-
-        vertices = [world_matrix @ point for point in vertices]
-
-        vertices_len = len(vertices)
-
-        return vertices
-
-    spline_1_vertices: List[Tuple[float, float, float]] = []
-    spline_2_vertices: List[Tuple[float, float, float]] = []
+    spline_1_vertices: List = []
+    spline_2_vertices: List = []
 
     wire_1_edges = wire_1.edges
     wire_2_edges = wire_2.edges
 
-    if wire_1.get_native_instance().type == "BEZIER":
-        spline = wire_1.get_native_instance()
-        spline_1_vertices = get_vertices_from_bezier_curve(spline, wire_1_world_matrix)
+    wire_1_spline = wire_1.get_native_instance()
+    wire_2_spline = wire_2.get_native_instance()
+
+    if not isinstance(wire_1_spline, bpy.types.Spline):
+        raise Exception("Wire 1 is not a spline")
+    if not isinstance(wire_2_spline, bpy.types.Spline):
+        raise Exception("Wire 2 is not a spline")
+
+    if wire_1_spline.type == "BEZIER":
+        spline_1_vertices = get_vertices_from_bezier_curve(
+            wire_1_spline, wire_1_world_matrix
+        )
     else:
         spline_1_vertices = get_vertices_from_edges(wire_1_edges, wire_1_world_matrix)
 
-    if wire_2.get_native_instance().type == "BEZIER":
-        spline = wire_2.get_native_instance()
-        spline_2_vertices = get_vertices_from_bezier_curve(spline, wire_2_world_matrix)
+    if wire_2_spline.type == "BEZIER":
+        spline_2_vertices = get_vertices_from_bezier_curve(
+            wire_2_spline, wire_2_world_matrix
+        )
     else:
         spline_2_vertices = get_vertices_from_edges(wire_2_edges, wire_2_world_matrix)
 
@@ -642,23 +636,24 @@ def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
 
 
 def add_bevel_object_to_curve(
-    path_curve_object_name: str, profile_curve_object_name: str, fill_cap=False
+    path_curve_blender_object: bpy.types.Object,
+    profile_curve_blender_object: bpy.types.Object,
+    fill_cap=False,
 ):
     """
     Effectively sweeps an object along a path
     """
-    pathCurveObject = get_object(path_curve_object_name)
-
-    profileCurveObject = get_object(profile_curve_object_name)
-
     assert isinstance(
-        profileCurveObject.data, bpy.types.Curve
-    ), f"Profile Object {profile_curve_object_name} is not a Curve object. Please use a Curve object."
+        profile_curve_blender_object.data, bpy.types.Curve
+    ), f"Profile Object {path_curve_blender_object.name} is not a Curve object. Please use a Curve object."
 
-    curve: bpy.types.Curve = pathCurveObject.data
+    curve = path_curve_blender_object.data
+
+    if not isinstance(curve, bpy.types.Curve):
+        raise Exception("Only bpy.types.Curve type can be bevelled")
 
     curve.bevel_mode = "OBJECT"
-    curve.bevel_object = profileCurveObject
+    curve.bevel_object = profile_curve_blender_object
     curve.use_fill_caps = fill_cap
 
 
@@ -918,7 +913,7 @@ class BlenderCurvePrimitives:
 
         curve_typeName: str = curve_type.name
 
-        bpy.ops.curve.spirals(
+        bpy.ops.curve.spirals(  # type: ignore
             spiral_type="ARCH",
             turns=number_of_turns,
             steps=24,
@@ -972,7 +967,7 @@ def create_simple_curve(curve_primitiveType: BlenderCurvePrimitiveTypes, **kwarg
 
     # Default values:
     # bpy.ops.curve.simple(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), Simple=True, Simple_Change=False, Simple_Delete="", Simple_Type='Point', Simple_endlocation=(2, 2, 2), Simple_a=2, Simple_b=1, Simple_h=1, Simple_angle=45, Simple_startangle=0, Simple_endangle=45, Simple_sides=3, Simple_radius=1, Simple_center=True, Simple_degrees_or_radians='Degrees', Simple_width=2, Simple_length=2, Simple_rounded=0, shape='2D', outputType='BEZIER', use_cyclic_u=True, endp_u=True, order_u=4, handleType='VECTOR', edit_mode=True)
-    bpy.ops.curve.simple(
+    bpy.ops.curve.simple(  # type: ignore
         Simple_Type=curve_primitiveType.name,
         outputType=curve_type.name,
         order_u=2,

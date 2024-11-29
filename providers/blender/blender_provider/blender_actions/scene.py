@@ -24,27 +24,39 @@ def set_default_unit(blender_unit: BlenderLength, scene_name="Scene"):
 
 
 def add_hdr_texture(
-    scene_name: str,
+    scene: bpy.types.Scene,
     image_file_path: str,
 ):
-    delete_nodes(scene_name)
-    nodeBackground = create_nodes(scene_name, "ShaderNodeBackground")
+    delete_nodes(scene)
+
+    nodeBackground = create_nodes(scene, "ShaderNodeBackground")
+
     nodeEnvironment: bpy.types.ShaderNodeTexEnvironment = create_nodes(
-        scene_name, "ShaderNodeTexEnvironment"
-    )
+        scene, "ShaderNodeTexEnvironment"
+    )  # type: ignore
+
     nodeEnvironment.image = bpy.data.images.load(image_file_path)
     nodeEnvironment.location = 0, 0
-    nodeOutput = create_nodes(scene_name, "ShaderNodeOutputWorld")
+
+    nodeOutput = create_nodes(scene, "ShaderNodeOutputWorld")
     nodeOutput.location = 0, 0
-    links = get_node_tree(scene_name).links
+
+    links = get_node_tree(scene).links
+
     links.new(nodeEnvironment.outputs["Color"], nodeBackground.inputs["Color"])
     links.new(nodeBackground.outputs["Background"], nodeOutput.inputs["Surface"])
 
 
-def set_background_location(scene_name: str, x, y):
-    envTexture: bpy.types.ShaderNodeTexEnvironment = get_node_tree(
-        scene_name
-    ).nodes.get("Environment Texture")
+def set_background_location(scene: bpy.types.Scene, x, y):
+    envTexture: bpy.types.ShaderNodeTexEnvironment | None = get_node_tree(
+        scene
+    ).nodes.get(
+        "Environment Texture"
+    )  # type: ignore
+
+    if envTexture is None:
+        raise Exception("Could not find an environment texture in the scene")
+
     envTexture.location = x, y
 
 

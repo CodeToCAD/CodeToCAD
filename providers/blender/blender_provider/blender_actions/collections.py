@@ -1,9 +1,11 @@
 import bpy
 
 from providers.blender.blender_provider.blender_actions.objects import (
-    get_object,
     remove_object,
 )
+
+default_scene_name = "Scene"
+default_collection_name = "Scene Collection"
 
 
 def get_collection(name: str, scene_name="Scene") -> bpy.types.Collection:
@@ -30,37 +32,31 @@ def create_collection(name: str, scene_name="Scene"):
     bpy.data.scenes[scene_name].collection.children.link(collection)
 
 
-def remove_collection(name: str, scene_name: str, remove_children: bool):
-    collection = get_collection(name, scene_name)
-
+def remove_collection(blender_collection: bpy.types.Collection, remove_children: bool):
     if remove_children:
-        for obj in collection.objects:
+        for obj in blender_collection.objects:
             try:
-                remove_object(obj.name, True)
+                remove_object(obj, True)
             except Exception as e:
                 print(f"Could not remove {obj.name}. {e}")
 
-    bpy.data.collections.remove(collection)
+    bpy.data.collections.remove(blender_collection)
 
 
 def remove_object_from_collection(
-    existing_object_name: str, collection_name: str, scene_name: str
+    blender_object: bpy.types.Object,
+    blender_collection: bpy.types.Collection,
 ):
-    blender_object = get_object(existing_object_name)
-
-    collection = get_collection(collection_name, scene_name)
-
     assert (
-        collection.objects.get(existing_object_name) is not None
-    ), f"Object {existing_object_name} does not exist in collection {collection_name}"
+        blender_collection.objects.get(blender_object.name) is not None
+    ), f"Object {blender_object.name} does not exist in collection {blender_collection.name}"
 
-    collection.objects.unlink(blender_object)
+    blender_collection.objects.unlink(blender_object)
 
 
 def assign_object_to_collection(
-    existing_object_name: str,
-    collection_name="Scene Collection",
-    scene_name="Scene",
+    blender_object: bpy.types.Object,
+    blender_collection: bpy.types.Collection | None = None,
     remove_from_other_groups=True,
     move_children=True,
 ):
@@ -68,28 +64,26 @@ def assign_object_to_collection(
     Assigns the existing_object_name to a collection.
     Defaults to using Scene Collection under the default Scene scene.
     """
-    blender_object = get_object(existing_object_name)
+    if blender_collection is None:
+        scene = bpy.data.scenes.get(default_scene_name)
 
-    collection = bpy.data.collections.get(collection_name)
+        assert scene is not None, f"Scene {default_scene_name} does not exist"
 
-    if collection is None and collection_name == "Scene Collection":
-        scene = bpy.data.scenes.get(scene_name)
+        blender_collection = scene.collection
 
-        assert scene is not None, f"Scene {scene_name} does not exist"
-
-        collection = scene.collection
-
-    assert collection is not None, f"Collection {collection_name} does not exist"
+    assert (
+        blender_collection is not None
+    ), f"Collection {default_collection_name} does not exist"
 
     if remove_from_other_groups:
-        currentCollections: list[bpy.types.Collection] = blender_object.users_collection
+        currentCollections: tuple[bpy.types.Collection, ...] = (
+            blender_object.users_collection
+        )
         for currentCollection in currentCollections:
             currentCollection.objects.unlink(blender_object)
 
-    collection.objects.link(blender_object)
+    blender_collection.objects.link(blender_object)
 
     if move_children:
         for child in blender_object.children:
-            assign_object_to_collection(
-                child.name, collection_name, scene_name, True, True
-            )
+            assign_object_to_collection(child, blender_collection, True, True)

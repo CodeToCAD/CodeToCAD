@@ -1,37 +1,46 @@
 import bpy
 
-from providers.blender.blender_provider.blender_actions.objects import get_object
-
 
 def update_view_layer():
+    """
+    This forces Blender to update internal data. Useful for some operations like getting the location matrix of objects, etc..
+    """
     bpy.context.view_layer.update()
 
 
-# Applies the dependency graph to the object and persists its data using .copy()
-# This allows us to apply modifiers, UV data, etc.. to the mesh.
-# This is different from apply_object_transformations()
 def apply_dependency_graph(
-    existing_object_name: str,
+    blender_object: bpy.types.Object,
 ):
-    blender_object = get_object(existing_object_name)
+    """
+    Applies the dependency graph to the object and persists its data using .copy()
+    This allows us to apply modifiers, UV data, etc.. to the mesh.
+    This is different from apply_object_transformations()
+    """
     blender_object_evaluated: bpy.types.Object = blender_object.evaluated_get(
         bpy.context.evaluated_depsgraph_get()
     )
-    blender_object.data = blender_object_evaluated.data.copy()
+    mesh_or_curve = blender_object_evaluated.data
+
+    if not isinstance(mesh_or_curve, (bpy.types.Mesh, bpy.types.Curve)):
+        raise NotImplementedError(f"{type(mesh_or_curve)} is not supported")
+
+    blender_object.data = mesh_or_curve.copy()
 
 
-def select_object(object_name: str):
-    blender_object = get_object(object_name)
-
+def select_object(blender_object: bpy.types.Object):
+    """
+    Attempts to select the object in the Blender UI
+    """
     blender_object.select_set(True)
 
 
-def get_selected_object_name() -> str:
+def get_selected_objects() -> list[bpy.types.Object]:
+    """
+    Attempts to retrieve the selected objects in Blender UI.
+    """
     selectedObjects = bpy.context.selected_objects
 
-    assert len(selectedObjects) > 0, "There are no selected objects."
-
-    return selectedObjects[0].name
+    return selectedObjects
 
 
 def get_context_view_3d(**kwargs):
@@ -69,4 +78,5 @@ def get_blender_version() -> tuple:
 def log_message(
     message: str,
 ):
-    bpy.ops.codetocad.log_message(message=message)
+    # This calls our addon:
+    bpy.ops.codetocad.log_message(message=message)  # type: ignore

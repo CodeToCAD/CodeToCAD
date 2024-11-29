@@ -8,7 +8,6 @@ from mathutils.kdtree import KDTree
 from codetocad.core.boundary_axis import BoundaryAxis
 from codetocad.core.boundary_box import BoundaryBox
 from providers.blender.blender_provider.blender_actions.context import update_view_layer
-from providers.blender.blender_provider.blender_actions.objects import get_object
 
 
 def get_mesh(
@@ -21,47 +20,45 @@ def get_mesh(
     return blenderMesh
 
 
+def get_mesh_for_object(blender_object: bpy.types.Object):
+
+    if blender_object.data is None:
+        raise Exception("Object does not have any data")
+
+    return get_mesh(blender_object.data.name)
+
+
 def remove_mesh(
-    mesh_name_or_instance: Union[str, bpy.types.Mesh],
+    blender_mesh: bpy.types.Mesh,
 ):
-    mesh: bpy.types.Mesh = mesh_name_or_instance
-    # if a (str) name is passed in, fetch the mesh object reference
-    if isinstance(mesh_name_or_instance, str):
-        mesh = get_mesh(mesh_name_or_instance)
-
-    bpy.data.meshes.remove(mesh)
+    bpy.data.meshes.remove(mesh=blender_mesh)
 
 
-def set_edges_mean_crease(mesh_name: str, mean_crease_value: float):
-    blenderMesh = get_mesh(mesh_name)
-
-    for edge in blenderMesh.edges:
-        edge.crease = mean_crease_value
+def set_edges_mean_crease(blender_mesh: bpy.types.Mesh, mean_crease_value: float):
+    for edge in blender_mesh.edges:
+        edge.crease = mean_crease_value  # type: ignore
 
 
-def recalculate_normals(mesh_name: str):
+def recalculate_normals(
+    blender_mesh: bpy.types.Mesh,
+):
     # references https://blender.stackexchange.com/a/72687
 
-    mesh = get_mesh(mesh_name)
+    b_mesh = bmesh.new()
+    b_mesh.from_mesh(blender_mesh)
+    bmesh.ops.recalc_face_normals(b_mesh, faces=list(b_mesh.faces))
+    b_mesh.to_mesh(blender_mesh)
+    b_mesh.clear()
 
-    bMesh = bmesh.new()
-    bMesh.from_mesh(mesh)
-    bmesh.ops.recalc_face_normals(bMesh, faces=bMesh.faces)
-    bMesh.to_mesh(mesh)
-    bMesh.clear()
-
-    mesh.update()
+    blender_mesh.update()
 
 
 # Note: transformations have to be applied for this to be reliable.
 def is_collision_between_two_objects(
-    object1_name: str,
-    object2_name: str,
+    blender_object1: bpy.types.Object,
+    blender_object2: bpy.types.Object,
 ):
     update_view_layer()
-
-    blender_object1 = get_object(object1_name)
-    blender_object2 = get_object(object2_name)
 
     # References https://blender.stackexchange.com/a/144609
     bm1 = bmesh.new()
@@ -83,11 +80,15 @@ def is_collision_between_two_objects(
 
 # References https://docs.blender.org/api/current/mathutils.kdtree.html
 def create_kd_tree_for_object(
-    object_name: str,
+    blender_object: bpy.types.Object,
 ):
-    blender_object = get_object(object_name)
-    mesh: bpy.types.Mesh = blender_object.data
+    if blender_object.data is None:
+        raise Exception("Object does not have any data")
+
+    mesh: bpy.types.Mesh = get_mesh_for_object(blender_object)
+
     size = len(mesh.vertices)
+
     kd = KDTree(size)
 
     for i, v in enumerate(mesh.vertices):
@@ -98,8 +99,9 @@ def create_kd_tree_for_object(
 
 
 # uses object.closest_point_on_mesh https://docs.blender.org/api/current/bpy.types.Object.html#bpy.types.Object.closest_point_on_mesh
-def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygon:
-    blender_object = get_object(object_name)
+def get_closest_face_to_vertex(
+    blender_object: bpy.types.Object, vertex
+) -> bpy.types.MeshPolygon:
 
     assert (
         len(vertex) == 3
@@ -116,13 +118,13 @@ def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygo
         blender_object.closest_point_on_mesh(vertexInverted)
     )
 
-    assert isFound, f"Could not find a point close to {vertex} on {object_name}"
+    assert isFound, f"Could not find a point close to {vertex} on {blender_object.name}"
 
     assert (
         polygonIndex is not None and polygonIndex != -1
-    ), f"Could not find a face near {vertex} on {object_name}"
+    ), f"Could not find a face near {vertex} on {blender_object.name}"
 
-    mesh: bpy.types.Mesh = blender_object.data
+    mesh: bpy.types.Mesh = get_mesh_for_object(blender_object)
     blenderPolygon = mesh.polygons[polygonIndex]
 
     return blenderPolygon
@@ -130,11 +132,10 @@ def get_closest_face_to_vertex(object_name: str, vertex) -> bpy.types.MeshPolygo
 
 # Returns a list of (co, index, dist)
 def get_closest_points_to_vertex(
-    object_name: str, vertex, number_of_points=2, object_kd_tree=None
+    blender_object: bpy.types.Object, vertex, number_of_points=2, object_kd_tree=None
 ):
-    blender_object = get_object(object_name)
-
-    kdTree = object_kd_tree or create_kd_tree_for_object(object_name)
+    
+    kdTree = object_kd_tree or create_kd_tree_for_object(blender_object)
 
     assert (
         len(vertex) == 3
@@ -150,11 +151,9 @@ def get_closest_points_to_vertex(
 
 # References https://blender.stackexchange.com/a/32288/138679
 def get_bounding_box(
-    object_name: str,
+    blender_object: bpy.types.Object,
 ):
     update_view_layer()
-
-    blender_object = get_object(object_name)
 
     local_coords = blender_object.bound_box[:]
 
@@ -184,10 +183,8 @@ def get_bounding_box(
     return BoundaryBox(boundingBox["x"], boundingBox["y"], boundingBox["z"])
 
 
-def separate_object(object_name):
+def separate_object(blender_object:bpy.types.Object):
     bpy.ops.object.select_all(action="DESELECT")
-
-    blender_object = get_object(object_name)
 
     blender_object.select_set(True)
 

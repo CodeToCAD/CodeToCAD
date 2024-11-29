@@ -5,7 +5,6 @@ from providers.blender.blender_provider.blender_actions.context import (
     get_context_view_3d,
     update_view_layer,
 )
-from providers.blender.blender_provider.blender_actions.objects import get_object
 
 from pathlib import Path
 
@@ -83,7 +82,9 @@ fileExportFunctions = {
 }
 
 
-def export_object(object_name: str, file_path: str, overwrite=True, scale=1.0):
+def export_object(
+    blender_object: bpy.types.Object, file_path: str, overwrite=True, scale=1.0
+):
     path = Path(file_path).resolve()
 
     # Check if the file exists:
@@ -91,8 +92,6 @@ def export_object(object_name: str, file_path: str, overwrite=True, scale=1.0):
         assert not path.is_file(), f"File {file_path} already exists"
 
     bpy.ops.object.select_all(action="DESELECT")
-
-    blender_object = get_object(object_name)
 
     blender_object.select_set(True)
 
