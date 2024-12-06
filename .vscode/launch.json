@@ -1,9 +1,66 @@
 {
     "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "confirmcapabilities_to_python",
+            "description": "Are you sure? This will overwrite existing templates.",
+            "type": "promptString"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Generate Jinja2Python, Html Docs, and Example Docs",
+            "configurations": [
+                "Capabilities.json to Python",
+                "Capabilities.json to HTML Docs",
+                "Examples.json to HTML"
+            ],
+            "stopAll": true
+        }
+    ],
     "configurations": [
         {
+            "name": "Capabilities.json to Python",
+            "type": "python",
+            "request": "launch",
+            "module": "development.capabilities_json_to_python.capabilities_to_py",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmcapabilities_to_python}"
+            ],
+            "justMyCode": true,
+            "jinja": true,
+            "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Capabilities.json to HTML Docs",
+            "type": "python",
+            "request": "launch",
+            "module": "development.capabilities_json_to_python.capabilities_to_html_docs",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmcapabilities_to_python}"
+            ],
+            "justMyCode": true,
+            "jinja": true,
+            "cwd": "${workspaceRoot}",
+        },
+        {
+            "name": "Examples.json to HTML",
+            "type": "python",
+            "request": "launch",
+            "module": "development.examples_json_to_html.examples_to_html",
+            "console": "integratedTerminal",
+            "args": [
+                "${input:confirmcapabilities_to_python}"
+            ],
+            "justMyCode": true,
+            "jinja": true,
+            "cwd": "${workspaceRoot}",
+        },
+        {
             "name": "Python: Attach",
-            "type": "debugpy",
+            "type": "python",
             "request": "attach",
             "connect": {
                 "host": "localhost",

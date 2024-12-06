@@ -94,7 +94,7 @@
                 "information": "Boolean union",
                 "parameters": {
                     "other": {
-                        "type": "string,Booleanable"
+                        "type": "Booleanable"
                     },
                     "delete_after_union": {
                         "type": "boolean",
@@ -111,7 +111,7 @@
                 "information": "Boolean subtraction",
                 "parameters": {
                     "other": {
-                        "type": "string,Booleanable"
+                        "type": "Booleanable"
                     },
                     "delete_after_subtract": {
                         "type": "boolean",
@@ -128,7 +128,7 @@
                 "information": "Boolean intersection",
                 "parameters": {
                     "other": {
-                        "type": "string,Booleanable"
+                        "type": "Booleanable"
                     },
                     "delete_after_intersect": {
                         "type": "boolean",
@@ -142,7 +142,7 @@
             }
         },
         "Landmarkable": {
-            "information": "An entity that can be use landmarks.",
+            "information": "An entity that can use landmarks. Landmarks are references on an object's geometry.",
             "is_interface_only": true,
             "create_landmark": {
                 "action": "get",
@@ -166,7 +166,7 @@
             "get_landmark": {
                 "action": "get",
                 "return_type": "Landmark",
-                "information": "Get the landmark by name",
+                "information": "Get the landmark by name or Preset Landmark",
                 "parameters": {
                     "landmark_name": {
                         "type": "string,PresetLandmark"
@@ -179,17 +179,18 @@
             "is_interface_only": true,
             "mirror": {
                 "action": "create",
-                "information": "Mirror an existing entity with respect to a landmark. If a name is provided, the mirror becomes a separate entity.",
+                "information": "Mirror an existing entity with respect to a landmark. If separate_resulting_entity is true (Default: false), the mirror becomes a separate entity.",
                 "parameters": {
                     "mirror_across_entity": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     },
                     "axis": {
                         "type": "string,int,Axis"
                     },
-                    "resulting_mirrored_entity_name": {
-                        "type": "string",
-                        "required": false
+                    "separate_resulting_entity": {
+                        "type": "boolean",
+                        "required": false,
+                        "default_value": false
                     }
                 }
             }
@@ -224,7 +225,7 @@
                         "type": "string,float,Angle"
                     },
                     "center_entity_or_landmark": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     },
                     "normal_direction_axis": {
                         "type": "string,int,Axis",
@@ -321,19 +322,35 @@
                 }
             }
         },
+        "NativeInstance": {
+            "information": "Adds the ability to access the native API's instance. For example, in Blender API, this would use native instances like bpy.object.",
+            "is_interface_only": true,
+            "get_native_instance": {
+                "action": "get",
+                "information": "Get the native API's object instance",
+                "return_type": "any"
+            },
+            "update_native_instance": {
+                "action": "modify",
+                "information": "This method updates the cached object instance in CodeToCAD. Returns the updated instance, which you can ignore. Use `native_instance` to get the native API's object instance. ",
+                "return_type": "any",
+                "parameters": {}
+            }
+        },
         "Entity": {
             "information": "Capabilities shared between scene objects.",
+            "implements": "NativeInstance",
             "constructor": {
                 "parameters": {
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     },
                     "description": {
                         "type": "string",
                         "required": false
                     },
                     "native_instance": {
-                        "information": "A cached instance of the native object. This may become stale.",
                         "type": "any",
                         "required": false
                     }
@@ -344,18 +361,23 @@
                 "information": "Check if an entity exists",
                 "return_type": "boolean"
             },
-            "rename": {
+            "set_name": {
                 "action": "modify",
                 "information": "Rename the entity, with an option to rename linked landmarks and underlying data.",
                 "parameters": {
                     "new_name": {
                         "type": "string"
                     },
-                    "renamelinked_entities_and_landmarks": {
+                    "rename_linked_entities_and_landmarks": {
                         "type": "boolean",
                         "default_value": true
                     }
                 }
+            },
+            "get_name": {
+                "action": "get",
+                "information": "Get the name of the entity via native API",
+                "return_type": "string"
             },
             "delete": {
                 "action": "delete",
@@ -402,12 +424,6 @@
                         "default_value": true
                     }
                 }
-            },
-            "get_native_instance": {
-                "action": "get",
-                "information": "Get the native API's object instance. For example, in Blender API, this would return a bpy.object instance.",
-                "return_type": "any",
-                "parameters": {}
             },
             "get_location_world": {
                 "action": "get",
@@ -675,8 +691,8 @@
                         "default_value": null,
                         "required": false
                     },
-                    "profile_curve_name": {
-                        "type": "string,Wire,Sketch",
+                    "profile_curve": {
+                        "type": "Wire,Sketch",
                         "required": false
                     }
                 }
@@ -687,11 +703,13 @@
                 "information": "Clone an existing Part with its geometry and properties. Returns the new Part.",
                 "parameters": {
                     "new_name": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     },
                     "copy_landmarks": {
                         "type": "boolean",
-                        "default_value": true
+                        "default_value": true,
+                        "required": false
                     }
                 }
             },
@@ -761,7 +779,7 @@
                         "default_value": 0.0
                     },
                     "mirror_about_entity_or_landmark": {
-                        "type": "string,Entity",
+                        "type": "Entity",
                         "required": false
                     },
                     "mirror_axis": {
@@ -785,7 +803,7 @@
                         "default_value": "z"
                     },
                     "circular_pattern_about_entity_or_landmark": {
-                        "type": "string,Entity",
+                        "type": "Entity",
                         "required": false
                     },
                     "linear_pattern_instance_count": {
@@ -838,8 +856,8 @@
                 "action": "modify",
                 "information": "Assign a known material to this part.",
                 "parameters": {
-                    "material_name": {
-                        "type": "string,Material"
+                    "material": {
+                        "type": "Material"
                     }
                 }
             },
@@ -849,7 +867,7 @@
                 "return_type": "boolean",
                 "parameters": {
                     "other_part": {
-                        "type": "string,Part"
+                        "type": "Part"
                     }
                 }
             },
@@ -935,9 +953,9 @@
                 "action": "interact",
                 "information": "Select the vertex closest to a Landmark on the entity (in UI).",
                 "parameters": {
-                    "landmark_name": {
+                    "landmark": {
                         "required": false,
-                        "type": "string,Landmark"
+                        "type": "Landmark"
                     }
                 }
             },
@@ -945,9 +963,9 @@
                 "action": "interact",
                 "information": "Select an edge closest to a landmark on the entity (in UI).",
                 "parameters": {
-                    "landmark_name": {
+                    "landmark": {
                         "required": false,
-                        "type": "string,Landmark"
+                        "type": "Landmark"
                     }
                 }
             },
@@ -955,9 +973,9 @@
                 "action": "interact",
                 "information": "Select a face closest to a landmark on the entity (in UI).",
                 "parameters": {
-                    "landmark_name": {
+                    "landmark": {
                         "required": false,
-                        "type": "string,Landmark"
+                        "type": "Landmark"
                     }
                 }
             }
@@ -968,15 +986,8 @@
             "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable,Projectable,Landmarkable",
             "constructor": {
                 "parameters": {
-                    "name": {
-                        "type": "string"
-                    },
                     "curve_type": {
                         "type": "CurveTypes",
-                        "required": false
-                    },
-                    "description": {
-                        "type": "string",
                         "required": false
                     }
                 }
@@ -992,11 +1003,13 @@
                 "information": "Clone an existing sketch with its geometry and properties. Returns the new Sketch.",
                 "parameters": {
                     "new_name": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     },
                     "copy_landmarks": {
                         "type": "boolean",
-                        "default_value": true
+                        "default_value": true,
+                        "required": false
                     }
                 }
             },
@@ -1044,8 +1057,8 @@
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
                     },
-                    "profile_curve_name": {
-                        "type": "string,Wire,Sketch",
+                    "profile_curve": {
+                        "type": "Wire,Sketch",
                         "required": false
                     }
                 }
@@ -1255,8 +1268,8 @@
                         "information": "Point coordinates of a vertex.",
                         "type": "Point"
                     },
-                    "parent_entity": {
-                        "type": "string,Entity",
+                    "parent": {
+                        "type": "Entity",
                         "required": false
                     }
                 }
@@ -1291,8 +1304,8 @@
                     "v2": {
                         "type": "Vertex"
                     },
-                    "parent_entity": {
-                        "type": "string,Entity",
+                    "parent": {
+                        "type": "Entity",
                         "required": false
                     }
                 }
@@ -1344,8 +1357,8 @@
                         "information": "A collection of edges",
                         "type": "list[Edge]"
                     },
-                    "parent_entity": {
-                        "type": "string,Entity",
+                    "parent": {
+                        "type": "Entity",
                         "required": false
                     }
                 }
@@ -1381,16 +1394,22 @@
             "loft": {
                 "action": "get",
                 "return_type": "Part",
-                "information": "Create a surface between two Wires (Faces). If new_part_name is not provided, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.",
+                "information": "Create a surface between two Wires (Faces). If union_connecting_parts is true, the two Wires' parents and the surface will be boolean union'ed, and the resulting Part will take the name of the first wire.",
                 "parameters": {
                     "other": {
                         "type": "Wire",
                         "information": "The other wire/face to loft to."
                     },
-                    "new_part_name": {
-                        "type": "string",
+                    "union_connecting_parts": {
+                        "type": "boolean",
                         "required": false,
-                        "information": "If provided, the resulting part will not be merged with the parent of this wire/face."
+                        "information": "If true, the resulting part will not be merged with the parent of this wire/face.",
+                        "default_value": true
+                    },
+                    "new_name": {
+                        "type": "string",
+                        "information": "Give a name to the resulting object.",
+                        "required": false
                     }
                 }
             },
@@ -1403,7 +1422,7 @@
                         "type": "string,float,Angle"
                     },
                     "about_entity_or_landmark": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     },
                     "axis": {
                         "type": "string,int,Axis",
@@ -1446,8 +1465,8 @@
                 "return_type": "Part",
                 "information": "Extrude this Wire along the path of another Wire",
                 "parameters": {
-                    "profile_name_or_instance": {
-                        "type": "string,Wire"
+                    "profile": {
+                        "type": "Wire"
                     },
                     "fill_cap": {
                         "type": "boolean",
@@ -1469,8 +1488,8 @@
                 "action": "modify",
                 "information": "Bend this curve along the path of another",
                 "parameters": {
-                    "profile_curve_name": {
-                        "type": "string,Wire,Sketch"
+                    "profile_curve": {
+                        "type": "Wire,Sketch"
                     }
                 }
             },
@@ -1552,17 +1571,9 @@
             "extends": "Entity",
             "constructor": {
                 "parameters": {
-                    "name": {
-                        "type": "string",
+                    "parent": {
+                        "type": "Entity",
                         "required": true
-                    },
-                    "parent_entity": {
-                        "type": "string,Entity",
-                        "required": true
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
                     }
                 }
             },
@@ -1579,31 +1590,22 @@
                         "required": false
                     },
                     "new_parent": {
-                        "type": "string,Entity",
+                        "type": "Entity",
+                        "information": "Specify this to assign this new Landmark to this new parent, instead of the current one's.",
                         "required": false
                     }
                 }
-            },
-            "get_landmark_entity_name": {
-                "information": "Get the landmark object name in the scene, which may be different to the name of the landmark when it was first created. For example, the generated name may be {parentName}_{landmarkName}.",
-                "action": "get",
-                "return_type": "string"
-            },
-            "get_parent_entity": {
-                "information": "Get the name of the entity this landmark belongs to.",
-                "action": "get",
-                "return_type": "Entity"
             }
         },
         "Joint": {
             "information": "Joints define the relationships and constraints between entities.",
             "constructor": {
                 "parameters": {
-                    "entity1": {
-                        "type": "string,Entity"
+                    "entity_1": {
+                        "type": "Entity"
                     },
-                    "entity2": {
-                        "type": "string,Entity"
+                    "entity_2": {
+                        "type": "Entity"
                     }
                 }
             },
@@ -1752,24 +1754,12 @@
             "constructor": {
                 "parameters": {
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "required": false
                     },
                     "description": {
                         "type": "string",
                         "required": false
-                    }
-                }
-            },
-            "get_preset": {
-                "information": "Get a material from a preset",
-                "action": "get",
-                "return_type": "Material",
-                "is_static_method": true,
-                "parameters": {
-                    "material_name": {
-                        "information": "A PresetMaterial name or instance",
-                        "type": "PresetMaterial",
-                        "required": true
                     }
                 }
             },
@@ -1867,7 +1857,7 @@
                 "action": "modify",
                 "parameters": {
                     "entity": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     },
                     "frame_number": {
                         "type": "int"
@@ -1879,7 +1869,7 @@
                 "action": "modify",
                 "parameters": {
                     "entity": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     },
                     "frame_number": {
                         "type": "int"
@@ -1890,17 +1880,7 @@
         "Light": {
             "information": "Manipulate a light object.",
             "extends": "Entity",
-            "constructor": {
-                "parameters": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
+            "constructor": {},
             "set_color": {
                 "information": "Set the color of an existing light.",
                 "action": "modify",
@@ -1956,17 +1936,7 @@
         "Camera": {
             "information": "Manipulate a camera object.",
             "extends": "Entity",
-            "constructor": {
-                "parameters": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
-                    }
-                }
-            },
+            "constructor": {},
             "create_perspective": {
                 "information": "Create a perspective camera in the scene.",
                 "action": "create",
@@ -2121,9 +2091,9 @@
                 "information": "Set the rendering camera.",
                 "action": "modify",
                 "parameters": {
-                    "camera_name_or_instance": {
-                        "information": "The camera name or Camera class instance.",
-                        "type": "string,Camera"
+                    "camera_instance": {
+                        "information": "The Camera class instance.",
+                        "type": "Camera"
                     }
                 }
             }
@@ -2174,7 +2144,7 @@
                         "type": "string"
                     },
                     "entities": {
-                        "type": "list[string,Exportable]"
+                        "type": "list[Exportable]"
                     },
                     "overwrite": {
                         "type": "boolean",
@@ -2220,8 +2190,8 @@
                 "action": "delete",
                 "information": "Removes an existing entity from a group",
                 "parameters": {
-                    "entity_name": {
-                        "type": "string"
+                    "entity": {
+                        "type": "Entity"
                     },
                     "group_name": {
                         "type": "string"
@@ -2233,7 +2203,7 @@
                 "information": "Assigns an existing entity to a new group",
                 "parameters": {
                     "entities": {
-                        "type": "list[string,Entity]"
+                        "type": "list[Entity]"
                     },
                     "group_name": {
                         "type": "string"
@@ -2250,7 +2220,7 @@
                 "information": "Change the visibiltiy of the entity.",
                 "parameters": {
                     "entities": {
-                        "type": "list[string,Entity]"
+                        "type": "list[Entity]"
                     },
                     "is_visible": {
                         "type": "boolean"
@@ -2285,11 +2255,11 @@
                 "return_type": "Dimensions",
                 "information": "The ubiquitous ruler.",
                 "parameters": {
-                    "entity1": {
-                        "type": "string,Entity"
+                    "entity_1": {
+                        "type": "Entity"
                     },
-                    "entity2": {
-                        "type": "string,Entity"
+                    "entity_2": {
+                        "type": "Entity"
                     }
                 }
             },
@@ -2298,14 +2268,14 @@
                 "return_type": "list[Angle]",
                 "information": "The ubiquitous ruler.",
                 "parameters": {
-                    "entity1": {
-                        "type": "string,Entity"
+                    "entity_1": {
+                        "type": "Entity"
                     },
-                    "entity2": {
-                        "type": "string,Entity"
+                    "entity_2": {
+                        "type": "Entity"
                     },
                     "pivot": {
-                        "type": "string,Entity",
+                        "type": "Entity",
                         "required": false
                     }
                 }
@@ -2316,7 +2286,7 @@
                 "information": "Returns the world pose of an entity.",
                 "parameters": {
                     "entity": {
-                        "type": "string,Entity"
+                        "type": "Entity"
                     }
                 }
             },
@@ -2325,8 +2295,8 @@
                 "return_type": "BoundaryBox",
                 "information": "Returns the bounding box of an entity.",
                 "parameters": {
-                    "entity_name": {
-                        "type": "string,Entity"
+                    "entity": {
+                        "type": "Entity"
                     }
                 }
             },
@@ -2335,14 +2305,14 @@
                 "return_type": "Dimensions",
                 "information": "Returns the dimensions of an entity.",
                 "parameters": {
-                    "entity_name": {
-                        "type": "string,Entity"
+                    "entity": {
+                        "type": "Entity"
                     }
                 }
             },
             "log": {
                 "action": "modify",
-                "information": "Write a message",
+                "information": "Write a message to the console or log. Location varies by provider.",
                 "parameters": {
                     "message": {
                         "type": "string"
