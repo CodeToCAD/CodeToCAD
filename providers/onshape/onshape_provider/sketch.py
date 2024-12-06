@@ -49,9 +49,9 @@ class Sketch(SketchInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
+        separate_resulting_entity: "bool| None" = False,
     ):
         return self
 
@@ -69,7 +69,7 @@ class Sketch(SketchInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
@@ -128,7 +128,7 @@ class Sketch(SketchInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
         curve_type: "CurveTypes| None" = None,
@@ -139,7 +139,9 @@ class Sketch(SketchInterface, Entity):
         self.native_instance = native_instance
 
     @supported(SupportLevel.UNSUPPORTED)
-    def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Sketch":
+    def clone(
+        self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
+    ) -> "Sketch":
         raise NotImplementedError()
 
     @supported(SupportLevel.PLANNED)
@@ -155,7 +157,7 @@ class Sketch(SketchInterface, Entity):
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
         center_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = None,
-        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        profile_curve: "WireInterface|SketchInterface| None" = None,
     ):
         pointLocation1 = Dimension(0.0, "mm")
         pointLocation2 = Dimension(0.2, "mm")

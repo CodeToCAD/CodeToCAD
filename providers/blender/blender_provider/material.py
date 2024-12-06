@@ -1,7 +1,6 @@
 from codetocad.interfaces.material_interface import MaterialInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
-from codetocad.codetocad_types import *
 from codetocad.utilities import get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.material import (
     add_texture_to_material,
@@ -15,7 +14,7 @@ from providers.blender.blender_provider.blender_actions.material import (
 
 class Material(MaterialInterface):
 
-    def __init__(self, name: "str", description: "str| None" = None):
+    def __init__(self, name: "str| None" = None, description: "str| None" = None):
         self.name = name
         self.description = description
         try:
@@ -49,18 +48,3 @@ class Material(MaterialInterface):
         absoluteFilePath = get_absolute_filepath(image_file_path)
         add_texture_to_material(self.name, absoluteFilePath)
         return self
-
-    @staticmethod
-    @supported(SupportLevel.SUPPORTED)
-    def get_preset(material_name: "PresetMaterial"):
-        if isinstance(material_name, str):
-            try:
-                material_name = getattr(PresetMaterial, material_name)
-            except:  # noqa
-                material = Material(material_name)
-        if isinstance(material_name, PresetMaterial):
-            material = Material(material_name.name)
-            material.set_color(*material_name.color)
-            material.set_reflectivity(material_name.reflectivity)
-            material.set_roughness(material_name.roughness)
-        return material

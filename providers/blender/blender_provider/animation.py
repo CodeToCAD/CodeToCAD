@@ -37,9 +37,7 @@ class Animation(AnimationInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED)
-    def create_key_frame_location(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_location(self, entity: "EntityInterface", frame_number: "int"):
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name
@@ -49,9 +47,7 @@ class Animation(AnimationInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED)
-    def create_key_frame_rotation(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_rotation(self, entity: "EntityInterface", frame_number: "int"):
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name

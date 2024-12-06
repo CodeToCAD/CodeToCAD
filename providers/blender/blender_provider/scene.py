@@ -62,7 +62,7 @@ class Scene(SceneInterface):
     def export(
         self,
         file_path: "str",
-        entities: "list[str|ExportableInterface]",
+        entities: "list[ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -94,7 +94,7 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED)
-    def remove_from_group(self, entity_name: "str", group_name: "str"):
+    def remove_from_group(self, entity: "EntityInterface", group_name: "str"):
         if isinstance(entity_name, Entity):
             entity_name = entity_name.name
         remove_object_from_collection(
@@ -107,7 +107,7 @@ class Scene(SceneInterface):
     @supported(SupportLevel.SUPPORTED)
     def assign_to_group(
         self,
-        entities: "list[str|EntityInterface]",
+        entities: "list[EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -121,7 +121,7 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED)
-    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
+    def set_visible(self, entities: "list[EntityInterface]", is_visible: "bool"):
         for entity in entities:
             if isinstance(entity, EntityInterface):
                 entity = entity.name

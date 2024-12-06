@@ -11,7 +11,10 @@ from providers.blender.blender_provider.blender_actions.camera import (
 class Camera(CameraInterface, Entity):
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description

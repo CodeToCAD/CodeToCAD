@@ -63,6 +63,6 @@ class Render(RenderInterface):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
+    def set_camera(self, camera_instance: "CameraInterface"):
         raise NotImplementedError()
         return self

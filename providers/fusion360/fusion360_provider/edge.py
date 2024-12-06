@@ -15,12 +15,12 @@ class Edge(EdgeInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
         v1: "VertexInterface",
         v2: "VertexInterface",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
+        parent: "EntityInterface| None" = None,
     ):
         self.v1 = v1
         self.v2 = v2
@@ -68,9 +68,9 @@ class Edge(EdgeInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
+        separate_resulting_entity: "bool| None" = False,
     ):
         raise NotImplementedError()
         return self
@@ -90,7 +90,7 @@ class Edge(EdgeInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()

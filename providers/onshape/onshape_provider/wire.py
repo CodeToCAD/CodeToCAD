@@ -34,9 +34,9 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
+        separate_resulting_entity: "bool| None" = False,
     ):
         return self
 
@@ -54,7 +54,7 @@ class Wire(WireInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
@@ -71,11 +71,11 @@ class Wire(WireInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
         edges: "list[EdgeInterface]",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
+        parent: "EntityInterface| None" = None,
     ):
         self.edges = edges
         self.parent_entity = parent_entity
@@ -100,7 +100,12 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
-    def loft(self, other: "WireInterface", new_part_name: "str| None" = None) -> "Part":
+    def loft(
+        self,
+        other: "WireInterface",
+        union_connecting_parts: "bool| None" = True,
+        new_name: "str| None" = None,
+    ) -> "Part":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -122,7 +127,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def union(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -132,7 +137,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def subtract(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -144,7 +149,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def intersect(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -170,7 +175,7 @@ class Wire(WireInterface, Entity):
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|EntityInterface",
+        about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
@@ -189,7 +194,7 @@ class Wire(WireInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def sweep(
-        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
+        self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
         print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
         return Part("a part")
@@ -200,7 +205,7 @@ class Wire(WireInterface, Entity):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
+    def profile(self, profile_curve: "WireInterface|SketchInterface"):
         print("profile called", f": {profile_curve_name}")
         return self
 

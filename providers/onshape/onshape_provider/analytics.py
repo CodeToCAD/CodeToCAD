@@ -16,29 +16,29 @@ class Analytics(AnalyticsInterface):
 
     @supported(SupportLevel.UNSUPPORTED)
     def measure_distance(
-        self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
+        self, entity_1: "EntityInterface", entity_2: "EntityInterface"
     ) -> "Dimensions":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
     def measure_angle(
         self,
-        entity1: "str|EntityInterface",
-        entity2: "str|EntityInterface",
-        pivot: "str|EntityInterface| None" = None,
+        entity_1: "EntityInterface",
+        entity_2: "EntityInterface",
+        pivot: "EntityInterface| None" = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
-    def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
+    def get_world_pose(self, entity: "EntityInterface") -> "list[float]":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
-    def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
+    def get_bounding_box(self, entity: "EntityInterface") -> "BoundaryBox":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
-    def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
+    def get_dimensions(self, entity: "EntityInterface") -> "Dimensions":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)

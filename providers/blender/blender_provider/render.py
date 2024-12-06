@@ -99,7 +99,7 @@ class Render(RenderInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED)
-    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
+    def set_camera(self, camera_instance: "CameraInterface"):
         cameraName = camera_name_or_instance
         if isinstance(cameraName, CameraInterface):
             cameraName = cameraName.name

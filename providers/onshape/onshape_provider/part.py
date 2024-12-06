@@ -22,7 +22,10 @@ if TYPE_CHECKING:
 class Part(PartInterface, Entity):
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description
@@ -31,9 +34,9 @@ class Part(PartInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
+        separate_resulting_entity: "bool| None" = False,
     ):
         return self
 
@@ -51,7 +54,7 @@ class Part(PartInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         return self
@@ -166,13 +169,15 @@ class Part(PartInterface, Entity):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def clone(self, new_name: "str", copy_landmarks: "bool" = True) -> "Part":
+    def clone(
+        self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
+    ) -> "Part":
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
     def union(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -181,7 +186,7 @@ class Part(PartInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def subtract(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -190,7 +195,7 @@ class Part(PartInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def intersect(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -222,13 +227,13 @@ class Part(PartInterface, Entity):
         initial_rotation_x: "str|float|Angle" = 0.0,
         initial_rotation_y: "str|float|Angle" = 0.0,
         initial_rotation_z: "str|float|Angle" = 0.0,
-        mirror_about_entity_or_landmark: "str|EntityInterface| None" = None,
+        mirror_about_entity_or_landmark: "EntityInterface| None" = None,
         mirror_axis: "str|int|Axis" = "x",
         mirror: "bool" = False,
         circular_pattern_instance_count: "int" = 1,
         circular_pattern_instance_separation: "str|float|Angle" = 0.0,
         circular_pattern_instance_axis: "str|int|Axis" = "z",
-        circular_pattern_about_entity_or_landmark: "str|EntityInterface| None" = None,
+        circular_pattern_about_entity_or_landmark: "EntityInterface| None" = None,
         linear_pattern_instance_count: "int" = 1,
         linear_pattern_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern_instance_axis: "str|int|Axis" = "x",
@@ -249,11 +254,11 @@ class Part(PartInterface, Entity):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def set_material(self, material_name: "str|MaterialInterface"):
+    def set_material(self, material: "MaterialInterface"):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def is_colliding_with_part(self, other_part: "str|PartInterface") -> bool:
+    def is_colliding_with_part(self, other_part: "PartInterface") -> bool:
         raise NotImplementedError()
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -301,21 +306,15 @@ class Part(PartInterface, Entity):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def select_vertex_near_landmark(
-        self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    def select_vertex_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def select_edge_near_landmark(
-        self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    def select_edge_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def select_face_near_landmark(
-        self, landmark_name: "str|LandmarkInterface| None" = None
-    ):
+    def select_face_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -347,7 +346,7 @@ class Part(PartInterface, Entity):
         word_spacing: "int" = 1,
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
-        profile_curve_name: "str|WireInterface|SketchInterface| None" = None,
+        profile_curve: "WireInterface|SketchInterface| None" = None,
     ) -> Self:
         print(
             "create_text called",

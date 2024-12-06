@@ -13,7 +13,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
 
 class Joint(JointInterface):
 
-    def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
+    def __init__(self, entity_1: "EntityInterface", entity_2: "EntityInterface"):
         self.entity1 = entity1
         self.entity2 = entity2
 

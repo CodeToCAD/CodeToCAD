@@ -12,11 +12,11 @@ class Vertex(VertexInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
         location: "Point",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
+        parent: "EntityInterface| None" = None,
     ):
         self.location = location
         self.parent_entity = parent_entity

@@ -43,7 +43,6 @@ from providers.blender.blender_provider.blender_actions.normals import (
     project_vector_along_normal,
 )
 from providers.blender.blender_provider.blender_actions.objects import (
-    get_object,
     get_object_or_none,
 )
 from providers.blender.blender_provider.entity import Entity
@@ -53,11 +52,11 @@ class Wire(WireInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
         edges: "list[EdgeInterface]",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
+        parent: "EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
@@ -108,9 +107,9 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
+        separate_resulting_entity: "bool| None" = False,
     ):
         raise NotImplementedError()
         return self
@@ -135,7 +134,7 @@ class Wire(WireInterface, Entity):
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
     ):
         raise NotImplementedError()
@@ -146,7 +145,10 @@ class Wire(WireInterface, Entity):
         "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.",
     )
     def loft(
-        self, other: "WireInterface", new_part_name: "str| None" = None
+        self,
+        other: "WireInterface",
+        union_connecting_parts: "bool| None" = True,
+        new_name: "str| None" = None,
     ) -> "PartInterface":
         blender_mesh = custom_codetocad_loft(self, other)
         part = Part(blender_mesh.name)
@@ -163,7 +165,6 @@ class Wire(WireInterface, Entity):
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-
                 part.rename(parent_name)
             if other.parent_entity:
                 parent_name = (
@@ -175,7 +176,6 @@ class Wire(WireInterface, Entity):
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-
         recalculate_normals(part.name)
         return part
 
@@ -199,7 +199,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def union(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -210,7 +210,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def subtract(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -223,7 +223,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def intersect(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
     ):
@@ -253,27 +253,23 @@ class Wire(WireInterface, Entity):
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|EntityInterface",
+        about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         assert self.parent_entity, "This wire is not associated with a parent entity."
         parent = self.parent_entity
         if isinstance(parent, str):
             parent = Sketch(parent)
-
         possible_sketch: SketchInterface | None = None
         possible_sketch_was_visible = False
-
         if isinstance(about_entity_or_landmark, str):
             if get_curve_or_none(about_entity_or_landmark) is not None:
                 possible_sketch = Sketch(about_entity_or_landmark)
         elif isinstance(about_entity_or_landmark, SketchInterface):
             possible_sketch = about_entity_or_landmark
-
         if possible_sketch:
             possible_sketch_was_visible = possible_sketch.is_visible()
             possible_sketch.set_visible(True)
-
         if isinstance(about_entity_or_landmark, LandmarkInterface):
             about_entity_or_landmark = (
                 about_entity_or_landmark.get_landmark_entity_name()
@@ -289,10 +285,8 @@ class Wire(WireInterface, Entity):
             entity_name_to_determine_axis=about_entity_or_landmark,
         )
         create_mesh_from_curve(parent.name)
-
         if not possible_sketch_was_visible and possible_sketch:
             possible_sketch.set_visible(False)
-
         # Recalculate normals because they're usually wrong after revolving.
         recalculate_normals(parent.name)
         return Part(parent.name, description=parent.description).apply()
@@ -331,22 +325,18 @@ class Wire(WireInterface, Entity):
         temp_sketch_1.project(self)
         for wire in temp_sketch_1.get_wires():
             wire.translate_xyz(*projected_normal)
-
         wire_name = parent.name + "_" + self.name
         temp_sketch_2 = Sketch(wire_name)
         temp_sketch_2.project(self)
-
         part = temp_sketch_2.get_wires()[0].loft(temp_sketch_1.get_wires()[0])
         part.description = self.description
-
         temp_sketch_1.delete()
         temp_sketch_2.delete()
-
         return part
 
     @supported(SupportLevel.SUPPORTED, notes="Sweep the wire")
     def sweep(
-        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
+        self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
         assert self.parent_entity, "This wire is not associated with a parent entity."
         parent = self.parent_entity
@@ -363,7 +353,7 @@ class Wire(WireInterface, Entity):
         return Part(parent.name, parent.description).apply()
 
     @supported(SupportLevel.SUPPORTED, notes="Get profile of the wire")
-    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
+    def profile(self, profile_curve: "WireInterface|SketchInterface"):
         assert self.parent_entity, "This wire is not associated with a parent entity."
         parent = self.parent_entity
         if isinstance(parent, str):

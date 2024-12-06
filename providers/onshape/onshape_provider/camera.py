@@ -12,7 +12,10 @@ class Camera(CameraInterface, Entity):
     native_instance = None
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description

@@ -14,8 +14,8 @@ class Landmark(LandmarkInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
-        parent_entity: "str|EntityInterface",
+        parent: "EntityInterface",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -39,7 +39,7 @@ class Landmark(LandmarkInterface, Entity):
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|EntityInterface| None" = None,
+        new_parent: "EntityInterface| None" = None,
     ) -> "Landmark":
         if new_parent:
             if isinstance(new_parent, str):
@@ -50,10 +50,6 @@ class Landmark(LandmarkInterface, Entity):
             parent = self.parent_entity
         sketch = self._fusion_landmark.clone(new_name, True)
         return Landmark(sketch.name, parent)
-
-    @supported(SupportLevel.SUPPORTED)
-    def get_landmark_entity_name(self) -> str:
-        return self._fusion_landmark.instance.name
 
     @supported(SupportLevel.SUPPORTED)
     def get_parent_entity(self) -> "EntityInterface":

@@ -1,4 +1,5 @@
 from codetocad.core.boundary_axis import BoundaryAxis
+from typing import Self
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
@@ -49,7 +50,10 @@ from providers.blender.blender_provider.blender_definitions import (
 class Entity(EntityInterface):
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description
@@ -59,23 +63,7 @@ class Entity(EntityInterface):
     def is_exists(self) -> bool:
         if isinstance(self, SketchInterface):
             return get_curve_or_none(self.name) is not None
-
         return get_object_or_none(self.name) is not None
-
-    @supported(
-        SupportLevel.SUPPORTED,
-        notes="Renames an object and its underlying data with the same name.",
-    )
-    def rename(
-        self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
-    ):
-        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
-        update_object_name(self.name, new_name)
-        if renamelinked_entities_and_landmarks:
-            update_object_data_name(new_name, new_name)
-            update_object_landmark_names(new_name, self.name, new_name)
-        self.name = new_name
-        return self
 
     @supported(
         SupportLevel.SUPPORTED,
@@ -84,12 +72,10 @@ class Entity(EntityInterface):
     def delete(self, remove_children: "bool" = True):
         if isinstance(self, SketchInterface):
             sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
-
             if sketch_object is None:
                 curve_data = get_curve(self.name)
                 remove_data(curve_data)
                 return
-
         remove_object(self.name, remove_children)
         return self
 
@@ -138,13 +124,10 @@ class Entity(EntityInterface):
         blender_object = get_object_or_none(self.name)
         if blender_object:
             return blender_object
-
         if isinstance(self, SketchInterface):
             return get_curve(self.name)
-
         if isinstance(self, PartInterface):
             return get_mesh(self.name)
-
         raise NotImplementedError("get_native_instance is not supported")
 
     @supported(SupportLevel.SUPPORTED)
@@ -275,3 +258,25 @@ class Entity(EntityInterface):
             for dimension in dimensions
         ]
         return Dimensions(dimensions[0], dimensions[1], dimensions[2])
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_name(
+        self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
+    ) -> Self:
+        assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
+        update_object_name(self.name, new_name)
+        if rename_linked_entities_and_landmarks:
+            update_object_data_name(new_name, new_name)
+            update_object_landmark_names(new_name, self.name, new_name)
+        self.name = new_name
+        return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_name(self) -> "str":
+        print("get_name called")
+        return "String"
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def update_native_instance(self) -> "object":
+        print("update_native_instance called")
+        return self

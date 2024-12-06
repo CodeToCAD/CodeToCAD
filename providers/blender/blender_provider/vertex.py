@@ -1,14 +1,12 @@
 from codetocad.interfaces.entity_interface import EntityInterface
+from typing import Self
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.codetocad_types import *
-from typing import Self, Sequence
+from typing import Self
 from codetocad.core.point import Point
 from codetocad.interfaces.vertex_interface import VertexInterface
-from providers.blender.blender_provider.blender_definitions import (
-    BlenderLength,
-    BlenderTypes,
-)
+from providers.blender.blender_provider.blender_definitions import BlenderTypes
 from providers.blender.blender_provider.entity import Entity
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override
@@ -23,11 +21,11 @@ class Vertex(VertexInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
         location: "Point",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
+        parent: "EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Vertex requires a parent_entity and a native_instance
@@ -62,7 +60,7 @@ class Vertex(VertexInterface, Entity):
 
     @supported(SupportLevel.SUPPORTED)
     def set_control_points(
-        self, points: "Sequence[str|list[str]|list[float]|list[Dimension]|Point]"
+        self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         set_control_points(self.get_native_instance(), parsed_points)  # type:ignore

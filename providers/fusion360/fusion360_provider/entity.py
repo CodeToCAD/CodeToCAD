@@ -1,4 +1,5 @@
 from codetocad.interfaces.landmark_interface import LandmarkInterface
+from typing import Self
 from codetocad.interfaces.part_interface import PartInterface
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
@@ -20,7 +21,10 @@ from .fusion_actions.fusion_sketch import FusionSketch
 class Entity(EntityInterface):
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description
@@ -44,24 +48,6 @@ class Entity(EntityInterface):
             raise NotImplementedError()
         except:
             return False
-
-    @supported(
-        SupportLevel.PARTIAL,
-        "Does not support the rename_linked_entities_and_landmarks parameter yet.",
-    )
-    def rename(
-        self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
-    ):
-        if isinstance(self, PartInterface):
-            FusionBody(self.name).rename(new_name)
-        if isinstance(self, SketchInterface):
-            FusionSketch(self.name).rename(new_name)
-        if isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).rename(new_name)
-        self.name = new_name
-        return self
 
     @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
     def delete(self, remove_children: "bool" = True):
@@ -241,3 +227,28 @@ class Entity(EntityInterface):
         else:
             raise NotImplementedError()
         return dimensions
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_name(
+        self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
+    ) -> Self:
+        if isinstance(self, PartInterface):
+            FusionBody(self.name).rename(new_name)
+        if isinstance(self, SketchInterface):
+            FusionSketch(self.name).rename(new_name)
+        if isinstance(self, LandmarkInterface):
+            FusionLandmark(
+                self.name, self.get_parent_entity().get_native_instance()
+            ).rename(new_name)
+        self.name = new_name
+        return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_name(self) -> "str":
+        print("get_name called")
+        return "String"
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def update_native_instance(self) -> "object":
+        print("update_native_instance called")
+        return self

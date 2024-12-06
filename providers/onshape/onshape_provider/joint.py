@@ -15,7 +15,7 @@ class Joint(JointInterface):
     entity1: str | Entity
     entity2: str | Entity
 
-    def __init__(self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"):
+    def __init__(self, entity_1: "EntityInterface", entity_2: "EntityInterface"):
         self.entity1 = entity1
         self.entity2 = entity2
 

@@ -38,7 +38,7 @@ class Scene(SceneInterface):
     def export(
         self,
         file_path: "str",
-        entities: "list[str|ExportableInterface]",
+        entities: "list[ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
     ):
@@ -61,14 +61,14 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.PLANNED)
-    def remove_from_group(self, entity_name: "str", group_name: "str"):
+    def remove_from_group(self, entity: "EntityInterface", group_name: "str"):
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.PLANNED)
     def assign_to_group(
         self,
-        entities: "list[str|EntityInterface]",
+        entities: "list[EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
     ):
@@ -76,7 +76,7 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.PLANNED)
-    def set_visible(self, entities: "list[str|EntityInterface]", is_visible: "bool"):
+    def set_visible(self, entities: "list[EntityInterface]", is_visible: "bool"):
         raise NotImplementedError()
         return self
 

@@ -30,15 +30,11 @@ class Animation(AnimationInterface):
         return self
 
     @supported(SupportLevel.PLANNED)
-    def create_key_frame_location(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_location(self, entity: "EntityInterface", frame_number: "int"):
         print("create_key_frame_location called:", entity, frame_number)
         return self
 
     @supported(SupportLevel.PLANNED)
-    def create_key_frame_rotation(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_rotation(self, entity: "EntityInterface", frame_number: "int"):
         print("create_key_frame_rotation called:", entity, frame_number)
         return self

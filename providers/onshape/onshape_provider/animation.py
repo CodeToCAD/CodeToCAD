@@ -31,13 +31,9 @@ class Animation(AnimationInterface):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def create_key_frame_location(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_location(self, entity: "EntityInterface", frame_number: "int"):
         return self
 
     @supported(SupportLevel.UNSUPPORTED)
-    def create_key_frame_rotation(
-        self, entity: "str|EntityInterface", frame_number: "int"
-    ):
+    def create_key_frame_rotation(self, entity: "EntityInterface", frame_number: "int"):
         return self

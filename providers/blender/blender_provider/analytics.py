@@ -22,7 +22,7 @@ class Analytics(AnalyticsInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def measure_distance(
-        self, entity1: "str|EntityInterface", entity2: "str|EntityInterface"
+        self, entity_1: "EntityInterface", entity_2: "EntityInterface"
     ) -> "Dimensions":
         distance = (
             Analytics._get_entity_from_name_or_landmark(entity2).get_location_world()
@@ -33,28 +33,28 @@ class Analytics(AnalyticsInterface):
     @supported(SupportLevel.PLANNED)
     def measure_angle(
         self,
-        entity1: "str|EntityInterface",
-        entity2: "str|EntityInterface",
-        pivot: "str|EntityInterface| None" = None,
+        entity_1: "EntityInterface",
+        entity_2: "EntityInterface",
+        pivot: "EntityInterface| None" = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED)
-    def get_world_pose(self, entity: "str|EntityInterface") -> "list[float]":
+    def get_world_pose(self, entity: "EntityInterface") -> "list[float]":
         part_name = entity
         if isinstance(part_name, EntityInterface):
             part_name = part_name.name
         return get_object_world_pose(part_name)
 
     @supported(SupportLevel.SUPPORTED)
-    def get_bounding_box(self, entity_name: "str|EntityInterface") -> "BoundaryBox":
+    def get_bounding_box(self, entity: "EntityInterface") -> "BoundaryBox":
         entity = entity_name
         if isinstance(entity, str):
             entity = Entity(entity)
         return entity.get_bounding_box()
 
     @supported(SupportLevel.SUPPORTED)
-    def get_dimensions(self, entity_name: "str|EntityInterface") -> "Dimensions":
+    def get_dimensions(self, entity: "EntityInterface") -> "Dimensions":
         if isinstance(entity_name, Entity):
             return entity_name.get_dimensions()
         if isinstance(entity_name, str):

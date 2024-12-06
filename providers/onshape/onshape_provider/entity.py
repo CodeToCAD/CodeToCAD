@@ -1,4 +1,5 @@
 from typing import Optional
+from typing import Self
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -15,7 +16,10 @@ class Entity(EntityInterface):
     native_instance = None
 
     def __init__(
-        self, name: "str", description: "str| None" = None, native_instance=None
+        self,
+        name: "str| None" = None,
+        description: "str| None" = None,
+        native_instance=None,
     ):
         self.name = name
         self.description = description
@@ -24,12 +28,6 @@ class Entity(EntityInterface):
     @supported(SupportLevel.UNSUPPORTED)
     def is_exists(self) -> bool:
         raise NotImplementedError()
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def rename(
-        self, new_name: "str", renamelinked_entities_and_landmarks: "bool" = True
-    ):
-        return self
 
     @supported(SupportLevel.UNSUPPORTED)
     def delete(self, remove_children: "bool" = True):
@@ -115,3 +113,22 @@ class Entity(EntityInterface):
     @supported(SupportLevel.UNSUPPORTED)
     def get_dimensions(self) -> "Dimensions":
         raise NotImplementedError()
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_name(
+        self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
+    ) -> Self:
+        print(
+            "set_name called", f": {new_name}, {rename_linked_entities_and_landmarks}"
+        )
+        return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_name(self) -> "str":
+        print("get_name called")
+        return "String"
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def update_native_instance(self) -> "object":
+        print("update_native_instance called")
+        return self

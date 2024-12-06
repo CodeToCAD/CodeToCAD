@@ -1,4 +1,3 @@
-from typing import Union
 import bpy
 import bmesh
 import mathutils
@@ -134,7 +133,7 @@ def get_closest_face_to_vertex(
 def get_closest_points_to_vertex(
     blender_object: bpy.types.Object, vertex, number_of_points=2, object_kd_tree=None
 ):
-    
+
     kdTree = object_kd_tree or create_kd_tree_for_object(blender_object)
 
     assert (
@@ -183,7 +182,7 @@ def get_bounding_box(
     return BoundaryBox(boundingBox["x"], boundingBox["y"], boundingBox["z"])
 
 
-def separate_object(blender_object:bpy.types.Object):
+def separate_object(blender_object: bpy.types.Object):
     bpy.ops.object.select_all(action="DESELECT")
 
     blender_object.select_set(True)

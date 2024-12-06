@@ -1,7 +1,6 @@
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.material_interface import MaterialInterface
-from codetocad.codetocad_types import *
 
 # The implementation diverges from Blender
 # It's only set the body of the current object
@@ -10,7 +9,7 @@ from codetocad.codetocad_types import *
 
 class Material(MaterialInterface):
 
-    def __init__(self, name: "str", description: "str| None" = None):
+    def __init__(self, name: "str| None" = None, description: "str| None" = None):
         self.name = name
         self.description = description
         self.color = (0, 0, 0, 1)
@@ -47,18 +46,3 @@ class Material(MaterialInterface):
     def set_image_texture(self, image_file_path: "str"):
         raise NotImplementedError()
         return self
-
-    @staticmethod
-    @supported(SupportLevel.SUPPORTED)
-    def get_preset(material_name: "PresetMaterial"):
-        if isinstance(material_name, str):
-            try:
-                material_name = getattr(PresetMaterial, material_name)
-            except:
-                raise Exception(f"Preset {material_name} not found!")
-        if isinstance(material_name, PresetMaterial):
-            material = Material(material_name.name)
-            material.set_color(*material_name.color)
-            material.set_reflectivity(material_name.reflectivity)
-            material.set_roughness(material_name.roughness)
-        return material

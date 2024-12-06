@@ -26,7 +26,6 @@ from providers.blender.blender_provider.blender_definitions import (
     BlenderCurveTypes,
     BlenderLength,
     BlenderObjectTypes,
-    BlenderTypes,
 )
 
 

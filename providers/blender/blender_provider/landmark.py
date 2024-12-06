@@ -26,8 +26,8 @@ class Landmark(LandmarkInterface, Entity):
 
     def __init__(
         self,
-        name: "str",
-        parent_entity: "str|EntityInterface",
+        parent: "EntityInterface",
+        name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
     ):
@@ -35,14 +35,6 @@ class Landmark(LandmarkInterface, Entity):
         self.parent_entity = parent_entity
         self.description = description
         self.native_instance = native_instance
-
-    @supported(SupportLevel.SUPPORTED)
-    def get_landmark_entity_name(self) -> str:
-        parent_entityName = self.parent_entity
-        if isinstance(parent_entityName, EntityInterface):
-            parent_entityName = parent_entityName.name
-        entityName = format_landmark_entity_name(parent_entityName, self.name)
-        return entityName
 
     @supported(SupportLevel.SUPPORTED)
     def get_parent_entity(self) -> "EntityInterface":
@@ -93,7 +85,7 @@ class Landmark(LandmarkInterface, Entity):
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|EntityInterface| None" = None,
+        new_parent: "EntityInterface| None" = None,
     ) -> "Landmark":
         x = (
             self.get_location_local().x
