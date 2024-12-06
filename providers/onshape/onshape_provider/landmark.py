@@ -41,7 +41,3 @@ class Landmark(LandmarkInterface, Entity):
         from . import Landmark
 
         return Landmark("name", "parent")
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_parent_entity(self) -> "Entity":
-        raise NotImplementedError()

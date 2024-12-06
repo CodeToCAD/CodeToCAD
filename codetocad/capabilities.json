@@ -1814,6 +1814,18 @@
                         "type": "string"
                     }
                 }
+            },
+            "get_preset": {
+                "information": "Get a material from PresetMaterial",
+                "action": "create",
+                "return_type": "Material",
+                "is_static_method": true,
+                "parameters": {
+                    "parameter": {
+                        "type": "PresetMaterial",
+                        "required": true
+                    }
+                }
             }
         },
         "Animation": {

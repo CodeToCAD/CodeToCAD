@@ -50,9 +50,3 @@ class Landmark(LandmarkInterface, Entity):
             parent = self.parent_entity
         sketch = self._fusion_landmark.clone(new_name, True)
         return Landmark(sketch.name, parent)
-
-    @supported(SupportLevel.SUPPORTED)
-    def get_parent_entity(self) -> "EntityInterface":
-        if isinstance(self.parent_entity, str):
-            return Entity(self.parent_entity)
-        return self.parent_entity

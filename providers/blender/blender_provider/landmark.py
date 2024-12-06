@@ -36,12 +36,6 @@ class Landmark(LandmarkInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.SUPPORTED)
-    def get_parent_entity(self) -> "EntityInterface":
-        if isinstance(self.parent_entity, str):
-            return Entity(self.parent_entity)
-        return self.parent_entity
-
     @override
     @supported(SupportLevel.SUPPORTED)
     def rename(self, new_name: str):
