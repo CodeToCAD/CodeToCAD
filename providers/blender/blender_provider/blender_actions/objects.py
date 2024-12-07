@@ -358,28 +358,28 @@ def get_object_world_pose(
     return [value for values in listOfTuples for value in values]
 
 
-# def get_object(
-#     object_name: str,
-#     of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
-# ) -> bpy.types.Object:
-#     blender_object = get_object_or_none(object_name, of_type)
+def get_object(
+    object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
+) -> bpy.types.Object:
+    blender_object = get_object_or_none(object_name, of_type)
 
-#     assert blender_object is not None, f"Object {object_name} does not exists"
+    assert blender_object is not None, f"Object {object_name} does not exists"
 
-#     return blender_object
+    return blender_object
 
 
-# def get_object_or_none(
-#     object_name: str,
-#     of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
-# ) -> Optional[bpy.types.Object]:
-#     blender_object = bpy.data.objects.get(object_name)
+def get_object_or_none(
+    object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
+) -> Optional[bpy.types.Object]:
+    blender_object = bpy.data.objects.get(object_name)
 
-#     if blender_object and of_type is not None:
-#         if not blender_object.type == of_type:
-#             return None
+    if blender_object and of_type is not None:
+        if not blender_object.type == of_type:
+            return None
 
-#     return blender_object
+    return blender_object
 
 
 def get_object_type(blender_object: bpy.types.Object) -> BlenderObjectTypes:

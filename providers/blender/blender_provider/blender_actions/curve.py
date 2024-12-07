@@ -531,12 +531,12 @@ def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     wire_1_world_matrix = Matrix.Identity(3)
     wire_2_world_matrix = Matrix.Identity(3)
 
-    if wire_1.parent_entity:
-        parent_object = wire_1.parent_entity.get_native_instance()
+    if wire_1.parent:
+        parent_object = wire_1.parent.get_native_instance()
         if isinstance(parent_object, bpy.types.Object):
             wire_1_world_matrix = parent_object.matrix_world
-    if wire_2.parent_entity:
-        parent_object = wire_2.parent_entity.get_native_instance()
+    if wire_2.parent:
+        parent_object = wire_2.parenttive_instance()
         if isinstance(parent_object, bpy.types.Object):
             wire_2_world_matrix = parent_object.matrix_world
 

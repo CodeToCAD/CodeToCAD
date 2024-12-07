@@ -46,7 +46,7 @@ def get_vertex_from_blender_point(
         location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
         native_instance=spline_point,
-        parent_entity=edge,
+        parent=edge,
     )
 
 
@@ -88,7 +88,7 @@ def get_edge_from_blender_edge(
         v1=v1,
         v2=v2,
         name=create_uuid_like_id(),
-        parent_entity=entity.name,
+        parent=entity.name,
         native_instance=edge,
     )
 
@@ -124,7 +124,7 @@ def get_wire_from_blender_wire(
     return Wire(
         edges=edges,
         name=create_uuid_like_id(),
-        parent_entity=entity.name,
+        parent=entity.name,
         native_instance=wire,
     )
 

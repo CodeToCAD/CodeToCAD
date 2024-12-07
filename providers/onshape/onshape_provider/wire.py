@@ -64,7 +64,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
 
     edges: "list[Edge]"
-    parent_entity: Optional[str | Entity] = None
+    parent: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -78,7 +78,7 @@ class Wire(WireInterface, Entity):
         parent: "EntityInterface| None" = None,
     ):
         self.edges = edges
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -196,7 +196,7 @@ class Wire(WireInterface, Entity):
     def sweep(
         self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
-        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
+        print("sweep called", f": {profile}, {fill_cap}")
         return Part("a part")
 
     @supported(SupportLevel.UNSUPPORTED)
@@ -206,7 +206,7 @@ class Wire(WireInterface, Entity):
 
     @supported(SupportLevel.UNSUPPORTED)
     def profile(self, profile_curve: "WireInterface|SketchInterface"):
-        print("profile called", f": {profile_curve_name}")
+        print("profile called", f": {profile_curve}")
         return self
 
     @supported(SupportLevel.UNSUPPORTED)

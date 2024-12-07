@@ -72,7 +72,7 @@ class Part(PartInterface, Entity):
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
         if self.name != importedFileName:
-            Part(importedFileName).rename(self.name)
+            Part(importedFileName).set_name(self.name)
         return self
 
     @supported(SupportLevel.SUPPORTED)
@@ -86,7 +86,7 @@ class Part(PartInterface, Entity):
             Sketch(self.name)
             .create_rectangle(length, width)
             .extrude(height)
-            .rename(self.name)
+            .set_name(self.name)
         )
 
     @supported(
@@ -118,7 +118,9 @@ class Part(PartInterface, Entity):
     def create_cylinder(
         self, radius: "str|float|Dimension", height: "str|float|Dimension"
     ):
-        return Sketch(self.name).create_circle(radius).extrude(height).rename(self.name)
+        return (
+            Sketch(self.name).create_circle(radius).extrude(height).set_name(self.name)
+        )
 
     @supported(SupportLevel.SUPPORTED)
     def create_torus(
@@ -148,7 +150,7 @@ class Part(PartInterface, Entity):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
         new_part = circle.revolve(180, sketch.get_landmark("center"), "x")
-        return new_part.rename(self.name)
+        return new_part.set_name(self.name)
 
     @supported(SupportLevel.SUPPORTED)
     def create_gear(
@@ -180,7 +182,7 @@ class Part(PartInterface, Entity):
         # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
         # therefore, we'll use the object's "expected" name and rename it to what it should be
         # note: this will fail if the "expected" name is incorrect
-        Part("Gear").rename(self.name, True)
+        Part("Gear").set_name(self.name, True)
         return self
 
     @supported(SupportLevel.SUPPORTED)
@@ -402,7 +404,7 @@ class Part(PartInterface, Entity):
             hole.mirror(
                 mirror_about_entity_or_landmark,
                 mirror_axis,
-                resulting_mirrored_entity_name=None,
+                separate_resulting_entity=None,
             )
         self.subtract(hole, delete_after_subtract=True, is_transfer_data=False)
         return self._apply_modifiers_only()
@@ -566,7 +568,9 @@ class Part(PartInterface, Entity):
         bevel_faces_nearlandmark_names: list[str | LandmarkInterface],
         vertex_group_name,
     ):
-        vertex_group_object = create_object_vertex_group(self.name, vertex_group_name)
+        vertex_group_object = create_object_vertex_group(
+            self.get_native_instance(), vertex_group_name
+        )
         for landmark_or_its_name in bevel_faces_nearlandmark_names:
             landmark = (
                 self.get_landmark(landmark_or_its_name)
@@ -617,7 +621,7 @@ class Part(PartInterface, Entity):
         separate_resulting_entity: "bool| None" = False,
     ):
         implementables.mirror(
-            self, mirror_across_entity, axis, resulting_mirrored_entity_name
+            self, mirror_across_entity, axis, separate_resulting_entity
         )
         return self
 
@@ -747,8 +751,6 @@ class Part(PartInterface, Entity):
         font_file_path: "str| None" = None,
         profile_curve: "WireInterface|SketchInterface| None" = None,
     ) -> Self:
-        if not options:
-            options = PartOptions()
         sketch = Sketch(self.name + "_" + create_uuid_like_id()).create_text(
             text=text,
             font_size=font_size,
@@ -759,17 +761,12 @@ class Part(PartInterface, Entity):
             word_spacing=word_spacing,
             line_spacing=line_spacing,
             font_file_path=font_file_path,
-            profile_curve_name=profile_curve_name,
-            options=SketchOptions(
-                rotation_x=options.rotation_x,
-                rotation_y=options.rotation_y,
-                rotation_z=options.rotation_z,
-            ),
+            profile_curve=profile_curve,
         )
         wires = sketch.get_wires()
         part = wires[0].extrude(extrude_amount)
         for wireIndex in range(1, len(wires)):
             part.union(wires[wireIndex].extrude(extrude_amount))
-        part.rename(self.name)
+        part.set_name(self.name)
         sketch.delete()
         return self

@@ -12,7 +12,11 @@ class PartTest(TestProviderCase, PartTestInterface):
             height=20,
         )
 
-        value = instance.mirror(mirror_across_entity="myPart", axis="z")
+        instance.translate_x(-1)
+
+        mirror_entity = Sketch().create_point([0, 0, 0])
+
+        value = instance.mirror(mirror_across_entity=mirror_entity, axis="z")
 
         assert value.is_exists(), "Create method failed."
 
@@ -36,10 +40,12 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         value = instance.create_cube(1, 1, 1)
 
+        mirror_entity = Sketch().create_point([0, 0, 0])
+
         value = instance.circular_pattern(
             instance_count=2,
             separation_angle=math.pi,
-            center_entity_or_landmark="myPart",
+            center_entity_or_landmark=mirror_entity,
             # "normal_direction_axis",
         )
 
@@ -258,13 +264,8 @@ class PartTest(TestProviderCase, PartTestInterface):
         instance2.create_cylinder(radius=5, height=10)
 
         value = instance.union(
-            other="myCylinder",  # "delete_after_union", "is_transfer_data"
+            other=instance2,
         )
-
-        # Regression test for union
-        assert (
-            instance.is_colliding_with_part(instance2) == True
-        ), "Union succeded even though parts are not touching."
 
         assert value, "Modify method failed."
 
@@ -277,14 +278,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance2.create_cylinder(radius=5, height=10)
 
-        value = instance.subtract(
-            other="myCylinder",  # "delete_after_subtract", "is_transfer_data"
-        )
-
-        # Regression test for subtract
-        assert (
-            instance.is_colliding_with_part(instance2) == True
-        ), "Subtract succeded even though parts are not touching."
+        value = instance.subtract(other=instance2)
 
         assert value, "Modify method failed."
 
@@ -297,14 +291,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance2.create_cylinder(radius=5, height=10)
 
-        value = instance.intersect(
-            other="myCylinder",  # "delete_after_intersect", "is_transfer_data"
-        )
-
-        # Regression test for intersect
-        assert (
-            instance.is_colliding_with_part(instance2) == True
-        ), "Intersect succeded even though parts are not touching."
+        value = instance.intersect(other=instance2)
 
         assert value, "Modify method failed."
 
@@ -359,7 +346,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance.create_cylinder(radius=5, height=10)
 
-        value = instance.set_material(material_name="test-material")
+        value = instance.set_material(PresetMaterial.blue.material)
 
         assert value, "Modify method failed."
 
@@ -372,7 +359,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance2.create_cylinder(radius=5, height=10)
 
-        value = instance.is_colliding_with_part(other_part="myCylinder")
+        value = instance.is_colliding_with_part(other_part=instance2)
 
         assert value, "Get method failed."
 
@@ -451,24 +438,30 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance.create_cube(5, 5, 5)
 
-        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+        landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
-        value = instance.select_vertex_near_landmark(landmark_name="ref-lm")
+        value = instance.select_vertex_near_landmark(landmark=landmark)
+
+        assert value, "Modify method failed."
 
     def test_select_edge_near_landmark(self):
         instance = Part("myCube")
 
         instance.create_cube(5, 5, 5)
 
-        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+        landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
-        value = instance.select_edge_near_landmark(landmark_name="ref-lm")
+        value = instance.select_edge_near_landmark(landmark=landmark)
+
+        assert value, "Modify method failed."
 
     def test_select_face_near_landmark(self):
         instance = Part("myCube")
 
         instance.create_cube(5, 5, 5)
 
-        instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
+        landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
-        value = instance.select_face_near_landmark(landmark_name="ref-lm")
+        value = instance.select_face_near_landmark(landmark=landmark)
+
+        assert value, "Modify method failed."

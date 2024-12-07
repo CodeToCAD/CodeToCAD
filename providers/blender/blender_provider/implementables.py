@@ -5,6 +5,7 @@ from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 from codetocad.codetocad_types import *
 
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 from codetocad.utilities import create_uuid_like_id, get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.collections import (
     assign_object_to_collection,
@@ -54,7 +55,7 @@ from providers.blender.blender_provider.landmark import Landmark
 def export(self: "Entity", file_path: str, overwrite: bool = True, scale: float = 1.0):
     absoluteFilePath = get_absolute_filepath(file_path)
 
-    export_object(self.name, absoluteFilePath, overwrite, scale)
+    export_object(self.get_native_instance(), absoluteFilePath, overwrite, scale)
     return self
 
 
@@ -62,9 +63,9 @@ def mirror(
     self: "Entity",
     mirror_across_entity: str | EntityInterface,
     axis: str | int | Axis,
-    resulting_mirrored_entity_name: Optional[str],
+    separate_resulting_entity: Optional[str],
 ):
-    if resulting_mirrored_entity_name is not None:
+    if separate_resulting_entity is not None:
         raise NotImplementedError("Not yet supported. COD-113")
 
     mirrorAcrossEntityName = mirror_across_entity
@@ -99,7 +100,7 @@ def linear_pattern(
         offset = BlenderLength.convert_dimension_to_blender_unit(offset)
         offset = offset.value
 
-    apply_linear_pattern(self.name, instance_count, axis, offset)
+    apply_linear_pattern(self.get_native_instance(), instance_count, axis, offset)
 
     return self._apply_modifiers_only()
 
@@ -119,15 +120,18 @@ def circular_pattern(
     elif isinstance(center_entity_or_landmark_name, EntityInterface):
         center_entity_or_landmark_name = center_entity_or_landmark_name.name
 
-    pivotLandmarkName = create_uuid_like_id()
+    if not isinstance(self, LandmarkableInterface):
+        raise Exception("Expected a landmarkable entity.")
 
-    self.create_landmark(pivotLandmarkName, 0, 0, 0)
+    pivot_landmark_name = create_uuid_like_id()
 
-    pivotLandmarkEntityName = self.get_landmark(
-        pivotLandmarkName
+    self.create_landmark(pivot_landmark_name, 0, 0, 0)
+
+    pivot_landmark_entity = self.get_landmark(
+        pivot_landmark_name
     ).get_landmark_entity_name()
 
-    apply_pivot_constraint(pivotLandmarkEntityName, center_entity_or_landmark_name)
+    apply_pivot_constraint(pivot_landmark_entity, center_entity_or_landmark_name)
 
     axis = Axis.from_string(normal_direction_axis)
 
@@ -144,16 +148,16 @@ def circular_pattern(
     angles[axis.value] = angle
 
     rotate_object(
-        pivotLandmarkEntityName,
+        pivot_landmark_entity,
         angles,
         BlenderRotationTypes.EULER,
     )
 
-    apply_circular_pattern(self.name, instance_count, pivotLandmarkEntityName)
+    apply_circular_pattern(self.name, instance_count, pivot_landmark_entity)
 
     self._apply_modifiers_only()
 
-    self.get_landmark(pivotLandmarkName).delete()
+    self.get_landmark(pivot_landmark_name).delete()
 
     return self
 
@@ -345,7 +349,7 @@ def create_landmark(
         local_positions[1] -= local_location.y
         local_positions[2] -= local_location.z
 
-    landmark = Landmark(landmark_name, self.name)
+    landmark = Landmark(name=landmark_name, parent=self)
     landmark_object_name = landmark.get_landmark_entity_name()
     # Create an Empty object to represent the landmark
     # Using an Empty object allows us to parent the object to this Empty.

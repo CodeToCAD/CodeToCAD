@@ -24,7 +24,7 @@ class Edge(EdgeInterface, Entity):
     ):
         self.v1 = v1
         self.v2 = v2
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance

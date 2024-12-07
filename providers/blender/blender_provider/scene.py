@@ -9,17 +9,19 @@ from codetocad.utilities import get_absolute_filepath
 from providers.blender.blender_provider.blender_actions.collections import (
     assign_object_to_collection,
     create_collection,
+    get_collection,
     remove_collection,
     remove_object_from_collection,
 )
 from providers.blender.blender_provider.blender_actions.context import (
-    get_selected_object_name,
+    get_selected_objects,
 )
 from providers.blender.blender_provider.blender_actions.objects import (
     set_object_visibility,
 )
 from providers.blender.blender_provider.blender_actions.scene import (
     add_hdr_texture,
+    get_scene,
     set_background_location,
     set_default_unit as blender_actions_set_default_unit,
 )
@@ -56,7 +58,7 @@ class Scene(SceneInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def get_selected_entity(self) -> "EntityInterface":
-        return Entity(get_selected_object_name())
+        return Entity(get_selected_objects()[0].name)
 
     @supported(SupportLevel.UNSUPPORTED)
     def export(
@@ -95,12 +97,9 @@ class Scene(SceneInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def remove_from_group(self, entity: "EntityInterface", group_name: "str"):
-        if isinstance(entity_name, Entity):
-            entity_name = entity_name.name
         remove_object_from_collection(
-            existing_object_name=entity_name,
-            collection_name=group_name,
-            scene_name=self.name,
+            blender_object=entity.get_native_instance(),
+            blender_collection=get_collection(group_name, self.name),
         )
         return self
 
@@ -112,20 +111,17 @@ class Scene(SceneInterface):
         remove_from_other_groups: "bool| None" = True,
     ):
         for entity in entities:
-            entity_name = entity
-            if isinstance(entity_name, EntityInterface):
-                entity_name = entity_name.name
             assign_object_to_collection(
-                entity_name, group_name, self.name, remove_from_other_groups or True
+                blender_object=entity.get_native_instance(),
+                blender_collection=get_collection(group_name, self.name),
+                remove_from_other_groups=remove_from_other_groups or True,
             )
         return self
 
     @supported(SupportLevel.SUPPORTED)
     def set_visible(self, entities: "list[EntityInterface]", is_visible: "bool"):
         for entity in entities:
-            if isinstance(entity, EntityInterface):
-                entity = entity.name
-            set_object_visibility(entity, is_visible)
+            set_object_visibility(entity.get_native_instance(), is_visible)
         return self
 
     @supported(SupportLevel.PARTIAL, "Only environment textures are supported.")
@@ -136,12 +132,13 @@ class Scene(SceneInterface):
         location_y: "str|float|Dimension| None" = 0,
     ):
         absoluteFilePath = get_absolute_filepath(file_path)
-        add_hdr_texture(self.name, absoluteFilePath)
+        blender_scene = get_scene(self.name)
+        add_hdr_texture(blender_scene, absoluteFilePath)
         x = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_x or 0)
         ).value
         y = BlenderLength.convert_dimension_to_blender_unit(
             Dimension.from_string(location_y or 0)
         ).value
-        set_background_location(self.name, x, y)
+        set_background_location(blender_scene, x, y)
         return self

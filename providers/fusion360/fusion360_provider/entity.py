@@ -56,9 +56,7 @@ class Entity(EntityInterface):
         if isinstance(self, SketchInterface):
             FusionSketch(self.name).delete()
         if isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).delete()
+            FusionLandmark(self.name, self.parent.get_native_instance()).delete()
         return self
 
     @supported(SupportLevel.PLANNED)
@@ -89,9 +87,7 @@ class Entity(EntityInterface):
         if isinstance(self, SketchInterface):
             return FusionSketch(self.name)
         if isinstance(self, LandmarkInterface):
-            return FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            )
+            return FusionLandmark(self.name, self.parent.get_native_instance())
         raise NotImplementedError()
 
     @supported(SupportLevel.PLANNED)
@@ -107,7 +103,7 @@ class Entity(EntityInterface):
             pos = FusionSketch(self.name).center
         elif isinstance(self, LandmarkInterface):
             pos = FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
+                self.name, self.parent.get_native_instance()
             ).get_point()
         return Point(pos.x, pos.y, pos.z)
 
@@ -128,9 +124,9 @@ class Entity(EntityInterface):
         elif isinstance(self, SketchInterface):
             FusionSketch(self.name).translate(x, y, z)
         elif isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).translate(x, y, z)
+            FusionLandmark(self.name, self.parent.get_native_instance()).translate(
+                x, y, z
+            )
         return self
 
     @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
@@ -140,9 +136,9 @@ class Entity(EntityInterface):
         elif isinstance(self, SketchInterface):
             FusionSketch(self.name).translate(amount, 0, 0)
         elif isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).translate(amount, 0, 0)
+            FusionLandmark(self.name, self.parent.get_native_instance()).translate(
+                amount, 0, 0
+            )
         return self
 
     @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
@@ -152,9 +148,9 @@ class Entity(EntityInterface):
         elif isinstance(self, SketchInterface):
             FusionSketch(self.name).translate(0, amount, 0)
         elif isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).translate(0, amount, 0)
+            FusionLandmark(self.name, self.parent.get_native_instance()).translate(
+                0, amount, 0
+            )
         return self
 
     @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
@@ -164,9 +160,9 @@ class Entity(EntityInterface):
         elif isinstance(self, SketchInterface):
             FusionSketch(self.name).translate(0, 0, amount)
         elif isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).translate(0, 0, amount)
+            FusionLandmark(self.name, self.parent.get_native_instance()).translate(
+                0, 0, amount
+            )
         return self
 
     @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
@@ -237,9 +233,9 @@ class Entity(EntityInterface):
         if isinstance(self, SketchInterface):
             FusionSketch(self.name).rename(new_name)
         if isinstance(self, LandmarkInterface):
-            FusionLandmark(
-                self.name, self.get_parent_entity().get_native_instance()
-            ).rename(new_name)
+            FusionLandmark(self.name, self.parent.get_native_instance()).rename(
+                new_name
+            )
         self.name = new_name
         return self
 

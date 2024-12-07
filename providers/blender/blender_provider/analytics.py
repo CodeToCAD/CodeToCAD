@@ -25,8 +25,8 @@ class Analytics(AnalyticsInterface):
         self, entity_1: "EntityInterface", entity_2: "EntityInterface"
     ) -> "Dimensions":
         distance = (
-            Analytics._get_entity_from_name_or_landmark(entity2).get_location_world()
-            - Analytics._get_entity_from_name_or_landmark(entity1).get_location_world()
+            Analytics._get_entity_from_name_or_landmark(entity_2).get_location_world()
+            - Analytics._get_entity_from_name_or_landmark(entity_1).get_location_world()
         )
         return Dimensions.from_point(distance)
 
@@ -48,18 +48,13 @@ class Analytics(AnalyticsInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def get_bounding_box(self, entity: "EntityInterface") -> "BoundaryBox":
-        entity = entity_name
         if isinstance(entity, str):
             entity = Entity(entity)
         return entity.get_bounding_box()
 
     @supported(SupportLevel.SUPPORTED)
     def get_dimensions(self, entity: "EntityInterface") -> "Dimensions":
-        if isinstance(entity_name, Entity):
-            return entity_name.get_dimensions()
-        if isinstance(entity_name, str):
-            return Entity(entity_name).get_dimensions()
-        raise TypeError("entity_name must be a string or an Entity")
+        return entity.get_dimensions()
 
     @supported(SupportLevel.SUPPORTED)
     def log(self, message: "str"):

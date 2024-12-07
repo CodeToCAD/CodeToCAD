@@ -12,17 +12,26 @@ class EntityTest(TestProviderCase, EntityTestInterface):
 
         assert value, "Get method failed."
 
-    def test_rename(self):
+    def test_set_name(self):
+
         instance = Sketch("mySketch")
 
         instance.create_rectangle(length=5, width=5)
 
         # "renamelinked_entities_and_landmarks")
-        value = instance.rename(
+        value = instance.set_name(
             "changeSketchName",
         )
 
         assert value, "Modify method failed."
+
+    def test_get_name(self):
+
+        instance = Entity(name="String", description="String", native_instance="value")
+
+        value = instance.get_name()
+
+        assert value, "Get method failed."
 
     def test_delete(self):
         instance = Sketch("mySketch")

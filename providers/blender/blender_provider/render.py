@@ -100,8 +100,5 @@ class Render(RenderInterface):
 
     @supported(SupportLevel.SUPPORTED)
     def set_camera(self, camera_instance: "CameraInterface"):
-        cameraName = camera_name_or_instance
-        if isinstance(cameraName, CameraInterface):
-            cameraName = cameraName.name
-        set_scene_camera(cameraName)
+        set_scene_camera(camera_instance.get_native_instance())
         return self

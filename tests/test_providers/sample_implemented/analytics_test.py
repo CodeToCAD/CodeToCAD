@@ -8,13 +8,16 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance.create_rectangle(length=5, width=5)
 
-        instance = Sketch("mySketch2")
+        instance2 = Sketch("mySketch2")
 
         instance.create_line_to(start_at=(0, 0, 0), to=(1, 1, 0))
 
         analytics = Analytics()
 
-        value = analytics.measure_distance(entity1="mySketch", entity2="mySketch2")
+        value = analytics.measure_distance(
+            entity_1=instance,
+            entity_2=instance2,
+        )
 
         assert value, "Get method failed."
 
@@ -23,15 +26,15 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance.create_rectangle(length=5, width=5)
 
-        instance = Sketch("mySketch2")
+        instance2 = Sketch("mySketch2")
 
         instance.create_line_to(start_at=(0, 0, 0), to=(1, 1, 0))
 
         analytics = Analytics()
 
         value = analytics.measure_angle(
-            entity1="mySketch",
-            entity2="mySketch2",
+            entity_1=instance,
+            entity_2=instance2,
         )
         # "pivot")
 
@@ -42,9 +45,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance.create_cube(1, 1, 1)
 
-        instance = Analytics()
-
-        value = instance.get_world_pose(entity="mySketch")
+        value = Analytics().get_world_pose(entity=instance)
 
         assert value, "Get method failed."
 
@@ -53,9 +54,7 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance.create_circle(radius="5mm")
 
-        analytics = Analytics()
-
-        value = analytics.get_bounding_box(entity_name="myCircle")
+        value = Analytics().get_bounding_box(instance)
 
         assert value, "Get method failed."
 
@@ -64,15 +63,11 @@ class AnalyticsTest(TestProviderCase, AnalyticsTestInterface):
 
         instance.create_circle(radius="5mm")
 
-        analytics = Analytics()
-
-        value = analytics.get_dimensions(entity_name="myCircle")
+        value = Analytics().get_dimensions(instance)
 
         assert value, "Get method failed."
 
     def test_log(self):
-        instance = Analytics()
-
-        value = instance.log("message")
+        value = Analytics().log("message")
 
         assert value, "Modify method failed."

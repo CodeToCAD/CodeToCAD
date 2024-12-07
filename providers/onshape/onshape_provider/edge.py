@@ -67,7 +67,7 @@ class Edge(EdgeInterface, Entity):
 
     v1: "Vertex"
     v2: "Vertex"
-    parent_entity: Optional[str | Entity] = None
+    parent: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -83,7 +83,7 @@ class Edge(EdgeInterface, Entity):
     ):
         self.v1 = v1
         self.v2 = v2
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance

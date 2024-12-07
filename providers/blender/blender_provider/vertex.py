@@ -28,13 +28,13 @@ class Vertex(VertexInterface, Entity):
         parent: "EntityInterface| None" = None,
     ):
         """
-        NOTE: Blender Provider's Vertex requires a parent_entity and a native_instance
+        NOTE: Blender Provider's Vertex requires a parent and a native_instance
         """
         assert (
-            parent_entity is not None and native_instance is not None
-        ), "Blender Provider's Vertex requires a parent_entity and a native_instance"
+            parent is not None and native_instance is not None
+        ), "Blender Provider's Vertex requires a parent and a native_instance"
         # self.location = location
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance

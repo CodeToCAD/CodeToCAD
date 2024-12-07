@@ -42,10 +42,10 @@ class Wire(WireInterface, Entity):
         native_instance=None,
         parent: "EntityInterface| None" = None,
     ):
-        if isinstance(parent_entity, str):
-            parent_entity = Entity(parent_entity)
+        if isinstance(parent, str):
+            parent = Entity(parent)
         self.edges = edges
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -82,10 +82,10 @@ class Wire(WireInterface, Entity):
         union_connecting_parts: "bool| None" = True,
         new_name: "str| None" = None,
     ) -> "PartInterface":
-        new_name = new_part_name if new_part_name else self.parent_entity.name
-        component = FusionSketch(self.parent_entity.name).component
-        sketch = FusionSketch(self.parent_entity.name).instance
-        other_sketch = FusionSketch(other.parent_entity.name).instance
+        new_name = new_name if new_name else self.parent.name
+        component = FusionSketch(self.parent.name).component
+        sketch = FusionSketch(self.parent.name).instance
+        other_sketch = FusionSketch(other.parent.name).instance
         part = Part(new_name)
         part.fusion_body.instance = make_loft(component, sketch, other_sketch)
         return part
@@ -180,7 +180,7 @@ class Wire(WireInterface, Entity):
 
     @supported(SupportLevel.PARTIAL, "fill_caps is not supported")
     def sweep(self, profile: "WireInterface", fill_cap: "bool" = True) -> "Part":
-        fusion_sketch = FusionSketch(profile_name_or_instance)
+        fusion_sketch = FusionSketch(profile)
         name = sweep(
             FusionSketch(self.name).component,
             FusionSketch(self.name).instance,
@@ -271,9 +271,7 @@ class Wire(WireInterface, Entity):
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
     ):
-        print(
-            "mirror called:", mirror_across_entity, axis, resulting_mirrored_entity_name
-        )
+        print("mirror called:", mirror_across_entity, axis, separate_resulting_entity)
         return self
 
     @supported(SupportLevel.PLANNED)

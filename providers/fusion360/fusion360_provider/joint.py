@@ -14,22 +14,22 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_joint import (
 class Joint(JointInterface):
 
     def __init__(self, entity_1: "EntityInterface", entity_2: "EntityInterface"):
-        self.entity1 = entity1
-        self.entity2 = entity2
+        self.entity_1 = entity_1
+        self.entity_2 = entity_2
 
     @property
     def _fusion_joint(self):
-        return FusionJoint(FusionBody(entity1), FusionBody(entity2))
+        return FusionJoint(FusionBody(entity_1), FusionBody(entity_2))
 
     @supported(SupportLevel.PLANNED)
     def translate_landmark_onto_another(self):
-        if not isinstance(self.entity1, LandmarkInterface) or not isinstance(
-            self.entity2, LandmarkInterface
+        if not isinstance(self.entity_1, LandmarkInterface) or not isinstance(
+            self.entity_2, LandmarkInterface
         ):
             raise TypeError("Entities 1 and 2 should be landmarks.")
-        landmark1: LandmarkInterface = self.entity1
-        landmark2: LandmarkInterface = self.entity2
-        entityForLandmark2 = self.entity2.get_parent_entity()
+        landmark1: LandmarkInterface = self.entity_1
+        landmark2: LandmarkInterface = self.entity_2
+        entityForLandmark2 = self.entity_2.parent
         translation = landmark1.get_location_world() - landmark2.get_location_world()
         entityForLandmark2.translate_xyz(translation.x, translation.y, translation.z)
         return self
@@ -61,8 +61,8 @@ class Joint(JointInterface):
     ):
         if self.fusion_joint.joint_ball_motion:
             return self
-        # offset = self.entity2.get_location_local() * -1
-        offset = self.entity2.get_location_local()
+        # offset = self.entity_2.get_location_local() * -1
+        offset = self.entity_2.get_location_local()
         offset.x = offset.x * -1
         offset.y = offset.y * -1
         offset.z = offset.z * -1

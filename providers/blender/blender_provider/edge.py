@@ -24,14 +24,14 @@ class Edge(EdgeInterface, Entity):
         parent: "EntityInterface| None" = None,
     ):
         """
-        NOTE: Blender Provider's Edge requires a parent_entity and a native_instance
+        NOTE: Blender Provider's Edge requires a parent and a native_instance
         """
         assert (
-            parent_entity is not None and native_instance is not None
-        ), "Blender Provider's Edge requires a parent_entity and a native_instance"
+            parent is not None and native_instance is not None
+        ), "Blender Provider's Edge requires a parent and a native_instance"
         self.v1 = v1
         self.v2 = v2
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance

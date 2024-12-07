@@ -20,19 +20,19 @@ class Landmark(LandmarkInterface, Entity):
         native_instance=None,
     ):
         self.name = name
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.description = description
         self.native_instance = native_instance
 
     @property
     def _fusion_landmark(self):
-        return FusionLandmark(self.name, self._get_parent_entity_instance().component)
+        return FusionLandmark(self.name, self._get_parent_instance().component)
 
-    def _get_parent_entity_instance(self):
-        if isinstance(self.parent_entity, str):
-            return FusionBody(self.parent_entity)
+    def _get_parent_instance(self):
+        if isinstance(self.parent, str):
+            return FusionBody(self.parent)
         else:
-            return FusionBody(self.parent_entity.name)
+            return FusionBody(self.parent.name)
 
     @supported(SupportLevel.PARTIAL, "Offset is not supported.")
     def clone(
@@ -47,6 +47,6 @@ class Landmark(LandmarkInterface, Entity):
             else:
                 parent = new_parent
         else:
-            parent = self.parent_entity
+            parent = self.parent
         sketch = self._fusion_landmark.clone(new_name, True)
         return Landmark(sketch.name, parent)

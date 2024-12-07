@@ -12,8 +12,8 @@ def get_dummy_obj():
     edge2 = instance.create_line_to(to=(5, 10, 0), start_at=(5, 5, 0))
 
     return Joint(
-        entity1="mySketch",
-        entity2="mySketch2",
+        entity_1=edge,
+        entity_2=edge2,
     )
 
 

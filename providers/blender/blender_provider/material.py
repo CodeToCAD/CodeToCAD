@@ -53,14 +53,4 @@ class Material(MaterialInterface):
     @staticmethod
     @supported(SupportLevel.SUPPORTED)
     def get_preset(material_name: "PresetMaterial"):
-        if isinstance(material_name, str):
-            try:
-                material_name = getattr(PresetMaterial, material_name)
-            except:  # noqa
-                material = Material(material_name)
-        if isinstance(material_name, PresetMaterial):
-            material = Material(material_name.name)
-            material.set_color(*material_name.color)
-            material.set_reflectivity(material_name.reflectivity)
-            material.set_roughness(material_name.roughness)
-        return material
+        return material_name.material

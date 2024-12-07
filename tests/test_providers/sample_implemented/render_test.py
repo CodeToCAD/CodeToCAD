@@ -79,6 +79,8 @@ class RenderTest(TestProviderCase, RenderTestInterface):
     def test_set_camera(self):
         instance = Render()
 
-        value = instance.set_camera(camera_name_or_instance="myCamera")
+        camera = Camera().create_orthogonal()
+
+        value = instance.set_camera(camera_instance=camera)
 
         assert value, "Modify method failed."

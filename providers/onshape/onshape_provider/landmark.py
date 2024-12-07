@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class Landmark(LandmarkInterface, Entity):
     name: str
-    parent_entity: str | Entity
+    parent: str | Entity
     description: Optional[str] = None
     native_instance = None
 
@@ -26,7 +26,7 @@ class Landmark(LandmarkInterface, Entity):
         native_instance=None,
     ):
         self.name = name
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.description = description
         self.native_instance = native_instance
 

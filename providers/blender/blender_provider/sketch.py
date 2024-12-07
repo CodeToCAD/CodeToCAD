@@ -159,10 +159,10 @@ class Sketch(SketchInterface, Entity):
             line_spacing,
             font_file_path,
         )
-        if profile_curve_name:
-            if isinstance(profile_curve_name, EntityInterface):
-                profile_curve_name = profile_curve_name.name
-            apply_curve_modifier(self.name, profile_curve_name)
+        if profile_curve:
+            if isinstance(profile_curve, EntityInterface):
+                profile_curve = profile_curve.name
+            apply_curve_modifier(self.name, profile_curve)
         update_view_layer()
         return self
 
@@ -227,7 +227,7 @@ class Sketch(SketchInterface, Entity):
         return Vertex(
             location=point,
             name=create_uuid_like_id(),
-            parent_entity=self,
+            parent=self,
             native_instance=blender_spline,
         )
 
@@ -485,7 +485,7 @@ class Sketch(SketchInterface, Entity):
         separate_resulting_entity: "bool| None" = False,
     ):
         implementables.mirror(
-            self, mirror_across_entity, axis, resulting_mirrored_entity_name
+            self, mirror_across_entity, axis, separate_resulting_entity
         )
         return self
 

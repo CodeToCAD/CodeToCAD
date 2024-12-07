@@ -16,7 +16,7 @@ class Vertex(VertexInterface, Entity):
         raise NotImplementedError()
 
     location: str | list[str] | list[float] | list[Dimension] | Point
-    parent_entity: Optional[str | Entity] = None
+    parent: Optional[str | Entity] = None
     name: str
     description: Optional[str] = None
     native_instance = None
@@ -30,7 +30,7 @@ class Vertex(VertexInterface, Entity):
         parent: "EntityInterface| None" = None,
     ):
         self.location = location
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance

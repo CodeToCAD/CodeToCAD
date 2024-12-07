@@ -1,3 +1,4 @@
+from codetocad.interfaces.landmarkable_interface import LandmarkableInterface
 from providers.blender.blender_provider.entity import Entity
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
@@ -32,22 +33,22 @@ class Landmark(LandmarkInterface, Entity):
         native_instance=None,
     ):
         self.name = name
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.description = description
         self.native_instance = native_instance
 
     @override
     @supported(SupportLevel.SUPPORTED)
-    def rename(self, new_name: str):
+    def set_name(self, new_name: str):
         assert (
-            Landmark(new_name, self.parent_entity).is_exists() is False
+            Landmark(name=new_name, parent=self.parent).is_exists() is False
         ), f"{new_name} already exists."
-        parent_entityName = self.parent_entity
-        if isinstance(parent_entityName, EntityInterface):
-            parent_entityName = parent_entityName.name
+        parent_name = self.parent.name
+        if isinstance(self.parent, EntityInterface):
+            parent_name = self.parent.name
         update_object_name(
             self.get_landmark_entity_name(),
-            format_landmark_entity_name(parent_entityName, new_name),
+            format_landmark_entity_name(parent_name, new_name),
         )
         self.name = new_name
         return self
@@ -80,28 +81,23 @@ class Landmark(LandmarkInterface, Entity):
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
         new_parent: "EntityInterface| None" = None,
-    ) -> "Landmark":
-        x = (
-            self.get_location_local().x
-            - self.get_parent_entity().get_location_local().x
-        )
-        y = (
-            self.get_location_local().y
-            - self.get_parent_entity().get_location_local().y
-        )
-        z = (
-            self.get_location_local().z
-            - self.get_parent_entity().get_location_local().z
-        )
+    ) -> "LandmarkInterface":
+        parent = new_parent if new_parent else self.parent
+
+        if not isinstance(parent, LandmarkableInterface):
+            raise Exception("Parent is not landmarkable")
+
+        x = self.get_location_local().x - self.parent.get_location_local().x
+        y = self.get_location_local().y - self.parent.get_location_local().y
+        z = self.get_location_local().z - self.parent.get_location_local().z
         if offset:
             offset_x, offset_y, offset_z = offset
             x += offset_x
             y += offset_y
             z += offset_z
-        if new_parent:
-            landmark = new_parent.create_landmark(new_name, x, y, z)
-        else:
-            landmark = self.get_parent_entity().create_landmark(new_name, x, y, z)
+
+        landmark = parent.create_landmark(new_name, x, y, z)
+
         return landmark
 
     @override

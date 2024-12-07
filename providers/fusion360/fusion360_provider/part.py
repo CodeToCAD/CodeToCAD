@@ -48,7 +48,7 @@ class Part(PartInterface, Entity):
 
     @supported(
         SupportLevel.PARTIAL,
-        "Cannot give mirrored object a new name via the resulting_mirrored_entity_name parameter. Can only mirror across Part and Sketch entities.",
+        "Cannot give mirrored object a new name via the separate_resulting_entity parameter. Can only mirror across Part and Sketch entities.",
     )
     def mirror(
         self,
@@ -573,6 +573,6 @@ class Part(PartInterface, Entity):
     ) -> Self:
         print(
             "create_text called",
-            f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve_name}, {options}",
+            f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve}, {options}",
         )
         return self

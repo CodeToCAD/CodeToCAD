@@ -10,8 +10,8 @@ class WireTest(TestProviderCase, WireTestInterface):
         instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
         value = instance.mirror(
-            mirror_across_entity="ellipse",
-            axis="z",  # "resulting_mirrored_entity_name"
+            mirror_across_entity=ellipse_sketch,
+            axis="z",  # "separate_resulting_entity"
         )
 
         assert value.is_exists(), "Create method failed."
@@ -34,7 +34,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         value = instance.circular_pattern(
             instance_count=2,
             separation_angle=30,
-            center_entity_or_landmark="circle",
+            center_entity_or_landmark=ellipse_sketch,
             # "normal_direction_axis",
         )
 
@@ -44,7 +44,8 @@ class WireTest(TestProviderCase, WireTestInterface):
         ellipse_sketch = Sketch("ellipse", curve_type=CurveTypes.BEZIER)
         instance = ellipse_sketch.create_ellipse(0.5, 0.25)
 
-        value = instance.project(project_from="myProject")
+        projected_sketch = Sketch("projected_sketch", curve_type=CurveTypes.BEZIER)
+        value = projected_sketch.project(project_from=ellipse_sketch)
 
         assert value, "Get method failed."
 
@@ -77,7 +78,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.get_edges()
@@ -107,7 +108,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         circle_sketch = Sketch("circle", curve_type=CurveTypes.BEZIER)
         instance = ellipse_sketch.create_circle(radius=0.5)
 
-        value = instance.loft(other="circle", new_part_name="myLoft")
+        value = instance.loft(other="circle", new_name="myLoft")
 
         assert value, "Get method failed."
 
@@ -149,7 +150,7 @@ class WireTest(TestProviderCase, WireTestInterface):
         instance = instance.create_rectangle(length=5, width=5)
 
         value = instance.sweep(
-            profile_name_or_instance="mySketch",
+            profile="mySketch",
         )
 
         assert value, "Get method failed."
@@ -168,7 +169,7 @@ class WireTest(TestProviderCase, WireTestInterface):
     def test_profile(self):
         instance = Sketch("mySketch")
 
-        value = instance.create_circle(2).profile(profile_curve_name="Curve")
+        value = instance.create_circle(2).profile(profile_curve="Curve")
 
         assert value, "Modify method failed."
 
@@ -189,7 +190,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_from_vertices(
@@ -215,7 +216,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_point(
@@ -241,7 +242,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_line(
@@ -267,7 +268,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_line_to(
@@ -294,7 +295,7 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent_entity=__import__("codetocad").Part("an entity"),
+            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_arc(

@@ -59,16 +59,16 @@ class Wire(WireInterface, Entity):
         parent: "EntityInterface| None" = None,
     ):
         """
-        NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
+        NOTE: Blender Provider's Wire requires a parent and a native_instance
         """
         assert (
-            parent_entity is not None and native_instance is not None
-        ), "Blender Provider's Wire requires a parent_entity and a native_instance"
+            parent is not None and native_instance is not None
+        ), "Blender Provider's Wire requires a parent and a native_instance"
         self.name = name
         self.description = description
         self.native_instance = native_instance
         self.edges = edges
-        self.parent_entity = parent_entity
+        self.parent = parent
 
     @override
     @supported(SupportLevel.SUPPORTED)
@@ -152,25 +152,25 @@ class Wire(WireInterface, Entity):
     ) -> "PartInterface":
         blender_mesh = custom_codetocad_loft(self, other)
         part = Part(blender_mesh.name)
-        if new_part_name:
-            part.rename(new_part_name)
+        if new_name:
+            part.set_name(new_name)
         else:
-            if self.parent_entity:
+            if self.parent:
                 parent_name = (
-                    self.parent_entity.name
-                    if not isinstance(self.parent_entity, str)
-                    else self.parent_entity
+                    self.parent.name
+                    if not isinstance(self.parent, str)
+                    else self.parent
                 )
                 if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-                part.rename(parent_name)
-            if other.parent_entity:
+                part.set_name(parent_name)
+            if other.parent:
                 parent_name = (
-                    other.parent_entity.name
-                    if not isinstance(other.parent_entity, str)
-                    else other.parent_entity
+                    other.parent.name
+                    if not isinstance(other.parent, str)
+                    else other.parent
                 )
                 if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
@@ -242,8 +242,8 @@ class Wire(WireInterface, Entity):
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
     ):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         implementables.twist(parent, angle, screw_pitch, iterations, axis)
@@ -256,8 +256,8 @@ class Wire(WireInterface, Entity):
         about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         possible_sketch: SketchInterface | None = None
@@ -279,12 +279,12 @@ class Wire(WireInterface, Entity):
         axis = Axis.from_string(axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
         apply_screw_modifier(
-            parent.name,
+            parent.get_native_instance(),
             Angle.from_string(angle).to_radians(),
             axis,
             entity_name_to_determine_axis=about_entity_or_landmark,
         )
-        create_mesh_from_curve(parent.name)
+        create_mesh_from_curve(parent.get_native_instance())
         if not possible_sketch_was_visible and possible_sketch:
             possible_sketch.set_visible(False)
         # Recalculate normals because they're usually wrong after revolving.
@@ -293,8 +293,8 @@ class Wire(WireInterface, Entity):
 
     @supported(SupportLevel.SUPPORTED, notes="Get offset of the wire")
     def offset(self, radius: "str|float|Dimension"):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: Make a vertex group around this wire, and apply the offset only to this vertex group
@@ -305,8 +305,8 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="Extrude the wire")
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We assume the normal is never perpendicular to the Z axis.
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         assert isinstance(
@@ -338,15 +338,15 @@ class Wire(WireInterface, Entity):
     def sweep(
         self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: This logic was moved from Sketch.py. Sweeping should be applied to a vertex group containing this wire only.
-        profile_curve_name = profile_name_or_instance
-        if isinstance(profile_curve_name, EntityInterface):
-            profile_curve_name = profile_curve_name.name
-        add_bevel_object_to_curve(parent.name, profile_curve_name, fill_cap)
+        profile_curve = profile
+        if isinstance(profile_curve, EntityInterface):
+            profile_curve = profile_curve.name
+        add_bevel_object_to_curve(parent.name, profile_curve, fill_cap)
         create_mesh_from_curve(parent.name)
         # Recalculate normals because they're usually wrong after sweeping.
         recalculate_normals(parent.name)
@@ -354,14 +354,14 @@ class Wire(WireInterface, Entity):
 
     @supported(SupportLevel.SUPPORTED, notes="Get profile of the wire")
     def profile(self, profile_curve: "WireInterface|SketchInterface"):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: this logic was moved from Sketch.py. Profiling should be applied to a vertex group containing this wire only.
-        if isinstance(profile_curve_name, Entity):
-            profile_curve_name = profile_curve_name.name
-        apply_curve_modifier(parent.name, profile_curve_name)
+        if isinstance(profile_curve, Entity):
+            profile_curve = profile_curve.name
+        apply_curve_modifier(parent.name, profile_curve)
         return self
 
     @supported(SupportLevel.UNSUPPORTED)

@@ -233,9 +233,9 @@ class Sketch(SketchInterface, Entity):
         for index in range(len(points) - 1):
             start = Vertex(location=points[index], name="vertex")
             end = Vertex(location=points[index + 1], name="vertex")
-            edge = Edge(v1=start, v2=end, name=self.name, parent_entity=self.name)
+            edge = Edge(v1=start, v2=end, name=self.name, parent=self)
             edges.append(edge)
-        return Wire(edges=edges, name=create_uuid_like_id(), parent_entity=self.name)
+        return Wire(edges=edges, name=create_uuid_like_id(), parent=self)
 
     @supported(SupportLevel.PARTIAL, "Options are not supported")
     def create_point(
@@ -243,7 +243,7 @@ class Sketch(SketchInterface, Entity):
     ) -> "Vertex":
         sketch = FusionSketch(self.name).instance
         make_point(sketch, point.x, point.y, point.z)
-        return Vertex(location=point, name=create_uuid_like_id(), parent_entity=self)
+        return Vertex(location=point, name=create_uuid_like_id(), parent=self)
 
     @supported(SupportLevel.PARTIAL, "Options, length and angle are not supported.")
     def create_line_to(
@@ -266,7 +266,7 @@ class Sketch(SketchInterface, Entity):
             line.endSketchPoint.geometry.y,
             line.endSketchPoint.geometry.z,
         )
-        edge = Edge(v1=start, v2=end, name=sketch.name, parent_entity=self.name)
+        edge = Edge(v1=start, v2=end, name=sketch.name, parent=self.name)
         return edge
 
     @supported(SupportLevel.PLANNED)
