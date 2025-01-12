@@ -122,9 +122,7 @@ def get_wire_from_blender_wire(
         raise Exception(f"Wire type {type(wire)} is not supported.")
 
     return Wire(
-        edges=edges,
         name=create_uuid_like_id(),
-        parent=entity.name,
         native_instance=wire,
     )
 

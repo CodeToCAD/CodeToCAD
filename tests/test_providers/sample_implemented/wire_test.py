@@ -65,17 +65,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="myWire",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -176,17 +165,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -201,17 +179,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -226,17 +193,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -251,17 +207,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -277,17 +222,6 @@ class WireTest(TestProviderCase, WireTestInterface):
 
         instance = Wire(
             name="String",
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             description="String",
             native_instance="value",
         )
@@ -304,17 +238,6 @@ class WireTest(TestProviderCase, WireTestInterface):
     def test_get_parent(self):
 
         instance = Wire(
-            edges=[
-                Edge(
-                    v1=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    v2=Vertex(
-                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
-                    ),
-                    name="an edge",
-                )
-            ],
             name="String",
             description="String",
             native_instance="value",

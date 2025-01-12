@@ -1,6 +1,6 @@
 from codetocad import *
 
-Wire("a", [], parent="a", native_instance="b")
+Wire("a", native_instance="b")
 
 red_material = Material("red").set_color(0.709804, 0.109394, 0.245126, 0.8)
 blue_material = Material("blue").set_color(0.0865257, 0.102776, 0.709804, 0.8)
