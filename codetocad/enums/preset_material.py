@@ -1,5 +1,8 @@
 from enum import Enum
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.material_interface import MaterialInterface
 
 
 class MaterialProperty:
@@ -38,6 +41,16 @@ class PresetMaterial(Enum):
     purple = MaterialProperty((128, 0, 128, 1.0), 0.0, 1.0)
     teal = MaterialProperty((0, 128, 128, 1.0), 0.0, 1.0)
     navy = MaterialProperty((0, 0, 128, 1.0), 0.0, 1.0)
+
+    @property
+    def material(self) -> "MaterialInterface":
+        from codetocad.proxy.material import Material
+
+        material = Material(self.name)
+        material.set_color(*self.color)
+        material.set_reflectivity(self.reflectivity)
+        material.set_roughness(self.roughness)
+        return material
 
     @property
     def color(self):

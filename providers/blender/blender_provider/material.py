@@ -1,5 +1,4 @@
 from codetocad.interfaces.material_interface import MaterialInterface
-from codetocad.codetocad_types import *
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.utilities import get_absolute_filepath
@@ -49,8 +48,3 @@ class Material(MaterialInterface):
         absoluteFilePath = get_absolute_filepath(image_file_path)
         add_texture_to_material(self.name, absoluteFilePath)
         return self
-
-    @staticmethod
-    @supported(SupportLevel.SUPPORTED)
-    def get_preset(material_name: "PresetMaterial"):
-        return material_name.material

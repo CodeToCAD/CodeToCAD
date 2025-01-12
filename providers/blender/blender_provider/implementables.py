@@ -41,7 +41,7 @@ from providers.blender.blender_provider.blender_actions.modifiers import (
 from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
     get_object,
-    get_object_collection_name,
+    get_object_collection,
     make_parent,
 )
 from providers.blender.blender_provider.blender_actions.transformations import (
@@ -218,7 +218,7 @@ def scale_x(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().x.value
     )
-    scale_object(self.name, scale_factor, None, None)
+    scale_object(self.get_native_instance(), scale_factor, None, None)
     return self._apply_rotation_and_scale_only()
 
 
@@ -226,7 +226,7 @@ def scale_y(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().y.value
     )
-    scale_object(self.name, None, scale_factor, None)
+    scale_object(self.get_native_instance(), None, scale_factor, None)
     return self._apply_rotation_and_scale_only()
 
 
@@ -234,22 +234,22 @@ def scale_z(self: "Entity", scale: str | float | Dimension):
     scale_factor = _scale_factor_from_dimension_or_its_float_or_string_value(
         scale, self.get_dimensions().z.value
     )
-    scale_object(self.name, None, None, scale_factor)
+    scale_object(self.get_native_instance(), None, None, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_x_by_factor(self: "Entity", scale_factor: float):
-    scale_object(self.name, scale_factor, None, None)
+    scale_object(self.get_native_instance(), scale_factor, None, None)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_y_by_factor(self: "Entity", scale_factor: float):
-    scale_object(self.name, None, scale_factor, None)
+    scale_object(self.get_native_instance(), None, scale_factor, None)
     return self._apply_rotation_and_scale_only()
 
 
 def scale_z_by_factor(self: "Entity", scale_factor: float):
-    scale_object(self.name, None, None, scale_factor)
+    scale_object(self.get_native_instance(), None, None, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
@@ -266,7 +266,7 @@ def scale_keep_aspect_ratio(
     dimensionInAxis = self.get_dimensions()[Axis.from_string(axis).value]
     scale_factor: float = (value_in_blender_default_length / dimensionInAxis).value
 
-    scale_object(self.name, scale_factor, scale_factor, scale_factor)
+    scale_object(self.get_native_instance(), scale_factor, scale_factor, scale_factor)
     return self._apply_rotation_and_scale_only()
 
 
@@ -286,7 +286,7 @@ def twist(
     screw_pitch = Dimension.from_string(screw_pitch)
 
     apply_screw_modifier(
-        self.name,
+        self.get_native_instance(),
         angleParsed.to_radians(),
         axis,
         screw_pitch=screw_pitch,
@@ -298,20 +298,20 @@ def twist(
 
 def remesh(self: "Entity", strategy: str, amount: float):
     if strategy == "decimate":
-        apply_decimate_modifier(self.name, int(amount))
+        apply_decimate_modifier(self.get_native_instance(), int(amount))
     else:
         if strategy == "crease":
-            set_edges_mean_crease(self.name, 1.0)
+            set_edges_mean_crease(self.get_native_instance().data, 1.0)
         if strategy == "edgesplit":
             apply_modifier(
-                self.name,
+                self.get_native_instance(),
                 BlenderModifiers.EDGE_SPLIT,
                 name="EdgeDiv",
                 split_angle=math.radians(30),
             )
 
         apply_modifier(
-            self.name,
+            self.get_native_instance(),
             BlenderModifiers.SUBSURF,
             name="Subdivision",
             levels=amount,
@@ -320,19 +320,19 @@ def remesh(self: "Entity", strategy: str, amount: float):
     self._apply_modifiers_only()
 
     if strategy == "crease":
-        set_edges_mean_crease(self.name, 0)
+        set_edges_mean_crease(self.get_native_instance().data, 0)
 
     return self
 
 
 def create_landmark(
     self: EntityInterface,
-    landmark_name: str,
     x: str | float | Dimension,
     y: str | float | Dimension,
     z: str | float | Dimension,
+    landmark_name: "str| None" = None,
 ) -> "Landmark":
-    bounding_box = get_bounding_box(self.name)
+    bounding_box = get_bounding_box(self.get_native_instance())
     local_positions = [
         Dimension.from_dimension_or_its_float_or_string_value(x, bounding_box.x),
         Dimension.from_dimension_or_its_float_or_string_value(y, bounding_box.y),
@@ -359,10 +359,10 @@ def create_landmark(
     empty_object.empty_display_size = 0
     # Assign the landmark to the parent's collection
     assign_object_to_collection(
-        landmark_object_name, get_object_collection_name(self.name)
+        landmark_object_name, get_object_collection(self.get_native_instance())
     )
     # Parent the landmark to the object
-    make_parent(landmark_object_name, self.name)
+    make_parent(landmark_object_name, self.get_native_instance())
     translate_object(
         landmark_object_name, local_positions, BlenderTranslationTypes.ABSOLUTE
     )
@@ -378,7 +378,7 @@ def get_landmark(self, landmark_name: str | PresetLandmark) -> "Landmark":
     if isinstance(landmark_name, PresetLandmark):
         preset = landmark_name
         landmark_name = preset.name
-    landmark = Landmark(landmark_name, self.name)
+    landmark = Landmark(name=landmark_name, parent=self)
     if preset is not None:
         # if preset does not exist, create it.
         try:

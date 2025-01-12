@@ -75,7 +75,6 @@ class Wire(WireInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         self.edges = edges
         self.parent = parent
@@ -111,10 +110,10 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
@@ -281,3 +280,8 @@ class Wire(WireInterface, Entity):
             "create_arc called", f": {end_at}, {radius}, {start_at}, {flip}, {options}"
         )
         return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_parent(self) -> "EntityInterface":
+        print("get_parent called")
+        return __import__("codetocad").Part("an entity")

@@ -82,8 +82,10 @@ class CapabilitiesLoader:
 
         classes = self.capabilities[class_name].extends + [class_name]
 
-        parameters = []  # needs to be ordered
+        parameters = []  # Order of params matters here
 
+        # Parameters that don't have a default value
+        # need to be placed first in the parameter list
         last_non_default_value_index = 0
 
         for some_class in classes:

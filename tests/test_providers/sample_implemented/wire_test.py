@@ -78,7 +78,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.get_edges()
@@ -190,7 +189,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_from_vertices(
@@ -216,7 +214,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_point(
@@ -242,7 +239,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_line(
@@ -268,7 +264,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_line_to(
@@ -295,7 +290,6 @@ class WireTest(TestProviderCase, WireTestInterface):
             ],
             description="String",
             native_instance="value",
-            parent=__import__("codetocad").Part("an entity"),
         )
 
         value = instance.create_arc(
@@ -306,3 +300,26 @@ class WireTest(TestProviderCase, WireTestInterface):
         )
 
         assert value, "Modify method failed."
+
+    def test_get_parent(self):
+
+        instance = Wire(
+            edges=[
+                Edge(
+                    v1=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    v2=Vertex(
+                        "a vertex", Point.from_list_of_float_or_string([0, 0, 0])
+                    ),
+                    name="an edge",
+                )
+            ],
+            name="String",
+            description="String",
+            native_instance="value",
+        )
+
+        value = instance.get_parent()
+
+        assert value, "Get method failed."

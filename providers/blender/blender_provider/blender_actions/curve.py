@@ -7,6 +7,7 @@ from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
 from codetocad.core.point import Point
 from codetocad.interfaces.edge_interface import EdgeInterface
+from codetocad.interfaces.wire_interface import WireInterface
 from codetocad.utilities import create_uuid_like_id
 from providers.blender.blender_provider.blender_actions.addons import (
     enable_curve_extra_objects_addon,
@@ -515,7 +516,9 @@ def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix: Matri
     return vertices
 
 
-def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
+def custom_codetocad_loft(
+    wire_1: "WireInterface", wire_2: "WireInterface"
+) -> bpy.types.Mesh:
     """
     This is a loft implemented in CodeToCAD. Mileage may vary.
     """
@@ -531,14 +534,13 @@ def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
     wire_1_world_matrix = Matrix.Identity(3)
     wire_2_world_matrix = Matrix.Identity(3)
 
-    if wire_1.parent:
-        parent_object = wire_1.parent.get_native_instance()
-        if isinstance(parent_object, bpy.types.Object):
-            wire_1_world_matrix = parent_object.matrix_world
-    if wire_2.parent:
-        parent_object = wire_2.parenttive_instance()
-        if isinstance(parent_object, bpy.types.Object):
-            wire_2_world_matrix = parent_object.matrix_world
+    parent_object = wire_1.get_parent().get_native_instance()
+    if isinstance(parent_object, bpy.types.Object):
+        wire_1_world_matrix = parent_object.matrix_world
+
+    parent_object = wire_2.get_parent().get_native_instance()
+    if isinstance(parent_object, bpy.types.Object):
+        wire_2_world_matrix = parent_object.matrix_world
 
     # wire_1_mesh = bpy.data.meshes.new_from_object(wire_1_parent)
     # wire_2_mesh = bpy.data.meshes.new_from_object(wire_2_parent)

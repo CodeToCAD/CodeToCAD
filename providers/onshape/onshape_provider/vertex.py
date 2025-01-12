@@ -2,7 +2,6 @@ from typing import Optional
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from typing import Self
-from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.vertex_interface import VertexInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
 from providers.onshape.onshape_provider.entity import Entity
@@ -27,7 +26,6 @@ class Vertex(VertexInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         self.location = location
         self.parent = parent

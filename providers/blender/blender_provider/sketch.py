@@ -571,10 +571,10 @@ class Sketch(SketchInterface, Entity):
     @supported(SupportLevel.SUPPORTED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         return implementables.create_landmark(self, landmark_name, x, y, z)
 

@@ -28,7 +28,7 @@ w1 = loft_sketch1.create_rectangle(1, 1)
 loft_sketch2 = Sketch("loft_sketch2", curve_type=CurveTypes.BEZIER)
 w2 = loft_sketch2.create_rectangle(0.5, 0.5)
 loft_sketch2.translate_z(1).rotate_x(45)
-lofted = w1.loft(w2).rename("loft")
+lofted = w1.loft(w2).set_name("loft")
 lofted.translate_xyz(0.5, 3.5, 0)
 
 

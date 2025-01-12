@@ -243,8 +243,3 @@ class Entity(EntityInterface):
     def get_name(self) -> "str":
         print("get_name called")
         return "String"
-
-    @supported(SupportLevel.SUPPORTED, notes="")
-    def update_native_instance(self) -> "object":
-        print("update_native_instance called")
-        return self

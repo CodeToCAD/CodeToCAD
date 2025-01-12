@@ -118,7 +118,7 @@ class Yoke:
         # shaftCoupling.fillet_faces(
         #     "25mm", [shaftCoupling.get_landmark(PresetLandmark.top)])
 
-        yoke.rename(name)
+        yoke.set_name(name)
 
         yoke.set_material(blue_metallic_material)
 

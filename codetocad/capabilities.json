@@ -149,9 +149,6 @@
                 "return_type": "Landmark",
                 "information": "Shortcut for creating and assigning a landmark to this entity. Returns a Landmark instance.",
                 "parameters": {
-                    "landmark_name": {
-                        "type": "string"
-                    },
                     "x": {
                         "type": "string,float,Dimension"
                     },
@@ -160,6 +157,10 @@
                     },
                     "z": {
                         "type": "string,float,Dimension"
+                    },
+                    "landmark_name": {
+                        "type": "string",
+                        "required": false
                     }
                 }
             },
@@ -329,12 +330,6 @@
                 "action": "get",
                 "information": "Get the native API's object instance",
                 "return_type": "any"
-            },
-            "update_native_instance": {
-                "action": "modify",
-                "information": "This method updates the cached object instance in CodeToCAD. Returns the updated instance, which you can ignore. Use `native_instance` to get the native API's object instance. ",
-                "return_type": "any",
-                "parameters": {}
             }
         },
         "Entity": {
@@ -1267,10 +1262,6 @@
                     "location": {
                         "information": "Point coordinates of a vertex.",
                         "type": "Point"
-                    },
-                    "parent": {
-                        "type": "Entity",
-                        "required": false
                     }
                 }
             },
@@ -1303,10 +1294,6 @@
                     },
                     "v2": {
                         "type": "Vertex"
-                    },
-                    "parent": {
-                        "type": "Entity",
-                        "required": false
                     }
                 }
             },
@@ -1352,16 +1339,12 @@
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Projectable,Landmarkable,Booleanable,Subdividable",
             "constructor": {
-                "parameters": {
-                    "edges": {
-                        "information": "A collection of edges",
-                        "type": "list[Edge]"
-                    },
-                    "parent": {
-                        "type": "Entity",
-                        "required": false
-                    }
-                }
+                "parameters": {}
+            },
+            "get_parent": {
+                "action": "get",
+                "information": "Get this wire's parent",
+                "return_type": "Entity"
             },
             "get_normal": {
                 "information": "Get the normal created by this wire. Must be a closed wire.",
@@ -1812,18 +1795,6 @@
                 "parameters": {
                     "image_file_path": {
                         "type": "string"
-                    }
-                }
-            },
-            "get_preset": {
-                "information": "Get a material from PresetMaterial",
-                "action": "create",
-                "return_type": "Material",
-                "is_static_method": true,
-                "parameters": {
-                    "parameter": {
-                        "type": "PresetMaterial",
-                        "required": true
                     }
                 }
             }

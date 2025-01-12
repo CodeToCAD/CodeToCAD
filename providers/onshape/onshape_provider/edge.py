@@ -79,7 +79,6 @@ class Edge(EdgeInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         self.v1 = v1
         self.v2 = v2
@@ -107,10 +106,10 @@ class Edge(EdgeInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")

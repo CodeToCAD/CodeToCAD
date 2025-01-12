@@ -52,23 +52,16 @@ class Wire(WireInterface, Entity):
 
     def __init__(
         self,
-        edges: "list[EdgeInterface]",
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Wire requires a parent and a native_instance
         """
-        assert (
-            parent is not None and native_instance is not None
-        ), "Blender Provider's Wire requires a parent and a native_instance"
         self.name = name
         self.description = description
         self.native_instance = native_instance
-        self.edges = edges
-        self.parent = parent
 
     @override
     @supported(SupportLevel.SUPPORTED)
@@ -182,10 +175,10 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         raise NotImplementedError()
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
@@ -476,3 +469,8 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_visible(self, is_visible: "bool") -> Self:
         raise NotImplementedError()
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_parent(self) -> "EntityInterface":
+        print("get_parent called")
+        return __import__("codetocad").Part("an entity")

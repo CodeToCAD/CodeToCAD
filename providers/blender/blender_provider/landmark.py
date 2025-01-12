@@ -83,10 +83,8 @@ class Landmark(LandmarkInterface, Entity):
         new_parent: "EntityInterface| None" = None,
     ) -> "LandmarkInterface":
         parent = new_parent if new_parent else self.parent
-
         if not isinstance(parent, LandmarkableInterface):
             raise Exception("Parent is not landmarkable")
-
         x = self.get_location_local().x - self.parent.get_location_local().x
         y = self.get_location_local().y - self.parent.get_location_local().y
         z = self.get_location_local().z - self.parent.get_location_local().z
@@ -95,9 +93,7 @@ class Landmark(LandmarkInterface, Entity):
             x += offset_x
             y += offset_y
             z += offset_z
-
         landmark = parent.create_landmark(new_name, x, y, z)
-
         return landmark
 
     @override

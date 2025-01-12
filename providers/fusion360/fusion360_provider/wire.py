@@ -40,7 +40,6 @@ class Wire(WireInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         if isinstance(parent, str):
             parent = Entity(parent)
@@ -93,10 +92,10 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         raise NotImplementedError()
         return self
@@ -305,3 +304,8 @@ class Wire(WireInterface, Entity):
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_parent(self) -> "EntityInterface":
+        print("get_parent called")
+        return __import__("codetocad").Part("an entity")

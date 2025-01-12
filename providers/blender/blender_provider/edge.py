@@ -16,22 +16,13 @@ class Edge(EdgeInterface, Entity):
 
     def __init__(
         self,
-        v1: "VertexInterface",
-        v2: "VertexInterface",
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Edge requires a parent and a native_instance
         """
-        assert (
-            parent is not None and native_instance is not None
-        ), "Blender Provider's Edge requires a parent and a native_instance"
-        self.v1 = v1
-        self.v2 = v2
-        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -108,10 +99,10 @@ class Edge(EdgeInterface, Entity):
     @supported(SupportLevel.PLANNED)
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         raise NotImplementedError()
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")

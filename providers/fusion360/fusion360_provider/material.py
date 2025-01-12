@@ -1,5 +1,4 @@
 from codetocad.utilities.supported import supported
-from codetocad.codetocad_types import *
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.material_interface import MaterialInterface
 
@@ -47,18 +46,3 @@ class Material(MaterialInterface):
     def set_image_texture(self, image_file_path: "str"):
         raise NotImplementedError()
         return self
-
-    @staticmethod
-    @supported(SupportLevel.SUPPORTED)
-    def get_preset(material_name: "PresetMaterial"):
-        if isinstance(material_name, str):
-            try:
-                material_name = getattr(PresetMaterial, material_name)
-            except:  # noqa
-                material = Material(material_name)
-        if isinstance(material_name, PresetMaterial):
-            material = Material(material_name.name)
-            material.set_color(*material_name.color)
-            material.set_reflectivity(material_name.reflectivity)
-            material.set_roughness(material_name.roughness)
-        return material

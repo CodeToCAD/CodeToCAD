@@ -1,4 +1,3 @@
-from codetocad.interfaces.entity_interface import EntityInterface
 from typing import Self
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
@@ -21,20 +20,13 @@ class Vertex(VertexInterface, Entity):
 
     def __init__(
         self,
-        location: "Point",
         name: "str| None" = None,
         description: "str| None" = None,
         native_instance=None,
-        parent: "EntityInterface| None" = None,
     ):
         """
         NOTE: Blender Provider's Vertex requires a parent and a native_instance
         """
-        assert (
-            parent is not None and native_instance is not None
-        ), "Blender Provider's Vertex requires a parent and a native_instance"
-        # self.location = location
-        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
