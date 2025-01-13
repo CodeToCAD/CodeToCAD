@@ -55,17 +55,23 @@ class CapabilitiesMethod:
 
     @property
     def return_type_parsed(self):
-        return (
-            capabilities_type_to_python_type(self.return_type)
-            if self.return_type
-            else None
-        )
+        if self.return_type:
+            return capabilities_type_to_python_type(self.return_type)
+
+        if self.is_static_method:
+            return None
+
+        return "Self"
 
     @property
     def return_type_mock_value(self):
-        if self.return_type is None:
+        if self.return_type:
+            return capabilities_type_to_python_mock_value(self.return_type_parsed)
+
+        if self.is_static_method:
             return None
-        return capabilities_type_to_python_mock_value(self.return_type_parsed)
+
+        return "self"
 
     @staticmethod
     def from_json(name: str, method_json: dict) -> "CapabilitiesMethod":

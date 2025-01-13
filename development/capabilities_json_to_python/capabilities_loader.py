@@ -35,7 +35,7 @@ class CapabilitiesLoader:
 
     def append_interface_suffix(
         self,
-        class_name: str,
+        class_name: str | None,
         surround_in_quotes: bool = True,
         union_none_type: bool = False,
     ):
@@ -43,6 +43,9 @@ class CapabilitiesLoader:
         This fills a templating need, and could likely be moved out of CapabiliesLoader.
         Adds Interface as a suffix to a class_name, and has options to add | None and surround the resulting type in quotes.
         """
+        if class_name is None:
+            return "None"
+
         output_name = self.type_to_type_interface(class_name)
         # if class_name in self.all_class_names:
         #     output_name += "Interface"

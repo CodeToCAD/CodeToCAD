@@ -9,8 +9,7 @@
         {{generate_parameters(capabilities_loader, capabilities_method, parameter)}}
         {{-", " if not loop.last}} 
         {%-endfor%}
-    )
-    {{-  " -> " + capabilities_loader.append_interface_suffix(capabilities_method.return_type_parsed) if capabilities_method.return_type_parsed}}:
+    ):
         {%for parameter in parameters%} 
         self.{{parameter.name}} = {{parameter.name}}
         {%-endfor%}

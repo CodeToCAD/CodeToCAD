@@ -7,7 +7,7 @@
 
         {{ parameter.name }} 
 
-        {{-": "+ capabilities_loader.append_interface_suffix(parameter.type_parsed, union_none_type=not parameter.required) if parameter.type_parsed is not none }} 
+        {{-": "+ capabilities_loader.append_interface_suffix(parameter.type_parsed, union_none_type=not parameter.required)}} 
 
         {{-" = "+ default_value if (not parameter.required) or parameter.default_value is not none -}} 
 {%- endmacro %}
@@ -23,5 +23,5 @@
         {{-", " if not loop.last}} 
         {%-endfor%}
     )
-    {{-  " -> " + (capabilities_loader.append_interface_suffix(capabilities_method.return_type_parsed) if capabilities_method.return_type_parsed else "Self")}}:
+    {{-  " -> " + (capabilities_loader.append_interface_suffix(capabilities_method.return_type_parsed))}}:
 {%- endmacro %}

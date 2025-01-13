@@ -8,10 +8,10 @@
         },
         "return_type": {
             "type": "string",
-            "description": "A value of type: any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|",
+            "description": "A value of type: any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|Light",
             "oneOf": [
                 {
-                    "pattern": "^(any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|)$"
+                    "pattern": "^(any|string|boolean|float|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|Light)$"
                 },
                 {
                     "$ref": "#/definitions/returnTypeList"
@@ -20,10 +20,10 @@
         },
         "methodTypes": {
             "type": "string",
-            "description": "Comma separated values of types: any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|",
+            "description": "Comma separated values of types: any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|CurveTypes",
             "oneOf": [
                 {
-                    "pattern": "^((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|)(,|))*$"
+                    "pattern": "^((any|string|boolean|float|list\\[float\\]|int|list\\[string\\]|Entity|Part|Sketch|Material|Landmark|Axis|Dimension|list\\[Dimension\\]|Dimensions|LengthUnit|Angle|object|Point|PresetLandmark|BoundaryBox|Animation|Scene|Camera|Vertex|Edge|Wire|Projectable|Importable|Exportable|Subdividable|Patternable|Mirrorable|PresetMaterial|Booleanable|Landmarkable|BooleanOperation|PartOptions|SketchOptions|CurveTypes)(,|))*$"
                 },
                 {
                     "$ref": "#/definitions/returnTypeList"
@@ -126,6 +126,20 @@
                         "properties": {
                             "action": {
                                 "const": "get"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "return_type"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "action": {
+                                "const": "create"
                             }
                         }
                     },

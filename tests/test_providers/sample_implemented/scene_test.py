@@ -4,9 +4,7 @@ from codetocad.tests_interfaces.scene_test_interface import SceneTestInterface
 
 class SceneTest(TestProviderCase, SceneTestInterface):
     def test_default(self):
-        instance = Scene(name="String", description="String")
-
-        value = instance.default()
+        value = Scene.default()
 
         assert value, "Get method failed."
 
@@ -23,7 +21,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         value = instance.delete()
 
     def test_is_exists(self):
-        instance = Scene()
+        instance = Scene.default()
 
         value = instance.is_exists()
 
@@ -39,7 +37,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
     def test_export(self):
         instance = Scene.default()
 
-        part = Part().create_cube(1, 1, 1)
+        part = Part.create_cube(1, 1, 1)
 
         value = instance.export(
             file_path="scene-export.png",
@@ -74,7 +72,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
 
         group_name = "test-scene-group"
 
-        part = Part().create_cube(1, 1, 1)
+        part = Part.create_cube(1, 1, 1)
 
         instance.assign_to_group([part], group_name)
 
@@ -85,7 +83,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
     def test_assign_to_group(self):
         instance = Scene.default()
 
-        part = Part().create_cube(1, 1, 1)
+        part = Part.create_cube(1, 1, 1)
 
         value = instance.assign_to_group(
             entities=[part],
@@ -97,7 +95,7 @@ class SceneTest(TestProviderCase, SceneTestInterface):
     def test_set_visible(self):
         instance = Scene.default()
 
-        part = Part().create_cube(1, 1, 1)
+        part = Part.create_cube(1, 1, 1)
 
         value = instance.set_visible(entities=[part], is_visible=True)
 
@@ -115,3 +113,11 @@ class SceneTest(TestProviderCase, SceneTestInterface):
         )
 
         assert value, "Modify method failed."
+
+    def test_get_by_name(self):
+
+        Scene.create("test_scene")
+
+        instance = Scene.get_by_name(name="test_scene")
+
+        assert instance.is_exists(), "Create method failed."

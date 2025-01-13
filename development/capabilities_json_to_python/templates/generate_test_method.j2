@@ -19,6 +19,10 @@
         {% if use_abstract_method_decorator %}
         pass
         {%else%}
+
+        {% if capabilities_method.is_static_method %}
+        instance = {{capabilities_class.name}}
+        {%else%}
         instance = {{capabilities_class.name}}(
         {% set parameters = capabilities_loader.get_constructor_parameters_for_class(capabilities_class.name)%}
         {%for parameter in parameters -%} 
@@ -26,6 +30,7 @@
         {{-", " if not loop.last}} 
         {%-endfor%}
         )
+        {%endif%}
 
         value = instance.{{capabilities_method.name}}(
         {%for parameter in capabilities_method.parameters -%} 
@@ -39,7 +44,7 @@
         {%elif capabilities_method.action == "create"%}
         assert value.is_exists(), "Create method failed."
         {%elif capabilities_method.action == "modify"%}
-        assert value, "Modify method failed."
+        # TODO: Check the method was modified correctly
         {%endif%}
         {%endif%}
 

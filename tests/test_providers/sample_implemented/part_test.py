@@ -4,6 +4,14 @@ import math
 
 
 class PartTest(TestProviderCase, PartTestInterface):
+    def test_get_by_name(self):
+
+        Part.create_cylinder(5, 1, name="testPart")
+
+        value = Part.get_by_name(name="testPart")
+
+        assert value, "Get method failed."
+
     def test_mirror(self):
         instance = Part("myPart")
 
@@ -14,7 +22,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         instance.translate_x(-1)
 
-        mirror_entity = Sketch().create_point([0, 0, 0])
+        mirror_entity = Sketch.create_point([0, 0, 0])
 
         value = instance.mirror(mirror_across_entity=mirror_entity, axis="z")
 
@@ -40,7 +48,7 @@ class PartTest(TestProviderCase, PartTestInterface):
 
         value = instance.create_cube(1, 1, 1)
 
-        mirror_entity = Sketch().create_point([0, 0, 0])
+        mirror_entity = Sketch.create_point([0, 0, 0])
 
         value = instance.circular_pattern(
             instance_count=2,
@@ -61,18 +69,14 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_subdivide(self):  # NotImplemented
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.subdivide(amount=10)
 
         assert value, "Modify method failed."
 
     def test_decimate(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.decimate(amount=10)
 
@@ -98,72 +102,56 @@ class PartTest(TestProviderCase, PartTestInterface):
         )
 
     def test_scale_xyz(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_xyz(x=1, y=0.5, z=2)
 
         assert value, "Modify method failed."
 
     def test_scale_x(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_x(scale=2)
 
         assert value, "Modify method failed."
 
     def test_scale_y(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_y(scale=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_z(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_z(scale=3)
 
         assert value, "Modify method failed."
 
     def test_scale_x_by_factor(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_x_by_factor(scale_factor=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_y_by_factor(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_y_by_factor(scale_factor=2.5)
 
         assert value, "Modify method failed."
 
     def test_scale_z_by_factor(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_z_by_factor(scale_factor=1.5)
 
         assert value, "Modify method failed."
 
     def test_scale_keep_aspect_ratio(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.scale_keep_aspect_ratio(scale=2, axis="z")
 
@@ -237,16 +225,12 @@ class PartTest(TestProviderCase, PartTestInterface):
 
     def test_create_text(self):
 
-        instance = Part(name="myPart")
-
-        value = instance.create_text(text="My string", extrude_amount="10mm")
+        value = Part.create_text(text="My string", extrude_amount="10mm")
 
         assert value.is_exists(), "Create method failed."
 
     def test_clone(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.clone(
             "myCubeClone",
@@ -255,9 +239,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_union(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         instance2 = Part("myCylinder")
 
@@ -270,9 +252,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_subtract(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         instance2 = Part("myCylinder")
 
@@ -283,9 +263,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_intersect(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         instance2 = Part("myCylinder")
 
@@ -296,9 +274,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_hollow(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         value = instance.hollow(
             thickness_x=0.5,
@@ -351,9 +327,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_is_colliding_with_part(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         instance2 = Part("myCylinder")
 
@@ -364,9 +338,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Get method failed."
 
     def test_fillet_all_edges(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         value = instance.fillet_all_edges(
             radius=0.2,
@@ -375,9 +347,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_fillet_edges(self):
-        instance = Part("myCube")
-
-        instance.create_cube(1, 1, 1)
+        instance = Part.create_cube(1, 1, 1)
 
         instance.create_landmark(x=0.5, y=0.5, z=0.5, landmark_name="fillet-ref-lm")
 
@@ -389,9 +359,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_fillet_faces(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="fillet-ref-lm")
 
@@ -403,18 +371,14 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_chamfer_all_edges(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         value = instance.chamfer_all_edges(radius=2)
 
         assert value, "Modify method failed."
 
     def test_chamfer_edges(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
@@ -423,9 +387,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_chamfer_faces(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
@@ -434,9 +396,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_select_vertex_near_landmark(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
@@ -445,9 +405,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_select_edge_near_landmark(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 
@@ -456,9 +414,7 @@ class PartTest(TestProviderCase, PartTestInterface):
         assert value, "Modify method failed."
 
     def test_select_face_near_landmark(self):
-        instance = Part("myCube")
-
-        instance.create_cube(5, 5, 5)
+        instance = Part.create_cube(5, 5, 5)
 
         landmark = instance.create_landmark(x=2.5, y=2.5, z=2.5, landmark_name="ref-lm")
 

@@ -16,6 +16,6 @@
         {%else-%}
         print("{{capabilities_method.name}} called", {{"f\": {" +capabilities_method.parameters_names|join("}, {") + "}\"" if capabilities_method.parameters_names|length>0 else ""}})
         
-        return {{ "self" if capabilities_method.action != "get" else capabilities_method.return_type_mock_value }}
+        return {{ capabilities_method.return_type_mock_value }}
         {%endif%}
 {% endmacro %}

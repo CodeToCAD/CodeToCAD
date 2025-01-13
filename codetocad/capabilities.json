@@ -180,6 +180,7 @@
             "is_interface_only": true,
             "mirror": {
                 "action": "create",
+                "return_type": "Entity",
                 "information": "Mirror an existing entity with respect to a landmark. If separate_resulting_entity is true (Default: false), the mirror becomes a separate entity.",
                 "parameters": {
                     "mirror_across_entity": {
@@ -274,6 +275,7 @@
             "is_interface_only": true,
             "create_from_file": {
                 "action": "create",
+                "return_type": "Entity",
                 "information": "Imports geometry from a file.",
                 "parameters": {
                     "file_path": {
@@ -283,7 +285,8 @@
                         "type": "string",
                         "required": false
                     }
-                }
+                },
+                "is_static_method": true
             }
         },
         "Exportable": {
@@ -530,8 +533,21 @@
             "information": "Capabilities related to creating and manipulating 3D shapes.",
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Subdividable,Importable,Exportable,Scalable,Landmarkable,Booleanable",
+            "get_by_name": {
+                "information": "Get a Part instance by name.",
+                "action": "get",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                "is_static_method": true,
+                "return_type": "Part"
+            },
             "create_cube": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds cuboid geometry to a part.",
                 "parameters": {
                     "width": {
@@ -556,6 +572,7 @@
             },
             "create_cone": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds cone geometry to a part.",
                 "parameters": {
                     "radius": {
@@ -581,6 +598,7 @@
             },
             "create_cylinder": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds cylinder geometry to a part.",
                 "parameters": {
                     "radius": {
@@ -602,6 +620,7 @@
             },
             "create_torus": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds torus geometry to a part.",
                 "parameters": {
                     "inner_radius": {
@@ -623,6 +642,7 @@
             },
             "create_sphere": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds sphere geometry to a part.",
                 "parameters": {
                     "radius": {
@@ -641,6 +661,7 @@
             },
             "create_gear": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Adds gear geometry to a part.",
                 "parameters": {
                     "outer_radius": {
@@ -691,6 +712,7 @@
             },
             "create_text": {
                 "action": "create",
+                "return_type": "Part",
                 "information": "Add 3D text. This is a shortcut for quickly extruding Sktech.create_text. Use a sketch for more flexibility.",
                 "parameters": {
                     "text": {
@@ -1034,13 +1056,18 @@
             "information": "Capabilities related to creating and manipulating 2D sketches, composed of vertices, edges and wires.",
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Importable,Exportable,Scalable,Projectable,Landmarkable",
-            "constructor": {
+            "constructor": {},
+            "get_by_name": {
+                "information": "Get a Sketch instance by name.",
+                "action": "get",
                 "parameters": {
-                    "curve_type": {
-                        "type": "CurveTypes",
-                        "required": false
+                    "name": {
+                        "type": "string",
+                        "required": true
                     }
-                }
+                },
+                "is_static_method": true,
+                "return_type": "Sketch"
             },
             "get_wires": {
                 "action": "get",
@@ -1065,6 +1092,7 @@
             },
             "create_text": {
                 "action": "create",
+                "return_type": "Sketch",
                 "information": "Adds text to a sketch.",
                 "parameters": {
                     "text": {
@@ -1118,13 +1146,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_from_vertices": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a curve from 2D/3D points.",
                 "parameters": {
                     "points": {
@@ -1137,13 +1169,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_point": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a point",
                 "parameters": {
                     "point": {
@@ -1156,13 +1192,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_line": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a line between two points",
                 "parameters": {
                     "length": {
@@ -1183,13 +1223,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_line_to": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a line between two points",
                 "parameters": {
                     "to": {
@@ -1207,13 +1251,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_circle": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a circle",
                 "parameters": {
                     "radius": {
@@ -1230,13 +1278,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_ellipse": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create an ellipse",
                 "parameters": {
                     "radius_minor": {
@@ -1256,13 +1308,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_arc": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create an arc. The radius is the distance from the center of the circle that forms the arc, to the chord tying start_at and end_at.",
                 "parameters": {
                     "end_at": {
@@ -1289,13 +1345,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_rectangle": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a rectangle",
                 "parameters": {
                     "length": {
@@ -1315,13 +1375,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_polygon": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create an n-gon",
                 "parameters": {
                     "number_of_sides": {
@@ -1344,13 +1408,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_trapezoid": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a trapezoid",
                 "parameters": {
                     "length_upper": {
@@ -1373,13 +1441,17 @@
                     "description": {
                         "type": "string",
                         "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
+                        "required": false
                     }
                 },
                 "is_static_method": true
             },
             "create_spiral": {
-                "action": "get",
-                "return_type": "Wire",
+                "action": "create",
+                "return_type": "Sketch",
                 "information": "Create a spiral or helix",
                 "parameters": {
                     "number_of_turns": {
@@ -1410,6 +1482,10 @@
                     },
                     "description": {
                         "type": "string",
+                        "required": false
+                    },
+                    "curve_type": {
+                        "type": "CurveTypes",
                         "required": false
                     }
                 },
@@ -2039,6 +2115,7 @@
             "create_sun": {
                 "information": "Create a Sun-type light.",
                 "action": "create",
+                "return_type": "Light",
                 "parameters": {
                     "energy_level": {
                         "type": "float"
@@ -2057,6 +2134,7 @@
             "create_spot": {
                 "information": "Create a Spot-type light.",
                 "action": "create",
+                "return_type": "Light",
                 "parameters": {
                     "energy_level": {
                         "type": "float"
@@ -2075,6 +2153,7 @@
             "create_point": {
                 "information": "Create a Point-type light.",
                 "action": "create",
+                "return_type": "Light",
                 "parameters": {
                     "energy_level": {
                         "type": "float"
@@ -2093,6 +2172,7 @@
             "create_area": {
                 "information": "Create an Area-type light.",
                 "action": "create",
+                "return_type": "Light",
                 "parameters": {
                     "energy_level": {
                         "type": "float"
@@ -2116,6 +2196,7 @@
             "create_perspective": {
                 "information": "Create a perspective camera in the scene.",
                 "action": "create",
+                "return_type": "Camera",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2131,6 +2212,7 @@
             "create_orthogonal": {
                 "information": "Create an orthogonal camera in the scene.",
                 "action": "create",
+                "return_type": "Camera",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2146,6 +2228,7 @@
             "create_panoramic": {
                 "information": "Create a panorama camera in the scene.",
                 "action": "create",
+                "return_type": "Camera",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2331,7 +2414,7 @@
             },
             "get_by_name": {
                 "information": "Get a Scene instance by name.",
-                "action": "create",
+                "action": "get",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2344,6 +2427,7 @@
             "create": {
                 "information": "Creates a new scene.",
                 "action": "create",
+                "return_type": "Scene",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2400,7 +2484,7 @@
                 }
             },
             "create_group": {
-                "action": "create",
+                "action": "modify",
                 "information": "Create a new group",
                 "parameters": {
                     "name": {
