@@ -1,8 +1,6 @@
 import math
-from codetocad.interfaces.sketch_interface import SketchInterface
 from tests.test_providers import *
 from codetocad.tests_interfaces.wire_test_interface import WireTestInterface
-from codetocad.enums.curve_types import CurveTypes
 
 
 class WireTest(TestProviderCase, WireTestInterface):

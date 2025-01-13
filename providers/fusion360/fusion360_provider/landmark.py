@@ -12,13 +12,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark impor
 
 class Landmark(LandmarkInterface, Entity):
 
-    def __init__(
-        self,
-        parent: "EntityInterface",
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any", parent: "EntityInterface"):
         self.name = name
         self.parent = parent
         self.description = description
@@ -34,7 +28,7 @@ class Landmark(LandmarkInterface, Entity):
         else:
             return FusionBody(self.parent.name)
 
-    @supported(SupportLevel.PARTIAL, "Offset is not supported.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",

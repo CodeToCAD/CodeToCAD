@@ -46,7 +46,6 @@ def get_vertex_from_blender_point(
         location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
         native_instance=spline_point,
-        parent=edge,
     )
 
 
@@ -88,7 +87,6 @@ def get_edge_from_blender_edge(
         v1=v1,
         v2=v2,
         name=create_uuid_like_id(),
-        parent=entity.name,
         native_instance=edge,
     )
 

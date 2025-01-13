@@ -53,34 +53,23 @@ from providers.blender.blender_provider.sketch import Sketch
 
 class Part(PartInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
-        self.name = name
-        self.description = description
+    def __init__(self, native_instance: "Any"):
         self.native_instance = native_instance
 
-    @supported(SupportLevel.PARTIAL, "Only stl, ply, obj types are supported.")
-    def create_from_file(self, file_path: "str", file_type: "str| None" = None):
-        assert self.is_exists() is False, f"{self.name} already exists."
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_from_file(file_path: "str", file_type: "str| None" = None):
         absoluteFilePath = get_absolute_filepath(file_path)
         importedFileName = import_file(absoluteFilePath, file_type)
-        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-        # therefore, we'll use the object's "expected" name and rename it to what it should be
-        # note: this will fail if the "expected" name is incorrect
-        if self.name != importedFileName:
-            Part(importedFileName).set_name(self.name)
-        return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_cube(
-        self,
         width: "str|float|Dimension",
         length: "str|float|Dimension",
         height: "str|float|Dimension",
+        name: "str| None" = None,
+        description: "str| None" = None,
     ):
         return (
             Sketch(self.name)
@@ -89,15 +78,14 @@ class Part(PartInterface, Entity):
             .set_name(self.name)
         )
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "Only cones with a draft_radius > 0 can be created at the moment. Options is not implemented.",
-    )
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_cone(
-        self,
         radius: "str|float|Dimension",
         height: "str|float|Dimension",
         draft_radius: "str|float|Dimension" = 0,
+        name: "str| None" = None,
+        description: "str| None" = None,
     ):
         base_sketch = Sketch(self.name)
         base = base_sketch.create_circle(radius)
@@ -114,17 +102,23 @@ class Part(PartInterface, Entity):
         top.delete()
         return new_part
 
-    @supported(SupportLevel.SUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_cylinder(
-        self, radius: "str|float|Dimension", height: "str|float|Dimension"
+        radius: "str|float|Dimension",
+        height: "str|float|Dimension",
+        name: "str| None" = None,
+        description: "str| None" = None,
     ):
-        return (
-            Sketch(self.name).create_circle(radius).extrude(height).set_name(self.name)
-        )
+        return Sketch.create_circle(radius).extrude(height).set_name(self.name)
 
-    @supported(SupportLevel.SUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_torus(
-        self, inner_radius: "str|float|Dimension", outer_radius: "str|float|Dimension"
+        inner_radius: "str|float|Dimension",
+        outer_radius: "str|float|Dimension",
+        name: "str| None" = None,
+        description: "str| None" = None,
     ):
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
             inner_radius
@@ -145,16 +139,21 @@ class Part(PartInterface, Entity):
         origin.delete()
         return new_part
 
-    @supported(SupportLevel.SUPPORTED)
-    def create_sphere(self, radius: "str|float|Dimension"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_sphere(
+        radius: "str|float|Dimension",
+        name: "str| None" = None,
+        description: "str| None" = None,
+    ):
         sketch = Sketch(self.name)
         circle = sketch.create_circle(radius)
         new_part = circle.revolve(180, sketch.get_landmark("center"), "x")
         return new_part.set_name(self.name)
 
-    @supported(SupportLevel.SUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_gear(
-        self,
         outer_radius: "str|float|Dimension",
         addendum: "str|float|Dimension",
         inner_radius: "str|float|Dimension",
@@ -165,6 +164,8 @@ class Part(PartInterface, Entity):
         skew_angle: "str|float|Angle" = 0,
         conical_angle: "str|float|Angle" = 0,
         crown_angle: "str|float|Angle" = 0,
+        name: "str| None" = None,
+        description: "str| None" = None,
     ):
         create_gear(
             self.name,
@@ -185,7 +186,7 @@ class Part(PartInterface, Entity):
         Part("Gear").set_name(self.name, True)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
     ) -> "PartInterface":
@@ -193,7 +194,7 @@ class Part(PartInterface, Entity):
         duplicate_object(self.name, new_name, copy_landmarks)
         return Part(new_name, self.description)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def union(
         self,
         other: "BooleanableInterface",
@@ -218,7 +219,7 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subtract(
         self,
         other: "BooleanableInterface",
@@ -239,7 +240,7 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def intersect(
         self,
         other: "BooleanableInterface",
@@ -260,10 +261,7 @@ class Part(PartInterface, Entity):
             remove_object(part_name, remove_children=True)
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "This implementation works with simple geometry like cubes and cylinders. This implementation fails when working with geometry that has splines or curves in one or more edges.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def hollow(
         self,
         thickness_x: "str|float|Dimension",
@@ -327,13 +325,13 @@ class Part(PartInterface, Entity):
         start_axis_landmark.delete()
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def thicken(self, radius: "str|float|Dimension") -> "PartInterface":
         radius = Dimension.from_string(radius)
         apply_solidify_modifier(self.name, radius)
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def hole(
         self,
         hole_landmark: "str|LandmarkInterface",
@@ -360,7 +358,7 @@ class Part(PartInterface, Entity):
     ):
         axis = Axis.from_string(normal_axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
-        hole = Part(create_uuid_like_id()).create_cylinder(radius, depth)
+        hole = Part.create_cylinder(radius, depth)
         hole_head = hole.create_landmark(
             "hole", "center", "center", "min" if flip_axis else "max"
         )
@@ -409,7 +407,7 @@ class Part(PartInterface, Entity):
         self.subtract(hole, delete_after_subtract=True, is_transfer_data=False)
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_material(self, material: "MaterialInterface"):
         if isinstance(material_name, MaterialInterface):
             material_name = material_name.name
@@ -425,7 +423,7 @@ class Part(PartInterface, Entity):
         set_material_to_object(material_name, self.name)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_colliding_with_part(self, other_part: "PartInterface"):
         other_part_name = other_part
         if isinstance(other_part_name, PartInterface):
@@ -469,13 +467,13 @@ class Part(PartInterface, Entity):
         )
         return self._apply_modifiers_only()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
     ):
         return self._bevel(radius, chamfer=False, use_width=use_width)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def fillet_edges(
         self,
         radius: "str|float|Dimension",
@@ -489,7 +487,7 @@ class Part(PartInterface, Entity):
             use_width=use_width,
         )
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def fillet_faces(
         self,
         radius: "str|float|Dimension",
@@ -503,11 +501,11 @@ class Part(PartInterface, Entity):
             use_width=use_width,
         )
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def chamfer_all_edges(self, radius: "str|float|Dimension"):
         return self._bevel(radius, chamfer=True, use_width=False)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def chamfer_edges(
         self,
         radius: "str|float|Dimension",
@@ -520,7 +518,7 @@ class Part(PartInterface, Entity):
             use_width=False,
         )
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def chamfer_faces(
         self,
         radius: "str|float|Dimension",
@@ -587,22 +585,22 @@ class Part(PartInterface, Entity):
             face_indecies: list[int] = blender_polygon.vertices
             add_verticies_to_vertex_group(vertex_group_object, face_indecies)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select_vertex_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select_edge_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select_face_near_landmark(self, landmark: "LandmarkInterface| None" = None):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def twist(
         self,
         angle: "str|float|Angle",
@@ -613,7 +611,7 @@ class Part(PartInterface, Entity):
         implementables.twist(self, angle, screw_pitch, iterations, axis)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
         mirror_across_entity: "EntityInterface",
@@ -625,7 +623,7 @@ class Part(PartInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
@@ -635,7 +633,7 @@ class Part(PartInterface, Entity):
         implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
@@ -652,12 +650,12 @@ class Part(PartInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
         implementables.export(self, file_path, overwrite, scale)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_xyz(
         self,
         x: "str|float|Dimension",
@@ -667,62 +665,59 @@ class Part(PartInterface, Entity):
         implementables.scale_xyz(self, x, y, z)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_x(self, scale: "str|float|Dimension"):
         implementables.scale_x(self, scale)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_y(self, scale: "str|float|Dimension"):
         implementables.scale_y(self, scale)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_z(self, scale: "str|float|Dimension"):
         implementables.scale_z(self, scale)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_x_by_factor(self, scale_factor: "float"):
         implementables.scale_x_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_y_by_factor(self, scale_factor: "float"):
         implementables.scale_y_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_z_by_factor(self, scale_factor: "float"):
         implementables.scale_z_by_factor(self, scale_factor)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
     ):
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "The strategy parameter will probably be broken down into remesh_[strategy] methods in the future.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def remesh(self, strategy: "str", amount: "float"):
         implementables.remesh(self, strategy, amount)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subdivide(self, amount: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def decimate(self, amount: "float"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
         x: "str|float|Dimension",
@@ -734,13 +729,13 @@ class Part(PartInterface, Entity):
             self, landmark_name=landmark_name, x=x, y=y, z=z
         )
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         return implementables.get_landmark(self, landmark_name)
 
+    @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
     def create_text(
-        self,
         text: "str",
         extrude_amount: "str|float|Dimension",
         font_size: "str|float|Dimension" = 1.0,
@@ -752,8 +747,10 @@ class Part(PartInterface, Entity):
         line_spacing: "int" = 1,
         font_file_path: "str| None" = None,
         profile_curve: "WireInterface|SketchInterface| None" = None,
+        name: "str| None" = None,
+        description: "str| None" = None,
     ) -> Self:
-        sketch = Sketch(self.name + "_" + create_uuid_like_id()).create_text(
+        sketch = Sketch.create_text(
             text=text,
             font_size=font_size,
             bold=bold,
@@ -772,3 +769,9 @@ class Part(PartInterface, Entity):
         part.set_name(self.name)
         sketch.delete()
         return self
+
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_by_name(name: "str") -> "PartInterface":
+        print("get_by_name called", f": {name}")
+        return Part("a part")

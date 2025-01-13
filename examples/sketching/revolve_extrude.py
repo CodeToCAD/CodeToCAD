@@ -1,6 +1,6 @@
 from codetocad import *
 
-Sketch("centerline").create_line([0, 0, 0], [0, 1, 0])
+Sketch.create_line([0, 0, 0], [0, 1, 0])
 
 half_donut = Sketch("half-donut")
 half_donut.create_circle("10cm")

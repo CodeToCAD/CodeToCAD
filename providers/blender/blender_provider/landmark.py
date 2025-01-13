@@ -25,13 +25,7 @@ from providers.blender.blender_provider.entity import Entity
 
 class Landmark(LandmarkInterface, Entity):
 
-    def __init__(
-        self,
-        parent: "EntityInterface",
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any", parent: "EntityInterface"):
         self.name = name
         self.parent = parent
         self.description = description
@@ -75,7 +69,7 @@ class Landmark(LandmarkInterface, Entity):
         update_view_layer()
         return get_object_local_location(self.get_landmark_entity_name())
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",

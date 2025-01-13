@@ -1,4 +1,5 @@
 from codetocad.interfaces.render_interface import RenderInterface
+from codetocad.codetocad_types import *
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.camera_interface import CameraInterface
@@ -6,19 +7,17 @@ from codetocad.interfaces.camera_interface import CameraInterface
 
 class Render(RenderInterface):
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_image(
-        self,
-        output_file_path: "str",
-        overwrite: "bool" = True,
-        file_type: "str| None" = None,
+        output_file_path: "str", overwrite: "bool" = True, file_type: "str| None" = None
     ):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_mp4(
-        self,
         output_file_path: "str",
         start_frame_number: "int" = 1,
         end_frame_number: "int" = 100,
@@ -28,9 +27,9 @@ class Render(RenderInterface):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_frames(
-        self,
         output_folder_path: "str",
         file_name_prefix: "str",
         start_frame_number: "int" = 1,
@@ -42,27 +41,32 @@ class Render(RenderInterface):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def set_frame_rate(self, frame_rate: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_frame_rate(frame_rate: "int"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def set_resolution(self, x: "int", y: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_resolution(x: "int", y: "int"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def set_render_quality(self, quality: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_quality(quality: "int"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def set_render_engine(self, name: "str"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_engine(name: "str"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def set_camera(self, camera_instance: "CameraInterface"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_camera(camera_instance: "CameraInterface"):
         raise NotImplementedError()
         return self

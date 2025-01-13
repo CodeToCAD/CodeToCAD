@@ -1,4 +1,5 @@
 from codetocad.interfaces.camera_interface import CameraInterface
+from codetocad.codetocad_types import *
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from providers.blender.blender_provider.entity import Entity
@@ -10,31 +11,29 @@ from providers.blender.blender_provider.blender_actions.camera import (
 
 class Camera(CameraInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.name = name
         self.description = description
 
-    @supported(SupportLevel.SUPPORTED)
-    def create_perspective(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_perspective(name: "str| None" = None, description: "str| None" = None):
         create_camera(self.name, type="PERSP")
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def create_orthogonal(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_orthogonal(name: "str| None" = None, description: "str| None" = None):
         create_camera(self.name, type="ORTHO")
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_focal_length(self, length: "float"):
         set_focal_length(self.name, length)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def create_panoramic(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_panoramic(name: "str| None" = None, description: "str| None" = None):
         create_camera(self.name, type="PANO")
         return self

@@ -16,7 +16,7 @@ class Material(MaterialInterface):
         self.name = name
         self.description = description
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_color(
         self,
         r_value: "int|float",
@@ -26,14 +26,14 @@ class Material(MaterialInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_reflectivity(self, reflectivity: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_roughness(self, roughness: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_image_texture(self, image_file_path: "str"):
         return self

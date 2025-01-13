@@ -7,7 +7,7 @@ for letter_ascii in range(starting_letter_ascii, starting_letter_ascii + 26):
 
     extrude_amount = 0.2
 
-    letter_sketch = Sketch(letter).create_text(letter)
+    letter_sketch = Sketch.create_text(letter)
     letter_sketch.extrude(extrude_amount)
     letter_sketch.rotate_xyz(90, 0, -90)
 

@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Type
 import bpy
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension

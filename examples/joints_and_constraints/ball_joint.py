@@ -1,17 +1,17 @@
 from codetocad import *
 from codetocad.interfaces.landmark_interface import LandmarkInterface
 
-ball = Part("ball").create_sphere(1)
+ball = Part.create_sphere(1)
 ball_center = ball.get_landmark("center")  # or PresetLandmarks.center
 ball_bottom: LandmarkInterface = ball.get_landmark(PresetLandmark.bottom)  # or "bottom"
 
-link = Part("link").create_cube(1, 1, 2)
+link = Part.create_cube(1, 1, 2)
 link_top = link.get_landmark("top")
 link_bottom = link.get_landmark("bottom")
 
 Joint(ball_center, link_bottom).limit_location_xyz(0, 0, 0).limit_rotation_xyz(0, 0, 0)
 
-socket = Part("socket").create_sphere(1.2)
+socket = Part.create_sphere(1.2)
 socket_cutoff = socket.create_landmark("cutoff", "center", "center", "min + 0.7")
 socket_center = socket.get_landmark("center")
 

@@ -13,19 +13,19 @@ class Joint(JointInterface):
         self.entity_1 = entity_1
         self.entity_2 = entity_2
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_landmark_onto_another(self):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def pivot(self):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def gear_ratio(self, ratio: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_location_xyz(
         self,
         x: "str|float|Dimension| None" = None,
@@ -34,7 +34,7 @@ class Joint(JointInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_location_x(
         self,
         min: "str|float|Dimension| None" = None,
@@ -42,7 +42,7 @@ class Joint(JointInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_location_y(
         self,
         min: "str|float|Dimension| None" = None,
@@ -50,7 +50,7 @@ class Joint(JointInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_location_z(
         self,
         min: "str|float|Dimension| None" = None,
@@ -58,7 +58,7 @@ class Joint(JointInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_rotation_xyz(
         self,
         x: "str|float|Angle| None" = None,
@@ -67,19 +67,19 @@ class Joint(JointInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_rotation_x(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_rotation_y(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def limit_rotation_z(
         self, min: "str|float|Angle| None" = None, max: "str|float|Angle| None" = None
     ):

@@ -1,12 +1,12 @@
 from codetocad import *
 from codetocad.interfaces.part_interface import PartInterface
-from examples.d_shaft import DShaft
+from .d_shaft import DShaft
 
 
 def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
     d_shaft_diameter = d_shaft.get_dimensions().y
 
-    sleeve = Part("sleeve").create_cylinder(
+    sleeve = Part.create_cylinder(
         d_shaft_diameter / 2 + sleeve_thickness, d_shaft.get_dimensions().z
     )
 
@@ -16,7 +16,7 @@ def create_d_shaft_sleeve(d_shaft: PartInterface, sleeve_thickness):
 
 
 def create_knob(radius):
-    knob = Sketch("knob").create_polygon(7, radius, radius).extrude(radius * 0.2)
+    knob = Sketch.create_polygon(7, radius, radius).extrude(radius * 0.2)
 
     return knob
 

@@ -18,17 +18,7 @@ from providers.blender.blender_provider.blender_actions.vertex_edge_wire import 
 
 class Vertex(VertexInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
-        """
-        NOTE: Blender Provider's Vertex requires a parent and a native_instance
-        """
-        self.name = name
-        self.description = description
+    def __init__(self, native_instance: "Any"):
         self.native_instance = native_instance
 
     @override
@@ -42,15 +32,15 @@ class Vertex(VertexInterface, Entity):
     def location(self) -> Point:
         return get_vertex_location_from_blender_point(self.get_native_instance())
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_control_points(self) -> "list[Point]":
         return get_control_points(self.get_native_instance())  # type:ignore
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
@@ -103,3 +93,8 @@ class Vertex(VertexInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_visible(self, is_visible: "bool") -> Self:
         raise NotImplementedError()
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_location(self) -> "Point":
+        print("get_location called")
+        return Point.from_list_of_float_or_string([0, 0, 0])

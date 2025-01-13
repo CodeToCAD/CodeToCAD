@@ -29,27 +29,19 @@ class Render(RenderInterface):
         )
         set_render_file_format(fileFormat)
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "file_type is ignored, and is infered from the output_file_path.",
-    )
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_image(
-        self,
-        output_file_path: "str",
-        overwrite: "bool" = True,
-        file_type: "str| None" = None,
+        output_file_path: "str", overwrite: "bool" = True, file_type: "str| None" = None
     ):
         absoluteFilePath = get_absolute_filepath(output_file_path)
         Render._set_file_format(absoluteFilePath)
         render_image(absoluteFilePath, overwrite or True)
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "start/end_frame_number and step_frame paramters are currently ignored.",
-    )
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_mp4(
-        self,
         output_file_path: "str",
         start_frame_number: "int" = 1,
         end_frame_number: "int" = 100,
@@ -61,9 +53,9 @@ class Render(RenderInterface):
         render_animation(absoluteFilePath, overwrite or True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_frames(
-        self,
         output_folder_path: "str",
         file_name_prefix: "str",
         start_frame_number: "int" = 1,
@@ -76,29 +68,34 @@ class Render(RenderInterface):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_frame_rate(self, frame_rate: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_frame_rate(frame_rate: "int"):
         set_render_frame_rate(int(frame_rate))
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_resolution(self, x: "int", y: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_resolution(x: "int", y: "int"):
         set_render_resolution(x, y)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_render_quality(self, quality: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_quality(quality: "int"):
         percentage = quality * 100 if quality < 1.0 else quality
         percentage = int(percentage)
         set_render_quality(percentage)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_render_engine(self, name: "str"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_engine(name: "str"):
         set_render_engine(RenderEngines.from_string(name))
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_camera(self, camera_instance: "CameraInterface"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_camera(camera_instance: "CameraInterface"):
         set_scene_camera(camera_instance.get_native_instance())
         return self

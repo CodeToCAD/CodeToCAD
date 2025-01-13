@@ -15,33 +15,28 @@ class Entity(EntityInterface):
     description: Optional[str] = None
     native_instance = None
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_exists(self) -> bool:
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete(self, remove_children: "bool" = True):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_visible(self) -> bool:
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_visible(self, is_visible: "bool"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def apply(
         self,
         rotation: "bool" = True,
@@ -51,23 +46,23 @@ class Entity(EntityInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_native_instance(self) -> object:
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_world(self) -> "Point":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_local(self) -> "Point":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select(self):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -76,41 +71,41 @@ class Entity(EntityInterface):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_x(self, amount: "str|float|Dimension"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_y(self, amount: "str|float|Dimension"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_z(self, amount: "str|float|Dimension"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_x(self, rotation: "str|float|Angle"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_y(self, rotation: "str|float|Angle"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_z(self, rotation: "str|float|Angle"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_bounding_box(self) -> "BoundaryBox":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_dimensions(self) -> "Dimensions":
         raise NotImplementedError()
 

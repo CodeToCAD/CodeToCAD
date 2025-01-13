@@ -1,6 +1,7 @@
 from codetocad.core.boundary_axis import BoundaryAxis
 from typing import Self
 from codetocad.interfaces.sketch_interface import SketchInterface
+from codetocad.utilities.override import override
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -49,26 +50,26 @@ from providers.blender.blender_provider.blender_definitions import (
 
 class Entity(EntityInterface):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
-        self.name = name
-        self.description = description
+    def __init__(self, native_instance: "Any"):
         self.native_instance = native_instance
 
-    @supported(SupportLevel.SUPPORTED, notes="Checks for Objects with the same name.")
+    @override
+    @property
+    def name(self) -> "str":
+        """
+        The @overide only exists to trick the provider_update script to not remove the name property.
+
+        Returns the name of the entity in Blender.
+        """
+        return self.native_instance.name
+
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_exists(self) -> bool:
         if isinstance(self, SketchInterface):
             return get_curve_or_none(self.name) is not None
         return get_object_or_none(self.name) is not None
 
-    @supported(
-        SupportLevel.SUPPORTED,
-        notes="Deletes an object and its data with the same name. Meaning it will also delete a Mesh Object's underlying mesh. Does not check if the Mesh is being used by another Object.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete(self, remove_children: "bool" = True):
         if isinstance(self, SketchInterface):
             sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
@@ -79,14 +80,11 @@ class Entity(EntityInterface):
         remove_object(self.name, remove_children)
         return self
 
-    @supported(
-        SupportLevel.SUPPORTED,
-        notes="Checks if the object is visible in the 3D viewport, taking into account all visibility settings",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_visible(self) -> bool:
         return get_object_visibility(self.name)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_visible(self, is_visible: "bool"):
         set_object_visibility(self.name, is_visible)
         return self
@@ -97,10 +95,7 @@ class Entity(EntityInterface):
     def _apply_rotation_and_scale_only(self):
         return self.apply(rotation=True, scale=True, location=False, modifiers=False)
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "Applies modifiers to Mesh based objects. Mileage may vary for other object types. For example, Blender does not allow applying modifiers on Curve objects, so apply() will only apply transformations.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def apply(
         self,
         rotation: "bool" = True,
@@ -119,7 +114,7 @@ class Entity(EntityInterface):
             apply_object_transformations(self.name, rotation, scale, location)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_native_instance(self) -> object:
         blender_object = get_object_or_none(self.name)
         if blender_object:
@@ -130,20 +125,17 @@ class Entity(EntityInterface):
             return get_mesh(self.name)
         raise NotImplementedError("get_native_instance is not supported")
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_world(self) -> "Point":
         update_view_layer()
         return get_object_world_location(self.name)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_local(self) -> "Point":
         update_view_layer()
         return get_object_local_location(self.name)
 
-    @supported(
-        SupportLevel.SUPPORTED,
-        notes="Selects the object in the viewport using the object's name",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select(self):
         select_object(self.name)
         return self
@@ -190,7 +182,7 @@ class Entity(EntityInterface):
         )
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -199,15 +191,15 @@ class Entity(EntityInterface):
     ):
         return self._translate_xyz(x, y, z)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_x(self, amount: "str|float|Dimension"):
         return self._translate_xyz(amount, None, None)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_y(self, amount: "str|float|Dimension"):
         return self._translate_xyz(None, amount, None)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_z(self, amount: "str|float|Dimension"):
         return self._translate_xyz(None, None, amount)
 
@@ -228,29 +220,29 @@ class Entity(EntityInterface):
         )
         return self._apply_rotation_and_scale_only()
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
         return self._rotate_xyz(x, y, z)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_x(self, rotation: "str|float|Angle"):
         return self._rotate_xyz(rotation, None, None)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_y(self, rotation: "str|float|Angle"):
         return self._rotate_xyz(None, rotation, None)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_z(self, rotation: "str|float|Angle"):
         return self._rotate_xyz(None, None, rotation)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_bounding_box(self) -> "BoundaryBox":
         return get_bounding_box(self.name)
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_dimensions(self) -> "Dimensions":
         dimensions = get_object(self.name).dimensions
         dimensions = [

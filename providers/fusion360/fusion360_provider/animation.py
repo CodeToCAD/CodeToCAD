@@ -10,31 +10,31 @@ class Animation(AnimationInterface):
         pass
 
     @staticmethod
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def default() -> "Animation":
         return Animation()
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_frame_start(self, frame_number: "int"):
         print("set_frame_start called:", frame_number)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_frame_end(self, frame_number: "int"):
         print("set_frame_end called:", frame_number)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_frame_current(self, frame_number: "int"):
         print("set_frame_current called:", frame_number)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_key_frame_location(self, entity: "EntityInterface", frame_number: "int"):
         print("create_key_frame_location called:", entity, frame_number)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_key_frame_rotation(self, entity: "EntityInterface", frame_number: "int"):
         print("create_key_frame_rotation called:", entity, frame_number)
         return self

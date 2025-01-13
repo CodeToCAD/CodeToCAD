@@ -33,7 +33,7 @@ class Yoke:
     def _createHollowRod(self, name: str, length: Dimension) -> Part:
         outerRadius = self.shaft_radius + self.wall_thickness
 
-        rod = Part(name).create_cylinder(outerRadius, length)
+        rod = Part.create_cylinder(outerRadius, length)
 
         if self.is_hollowed:
             rod.hollow(
@@ -132,9 +132,9 @@ class Cross:
     pin_length: Dimension
 
     def create(self, name: str) -> Part:
-        core = Part(name).create_cube(self.width, self.width, self.width)
+        core = Part.create_cube(self.width, self.width, self.width)
 
-        pin = Part("pin").create_cylinder(self.pin_radius, self.pin_length)
+        pin = Part.create_cylinder(self.pin_radius, self.pin_length)
 
         Joint(
             core.get_landmark(PresetLandmark.top),

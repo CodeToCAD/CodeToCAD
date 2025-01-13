@@ -20,12 +20,7 @@ from .fusion_actions.fusion_sketch import FusionSketch
 
 class Entity(EntityInterface):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -37,7 +32,7 @@ class Entity(EntityInterface):
         if isinstance(self, SketchInterface):
             return FusionSketch(self.name).center
 
-    @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_exists(self) -> bool:
         try:
             component = get_component(self.name)
@@ -49,7 +44,7 @@ class Entity(EntityInterface):
         except:
             return False
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def delete(self, remove_children: "bool" = True):
         if isinstance(self, PartInterface):
             FusionBody(self.name).delete()
@@ -59,17 +54,17 @@ class Entity(EntityInterface):
             FusionLandmark(self.name, self.parent.get_native_instance()).delete()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def is_visible(self) -> bool:
         raise NotImplementedError()
         return True
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_visible(self, is_visible: "bool"):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def apply(
         self,
         rotation: "bool" = True,
@@ -80,7 +75,7 @@ class Entity(EntityInterface):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_native_instance(self) -> object:
         if isinstance(self, PartInterface):
             return FusionBody(self.name)
@@ -90,12 +85,12 @@ class Entity(EntityInterface):
             return FusionLandmark(self.name, self.parent.get_native_instance())
         raise NotImplementedError()
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_world(self) -> "Point":
         raise NotImplementedError()
         return Point.from_list_of_float_or_string([0, 0, 0])
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_local(self) -> "Point":
         if isinstance(self, PartInterface):
             pos = FusionBody(self.name).center
@@ -107,12 +102,12 @@ class Entity(EntityInterface):
             ).get_point()
         return Point(pos.x, pos.y, pos.z)
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def select(self):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_xyz(
         self,
         x: "str|float|Dimension",
@@ -129,7 +124,7 @@ class Entity(EntityInterface):
             )
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_x(self, amount: "str|float|Dimension"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(amount, 0, 0)
@@ -141,7 +136,7 @@ class Entity(EntityInterface):
             )
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_y(self, amount: "str|float|Dimension"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(0, amount, 0)
@@ -153,7 +148,7 @@ class Entity(EntityInterface):
             )
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part, Sketch and Landmark entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def translate_z(self, amount: "str|float|Dimension"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(0, 0, amount)
@@ -165,7 +160,7 @@ class Entity(EntityInterface):
             )
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
     ):
@@ -174,7 +169,7 @@ class Entity(EntityInterface):
         self.rotate_z(z)
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_x(self, rotation: "str|float|Angle"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("x", rotation)
@@ -184,7 +179,7 @@ class Entity(EntityInterface):
             raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_y(self, rotation: "str|float|Angle"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("y", rotation)
@@ -194,7 +189,7 @@ class Entity(EntityInterface):
             raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PARTIAL, "Supports Part and Sketch entities.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_z(self, rotation: "str|float|Angle"):
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("z", rotation)
@@ -204,7 +199,7 @@ class Entity(EntityInterface):
             raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_bounding_box(self) -> "BoundaryBox":
         if isinstance(self, PartInterface):
             boundaryBox = FusionBody(self.name).get_bounding_box()
@@ -214,7 +209,7 @@ class Entity(EntityInterface):
             raise NotImplementedError()
         return boundaryBox
 
-    @supported(SupportLevel.SUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_dimensions(self) -> "Dimensions":
         if isinstance(self, PartInterface):
             dimensions = FusionBody(self.name).get_dimensions()

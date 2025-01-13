@@ -15,7 +15,7 @@ class Material(MaterialInterface):
         self.color = (0, 0, 0, 1)
         self.roughness = 1
 
-    @supported(SupportLevel.PARTIAL, "Implementation needs improvement.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_color(
         self,
         r_value: "int|float",
@@ -32,17 +32,17 @@ class Material(MaterialInterface):
         self.color = (r_value, g_value, b_value, a_value)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_reflectivity(self, reflectivity: "float"):
         print("set_reflectivity called:", reflectivity)
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_roughness(self, roughness: "float"):
         self.roughness = roughness
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_image_texture(self, image_file_path: "str"):
         raise NotImplementedError()
         return self

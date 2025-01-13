@@ -11,12 +11,7 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_camera import 
 
 class Camera(CameraInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.name = name
         self.description = description
         self.native_instance = native_instance
@@ -37,22 +32,25 @@ class Camera(CameraInterface, Entity):
             FusionCamera().rotate(Axis.Z, zAngle)
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def create_perspective(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_perspective(name: "str| None" = None, description: "str| None" = None):
         print("create_perspective called:")
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def create_orthogonal(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_orthogonal(name: "str| None" = None, description: "str| None" = None):
         print("create_orthogonal called:")
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def create_panoramic(self):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def create_panoramic(name: "str| None" = None, description: "str| None" = None):
         print("create_panoramic called")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_focal_length(self, length: "float"):
         print("set_focal_length called:", length)
         return self

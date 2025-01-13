@@ -31,7 +31,7 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 if TYPE_CHECKING:
-    from providers.blender.blender_provider.wire import Wire
+    pass
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
@@ -329,7 +329,7 @@ def set_spline_point(
         spline_points[index].handle_right_type = "FREE"
     else:
         x, y, z = new_coord
-        spline_points[index].co = (x, y, z, 1)
+        spline_points[index].co = (x, y, z)
 
 
 def add_points_to_spline(
@@ -562,8 +562,8 @@ def custom_codetocad_loft(
     spline_1_vertices: List = []
     spline_2_vertices: List = []
 
-    wire_1_edges = wire_1.edges
-    wire_2_edges = wire_2.edges
+    wire_1_edges = wire_1.get_edges()
+    wire_2_edges = wire_2.get_edges()
 
     wire_1_spline = wire_1.get_native_instance()
     wire_2_spline = wire_2.get_native_instance()

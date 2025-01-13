@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class Edge(EdgeInterface, Entity):
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
         mirror_across_entity: "EntityInterface",
@@ -30,7 +30,7 @@ class Edge(EdgeInterface, Entity):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
@@ -39,7 +39,7 @@ class Edge(EdgeInterface, Entity):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
@@ -49,19 +49,19 @@ class Edge(EdgeInterface, Entity):
     ):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def remesh(self, strategy: "str", amount: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subdivide(self, amount: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def decimate(self, amount: "float"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
@@ -72,14 +72,7 @@ class Edge(EdgeInterface, Entity):
     description: Optional[str] = None
     native_instance = None
 
-    def __init__(
-        self,
-        v1: "VertexInterface",
-        v2: "VertexInterface",
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.v1 = v1
         self.v2 = v2
         self.parent = parent
@@ -87,23 +80,23 @@ class Edge(EdgeInterface, Entity):
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def offset(self, distance: "str|float|Dimension") -> "Edge":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_is_construction(self, is_construction: "bool"):
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_is_construction(self) -> bool:
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
         x: "str|float|Dimension",
@@ -114,7 +107,12 @@ class Edge(EdgeInterface, Entity):
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_vertices(self) -> "list[VertexInterface]":
+        print("get_vertices called")
+        return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]

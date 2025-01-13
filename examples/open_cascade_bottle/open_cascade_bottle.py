@@ -11,8 +11,8 @@ from codetocad import *
 (L, w, t) = (20.0, 6.0, 3.0)
 # s = cq.Workplane("XY")
 # Sketch is missing the sketch plane
-bottle_profile = Sketch("bottle_profile").create_line(w / 2.0)
-arc = Sketch("bottle_arc").create_arc(L / 2)
+bottle_profile = Sketch.create_line(w / 2.0)
+arc = Sketch.create_arc(L / 2)
 # # Draw half the profile of the bottle and extrude it
 # p = (
 #     s.center(-L / 2.0, 0)

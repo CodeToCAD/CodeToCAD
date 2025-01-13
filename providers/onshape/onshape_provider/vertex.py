@@ -10,7 +10,7 @@ from codetocad.codetocad_types import *
 
 class Vertex(VertexInterface, Entity):
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "Projectable":
         raise NotImplementedError()
 
@@ -20,20 +20,14 @@ class Vertex(VertexInterface, Entity):
     description: Optional[str] = None
     native_instance = None
 
-    def __init__(
-        self,
-        location: "Point",
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.location = location
         self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_control_points(self) -> "list[Entity]":
         raise NotImplementedError()
 
@@ -41,9 +35,14 @@ class Vertex(VertexInterface, Entity):
     def _center(self):
         return self.location
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
     ) -> Self:
         print("set_control_points called", f": {points}")
         return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_location(self) -> "Point":
+        print("get_location called")
+        return Point.from_list_of_float_or_string([0, 0, 0])

@@ -14,33 +14,38 @@ class Analytics(AnalyticsInterface):
     def __init__(self):
         pass
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def measure_distance(
-        self, entity_1: "EntityInterface", entity_2: "EntityInterface"
+        entity_1: "EntityInterface", entity_2: "EntityInterface"
     ) -> "Dimensions":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def measure_angle(
-        self,
         entity_1: "EntityInterface",
         entity_2: "EntityInterface",
         pivot: "EntityInterface| None" = None,
     ) -> "list[Angle]":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_world_pose(self, entity: "EntityInterface") -> "list[float]":
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_world_pose(entity: "EntityInterface") -> "list[float]":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_bounding_box(self, entity: "EntityInterface") -> "BoundaryBox":
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_bounding_box(entity: "EntityInterface") -> "BoundaryBox":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_dimensions(self, entity: "EntityInterface") -> "Dimensions":
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_dimensions(entity: "EntityInterface") -> "Dimensions":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def log(self, message: "str"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def log(message: "str"):
         return self

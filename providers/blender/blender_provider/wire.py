@@ -39,9 +39,9 @@ from providers.blender.blender_provider.blender_actions.curve import (
 )
 from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
 from providers.blender.blender_provider.blender_actions.normals import (
-    calculate_normal,
     project_vector_along_normal,
 )
+from codetocad.utilities.normals import calculate_normal
 from providers.blender.blender_provider.blender_actions.objects import (
     get_object_or_none,
 )
@@ -50,17 +50,7 @@ from providers.blender.blender_provider.entity import Entity
 
 class Wire(WireInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str| None" = None,
-        description: "str| None" = None,
-        native_instance=None,
-    ):
-        """
-        NOTE: Blender Provider's Wire requires a parent and a native_instance
-        """
-        self.name = name
-        self.description = description
+    def __init__(self, native_instance: "Any"):
         self.native_instance = native_instance
 
     @override
@@ -68,28 +58,29 @@ class Wire(WireInterface, Entity):
     def get_native_instance(self) -> object:
         return self.native_instance
 
-    @supported(SupportLevel.SUPPORTED, notes="Get normal of the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         # Note: 3D surfaces will not provide a good result here.
         vertices = self.get_vertices()
         num_vertices = len(vertices)
         normal = calculate_normal(
-            vertices[0].get_native_instance().co,
-            vertices[int(num_vertices * 1 / 3)].get_native_instance().co,
-            vertices[int(num_vertices * 2 / 3)].get_native_instance().co,
+            vertices[0].location,
+            vertices[int(num_vertices * 1 / 3)].location,
+            vertices[int(num_vertices * 2 / 3)].location,
         )
         return Point.from_list_of_float_or_string(normal)
 
-    @supported(SupportLevel.SUPPORTED, notes="Get vertices of the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_vertices(self) -> list["VertexInterface"]:
-        if len(self.edges) == 0:
+        edges = self.get_edges()
+        if len(edges) == 0:
             return []
-        all_vertices = [self.edges[0].v1, self.edges[0].v2]
-        for edge in self.edges[1:]:
+        all_vertices = [edges[0].v1, edges[0].v2]
+        for edge in edges[1:]:
             all_vertices.append(edge.v2)
         return all_vertices
 
-    @supported(SupportLevel.SUPPORTED, notes="Check whether the wire is closed")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_is_closed(self) -> bool:
         if not self.native_instance:
             raise Exception(
@@ -97,7 +88,7 @@ class Wire(WireInterface, Entity):
             )
         return is_spline_cyclical(self.native_instance)
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
         mirror_across_entity: "EntityInterface",
@@ -107,12 +98,12 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
@@ -122,7 +113,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
@@ -133,10 +124,7 @@ class Wire(WireInterface, Entity):
         raise NotImplementedError()
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def loft(
         self,
         other: "WireInterface",
@@ -172,7 +160,7 @@ class Wire(WireInterface, Entity):
         recalculate_normals(part.name)
         return part
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
         x: "str|float|Dimension",
@@ -184,12 +172,12 @@ class Wire(WireInterface, Entity):
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def union(
         self,
         other: "BooleanableInterface",
@@ -200,7 +188,7 @@ class Wire(WireInterface, Entity):
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subtract(
         self,
         other: "BooleanableInterface",
@@ -213,7 +201,7 @@ class Wire(WireInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def intersect(
         self,
         other: "BooleanableInterface",
@@ -227,7 +215,7 @@ class Wire(WireInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Twist the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def twist(
         self,
         angle: "str|float|Angle",
@@ -242,7 +230,7 @@ class Wire(WireInterface, Entity):
         implementables.twist(parent, angle, screw_pitch, iterations, axis)
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Revolve the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def revolve(
         self,
         angle: "str|float|Angle",
@@ -284,7 +272,7 @@ class Wire(WireInterface, Entity):
         recalculate_normals(parent.name)
         return Part(parent.name, description=parent.description).apply()
 
-    @supported(SupportLevel.SUPPORTED, notes="Get offset of the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def offset(self, radius: "str|float|Dimension"):
         assert self.parent, "This wire is not associated with a parent entity."
         parent = self.parent
@@ -295,7 +283,7 @@ class Wire(WireInterface, Entity):
         set_curve_offset_geometry(parent.name, radius)
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Extrude the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We assume the normal is never perpendicular to the Z axis.
         assert self.parent, "This wire is not associated with a parent entity."
@@ -327,7 +315,7 @@ class Wire(WireInterface, Entity):
         temp_sketch_2.delete()
         return part
 
-    @supported(SupportLevel.SUPPORTED, notes="Sweep the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def sweep(
         self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
@@ -345,7 +333,7 @@ class Wire(WireInterface, Entity):
         recalculate_normals(parent.name)
         return Part(parent.name, parent.description).apply()
 
-    @supported(SupportLevel.SUPPORTED, notes="Get profile of the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def profile(self, profile_curve: "WireInterface|SketchInterface"):
         assert self.parent, "This wire is not associated with a parent entity."
         parent = self.parent
@@ -357,7 +345,7 @@ class Wire(WireInterface, Entity):
         apply_curve_modifier(parent.name, profile_curve)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_edges(self) -> "list[EdgeInterface]":
         print("get_edges called")
         return [
@@ -368,25 +356,25 @@ class Wire(WireInterface, Entity):
             )
         ]
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def remesh(self, strategy: "str", amount: "float"):
         raise NotImplementedError()
         print("remesh called", f": {strategy}, {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subdivide(self, amount: "float"):
         raise NotImplementedError()
         print("subdivide called", f": {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def decimate(self, amount: "float"):
         raise NotImplementedError()
         print("decimate called", f": {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
@@ -395,7 +383,7 @@ class Wire(WireInterface, Entity):
         print("create_from_vertices called", f": {points}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
     ) -> Self:
@@ -403,7 +391,7 @@ class Wire(WireInterface, Entity):
         print("create_point called", f": {point}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line(
         self,
         length: "str|float|Dimension",
@@ -414,7 +402,7 @@ class Wire(WireInterface, Entity):
         print("create_line called", f": {length}, {angle}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
@@ -424,7 +412,7 @@ class Wire(WireInterface, Entity):
         print("create_line_to called", f": {to}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",

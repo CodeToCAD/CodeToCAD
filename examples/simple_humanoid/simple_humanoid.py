@@ -1,15 +1,15 @@
 from codetocad import *
 
 # MARK: Create body
-body = Part("body").create_cube(1, 2, 3)
+body = Part.create_cube(1, 2, 3)
 body_top = body.create_landmark("top", center, center, max)
 
 # MARK: Create head
-head = Part("head").create_sphere(0.5)
+head = Part.create_sphere(0.5)
 head_bottom = head.create_landmark("bottom", center, center, min)
 
 # Mark: Create Eye
-eye = Part("eye").create_cylinder(0.1, 0.1)
+eye = Part.create_cylinder(0.1, 0.1)
 eye_bottom = eye.create_landmark("bottom", center, center, min)
 
 eye.rotate_xyz(0, 90, 0)

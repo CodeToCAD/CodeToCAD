@@ -7,9 +7,7 @@ from onshape_client.oas import (
     BTFeatureDefinitionCall1406,
     BTMIndividualQuery138,
     BTMParameterBoolean144,
-    BTModelElementParams,
     BTMParameterQueryList148,
-    BTMSketch151,
     BTMFeature134,
     BTMSketchPoint158,
     BTMParameterEnum145,
@@ -18,7 +16,6 @@ from onshape_client.oas import (
     BTCurveGeometryCircle115,
     BTMSketchCurve4,
     BTMSketchCurveSegment155,
-    BTMIndividualSketchRegionQuery140,
     BTMSketchTextEntity1761,
     BTMParameterString149,
     BTCurveGeometryEllipse1189,
@@ -29,8 +26,6 @@ from codetocad.core.dimension import Dimension
 
 from codetocad.core.point import Point
 
-from codetocad.proxy import part
-from codetocad.proxy.sketch import Sketch
 import codetocad.utilities as Utilities
 
 from . import onshape_definitions
@@ -40,7 +35,6 @@ import onpy
 from onpy import Client, Document
 from onpy.api import schema
 from onpy.elements.partstudio import PartStudio
-import os
 
 # def get_onshape_client(config: dict) -> Client:
 #     return Client(configuration=config).get_client()
@@ -49,32 +43,39 @@ import os
 def get_onshape_client_with_config_file(config_filepath: str) -> Client:
     configAbsolutePath = Utilities.get_absolute_filepath(config_filepath)
     import yaml
-    with open(configAbsolutePath, 'r') as f:
+
+    with open(configAbsolutePath, "r") as f:
         config = yaml.safe_load(f)
-        base_url = config['prod_api_keys']['base_url']
-        secret_key = config['prod_api_keys']['secret_key'] 
-        access_key = config['prod_api_keys']['access_key']
-        default_stack = config['default_stack']
+        base_url = config["prod_api_keys"]["base_url"]
+        secret_key = config["prod_api_keys"]["secret_key"]
+        access_key = config["prod_api_keys"]["access_key"]
+        default_stack = config["default_stack"]
     return Client(onshape_access_token=access_key, onshape_secret_token=secret_key)
+
 
 def get_document_by_name(client: Client, name: str) -> Document:
     # return client.documents_api.get_documents(q=name)["items"][0]
     return client.get_document(name=name)
 
+
 def get_document_by_id(client: Client, id: str) -> Document:
     return client.get_document(id)
+
 
 # def get_document_workspaces_by_id(client: Client, document_id: str) -> schema.Workspace:
 #     return client.get_document(document_id).default_workspace
 
-def get_first_document_workspace_by_id(client: Client, document_id: str) -> schema.Workspace:
+
+def get_first_document_workspace_by_id(
+    client: Client, document_id: str
+) -> schema.Workspace:
     return client.get_document(document_id).default_workspace
+
 
 def get_document_tabs_by_id(
     client: Client, document_id: str, workspace_id: str
 ) -> list[PartStudio]:
     return client.get_document(document_id).list_partstudios()
-
 
 
 def get_first_document_tabs_by_id(
@@ -103,12 +104,14 @@ def get_first_document_url_by_name(
         document_id=document_id, workspace_id=workspace_id, tab_id=tab_id
     )
 
+
 # def create_tab_part_studios(
 #     client: Client, onshape_url: onshape_definitions.OnshapeUrl, tab_name: str
 # ) -> str:
 #     """
 #     Create a Part Studio tab and return the newly created tab id
 #     """
+
 
 #     partStudio = client.get_document(onshape_url.document_id).add_partstudio(
 #         name=tab_name,
@@ -121,10 +124,12 @@ def get_partstudio_by_name(client: Client, document_id: str, name: str):
     partstudio = document.get_partstudio(name=name)
     return partstudio
 
+
 def get_partstudio_by_id(client: Client, document_id: str, element_id: str):
     document = client.get_document(document_id)
     partstudio = document.get_partstudio(element_id=element_id)
     return partstudio
+
 
 def create_sketch(
     client: Client,
@@ -240,14 +245,17 @@ def create_rect(
         plane=partstudio.features.top_plane,  # we define the plane to draw on
         name=sketch_name,  # and we name the sketch
     )
-    sketch.add_corner_rectangle((corner1.x.value, corner1.y.value), (corner2.x.value, corner2.y.value))
+    sketch.add_corner_rectangle(
+        (corner1.x.value, corner1.y.value), (corner2.x.value, corner2.y.value)
+    )
     return sketch
+
 
 def create_circle(
     client: Client,
     onshape_url: onshape_definitions.OnshapeUrl,
-    sketch_name: str='New Cirdle',
-    radius: float=1.0,
+    sketch_name: str = "New Cirdle",
+    radius: float = 1.0,
     center: Point = Point(Dimension(0), Dimension(0), Dimension(0)),
     clockwise: bool = False,
 ):
@@ -401,13 +409,11 @@ def create_extrude(
     client: Client,
     partstudio: PartStudio,
     sketch: onpy.features.Sketch,
-    distance: float
+    distance: float,
 ):
-    extrude = partstudio.add_extrude(
-        faces=sketch,
-        distance=distance
-    )
+    extrude = partstudio.add_extrude(faces=sketch, distance=distance)
     return extrude
+
 
 def create_spiral(
     client: Client,
