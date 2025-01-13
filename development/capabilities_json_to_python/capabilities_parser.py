@@ -22,7 +22,7 @@ class CapabilitiesParameter:
     @property
     def type_parsed(self):
         if self.type == "any":
-            return None
+            return "Any"
         return capabilities_type_to_python_type(self.type)
 
     @property

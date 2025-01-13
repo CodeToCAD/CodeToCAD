@@ -15,6 +15,7 @@ dummy_edge = f"Edge('an edge')"
 dummy_wire = f"Wire('a wire')"
 importable_codetocad = '__import__("codetocad").'
 capabilities_parameter_types_mock_values = {
+    "Any": "'anytype'",
     "str": "'String'",
     "list": [],
     "dict": {},
