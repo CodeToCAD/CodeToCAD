@@ -1,4 +1,5 @@
 from codetocad.utilities.supported import supported
+from typing import Self
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.material_interface import MaterialInterface
 
@@ -22,7 +23,7 @@ class Material(MaterialInterface):
         g_value: "int|float",
         b_value: "int|float",
         a_value: "int|float" = 1.0,
-    ):
+    ) -> "Self":
         if r_value < 1:
             r_value = round(r_value * 255)
         if g_value < 1:
@@ -33,16 +34,16 @@ class Material(MaterialInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_reflectivity(self, reflectivity: "float"):
+    def set_reflectivity(self, reflectivity: "float") -> "Self":
         print("set_reflectivity called:", reflectivity)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_roughness(self, roughness: "float"):
+    def set_roughness(self, roughness: "float") -> "Self":
         self.roughness = roughness
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_image_texture(self, image_file_path: "str"):
+    def set_image_texture(self, image_file_path: "str") -> "Self":
         raise NotImplementedError()
         return self

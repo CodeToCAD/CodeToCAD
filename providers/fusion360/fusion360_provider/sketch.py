@@ -1,4 +1,5 @@
 from codetocad.utilities import create_uuid_like_id
+from typing import Self
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.wire_interface import WireInterface
@@ -56,7 +57,7 @@ class Sketch(SketchInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         fusionMirrorEntity = FusionBody(self.name)
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
@@ -75,7 +76,7 @@ class Sketch(SketchInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         offset = Dimension.from_dimension_or_its_float_or_string_value(offset, None)
         create_rectangular_pattern_sketch(
             FusionSketch(self.name).component,
@@ -92,7 +93,7 @@ class Sketch(SketchInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         fusionEntity = FusionBody(self.name)
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
@@ -109,12 +110,16 @@ class Sketch(SketchInterface, Entity):
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create_from_file(file_path: "str", file_type: "str| None" = None):
+    def create_from_file(
+        file_path: "str", file_type: "str| None" = None
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -124,7 +129,7 @@ class Sketch(SketchInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
         z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
@@ -132,42 +137,42 @@ class Sketch(SketchInterface, Entity):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionSketch(self.name).scale(scale.value, 0, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionSketch(self.name).scale(0, scale.value, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionSketch(self.name).scale(0, 0, scale.value)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> "Self":
         FusionSketch(self.name).scale_by_factor(scale_factor, 0, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> "Self":
         FusionSketch(self.name).scale_by_factor(0, scale_factor, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> "Self":
         FusionSketch(self.name).scale_by_factor(0, 0, scale_factor)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionSketch(self.name).scale_uniform(scale.value)
         return self
@@ -175,7 +180,7 @@ class Sketch(SketchInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
-    ) -> "Sketch":
+    ) -> "SketchInterface":
         new_sketch = clone_sketch(
             FusionSketch(self.name).instance, new_name, copy_landmarks
         )
@@ -198,7 +203,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ):
+    ) -> "SketchInterface":
         font_size = Dimension.from_dimension_or_its_float_or_string_value(
             font_size, None
         )
@@ -223,7 +228,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         edges = []
         for index in range(len(points) - 1):
             start = Vertex(location=points[index], name="vertex")
@@ -239,7 +244,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Vertex":
+    ) -> "SketchInterface":
         sketch = FusionSketch(self.name).instance
         make_point(sketch, point.x, point.y, point.z)
         return Vertex(location=point, name=create_uuid_like_id())
@@ -252,7 +257,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         sketch = FusionSketch(self.name).instance
         start = make_point3d(start_at.x, start_at.y, start_at.z)
         end = make_point3d(to.x, to.y, to.z)
@@ -280,7 +285,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Edge":
+    ) -> "SketchInterface":
         raise NotImplementedError()
 
     @staticmethod
@@ -291,7 +296,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         sketch = FusionSketch(self.name).instance
         self.curves = make_circle(sketch, radius.value, self.resolution)
@@ -307,7 +312,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         # from . import Wire
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
@@ -333,7 +338,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         sketch = FusionSketch(self.name).instance
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         start = make_point3d(start_at.x, start_at.y, start_at.z)
@@ -351,7 +356,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
         sketch = FusionSketch(self.name).instance
@@ -370,7 +375,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
@@ -384,7 +389,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 
@@ -400,7 +405,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Wire":
+    ) -> "SketchInterface":
         raise NotImplementedError()
         return Wire(edges=[Edge(v1=(0, 0), v2=(5, 5), name="myEdge")], name="myWire")
 

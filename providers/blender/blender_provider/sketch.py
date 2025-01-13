@@ -1,8 +1,8 @@
 import cmath
+from typing import Self
 from functools import wraps
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
-from codetocad.interfaces.edge_interface import EdgeInterface
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.proxy.vertex import Vertex
 from codetocad.core.angle import Angle
@@ -56,7 +56,6 @@ import providers.blender.blender_provider.implementables as implementables
 
 
 class Sketch(SketchInterface, Entity):
-
     curve_type = CurveTypes.BEZIER
 
     def __init__(self, native_instance: "Any"):
@@ -107,7 +106,7 @@ class Sketch(SketchInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
-    ) -> "Sketch":
+    ) -> "SketchInterface":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         duplicate_object(self.name, new_name, copy_landmarks)
         return Sketch(
@@ -116,7 +115,9 @@ class Sketch(SketchInterface, Entity):
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create_from_file(file_path: "str", file_type: "str| None" = None):
+    def create_from_file(
+        file_path: "str", file_type: "str| None" = None
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
@@ -137,7 +138,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ):
+    ) -> "SketchInterface":
         size = Dimension.from_string(font_size)
         create_text(
             self.name,
@@ -165,7 +166,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         parsed_points = [
             Point.from_list_of_float_or_string_or_Vertex(point) for point in points
         ]
@@ -210,7 +211,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "Vertex":
+    ) -> "SketchInterface":
         blender_spline, curve_data, added_points = create_curve(
             curve_name=self.name,
             curve_type=(
@@ -235,7 +236,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         start_point: Point
         end_point: Point
         if isinstance(start_at, VertexInterface):
@@ -272,7 +273,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "EdgeInterface":
+    ) -> "SketchInterface":
         raise NotImplementedError()
 
     @staticmethod
@@ -320,7 +321,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
         radius = BlenderLength.convert_dimension_to_blender_unit(radius)
         points = get_circle_points(radius, self.resolution)
@@ -342,7 +343,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         radius_minor = Dimension.from_dimension_or_its_float_or_string_value(
             radius_minor
         )
@@ -368,7 +369,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         start_point: Point
         end_point: Point
         if isinstance(start_at, VertexInterface):
@@ -433,7 +434,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         half_length = (
             Dimension.from_dimension_or_its_float_or_string_value(length, None) / 2
         )
@@ -460,7 +461,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         raise NotImplementedError()
 
     @staticmethod
@@ -473,7 +474,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         raise NotImplementedError()
 
     @staticmethod
@@ -488,7 +489,7 @@ class Sketch(SketchInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
         curve_type: "CurveTypes| None" = None,
-    ) -> "WireInterface":
+    ) -> "SketchInterface":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -497,7 +498,7 @@ class Sketch(SketchInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         implementables.mirror(
             self, mirror_across_entity, axis, separate_resulting_entity
         )
@@ -509,7 +510,7 @@ class Sketch(SketchInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         implementables.linear_pattern(self, instance_count, offset, direction_axis)
         return self
 
@@ -520,7 +521,7 @@ class Sketch(SketchInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         implementables.circular_pattern(
             self,
             instance_count,
@@ -531,7 +532,9 @@ class Sketch(SketchInterface, Entity):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> "Self":
         implementables.export(self, file_path, overwrite, scale)
         return self
 
@@ -541,44 +544,44 @@ class Sketch(SketchInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         implementables.scale_xyz(self, x, y, z)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> "Self":
         implementables.scale_x(self, scale)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> "Self":
         implementables.scale_y(self, scale)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> "Self":
         implementables.scale_z(self, scale)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> "Self":
         implementables.scale_x_by_factor(self, scale_factor)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> "Self":
         implementables.scale_y_by_factor(self, scale_factor)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> "Self":
         implementables.scale_z_by_factor(self, scale_factor)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> "Self":
         implementables.scale_keep_aspect_ratio(self, scale, axis)
         return self
 

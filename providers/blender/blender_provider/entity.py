@@ -64,13 +64,13 @@ class Entity(EntityInterface):
         return self.native_instance.name
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_exists(self) -> bool:
+    def is_exists(self) -> "bool":
         if isinstance(self, SketchInterface):
             return get_curve_or_none(self.name) is not None
         return get_object_or_none(self.name) is not None
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def delete(self, remove_children: "bool" = True):
+    def delete(self, remove_children: "bool" = True) -> "Self":
         if isinstance(self, SketchInterface):
             sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
             if sketch_object is None:
@@ -81,11 +81,11 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_visible(self) -> bool:
+    def is_visible(self) -> "bool":
         return get_object_visibility(self.name)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_visible(self, is_visible: "bool"):
+    def set_visible(self, is_visible: "bool") -> "Self":
         set_object_visibility(self.name, is_visible)
         return self
 
@@ -102,7 +102,7 @@ class Entity(EntityInterface):
         scale: "bool" = True,
         location: "bool" = False,
         modifiers: "bool" = True,
-    ) -> EntityInterface:
+    ) -> "Self":
         update_view_layer()
         if modifiers and isinstance(self, PartInterface):
             # Only apply modifiers for Blender Objects that have meshes
@@ -115,7 +115,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> object:
+    def get_native_instance(self) -> "object":
         blender_object = get_object_or_none(self.name)
         if blender_object:
             return blender_object
@@ -136,7 +136,7 @@ class Entity(EntityInterface):
         return get_object_local_location(self.name)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select(self):
+    def select(self) -> "Self":
         select_object(self.name)
         return self
 
@@ -188,19 +188,19 @@ class Entity(EntityInterface):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         return self._translate_xyz(x, y, z)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_x(self, amount: "str|float|Dimension"):
+    def translate_x(self, amount: "str|float|Dimension") -> "Self":
         return self._translate_xyz(amount, None, None)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_y(self, amount: "str|float|Dimension"):
+    def translate_y(self, amount: "str|float|Dimension") -> "Self":
         return self._translate_xyz(None, amount, None)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_z(self, amount: "str|float|Dimension"):
+    def translate_z(self, amount: "str|float|Dimension") -> "Self":
         return self._translate_xyz(None, None, amount)
 
     def _rotate_xyz(
@@ -223,19 +223,19 @@ class Entity(EntityInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
-    ):
+    ) -> "Self":
         return self._rotate_xyz(x, y, z)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_x(self, rotation: "str|float|Angle"):
+    def rotate_x(self, rotation: "str|float|Angle") -> "Self":
         return self._rotate_xyz(rotation, None, None)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_y(self, rotation: "str|float|Angle"):
+    def rotate_y(self, rotation: "str|float|Angle") -> "Self":
         return self._rotate_xyz(None, rotation, None)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_z(self, rotation: "str|float|Angle"):
+    def rotate_z(self, rotation: "str|float|Angle") -> "Self":
         return self._rotate_xyz(None, None, rotation)
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -254,7 +254,7 @@ class Entity(EntityInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_name(
         self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
-    ) -> Self:
+    ) -> "Self":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
         update_object_name(self.name, new_name)
         if rename_linked_entities_and_landmarks:

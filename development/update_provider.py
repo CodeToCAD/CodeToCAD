@@ -136,6 +136,7 @@ def update_provider_file(
                 continue
 
             provider_function.args = definition.args
+            provider_function.returns = definition.returns
 
             decorators = [
                 dec.id if hasattr(dec, "id") else dec.func.id

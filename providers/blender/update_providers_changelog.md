@@ -4,17 +4,17 @@
 
 ## `Blender.Part` Additions and Deletions:
 
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
 
-- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
-
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
@@ -24,21 +24,21 @@
 
 - Added: `from typing import Self`
 
-- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
-
-- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.importable_interface import ImportableInterface`
 
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+- Added: `from codetocad.interfaces.scalable_interface import ScalableInterface`
+
+- Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.interfaces.exportable_interface import ExportableInterface`
 
-- Added: `from codetocad.proxy.landmark import Landmark`
+- Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
 
 - Added: `from codetocad.proxy.wire import Wire`
+
+- Added: `from codetocad.proxy.landmark import Landmark`
 
 ## `Blender.Vertex` Additions and Deletions:
 
@@ -46,21 +46,21 @@
 
 ## `Blender.Edge` Additions and Deletions:
 
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
 - Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 
 ## `Blender.Wire` Additions and Deletions:
 
+- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
+
 - Added: `from codetocad.interfaces.landmarkable_interface import LandmarkableInterface`
 
 - Added: `from codetocad.interfaces.patternable_interface import PatternableInterface`
-
-- Added: `from codetocad.interfaces.mirrorable_interface import MirrorableInterface`
 
 - Added: `from codetocad.interfaces.subdividable_interface import SubdividableInterface`
 

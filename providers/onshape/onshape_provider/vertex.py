@@ -11,7 +11,7 @@ from codetocad.codetocad_types import *
 class Vertex(VertexInterface, Entity):
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def project(self, project_from: "ProjectableInterface") -> "Projectable":
+    def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
 
     location: str | list[str] | list[float] | list[Dimension] | Point
@@ -28,7 +28,7 @@ class Vertex(VertexInterface, Entity):
         self.native_instance = native_instance
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_control_points(self) -> "list[Entity]":
+    def get_control_points(self) -> "list[Point]":
         raise NotImplementedError()
 
     @property
@@ -38,7 +38,7 @@ class Vertex(VertexInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
-    ) -> Self:
+    ) -> "Self":
         print("set_control_points called", f": {points}")
         return self
 

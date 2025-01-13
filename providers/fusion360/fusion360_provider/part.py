@@ -47,7 +47,7 @@ class Part(PartInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         fusionEntity = FusionBody(mirror_across_entity)
         if isinstance(mirror_across_entity, str):
             component = get_component(mirror_across_entity)
@@ -64,7 +64,7 @@ class Part(PartInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         create_rectangular_pattern(
             FusionBody(self.name).component, instance_count, offset, direction_axis
         )
@@ -77,7 +77,7 @@ class Part(PartInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         fusionPatternEntity = FusionBody(self.name)
         if isinstance(center_entity_or_landmark, str):
             component = get_component(center_entity_or_landmark)
@@ -95,28 +95,32 @@ class Part(PartInterface, Entity):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         print("remesh called:", strategy, amount)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> "Self":
         print("subdivide called:", amount)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> "Self":
         print("decimate called:", amount)
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create_from_file(file_path: "str", file_type: "str| None" = None):
+    def create_from_file(
+        file_path: "str", file_type: "str| None" = None
+    ) -> "EntityInterface":
         print("create_from_file called:", file_path, file_type)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> "Self":
         print("export called:", file_path, overwrite, scale)
         return self
 
@@ -126,7 +130,7 @@ class Part(PartInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         x = Dimension.from_dimension_or_its_float_or_string_value(x, None)
         y = Dimension.from_dimension_or_its_float_or_string_value(y, None)
         z = Dimension.from_dimension_or_its_float_or_string_value(z, None)
@@ -134,42 +138,42 @@ class Part(PartInterface, Entity):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionBody(self.name).scale(scale.value, 0, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionBody(self.name).scale(0, scale.value, 0)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionBody(self.name).scale(0, 0, scale.value)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> "Self":
         FusionBody(self.name).scale_by_factor(scale_factor, 1, 1)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> "Self":
         FusionBody(self.name).scale_by_factor(1, scale_factor, 1)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> "Self":
         FusionBody(self.name).scale_by_factor(1, 1, scale_factor)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> "Self":
         scale = Dimension.from_dimension_or_its_float_or_string_value(scale, None)
         FusionBody(self.name).scale_uniform(scale.value)
         return self
@@ -182,7 +186,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         width = Dimension.from_dimension_or_its_float_or_string_value(width, None)
         length = Dimension.from_dimension_or_its_float_or_string_value(length, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
@@ -199,7 +203,7 @@ class Part(PartInterface, Entity):
         draft_radius: "str|float|Dimension" = 0,
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
         draft_radius = Dimension.from_dimension_or_its_float_or_string_value(
@@ -244,7 +248,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         height = Dimension.from_dimension_or_its_float_or_string_value(height, None)
         sketch = FusionSketch(FusionBody(self.name).sketch.name)
@@ -259,7 +263,7 @@ class Part(PartInterface, Entity):
         outer_radius: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         import math
 
         inner_radius = Dimension.from_dimension_or_its_float_or_string_value(
@@ -290,7 +294,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         import math
 
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius)
@@ -323,14 +327,14 @@ class Part(PartInterface, Entity):
         crown_angle: "str|float|Angle" = 0,
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
-    ) -> "Part":
+    ) -> "PartInterface":
         body, sketch = FusionBody(self.name).clone(new_name, copy_landmarks)
         part = Part(body.name)
         return part
@@ -341,7 +345,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         if not isinstance(other, str):
             raise NotImplementedError()
         combine(
@@ -357,7 +361,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         if not isinstance(other, str):
             raise NotImplementedError()
         subtract(
@@ -373,7 +377,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         if not isinstance(other, str):
             raise NotImplementedError()
         intersect(
@@ -391,14 +395,14 @@ class Part(PartInterface, Entity):
         thickness_z: "str|float|Dimension",
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-    ):
+    ) -> "Self":
         hollow(
             FusionBody(self.name).component, FusionBody(self.name).instance, thickness_x
         )
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def thicken(self, radius: "str|float|Dimension"):
+    def thicken(self, radius: "str|float|Dimension") -> "Self":
         raise NotImplementedError()
         return self
 
@@ -426,7 +430,7 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
-    ):
+    ) -> "Self":
         fusion_entity = FusionBody(self.name)
         if isinstance(hole_landmark, str):
             component = get_component(hole_landmark)
@@ -452,24 +456,24 @@ class Part(PartInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         print("twist called:", angle, screw_pitch, iterations, axis)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_material(self, material: "MaterialInterface"):
+    def set_material(self, material: "MaterialInterface") -> "Self":
         set_material(FusionBody(self.name), material_name)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_colliding_with_part(self, other_part: "PartInterface") -> bool:
+    def is_colliding_with_part(self, other_part: "PartInterface") -> "bool":
         print("is_colliding_with_part called:", other_part)
         return True
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
-    ):
+    ) -> "Self":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         fillet_all_edges(
             FusionBody(self.name).component,
@@ -484,7 +488,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -494,12 +498,12 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def chamfer_all_edges(self, radius: "str|float|Dimension"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension") -> "Self":
         radius = Dimension.from_dimension_or_its_float_or_string_value(radius, None)
         chamfer_all_edges(
             FusionBody(self.name).component,
@@ -513,7 +517,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -521,22 +525,28 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_vertex_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_vertex_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_edge_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_edge_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_face_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_face_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -572,7 +582,7 @@ class Part(PartInterface, Entity):
         profile_curve: "WireInterface|SketchInterface| None" = None,
         name: "str| None" = None,
         description: "str| None" = None,
-    ) -> Self:
+    ) -> "PartInterface":
         print(
             "create_text called",
             f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve}, {options}",

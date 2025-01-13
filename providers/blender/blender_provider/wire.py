@@ -71,7 +71,7 @@ class Wire(WireInterface, Entity):
         return Point.from_list_of_float_or_string(normal)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_vertices(self) -> list["VertexInterface"]:
+    def get_vertices(self) -> "list[VertexInterface]":
         edges = self.get_edges()
         if len(edges) == 0:
             return []
@@ -81,7 +81,7 @@ class Wire(WireInterface, Entity):
         return all_vertices
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_is_closed(self) -> bool:
+    def get_is_closed(self) -> "bool":
         if not self.native_instance:
             raise Exception(
                 "Cannot find native wire instance, this may mean that this reference is stale or the object does not exist in Blender."
@@ -94,7 +94,7 @@ class Wire(WireInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
@@ -109,7 +109,7 @@ class Wire(WireInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -120,7 +120,7 @@ class Wire(WireInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -183,7 +183,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
         return self
@@ -194,7 +194,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
@@ -207,7 +207,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "intersect called",
@@ -222,7 +222,7 @@ class Wire(WireInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         assert self.parent, "This wire is not associated with a parent entity."
         parent = self.parent
         if isinstance(parent, str):
@@ -273,7 +273,7 @@ class Wire(WireInterface, Entity):
         return Part(parent.name, description=parent.description).apply()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def offset(self, radius: "str|float|Dimension"):
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
         assert self.parent, "This wire is not associated with a parent entity."
         parent = self.parent
         if isinstance(parent, str):
@@ -334,7 +334,7 @@ class Wire(WireInterface, Entity):
         return Part(parent.name, parent.description).apply()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def profile(self, profile_curve: "WireInterface|SketchInterface"):
+    def profile(self, profile_curve: "WireInterface|SketchInterface") -> "Self":
         assert self.parent, "This wire is not associated with a parent entity."
         parent = self.parent
         if isinstance(parent, str):
@@ -357,19 +357,19 @@ class Wire(WireInterface, Entity):
         ]
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         raise NotImplementedError()
         print("remesh called", f": {strategy}, {amount}")
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> "Self":
         raise NotImplementedError()
         print("subdivide called", f": {amount}")
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> "Self":
         raise NotImplementedError()
         print("decimate called", f": {amount}")
         return self
@@ -378,7 +378,7 @@ class Wire(WireInterface, Entity):
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_from_vertices called", f": {points}, {options}")
         return self
@@ -386,7 +386,7 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="")
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_point called", f": {point}, {options}")
         return self
@@ -397,7 +397,7 @@ class Wire(WireInterface, Entity):
         length: "str|float|Dimension",
         angle: "str|float|Angle",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_line called", f": {length}, {angle}, {start_at}, {options}")
         return self
@@ -407,7 +407,7 @@ class Wire(WireInterface, Entity):
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_line_to called", f": {to}, {start_at}, {options}")
         return self
@@ -419,7 +419,7 @@ class Wire(WireInterface, Entity):
         radius: "str|float|Dimension",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         flip: "bool| None" = False,
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "create_arc called", f": {end_at}, {radius}, {start_at}, {flip}, {options}"

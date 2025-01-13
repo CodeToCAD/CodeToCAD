@@ -1,4 +1,5 @@
 from codetocad.utilities.supported import supported
+from typing import Self
 from codetocad.proxy.vertex import Vertex
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
@@ -23,22 +24,22 @@ class Edge(EdgeInterface, Entity):
         self.native_instance = native_instance
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def offset(self, distance: "str|float|Dimension") -> "Edge":
+    def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
         raise NotImplementedError()
         return Edge.get_dummy_edge()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_is_construction(self, is_construction: "bool"):
+    def set_is_construction(self, is_construction: "bool") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_is_construction(self) -> bool:
+    def get_is_construction(self) -> "bool":
         raise NotImplementedError()
         return True
 
@@ -64,7 +65,7 @@ class Edge(EdgeInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
@@ -74,7 +75,7 @@ class Edge(EdgeInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -85,22 +86,22 @@ class Edge(EdgeInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 

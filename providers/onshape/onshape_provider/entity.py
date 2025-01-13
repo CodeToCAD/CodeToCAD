@@ -21,19 +21,19 @@ class Entity(EntityInterface):
         self.native_instance = native_instance
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_exists(self) -> bool:
+    def is_exists(self) -> "bool":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def delete(self, remove_children: "bool" = True):
+    def delete(self, remove_children: "bool" = True) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_visible(self) -> bool:
+    def is_visible(self) -> "bool":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_visible(self, is_visible: "bool"):
+    def set_visible(self, is_visible: "bool") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -43,11 +43,11 @@ class Entity(EntityInterface):
         scale: "bool" = True,
         location: "bool" = False,
         modifiers: "bool" = True,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> object:
+    def get_native_instance(self) -> "object":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -59,7 +59,7 @@ class Entity(EntityInterface):
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select(self):
+    def select(self) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -68,37 +68,37 @@ class Entity(EntityInterface):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_x(self, amount: "str|float|Dimension"):
+    def translate_x(self, amount: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_y(self, amount: "str|float|Dimension"):
+    def translate_y(self, amount: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_z(self, amount: "str|float|Dimension"):
+    def translate_z(self, amount: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_x(self, rotation: "str|float|Angle"):
+    def rotate_x(self, rotation: "str|float|Angle") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_y(self, rotation: "str|float|Angle"):
+    def rotate_y(self, rotation: "str|float|Angle") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_z(self, rotation: "str|float|Angle"):
+    def rotate_z(self, rotation: "str|float|Angle") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -112,7 +112,7 @@ class Entity(EntityInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_name(
         self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
-    ) -> Self:
+    ) -> "Self":
         print(
             "set_name called", f": {new_name}, {rename_linked_entities_and_landmarks}"
         )

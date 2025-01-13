@@ -32,7 +32,7 @@ class Part(PartInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -41,7 +41,7 @@ class Part(PartInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -51,28 +51,32 @@ class Part(PartInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> "Self":
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create_from_file(file_path: "str", file_type: "str| None" = None):
+    def create_from_file(
+        file_path: "str", file_type: "str| None" = None
+    ) -> "EntityInterface":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def export(self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0):
+    def export(
+        self, file_path: "str", overwrite: "bool" = True, scale: "float" = 1.0
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -81,37 +85,37 @@ class Part(PartInterface, Entity):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x(self, scale: "str|float|Dimension"):
+    def scale_x(self, scale: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y(self, scale: "str|float|Dimension"):
+    def scale_y(self, scale: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z(self, scale: "str|float|Dimension"):
+    def scale_z(self, scale: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_x_by_factor(self, scale_factor: "float"):
+    def scale_x_by_factor(self, scale_factor: "float") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_y_by_factor(self, scale_factor: "float"):
+    def scale_y_by_factor(self, scale_factor: "float") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def scale_z_by_factor(self, scale_factor: "float"):
+    def scale_z_by_factor(self, scale_factor: "float") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def scale_keep_aspect_ratio(
         self, scale: "str|float|Dimension", axis: "str|int|Axis"
-    ):
+    ) -> "Self":
         return self
 
     @staticmethod
@@ -122,7 +126,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @staticmethod
@@ -133,7 +137,7 @@ class Part(PartInterface, Entity):
         draft_radius: "str|float|Dimension" = 0,
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @staticmethod
@@ -143,7 +147,7 @@ class Part(PartInterface, Entity):
         height: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @staticmethod
@@ -153,7 +157,7 @@ class Part(PartInterface, Entity):
         outer_radius: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @staticmethod
@@ -162,7 +166,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @staticmethod
@@ -180,13 +184,13 @@ class Part(PartInterface, Entity):
         crown_angle: "str|float|Angle" = 0,
         name: "str| None" = None,
         description: "str| None" = None,
-    ):
+    ) -> "PartInterface":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
-    ) -> "Part":
+    ) -> "PartInterface":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -195,7 +199,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -204,7 +208,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -213,7 +217,7 @@ class Part(PartInterface, Entity):
         other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -224,11 +228,11 @@ class Part(PartInterface, Entity):
         thickness_z: "str|float|Dimension",
         start_axis: "str|int|Axis" = "z",
         flip_axis: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def thicken(self, radius: "str|float|Dimension"):
+    def thicken(self, radius: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -255,7 +259,7 @@ class Part(PartInterface, Entity):
         linear_pattern2nd_instance_count: "int" = 1,
         linear_pattern2nd_instance_separation: "str|float|Dimension" = 0.0,
         linear_pattern2nd_instance_axis: "str|int|Axis" = "y",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -265,21 +269,21 @@ class Part(PartInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_material(self, material: "MaterialInterface"):
+    def set_material(self, material: "MaterialInterface") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_colliding_with_part(self, other_part: "PartInterface") -> bool:
+    def is_colliding_with_part(self, other_part: "PartInterface") -> "bool":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def fillet_all_edges(
         self, radius: "str|float|Dimension", use_width: "bool" = False
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -288,7 +292,7 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -297,11 +301,11 @@ class Part(PartInterface, Entity):
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
         use_width: "bool" = False,
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def chamfer_all_edges(self, radius: "str|float|Dimension"):
+    def chamfer_all_edges(self, radius: "str|float|Dimension") -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -309,7 +313,7 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_edges: "list[str|LandmarkInterface]",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -317,19 +321,25 @@ class Part(PartInterface, Entity):
         self,
         radius: "str|float|Dimension",
         landmarks_near_faces: "list[str|LandmarkInterface]",
-    ):
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_vertex_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_vertex_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_edge_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_edge_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select_face_near_landmark(self, landmark: "LandmarkInterface| None" = None):
+    def select_face_near_landmark(
+        self, landmark: "LandmarkInterface| None" = None
+    ) -> "Self":
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -364,7 +374,7 @@ class Part(PartInterface, Entity):
         profile_curve: "WireInterface|SketchInterface| None" = None,
         name: "str| None" = None,
         description: "str| None" = None,
-    ) -> Self:
+    ) -> "PartInterface":
         print(
             "create_text called",
             f": {text}, {extrude_amount}, {font_size}, {bold}, {italic}, {underlined}, {character_spacing}, {word_spacing}, {line_spacing}, {font_file_path}, {profile_curve}, {options}",

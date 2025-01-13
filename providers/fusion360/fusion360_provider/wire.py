@@ -59,7 +59,7 @@ class Wire(WireInterface, Entity):
         return all_vertices
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_is_closed(self) -> bool:
+    def get_is_closed(self) -> "bool":
         print("is_closed called:")
         return True
 
@@ -100,7 +100,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -110,7 +110,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -120,7 +120,7 @@ class Wire(WireInterface, Entity):
         other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -130,7 +130,7 @@ class Wire(WireInterface, Entity):
         angle: "str|float|Angle",
         about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
-    ) -> "Part":
+    ) -> "PartInterface":
         if isinstance(about_entity_or_landmark, str):
             component = get_component(about_entity_or_landmark)
             if get_body(component, about_entity_or_landmark):
@@ -155,7 +155,7 @@ class Wire(WireInterface, Entity):
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         print("twist called:", angle, screw_pitch, iterations, axis)
         return self
 
@@ -167,7 +167,9 @@ class Wire(WireInterface, Entity):
         return part
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def sweep(self, profile: "WireInterface", fill_cap: "bool" = True) -> "Part":
+    def sweep(
+        self, profile: "WireInterface", fill_cap: "bool" = True
+    ) -> "PartInterface":
         fusion_sketch = FusionSketch(profile)
         name = sweep(
             FusionSketch(self.name).component,
@@ -178,12 +180,12 @@ class Wire(WireInterface, Entity):
         return Part(name)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def offset(self, radius: "str|float|Dimension"):
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def profile(self, profile_curve: "WireInterface|SketchInterface"):
+    def profile(self, profile_curve: "WireInterface|SketchInterface") -> "Self":
         raise NotImplementedError()
         return self
 
@@ -193,17 +195,17 @@ class Wire(WireInterface, Entity):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remesh(self, strategy: "str", amount: "float"):
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def subdivide(self, amount: "float"):
+    def subdivide(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def decimate(self, amount: "float"):
+    def decimate(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
@@ -211,14 +213,14 @@ class Wire(WireInterface, Entity):
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -228,7 +230,7 @@ class Wire(WireInterface, Entity):
         length: "str|float|Dimension",
         angle: "str|float|Angle",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -237,7 +239,7 @@ class Wire(WireInterface, Entity):
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -248,7 +250,7 @@ class Wire(WireInterface, Entity):
         radius: "str|float|Dimension",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         flip: "bool| None" = False,
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -258,7 +260,7 @@ class Wire(WireInterface, Entity):
         mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
         separate_resulting_entity: "bool| None" = False,
-    ):
+    ) -> "EntityInterface":
         print("mirror called:", mirror_across_entity, axis, separate_resulting_entity)
         return self
 
@@ -268,7 +270,7 @@ class Wire(WireInterface, Entity):
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         print("linear_pattern called:", instance_count, offset, direction_axis)
         return self
 
@@ -279,7 +281,7 @@ class Wire(WireInterface, Entity):
         separation_angle: "str|float|Angle",
         center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         print(
             "circular_pattern called:",
             instance_count,

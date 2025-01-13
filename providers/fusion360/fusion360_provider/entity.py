@@ -33,7 +33,7 @@ class Entity(EntityInterface):
             return FusionSketch(self.name).center
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_exists(self) -> bool:
+    def is_exists(self) -> "bool":
         try:
             component = get_component(self.name)
             if isinstance(self, PartInterface):
@@ -45,7 +45,7 @@ class Entity(EntityInterface):
             return False
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def delete(self, remove_children: "bool" = True):
+    def delete(self, remove_children: "bool" = True) -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).delete()
         if isinstance(self, SketchInterface):
@@ -55,12 +55,12 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_visible(self) -> bool:
+    def is_visible(self) -> "bool":
         raise NotImplementedError()
         return True
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_visible(self, is_visible: "bool"):
+    def set_visible(self, is_visible: "bool") -> "Self":
         raise NotImplementedError()
         return self
 
@@ -71,12 +71,12 @@ class Entity(EntityInterface):
         scale: "bool" = True,
         location: "bool" = False,
         modifiers: "bool" = True,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> object:
+    def get_native_instance(self) -> "object":
         if isinstance(self, PartInterface):
             return FusionBody(self.name)
         if isinstance(self, SketchInterface):
@@ -103,7 +103,7 @@ class Entity(EntityInterface):
         return Point(pos.x, pos.y, pos.z)
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def select(self):
+    def select(self) -> "Self":
         raise NotImplementedError()
         return self
 
@@ -113,7 +113,7 @@ class Entity(EntityInterface):
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
-    ):
+    ) -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(x, y, z)
         elif isinstance(self, SketchInterface):
@@ -125,7 +125,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_x(self, amount: "str|float|Dimension"):
+    def translate_x(self, amount: "str|float|Dimension") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(amount, 0, 0)
         elif isinstance(self, SketchInterface):
@@ -137,7 +137,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_y(self, amount: "str|float|Dimension"):
+    def translate_y(self, amount: "str|float|Dimension") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(0, amount, 0)
         elif isinstance(self, SketchInterface):
@@ -149,7 +149,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def translate_z(self, amount: "str|float|Dimension"):
+    def translate_z(self, amount: "str|float|Dimension") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).translate(0, 0, amount)
         elif isinstance(self, SketchInterface):
@@ -163,14 +163,14 @@ class Entity(EntityInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def rotate_xyz(
         self, x: "str|float|Angle", y: "str|float|Angle", z: "str|float|Angle"
-    ):
+    ) -> "Self":
         self.rotate_x(x)
         self.rotate_y(y)
         self.rotate_z(z)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_x(self, rotation: "str|float|Angle"):
+    def rotate_x(self, rotation: "str|float|Angle") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("x", rotation)
         elif isinstance(self, SketchInterface):
@@ -180,7 +180,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_y(self, rotation: "str|float|Angle"):
+    def rotate_y(self, rotation: "str|float|Angle") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("y", rotation)
         elif isinstance(self, SketchInterface):
@@ -190,7 +190,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def rotate_z(self, rotation: "str|float|Angle"):
+    def rotate_z(self, rotation: "str|float|Angle") -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).rotate("z", rotation)
         elif isinstance(self, SketchInterface):
@@ -222,7 +222,7 @@ class Entity(EntityInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_name(
         self, new_name: "str", rename_linked_entities_and_landmarks: "bool" = True
-    ) -> Self:
+    ) -> "Self":
         if isinstance(self, PartInterface):
             FusionBody(self.name).rename(new_name)
         if isinstance(self, SketchInterface):

@@ -17,14 +17,14 @@ class Vertex(VertexInterface, Entity):
         self.native_instance = native_instance
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_control_points(self) -> "list[Vertex]":
+    def get_control_points(self) -> "list[Point]":
         raise NotImplementedError()
         return [Vertex(location=(0, 0), name="myVertex")]
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         return self
 

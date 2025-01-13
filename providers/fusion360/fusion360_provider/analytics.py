@@ -63,6 +63,6 @@ class Analytics(AnalyticsInterface):
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def log(message: "str"):
+    def log(message: "str") -> None:
         print("log called:", message)
         return self

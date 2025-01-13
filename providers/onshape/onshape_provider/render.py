@@ -15,7 +15,7 @@ class Render(RenderInterface):
     @supported(SupportLevel.SUPPORTED, notes="")
     def render_image(
         output_file_path: "str", overwrite: "bool" = True, file_type: "str| None" = None
-    ):
+    ) -> None:
         return self
 
     @staticmethod
@@ -26,7 +26,7 @@ class Render(RenderInterface):
         end_frame_number: "int" = 100,
         step_frames: "int" = 1,
         overwrite: "bool" = True,
-    ):
+    ) -> None:
         return self
 
     @staticmethod
@@ -39,30 +39,30 @@ class Render(RenderInterface):
         step_frames: "int" = 1,
         overwrite: "bool" = True,
         file_type: "str| None" = None,
-    ):
+    ) -> None:
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_frame_rate(frame_rate: "int"):
+    def set_frame_rate(frame_rate: "int") -> None:
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_resolution(x: "int", y: "int"):
+    def set_resolution(x: "int", y: "int") -> None:
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_render_quality(quality: "int"):
+    def set_render_quality(quality: "int") -> None:
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_render_engine(name: "str"):
+    def set_render_engine(name: "str") -> None:
         return self
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_camera(camera_instance: "CameraInterface"):
+    def set_camera(camera_instance: "CameraInterface") -> None:
         return self

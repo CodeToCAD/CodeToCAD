@@ -1,4 +1,5 @@
 from codetocad.interfaces.exportable_interface import ExportableInterface
+from typing import Self
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
 from codetocad.proxy.entity import Entity
@@ -36,22 +37,24 @@ class Scene(SceneInterface):
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def default() -> "Scene":
+    def default() -> "SceneInterface":
         return Scene(get_scene(None))
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create(name: "str| None" = None, description: "str| None" = None):
+    def create(
+        name: "str| None" = None, description: "str| None" = None
+    ) -> "SceneInterface":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def delete(self):
+    def delete(self) -> "Self":
         raise NotImplementedError()
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def is_exists(self) -> bool:
+    def is_exists(self) -> "bool":
         raise NotImplementedError()
         return
 
@@ -66,7 +69,7 @@ class Scene(SceneInterface):
         entities: "list[ExportableInterface]",
         overwrite: "bool" = True,
         scale: "float" = 1.0,
-    ):
+    ) -> "Self":
         for entity in entities:
             part = entity
             if isinstance(part, str):
@@ -75,7 +78,7 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_default_unit(self, unit: "str|LengthUnit"):
+    def set_default_unit(self, unit: "str|LengthUnit") -> "Self":
         if isinstance(unit, str):
             unit = LengthUnit.from_string(unit)
         blenderUnit = BlenderLength.from_length_unit(unit)
@@ -83,18 +86,18 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def create_group(self, name: "str"):
+    def create_group(self, name: "str") -> "Self":
         create_collection(name, self.native_instance.name)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def delete_group(self, name: "str", remove_children: "bool"):
+    def delete_group(self, name: "str", remove_children: "bool") -> "Self":
         collection = get_collection(name, scene_name=self.native_instance.name)
         remove_collection(collection, remove_children=remove_children)
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def remove_from_group(self, entity: "EntityInterface", group_name: "str"):
+    def remove_from_group(self, entity: "EntityInterface", group_name: "str") -> "Self":
         remove_object_from_collection(
             blender_object=entity.get_native_instance(),
             blender_collection=get_collection(group_name, self.native_instance.name),
@@ -107,7 +110,7 @@ class Scene(SceneInterface):
         entities: "list[EntityInterface]",
         group_name: "str",
         remove_from_other_groups: "bool| None" = True,
-    ):
+    ) -> "Self":
         for entity in entities:
             assign_object_to_collection(
                 blender_object=entity.get_native_instance(),
@@ -119,7 +122,9 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def set_visible(self, entities: "list[EntityInterface]", is_visible: "bool"):
+    def set_visible(
+        self, entities: "list[EntityInterface]", is_visible: "bool"
+    ) -> "Self":
         for entity in entities:
             set_object_visibility(entity.get_native_instance(), is_visible)
         return self
@@ -130,7 +135,7 @@ class Scene(SceneInterface):
         file_path: "str",
         location_x: "str|float|Dimension| None" = 0,
         location_y: "str|float|Dimension| None" = 0,
-    ):
+    ) -> "Self":
         absoluteFilePath = get_absolute_filepath(file_path)
         blender_scene = get_scene(self.native_instance.name)
         add_hdr_texture(blender_scene, absoluteFilePath)

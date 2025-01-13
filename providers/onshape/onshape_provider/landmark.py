@@ -30,7 +30,7 @@ class Landmark(LandmarkInterface, Entity):
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
         new_parent: "EntityInterface| None" = None,
-    ) -> "Landmark":
+    ) -> "LandmarkInterface":
         print("clone called:", new_name, offset, new_parent)
         from . import Landmark
 

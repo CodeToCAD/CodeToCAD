@@ -43,7 +43,7 @@ class Vertex(VertexInterface, Entity):
     @supported(SupportLevel.SUPPORTED, notes="")
     def set_control_points(
         self, points: "list[str|list[str]|list[float]|list[Dimension]|Point]"
-    ) -> Self:
+    ) -> "Self":
         parsed_points = [Point.from_list_of_float_or_string(point) for point in points]
         set_control_points(self.get_native_instance(), parsed_points)  # type:ignore
         return self

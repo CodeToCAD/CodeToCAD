@@ -34,7 +34,7 @@ class Landmark(LandmarkInterface, Entity):
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
         new_parent: "EntityInterface| None" = None,
-    ) -> "Landmark":
+    ) -> "LandmarkInterface":
         if new_parent:
             if isinstance(new_parent, str):
                 parent = Entity(new_parent)
