@@ -1,7 +1,7 @@
 from codetocad.core.point import Point
 
 
-def cross_product(v1, v2):
+def cross_product(v1, v2) -> Point:
     x = v1[1] * v2[2] - v1[2] * v2[1]
     y = v1[2] * v2[0] - v1[0] * v2[2]
     z = v1[0] * v2[1] - v1[1] * v2[0]

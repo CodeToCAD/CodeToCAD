@@ -337,17 +337,9 @@
             "implements": "NativeInstance",
             "constructor": {
                 "parameters": {
-                    "name": {
-                        "type": "string",
-                        "required": false
-                    },
-                    "description": {
-                        "type": "string",
-                        "required": false
-                    },
                     "native_instance": {
                         "type": "any",
-                        "required": false
+                        "required": true
                     }
                 }
             },
@@ -550,8 +542,17 @@
                     },
                     "height": {
                         "type": "string,float,Dimension"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_cone": {
                 "action": "create",
@@ -566,8 +567,17 @@
                     "draft_radius": {
                         "type": "string,float,Dimension",
                         "default_value": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_cylinder": {
                 "action": "create",
@@ -578,8 +588,17 @@
                     },
                     "height": {
                         "type": "string,float,Dimension"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_torus": {
                 "action": "create",
@@ -590,8 +609,17 @@
                     },
                     "outer_radius": {
                         "type": "string,float,Dimension"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_sphere": {
                 "action": "create",
@@ -599,8 +627,17 @@
                 "parameters": {
                     "radius": {
                         "type": "string,float,Dimension"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_gear": {
                 "action": "create",
@@ -640,8 +677,17 @@
                     "crown_angle": {
                         "type": "string,float,Angle",
                         "default_value": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_text": {
                 "action": "create",
@@ -689,8 +735,17 @@
                     "profile_curve": {
                         "type": "Wire,Sketch",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "clone": {
                 "action": "get",
@@ -1055,8 +1110,17 @@
                     "profile_curve": {
                         "type": "Wire,Sketch",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_from_vertices": {
                 "action": "get",
@@ -1065,8 +1129,17 @@
                 "parameters": {
                     "points": {
                         "type": "list[string,list[string],list[float],list[Dimension],Point,Vertex]"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_point": {
                 "action": "get",
@@ -1075,8 +1148,17 @@
                 "parameters": {
                     "point": {
                         "type": "string,list[string],list[float],list[Dimension],Point"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_line": {
                 "action": "get",
@@ -1093,8 +1175,17 @@
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false,
                         "default_value": "PresetLandmark.end"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_line_to": {
                 "action": "get",
@@ -1108,8 +1199,17 @@
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false,
                         "default_value": "PresetLandmark.end"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_circle": {
                 "action": "get",
@@ -1122,8 +1222,17 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_ellipse": {
                 "action": "get",
@@ -1139,8 +1248,17 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_arc": {
                 "action": "get",
@@ -1163,8 +1281,17 @@
                         "type": "boolean",
                         "required": false,
                         "default_value": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_rectangle": {
                 "action": "get",
@@ -1180,8 +1307,17 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_polygon": {
                 "action": "get",
@@ -1200,8 +1336,17 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_trapezoid": {
                 "action": "get",
@@ -1220,8 +1365,17 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_spiral": {
                 "action": "get",
@@ -1249,21 +1403,28 @@
                     "center_at": {
                         "type": "string,list[string],list[float],list[Dimension],Point,Vertex,Landmark,PresetLandmark",
                         "required": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             }
         },
         "Vertex": {
             "information": "A single point in space, or a control point.",
             "extends": "Entity",
             "implements": "Projectable",
-            "constructor": {
-                "parameters": {
-                    "location": {
-                        "information": "Point coordinates of a vertex.",
-                        "type": "Point"
-                    }
-                }
+            "constructor": {},
+            "get_location": {
+                "action": "get",
+                "information": "Point coordinates of a vertex.",
+                "return_type": "Point"
             },
             "get_control_points": {
                 "information": "Get a vertex's curve control points. This may not be applicable for some curve types.",
@@ -1287,15 +1448,11 @@
             "information": "A curve bounded by two Vertices.",
             "extends": "Entity",
             "implements": "Mirrorable,Patternable,Subdividable,Projectable,Landmarkable",
-            "constructor": {
-                "parameters": {
-                    "v1": {
-                        "type": "Vertex"
-                    },
-                    "v2": {
-                        "type": "Vertex"
-                    }
-                }
+            "constructor": {},
+            "get_vertices": {
+                "information": "Collapse all edges' vertices into one list.",
+                "action": "get",
+                "return_type": "list[Vertex]"
             },
             "offset": {
                 "information": "Clone and offset this edge a distance away from this one. This returns a new edge in the same sketch.",
@@ -1885,8 +2042,17 @@
                 "parameters": {
                     "energy_level": {
                         "type": "float"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_spot": {
                 "information": "Create a Spot-type light.",
@@ -1894,8 +2060,17 @@
                 "parameters": {
                     "energy_level": {
                         "type": "float"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_point": {
                 "information": "Create a Point-type light.",
@@ -1903,8 +2078,17 @@
                 "parameters": {
                     "energy_level": {
                         "type": "float"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "create_area": {
                 "information": "Create an Area-type light.",
@@ -1912,8 +2096,17 @@
                 "parameters": {
                     "energy_level": {
                         "type": "float"
+                    },
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
                     }
-                }
+                },
+                "is_static_method": true
             }
         },
         "Camera": {
@@ -1923,17 +2116,47 @@
             "create_perspective": {
                 "information": "Create a perspective camera in the scene.",
                 "action": "create",
-                "parameters": {}
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                },
+                "is_static_method": true
             },
             "create_orthogonal": {
                 "information": "Create an orthogonal camera in the scene.",
                 "action": "create",
-                "parameters": {}
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                },
+                "is_static_method": true
             },
             "create_panoramic": {
                 "information": "Create a panorama camera in the scene.",
                 "action": "create",
-                "parameters": {}
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false
+                    }
+                },
+                "is_static_method": true
             },
             "set_focal_length": {
                 "information": "Set the focal length of the camera.",
@@ -1963,7 +2186,8 @@
                         "type": "string",
                         "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "render_video_mp4": {
                 "information": "Render an MP4 video.",
@@ -1989,7 +2213,8 @@
                         "type": "boolean",
                         "default_value": true
                     }
-                }
+                },
+                "is_static_method": true
             },
             "render_video_frames": {
                 "information": "Render a video as image frame stills.",
@@ -2023,7 +2248,8 @@
                         "type": "string",
                         "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "set_frame_rate": {
                 "information": "Set rendering framerate.",
@@ -2033,7 +2259,8 @@
                         "type": "int",
                         "required": true
                     }
-                }
+                },
+                "is_static_method": true
             },
             "set_resolution": {
                 "information": "Set rendering resolution",
@@ -2047,7 +2274,8 @@
                         "type": "int",
                         "required": true
                     }
-                }
+                },
+                "is_static_method": true
             },
             "set_render_quality": {
                 "information": "Set rendering quality.",
@@ -2058,7 +2286,8 @@
                         "type": "int",
                         "required": true
                     }
-                }
+                },
+                "is_static_method": true
             },
             "set_render_engine": {
                 "information": "Set rendering engine name.",
@@ -2068,7 +2297,8 @@
                         "type": "string",
                         "required": true
                     }
-                }
+                },
+                "is_static_method": true
             },
             "set_camera": {
                 "information": "Set the rendering camera.",
@@ -2078,12 +2308,42 @@
                         "information": "The Camera class instance.",
                         "type": "Camera"
                     }
-                }
+                },
+                "is_static_method": true
             }
         },
         "Scene": {
             "information": "Scene, camera, lighting, rendering, animation, simulation and GUI related functionality.",
+            "implements": "NativeInstance",
             "constructor": {
+                "parameters": {
+                    "native_instance": {
+                        "type": "any",
+                        "required": true
+                    }
+                }
+            },
+            "default": {
+                "information": "Get a Scene instance for the active scene.",
+                "action": "get",
+                "is_static_method": true,
+                "return_type": "Scene"
+            },
+            "get_by_name": {
+                "information": "Get a Scene instance by name.",
+                "action": "create",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                "is_static_method": true,
+                "return_type": "Scene"
+            },
+            "create": {
+                "information": "Creates a new scene.",
+                "action": "create",
                 "parameters": {
                     "name": {
                         "type": "string",
@@ -2093,17 +2353,8 @@
                         "type": "string",
                         "required": false
                     }
-                }
-            },
-            "default": {
-                "information": "Get a Scene instance for the current scene.",
-                "action": "get",
-                "is_static_method": true,
-                "return_type": "Scene"
-            },
-            "create": {
-                "information": "Creates a new scene.",
-                "action": "create"
+                },
+                "is_static_method": true
             },
             "delete": {
                 "information": "Deletes a scene.",
@@ -2244,7 +2495,8 @@
                     "entity_2": {
                         "type": "Entity"
                     }
-                }
+                },
+                "is_static_method": true
             },
             "measure_angle": {
                 "action": "get",
@@ -2261,7 +2513,8 @@
                         "type": "Entity",
                         "required": false
                     }
-                }
+                },
+                "is_static_method": true
             },
             "get_world_pose": {
                 "action": "get",
@@ -2271,7 +2524,8 @@
                     "entity": {
                         "type": "Entity"
                     }
-                }
+                },
+                "is_static_method": true
             },
             "get_bounding_box": {
                 "action": "get",
@@ -2281,7 +2535,8 @@
                     "entity": {
                         "type": "Entity"
                     }
-                }
+                },
+                "is_static_method": true
             },
             "get_dimensions": {
                 "action": "get",
@@ -2291,7 +2546,8 @@
                     "entity": {
                         "type": "Entity"
                     }
-                }
+                },
+                "is_static_method": true
             },
             "log": {
                 "action": "modify",
@@ -2300,7 +2556,8 @@
                     "message": {
                         "type": "string"
                     }
-                }
+                },
+                "is_static_method": true
             }
         }
     }
