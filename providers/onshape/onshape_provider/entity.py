@@ -47,7 +47,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> "object":
+    def get_native_instance(self) -> "Any":
         raise NotImplementedError()
 
     @supported(SupportLevel.SUPPORTED, notes="")

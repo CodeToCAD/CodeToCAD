@@ -11,7 +11,7 @@ capabilities_parameter_types = {
     "string": "str",
     "array": "list",
     "object": "dict",
-    "any": "object",
+    "any": "Any",
     "number": "int",
     "float": "float",
     "boolean": "bool",

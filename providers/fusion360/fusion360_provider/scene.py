@@ -108,6 +108,6 @@ class Scene(SceneInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> "object":
+    def get_native_instance(self) -> "Any":
         print("get_native_instance called")
         return "instance"

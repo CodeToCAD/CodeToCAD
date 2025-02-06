@@ -115,7 +115,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> "object":
+    def get_native_instance(self) -> "Any":
         blender_object = get_object_or_none(self.name)
         if blender_object:
             return blender_object

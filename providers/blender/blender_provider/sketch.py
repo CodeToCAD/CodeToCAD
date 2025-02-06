@@ -23,6 +23,7 @@ from providers.blender.blender_provider.blender_actions.modifiers import (
 )
 from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
+    get_object_for_data,
     get_object_or_none,
     get_object_visibility,
     remove_object,
@@ -62,6 +63,35 @@ class Sketch(SketchInterface, Entity):
         self.native_instance = native_instance
         self.resolution = 4 if self.curve_type == CurveTypes.BEZIER else 64
 
+    @property
+    def _blender_object(self):
+        """
+        Get the first blender object associated with the curve data.
+        This throws if the curve data is not associated with any object.
+        """
+        blender_object = get_object_for_data(self._blender_curve)
+
+        if blender_object is None:
+            raise ValueError("No object associated with the curve data")
+
+        return blender_object
+
+    @property
+    def _blender_curve(self):
+        """
+        Get the curve instance that's associated with the sketch in Blender
+        """
+        return self.get_native_instance()
+
+    @staticmethod
+    def _curve_to_object(curve):
+        if get_object_for_data(curve) is not None:
+            return
+
+        blender_object = create_object(curve.name, curve)
+
+        assign_object_to_collection(blender_object)
+
     @override
     @supported(SupportLevel.SUPPORTED)
     def set_visible(self, is_visible: "bool"):
@@ -70,12 +100,9 @@ class Sketch(SketchInterface, Entity):
         Note: is_visible is reliant on this implementation
         """
         if is_visible:
-            if get_object_or_none(self.name, BlenderTypes.CURVE.value) is not None:
-                return self
-            create_object(self.name, get_curve(self.name))
-            assign_object_to_collection(self.name)
+            Sketch._curve_to_object(self._blender_object)
         else:
-            remove_object(self.name, is_remove_data=False)
+            remove_object(self._blender_object, is_remove_data=False)
         update_view_layer()
         return self
 
@@ -91,7 +118,7 @@ class Sketch(SketchInterface, Entity):
         sketch_object = get_object_or_none(self.name, BlenderTypes.CURVE.value)
         if self.is_exists() and sketch_object is None:
             return False
-        return get_object_visibility(self.name)
+        return get_object_visibility(self._blender_object)
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
@@ -108,7 +135,7 @@ class Sketch(SketchInterface, Entity):
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
     ) -> "SketchInterface":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
-        duplicate_object(self.name, new_name, copy_landmarks)
+        duplicate_object(self._blender_object, new_name, copy_landmarks)
         return Sketch(
             new_name, curve_type=self.curve_type, description=self.description
         )
@@ -140,8 +167,9 @@ class Sketch(SketchInterface, Entity):
         curve_type: "CurveTypes| None" = None,
     ) -> "SketchInterface":
         size = Dimension.from_string(font_size)
-        create_text(
-            self.name,
+
+        curve = create_text(
+            name or create_uuid_like_id(),
             text,
             size,
             bold,
@@ -152,12 +180,15 @@ class Sketch(SketchInterface, Entity):
             line_spacing,
             font_file_path,
         )
+
         if profile_curve:
-            if isinstance(profile_curve, EntityInterface):
-                profile_curve = profile_curve.name
-            apply_curve_modifier(self.name, profile_curve)
+            Sketch._curve_to_object(curve)
+            update_view_layer()
+            apply_curve_modifier(self.name, profile_curve.get_native_instance())
+
         update_view_layer()
-        return self
+
+        return Sketch(native_instance=curve)
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")

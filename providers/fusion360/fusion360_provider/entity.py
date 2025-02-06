@@ -76,7 +76,7 @@ class Entity(EntityInterface):
         return self
 
     @supported(SupportLevel.SUPPORTED, notes="")
-    def get_native_instance(self) -> "object":
+    def get_native_instance(self) -> "Any":
         if isinstance(self, PartInterface):
             return FusionBody(self.name)
         if isinstance(self, SketchInterface):

@@ -382,5 +382,15 @@ def get_object_or_none(
     return blender_object
 
 
+def get_object_for_data(data):
+    """
+    Get the first blender object associated with the data.
+    This returns None if the data is not associated with any object.
+    """
+    for obj in bpy.data.objects:
+        if obj.type == data.id_type and obj.data and obj.data.name == data.name:
+            return obj
+
+
 def get_object_type(blender_object: bpy.types.Object) -> BlenderObjectTypes:
     return BlenderObjectTypes[blender_object.type]
