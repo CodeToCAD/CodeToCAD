@@ -24,7 +24,7 @@ fileImportFunctions = {
 }
 
 
-def import_file(file_path: str, file_type: Optional[str] = None) -> str:
+def import_file(file_path: str, file_type: Optional[str] = None) -> bpy.types.Object:
     path = Path(file_path).resolve()
 
     # Check if the file exists:
@@ -65,7 +65,7 @@ def import_file(file_path: str, file_type: Optional[str] = None) -> str:
         bpy.ops.object.join()
 
     # return the imported objects, assumed to be selected at import
-    return active_object.name
+    return active_object
 
 
 fileExportFunctions = {

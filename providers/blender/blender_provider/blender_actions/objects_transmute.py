@@ -12,6 +12,7 @@ from providers.blender.blender_provider.blender_actions.context import (
 from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
     get_object_collection,
+    get_object_or_none,
     get_object_world_location,
     remove_object,
     update_object_name,
@@ -87,7 +88,7 @@ def duplicate_object(
     existing_blender_object: bpy.types.Object,
     new_object_name: str,
     copy_landmarks: bool = True,
-):
+) -> bpy.types.Object:
 
     assert (
         get_object_or_none(new_object_name) is None
@@ -115,3 +116,5 @@ def duplicate_object(
                 )
                 newChild.parent = cloned_object
                 assign_object_to_collection(newChild, defaultCollection)
+
+    return cloned_object

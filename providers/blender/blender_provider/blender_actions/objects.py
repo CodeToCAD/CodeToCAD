@@ -113,7 +113,7 @@ def add_primitive(
 
 
 def create_gear(
-    blender_object: bpy.types.Object,
+    name: "str",
     outer_radius: str | float | Dimension,
     addendum: str | float | Dimension,
     inner_radius: str | float | Dimension,
@@ -166,7 +166,7 @@ def create_gear(
     crown_angleValue = Angle.from_string(crown_angle).to_radians().value
 
     return bpy.ops.mesh.primitive_gear(  # type: ignore
-        name=blender_object.name,
+        name=name,
         number_of_teeth=number_of_teeth,
         radius=outer_radius_dimension,
         addendum=addendum_dimension,

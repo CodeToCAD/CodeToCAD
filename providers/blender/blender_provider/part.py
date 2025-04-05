@@ -62,7 +62,22 @@ class Part(PartInterface, Entity):
         file_path: "str", file_type: "str| None" = None
     ) -> "EntityInterface":
         absoluteFilePath = get_absolute_filepath(file_path)
-        importedFileName = import_file(absoluteFilePath, file_type)
+
+        importedFileObject = import_file(absoluteFilePath, file_type)
+
+        return Part(importedFileObject)
+
+    @staticmethod
+    def _extrude_and_name(
+        sketch: "SketchInterface",
+        height: "str|float|Dimension",
+        name: "str| None" = None,
+        description: "str| None" = None,
+    ) -> "PartInterface":
+        part = sketch.get_wires()[0].extrude(height)
+        if name:
+            part.set_name(name)
+        return part
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -75,10 +90,8 @@ class Part(PartInterface, Entity):
     ) -> "PartInterface":
         cube = Sketch.create_rectangle(
             length, width, name=name, description=description
-        ).extrude(height)
-        if name:
-            cube.set_name(name)
-        return cube
+        )
+        return Part._extrude_and_name(cube, height, name)
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -89,19 +102,20 @@ class Part(PartInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
     ) -> "PartInterface":
-        base_sketch = Sketch(self.name)
-        base = base_sketch.create_circle(radius)
-        top = Sketch(self.name + "_temp_top")
+        base = Sketch.create_circle(radius).get_wires()[0]
+
         top_wire: WireInterface
         if draft_radius == Dimension(0):
             # top_wire = top.create_from_vertices([(0, 0, 0)])
             # This is temporary until the bug of lofting to a single vertex is fixed:
-            top_wire = top.create_circle(0.0001)
+            top_wire = Sketch.create_circle(0.0001).get_wires()[0]
         else:
-            top_wire = top.create_circle(draft_radius)
+            top_wire = Sketch.create_circle(draft_radius).get_wires()[0]
         top_wire.translate_z(height)
-        new_part = base.loft(top_wire, self.name)
-        top.delete()
+        new_part = base.loft(top_wire, new_name=name)
+
+        top_wire.get_parent().delete()
+
         return new_part
 
     @staticmethod
@@ -112,7 +126,9 @@ class Part(PartInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
     ) -> "PartInterface":
-        return Sketch.create_circle(radius).extrude(height).set_name(self.name)
+        return Part._extrude_and_name(
+            Sketch.create_circle(radius), height, name, description
+        )
 
     @staticmethod
     @supported(SupportLevel.SUPPORTED, notes="")
@@ -137,7 +153,7 @@ class Part(PartInterface, Entity):
             .rotate_x(90)
             .translate_x(inner_radius + circle_radius)
         )
-        new_part = circle.revolve(360, origin, "z")
+        new_part = circle.get_wires()[0].revolve(360, origin, "z")
         origin.delete()
         if name:
             new_part.set_name(name)
@@ -151,13 +167,18 @@ class Part(PartInterface, Entity):
         description: "str| None" = None,
     ) -> "PartInterface":
         circle = Sketch.create_circle(radius)
-        new_part = circle.revolve(180, circle.get_landmark("center"), "x")
+        new_part = circle.get_wires()[0].revolve(
+            180, circle.get_landmark("center"), "x"
+        )
         if name:
             new_part.set_name(name)
         return new_part
 
     @staticmethod
-    @supported(SupportLevel.SUPPORTED, notes="")
+    @supported(
+        SupportLevel.SUPPORTED,
+        notes="Requires the add_mesh_extra_objects addon. This addon is included in Blender by default. This method may try to activate this addon automatically.",
+    )
     def create_gear(
         outer_radius: "str|float|Dimension",
         addendum: "str|float|Dimension",
@@ -172,8 +193,8 @@ class Part(PartInterface, Entity):
         name: "str| None" = None,
         description: "str| None" = None,
     ) -> "PartInterface":
-        create_gear(
-            self.name,
+        gear = create_gear(
+            name or create_uuid_like_id(),
             outer_radius,
             addendum,
             inner_radius,
@@ -185,19 +206,25 @@ class Part(PartInterface, Entity):
             conical_angle,
             crown_angle,
         )
-        # Since we're using Blender's bpy.ops API, we cannot provide a name for the newly created object,
-        # therefore, we'll use the object's "expected" name and rename it to what it should be
-        # note: this will fail if the "expected" name is incorrect
-        Part("Gear").set_name(self.name, True)
-        return self
+
+        part = Part(gear)
+
+        if name:
+            part.set_name(name, True)
+
+        return part
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self, new_name: "str| None" = None, copy_landmarks: "bool| None" = True
     ) -> "PartInterface":
         assert Entity(new_name).is_exists() is False, f"{new_name} already exists."
-        duplicate_object(self.name, new_name, copy_landmarks)
-        return Part(new_name, self.description)
+        new_object = duplicate_object(
+            self.native_instance,
+            new_name or create_uuid_like_id(),
+            copy_landmarks if copy_landmarks is not None else True,
+        )
+        return Part(new_object)
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def union(

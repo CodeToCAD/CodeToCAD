@@ -18,7 +18,6 @@ from providers.blender.blender_provider.blender_actions.curve import (
 )
 from providers.blender.blender_provider.blender_actions.mesh import (
     get_bounding_box,
-    get_mesh,
     remove_mesh,
 )
 from providers.blender.blender_provider.blender_actions.modifiers import clear_modifiers
@@ -116,14 +115,7 @@ class Entity(EntityInterface):
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def get_native_instance(self) -> "Any":
-        blender_object = get_object_or_none(self.name)
-        if blender_object:
-            return blender_object
-        if isinstance(self, SketchInterface):
-            return get_curve(self.name)
-        if isinstance(self, PartInterface):
-            return get_mesh(self.name)
-        raise NotImplementedError("get_native_instance is not supported")
+        return self.native_instance
 
     @supported(SupportLevel.SUPPORTED, notes="")
     def get_location_world(self) -> "Point":
