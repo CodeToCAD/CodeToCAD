@@ -1,9 +1,8 @@
-from typing import Any, Optional, Sequence
+from typing import Sequence
 import bpy
 import mathutils
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
-from providers.blender.blender_provider.blender_actions.objects import get_object
 from providers.blender.blender_provider.blender_definitions import (
     BlenderRotationTypes,
     BlenderTranslationTypes,
@@ -11,20 +10,18 @@ from providers.blender.blender_provider.blender_definitions import (
 
 
 def apply_object_transformations(
-    object_name: str,
+    blender_object: bpy.types.Object,
     apply_rotation: bool,
     apply_scale: bool,
     apply_location: bool,
 ):
     # Apply the object's transformations (under Object Properties tab)
     # references https://blender.stackexchange.com/a/159540/138679
-    blender_object = get_object(object_name)
-
     assert (
         blender_object.data is not None
-    ), f"Object {object_name} does not have data to transform."
+    ), f"Object {blender_object.name} does not have data to transform."
 
-    decomposedMatrix: list[Any] = blender_object.matrix_basis.decompose()
+    decomposedMatrix: tuple = blender_object.matrix_basis.decompose()
     translationVector: mathutils.Vector = decomposedMatrix[0]
     rotationQuat: mathutils.Quaternion = decomposedMatrix[1]
     scaleVector: mathutils.Vector = decomposedMatrix[2]
@@ -49,7 +46,11 @@ def apply_object_transformations(
     else:
         basis @= translation
 
-    mesh: bpy.types.Mesh = blender_object.data
+    mesh = blender_object.data
+
+    if not isinstance(mesh, (bpy.types.Mesh, bpy.types.Curve)):
+        raise NotImplementedError(f"Mesh of type {type(mesh)} is not supported.")
+
     mesh.transform(transformation)
 
     # Set the object to its world translation
@@ -60,12 +61,10 @@ def apply_object_transformations(
 
 
 def rotate_object(
-    object_name: str,
-    rotation_angles: list[Optional[Angle]],
+    blender_object: bpy.types.Object,
+    rotation_angles: list[Angle | None],
     rotation_type: BlenderRotationTypes,
 ):
-    blender_object = get_object(object_name)
-
     currentRotation = getattr(blender_object, rotation_type.value)
 
     outputRotation = []
@@ -81,11 +80,10 @@ def rotate_object(
 
 
 def translate_object(
-    object_name: str,
+    blender_object: bpy.types.Object,
     translation_dimensions: Sequence[Dimension | None],
     translation_type: BlenderTranslationTypes,
 ):
-    blender_object = get_object(object_name)
 
     assert len(translation_dimensions) == 3, "translation_dimensions must be length 3"
 
@@ -104,10 +102,8 @@ def translate_object(
 
 
 def set_object_location(
-    object_name: str, location_dimensions: list[Optional[Dimension]]
+    blender_object: bpy.types.Object, location_dimensions: list[Dimension | None]
 ):
-    blender_object = get_object(object_name)
-
     assert len(location_dimensions) == 3, "location_dimensions must be length 3"
 
     currentLocation = blender_object.location
@@ -125,13 +121,11 @@ def set_object_location(
 
 
 def scale_object(
-    object_name: str,
-    x_scale_factor: Optional[float],
-    y_scale_factor: Optional[float],
-    z_scale_factor: Optional[float],
+    blender_object: bpy.types.Object,
+    x_scale_factor: float | None,
+    y_scale_factor: float | None,
+    z_scale_factor: float | None,
 ):
-    blender_object = get_object(object_name)
-
     currentScale: mathutils.Vector = blender_object.scale
 
     blender_object.scale = (

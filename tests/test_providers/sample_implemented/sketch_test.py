@@ -4,23 +4,24 @@ from codetocad.tests_interfaces.sketch_test_interface import SketchTestInterface
 
 
 class SketchTest(TestProviderCase, SketchTestInterface):
+    def test_get_by_name(self):
+
+        Sketch.create_line(5, 0, name="testSketch")
+
+        value = Sketch.get_by_name(name="testSketch")
+
+        assert value, "Get method failed."
+
     def test_get_wires(self):
 
-        instance = Sketch(
-            name="String",
-            description="String",
-            native_instance="value",
-            curve_type=CurveTypes.NURBS,
-        )
+        Sketch.create_line(6, 0, name="test_sketch")
 
-        value = instance.get_wires()
+        value = Sketch.get_by_name(name="test_sketch").get_wires()
 
         assert value, "Get method failed."
 
     def test_mirror(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.mirror(
             mirror_across_entity="mySketch",
@@ -30,18 +31,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_linear_pattern(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.linear_pattern(instance_count=2, offset=2)
 
         assert value, "Modify method failed."
 
     def test_circular_pattern(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.circular_pattern(
             instance_count=2,
@@ -61,90 +58,70 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_export(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.export(file_path="my-sketch-exported.stl")
 
         assert value.is_exists(), "Create method failed."
 
     def test_scale_xyz(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_xyz(x=0.5, y=0.5, z=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_x(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_x(scale=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_y(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_y(scale=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_z(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_z(scale=0.5)
 
         assert value, "Modify method failed."
 
     def test_scale_x_by_factor(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_x_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
     def test_scale_y_by_factor(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_y_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
     def test_scale_z_by_factor(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_z_by_factor(scale_factor=2)
 
         assert value, "Modify method failed."
 
     def test_scale_keep_aspect_ratio(self):
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.scale_keep_aspect_ratio(scale=2, axis=1)
 
         assert value, "Modify method failed."
 
     def test_clone(self):  # None type object has no attribute name
-        instance = Sketch("mySketch")
-
-        instance.create_rectangle(length=5, width=5)
+        instance = Sketch.create_rectangle(length=5, width=5)
 
         value = instance.clone(new_name="myCloneSketch")
 
@@ -160,18 +137,14 @@ class SketchTest(TestProviderCase, SketchTestInterface):
         assert value.is_exists(), "Create method failed."
 
     def test_create_from_vertices(self):
-        instance = Sketch("mySketch")
-
-        instance.create_from_vertices(
+        instance = Sketch.create_from_vertices(
             points=[(0, 2, 0), (2, 2, 0), (2, 0, 0), (0, 0, 0), (0, 2, 0)]
         )
 
         assert instance.is_exists(), "Create method failed."
 
     def test_create_point(self):
-        instance = Sketch("mySketch")
-
-        instance.create_point(point=(0, 0, 0))
+        instance = Sketch.create_point(point=(0, 0, 0))
 
         assert instance.is_exists(), "Create method failed."
 

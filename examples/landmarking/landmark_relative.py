@@ -2,12 +2,12 @@ from codetocad import *
 
 wall_thickness = Dimension.from_string(0.1)
 
-hollow_cube = Part("hollow_cube").create_cube(1, 1, 0.1)
+hollow_cube = Part.create_cube(1, 1, 0.1)
 hollow_cube.hollow(wall_thickness * 2, wall_thickness * 2, 0)
 
 hollow_cube.translate_x(3)
 
-c1 = Part("c1").create_cube(1, 1, 1)
+c1 = Part.create_cube(1, 1, 1)
 c1.translate_x(2)
 c1.translate_y(2)
 c1.translate_z(2)

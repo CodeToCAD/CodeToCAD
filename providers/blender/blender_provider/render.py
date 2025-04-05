@@ -29,41 +29,33 @@ class Render(RenderInterface):
         )
         set_render_file_format(fileFormat)
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "file_type is ignored, and is infered from the output_file_path.",
-    )
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_image(
-        self,
-        output_file_path: "str",
-        overwrite: "bool" = True,
-        file_type: "str| None" = None,
-    ):
+        output_file_path: "str", overwrite: "bool" = True, file_type: "str| None" = None
+    ) -> None:
         absoluteFilePath = get_absolute_filepath(output_file_path)
         Render._set_file_format(absoluteFilePath)
         render_image(absoluteFilePath, overwrite or True)
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "start/end_frame_number and step_frame paramters are currently ignored.",
-    )
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_mp4(
-        self,
         output_file_path: "str",
         start_frame_number: "int" = 1,
         end_frame_number: "int" = 100,
         step_frames: "int" = 1,
         overwrite: "bool" = True,
-    ):
+    ) -> None:
         absoluteFilePath = get_absolute_filepath(output_file_path)
         Render._set_file_format(absoluteFilePath)
         render_animation(absoluteFilePath, overwrite or True)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
     def render_video_frames(
-        self,
         output_folder_path: "str",
         file_name_prefix: "str",
         start_frame_number: "int" = 1,
@@ -71,37 +63,39 @@ class Render(RenderInterface):
         step_frames: "int" = 1,
         overwrite: "bool" = True,
         file_type: "str| None" = None,
-    ):
+    ) -> None:
         absoluteFilePath = get_absolute_filepath(output_folder_path)
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_frame_rate(self, frame_rate: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_frame_rate(frame_rate: "int") -> None:
         set_render_frame_rate(int(frame_rate))
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_resolution(self, x: "int", y: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_resolution(x: "int", y: "int") -> None:
         set_render_resolution(x, y)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_render_quality(self, quality: "int"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_quality(quality: "int") -> None:
         percentage = quality * 100 if quality < 1.0 else quality
         percentage = int(percentage)
         set_render_quality(percentage)
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_render_engine(self, name: "str"):
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_render_engine(name: "str") -> None:
         set_render_engine(RenderEngines.from_string(name))
         return self
 
-    @supported(SupportLevel.SUPPORTED)
-    def set_camera(self, camera_name_or_instance: "str|CameraInterface"):
-        cameraName = camera_name_or_instance
-        if isinstance(cameraName, CameraInterface):
-            cameraName = cameraName.name
-        set_scene_camera(cameraName)
+    @staticmethod
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_camera(camera_instance: "CameraInterface") -> None:
+        set_scene_camera(camera_instance.get_native_instance())
         return self

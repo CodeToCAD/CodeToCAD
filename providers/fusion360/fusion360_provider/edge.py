@@ -1,4 +1,6 @@
 from codetocad.utilities.supported import supported
+from typing import Self
+from codetocad.proxy.vertex import Vertex
 from codetocad.enums.support_level import SupportLevel
 from codetocad.interfaces.entity_interface import EntityInterface
 from codetocad.interfaces.projectable_interface import ProjectableInterface
@@ -13,105 +15,102 @@ from codetocad.codetocad_types import *
 
 class Edge(EdgeInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str",
-        v1: "VertexInterface",
-        v2: "VertexInterface",
-        description: "str| None" = None,
-        native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
-    ):
+    def __init__(self, native_instance: "Any"):
         self.v1 = v1
         self.v2 = v2
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.PLANNED)
-    def offset(self, distance: "str|float|Dimension") -> "Edge":
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def offset(self, distance: "str|float|Dimension") -> "EdgeInterface":
         raise NotImplementedError()
         return Edge.get_dummy_edge()
 
-    @supported(SupportLevel.PLANNED)
-    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def fillet(self, other_edge: "EdgeInterface", amount: "str|float|Angle") -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def set_is_construction(self, is_construction: "bool"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def set_is_construction(self, is_construction: "bool") -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def get_is_construction(self) -> bool:
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_is_construction(self) -> "bool":
         raise NotImplementedError()
         return True
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         raise NotImplementedError()
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         raise NotImplementedError()
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
-    ):
+        separate_resulting_entity: "bool| None" = False,
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def remesh(self, strategy: "str", amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def subdivide(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def subdivide(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def decimate(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def decimate(self, amount: "float") -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return Sketch("a projected sketch")
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_vertices(self) -> "list[VertexInterface]":
+        print("get_vertices called")
+        return [Vertex("a vertex", Point.from_list_of_float_or_string([0, 0, 0]))]

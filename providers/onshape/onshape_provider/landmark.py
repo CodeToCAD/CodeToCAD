@@ -14,38 +14,24 @@ if TYPE_CHECKING:
 
 class Landmark(LandmarkInterface, Entity):
     name: str
-    parent_entity: str | Entity
+    parent: str | Entity
     description: Optional[str] = None
     native_instance = None
 
-    def __init__(
-        self,
-        name: "str",
-        parent_entity: "str|EntityInterface",
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any", parent: "EntityInterface"):
         self.name = name
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|EntityInterface| None" = None,
-    ) -> "Landmark":
+        new_parent: "EntityInterface| None" = None,
+    ) -> "LandmarkInterface":
         print("clone called:", new_name, offset, new_parent)
         from . import Landmark
 
         return Landmark("name", "parent")
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_landmark_entity_name(self) -> str:
-        raise NotImplementedError()
-
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_parent_entity(self) -> "Entity":
-        raise NotImplementedError()

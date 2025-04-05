@@ -4,38 +4,41 @@ from providers.blender.blender_provider.blender_actions.collections import (
     assign_object_to_collection,
 )
 
+import bpy
+
 from providers.blender.blender_provider.blender_actions.objects import (
     create_object,
-    get_object,
 )
 from providers.blender.blender_provider.blender_actions.scene import get_scene
 
 
-def create_camera(obj_name: str, type):
-    camera_data = bpy.data.cameras.new(name=obj_name)
-    create_object(obj_name, data=camera_data)
-    assign_object_to_collection(obj_name)
+def create_camera(camera_object_name: str, type):
+    camera_data = bpy.data.cameras.new(name=camera_object_name)
+
+    blender_object = create_object(camera_object_name, data=camera_data)
+
+    assign_object_to_collection(blender_object)
 
 
 def get_camera(
     camera_name: str,
 ):
-    blenderCamera = bpy.data.cameras.get(camera_name)
+    blender_camera = bpy.data.cameras.get(camera_name)
 
-    assert blenderCamera is not None, f"Camera {camera_name} does not exist."
+    assert blender_camera is not None, f"Camera {camera_name} does not exist."
 
-    return blenderCamera
+    return blender_camera
 
 
-def set_scene_camera(camera_name: str, scene_name: Optional[str] = None):
-    blenderCamera = get_object(camera_name)
+def set_scene_camera(
+    blender_camera: bpy.types.Object, scene_name: Optional[str] = None
+):
     scene = get_scene(scene_name)
 
-    scene.camera = blenderCamera
+    scene.camera = blender_camera
 
 
-def set_focal_length(camera_name: str, length=50.0):
-    camera = get_camera(camera_name)
+def set_focal_length(blender_camera: bpy.types.Camera, length=50.0):
     assert length >= 1, "Length needs to be greater than or equal to 1."
 
-    camera.lens = length
+    blender_camera.lens = length

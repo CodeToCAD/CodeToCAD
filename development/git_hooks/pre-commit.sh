@@ -36,7 +36,7 @@ if [ ! -z "$FILES"]; then
     echo "$FILES" | xargs git add
 fi
 
-# Mark: run tests  and lint checks
+# run tests and lint checks
 sh "$ROOT_DIR/development/run_tests.sh"
 
 echo "Done running pre-commit hooks."

@@ -1,6 +1,6 @@
 # autoflake: skip_file
 
-from typing import TypeAlias, Union
+from typing import TypeAlias, Union, Any
 
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension

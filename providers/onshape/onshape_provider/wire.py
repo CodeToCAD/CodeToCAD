@@ -1,4 +1,3 @@
-from typing import Optional
 from codetocad.interfaces.sketch_interface import SketchInterface
 from codetocad.utilities.supported import supported
 from codetocad.enums.support_level import SupportLevel
@@ -31,131 +30,119 @@ if TYPE_CHECKING:
 
 class Wire(WireInterface, Entity):
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
-    ):
+        separate_resulting_entity: "bool| None" = False,
+    ) -> "EntityInterface":
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
 
-    edges: "list[Edge]"
-    parent_entity: Optional[str | Entity] = None
-    name: str
-    description: Optional[str] = None
-    native_instance = None
-
-    def __init__(
-        self,
-        name: "str",
-        edges: "list[EdgeInterface]",
-        description: "str| None" = None,
-        native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
-    ):
-        self.edges = edges
-        self.parent_entity = parent_entity
+    def __init__(self, native_instance: "Any"):
         self.name = name
         self.description = description
         self.native_instance = native_instance
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         print("get_normal called:", flip)
         return Point.from_list_of_float_or_string([0, 0, 0])
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_vertices(self) -> "list[Vertex]":
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_vertices(self) -> "list[VertexInterface]":
         print("get_vertices called:")
-        from . import Vertex
-
         return [Vertex(Point.from_list_of_float_or_string([0, 0, 0]), "a vertex")]
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def get_is_closed(self) -> bool:
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_is_closed(self) -> "bool":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def loft(self, other: "WireInterface", new_part_name: "str| None" = None) -> "Part":
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def loft(
+        self,
+        other: "WireInterface",
+        union_connecting_parts: "bool| None" = True,
+        new_name: "str| None" = None,
+    ) -> "PartInterface":
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def union(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subtract(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         print(
             "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def intersect(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         print(
             "intersect called",
             f": {other}, {delete_after_intersect}, {is_transfer_data}",
         )
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def extrude(self, length: "str|float|Dimension") -> "Part":
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         if self.native_instance is None:
             raise ValueError("Native Instance is None")
         onshape_url = get_first_document_url_by_name(self.client, onshape_document_name)
@@ -166,45 +153,45 @@ class Wire(WireInterface, Entity):
         create_extrude(self.client, onshape_url, feature_id, str(length_float))
         raise NotImplementedError()
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|EntityInterface",
+        about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
         print("revolve called", f": {angle}, {about_entity_or_landmark}, {axis}")
         return Part("a part")
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def twist(
         self,
         angle: "str|float|Angle",
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         print("twist called", f": {angle}, {screw_pitch}, {iterations}, {axis}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def sweep(
-        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
+        self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
-        print("sweep called", f": {profile_name_or_instance}, {fill_cap}")
+        print("sweep called", f": {profile}, {fill_cap}")
         return Part("a part")
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def offset(self, radius: "str|float|Dimension"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
         print("offset called", f": {radius}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
-        print("profile called", f": {profile_curve_name}")
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def profile(self, profile_curve: "WireInterface|SketchInterface") -> "Self":
+        print("profile called", f": {profile_curve}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_edges(self) -> "list[EdgeInterface]":
         print("get_edges called")
         return [
@@ -215,64 +202,69 @@ class Wire(WireInterface, Entity):
             )
         ]
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def remesh(self, strategy: "str", amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         print("remesh called", f": {strategy}, {amount}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def subdivide(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def subdivide(self, amount: "float") -> "Self":
         print("subdivide called", f": {amount}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
-    def decimate(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def decimate(self, amount: "float") -> "Self":
         print("decimate called", f": {amount}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-    ) -> Self:
+    ) -> "Self":
         print("create_from_vertices called", f": {points}, {options}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
-    ) -> Self:
+    ) -> "Self":
         print("create_point called", f": {point}, {options}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line(
         self,
         length: "str|float|Dimension",
         angle: "str|float|Angle",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         print("create_line called", f": {length}, {angle}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         print("create_line_to called", f": {to}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         flip: "bool| None" = False,
-    ) -> Self:
+    ) -> "Self":
         print(
             "create_arc called", f": {end_at}, {radius}, {start_at}, {flip}, {options}"
         )
         return self
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_parent(self) -> "EntityInterface":
+        print("get_parent called")
+        return __import__("codetocad").Part("an entity")

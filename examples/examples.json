@@ -163,7 +163,7 @@
     },
     {
         "name": "Text",
-        "description": "Use Sketch('sketchName').create_text() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.",
+        "description": "Use Sketch.create_text() to write text. You can apply different text fonts, decorations and sizes. You can also extrude text, or define landmarks relative to the Sketch to mate/joint text to other landmarks.",
         "codeFilepath": "text/text.py",
         "imagePath": "text/text.png"
     },

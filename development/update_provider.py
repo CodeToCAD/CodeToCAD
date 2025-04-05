@@ -136,6 +136,14 @@ def update_provider_file(
                 continue
 
             provider_function.args = definition.args
+            provider_function.returns = definition.returns
+
+            decorators = [
+                dec.id if hasattr(dec, "id") else dec.func.id
+                for dec in provider_function.decorator_list
+            ]
+            if not ("override" in decorators):
+                provider_function.decorator_list = definition.decorator_list
 
     if is_dump_imports:
         count_dumps = 1

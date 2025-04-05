@@ -10,10 +10,12 @@ def capabilities_type_to_python_mock_value(type_name: str | None):
 
 
 dummy_point = "Point.from_list_of_float_or_string([0,0,0])"
-dummy_vertex = f"Vertex('a vertex', {dummy_point})"
-dummy_edge = f"Edge(v1={dummy_vertex}, v2={dummy_vertex}, name='an edge')"
+dummy_vertex = f"Vertex('a vertex')"
+dummy_edge = f"Edge('an edge')"
+dummy_wire = f"Wire('a wire')"
 importable_codetocad = '__import__("codetocad").'
 capabilities_parameter_types_mock_values = {
+    "Any": "'anytype'",
     "str": "'String'",
     "list": [],
     "dict": {},
@@ -30,6 +32,7 @@ capabilities_parameter_types_mock_values = {
     "str|Entity": f"{importable_codetocad}Part('an entity')",
     "Sketch": "Sketch('a sketch')",
     "str|Sketch": "Sketch('a sketch')",
+    "list[Entity]": [f"{importable_codetocad}Part('an entity')"],
     "list[str|Entity]": [f"{importable_codetocad}Part('an entity')"],
     "Landmark": "Landmark('name', 'parent')",
     "str|Landmark": "Landmark('name', 'parent')",
@@ -58,26 +61,29 @@ capabilities_parameter_types_mock_values = {
     "PresetLandmark": "PresetLandmark.leftTop",
     "str|PresetLandmark": "PresetLandmark.leftTop",
     "Camera": "Camera('a camera')",
+    "Light": "Light('a light')",
     "str|Camera": "Camera('a camera')",
     "str|Exportable": f"{importable_codetocad}Part('an exportable part')",
     "list[str|Exportable]": f"[{importable_codetocad}Part('an exportable part')]",
     "Exportable": f"{importable_codetocad}Part('an exportable part')",
+    "list[Exportable]": f"[{importable_codetocad}Part('an exportable part')]",
     "Projectable": f"{importable_codetocad}Sketch('a projected sketch')",
     "BoundaryBox": "BoundaryBox(BoundaryAxis(0,0),BoundaryAxis(0,0),BoundaryAxis(0,0))",
     "Dimensions": "Dimensions.from_point(Point.from_list_of_float_or_string([0,0,0]))",
     "Vertex": dummy_vertex,
     "Edge": dummy_edge,
     "list[Edge]": f"[{dummy_edge}]",
-    "Wire": f"Wire('a wire',[])",
-    "list[Wire]": f"[Wire('a wire',[])]",
-    "str|Wire": f"Wire('a wire',[])",
-    "list[Vertex]": "[" + dummy_vertex + "]",
+    "Wire": dummy_wire,
+    "list[Wire]": f"[{dummy_wire}]",
+    "str|Wire": dummy_wire,
+    "list[Vertex]": f"[{dummy_vertex}]",
     "Animation": "Animation()",
-    "Scene": "Scene()",
-    "str|Booleanable": f"{importable_codetocad}Part('a booleanable part')",
+    "Scene": "Scene('a scene')",
+    "Booleanable": f"{importable_codetocad}Part('a booleanable part')",
     "str|Landmarkable": f"{importable_codetocad}Part('a landmarkable part')",
     "CurveTypes": "CurveTypes.NURBS",
     "PartOptions": "PartOptions()",
     "SketchOptions": "SketchOptions()",
-    "str|Wire|Sketch": f"Wire('a wire',[])",
+    "Wire|Sketch": dummy_wire,
+    "str|Wire|Sketch": dummy_wire,
 }

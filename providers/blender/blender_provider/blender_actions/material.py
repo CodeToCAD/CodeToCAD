@@ -1,6 +1,6 @@
 import bpy
 
-from providers.blender.blender_provider.blender_actions.objects import get_object
+from providers.blender.blender_provider.blender_actions.mesh import get_mesh_for_object
 
 
 def get_material(
@@ -15,7 +15,11 @@ def get_material(
 
 def get_materials(obj_name: str) -> list[bpy.types.Material]:
     obj = bpy.data.objects[obj_name]
-    return [material_slot.material for material_slot in obj.material_slots]
+    return [
+        material_slot.material
+        for material_slot in obj.material_slots
+        if material_slot.material
+    ]
 
 
 def create_material(
@@ -30,7 +34,9 @@ def create_material(
     return material
 
 
-def set_material_color(material_name: str, r_value, g_value, b_value, a_value=1.0):
+def set_material_color(
+    material: bpy.types.Material, r_value, g_value, b_value, a_value=1.0
+):
     if isinstance(r_value, int):
         r_value /= 255.0
 
@@ -43,34 +49,28 @@ def set_material_color(material_name: str, r_value, g_value, b_value, a_value=1.
     if isinstance(a_value, int):
         a_value /= 255.0
 
-    material = get_material(material_name)
-
     material.diffuse_color = (r_value, g_value, b_value, a_value)
 
     return material
 
 
-def set_material_metallicness(material_name: str, value: float):
-    material = get_material(material_name)
+def set_material_metallicness(material: bpy.types.Material, value: float):
     material.metallic = value
 
 
-def set_material_roughness(material_name: str, value: float):
-    material = get_material(material_name)
+def set_material_roughness(material: bpy.types.Material, value: float):
     material.roughness = value
 
 
-def set_material_specularness(material_name: str, value: float):
-    material = get_material(material_name)
+def set_material_specularness(material: bpy.types.Material, value: float):
     material.specular_intensity = value
 
 
-def set_material_to_object(material_name: str, object_name: str, is_union=False):
-    material = get_material(material_name)
+def set_material_to_object(
+    material: bpy.types.Material, blender_object: bpy.types.Object, is_union=False
+):
 
-    object = get_object(object_name)
-
-    mesh: bpy.types.Mesh = object.data
+    mesh: bpy.types.Mesh = get_mesh_for_object(blender_object)
 
     objectMaterial = mesh.materials
 
@@ -98,14 +98,15 @@ def set_material_to_object(material_name: str, object_name: str, is_union=False)
 #   blenderTexture.image = image
 #   blenderTexture.extension = repeatMode.getBlenderName
 
-# ref https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
-
 
 def add_texture_to_material(
-    material_name: str,
+    material: bpy.types.Material,
     image_file_path: str,
 ):
-    material = get_material(material_name)
+    """
+    References https://blender.stackexchange.com/questions/118646/add-a-texture-to-an-object-using-python-and-blender-2-8/129014#129014
+
+    """
     material.use_nodes = True
     bsdf = material.node_tree.nodes["Principled BSDF"]
     texImage: bpy.types.ShaderNodeTexImage = material.node_tree.nodes.new(

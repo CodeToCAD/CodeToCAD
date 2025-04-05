@@ -2,22 +2,28 @@ import bpy
 
 
 def get_node_tree(
-    scene_name: str,
+    scene: bpy.types.Scene,
 ) -> bpy.types.NodeTree:
-    from providers.blender.blender_provider.blender_actions.scene import get_scene
 
-    scene = get_scene(scene_name)
-    node_tree = scene.world.node_tree
+    scene_world = scene.world
+    if scene_world is None:
+        raise Exception("Scene does not have a world")
+
+    node_tree = scene_world.node_tree
+
+    if node_tree is None:
+        raise Exception("Scene does not have a node tree")
+
     return node_tree
 
 
 def delete_nodes(
-    scene_name: str,
+    scene: bpy.types.Scene,
 ):
-    nodes = get_node_tree(scene_name).nodes
+    nodes = get_node_tree(scene).nodes
     nodes.clear()
 
 
-def create_nodes(scene_name: str, type) -> bpy.types.Node:
-    nodes = get_node_tree(scene_name).nodes.new(type=type)
+def create_nodes(scene: bpy.types.Scene, type) -> bpy.types.Node:
+    nodes = get_node_tree(scene).nodes.new(type=type)
     return nodes

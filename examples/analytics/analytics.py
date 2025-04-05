@@ -3,7 +3,7 @@ from codetocad import Analytics, Part
 
 analytics = Analytics()
 
-my_cube = Part("myCube").create_cube(1, 1, 1)
+my_cube = Part.create_cube(1, 1, 1)
 
 dimensions = analytics.get_dimensions(my_cube)
 

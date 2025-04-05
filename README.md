@@ -75,7 +75,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
    from codetocad import *
 
    my_material = Material("material").set_color(169, 76, 181, 0.8)
-   Part("Cube").create_cube(1, 1, 1).set_material(my_material)
+   Part.create_cube(1, 1, 1).set_material(my_material)
    ```
 
 3. Watch as your code gets seemlessly translated into CAD using our [custom addon](#working-with-the-software-of-your-choice) for your desired application

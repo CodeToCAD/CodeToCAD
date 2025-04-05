@@ -4,6 +4,9 @@ from functools import wraps
 
 
 def add_user_site_packages_to_path():
+    """
+    On some platforms, we need to access packages installed on the user's site_packages, this helps us do that.
+    """
     import site
     import sys
 
@@ -32,11 +35,23 @@ def install_debugpy(uninstall: bool = False):
     subprocess.call([python, "-m", "pip", "install", "--user", "debugpy"])
 
 
-def start_debugger(host: str = "localhost", port: int = 5678, wait_to_connect:bool = False):
+def start_debugger(
+    host: str = "localhost",
+    port: int = 5678,
+    auto_install_debugpy: bool = True,
+    wait_to_connect: bool = False,
+):
+    """
+    Side-effect: installs debugpy if it's not installed.
+    """
     try:
         add_user_site_packages_to_path()
         import debugpy
     except Exception as e:
+        if not auto_install_debugpy:
+            raise Exception(
+                "Debugpy is not installed. Install it first, or use the auto_install_debugpy=True parameter to auto-install it."
+            )
         print("debugpy is not installed, will try to auto-install.", e)
         install_debugpy()
         __import__("time").sleep(5)
@@ -54,6 +69,9 @@ def start_debugger(host: str = "localhost", port: int = 5678, wait_to_connect:bo
 
 
 def reload_codetocad_modules():
+    """
+    Tries to reload codetocad packages without restarting Blender. Works sometimes.
+    """
     print("Reloading CodeToCAD modules")
 
     import inspect
@@ -88,23 +106,23 @@ def write_to_console(message: str, text_type: str = "INFO"):
     """
     # References https://blender.stackexchange.com/a/78332
     try:
-      area, space, region = console_get()
-  
-      context_override = bpy.context.copy()
-      context_override.update(
-          {
-              "space": space,
-              "area": area,
-              "region": region,
-          }
-      )
-      print(message)
-      with bpy.context.temp_override(**context_override):
-          for line in message.split("\n"):
-              bpy.ops.console.scrollback_append(text=line, type=text_type)
+        area, space, region = console_get()
+
+        context_override = bpy.context.copy()
+        context_override.update(
+            {
+                "space": space,
+                "area": area,
+                "region": region,
+            }
+        )
+        print(message)
+        with bpy.context.temp_override(**context_override):
+            for line in message.split("\n"):
+                bpy.ops.console.scrollback_append(text=line, type=text_type)
     except:
-      print("Warning: Console could not be found, could be running headless.")
-      print(f"{text_type}: {message}")
+        print("Warning: Console could not be found, could be running headless.")
+        print(f"{text_type}: {message}")
 
 
 def console_get():
@@ -120,7 +138,11 @@ def console_get():
 
 @wraps(replace_help)
 def add_codetocad_convenience_words_to_console(namespace):
-    # references https://blender.stackexchange.com/a/2751
+    """
+    This allows the user to use CodeToCAD classes in the built-in blender console without first importing CodeToCAD via `from codetocad import *`
+
+    This implmentation references https://blender.stackexchange.com/a/2751 and may break for future releases since it's not using the official api.
+    """
 
     print("Adding Blender Console Convenience Words")
 

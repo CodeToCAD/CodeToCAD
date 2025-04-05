@@ -1,31 +1,26 @@
 import bpy
 
-from providers.blender.blender_provider.blender_actions.objects import get_object
 
-
-def create_driver(object_name: str, path: str, index=-1):
-    blender_object = get_object(object_name)
-
+def create_driver(blender_object: bpy.types.Object, path: str, index=-1):
     return blender_object.driver_add(path, index).driver
 
 
-def remove_driver(object_name: str, path: str, index=-1):
-    blender_object = get_object(object_name)
-
+def remove_driver(blender_object: bpy.types.Object, path: str, index=-1):
     blender_object.driver_remove(path, index)
 
 
 def get_driver(
-    object_name: str,
+    blender_object: bpy.types.Object,
     path: str,
 ):
-    blender_object = get_object(object_name)
-
-    # this returns an FCurve object
-    # https://docs.blender.org/api/current/bpy.types.FCurve.html
+    """this returns an FCurve object
+    References https://docs.blender.org/api/current/bpy.types.FCurve.html
+    """
     fcurve = blender_object.animation_data.drivers.find(path)
 
-    assert fcurve is not None, f"Could not find driver {path} for object {object_name}."
+    assert (
+        fcurve is not None
+    ), f"Could not find driver {path} for object {blender_object.name}."
 
     return fcurve.driver
 
@@ -43,7 +38,7 @@ def set_driver(
 def set_driver_variable_single_prop(
     driver: bpy.types.Driver,
     variable_name: str,
-    target_object_name: str,
+    target_blender_object: bpy.types.Object,
     target_data_path: str,
 ):
     variable = driver.variables.get(variable_name)
@@ -54,9 +49,7 @@ def set_driver_variable_single_prop(
 
     variable.type = "SINGLE_PROP"
 
-    target_object = get_object(target_object_name)
-
-    variable.targets[0].id = target_object
+    variable.targets[0].id = target_blender_object
 
     variable.targets[0].data_path = target_data_path
 
@@ -64,7 +57,7 @@ def set_driver_variable_single_prop(
 def set_driver_variable_transforms(
     driver: bpy.types.Driver,
     variable_name: str,
-    target_object_name: str,
+    target_blender_object: bpy.types.Object,
     transform_type,  # : BlenderDriverVariableTransformTypes,
     transform_space,  # : BlenderDriverVariableTransformSpaces
 ):
@@ -74,11 +67,9 @@ def set_driver_variable_transforms(
         variable = driver.variables.new()
         driver.variables[-1].name = variable_name
 
-    variable.type = "‘TRANSFORMS’"
+    variable.type = "TRANSFORMS"
 
-    target_object = get_object(target_object_name)
-
-    variable.targets[0].id = target_object
+    variable.targets[0].id = target_blender_object
 
     variable.targets[0].transform_type = transform_type
 
@@ -88,8 +79,8 @@ def set_driver_variable_transforms(
 def set_driver_variable_location_difference(
     driver: bpy.types.Driver,
     variable_name: str,
-    target1_object_name: str,
-    target2_object_name: str,
+    target1_blender_object: bpy.types.Object,
+    target2_blender_object: bpy.types.Object,
 ):
     variable = driver.variables.get(variable_name)
 
@@ -97,22 +88,18 @@ def set_driver_variable_location_difference(
         variable = driver.variables.new()
         driver.variables[-1].name = variable_name
 
-    variable.type = "‘LOC_DIFF’"
+    variable.type = "LOC_DIFF"
 
-    target1Object = get_object(target1_object_name)
+    variable.targets[0].id = target1_blender_object
 
-    variable.targets[0].id = target1Object
-
-    target2Object = get_object(target2_object_name)
-
-    variable.targets[1].id = target2Object
+    variable.targets[1].id = target2_blender_object
 
 
 def set_driver_variable_rotation_difference(
     driver: bpy.types.Driver,
     variable_name: str,
-    target1_object_name: str,
-    target2_object_name: str,
+    target1_blender_object: bpy.types.Object,
+    target2_blender_object: bpy.types.Object,
 ):
     variable = driver.variables.get(variable_name)
 
@@ -120,12 +107,8 @@ def set_driver_variable_rotation_difference(
         variable = driver.variables.new()
         driver.variables[-1].name = variable_name
 
-    variable.type = "‘ROTATION_DIFF’"
+    variable.type = "ROTATION_DIFF"
 
-    target1Object = get_object(target1_object_name)
+    variable.targets[0].id = target1_blender_object
 
-    variable.targets[0].id = target1Object
-
-    target2Object = get_object(target2_object_name)
-
-    variable.targets[1].id = target2Object
+    variable.targets[1].id = target2_blender_object

@@ -36,7 +36,6 @@ class LauncherArgs:
     config_file_path: Optional[str] = None
     debug: Optional[bool] = False  # Add debug field
 
-
     @staticmethod
     def get_sample_launcher_name():
         return "sample"
@@ -145,7 +144,7 @@ codetocad /path/to/script ...args => runs a codetocad script
             config_file_path=args.config_file_path,
             debug=args.debug,
         )
-    
+
     def get_config_path(self):
         return Path.home() / ".codetocad/config.json"
 
@@ -159,7 +158,7 @@ codetocad /path/to/script ...args => runs a codetocad script
 
         return config
 
-    def write_config(self, config): 
+    def write_config(self, config):
         config_path = self.get_config_path()
         with config_path.open("w") as file:
             json.dump(config, file, indent=4)

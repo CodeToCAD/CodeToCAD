@@ -10,7 +10,7 @@ class Bracelet:
     thickness = "83cm"
 
     def create(self):
-        bracelet = Part("bracelet").create_torus(
+        bracelet = Part.create_torus(
             Dimension.from_string(self.inner_diameter) / 2,
             Dimension.from_string(self.outer_diameter) / 2,
         )
@@ -26,7 +26,7 @@ class Button:
     inset_depth = "3cm"
 
     def create(self):
-        button = Part("button").create_cylinder(self.radius, self.depth)
+        button = Part.create_cylinder(self.radius, self.depth)
         button_top = button.get_landmark("top")
         button.hole(button_top, self.inset_radius, self.inset_depth)
         button.fillet_faces("5cm", [button_top])
@@ -39,7 +39,7 @@ class Belt:
     thickness = "30cm"
 
     def create(self):
-        belt = Part("belt").create_cylinder(self.outer_radius, self.thickness)
+        belt = Part.create_cylinder(self.outer_radius, self.thickness)
         belt.hole(belt.get_landmark("top"), self.inner_radius, self.thickness)
         return belt
 

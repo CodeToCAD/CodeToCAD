@@ -1,4 +1,3 @@
-from typing import Optional
 import bpy
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
@@ -10,7 +9,6 @@ from providers.blender.blender_provider.blender_actions.drivers import (
     set_driver_variable_single_prop,
 )
 from providers.blender.blender_provider.blender_actions.objects import (
-    get_object,
     get_object_world_location,
 )
 from providers.blender.blender_provider.blender_actions.transformations import (
@@ -23,21 +21,23 @@ from providers.blender.blender_provider.blender_definitions import (
 )
 
 
-def get_constraint(object_name: str, constraint_name) -> Optional[bpy.types.Constraint]:
-    blender_object = get_object(object_name)
+def get_constraint(
+    blender_object: bpy.types.Object, constraint_name
+) -> bpy.types.Constraint | None:
+    """
+    Get contraint from Blender
+    """
     return blender_object.constraints.get(constraint_name)
 
 
 def apply_constraint(
-    object_name: str,
+    blender_object: bpy.types.Object,
     constraint_type: BlenderConstraintTypes,
     **kwargs,
 ):
-    blender_object = get_object(object_name)
-
     constraint_name = kwargs.get("name") or constraint_type.get_default_blender_name()
 
-    constraint = get_constraint(object_name, constraint_name)
+    constraint = get_constraint(blender_object, constraint_name)
 
     # If it doesn't exist, create it:
     if constraint is None:
@@ -49,16 +49,13 @@ def apply_constraint(
 
 
 def apply_limit_location_constraint(
-    object_name: str,
-    x: Optional[list[Optional[Dimension]]],
-    y: Optional[list[Optional[Dimension]]],
-    z: Optional[list[Optional[Dimension]]],
-    relative_to_object_name: Optional[str],
+    blender_object: bpy.types.Object,
+    x: list[Dimension | None] | None,
+    y: list[Dimension | None] | None,
+    z: list[Dimension | None] | None,
+    relative_to_object: bpy.types.Object | None,
     **kwargs,
 ):
-    relative_to_object = (
-        get_object(relative_to_object_name) if relative_to_object_name else None
-    )
 
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
@@ -67,7 +64,7 @@ def apply_limit_location_constraint(
     keyword_args = kwargs or {}
 
     keyword_args["name"] = BlenderConstraintTypes.LIMIT_LOCATION.format_constraint_name(
-        object_name, relative_to_object
+        blender_object.name, relative_to_object.name if relative_to_object else ""
     )
 
     keyword_args["owner_space"] = "CUSTOM" if relative_to_object else "WORLD"
@@ -96,23 +93,20 @@ def apply_limit_location_constraint(
         keyword_args["max_z"] = maxZ.value
 
     apply_constraint(
-        object_name,
+        blender_object,
         BlenderConstraintTypes.LIMIT_LOCATION,
         **keyword_args,
     )
 
 
 def apply_limit_rotation_constraint(
-    object_name: str,
-    x: Optional[list[Optional[Angle]]],
-    y: Optional[list[Optional[Angle]]],
-    z: Optional[list[Optional[Angle]]],
-    relative_to_object_name: Optional[str],
+    blender_object: bpy.types.Object,
+    x: list[Angle | None] | None,
+    y: list[Angle | None] | None,
+    z: list[Angle | None] | None,
+    relative_to_object: bpy.types.Object | None,
     **kwargs,
 ):
-    relative_to_object = (
-        get_object(relative_to_object_name) if relative_to_object_name else None
-    )
 
     [minX, maxX] = x or [None, None]
     [minY, maxY] = y or [None, None]
@@ -121,7 +115,7 @@ def apply_limit_rotation_constraint(
     keyword_args = kwargs or {}
 
     keyword_args["name"] = BlenderConstraintTypes.LIMIT_ROTATION.format_constraint_name(
-        object_name, relative_to_object
+        blender_object.name, relative_to_object.name if relative_to_object else ""
     )
 
     keyword_args["owner_space"] = "CUSTOM" if relative_to_object else "WORLD"
@@ -150,30 +144,28 @@ def apply_limit_rotation_constraint(
         keyword_args["max_z"] = maxZ.to_radians().value
 
     apply_constraint(
-        object_name,
+        blender_object,
         BlenderConstraintTypes.LIMIT_ROTATION,
         **keyword_args,
     )
 
 
 def apply_copy_location_constraint(
-    object_name: str,
-    copied_object_name: str,
+    blender_object: bpy.types.Object,
+    copied_blender_object: bpy.types.Object,
     copy_x: bool,
     copy_y: bool,
     copy_z: bool,
     use_offset: bool,
     **kwargs,
 ):
-    copiedObject = get_object(copied_object_name)
-
     apply_constraint(
-        object_name,
+        blender_object,
         BlenderConstraintTypes.COPY_LOCATION,
         name=BlenderConstraintTypes.COPY_LOCATION.format_constraint_name(
-            object_name, copied_object_name
+            blender_object.name, copied_blender_object.name
         ),
-        target=copiedObject,
+        target=copied_blender_object,
         use_x=copy_x,
         use_y=copy_y,
         use_z=copy_z,
@@ -183,22 +175,20 @@ def apply_copy_location_constraint(
 
 
 def apply_copy_rotation_constraint(
-    object_name: str,
-    copied_object_name: str,
+    blender_object: bpy.types.Object,
+    copied_blender_object: bpy.types.Object,
     copy_x: bool,
     copy_y: bool,
     copy_z: bool,
     **kwargs,
 ):
-    copiedObject = get_object(copied_object_name)
-
     apply_constraint(
-        object_name,
+        blender_object,
         BlenderConstraintTypes.COPY_ROTATION,
         name=BlenderConstraintTypes.COPY_ROTATION.format_constraint_name(
-            object_name, copied_object_name
+            blender_object.name, copied_blender_object.name
         ),
-        target=copiedObject,
+        target=copied_blender_object,
         use_x=copy_x,
         use_y=copy_y,
         use_z=copy_z,
@@ -207,48 +197,51 @@ def apply_copy_rotation_constraint(
     )
 
 
-def apply_pivot_constraint(object_name: str, pivot_object_name: str, **kwargs):
-    pivotObject = get_object(pivot_object_name)
-
+def apply_pivot_constraint(
+    blender_object: bpy.types.Object, pivot_blender_object: bpy.types.Object, **kwargs
+):
     apply_constraint(
-        object_name,
+        blender_object,
         BlenderConstraintTypes.PIVOT,
         name=BlenderConstraintTypes.PIVOT.format_constraint_name(
-            object_name, pivot_object_name
+            blender_object.name, pivot_blender_object.name
         ),
-        target=pivotObject,
+        target=pivot_blender_object,
         rotation_range="ALWAYS_ACTIVE",
         **kwargs,
     )
 
 
 def apply_gear_constraint(
-    object_name: str, gear_object_name: str, ratio: float = 1, **kwargs
+    blender_object: bpy.types.Object,
+    gear_blender_object: bpy.types.Object,
+    ratio: float = 1,
+    **kwargs,
 ):
     for axis in Axis:
         # e.g. constraints["Limit Location"].min_x
-        driver = create_driver(object_name, "rotation_euler", axis.value)
+        driver = create_driver(blender_object, "rotation_euler", axis.value)
         set_driver(driver, "SCRIPTED", f"{-1*ratio} * gearRotation")
         set_driver_variable_single_prop(
-            driver, "gearRotation", gear_object_name, f"rotation_euler[{axis.value}]"
+            driver, "gearRotation", gear_blender_object, f"rotation_euler[{axis.value}]"
         )
 
 
 def translate_landmark_onto_another(
-    object_to_translate_name: str,
-    object1_landmark_name: str,
-    object2_landmark_name: str,
+    object_to_translate: bpy.types.Object,
+    object1_landmark: bpy.types.Object,
+    object2_landmark: bpy.types.Object,
 ):
     update_view_layer()
-    object1LandmarkLocation = get_object_world_location(object1_landmark_name)
-    object2LandmarkLocation = get_object_world_location(object2_landmark_name)
+    object1LandmarkLocation = get_object_world_location(object1_landmark)
+    object2LandmarkLocation = get_object_world_location(object2_landmark)
 
     translation = (object1LandmarkLocation) - (object2LandmarkLocation)
 
     blender_default_unit = BlenderLength.DEFAULT_BLENDER_UNIT.value
 
     translate_object(
-        object_to_translate_name,
+        object_to_translate,
         [
             Dimension(translation.x.value, blender_default_unit),
             Dimension(translation.y.value, blender_default_unit),

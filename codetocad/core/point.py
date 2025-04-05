@@ -219,13 +219,14 @@ class Point:
     def copy(self):
         return self.__deepcopy__()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Dimension:
         if key == 0:
             return self.x
         if key == 1:
             return self.y
         if key == 2:
             return self.z
+        raise IndexError("Index out of range.")
 
     def __str__(self):
         return f"""x   y   z

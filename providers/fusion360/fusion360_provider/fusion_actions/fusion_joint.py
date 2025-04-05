@@ -5,9 +5,9 @@ import adsk.fusion
 
 
 class FusionJoint:
-    def __init__(self, entity1: str | Entity, entity2: str | Entity):
-        self.entity1 = entity1
-        self.entity2 = entity2
+    def __init__(self, entity_1: str | Entity, entity_2: str | Entity):
+        self.entity_1 = entity_1
+        self.entity_2 = entity_2
         self.joint_slider = None
         self.joint_ball_motion = None
 
@@ -35,10 +35,10 @@ class FusionJoint:
             return
 
         geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
-            self.entity1.fusion_landmark.point
+            self.entity_1.fusion_landmark.point
         )
         geoEntity2 = adsk.fusion.JointGeometry.createByPoint(
-            self.entity2.fusion_landmark.point
+            self.entity_2.fusion_landmark.point
         )
 
         angle = adsk.core.ValueInput.createByReal(0)
@@ -72,10 +72,10 @@ class FusionJoint:
 
         if self.joint_slider is None:
             geoEntity1 = adsk.fusion.JointGeometry.createByPoint(
-                self.entity1.fusion_landmark.point
+                self.entity_1.fusion_landmark.point
             )
             geoEntity2 = adsk.fusion.JointGeometry.createByPoint(
-                self.entity2.fusion_landmark.point
+                self.entity_2.fusion_landmark.point
             )
 
             angle = adsk.core.ValueInput.createByReal(0)

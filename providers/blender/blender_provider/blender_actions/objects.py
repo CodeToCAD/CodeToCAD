@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Type
 import bpy
 from codetocad.core.angle import Angle
 from codetocad.core.dimension import Dimension
@@ -113,7 +113,7 @@ def add_primitive(
 
 
 def create_gear(
-    object_name: str,
+    name: "str",
     outer_radius: str | float | Dimension,
     addendum: str | float | Dimension,
     inner_radius: str | float | Dimension,
@@ -165,8 +165,8 @@ def create_gear(
     conical_angleValue = Angle.from_string(conical_angle).to_radians().value
     crown_angleValue = Angle.from_string(crown_angle).to_radians().value
 
-    return bpy.ops.mesh.primitive_gear(
-        name=object_name,
+    return bpy.ops.mesh.primitive_gear(  # type: ignore
+        name=name,
         number_of_teeth=number_of_teeth,
         radius=outer_radius_dimension,
         addendum=addendum_dimension,
@@ -181,90 +181,116 @@ def create_gear(
 
 
 def make_parent(
-    name: str,
-    parent_name: str,
+    blender_object: bpy.types.Object,
+    blender_parent_object: bpy.types.Object,
 ):
-    blender_object = get_object(name)
-    blender_parent_object = get_object(parent_name)
-
     blender_object.parent = blender_parent_object
 
 
 def update_object_name(
-    old_name: str,
+    blender_object: bpy.types.Object,
     new_name: str,
 ):
-    blender_object = get_object(old_name)
-
     blender_object.name = new_name
 
 
-def get_object_collection_name(
-    object_name: str,
-) -> str:
-    blender_object = get_object(object_name)
-
+def get_object_collection(
+    blender_object: bpy.types.Object,
+) -> bpy.types.Collection:
     # Assumes the first collection is the main collection
     [currentCollection] = blender_object.users_collection
 
-    return currentCollection.name
+    assert (
+        currentCollection is not None
+    ), f"{blender_object.name} is not assigned to a collection."
+
+    return currentCollection
 
 
 def update_object_data_name(
-    parent_object_name: str,
+    blender_object: bpy.types.Object,
     new_name: str,
 ):
-    blender_object = get_object(parent_object_name)
-
+    """
+    Warning: if multiple objects share the same data, all of them will be affected!
+    """
     assert (
         blender_object.data is not None
-    ), f"Object {parent_object_name} does not have data to name."
+    ), f"Object {blender_object.name} does not have data to name."
 
     blender_object.data.name = new_name
 
 
 # This assumes that landmarks are named with format: `{parent_part_name}_{landmarkName}`
 def update_object_landmark_names(
-    parent_object_name: str,
-    old_namePrefix: str,
-    new_namePrefix: str,
+    blender_object: bpy.types.Object,
+    old_name_prefix: str,
+    new_name_prefix: str,
 ):
-    blender_object = get_object(parent_object_name)
-
-    blender_object_children: list[bpy.types.Object] = blender_object.children
+    blender_object_children: tuple[bpy.types.Object, ...] = blender_object.children
 
     for child in blender_object_children:
-        if f"{old_namePrefix}_" in child.name and child.type == "EMPTY":
+        if f"{old_name_prefix}_" in child.name and child.type == "EMPTY":
             update_object_name(
-                child.name,
-                child.name.replace(f"{old_namePrefix}_", f"{new_namePrefix}_"),
+                child,
+                child.name.replace(f"{old_name_prefix}_", f"{new_name_prefix}_"),
             )
 
 
-def remove_object(existing_object_name: str, remove_children=False):
-    blender_object = get_object(existing_object_name)
+def remove_data(
+    blender_data: (
+        bpy.types.Armature
+        | bpy.types.Camera
+        | bpy.types.Curve
+        | bpy.types.Curves
+        | bpy.types.GreasePencil
+        | bpy.types.GreasePencilv3
+        | bpy.types.Lattice
+        | bpy.types.Light
+        | bpy.types.LightProbe
+        | bpy.types.Mesh
+        | bpy.types.MetaBall
+        | bpy.types.PointCloud
+        | bpy.types.Speaker
+        | bpy.types.SurfaceCurve
+        | bpy.types.TextCurve
+        | bpy.types.Volume
+    ),
+):
+    if isinstance(blender_data, bpy.types.Mesh):
+        bpy.data.meshes.remove(blender_data)
+    elif isinstance(blender_data, (bpy.types.Curve, bpy.types.TextCurve)):
+        bpy.data.curves.remove(blender_data)
+    else:
+        raise NotImplementedError(f"{type(blender_data)} is not supported yet.")
+
+
+def remove_object(
+    blender_object: bpy.types.Object,
+    remove_children=False,
+    is_remove_data=True,
+):
 
     if remove_children:
-        blender_object_children: list[bpy.types.Object] = blender_object.children
+        blender_object_children: tuple[bpy.types.Object, ...] = blender_object.children
         for child in blender_object_children:
             try:
-                remove_object(child.name, True)
+                remove_object(child, True)
             except Exception as e:
                 print(f"Could not remove {child.name}. {e}")
 
     # Not all objects have data, but if they do, then deleting the data
     # deletes the object
-    if blender_object.data and isinstance(blender_object.data, bpy.types.Mesh):
-        bpy.data.meshes.remove(blender_object.data)
-    elif blender_object.data and isinstance(blender_object.data, bpy.types.Curve):
-        bpy.data.curves.remove(blender_object.data)
-    elif blender_object.data and isinstance(blender_object.data, bpy.types.TextCurve):
-        bpy.data.curves.remove(blender_object.data)
+    if blender_object.data and is_remove_data:
+        remove_data(blender_object.data)
     else:
         bpy.data.objects.remove(blender_object)
 
 
 def create_object(name: str, data: Optional[Any] = None):
+    """
+    Creates an object in Blender. The object will exist in data, but will not appear in the scene until `assign_object_to_collection()` is called.
+    """
     blender_object = bpy.data.objects.get(name)
 
     assert blender_object is None, f"Object {name} already exists"
@@ -273,18 +299,16 @@ def create_object(name: str, data: Optional[Any] = None):
 
 
 def create_object_vertex_group(
-    object_name: str,
+    blender_object: bpy.types.Object,
     vertex_group_name: str,
 ):
-    blender_object = get_object(object_name)
     return blender_object.vertex_groups.new(name=vertex_group_name)
 
 
 def get_object_vertex_group(
-    object_name: str,
+    blender_object: bpy.types.Object,
     vertex_group_name: str,
 ):
-    blender_object = get_object(object_name)
     return blender_object.vertex_groups.get(vertex_group_name)
 
 
@@ -293,26 +317,20 @@ def add_verticies_to_vertex_group(vertex_group_object, vertex_indecies: list[int
 
 
 def get_object_visibility(
-    existing_object_name: str,
+    blender_object: bpy.types.Object,
 ) -> bool:
-    blender_object = get_object(existing_object_name)
-
     return blender_object.visible_get()
 
 
-def set_object_visibility(existing_object_name: str, is_visible: bool):
-    blender_object = get_object(existing_object_name)
-
+def set_object_visibility(blender_object: bpy.types.Object, is_visible: bool):
     # blender_object.hide_viewport = not is_visible
     # blender_object.hide_render = not is_visible
     blender_object.hide_set(not is_visible)
 
 
 def get_object_local_location(
-    object_name: str,
+    blender_object: bpy.types.Object,
 ):
-    blender_object = get_object(object_name)
-
     return Point.from_list(
         [
             Dimension(p, BlenderLength.DEFAULT_BLENDER_UNIT.value)
@@ -322,10 +340,8 @@ def get_object_local_location(
 
 
 def get_object_world_location(
-    object_name: str,
+    blender_object: bpy.types.Object,
 ):
-    blender_object = get_object(object_name)
-
     return Point.from_list(
         [
             Dimension(p, BlenderLength.DEFAULT_BLENDER_UNIT.value)
@@ -335,19 +351,18 @@ def get_object_world_location(
 
 
 def get_object_world_pose(
-    object_name: str,
+    blender_object: bpy.types.Object,
 ) -> list[float]:
-    blender_object = get_object(object_name)
-
-    listOfTuples = [v.to_tuple() for v in list(blender_object.matrix_world)]
+    listOfTuples = [v.to_tuple() for v in blender_object.matrix_world[:]]
 
     return [value for values in listOfTuples for value in values]
 
 
 def get_object(
     object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
 ) -> bpy.types.Object:
-    blender_object = bpy.data.objects.get(object_name)
+    blender_object = get_object_or_none(object_name, of_type)
 
     assert blender_object is not None, f"Object {object_name} does not exists"
 
@@ -356,13 +371,26 @@ def get_object(
 
 def get_object_or_none(
     object_name: str,
+    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
 ) -> Optional[bpy.types.Object]:
-    return bpy.data.objects.get(object_name)
-
-
-def get_objectType(object_name: str) -> BlenderObjectTypes:
     blender_object = bpy.data.objects.get(object_name)
 
-    assert blender_object is not None, f"Object {object_name} does not exists"
+    if blender_object and of_type is not None:
+        if not blender_object.type == of_type:
+            return None
 
+    return blender_object
+
+
+def get_object_for_data(data):
+    """
+    Get the first blender object associated with the data.
+    This returns None if the data is not associated with any object.
+    """
+    for obj in bpy.data.objects:
+        if obj.type == data.id_type and obj.data and obj.data.name == data.name:
+            return obj
+
+
+def get_object_type(blender_object: bpy.types.Object) -> BlenderObjectTypes:
     return BlenderObjectTypes[blender_object.type]

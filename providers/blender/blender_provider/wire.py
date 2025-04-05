@@ -32,199 +32,182 @@ from codetocad.interfaces.projectable_interface import ProjectableInterface
 from codetocad.utilities.override import override
 from providers.blender.blender_provider.blender_actions.curve import (
     add_bevel_object_to_curve,
+    get_curve_or_none,
     is_spline_cyclical,
-    loft,
+    custom_codetocad_loft,
     set_curve_offset_geometry,
 )
 from providers.blender.blender_provider.blender_actions.mesh import recalculate_normals
 from providers.blender.blender_provider.blender_actions.normals import (
-    calculate_normal,
     project_vector_along_normal,
 )
-from providers.blender.blender_provider.blender_actions.objects import get_object
+from codetocad.utilities.normals import calculate_normal
+from providers.blender.blender_provider.blender_actions.objects import (
+    get_object_or_none,
+)
 from providers.blender.blender_provider.entity import Entity
 
 
 class Wire(WireInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str",
-        edges: "list[EdgeInterface]",
-        description: "str| None" = None,
-        native_instance=None,
-        parent_entity: "str|EntityInterface| None" = None,
-    ):
-        """
-        NOTE: Blender Provider's Wire requires a parent_entity and a native_instance
-        """
-        assert (
-            parent_entity is not None and native_instance is not None
-        ), "Blender Provider's Wire requires a parent_entity and a native_instance"
-        self.name = name
-        self.description = description
+    def __init__(self, native_instance: "Any"):
         self.native_instance = native_instance
-        self.edges = edges
-        self.parent_entity = parent_entity
 
     @override
     @supported(SupportLevel.SUPPORTED)
     def get_native_instance(self) -> object:
         return self.native_instance
 
-    @supported(SupportLevel.SUPPORTED, notes="Get normal of the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_normal(self, flip: "bool| None" = False) -> "Point":
         # Note: 3D surfaces will not provide a good result here.
         vertices = self.get_vertices()
         num_vertices = len(vertices)
         normal = calculate_normal(
-            vertices[0].get_native_instance().co,
-            vertices[int(num_vertices * 1 / 3)].get_native_instance().co,
-            vertices[int(num_vertices * 2 / 3)].get_native_instance().co,
+            vertices[0].location,
+            vertices[int(num_vertices * 1 / 3)].location,
+            vertices[int(num_vertices * 2 / 3)].location,
         )
         return Point.from_list_of_float_or_string(normal)
 
-    @supported(SupportLevel.SUPPORTED, notes="Get vertices of the wire")
-    def get_vertices(self) -> list["VertexInterface"]:
-        if len(self.edges) == 0:
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_vertices(self) -> "list[VertexInterface]":
+        edges = self.get_edges()
+        if len(edges) == 0:
             return []
-        all_vertices = [self.edges[0].v1, self.edges[0].v2]
-        for edge in self.edges[1:]:
+        all_vertices = [edges[0].v1, edges[0].v2]
+        for edge in edges[1:]:
             all_vertices.append(edge.v2)
         return all_vertices
 
-    @supported(SupportLevel.SUPPORTED, notes="Check whether the wire is closed")
-    def get_is_closed(self) -> bool:
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_is_closed(self) -> "bool":
         if not self.native_instance:
             raise Exception(
                 "Cannot find native wire instance, this may mean that this reference is stale or the object does not exist in Blender."
             )
         return is_spline_cyclical(self.native_instance)
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def mirror(
         self,
-        mirror_across_entity: "str|EntityInterface",
+        mirror_across_entity: "EntityInterface",
         axis: "str|int|Axis",
-        resulting_mirrored_entity_name: "str| None" = None,
-    ):
+        separate_resulting_entity: "bool| None" = False,
+    ) -> "EntityInterface":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def project(self, project_from: "ProjectableInterface") -> "ProjectableInterface":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def linear_pattern(
         self,
         instance_count: "int",
         offset: "str|float|Dimension",
         direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def circular_pattern(
         self,
         instance_count: "int",
         separation_angle: "str|float|Angle",
-        center_entity_or_landmark: "str|EntityInterface",
+        center_entity_or_landmark: "EntityInterface",
         normal_direction_axis: "str|int|Axis" = "z",
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         return self
 
-    @supported(
-        SupportLevel.PARTIAL,
-        "Needs more edge-case testing. If two wires have different number of vertices, one is subdivided to match the other.",
-    )
+    @supported(SupportLevel.SUPPORTED, notes="")
     def loft(
-        self, other: "WireInterface", new_part_name: "str| None" = None
+        self,
+        other: "WireInterface",
+        union_connecting_parts: "bool| None" = True,
+        new_name: "str| None" = None,
     ) -> "PartInterface":
-        blender_mesh = loft(self, other)
+        blender_mesh = custom_codetocad_loft(self, other)
         part = Part(blender_mesh.name)
-        if new_part_name:
-            part.rename(new_part_name)
+        if new_name:
+            part.set_name(new_name)
         else:
-            if self.parent_entity:
+            if self.parent:
                 parent_name = (
-                    self.parent_entity.name
-                    if not isinstance(self.parent_entity, str)
-                    else self.parent_entity
+                    self.parent.name
+                    if not isinstance(self.parent, str)
+                    else self.parent
                 )
-                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
+                if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-                else:
-                    Entity(parent_name).delete()
-                part.rename(parent_name)
-            if other.parent_entity:
+                part.set_name(parent_name)
+            if other.parent:
                 parent_name = (
-                    other.parent_entity.name
-                    if not isinstance(other.parent_entity, str)
-                    else other.parent_entity
+                    other.parent.name
+                    if not isinstance(other.parent, str)
+                    else other.parent
                 )
-                if type(get_object(parent_name)) == BlenderTypes.MESH.value:
+                if type(get_object_or_none(parent_name)) == BlenderTypes.MESH.value:
                     part.union(
                         parent_name, delete_after_union=True, is_transfer_data=True
                     )
-                else:
-                    Entity(parent_name).delete()
         recalculate_normals(part.name)
         return part
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_landmark(
         self,
-        landmark_name: "str",
         x: "str|float|Dimension",
         y: "str|float|Dimension",
         z: "str|float|Dimension",
+        landmark_name: "str| None" = None,
     ) -> "LandmarkInterface":
         raise NotImplementedError()
         print("create_landmark called", f": {landmark_name}, {x}, {y}, {z}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_landmark(self, landmark_name: "str|PresetLandmark") -> "LandmarkInterface":
         print("get_landmark called", f": {landmark_name}")
         return Landmark("name", "parent")
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def union(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_union: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print("union called", f": {other}, {delete_after_union}, {is_transfer_data}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def subtract(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_subtract: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "subtract called", f": {other}, {delete_after_subtract}, {is_transfer_data}"
         )
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def intersect(
         self,
-        other: "str|BooleanableInterface",
+        other: "BooleanableInterface",
         delete_after_intersect: "bool" = True,
         is_transfer_data: "bool" = False,
-    ):
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "intersect called",
@@ -232,32 +215,42 @@ class Wire(WireInterface, Entity):
         )
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Twist the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def twist(
         self,
         angle: "str|float|Angle",
         screw_pitch: "str|float|Dimension",
         iterations: "int" = 1,
         axis: "str|int|Axis" = "z",
-    ):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+    ) -> "Self":
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         implementables.twist(parent, angle, screw_pitch, iterations, axis)
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Revolve the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def revolve(
         self,
         angle: "str|float|Angle",
-        about_entity_or_landmark: "str|EntityInterface",
+        about_entity_or_landmark: "EntityInterface",
         axis: "str|int|Axis" = "z",
     ) -> "PartInterface":
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
+        possible_sketch: SketchInterface | None = None
+        possible_sketch_was_visible = False
+        if isinstance(about_entity_or_landmark, str):
+            if get_curve_or_none(about_entity_or_landmark) is not None:
+                possible_sketch = Sketch(about_entity_or_landmark)
+        elif isinstance(about_entity_or_landmark, SketchInterface):
+            possible_sketch = about_entity_or_landmark
+        if possible_sketch:
+            possible_sketch_was_visible = possible_sketch.is_visible()
+            possible_sketch.set_visible(True)
         if isinstance(about_entity_or_landmark, LandmarkInterface):
             about_entity_or_landmark = (
                 about_entity_or_landmark.get_landmark_entity_name()
@@ -267,20 +260,22 @@ class Wire(WireInterface, Entity):
         axis = Axis.from_string(axis)
         assert axis, f"Unknown axis {axis}. Please use 'x', 'y', or 'z'"
         apply_screw_modifier(
-            parent.name,
+            parent.get_native_instance(),
             Angle.from_string(angle).to_radians(),
             axis,
             entity_name_to_determine_axis=about_entity_or_landmark,
         )
-        create_mesh_from_curve(parent.name)
+        create_mesh_from_curve(parent.get_native_instance())
+        if not possible_sketch_was_visible and possible_sketch:
+            possible_sketch.set_visible(False)
         # Recalculate normals because they're usually wrong after revolving.
         recalculate_normals(parent.name)
         return Part(parent.name, description=parent.description).apply()
 
-    @supported(SupportLevel.SUPPORTED, notes="Get offset of the wire")
-    def offset(self, radius: "str|float|Dimension"):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def offset(self, radius: "str|float|Dimension") -> "WireInterface":
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: Make a vertex group around this wire, and apply the offset only to this vertex group
@@ -288,11 +283,11 @@ class Wire(WireInterface, Entity):
         set_curve_offset_geometry(parent.name, radius)
         return self
 
-    @supported(SupportLevel.SUPPORTED, notes="Extrude the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def extrude(self, length: "str|float|Dimension") -> "PartInterface":
         # We assume the normal is never perpendicular to the Z axis.
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         assert isinstance(
@@ -307,47 +302,50 @@ class Wire(WireInterface, Entity):
         projected_normal = project_vector_along_normal(
             translate_vector, [p.value for p in normal.to_list()]
         )
-        temp_sketch_1 = Sketch(parent.name + create_uuid_like_id())
+        temp_sketch_1 = Sketch(parent.name + "_" + create_uuid_like_id())
         temp_sketch_1.project(self)
-        temp_sketch_1.translate_xyz(*projected_normal)
+        for wire in temp_sketch_1.get_wires():
+            wire.translate_xyz(*projected_normal)
         wire_name = parent.name + "_" + self.name
         temp_sketch_2 = Sketch(wire_name)
         temp_sketch_2.project(self)
         part = temp_sketch_2.get_wires()[0].loft(temp_sketch_1.get_wires()[0])
         part.description = self.description
+        temp_sketch_1.delete()
+        temp_sketch_2.delete()
         return part
 
-    @supported(SupportLevel.SUPPORTED, notes="Sweep the wire")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def sweep(
-        self, profile_name_or_instance: "str|WireInterface", fill_cap: "bool" = True
+        self, profile: "WireInterface", fill_cap: "bool" = True
     ) -> "PartInterface":
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: This logic was moved from Sketch.py. Sweeping should be applied to a vertex group containing this wire only.
-        profile_curve_name = profile_name_or_instance
-        if isinstance(profile_curve_name, EntityInterface):
-            profile_curve_name = profile_curve_name.name
-        add_bevel_object_to_curve(parent.name, profile_curve_name, fill_cap)
+        profile_curve = profile
+        if isinstance(profile_curve, EntityInterface):
+            profile_curve = profile_curve.name
+        add_bevel_object_to_curve(parent.name, profile_curve, fill_cap)
         create_mesh_from_curve(parent.name)
         # Recalculate normals because they're usually wrong after sweeping.
         recalculate_normals(parent.name)
         return Part(parent.name, parent.description).apply()
 
-    @supported(SupportLevel.SUPPORTED, notes="Get profile of the wire")
-    def profile(self, profile_curve_name: "str|WireInterface|SketchInterface"):
-        assert self.parent_entity, "This wire is not associated with a parent entity."
-        parent = self.parent_entity
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def profile(self, profile_curve: "WireInterface|SketchInterface") -> "Self":
+        assert self.parent, "This wire is not associated with a parent entity."
+        parent = self.parent
         if isinstance(parent, str):
             parent = Sketch(parent)
         # TODO: this logic was moved from Sketch.py. Profiling should be applied to a vertex group containing this wire only.
-        if isinstance(profile_curve_name, Entity):
-            profile_curve_name = profile_curve_name.name
-        apply_curve_modifier(parent.name, profile_curve_name)
+        if isinstance(profile_curve, Entity):
+            profile_curve = profile_curve.name
+        apply_curve_modifier(parent.name, profile_curve)
         return self
 
-    @supported(SupportLevel.UNSUPPORTED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def get_edges(self) -> "list[EdgeInterface]":
         print("get_edges called")
         return [
@@ -358,70 +356,70 @@ class Wire(WireInterface, Entity):
             )
         ]
 
-    @supported(SupportLevel.PLANNED)
-    def remesh(self, strategy: "str", amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def remesh(self, strategy: "str", amount: "float") -> "Self":
         raise NotImplementedError()
         print("remesh called", f": {strategy}, {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def subdivide(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def subdivide(self, amount: "float") -> "Self":
         raise NotImplementedError()
         print("subdivide called", f": {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
-    def decimate(self, amount: "float"):
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def decimate(self, amount: "float") -> "Self":
         raise NotImplementedError()
         print("decimate called", f": {amount}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_from_vertices(
         self,
         points: "list[str|list[str]|list[float]|list[Dimension]|Point|VertexInterface]",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_from_vertices called", f": {points}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_point(
         self, point: "str|list[str]|list[float]|list[Dimension]|Point"
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_point called", f": {point}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line(
         self,
         length: "str|float|Dimension",
         angle: "str|float|Angle",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_line called", f": {length}, {angle}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_line_to(
         self,
         to: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print("create_line_to called", f": {to}, {start_at}, {options}")
         return self
 
-    @supported(SupportLevel.PLANNED)
+    @supported(SupportLevel.SUPPORTED, notes="")
     def create_arc(
         self,
         end_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface",
         radius: "str|float|Dimension",
         start_at: "str|list[str]|list[float]|list[Dimension]|Point|VertexInterface|LandmarkInterface|PresetLandmark| None" = "PresetLandmark.end",
         flip: "bool| None" = False,
-    ) -> Self:
+    ) -> "Self":
         raise NotImplementedError()
         print(
             "create_arc called", f": {end_at}, {radius}, {start_at}, {flip}, {options}"
@@ -459,3 +457,8 @@ class Wire(WireInterface, Entity):
     @supported(SupportLevel.UNSUPPORTED, notes="")
     def set_visible(self, is_visible: "bool") -> Self:
         raise NotImplementedError()
+
+    @supported(SupportLevel.SUPPORTED, notes="")
+    def get_parent(self) -> "EntityInterface":
+        print("get_parent called")
+        return __import__("codetocad").Part("an entity")

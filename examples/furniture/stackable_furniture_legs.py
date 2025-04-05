@@ -1,14 +1,12 @@
 from codetocad import *
 
-Scene().set_default_unit("mm")
+Scene.default().set_default_unit("mm")
 
-ellipse_leg = Sketch("ellipse_leg").create_ellipse("14mm", "27mm").extrude("5/2in")
+ellipse_leg = Sketch.create_ellipse("14mm", "27mm").extrude("5/2in")
 ellipse_leg_top = ellipse_leg.create_landmark("top", center, center, max)
 ellipse_leg_bottom = ellipse_leg.create_landmark("bottom", center, center, min)
 
-ellipse_leg_outer_cutout = (
-    Sketch("ellipse_legOuterCutout").create_ellipse("14mm", "27mm").extrude("1in")
-)
+ellipse_leg_outer_cutout = Sketch.create_ellipse("14mm", "27mm").extrude("1in")
 ellipse_leg_outer_cutout.hollow("3mm", "3mm", 0)
 ellipse_leg_outer_cutout_top = ellipse_leg_outer_cutout.create_landmark(
     "top", center, center, max

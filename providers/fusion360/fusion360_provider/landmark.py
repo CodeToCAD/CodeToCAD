@@ -12,51 +12,35 @@ from providers.fusion360.fusion360_provider.fusion_actions.fusion_landmark impor
 
 class Landmark(LandmarkInterface, Entity):
 
-    def __init__(
-        self,
-        name: "str",
-        parent_entity: "str|EntityInterface",
-        description: "str| None" = None,
-        native_instance=None,
-    ):
+    def __init__(self, native_instance: "Any", parent: "EntityInterface"):
         self.name = name
-        self.parent_entity = parent_entity
+        self.parent = parent
         self.description = description
         self.native_instance = native_instance
 
     @property
     def _fusion_landmark(self):
-        return FusionLandmark(self.name, self._get_parent_entity_instance().component)
+        return FusionLandmark(self.name, self._get_parent_instance().component)
 
-    def _get_parent_entity_instance(self):
-        if isinstance(self.parent_entity, str):
-            return FusionBody(self.parent_entity)
+    def _get_parent_instance(self):
+        if isinstance(self.parent, str):
+            return FusionBody(self.parent)
         else:
-            return FusionBody(self.parent_entity.name)
+            return FusionBody(self.parent.name)
 
-    @supported(SupportLevel.PARTIAL, "Offset is not supported.")
+    @supported(SupportLevel.SUPPORTED, notes="")
     def clone(
         self,
         new_name: "str",
         offset: "str|list[str]|list[float]|list[Dimension]|Dimensions| None" = None,
-        new_parent: "str|EntityInterface| None" = None,
-    ) -> "Landmark":
+        new_parent: "EntityInterface| None" = None,
+    ) -> "LandmarkInterface":
         if new_parent:
             if isinstance(new_parent, str):
                 parent = Entity(new_parent)
             else:
                 parent = new_parent
         else:
-            parent = self.parent_entity
+            parent = self.parent
         sketch = self._fusion_landmark.clone(new_name, True)
         return Landmark(sketch.name, parent)
-
-    @supported(SupportLevel.SUPPORTED)
-    def get_landmark_entity_name(self) -> str:
-        return self._fusion_landmark.instance.name
-
-    @supported(SupportLevel.SUPPORTED)
-    def get_parent_entity(self) -> "EntityInterface":
-        if isinstance(self.parent_entity, str):
-            return Entity(self.parent_entity)
-        return self.parent_entity

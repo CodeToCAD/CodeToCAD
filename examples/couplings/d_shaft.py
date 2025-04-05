@@ -18,11 +18,9 @@ class DShaft:
 
         d_profile_width = (radius - dProfileRadius) * 2
 
-        shaft = Part(name).create_cylinder(radius, shaft_length)
+        shaft = Part.create_cylinder(radius, shaft_length)
 
-        d_profile = Part("dProfile").create_cube(
-            d_profile_width, radius * 2, self.d_profile_length
-        )
+        d_profile = Part.create_cube(d_profile_width, radius * 2, self.d_profile_length)
 
         shaft_left_side = shaft.get_landmark(PresetLandmark.leftTop)
         d_profile_left_side = d_profile.get_landmark(PresetLandmark.leftTop)

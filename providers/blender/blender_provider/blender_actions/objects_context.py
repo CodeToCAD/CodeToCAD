@@ -1,14 +1,17 @@
+from typing import Literal
 from providers.blender.blender_provider.blender_actions.context import (
     get_context_view_3d,
     update_view_layer,
 )
-from providers.blender.blender_provider.blender_actions.objects import get_object
-from providers.blender.blender_provider.blender_definitions import BlenderTypes
+from providers.blender.blender_provider.blender_definitions import (
+    BlenderObjectTypes,
+)
 import bpy
 
 
-def convert_object_using_ops(existing_object_name: str, convert_to_type: BlenderTypes):
-    existing_object = get_object(existing_object_name)
+def convert_object_using_ops(
+    existing_object: bpy.types.Object, convert_to_type: BlenderObjectTypes
+):
     with get_context_view_3d(
         active_object=existing_object, selected_objects=[existing_object]
     ):
@@ -16,4 +19,9 @@ def convert_object_using_ops(existing_object_name: str, convert_to_type: Blender
         bpy.context.view_layer.objects.active = existing_object
         update_view_layer()
 
-        bpy.ops.object.convert(target=convert_to_type.name)
+        convert_to: Literal["MESH", "CURVE"] = convert_to_type.name  # type: ignore
+
+        if not convert_to in ["MESH", "CURVE"]:
+            raise NotImplementedError(f"{convert_to} type is not supported")
+
+        bpy.ops.object.convert(target=convert_to)

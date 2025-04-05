@@ -532,7 +532,7 @@ CodeToCAD has been added to your console.
 
 You can access the CodeToCAD menu in the sidebar. (Press 'n' on the keyboard)
                     
-Try `my_cube = Part("my_cube").create_cube("100cm", "1m", "1m")`
+Try `my_cube = Part.create_cube("100cm", "1m", "1m")`
 ------------------------------
     """,
             "INFO",
@@ -559,7 +559,7 @@ def run_from_commandline_arguments(*args):
             directory = str(Path(filepath).parent)
 
             print("Waiting for debugger to attach")
-            start_debugger(host = "localhost", port = 5678, wait_to_connect=True)
+            start_debugger(host="localhost", port=5678, wait_to_connect=True)
 
             import_codetocad_file(filepath, directory, directory)
 

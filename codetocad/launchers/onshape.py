@@ -1,4 +1,3 @@
-
 import os
 import sys
 import subprocess
@@ -6,6 +5,7 @@ from pathlib import Path
 
 from codetocad.launchers.launcher_args import LauncherArgs
 from providers.sample import register
+
 
 def run_onshape(launcher_args: LauncherArgs):
     """
@@ -22,5 +22,5 @@ def run_onshape(launcher_args: LauncherArgs):
     python = os.path.abspath(sys.executable)
 
     return subprocess.call(
-          [python, "-m", "debugpy", "--listen", "5678", "--wait-for-client",  filepath]
+        [python, "-m", "debugpy", "--listen", "5678", "--wait-for-client", filepath]
     )
