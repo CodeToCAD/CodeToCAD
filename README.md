@@ -54,7 +54,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 💕 Built by people who believe in automation and that modeling workflows should be intuitive, reliable and most importantly free and open source!
 
 <div align="center">
-<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/three_axis_mill.gif"/>
+<image src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/docs/images/three_axis_mill.gif"/>
 </div>
 
 ## Getting started
@@ -80,7 +80,7 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 3. Watch as your code gets seemlessly translated into CAD using our [custom addon](#working-with-the-software-of-your-choice) for your desired application
 
-![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/material_cube.png)
+![Material Cube](https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/docs/images/material_cube.png)
 
 4. You may also run `codetocad my_codetocad_script.py` from the CLI to run your script.
 
@@ -122,11 +122,11 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 2. Install the Blender Addon in the blender software
 
-    <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/Blender_Install_Addon.gif" width=400 />
+    <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/docs/images/Blender_Install_Addon.gif" width=400 />
 
 3. Import your script using the file menu > import > CodeToCAD or the CodeToCAD menu in the sidebar.
 
-   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/import_file_in_blender.png" width=400 />
+   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/docs/images/import_file_in_blender.png" width=400 />
 
 > Note, you can also run CodeToCAD in Blender via cli: `blender -- --codetocad $(pwd)/yourScript.py` or `codetocad yourScript.py blender /path/to/blender/executable`
 
@@ -134,13 +134,13 @@ CodeToCAD is an open source code-CAD automation. It provides extendable, declara
 
 You can use the side-panel to import CodeToCAD files or start a debugger server.
 
-   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/docs/images/blender_panel.png" width=400 />
+   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/docs/images/blender_panel.png" width=400 />
 
 #### Fusion 360
 
 To use CodeToCAD with Fusion 360, please install the Add-In. Please check out the [README](./providers/fusion360/codetocad_fusion360_addin/README.md) for more information.
 
-   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/develop/providers/fusion360/codetocad_fusion360_addin/fusion360_addin.png" width=400 />
+   <img src="https://raw.githubusercontent.com/CodeToCAD/CodeToCAD/codetocad_legacy/providers/fusion360/codetocad_fusion360_addin/fusion360_addin.png" width=400 />
 
 #### Onshape
 
