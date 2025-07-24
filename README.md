@@ -12,7 +12,7 @@
    <a href="https://codetocad.github.io/CodeToCAD/examples.html"><img alt="Static Badge" src="https://img.shields.io/badge/Examples-white?logo=internetarchive&logoColor=black"></a>
 </p>
 
-> **Maintainers Note**: This month (March 2025) we're focused on: 1. continue fixing Blender providers - we're aware that a lot of the examples are broken. 2. improving the CLI tool so the you can `pip install codetocad` and launch scripts by doing `codetocad ./path-to-script` with configured environment paths. 3. Improving the overall api design. (Updated March 9, 2025)
+> **Maintainers Note**: This month (July 2025) we're focused on fixing the broken examples in the develop branch. This fix involves a little side-quest to investigate a new API that will migrate old features and improve the overall low-level sketching and querying features that broke them in the first place. Thanks for your patience! (Updated July 23, 2025)
 
 ## Table of Contents
 
