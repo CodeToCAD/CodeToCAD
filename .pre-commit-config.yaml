@@ -3,7 +3,7 @@ repos:
     rev: 24.4.2
     hooks:
       - id: black
-        args: [--check]
+        args: [".", "--check"]
 
   - repo: local
     hooks:
