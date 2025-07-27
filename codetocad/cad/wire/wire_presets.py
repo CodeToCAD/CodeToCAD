@@ -19,11 +19,11 @@ class WirePresets:
 
     def rectangle(self, x: LengthType, y: LengthType) -> "Wire":
         wire = self.cls(self.sketch)
-        wire.draw.point("0", "0")
-        wire.draw.line_to(x, "0")
-        wire.draw.line_to(x, y)
-        wire.draw.line_to("0", y)
-        wire.draw.line_to("0", "0")
+        wire.add.point("0", "0")
+        wire.add.line_to(x, "0")
+        wire.add.line_to(x, y)
+        wire.add.line_to("0", y)
+        wire.add.line_to("0", "0")
         if self.sketch:
             self.sketch.wires.append(wire)
         return wire

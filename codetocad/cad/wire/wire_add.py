@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from codetocad.cad.wire.wire import Wire
 
 
-class WireDraw:
+class WireAdd:
     def __init__(self, wire: "Wire"):
         self.wire = wire
 

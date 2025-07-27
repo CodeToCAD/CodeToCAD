@@ -1,6 +1,6 @@
 from codetocad.cad.sketch.sketch_get import SketchGet
 from codetocad.cad.wire.wire import Wire
-from codetocad.cad.wire.wire_draw import WireDraw
+from codetocad.cad.wire.wire_add import WireAdd
 from codetocad.cad.wire.wire_presets import WirePresets
 
 
@@ -27,7 +27,7 @@ class Sketch:
 
             self.add(wire)
 
-        return WireDraw(wire)
+        return WireAdd(wire)
 
     def __repr__(self):
         return f"<Sketch: {len(self.wires)} vertices, {len(self.wires)} edges>"
