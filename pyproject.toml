@@ -1,0 +1,32 @@
+[project]
+name = "codetocad"
+version = "0.20.0"
+description = "Automate Digital Manufacturing With Your Existing Tools"
+authors = [
+    { name="Shehab Attia", email="shehab@codethatdown.com" },
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "ipykernel>=6.29.5",
+    "numpy>=2.3.2",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["devlog*", "tests*"]
+
+[tool.black]
+line-length = 88
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "black[jupyter]>=25.1.0",
+    "pytest>=8.3.5",
+    "nbdime>=4.0.2",
+    "pre-commit>=4.2.0",
+]
