@@ -5,7 +5,6 @@ from codetocad.cad.wire.wire_presets import WirePresets
 
 
 class Sketch:
-
     def __init__(self):
         self.wires: list[Wire] = []
         self.preset = WirePresets(Wire, self)
@@ -30,4 +29,4 @@ class Sketch:
         return WireAdd(wire)
 
     def __repr__(self):
-        return f"<Sketch: {len(self.wires)} vertices, {len(self.wires)} edges>"
+        return f"<Sketch: {len(self.wires)} wires, {sum([len(wire.edges) for wire in self.wires])} edges>"

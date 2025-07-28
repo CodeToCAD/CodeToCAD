@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 from codetocad.cad.edge.edge import Edge
 from codetocad.cad.vertex.vertex import Vertex
-from codetocad.core.dimensions.length import LengthType
+from codetocad.cad.wire.wire_operations import WireOperationLineTo
+from codetocad.core.dimensions.length import Length, LengthType
 
 if TYPE_CHECKING:
     from codetocad.cad.wire.wire import Wire
@@ -26,4 +27,10 @@ class WireAdd:
         v2 = Vertex(x, y, z)
         e = Edge(v1, v2)
         self.wire.edges.append(e)
+
+        x = Length(x)
+        y = Length(y)
+        z = Length(z)
+        self.wire._add_operation(WireOperationLineTo(x, y, z))
+
         return e
