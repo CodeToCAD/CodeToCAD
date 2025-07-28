@@ -6,15 +6,29 @@ authors = [
     { name="Shehab Attia", email="shehab@codethatdown.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 
 dependencies = [
+    "click>=8.1.8",
     "ipykernel>=6.29.5",
     "numpy>=2.3.2",
 ]
 
+[project.optional-dependencies]
+build123d = [
+    "build123d>=0.9.1",
+    "ipywidgets>=8.1.7",
+    "open3d>=0.19.0",
+]
+blender = [
+    "fake-bpy-module-latest>=20250630",
+    "ipywidgets>=8.1.7",
+    "open3d>=0.19.0",
+]
+
 [tool.setuptools.packages.find]
 exclude = ["devlog*", "tests*"]
+where = ["."]
 
 [tool.black]
 line-length = 88
