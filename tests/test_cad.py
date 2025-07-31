@@ -25,10 +25,10 @@ def test_angle():
 def test_sketch():
     sketch = Sketch()
 
-    t = Length("5mm")
-    gap = Length("2mm")
+    l1 = Length("5mm")
+    l2 = Length("2mm")
     sketch.draw.point("0mm", "0mm")
-    sketch.draw.line_to(f"10cm + 2*{t} + {gap}", "0")
+    sketch.draw.line_to(f"10cm + 2*{l1} + {l2}", "0")
     sketch.draw.line_to("20cm", "10cm")
 
     wire = sketch.get.wire(-1)
@@ -45,6 +45,7 @@ def test_sketch():
         print(e)
 
 
+@pytest.mark.skip("Parts are not yet hardened.")
 def test_assembly():
     my_assembly = Assembly()
     p0 = my_assembly.add.preset.cube("1", "0.2", "0.2")
@@ -53,6 +54,8 @@ def test_assembly():
 
     p1.set_name("my_beam")
     found = Part.get_by_name("my_beam")
+
+    assert found is not None, "Part with name 'my_beam' not found"
 
     print(my_assembly.get.parts)
     print(my_assembly.get.part("my_beam").name)

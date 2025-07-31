@@ -12,8 +12,16 @@ class WireGet:
     def __init__(self, wire: "Wire"):
         self.wire = wire
 
+    @property
+    def edges(self) -> list[Edge]:
+        return self.wire.edges
+
+    @property
+    def vertices(self) -> list[Vertex]:
+        return [vertex for edge in self.wire.edges for vertex in [edge.v1, edge.v2]]
+
     def vertex(self, i) -> "Vertex":
-        return [vertex for edge in self.wire.edges for vertex in [edge.v1, edge.v2]][i]
+        return self.vertices[i]
 
     def edge(self, i) -> "Edge":
-        return self.wire.edges[i]
+        return self.edges[i]

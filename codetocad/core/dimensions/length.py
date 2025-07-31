@@ -48,7 +48,7 @@ class Length:
         return eval(expr, {"__builtins__": None}, {})
 
     @property
-    def value(self):
+    def value(self) -> float:
         return float(self.meters)
 
     def __add__(self, other):

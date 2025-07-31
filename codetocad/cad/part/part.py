@@ -3,7 +3,6 @@ from codetocad.cad.part.part_presets import PartPresets
 
 if TYPE_CHECKING:
     from codetocad.cad.assembly.assembly import Assembly
-    from codetocad.cad.sketch.sketch import Sketch
 
 
 class _PartPresetClassProperty(type):
@@ -16,7 +15,10 @@ class Part(metaclass=_PartPresetClassProperty):
     def __init__(self):
         self.member_assemblies: list[Assembly] = []
 
-        self.sketch: Sketch | None = None
+        from codetocad.cad.sketch.sketch import Sketch
+
+        self.sketch: Sketch = Sketch()
+
         self.name = None
 
     def set_name(self, name):
