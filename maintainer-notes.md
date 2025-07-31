@@ -1,0 +1,4 @@
+
+**Maintainers Note**: This month (August 2025) we're focused on implementing the new API discussed in [New API](./devlog/2-new-api.ipynb). This new API migrates old features and improves the overall low-level sketching and querying features. Thanks for your patience while we bring these changes out! (Updated July 28, 2025)
+
+**Maintainers Note**: This month (April 2025) we moved the existing CodeToCAD develop branch to [codetocad_legacy](https://github.com/CodeToCAD/CodeToCAD/tree/codetocad_legacy). A fresh start with all the learnings from the previous attempts will be taken from here. We will build the CodeToCAD API with better documentation, usability and clear use-cases.

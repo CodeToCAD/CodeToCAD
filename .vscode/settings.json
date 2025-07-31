@@ -13,5 +13,13 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "files.exclude": {
+        "**/__pycache__": true,
+        ".pytest_cache/": true,
+        ".venv/": true,
+        "*.egg-info": true,
+        "**/.git": true,
+        "build/": true,
+    },
 }
