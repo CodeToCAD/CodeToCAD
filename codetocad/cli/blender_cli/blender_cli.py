@@ -131,7 +131,7 @@ sys.path.append(bpy.utils.script_path_user()) #type: ignore
 def run(
     entry_function: Callable,
     document_name: str | None = None,
-    background: bool = False,
+    background: bool = True,
     custom_code_to_run_before: str = "",
     custom_code_to_run_after: str = "",
 ):
