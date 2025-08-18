@@ -1,63 +1,63 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypeAlias
 
-from codetocad.interfaces.cad.edge.edge import Edge
-from codetocad.interfaces.cad.vertex.vertex import Vertex
+from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
+from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
 
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 
 
 @dataclass
-class WireConstraintCoincident:
-    v1: Vertex
-    v2: Vertex
+class WireConstraintCoincidentInterface:
+    v1: VertexInterface
+    v2: VertexInterface
 
 
 @dataclass
-class WireConstraintMidpoint:
-    edge: Edge
-    target: Vertex
+class WireConstraintMidpointInterface:
+    edge: EdgeInterface
+    target: VertexInterface
 
 
 @dataclass
-class WireConstraintParallel:
-    edge1: Edge
-    edge2: Edge
+class WireConstraintParallelInterface:
+    edge1: EdgeInterface
+    edge2: EdgeInterface
 
 
 @dataclass
-class WireConstraintPerpendicular:
-    edge1: Edge
-    edge2: Edge
+class WireConstraintPerpendicularInterface:
+    edge1: EdgeInterface
+    edge2: EdgeInterface
 
 
 @dataclass
-class WireConstraintTangent:
-    edge: Edge
-    wire: "Wire"
+class WireConstraintTangentInterface:
+    edge: EdgeInterface
+    wire: "WireInterface"
 
 
 WireOperationConstraintType: TypeAlias = (
-    WireConstraintCoincident
-    | WireConstraintMidpoint
-    | WireConstraintParallel
-    | WireConstraintPerpendicular
-    | WireConstraintTangent
+    WireConstraintCoincidentInterface
+    | WireConstraintMidpointInterface
+    | WireConstraintParallelInterface
+    | WireConstraintPerpendicularInterface
+    | WireConstraintTangentInterface
 )
 
 
-class WireConstraint:
-    def __init__(self, wire: "Wire"):
+class WireConstraintInterface:
+    def __init__(self, wire: "WireInterface"):
         self.wire = wire
 
-    def coincident(self, v1: "Vertex", v2: "Vertex"): ...
+    def coincident(self, v1: "VertexInterface", v2: "VertexInterface"): ...
 
-    def midpoint(self, edge: "Edge", target: "Vertex"): ...
+    def midpoint(self, edge: "EdgeInterface", target: "VertexInterface"): ...
 
-    def parallel(self, e1: "Edge", e2: "Edge"): ...
+    def parallel(self, e1: "EdgeInterface", e2: "EdgeInterface"): ...
 
-    def perpendicular(self, e1: "Edge", e2: "Edge"): ...
+    def perpendicular(self, e1: "EdgeInterface", e2: "EdgeInterface"): ...
 
-    def tangent(self, wire: "Wire", edge: "Edge"): ...
+    def tangent(self, wire: "WireInterface", edge: "EdgeInterface"): ...

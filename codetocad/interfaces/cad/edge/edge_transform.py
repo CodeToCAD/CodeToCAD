@@ -3,7 +3,7 @@ import numpy as np
 from codetocad.core.dimensions.length import Length
 
 
-class EdgeTransform:
+class EdgeTransformInterface:
     def __init__(self, edge):
         self.edge = edge
 

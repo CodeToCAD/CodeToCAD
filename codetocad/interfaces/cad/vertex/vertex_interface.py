@@ -2,7 +2,7 @@ import numpy as np
 from codetocad.core.dimensions.length import Length, LengthType
 
 
-class Vertex:
+class VertexInterface:
     def __init__(self, x: LengthType, y: LengthType, z: LengthType = 0):
         self.position = np.array([float(Length(x)), float(Length(y)), float(Length(z))])
 

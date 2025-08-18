@@ -2,22 +2,22 @@ from typing import TYPE_CHECKING, Type
 from codetocad.core.dimensions.length import LengthType
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.sketch.sketch import Sketch
-    from codetocad.interfaces.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface
+    from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 
 
-class WirePresets:
+class WirePresetsInterface:
     """
-    Constructs a Wire with preset shapes.
+    Constructs a WireInterface with preset shapes.
     This class is used to create common part shapes like rectangles, circles and arcs.
-    If a Sketch is provided, the created Wire will be added to that Sketch.
+    If a SketchInterface is provided, the created WireInterface will be added to that SketchInterface.
     """
 
-    def __init__(self, cls: Type["Wire"], sketch: "Sketch|None"):
+    def __init__(self, cls: Type["WireInterface"], sketch: "SketchInterface|None"):
         self.cls = cls
         self.sketch = sketch
 
-    def rectangle(self, x: LengthType, y: LengthType) -> "Wire":
+    def rectangle(self, x: LengthType, y: LengthType) -> "WireInterface":
         wire = self.cls(self.sketch)
         wire.add.line_to(x, "0")
         wire.add.line_to(x, y)

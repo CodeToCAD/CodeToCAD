@@ -1,17 +1,17 @@
 from typing import TYPE_CHECKING
-from codetocad.interfaces.cad.part.part import Part
-from codetocad.interfaces.cad.part.part_presets import PartPresets
+from codetocad.interfaces.cad.part.part_interface import PartInterface
+from codetocad.interfaces.cad.part.part_presets import PartPresetsInterface
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
 
 
-class AssemblyAdd:
-    def __init__(self, assembly: "Assembly"):
+class AssemblyAddInterface:
+    def __init__(self, assembly: "AssemblyInterface"):
         self.assembly = assembly
-        self.preset = PartPresets(assembly)
+        self.preset = PartPresetsInterface(assembly)
 
-    def __call__(self, part: Part):
+    def __call__(self, part: PartInterface):
         """
         Adds a Wire to the Sketch.
         """

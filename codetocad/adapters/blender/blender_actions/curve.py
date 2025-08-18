@@ -3,6 +3,7 @@ from typing import List, Sequence, Tuple, Optional, TYPE_CHECKING
 import bpy
 import mathutils
 from mathutils import Matrix
+from uuid import uuid4
 
 from codetocad.adapters.blender.blender_actions.addons import (
     enable_addon,
@@ -25,9 +26,14 @@ from codetocad.adapters.blender.blender_definitions import (
 from codetocad.core.dimensions.point import Point
 
 
+def create_uuid_like_id() -> str:
+    """Generate a UUID-like string for naming objects."""
+    return str(uuid4())
+
+
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.edge.edge import Edge
-    from codetocad.interfaces.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
+    from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
@@ -461,7 +467,7 @@ def subdivide_bezier_points(
     return poly_points
 
 
-def get_vertices_from_edges(edges: list["Edge"], world_matrix: Matrix):
+def get_vertices_from_edges(edges: list["EdgeInterface"], world_matrix: Matrix):
     vertices = []
     for edge in edges:
         v1 = edge.v1.position
@@ -503,7 +509,9 @@ def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix: Matri
     return vertices
 
 
-def custom_codetocad_loft(wire_1: "Wire", wire_2: "Wire") -> bpy.types.Mesh:
+def custom_codetocad_loft(
+    wire_1: "WireInterface", wire_2: "WireInterface"
+) -> bpy.types.Mesh:
     """
     This is a loft implemented in CodeToCAD. Mileage may vary.
     """

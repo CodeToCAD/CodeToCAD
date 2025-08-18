@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
-from codetocad.interfaces.cad.assembly.assembly_part import AssemblyPart
+from codetocad.interfaces.cad.assembly.assembly_part import AssemblyPartInterface
 
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
 
 
-class AssemblyGet:
-    def __init__(self, assembly: "Assembly"):
+class AssemblyGetInterface:
+    def __init__(self, assembly: "AssemblyInterface"):
         self.assembly = assembly
 
-        self.part = AssemblyPart(assembly)
+        self.part = AssemblyPartInterface(assembly)
         self.parts = self.assembly.parts

@@ -1,11 +1,17 @@
 from typing import List, Tuple, Union
 import bpy
+from uuid import uuid4
 
 from codetocad.adapters.blender.blender_definitions import BlenderLength
-from codetocad.interfaces.cad.edge.edge import Edge
-from codetocad.interfaces.cad.vertex.vertex import Vertex
-from codetocad.interfaces.cad.wire.wire import Wire
+from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
+from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
+from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 from codetocad.core.dimensions.point import Point
+
+
+def create_uuid_like_id() -> str:
+    """Generate a UUID-like string for naming objects."""
+    return str(uuid4())
 
 
 def get_vertex_location_from_blender_point(
@@ -30,8 +36,8 @@ def get_vertex_from_blender_point(
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],
     ],
-) -> "Vertex":
-    return Vertex(
+) -> "VertexInterface":
+    return VertexInterface(
         location=get_vertex_location_from_blender_point(spline_point),
         name=create_uuid_like_id(),
         native_instance=spline_point,
@@ -48,9 +54,9 @@ def get_edge_from_blender_edge(
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],
     ],
-) -> "Edge":
-    v1: Vertex
-    v2: Vertex
+) -> "EdgeInterface":
+    v1: VertexInterface
+    v2: VertexInterface
     if isinstance(edge, bpy.types.Spline):
         points = edge.bezier_points if edge.type == "BEZIER" else edge.points
 
@@ -72,7 +78,7 @@ def get_edge_from_blender_edge(
     else:
         raise Exception(f"Edge type {type(edge)} is not supported.")
 
-    return Edge(
+    return EdgeInterface(
         v1=v1,
         v2=v2,
         name=create_uuid_like_id(),
@@ -83,8 +89,8 @@ def get_edge_from_blender_edge(
 def get_wire_from_blender_wire(
     entity: Union[bpy.types.Curve, bpy.types.Mesh],
     wire: Union[bpy.types.Spline, bpy.types.MeshPolygon],
-) -> "Wire":
-    edges: List[Edge]
+) -> "WireInterface":
+    edges: List[EdgeInterface]
     if isinstance(wire, bpy.types.Spline):
         points = wire.bezier_points if wire.type == "BEZIER" else wire.points
 
@@ -108,7 +114,7 @@ def get_wire_from_blender_wire(
     else:
         raise Exception(f"Wire type {type(wire)} is not supported.")
 
-    return Wire(
+    return WireInterface(
         name=create_uuid_like_id(),
         native_instance=wire,
     )
@@ -116,8 +122,8 @@ def get_wire_from_blender_wire(
 
 def get_wires_from_blender_entity(
     entity: Union[bpy.types.Curve, bpy.types.Mesh],
-) -> "List[Wire]":
-    wires: List[Wire]
+) -> "List[WireInterface]":
+    wires: List[WireInterface]
 
     if isinstance(entity, bpy.types.Curve):
         wires = [

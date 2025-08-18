@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
 
 
-class AssemblyPart:
-    def __init__(self, assembly: "Assembly"):
+class AssemblyPartInterface:
+    def __init__(self, assembly: "AssemblyInterface"):
         self.assembly = assembly
 
     def __getitem__(self, key: str | int):
