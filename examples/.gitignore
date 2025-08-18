@@ -1,6 +1,0 @@
-*.stl
-*.obj
-*.mtl
-
-# allow files that begin with "importable"
-!importable*
