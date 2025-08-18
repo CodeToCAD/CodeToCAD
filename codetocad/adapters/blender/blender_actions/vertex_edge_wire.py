@@ -1,7 +1,7 @@
 from typing import List, Tuple, Union
 import bpy
 
-from adapters.blender.blender_definitions import BlenderLength
+from codetocad.adapters.blender.blender_definitions import BlenderLength
 from codetocad.cad.edge.edge import Edge
 from codetocad.cad.vertex.vertex import Vertex
 from codetocad.cad.wire.wire import Wire

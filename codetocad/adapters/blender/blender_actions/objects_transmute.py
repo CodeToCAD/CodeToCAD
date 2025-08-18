@@ -1,4 +1,4 @@
-from adapters.blender.blender_actions.collections import (
+from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
 from uuid import uuid4
@@ -6,10 +6,10 @@ import mathutils
 from typing import Optional
 import bpy
 
-from adapters.blender.blender_actions.context import (
+from codetocad.adapters.blender.blender_actions.context import (
     update_view_layer,
 )
-from adapters.blender.blender_actions.objects import (
+from codetocad.adapters.blender.blender_actions.objects import (
     create_object,
     get_object_collection,
     get_object_or_none,
@@ -17,7 +17,7 @@ from adapters.blender.blender_actions.objects import (
     remove_object,
     update_object_name,
 )
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     BlenderTypes,
 )
 

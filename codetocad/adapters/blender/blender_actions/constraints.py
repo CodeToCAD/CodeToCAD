@@ -1,17 +1,17 @@
 import bpy
-from adapters.blender.blender_actions.context import update_view_layer
-from adapters.blender.blender_actions.drivers import (
+from codetocad.adapters.blender.blender_actions.context import update_view_layer
+from codetocad.adapters.blender.blender_actions.drivers import (
     create_driver,
     set_driver,
     set_driver_variable_single_prop,
 )
-from adapters.blender.blender_actions.objects import (
+from codetocad.adapters.blender.blender_actions.objects import (
     get_object_world_location,
 )
-from adapters.blender.blender_actions.transformations import (
+from codetocad.adapters.blender.blender_actions.transformations import (
     translate_object,
 )
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     BlenderConstraintTypes,
     BlenderTranslationTypes,
 )

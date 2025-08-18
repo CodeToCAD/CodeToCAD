@@ -1,6 +1,6 @@
 import bpy
 
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     FileFormat,
     RenderEngines,
 )

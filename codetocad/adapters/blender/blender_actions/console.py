@@ -81,18 +81,18 @@ def reload_codetocad_modules():
 
     reload(codetocad)
 
-    import adapters.blender
+    import codetocad.adapters.blender
 
-    reload(adapters.blender)
+    reload(codetocad.adapters.blender)
 
     all_providers_modules = inspect.getmembers(
-        adapters.blender, predicate=inspect.ismodule
+        codetocad.adapters.blender, predicate=inspect.ismodule
     )
     for module_name, module in all_providers_modules:
         print(f"Reloading {module_name}")
         reload(module)
 
-    from adapters.blender.register import register
+    from codetocad.adapters.blender.register import register
 
     print("Registering BlenderAddon as codetocad.factory provider.")
     register()

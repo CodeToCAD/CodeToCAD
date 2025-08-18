@@ -1,6 +1,6 @@
 import bpy
 
-from adapters.blender.blender_actions.mesh import get_mesh_for_object
+from codetocad.adapters.blender.blender_actions.mesh import get_mesh_for_object
 
 
 def get_material(

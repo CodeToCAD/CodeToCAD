@@ -4,7 +4,7 @@ import mathutils
 
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
-from adapters.blender.blender_actions.context import update_view_layer
+from codetocad.adapters.blender.blender_actions.context import update_view_layer
 from codetocad.core.dimensions.boundary_axis import BoundaryAxis
 from codetocad.core.dimensions.boundary_box import BoundaryBox
 

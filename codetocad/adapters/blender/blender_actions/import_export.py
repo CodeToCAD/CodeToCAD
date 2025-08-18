@@ -3,12 +3,12 @@ from typing import Optional
 import bpy
 
 from codetocad.utils.file_io import get_file_extension
-from adapters.blender.blender_actions.context import (
+from codetocad.adapters.blender.blender_actions.context import (
     get_blender_version,
     get_context_view_3d,
     update_view_layer,
 )
-from adapters.blender.blender_definitions import BlenderVersions
+from codetocad.adapters.blender.blender_definitions import BlenderVersions
 
 fileImportFunctions = {
     "stl": lambda file_path: bpy.ops.wm.stl_import(filepath=file_path),

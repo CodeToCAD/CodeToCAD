@@ -2,7 +2,7 @@ from typing import Optional
 
 import bpy
 
-from adapters.blender.blender_actions.scene import get_scene
+from codetocad.adapters.blender.blender_actions.scene import get_scene
 
 
 def add_keyframe_to_object(

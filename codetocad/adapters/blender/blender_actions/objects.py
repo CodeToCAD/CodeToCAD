@@ -1,8 +1,8 @@
 from typing import Any, Optional, Type
 import bpy
 
-from adapters.blender.blender_actions.addons import enable_addon
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_actions.addons import enable_addon
+from codetocad.adapters.blender.blender_definitions import (
     BlenderObjectPrimitiveTypes,
     BlenderObjectTypes,
 )

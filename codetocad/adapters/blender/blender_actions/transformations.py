@@ -1,7 +1,7 @@
 from typing import Sequence
 import bpy
 import mathutils
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     BlenderRotationTypes,
     BlenderTranslationTypes,
 )

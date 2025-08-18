@@ -1,6 +1,6 @@
 import bpy
 
-from adapters.blender.blender_actions.objects import (
+from codetocad.adapters.blender.blender_actions.objects import (
     remove_object,
 )
 

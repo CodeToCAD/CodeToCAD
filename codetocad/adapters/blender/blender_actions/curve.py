@@ -4,20 +4,20 @@ import bpy
 import mathutils
 from mathutils import Matrix
 
-from adapters.blender.blender_actions.addons import (
+from codetocad.adapters.blender.blender_actions.addons import (
     enable_addon,
 )
-from adapters.blender.blender_actions.collections import (
+from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
-from adapters.blender.blender_actions.context import update_view_layer
-from adapters.blender.blender_actions.objects import (
+from codetocad.adapters.blender.blender_actions.context import update_view_layer
+from codetocad.adapters.blender.blender_actions.objects import (
     create_object,
 )
-from adapters.blender.blender_actions.objects_context import (
+from codetocad.adapters.blender.blender_actions.objects_context import (
     convert_object_using_ops,
 )
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     BlenderCurvePrimitiveTypes,
     BlenderCurveTypes,
     BlenderObjectTypes,

@@ -1,9 +1,9 @@
 from typing import Literal
-from adapters.blender.blender_actions.context import (
+from codetocad.adapters.blender.blender_actions.context import (
     get_context_view_3d,
     update_view_layer,
 )
-from adapters.blender.blender_definitions import (
+from codetocad.adapters.blender.blender_definitions import (
     BlenderObjectTypes,
 )
 import bpy

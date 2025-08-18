@@ -1,7 +1,7 @@
 import os
 import subprocess
 import click
-from codetocad.cli.blender_cli.blender_cli import run_blender_process
+from codetocad.adapters.blender.cli.blender_cli import run_blender_process
 from codetocad.cli.launcher_args import LauncherArgs
 
 

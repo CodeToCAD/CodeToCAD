@@ -1,9 +1,9 @@
 import bpy
-from adapters.blender.blender_actions.collections import (
+from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
 
-from adapters.blender.blender_actions.objects import create_object
+from codetocad.adapters.blender.blender_actions.objects import create_object
 
 
 def create_light(obj_name: str, energy_level, type):

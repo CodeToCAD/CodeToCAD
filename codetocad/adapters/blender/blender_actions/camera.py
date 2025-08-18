@@ -1,15 +1,15 @@
 from typing import Optional
 import bpy
-from adapters.blender.blender_actions.collections import (
+from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
 
 import bpy
 
-from adapters.blender.blender_actions.objects import (
+from codetocad.adapters.blender.blender_actions.objects import (
     create_object,
 )
-from adapters.blender.blender_actions.scene import get_scene
+from codetocad.adapters.blender.blender_actions.scene import get_scene
 
 
 def create_camera(camera_object_name: str, type):

@@ -2,12 +2,12 @@ from typing import Optional
 import bpy
 
 
-from adapters.blender.blender_actions.nodes import (
+from codetocad.adapters.blender.blender_actions.nodes import (
     create_nodes,
     delete_nodes,
     get_node_tree,
 )
-from adapters.blender.blender_definitions import BlenderLength
+from codetocad.adapters.blender.blender_definitions import BlenderLength
 
 
 def scene_lock_interface(is_locked: bool):
