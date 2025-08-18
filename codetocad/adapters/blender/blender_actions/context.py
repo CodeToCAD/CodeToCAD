@@ -9,7 +9,7 @@ def update_view_layer():
 
 
 def apply_dependency_graph(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ):
     """
     Applies the dependency graph to the object and persists its data using .copy()
@@ -27,14 +27,14 @@ def apply_dependency_graph(
     blender_object.data = mesh_or_curve.copy()
 
 
-def select_object(blender_object: bpy.types.Object):
+def select_object(blender_object: "bpy.types.Object"):
     """
     Attempts to select the object in the Blender UI
     """
     blender_object.select_set(True)
 
 
-def get_selected_objects() -> list[bpy.types.Object]:
+def get_selected_objects() -> "list[bpy.types.Object]":
     """
     Attempts to retrieve the selected objects in Blender UI.
     """

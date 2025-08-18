@@ -10,7 +10,7 @@ import bpy
 
 
 def convert_object_using_ops(
-    existing_object: bpy.types.Object, convert_to_type: BlenderObjectTypes
+    existing_object: "bpy.types.Object", convert_to_type: BlenderObjectTypes
 ):
     with get_context_view_3d(
         active_object=existing_object, selected_objects=[existing_object]

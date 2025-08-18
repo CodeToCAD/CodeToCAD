@@ -23,7 +23,7 @@ fileImportFunctions = {
 }
 
 
-def import_file(file_path: str, file_type: Optional[str] = None) -> bpy.types.Object:
+def import_file(file_path: str, file_type: str | None = None) -> "bpy.types.Object":
     path = Path(file_path).resolve()
 
     # Check if the file exists:
@@ -82,7 +82,7 @@ fileExportFunctions = {
 
 
 def export_object(
-    blender_object: bpy.types.Object, file_path: str, overwrite=True, scale=1.0
+    blender_object: "bpy.types.Object", file_path: str, overwrite=True, scale=1.0
 ):
     path = Path(file_path).resolve()
 

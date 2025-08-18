@@ -92,10 +92,10 @@ def reload_codetocad_modules():
         print(f"Reloading {module_name}")
         reload(module)
 
-    from codetocad.adapters.blender.register import register
+    # from codetocad.adapters.blender.register import register
 
-    print("Registering BlenderAddon as codetocad.factory provider.")
-    register()
+    # print("Registering BlenderAddon as codetocad.factory provider.")
+    # register()
 
 
 def write_to_console(message: str, text_type: str = "INFO"):

@@ -15,7 +15,7 @@ def create_light(obj_name: str, energy_level, type):
 
 def get_light(
     light_name: str,
-) -> bpy.types.Light:
+) -> "bpy.types.Light":
     blender_light = bpy.data.lights.get(light_name)
 
     assert blender_light is not None, f"Light {light_name} does not exist."
@@ -23,7 +23,7 @@ def get_light(
     return blender_light
 
 
-def set_light_color(light: bpy.types.Light, r_value, g_value, b_value):
+def set_light_color(light: "bpy.types.Light", r_value, g_value, b_value):
     if isinstance(r_value, int):
         r_value /= 255.0
 

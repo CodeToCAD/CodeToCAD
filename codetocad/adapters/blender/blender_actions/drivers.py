@@ -1,16 +1,16 @@
 import bpy
 
 
-def create_driver(blender_object: bpy.types.Object, path: str, index=-1):
+def create_driver(blender_object: "bpy.types.Object", path: str, index=-1):
     return blender_object.driver_add(path, index).driver
 
 
-def remove_driver(blender_object: bpy.types.Object, path: str, index=-1):
+def remove_driver(blender_object: "bpy.types.Object", path: str, index=-1):
     blender_object.driver_remove(path, index)
 
 
 def get_driver(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     path: str,
 ):
     """this returns an FCurve object
@@ -26,7 +26,7 @@ def get_driver(
 
 
 def set_driver(
-    driver: bpy.types.Driver,
+    driver: "bpy.types.Driver",
     driver_type,  # : BlenderDriverTypes,
     expression="",
 ):
@@ -36,9 +36,9 @@ def set_driver(
 
 
 def set_driver_variable_single_prop(
-    driver: bpy.types.Driver,
+    driver: "bpy.types.Driver",
     variable_name: str,
-    target_blender_object: bpy.types.Object,
+    target_blender_object: "bpy.types.Object",
     target_data_path: str,
 ):
     variable = driver.variables.get(variable_name)
@@ -55,9 +55,9 @@ def set_driver_variable_single_prop(
 
 
 def set_driver_variable_transforms(
-    driver: bpy.types.Driver,
+    driver: "bpy.types.Driver",
     variable_name: str,
-    target_blender_object: bpy.types.Object,
+    target_blender_object: "bpy.types.Object",
     transform_type,  # : BlenderDriverVariableTransformTypes,
     transform_space,  # : BlenderDriverVariableTransformSpaces
 ):
@@ -77,10 +77,10 @@ def set_driver_variable_transforms(
 
 
 def set_driver_variable_location_difference(
-    driver: bpy.types.Driver,
+    driver: "bpy.types.Driver",
     variable_name: str,
-    target1_blender_object: bpy.types.Object,
-    target2_blender_object: bpy.types.Object,
+    target1_blender_object: "bpy.types.Object",
+    target2_blender_object: "bpy.types.Object",
 ):
     variable = driver.variables.get(variable_name)
 
@@ -96,10 +96,10 @@ def set_driver_variable_location_difference(
 
 
 def set_driver_variable_rotation_difference(
-    driver: bpy.types.Driver,
+    driver: "bpy.types.Driver",
     variable_name: str,
-    target1_blender_object: bpy.types.Object,
-    target2_blender_object: bpy.types.Object,
+    target1_blender_object: "bpy.types.Object",
+    target2_blender_object: "bpy.types.Object",
 ):
     variable = driver.variables.get(variable_name)
 

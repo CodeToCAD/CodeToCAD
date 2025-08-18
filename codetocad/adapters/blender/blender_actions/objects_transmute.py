@@ -23,8 +23,8 @@ from codetocad.adapters.blender.blender_definitions import (
 
 
 def create_mesh_from_curve(
-    curve_object: bpy.types.Object,
-    new_object_name: Optional[str] = None,
+    curve_object: "bpy.types.Object",
+    new_object_name: str | None = None,
 ):
     if new_object_name is None:
         update_object_name(curve_object, str(uuid4()))
@@ -44,7 +44,10 @@ def create_mesh_from_curve(
 
     existingCurveObjectChildren = curve_object.children
     for child in existingCurveObjectChildren:
-        if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
+        if (
+            isinstance(child, BlenderTypes.OBJECT.blender_type)
+            and child.type == "EMPTY"
+        ):
             child.parent = blender_object
 
     # twisted logic here, but if we renamed this above, we want to nuke it because we're done with it.
@@ -53,8 +56,8 @@ def create_mesh_from_curve(
 
 
 def transfer_landmarks(
-    from_blender_object: bpy.types.Object,
-    to_blender_object: bpy.types.Object,
+    from_blender_object: "bpy.types.Object",
+    to_blender_object: "bpy.types.Object",
 ):
     update_view_layer()
 
@@ -67,7 +70,10 @@ def transfer_landmarks(
 
     from_blender_object_children = from_blender_object.children
     for child in from_blender_object_children:
-        if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
+        if (
+            isinstance(child, BlenderTypes.OBJECT.blender_type)
+            and child.type == "EMPTY"
+        ):
             child.name = f"{to_blender_object.name}_{child.name}"
             isAlreadyExists = bpy.data.objects.get(child.name) is None
             if isAlreadyExists:
@@ -79,10 +85,10 @@ def transfer_landmarks(
 
 
 def duplicate_object(
-    existing_blender_object: bpy.types.Object,
+    existing_blender_object: "bpy.types.Object",
     new_object_name: str,
     copy_landmarks: bool = True,
-) -> bpy.types.Object:
+) -> "bpy.types.Object":
 
     assert (
         get_object_or_none(new_object_name) is None
@@ -103,7 +109,10 @@ def duplicate_object(
     if copy_landmarks:
         blender_object_children: tuple = existing_blender_object.children
         for child in blender_object_children:
-            if isinstance(child, BlenderTypes.OBJECT.value) and child.type == "EMPTY":
+            if (
+                isinstance(child, BlenderTypes.OBJECT.blender_type)
+                and child.type == "EMPTY"
+            ):
                 newChild: bpy.types.Object = child.copy()
                 newChild.name = child.name.replace(
                     existing_blender_object.name, new_object_name

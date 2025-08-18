@@ -67,6 +67,8 @@ def run_blender_process(
 def set_blender_executable_path(blender_path: str):
     """
     Sets the Blender executable path in the configuration file.
+
+    Usage: `set_blender_executable_path("/Applications/Blender.app/Contents/MacOS/Blender")`
     """
     if not os.path.exists(blender_path):
         raise FileNotFoundError(f"Blender executable not found at {blender_path}")
@@ -125,6 +127,9 @@ def add_user_script_dir_to_path():
 import sys
 import bpy
 sys.path.append(bpy.utils.script_path_user()) #type: ignore
+
+from codetocad.adapters.blender import *
+
 """
 
 
@@ -137,6 +142,8 @@ def run(
 ):
     """
     Runs a function using the configured Blender executable path.
+
+    Call `set_blender_executable_path("/Applications/Blender.app/Contents/MacOS/Blender") && install_codetocad_in_blender()` before using this function.
     """
     blender_path = get_blender_executable_path()
 

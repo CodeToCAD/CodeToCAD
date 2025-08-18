@@ -8,7 +8,7 @@ from codetocad.adapters.blender.blender_definitions import (
 
 
 def apply_object_transformations(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     apply_rotation: bool,
     apply_scale: bool,
     apply_location: bool,
@@ -59,7 +59,7 @@ def apply_object_transformations(
 
 
 def rotate_object(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     rotation_angles_radians: list[float | None],
     rotation_type: BlenderRotationTypes,
 ):
@@ -78,7 +78,7 @@ def rotate_object(
 
 
 def translate_object(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     translation_dimensions: Sequence[float | None],
     translation_type: BlenderTranslationTypes,
 ):
@@ -100,7 +100,7 @@ def translate_object(
 
 
 def set_object_location(
-    blender_object: bpy.types.Object, location_dimensions: list[float | None]
+    blender_object: "bpy.types.Object", location_dimensions: list[float | None]
 ):
     assert len(location_dimensions) == 3, "location_dimensions must be length 3"
 
@@ -119,7 +119,7 @@ def set_object_location(
 
 
 def scale_object(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     x_scale_factor: float | None,
     y_scale_factor: float | None,
     z_scale_factor: float | None,

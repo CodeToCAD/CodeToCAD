@@ -130,22 +130,22 @@ def create_gear(
 
 
 def make_parent(
-    blender_object: bpy.types.Object,
-    blender_parent_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
+    blender_parent_object: "bpy.types.Object",
 ):
     blender_object.parent = blender_parent_object
 
 
 def update_object_name(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     new_name: str,
 ):
     blender_object.name = new_name
 
 
 def get_object_collection(
-    blender_object: bpy.types.Object,
-) -> bpy.types.Collection:
+    blender_object: "bpy.types.Object",
+) -> "bpy.types.Collection":
     # Assumes the first collection is the main collection
     [currentCollection] = blender_object.users_collection
 
@@ -157,7 +157,7 @@ def get_object_collection(
 
 
 def update_object_data_name(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     new_name: str,
 ):
     """
@@ -172,7 +172,7 @@ def update_object_data_name(
 
 # This assumes that landmarks are named with format: `{parent_part_name}_{landmarkName}`
 def update_object_landmark_names(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     old_name_prefix: str,
     new_name_prefix: str,
 ):
@@ -187,8 +187,7 @@ def update_object_landmark_names(
 
 
 def remove_data(
-    blender_data: (
-        bpy.types.Armature
+    blender_data: """bpy.types.Armature
         | bpy.types.Camera
         | bpy.types.Curve
         | bpy.types.Curves
@@ -203,8 +202,7 @@ def remove_data(
         | bpy.types.Speaker
         | bpy.types.SurfaceCurve
         | bpy.types.TextCurve
-        | bpy.types.Volume
-    ),
+        | bpy.types.Volume""",
 ):
     if isinstance(blender_data, bpy.types.Mesh):
         bpy.data.meshes.remove(blender_data)
@@ -215,7 +213,7 @@ def remove_data(
 
 
 def remove_object(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     remove_children=False,
     is_remove_data=True,
 ):
@@ -236,7 +234,7 @@ def remove_object(
         bpy.data.objects.remove(blender_object)
 
 
-def create_object(name: str, data: Optional[Any] = None):
+def create_object(name: str, data: Any | None = None):
     """
     Creates an object in Blender. The object will exist in data, but will not appear in the scene until `assign_object_to_collection()` is called.
     """
@@ -248,14 +246,14 @@ def create_object(name: str, data: Optional[Any] = None):
 
 
 def create_object_vertex_group(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     vertex_group_name: str,
 ):
     return blender_object.vertex_groups.new(name=vertex_group_name)
 
 
 def get_object_vertex_group(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     vertex_group_name: str,
 ):
     return blender_object.vertex_groups.get(vertex_group_name)
@@ -266,31 +264,31 @@ def add_verticies_to_vertex_group(vertex_group_object, vertex_indecies: list[int
 
 
 def get_object_visibility(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ) -> bool:
     return blender_object.visible_get()
 
 
-def set_object_visibility(blender_object: bpy.types.Object, is_visible: bool):
+def set_object_visibility(blender_object: "bpy.types.Object", is_visible: bool):
     # blender_object.hide_viewport = not is_visible
     # blender_object.hide_render = not is_visible
     blender_object.hide_set(not is_visible)
 
 
 def get_object_local_location(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ):
     return blender_object.location
 
 
 def get_object_world_location(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ):
     return blender_object.matrix_world.translation
 
 
 def get_object_world_pose(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ) -> list[float]:
     listOfTuples = [v.to_tuple() for v in blender_object.matrix_world[:]]
 
@@ -299,8 +297,8 @@ def get_object_world_pose(
 
 def get_object(
     object_name: str,
-    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
-) -> bpy.types.Object:
+    of_type: "Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None" = None,
+) -> "bpy.types.Object":
     blender_object = get_object_or_none(object_name, of_type)
 
     assert blender_object is not None, f"Object {object_name} does not exists"
@@ -310,8 +308,8 @@ def get_object(
 
 def get_object_or_none(
     object_name: str,
-    of_type: Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None = None,
-) -> Optional[bpy.types.Object]:
+    of_type: "Type[bpy.types.Mesh] | Type[bpy.types.Curve] | None" = None,
+) -> "bpy.types.Object | None":
     blender_object = bpy.data.objects.get(object_name)
 
     if blender_object and of_type is not None:
@@ -331,5 +329,5 @@ def get_object_for_data(data):
             return obj
 
 
-def get_object_type(blender_object: bpy.types.Object) -> BlenderObjectTypes:
+def get_object_type(blender_object: "bpy.types.Object") -> BlenderObjectTypes:
     return BlenderObjectTypes[blender_object.type]

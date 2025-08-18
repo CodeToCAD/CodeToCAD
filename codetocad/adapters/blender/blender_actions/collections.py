@@ -8,7 +8,7 @@ default_scene_name = "Scene"
 default_collection_name = "Scene Collection"
 
 
-def get_collection(name: str, scene_name="Scene") -> bpy.types.Collection:
+def get_collection(name: str, scene_name="Scene") -> "bpy.types.Collection":
     collection = bpy.data.scenes[scene_name].collection.children.get(name)
 
     assert (
@@ -32,7 +32,9 @@ def create_collection(name: str, scene_name="Scene"):
     bpy.data.scenes[scene_name].collection.children.link(collection)
 
 
-def remove_collection(blender_collection: bpy.types.Collection, remove_children: bool):
+def remove_collection(
+    blender_collection: "bpy.types.Collection", remove_children: bool
+):
     if remove_children:
         for obj in blender_collection.objects:
             try:
@@ -44,8 +46,8 @@ def remove_collection(blender_collection: bpy.types.Collection, remove_children:
 
 
 def remove_object_from_collection(
-    blender_object: bpy.types.Object,
-    blender_collection: bpy.types.Collection,
+    blender_object: "bpy.types.Object",
+    blender_collection: "bpy.types.Collection",
 ):
     assert (
         blender_collection.objects.get(blender_object.name) is not None
@@ -55,8 +57,8 @@ def remove_object_from_collection(
 
 
 def assign_object_to_collection(
-    blender_object: bpy.types.Object,
-    blender_collection: bpy.types.Collection | None = None,
+    blender_object: "bpy.types.Object",
+    blender_collection: "bpy.types.Collection | None" = None,
     remove_from_other_groups=True,
     move_children=True,
 ):

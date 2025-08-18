@@ -90,7 +90,7 @@ def get_wire_from_blender_wire(
     entity: Union[bpy.types.Curve, bpy.types.Mesh],
     wire: Union[bpy.types.Spline, bpy.types.MeshPolygon],
 ) -> "WireInterface":
-    edges: List[EdgeInterface]
+    edges: list[EdgeInterface]
     if isinstance(wire, bpy.types.Spline):
         points = wire.bezier_points if wire.type == "BEZIER" else wire.points
 
@@ -122,8 +122,8 @@ def get_wire_from_blender_wire(
 
 def get_wires_from_blender_entity(
     entity: Union[bpy.types.Curve, bpy.types.Mesh],
-) -> "List[WireInterface]":
-    wires: List[WireInterface]
+) -> "list[WireInterface]":
+    wires: list[WireInterface]
 
     if isinstance(entity, bpy.types.Curve):
         wires = [

@@ -1,5 +1,4 @@
 import bpy
-from bpy.types import Addon
 
 
 def addon_set_enabled(addon_name: str, is_enabled: bool):
@@ -10,7 +9,7 @@ def addon_set_enabled(addon_name: str, is_enabled: bool):
     command(module=addon_name)
 
 
-def get_addon(addon_name: str) -> Addon | None:
+def get_addon(addon_name: str) -> "bpy.types.Addon|None":
 
     preferences = bpy.context.preferences
 

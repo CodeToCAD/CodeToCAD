@@ -24,7 +24,7 @@ def set_default_unit(blender_unit: BlenderLength, scene_name="Scene"):
 
 
 def add_hdr_texture(
-    scene: bpy.types.Scene,
+    scene: "bpy.types.Scene",
     image_file_path: str,
 ):
     delete_nodes(scene)
@@ -47,7 +47,7 @@ def add_hdr_texture(
     links.new(nodeBackground.outputs["Background"], nodeOutput.inputs["Surface"])
 
 
-def set_background_location(scene: bpy.types.Scene, x, y):
+def set_background_location(scene: "bpy.types.Scene", x, y):
     envTexture: bpy.types.ShaderNodeTexEnvironment | None = get_node_tree(
         scene
     ).nodes.get(
@@ -60,7 +60,7 @@ def set_background_location(scene: bpy.types.Scene, x, y):
     envTexture.location = x, y
 
 
-def get_scene(scene_name: Optional[str] = "Scene") -> bpy.types.Scene:
+def get_scene(scene_name: str | None = "Scene") -> "bpy.types.Scene":
     blenderScene = bpy.data.scenes.get(scene_name or "Scene")
 
     assert blenderScene is not None, f"Scene{scene_name} does not exists"

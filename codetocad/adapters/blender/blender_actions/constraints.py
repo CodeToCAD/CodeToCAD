@@ -18,8 +18,8 @@ from codetocad.adapters.blender.blender_definitions import (
 
 
 def get_constraint(
-    blender_object: bpy.types.Object, constraint_name
-) -> bpy.types.Constraint | None:
+    blender_object: "bpy.types.Object", constraint_name
+) -> "bpy.types.Constraint | None":
     """
     Get contraint from Blender
     """
@@ -27,7 +27,7 @@ def get_constraint(
 
 
 def apply_constraint(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     constraint_type: BlenderConstraintTypes,
     **kwargs,
 ):
@@ -45,7 +45,7 @@ def apply_constraint(
 
 
 def apply_limit_location_constraint(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     x: list[float | None] | None,
     y: list[float | None] | None,
     z: list[float | None] | None,
@@ -96,7 +96,7 @@ def apply_limit_location_constraint(
 
 
 def apply_limit_rotation_constraint(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     x_radians: list[float | None] | None,
     y_radians: list[float | None] | None,
     z_radians: list[float | None] | None,
@@ -147,8 +147,8 @@ def apply_limit_rotation_constraint(
 
 
 def apply_copy_location_constraint(
-    blender_object: bpy.types.Object,
-    copied_blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
+    copied_blender_object: "bpy.types.Object",
     copy_x: bool,
     copy_y: bool,
     copy_z: bool,
@@ -171,8 +171,8 @@ def apply_copy_location_constraint(
 
 
 def apply_copy_rotation_constraint(
-    blender_object: bpy.types.Object,
-    copied_blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
+    copied_blender_object: "bpy.types.Object",
     copy_x: bool,
     copy_y: bool,
     copy_z: bool,
@@ -194,7 +194,9 @@ def apply_copy_rotation_constraint(
 
 
 def apply_pivot_constraint(
-    blender_object: bpy.types.Object, pivot_blender_object: bpy.types.Object, **kwargs
+    blender_object: "bpy.types.Object",
+    pivot_blender_object: "bpy.types.Object",
+    **kwargs,
 ):
     apply_constraint(
         blender_object,
@@ -209,8 +211,8 @@ def apply_pivot_constraint(
 
 
 def apply_gear_constraint(
-    blender_object: bpy.types.Object,
-    gear_blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
+    gear_blender_object: "bpy.types.Object",
     ratio: float = 1,
     **kwargs,
 ):
@@ -224,9 +226,9 @@ def apply_gear_constraint(
 
 
 def translate_landmark_onto_another(
-    object_to_translate: bpy.types.Object,
-    object1_landmark: bpy.types.Object,
-    object2_landmark: bpy.types.Object,
+    object_to_translate: "bpy.types.Object",
+    object1_landmark: "bpy.types.Object",
+    object2_landmark: "bpy.types.Object",
 ):
     update_view_layer()
     object1LandmarkLocation = get_object_world_location(object1_landmark)

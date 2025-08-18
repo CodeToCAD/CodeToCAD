@@ -1,8 +1,7 @@
 import math
-from typing import List, Sequence, Tuple, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 import bpy
 import mathutils
-from mathutils import Matrix
 from uuid import uuid4
 
 from codetocad.adapters.blender.blender_actions.addons import (
@@ -36,7 +35,7 @@ if TYPE_CHECKING:
     from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 
 
-def get_curve(curve_name: str) -> bpy.types.Curve:
+def get_curve(curve_name: str) -> "bpy.types.Curve":
     """
     Get a curve in Blender. Throws if the curve does not exist.
     """
@@ -47,7 +46,7 @@ def get_curve(curve_name: str) -> bpy.types.Curve:
     return curve
 
 
-def get_curve_or_none(curve_name: str) -> Optional[bpy.types.Curve]:
+def get_curve_or_none(curve_name: str) -> "bpy.types.Curve | None":
     """
     Get a curve in Blender. Returns non if the curve does not exist.
     """
@@ -71,7 +70,7 @@ def set_curve_offset_geometry(curve_name: str, offset: float):
     curve.offset = offset
 
 
-def set_curve_use_path(curve_object: bpy.types.Curve, is_use_path: bool):
+def set_curve_use_path(curve_object: "bpy.types.Curve", is_use_path: bool):
     curve_object.use_path = is_use_path
 
 
@@ -97,7 +96,7 @@ def create_text(
     character_spacing=1,
     word_spacing=1,
     line_spacing=1,
-    font_file_path: Optional[str] = None,
+    font_file_path: str | None = None,
 ):
     curveData = bpy.data.curves.new(type="FONT", name=curve_name)
 
@@ -142,11 +141,10 @@ def create_curve(
     interpolation=64,
     is_3d=False,
     order_u: int = 2,
-) -> Tuple[
+) -> """tuple[
     bpy.types.Spline,
     bpy.types.Curve,
-    List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint],
-]:
+    list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]""":
     """
     Create a bpy.types.curve instance if one with `curve_name` doesn't already exist, then create a spline with the points provided.
     """
@@ -157,7 +155,7 @@ def create_curve(
     curve_data.resolution_u = interpolation
     curve_data.use_path = False
     curve_data.fill_mode = "FULL" if is_3d else "BOTH"  # type: ignore
-    points_parsed: List[Point] = [
+    points_parsed: list[Point] = [
         Point.from_list(point) if isinstance(point, list) else point for point in points
     ]
 
@@ -191,7 +189,7 @@ def create_curve(
 
 
 def create_spline(
-    blender_curve: bpy.types.Curve,
+    blender_curve: "bpy.types.Curve",
     curve_type: BlenderCurveTypes,
     order_u: int,
 ):
@@ -209,10 +207,10 @@ def create_spline(
 
 
 def point_exists_in_spline(
-    spline_points: bpy.types.SplinePoints | bpy.types.SplineBezierPoints,
+    spline_points: "bpy.types.SplinePoints | bpy.types.SplineBezierPoints",
     target_point: Point,
     tolerance=0.001,
-) -> bpy.types.SplinePoint | bpy.types.BezierSplinePoint | None:
+) -> "bpy.types.SplinePoint | bpy.types.BezierSplinePoint | None":
     """
     Check if a point already exists in the spline within a given tolerance.
     """
@@ -224,8 +222,8 @@ def point_exists_in_spline(
 
 
 def is_points_touching(
-    point1: mathutils.Vector | List[float],
-    point2: mathutils.Vector | List[float],
+    point1: "mathutils.Vector | list[float]",
+    point2: "mathutils.Vector | list[float]",
     tolerance: float = 0.001,
 ) -> bool:
     """
@@ -236,7 +234,7 @@ def is_points_touching(
     return (point1.xyz - point2.xyz).length < tolerance
 
 
-def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
+def merge_touching_splines(curve: "bpy.types.Curve", reference_spline_index: int):
     """
     Iterates through all the splines in a curve. If any splines share the same start and end points, their points get merged into the same spline.
     """
@@ -290,14 +288,14 @@ def merge_touching_splines(curve: bpy.types.Curve, reference_spline_index: int):
 
 
 def is_spline_cyclical(
-    spline: bpy.types.Spline,
+    spline: "bpy.types.Spline",
 ) -> bool:
     return spline.use_cyclic_u or spline.use_bezier_v
 
 
 def get_spline_points(
-    spline: bpy.types.Spline,
-) -> bpy.types.SplineBezierPoints | bpy.types.SplinePoints:
+    spline: "bpy.types.Spline",
+) -> "bpy.types.SplineBezierPoints | bpy.types.SplinePoints":
     return (
         spline.bezier_points
         if spline.type == BlenderCurveTypes.BEZIER.name
@@ -306,7 +304,7 @@ def get_spline_points(
 
 
 def set_spline_point(
-    spline_points: bpy.types.SplineBezierPoints | bpy.types.SplinePoints,
+    spline_points: "bpy.types.SplineBezierPoints | bpy.types.SplinePoints",
     new_coord: tuple[float, float, float],
     index: int,
 ):
@@ -326,14 +324,14 @@ def set_spline_point(
 
 
 def add_points_to_spline(
-    spline: bpy.types.Spline,
-    points: List[mathutils.Vector],
+    spline: "bpy.types.Spline",
+    points: "list[mathutils.Vector]",
     overwrite_first_point: bool = False,
-) -> list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]:
+) -> "list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]":
     """
     Adds points to a specific spline
     """
-    added_points: List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
+    added_points: list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint] = []
 
     spline_points = get_spline_points(spline)
 
@@ -364,9 +362,11 @@ def add_points_to_spline(
 
 
 def add_points_to_curve(
-    reference_spline: bpy.types.Spline,
-    points: List[mathutils.Vector],
-) -> Tuple[bpy.types.Spline, List[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]:
+    reference_spline: "bpy.types.Spline",
+    points: "list[mathutils.Vector]",
+) -> (
+    "tuple[bpy.types.Spline, list[bpy.types.SplinePoint | bpy.types.BezierSplinePoint]]"
+):
     """
     Adds points to a curve. If the points are touching the start or end points of the `reference_spline`, then the points will be appended to this spline. Otherwise, a new spline will be created and the points added to that instead.
 
@@ -429,12 +429,12 @@ def add_points_to_curve(
 
 
 def subdivide_bezier_points(
-    bezier_spline: bpy.types.Spline,
+    bezier_spline: "bpy.types.Spline",
     resolution: int,
     start_at_index: int = 0,
     end_at_index: int | None = None,
     is_cyclic: bool = False,
-) -> list[mathutils.Vector]:
+) -> "list[mathutils.Vector]":
     if bezier_spline.type != "BEZIER":
         raise Exception("Spline must be a bezier spline for interpolation.")
 
@@ -467,7 +467,9 @@ def subdivide_bezier_points(
     return poly_points
 
 
-def get_vertices_from_edges(edges: list["EdgeInterface"], world_matrix: Matrix):
+def get_vertices_from_edges(
+    edges: list["EdgeInterface"], world_matrix: "mathutils.Matrix"
+):
     vertices = []
     for edge in edges:
         v1 = edge.v1.position
@@ -483,7 +485,9 @@ def get_vertices_from_edges(edges: list["EdgeInterface"], world_matrix: Matrix):
     return vertices
 
 
-def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix: Matrix):
+def get_vertices_from_bezier_curve(
+    spline: "bpy.types.Spline", world_matrix: "mathutils.Matrix"
+):
     NUM_BEZIER_POINTS = 32
 
     vertices = []
@@ -511,7 +515,7 @@ def get_vertices_from_bezier_curve(spline: bpy.types.Spline, world_matrix: Matri
 
 def custom_codetocad_loft(
     wire_1: "WireInterface", wire_2: "WireInterface"
-) -> bpy.types.Mesh:
+) -> "bpy.types.Mesh":
     """
     This is a loft implemented in CodeToCAD. Mileage may vary.
     """
@@ -524,8 +528,8 @@ def custom_codetocad_loft(
     blender_object = create_object(name, mesh)
     assign_object_to_collection(blender_object)
 
-    wire_1_world_matrix = Matrix.Identity(3)
-    wire_2_world_matrix = Matrix.Identity(3)
+    wire_1_world_matrix = mathutils.Matrix.Identity(3)
+    wire_2_world_matrix = mathutils.Matrix.Identity(3)
 
     parent_object = wire_1.get_parent().get_native_instance()
     if isinstance(parent_object, bpy.types.Object):
@@ -552,8 +556,8 @@ def custom_codetocad_loft(
     # wire_1_edges = edges_1_from_mesh
     # wire_2_edges = edges_2_from_mesh
 
-    spline_1_vertices: List = []
-    spline_2_vertices: List = []
+    spline_1_vertices: list = []
+    spline_2_vertices: list = []
 
     wire_1_edges = wire_1.get_edges()
     wire_2_edges = wire_2.get_edges()
@@ -630,8 +634,8 @@ def custom_codetocad_loft(
 
 
 def add_bevel_object_to_curve(
-    path_curve_blender_object: bpy.types.Object,
-    profile_curve_blender_object: bpy.types.Object,
+    path_curve_blender_object: "bpy.types.Object",
+    profile_curve_blender_object: "bpy.types.Object",
     fill_cap=False,
 ):
     """

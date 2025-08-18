@@ -4,11 +4,40 @@ from enum import Enum
 
 
 class BlenderTypes(Enum):
-    OBJECT = bpy.types.Object
-    MESH = bpy.types.Mesh
-    CURVE = bpy.types.Curve
-    TEXT = bpy.types.TextCurve
-    POINT = bpy.types.SplinePoint | bpy.types.BezierSplinePoint
+    OBJECT = 0
+    MESH = 1
+    CURVE = 2
+    TEXT = 3
+    POINT = 4
+
+    @property
+    def blender_type(self):
+        if self == BlenderTypes.OBJECT:
+            return bpy.types.Object
+        if self == BlenderTypes.MESH:
+            return bpy.types.Mesh
+        if self == BlenderTypes.CURVE:
+            return bpy.types.Curve
+        if self == BlenderTypes.TEXT:
+            return bpy.types.TextCurve
+        if self == BlenderTypes.POINT:
+            return bpy.types.SplinePoint | bpy.types.BezierSplinePoint
+
+        raise NotImplementedError(f"Blender type {self.name} is not implemented.")
+
+    @staticmethod
+    def from_string(name: str):
+        name = name.lower()
+        if name == "object":
+            return BlenderTypes.OBJECT
+        if name == "mesh":
+            return BlenderTypes.MESH
+        if name == "curve":
+            return BlenderTypes.CURVE
+        if name == "text":
+            return BlenderTypes.TEXT
+        if name == "point":
+            return BlenderTypes.POINT
 
 
 class BlenderObjectTypes(Enum):

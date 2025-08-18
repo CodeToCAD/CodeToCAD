@@ -8,11 +8,11 @@ from codetocad.cli.config import read_config
 class LauncherArgs:
     script_file_path_or_action: str
     launcher: str
-    launcher_location: Optional[str] = None
-    background: Optional[bool] = False
-    document_name: Optional[str] = None
-    config_file_path: Optional[str] = None
-    debug: Optional[bool] = False
+    launcher_location: str | None = None
+    background: bool | None = False
+    document_name: str | None = None
+    config_file_path: str | None = None
+    debug: bool | None = False
 
     @staticmethod
     def get_sample_launcher_name():

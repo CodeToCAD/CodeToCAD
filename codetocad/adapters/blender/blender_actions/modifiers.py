@@ -1,6 +1,5 @@
-from codetocad.core.angle import Angle
-from codetocad.core.dimension import Dimension
-from codetocad.enums.axis import Axis
+from codetocad.core.dimensions.angle import Angle
+from codetocad.core.enums.axis import Axis
 from codetocad.adapters.blender.blender_definitions import (
     BlenderBooleanTypes,
     BlenderLength,
@@ -11,13 +10,13 @@ import bpy
 
 
 def clear_modifiers(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
 ):
     blender_object.modifiers.clear()
 
 
 def apply_modifier(
-    blender_object: bpy.types.Object, modifier: BlenderModifiers, **kwargs
+    blender_object: "bpy.types.Object", modifier: BlenderModifiers, **kwargs
 ):
     # references https://docs.blender.org/api/current/bpy.types.BooleanModifier.html?highlight=boolean#bpy.types.BooleanModifier and https://docs.blender.org/api/current/bpy.types.ObjectModifiers.html#bpy.types.ObjectModifiers and https://docs.blender.org/api/current/bpy.types.Modifier.html#bpy.types.Modifier
     blenderModifier = blender_object.modifiers.new(
@@ -31,7 +30,7 @@ def apply_modifier(
         setattr(blenderModifier, key, value)
 
 
-def apply_decimate_modifier(blender_object: bpy.types.Object, amount: int):
+def apply_decimate_modifier(blender_object: "bpy.types.Object", amount: int):
     apply_modifier(
         blender_object,
         BlenderModifiers.DECIMATE,
@@ -41,8 +40,8 @@ def apply_decimate_modifier(blender_object: bpy.types.Object, amount: int):
 
 
 def apply_bevel_modifier(
-    blender_object: bpy.types.Object,
-    radius: Dimension,
+    blender_object: "bpy.types.Object",
+    radius: float,
     vertex_group_name=None,
     use_edges=True,
     use_width=False,
@@ -54,7 +53,7 @@ def apply_bevel_modifier(
         BlenderModifiers.BEVEL,
         affect="EDGES" if use_edges else "VERTICES",
         offset_type="WIDTH" if use_width else "OFFSET",
-        width=radius.value,
+        width=radius,
         segments=1 if chamfer else 24,
         limit_method="VGROUP" if vertex_group_name else "ANGLE",
         vertex_group=vertex_group_name or "",
@@ -63,7 +62,7 @@ def apply_bevel_modifier(
 
 
 def apply_linear_pattern(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     instance_count,
     direction: Axis,
     offset: float,
@@ -71,7 +70,7 @@ def apply_linear_pattern(
 ):
     offset_array = [0.0, 0.0, 0.0]
 
-    offset_array[direction.value] = offset
+    offset_array[direction] = offset
 
     apply_modifier(
         blender_object,
@@ -85,9 +84,9 @@ def apply_linear_pattern(
 
 
 def apply_circular_pattern(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     instance_count: int,
-    blender_around_object: bpy.types.Object,
+    blender_around_object: "bpy.types.Object",
     **kwargs,
 ):
 
@@ -103,19 +102,21 @@ def apply_circular_pattern(
 
 
 def apply_solidify_modifier(
-    blender_object: bpy.types.Object, thickness: Dimension, **kwargs
+    blender_object: "bpy.types.Object", thickness: float, **kwargs
 ):
     apply_modifier(
         blender_object,
         BlenderModifiers.SOLIDIFY,
-        thickness=BlenderLength.convert_dimension_to_blender_unit(thickness).value,
+        thickness=thickness,
         offset=0,
         **kwargs,
     )
 
 
 def apply_curve_modifier(
-    blender_object: bpy.types.Object, curve_blender_object: bpy.types.Object, **kwargs
+    blender_object: "bpy.types.Object",
+    curve_blender_object: "bpy.types.Object",
+    **kwargs,
 ):
     apply_modifier(
         blender_object,
@@ -126,17 +127,17 @@ def apply_curve_modifier(
 
 
 def apply_boolean_modifier(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     blender_boolean_type: BlenderBooleanTypes,
-    blender_boolean_object: bpy.types.Object,
+    blender_boolean_object: "bpy.types.Object",
     **kwargs,
 ):
 
     assert isinstance(
-        blender_object.data, BlenderTypes.MESH.value
+        blender_object.data, BlenderTypes.MESH.blender_type
     ), f"Object {blender_object.name} is not an Object. Cannot use the Boolean modifier with {type(blender_object.data)} type."
     assert isinstance(
-        blender_boolean_object.data, BlenderTypes.MESH.value
+        blender_boolean_object.data, BlenderTypes.MESH.blender_type
     ), f"Object {blender_boolean_object.name} is not an Object. Cannot use the Boolean modifier with {type(blender_boolean_object.data)} type."
 
     apply_modifier(
@@ -153,13 +154,13 @@ def apply_boolean_modifier(
 
 
 def apply_mirror_modifier(
-    blender_object: bpy.types.Object,
-    blender_mirror_across_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
+    blender_mirror_across_object: "bpy.types.Object",
     axis: Axis,
     **kwargs,
 ):
     axis_list = [False, False, False]
-    axis_list[axis.value] = True
+    axis_list[axis] = True
 
     apply_modifier(
         blender_object,
@@ -172,22 +173,20 @@ def apply_mirror_modifier(
 
 
 def apply_screw_modifier(
-    blender_object: bpy.types.Object,
+    blender_object: "bpy.types.Object",
     angle: Angle,
     axis: Axis,
-    screw_pitch: Dimension = Dimension(0),
+    screw_pitch: float = float(0),
     iterations=1,
-    blender_mirror_across_object: bpy.types.Object | None = None,
+    blender_mirror_across_object: "bpy.types.Object | None" = None,
     resolution=16,
     **kwargs,
 ):
     # https://docs.blender.org/api/current/bpy.types.ScrewModifier.html
     properties = {
         "axis": axis.name,
-        "angle": angle.value,
-        "screw_offset": BlenderLength.convert_dimension_to_blender_unit(
-            screw_pitch
-        ).value,
+        "angle": angle,
+        "screw_offset": screw_pitch,
         "steps": resolution,
         "render_steps": resolution,
         "use_merge_vertices": True,

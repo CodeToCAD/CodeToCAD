@@ -5,7 +5,7 @@ from codetocad.adapters.blender.blender_actions.mesh import get_mesh_for_object
 
 def get_material(
     material_name: str,
-) -> bpy.types.Material:
+) -> "bpy.types.Material":
     blender_material = bpy.data.materials.get(material_name)
 
     assert blender_material is not None, f"Material {material_name} does not exist."
@@ -13,7 +13,7 @@ def get_material(
     return blender_material
 
 
-def get_materials(obj_name: str) -> list[bpy.types.Material]:
+def get_materials(obj_name: str) -> "list[bpy.types.Material]":
     obj = bpy.data.objects[obj_name]
     return [
         material_slot.material
@@ -35,7 +35,7 @@ def create_material(
 
 
 def set_material_color(
-    material: bpy.types.Material, r_value, g_value, b_value, a_value=1.0
+    material: "bpy.types.Material", r_value, g_value, b_value, a_value=1.0
 ):
     if isinstance(r_value, int):
         r_value /= 255.0
@@ -54,20 +54,20 @@ def set_material_color(
     return material
 
 
-def set_material_metallicness(material: bpy.types.Material, value: float):
+def set_material_metallicness(material: "bpy.types.Material", value: float):
     material.metallic = value
 
 
-def set_material_roughness(material: bpy.types.Material, value: float):
+def set_material_roughness(material: "bpy.types.Material", value: float):
     material.roughness = value
 
 
-def set_material_specularness(material: bpy.types.Material, value: float):
+def set_material_specularness(material: "bpy.types.Material", value: float):
     material.specular_intensity = value
 
 
 def set_material_to_object(
-    material: bpy.types.Material, blender_object: bpy.types.Object, is_union=False
+    material: "bpy.types.Material", blender_object: "bpy.types.Object", is_union=False
 ):
 
     mesh: bpy.types.Mesh = get_mesh_for_object(blender_object)
@@ -100,7 +100,7 @@ def set_material_to_object(
 
 
 def add_texture_to_material(
-    material: bpy.types.Material,
+    material: "bpy.types.Material",
     image_file_path: str,
 ):
     """

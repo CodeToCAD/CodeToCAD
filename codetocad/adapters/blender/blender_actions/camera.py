@@ -30,15 +30,13 @@ def get_camera(
     return blender_camera
 
 
-def set_scene_camera(
-    blender_camera: bpy.types.Object, scene_name: Optional[str] = None
-):
+def set_scene_camera(blender_camera: "bpy.types.Object", scene_name: str | None = None):
     scene = get_scene(scene_name)
 
     scene.camera = blender_camera
 
 
-def set_focal_length(blender_camera: bpy.types.Camera, length=50.0):
+def set_focal_length(blender_camera: "bpy.types.Camera", length=50.0):
     assert length >= 1, "Length needs to be greater than or equal to 1."
 
     blender_camera.lens = length
