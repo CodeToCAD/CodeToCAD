@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
-from codetocad.cad.edge.edge import Edge
-from codetocad.cad.wire.wire_constraint import WireConstraint
-from codetocad.cad.wire.wire_add import WireAdd
-from codetocad.cad.wire.wire_presets import WirePresets
-from codetocad.cad.wire.wire_get import WireGet
+from codetocad.interfaces.cad.edge.edge import Edge
+from codetocad.interfaces.cad.wire.wire_constraint import WireConstraint
+from codetocad.interfaces.cad.wire.wire_add import WireAdd
+from codetocad.interfaces.cad.wire.wire_presets import WirePresets
+from codetocad.interfaces.cad.wire.wire_get import WireGet
 from codetocad.core.dimensions.length import LengthType
 
 if TYPE_CHECKING:
-    from codetocad.cad.part.part import Part
-    from codetocad.cad.sketch.sketch import Sketch
+    from codetocad.interfaces.cad.part.part import Part
+    from codetocad.interfaces.cad.sketch.sketch import Sketch
 
 
 class _WirePresetClassProperty(type):
@@ -35,8 +35,8 @@ class Wire(metaclass=_WirePresetClassProperty):
         return f"Wire({self.edges}"
 
     def extude(self, length: LengthType) -> "Part":
-        from codetocad.cad.part.part import Part
-        from codetocad.cad.sketch.sketch import Sketch
+        from codetocad.interfaces.cad.part.part import Part
+        from codetocad.interfaces.cad.sketch.sketch import Sketch
 
         part = Part()
         sketch = Sketch()

@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
-from codetocad.cad.assembly.assembly_part import AssemblyPart
+from codetocad.interfaces.cad.assembly.assembly_part import AssemblyPart
 
 
 if TYPE_CHECKING:
-    from codetocad.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly import Assembly
 
 
 class AssemblyGet:

@@ -1,6 +1,6 @@
-from codetocad.cad.assembly.assembly_add import AssemblyAdd
-from codetocad.cad.assembly.assembly_get import AssemblyGet
-from codetocad.cad.part.part import Part
+from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAdd
+from codetocad.interfaces.cad.assembly.assembly_get import AssemblyGet
+from codetocad.interfaces.cad.part.part import Part
 
 
 class Assembly:

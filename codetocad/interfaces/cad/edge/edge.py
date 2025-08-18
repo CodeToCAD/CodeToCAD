@@ -1,5 +1,5 @@
-from codetocad.cad.edge.edge_transform import EdgeTransform
-from codetocad.cad.vertex.vertex import Vertex
+from codetocad.interfaces.cad.edge.edge_transform import EdgeTransform
+from codetocad.interfaces.cad.vertex.vertex import Vertex
 
 
 class Edge:

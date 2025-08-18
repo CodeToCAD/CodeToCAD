@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from codetocad.cad.sketch.sketch import Sketch
-    from codetocad.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.sketch.sketch import Sketch
+    from codetocad.interfaces.cad.wire.wire import Wire
 
 
 class SketchGet:

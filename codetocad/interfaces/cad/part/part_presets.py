@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
-from codetocad.cad.sketch.sketch import Sketch
+from codetocad.interfaces.cad.sketch.sketch import Sketch
 from codetocad.core.dimensions.length import LengthType
 
 if TYPE_CHECKING:
-    from codetocad.cad.assembly.assembly import Assembly
-    from codetocad.cad.part.part import Part
+    from codetocad.interfaces.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.part.part import Part
 
 
 class PartPresets:

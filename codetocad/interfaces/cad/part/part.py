@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
-from codetocad.cad.part.part_presets import PartPresets
+from codetocad.interfaces.cad.part.part_presets import PartPresets
 
 if TYPE_CHECKING:
-    from codetocad.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly import Assembly
 
 
 class _PartPresetClassProperty(type):
@@ -15,7 +15,7 @@ class Part(metaclass=_PartPresetClassProperty):
     def __init__(self):
         self.member_assemblies: list[Assembly] = []
 
-        from codetocad.cad.sketch.sketch import Sketch
+        from codetocad.interfaces.cad.sketch.sketch import Sketch
 
         self.sketch: Sketch = Sketch()
 

@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
-from codetocad.cad.edge.edge import Edge
-from codetocad.cad.vertex.vertex import Vertex
+from codetocad.interfaces.cad.edge.edge import Edge
+from codetocad.interfaces.cad.vertex.vertex import Vertex
 
 
 if TYPE_CHECKING:
-    from codetocad.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.wire.wire import Wire
 
 
 class WireGet:

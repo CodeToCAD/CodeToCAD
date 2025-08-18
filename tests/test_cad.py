@@ -1,7 +1,7 @@
 import math
 import pytest
 
-from codetocad.cad import *
+from codetocad.adapters.blender import *
 
 
 def test_length():

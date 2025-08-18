@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from codetocad.cad.assembly.assembly import Assembly
+    from codetocad.interfaces.cad.assembly.assembly import Assembly
 
 
 class AssemblyPart:

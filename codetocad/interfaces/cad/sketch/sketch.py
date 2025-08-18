@@ -1,7 +1,7 @@
-from codetocad.cad.sketch.sketch_get import SketchGet
-from codetocad.cad.wire.wire import Wire
-from codetocad.cad.wire.wire_add import WireAdd
-from codetocad.cad.wire.wire_presets import WirePresets
+from codetocad.interfaces.cad.sketch.sketch_get import SketchGet
+from codetocad.interfaces.cad.wire.wire import Wire
+from codetocad.interfaces.cad.wire.wire_add import WireAdd
+from codetocad.interfaces.cad.wire.wire_presets import WirePresets
 
 
 class Sketch:

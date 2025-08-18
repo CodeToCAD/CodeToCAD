@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Type
 from codetocad.core.dimensions.length import LengthType
 
 if TYPE_CHECKING:
-    from codetocad.cad.sketch.sketch import Sketch
-    from codetocad.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.sketch.sketch import Sketch
+    from codetocad.interfaces.cad.wire.wire import Wire
 
 
 class WirePresets:

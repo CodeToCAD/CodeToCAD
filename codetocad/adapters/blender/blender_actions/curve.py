@@ -26,8 +26,8 @@ from codetocad.core.dimensions.point import Point
 
 
 if TYPE_CHECKING:
-    from codetocad.cad.edge.edge import Edge
-    from codetocad.cad.wire.wire import Wire
+    from codetocad.interfaces.cad.edge.edge import Edge
+    from codetocad.interfaces.cad.wire.wire import Wire
 
 
 def get_curve(curve_name: str) -> bpy.types.Curve:
