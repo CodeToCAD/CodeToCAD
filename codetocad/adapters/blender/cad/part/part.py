@@ -1,22 +1,32 @@
-import bpy
 import bmesh
 from typing import TYPE_CHECKING, List
 from uuid import uuid4
 
 from codetocad.interfaces.cad.part.part_interface import PartInterface
-from codetocad.core.dimensions.length import LengthType
+from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.adapters.blender.cad.sketch.sketch import Sketch
-from codetocad.adapters.blender.blender_actions.objects import create_object
+from codetocad.adapters.blender.blender_actions.objects import (
+    create_object,
+    update_object_data_name,
+    update_object_name,
+    get_object,
+    remove_object,
+)
 from codetocad.adapters.blender.blender_actions.objects_transmute import (
     create_mesh_from_curve,
 )
-from codetocad.adapters.blender.blender_actions.modifiers import apply_modifier
+from codetocad.adapters.blender.blender_actions.modifiers import (
+    apply_solidify_modifier,
+    apply_boolean_modifier,
+)
+from codetocad.adapters.blender.blender_definitions import BlenderBooleanTypes
 from codetocad.adapters.blender.cad.part.part_preset_class_property import (
     _PartPresetClassProperty,
 )
 
 if TYPE_CHECKING:
     from codetocad.adapters.blender.cad.assembly.assembly import Assembly
+    import bpy
 
 
 class Part(PartInterface, metaclass=_PartPresetClassProperty):
@@ -27,20 +37,19 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         self.name = name or f"part_{str(uuid4())[:8]}"
         self._blender_object: bpy.types.Object | None = None
 
-        # Initialize parent interface properties
-        self.member_assemblies: List["Assembly"] = []
-        self.sketch: Sketch = Sketch(f"{self.name}_sketch")
+        self.sketch = Sketch(f"{self.name}_sketch")
 
     def set_name(self, name: str):
         """Set the part name and update Blender object."""
         self.name = name
         if self._blender_object:
-            self._blender_object.name = name
+            update_object_name(self._blender_object, name)
+            update_object_data_name(self._blender_object, name)
 
     @classmethod
     def get_by_name(cls, name: str) -> "Part| None":
         """Get a part by name from the Blender scene."""
-        blender_obj = bpy.data.objects.get(name)
+        blender_obj = get_object(name)
         if blender_obj:
             part = cls(name)
             part._blender_object = blender_obj
@@ -74,37 +83,34 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
             self._blender_object.data, bpy.types.Mesh
         ):
             # Add solidify modifier for extrusion
-            modifier = apply_modifier(self._blender_object, "Solidify", "SOLIDIFY")
-            if modifier:
-                modifier.thickness = float(distance)
+            apply_solidify_modifier(self._blender_object, float(distance))
 
     def boolean_union(self, other: "Part"):
         """Perform boolean union with another part."""
         if self._blender_object and other._blender_object:
-            modifier = apply_modifier(self._blender_object, "Boolean_Union", "BOOLEAN")
-            if modifier:
-                modifier.operation = "UNION"
-                modifier.object = other._blender_object
+            apply_boolean_modifier(
+                self._blender_object,
+                BlenderBooleanTypes.UNION,
+                other._blender_object,
+            )
 
     def boolean_difference(self, other: "Part"):
         """Perform boolean difference with another part."""
         if self._blender_object and other._blender_object:
-            modifier = apply_modifier(
-                self._blender_object, "Boolean_Difference", "BOOLEAN"
+            apply_boolean_modifier(
+                self._blender_object,
+                BlenderBooleanTypes.DIFFERENCE,
+                other._blender_object,
             )
-            if modifier:
-                modifier.operation = "DIFFERENCE"
-                modifier.object = other._blender_object
 
     def boolean_intersection(self, other: "Part"):
         """Perform boolean intersection with another part."""
         if self._blender_object and other._blender_object:
-            modifier = apply_modifier(
-                self._blender_object, "Boolean_Intersection", "BOOLEAN"
+            apply_boolean_modifier(
+                self._blender_object,
+                BlenderBooleanTypes.INTERSECT,
+                other._blender_object,
             )
-            if modifier:
-                modifier.operation = "INTERSECT"
-                modifier.object = other._blender_object
 
     def move(self, x: float, y: float, z: float):
         """Move the part to a new location."""
@@ -116,12 +122,12 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         if self._blender_object:
             self._blender_object.rotation_euler = (x, y, z)
 
-    def scale(self, x: float, y: float = None, z: float = None):
+    def scale(self, x: float, y: float | None = None, z: float | None = None):
         """Scale the part."""
         if self._blender_object:
-            y = y or x
-            z = z or x
-            self._blender_object.scale = (x, y, z)
+            y_val = y if y is not None else x
+            z_val = z if z is not None else x
+            self._blender_object.scale = (x, y_val, z_val)
 
     def get_volume(self) -> float:
         """Calculate the volume of the part."""
@@ -153,7 +159,7 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         """Delete the part from Blender."""
         if self._blender_object:
             # Remove from scene
-            bpy.data.objects.remove(self._blender_object, do_unlink=True)
+            remove_object(self._blender_object)
             self._blender_object = None
 
     def __repr__(self):

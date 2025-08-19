@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING, List
-import bpy
 from uuid import uuid4
 
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterface
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
-from codetocad.core.dimensions.length import LengthType
+from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.adapters.blender.cad.edge.edge import Edge
 from codetocad.adapters.blender.cad.vertex.vertex import Vertex
 from codetocad.adapters.blender.cad.wire.wire_add import WireAdd
@@ -16,10 +15,13 @@ from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
+from codetocad.adapters.blender.blender_actions.curve import create_curve
+from codetocad.adapters.blender.blender_definitions import BlenderCurveTypes
 
 if TYPE_CHECKING:
     from codetocad.adapters.blender.cad.part.part import Part
     from codetocad.adapters.blender.cad.sketch.sketch import Sketch
+    import bpy
 
 
 class Wire(WireInterface, metaclass=_WirePresetClassProperty):
@@ -37,13 +39,10 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         self._blender_object: bpy.types.Object | None = None
         self._curve_data: bpy.types.Curve | None = None
 
-        # Initialize parent with sketch
-        if sketch is not None:
-            self.member_sketches: List["Sketch"] = [sketch]
-        else:
-            self.member_sketches: List["Sketch"] = []
+        self.member_sketches: list["Sketch"] = [sketch] if sketch is not None else []  # type: ignore
 
-        self.edges: List[Edge] = []
+        self.edges: list[Edge] = []  # type: ignore
+
         self.add = WireAdd(self)
         self.get = WireGetInterface(self)
         self.constraint = WireConstraintInterface(self)
@@ -53,9 +52,16 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
     def _create_blender_wire(self):
         """Create a Blender curve to represent this wire."""
-        # Create an empty curve initially
-        self._curve_data = bpy.data.curves.new(self.name, type="CURVE")
-        self._curve_data.dimensions = "3D"
+        # Create an empty curve initially with basic points
+        initial_points = [(0, 0, 0), (0, 0, 0)]  # Start with minimal curve
+
+        spline, curve_data, spline_points = create_curve(
+            curve_name=self.name,
+            curve_type=BlenderCurveTypes.NURBS,
+            points=initial_points,
+            is_3d=True,
+        )
+        self._curve_data = curve_data
 
         # Create object from curve
         self._blender_object = create_object(self.name, self._curve_data)

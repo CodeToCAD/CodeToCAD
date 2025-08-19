@@ -11,6 +11,7 @@ from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
 from codetocad.adapters.blender.blender_actions.curve import create_curve
+from codetocad.adapters.blender.blender_actions.mesh import create_mesh
 from codetocad.adapters.blender.blender_definitions import BlenderCurveTypes
 
 
@@ -65,14 +66,12 @@ class Edge(EdgeInterface):
     def _create_mesh_edge(self):
         """Fallback method to create a mesh-based edge."""
         # Create a mesh with two vertices and one edge
-        mesh = bpy.data.meshes.new(self.name)
-
         vertices = [self.v1.position.tolist(), self.v2.position.tolist()]
         edges = [(0, 1)]
         faces = []
 
-        mesh.from_pydata(vertices, edges, faces)
-        mesh.update()
+        # Use utility function to create mesh
+        mesh = create_mesh(self.name, vertices, edges, faces)
 
         # Create object and assign to scene
         self._blender_object = create_object(self.name, mesh)

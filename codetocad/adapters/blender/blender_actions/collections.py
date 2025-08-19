@@ -8,6 +8,15 @@ default_scene_name = "Scene"
 default_collection_name = "Scene Collection"
 
 
+def get_scene_collection(scene_name="Scene") -> "bpy.types.Collection":
+
+    collection = bpy.data.scenes[scene_name].collection
+
+    assert collection is not None, f"Scene {scene_name} does not have a collection"
+
+    return collection
+
+
 def get_collection(name: str, scene_name="Scene") -> "bpy.types.Collection":
     collection = bpy.data.scenes[scene_name].collection.children.get(name)
 
@@ -16,6 +25,13 @@ def get_collection(name: str, scene_name="Scene") -> "bpy.types.Collection":
     ), f"Collection {name} does not exists in scene {scene_name}"
 
     return collection
+
+
+def get_collection_or_none(
+    name: str, scene_name="Scene"
+) -> "bpy.types.Collection | None":
+    """Get a collection by name, returning None if it doesn't exist."""
+    return bpy.data.scenes[scene_name].collection.children.get(name)
 
 
 def create_collection(name: str, scene_name="Scene"):
@@ -56,6 +72,22 @@ def remove_object_from_collection(
     blender_collection.objects.unlink(blender_object)
 
 
+def link_object_to_collection(
+    blender_object: "bpy.types.Object",
+    blender_collection: "bpy.types.Collection",
+):
+    """Link an object to a collection."""
+    blender_collection.objects.link(blender_object)
+
+
+def unlink_object_from_collection(
+    blender_object: "bpy.types.Object",
+    blender_collection: "bpy.types.Collection",
+):
+    """Unlink an object from a collection."""
+    blender_collection.objects.unlink(blender_object)
+
+
 def assign_object_to_collection(
     blender_object: "bpy.types.Object",
     blender_collection: "bpy.types.Collection | None" = None,
@@ -82,9 +114,9 @@ def assign_object_to_collection(
             blender_object.users_collection
         )
         for currentCollection in currentCollections:
-            currentCollection.objects.unlink(blender_object)
+            unlink_object_from_collection(blender_object, currentCollection)
 
-    blender_collection.objects.link(blender_object)
+    link_object_to_collection(blender_object, blender_collection)
 
     if move_children:
         for child in blender_object.children:

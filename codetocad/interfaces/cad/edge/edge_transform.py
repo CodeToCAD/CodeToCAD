@@ -1,6 +1,6 @@
 import numpy as np
 
-from codetocad.core.dimensions.length import Length
+from codetocad.core.dimensions.length_expression import LengthExpression
 
 
 class EdgeTransformInterface:
@@ -10,9 +10,9 @@ class EdgeTransformInterface:
     def translate(self, dx, dy, dz=0):
         t = np.array(
             [
-                [1, 0, 0, float(Length(dx))],
-                [0, 1, 0, float(Length(dy))],
-                [0, 0, 1, float(Length(dz))],
+                [1, 0, 0, float(LengthExpression(dx))],
+                [0, 1, 0, float(LengthExpression(dy))],
+                [0, 0, 1, float(LengthExpression(dz))],
                 [0, 0, 0, 1],
             ]
         )

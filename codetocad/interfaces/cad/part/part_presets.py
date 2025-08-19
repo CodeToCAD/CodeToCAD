@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface
-from codetocad.core.dimensions.length import LengthType
+from codetocad.core.dimensions.length_expression import LengthType
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface

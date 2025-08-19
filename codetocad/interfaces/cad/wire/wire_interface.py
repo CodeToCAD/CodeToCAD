@@ -4,7 +4,7 @@ from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterfac
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
 from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
-from codetocad.core.dimensions.length import LengthType
+from codetocad.core.dimensions.length_expression import LengthType
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.part.part_interface import PartInterface

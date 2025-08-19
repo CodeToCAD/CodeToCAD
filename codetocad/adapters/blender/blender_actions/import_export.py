@@ -84,6 +84,12 @@ fileExportFunctions = {
 def export_object(
     blender_object: "bpy.types.Object", file_path: str, overwrite=True, scale=1.0
 ):
+    return export_objects([blender_object], file_path, overwrite, scale)
+
+
+def export_objects(
+    blender_objects: "list[bpy.types.Object]", file_path: str, overwrite=True, scale=1.0
+):
     path = Path(file_path).resolve()
 
     # Check if the file exists:
@@ -92,7 +98,8 @@ def export_object(
 
     bpy.ops.object.select_all(action="DESELECT")
 
-    blender_object.select_set(True)
+    for blender_object in blender_objects:
+        blender_object.select_set(True)
 
     # Check if this is a file-type we support:
     file_type = path.suffix.replace(".", "")

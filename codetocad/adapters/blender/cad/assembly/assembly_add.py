@@ -2,6 +2,11 @@ import bpy
 from typing import TYPE_CHECKING
 
 from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAddInterface
+from codetocad.adapters.blender.blender_actions.collections import (
+    get_collection_or_none,
+    link_object_to_collection,
+    unlink_object_from_collection,
+)
 
 if TYPE_CHECKING:
     from codetocad.adapters.blender.cad.assembly.assembly import Assembly
@@ -25,14 +30,15 @@ class AssemblyAdd(AssemblyAddInterface):
         self.assembly.parts.append(part)
 
         # Add part's Blender object to assembly collection
-        if part.get_blender_object() and self.assembly.name in bpy.data.collections:
-            assembly_collection = bpy.data.collections[self.assembly.name]
-            part_obj = part.get_blender_object()
+        part_obj = part.get_blender_object()
+        if part_obj:
+            assembly_collection = get_collection_or_none(self.assembly.name)
+            if assembly_collection:
+                # Add to assembly collection if not already there
+                if part_obj.name not in assembly_collection.objects:
+                    link_object_to_collection(part_obj, assembly_collection)
 
-            # Add to assembly collection if not already there
-            if part_obj.name not in assembly_collection.objects:
-                assembly_collection.objects.link(part_obj)
-
-                # Remove from scene collection to avoid duplication
-                if part_obj.name in bpy.context.scene.collection.objects:
-                    bpy.context.scene.collection.objects.unlink(part_obj)
+                    # Remove from scene collection to avoid duplication
+                    scene_collection = bpy.context.scene.collection
+                    if part_obj.name in scene_collection.objects:
+                        unlink_object_from_collection(part_obj, scene_collection)

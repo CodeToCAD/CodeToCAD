@@ -1,14 +1,18 @@
+from typing import TYPE_CHECKING
 import numpy as np
-import bpy
 from uuid import uuid4
 
 from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
-from codetocad.core.dimensions.length import Length, LengthType
+from codetocad.core.dimensions.length_expression import LengthExpression, LengthType
 from codetocad.core.dimensions.point import Point
 from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
+from codetocad.adapters.blender.blender_actions.mesh import create_mesh
+
+if TYPE_CHECKING:
+    import bpy
 
 
 class Vertex(VertexInterface):
@@ -36,16 +40,13 @@ class Vertex(VertexInterface):
 
     def _create_blender_vertex(self):
         """Create a Blender object to represent this vertex."""
-        # Create a small sphere to represent the vertex
-        mesh = bpy.data.meshes.new(self.name)
-
         # Create a simple vertex mesh (single point)
         vertices = [self.position.tolist()]
         edges = []
         faces = []
 
-        mesh.from_pydata(vertices, edges, faces)
-        mesh.update()
+        # Use utility function to create mesh
+        mesh = create_mesh(self.name, vertices, edges, faces)
 
         # Create object and assign to scene
         self._blender_object = create_object(self.name, mesh)
@@ -72,7 +73,13 @@ class Vertex(VertexInterface):
 
     def set_location(self, x: LengthType, y: LengthType, z: LengthType):
         """Set the vertex location and update Blender representation."""
-        self.position = np.array([float(Length(x)), float(Length(y)), float(Length(z))])
+        self.position = np.array(
+            [
+                float(LengthExpression(x)),
+                float(LengthExpression(y)),
+                float(LengthExpression(z)),
+            ]
+        )
 
         if self._blender_object:
             self._blender_object.location = self.position

@@ -2,8 +2,6 @@ import bpy
 import bmesh
 import mathutils
 
-from mathutils.bvhtree import BVHTree
-from mathutils.kdtree import KDTree
 from codetocad.adapters.blender.blender_actions.context import update_view_layer
 from codetocad.core.dimensions.boundary_axis import BoundaryAxis
 from codetocad.core.dimensions.boundary_box import BoundaryBox
@@ -17,6 +15,19 @@ def get_mesh(
     assert blenderMesh is not None, f"Mesh {mesh_name} does not exists"
 
     return blenderMesh
+
+
+def create_mesh(
+    mesh_name: str,
+    vertices: list,
+    edges: list,
+    faces: list,
+) -> "bpy.types.Mesh":
+    """Create a new mesh with the given vertices, edges, and faces."""
+    mesh = bpy.data.meshes.new(mesh_name)
+    mesh.from_pydata(vertices, edges, faces)
+    mesh.update()
+    return mesh
 
 
 def get_mesh_for_object(blender_object: "bpy.types.Object"):
@@ -69,8 +80,8 @@ def is_collision_between_two_objects(
     bm1.transform(blender_object1.matrix_world)
     bm2.transform(blender_object2.matrix_world)
 
-    obj_now_BVHtree = BVHTree.FromBMesh(bm1)
-    obj_next_BVHtree = BVHTree.FromBMesh(bm2)
+    obj_now_BVHtree = mathutils.bvhtree.BVHTree.FromBMesh(bm1)
+    obj_next_BVHtree = mathutils.bvhtree.BVHTree.FromBMesh(bm2)
 
     uniqueIndecies = obj_now_BVHtree.overlap(obj_next_BVHtree)
 
@@ -88,7 +99,7 @@ def create_kd_tree_for_object(
 
     size = len(mesh.vertices)
 
-    kd = KDTree(size)
+    kd = mathutils.kdtree.KDTree(size)
 
     for i, v in enumerate(mesh.vertices):
         kd.insert(v.co, i)

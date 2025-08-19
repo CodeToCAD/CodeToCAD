@@ -1,14 +1,25 @@
-import bpy
 import mathutils
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from codetocad.adapters.blender.blender_actions.objects import remove_object
 from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
 from codetocad.adapters.blender.cad.assembly.assembly_add import AssemblyAdd
 from codetocad.adapters.blender.cad.assembly.assembly_get import AssemblyGet
-from codetocad.adapters.blender.blender_actions.collections import create_collection
+from codetocad.adapters.blender.blender_actions.collections import (
+    create_collection,
+    get_collection,
+    get_collection_or_none,
+    remove_collection,
+)
+from codetocad.adapters.blender.blender_actions.context import select_object
+from codetocad.adapters.blender.blender_actions.import_export import (
+    export_object,
+    export_objects,
+)
 
 if TYPE_CHECKING:
+    import bpy
     from codetocad.adapters.blender.cad.part.part import Part
 
 
@@ -21,7 +32,7 @@ class Assembly(AssemblyInterface):
         self._blender_collection: bpy.types.Collection | None = None
 
         # Initialize parent interface properties
-        self.parts: List["Part"] = []
+        self.parts: list["Part"] = []  # type: ignore
         self.add = AssemblyAdd(self)
         self.get = AssemblyGet(self)
 
@@ -32,27 +43,30 @@ class Assembly(AssemblyInterface):
         """Create a Blender collection to represent this assembly."""
         try:
             create_collection(self.name)
-            self._blender_collection = bpy.data.collections[self.name]
+            self._blender_collection = get_collection(self.name)
         except Exception:
             # Collection might already exist
-            self._blender_collection = bpy.data.collections.get(self.name)
+            self._blender_collection = get_collection_or_none(self.name)
 
-    def get_collection(self) -> "bpy.types.Collection | None":
+    def _get_collection(self) -> "bpy.types.Collection | None":
         """Get the Blender collection representing this assembly."""
         return self._blender_collection
 
-    def get_all_objects(self) -> "list[bpy.types.Object]":
-        """Get all Blender objects in this assembly."""
-        if self._blender_collection:
-            return list(self._blender_collection.objects)
-        return []
+    def _get_all_blender_objects(self) -> "list[bpy.types.Object]":
+        """Get all Blender objects in the assembly."""
+        return [
+            obj
+            for obj in [part.get_blender_object() for part in self.parts]
+            if obj is not None
+        ]
 
     def move(self, x: float, y: float, z: float):
         """Move all parts in the assembly."""
         for part in self.parts:
-            if part.get_blender_object():
-                current_loc = part.get_blender_object().location
-                part.get_blender_object().location = (
+            blender_object = part.get_blender_object()
+            if blender_object:
+                current_loc = blender_object.location
+                blender_object.location = (
                     current_loc[0] + x,
                     current_loc[1] + y,
                     current_loc[2] + z,
@@ -61,26 +75,28 @@ class Assembly(AssemblyInterface):
     def rotate(self, x: float, y: float, z: float):
         """Rotate all parts in the assembly."""
         for part in self.parts:
-            if part.get_blender_object():
-                current_rot = part.get_blender_object().rotation_euler
-                part.get_blender_object().rotation_euler = (
+            blender_object = part.get_blender_object()
+            if blender_object:
+                current_rot = blender_object.rotation_euler
+                blender_object.rotation_euler = (
                     current_rot[0] + x,
                     current_rot[1] + y,
                     current_rot[2] + z,
                 )
 
-    def scale(self, x: float, y: float = None, z: float = None):
+    def scale(self, x: float, y: float | None = None, z: float | None = None):
         """Scale all parts in the assembly."""
-        y = y or x
-        z = z or x
+        y_val = y if y is not None else x
+        z_val = z if z is not None else x
 
         for part in self.parts:
-            if part.get_blender_object():
-                current_scale = part.get_blender_object().scale
-                part.get_blender_object().scale = (
+            blender_object = part.get_blender_object()
+            if blender_object:
+                current_scale = blender_object.scale
+                blender_object.scale = (
                     current_scale[0] * x,
-                    current_scale[1] * y,
-                    current_scale[2] * z,
+                    current_scale[1] * y_val,
+                    current_scale[2] * z_val,
                 )
 
     def get_bounding_box(self) -> tuple:
@@ -88,11 +104,7 @@ class Assembly(AssemblyInterface):
         if not self.parts:
             return ((0, 0, 0), (0, 0, 0))
 
-        all_objects = [
-            part.get_blender_object()
-            for part in self.parts
-            if part.get_blender_object()
-        ]
+        all_objects = self._get_all_blender_objects()
         if not all_objects:
             return ((0, 0, 0), (0, 0, 0))
 
@@ -126,14 +138,7 @@ class Assembly(AssemblyInterface):
         # Remove Blender objects
         if self._blender_collection:
             for obj in list(self._blender_collection.objects):
-                self._blender_collection.objects.unlink(obj)
-                if obj.data:
-                    # Remove mesh data
-                    if isinstance(obj.data, bpy.types.Mesh):
-                        bpy.data.meshes.remove(obj.data)
-                    elif isinstance(obj.data, bpy.types.Curve):
-                        bpy.data.curves.remove(obj.data)
-                bpy.data.objects.remove(obj)
+                remove_object(obj, remove_children=True, is_remove_data=True)
 
         # Clear parts list
         self.parts.clear()
@@ -144,38 +149,16 @@ class Assembly(AssemblyInterface):
 
         # Remove the collection
         if self._blender_collection:
-            bpy.data.collections.remove(self._blender_collection)
+            remove_collection(self._blender_collection, remove_children=True)
             self._blender_collection = None
 
     def export_stl(self, filepath: str):
         """Export the assembly to STL format."""
-        if not self.parts:
-            return
-
-        # Select all objects in the assembly
-        bpy.ops.object.select_all(action="DESELECT")
-        for part in self.parts:
-            obj = part.get_blender_object()
-            if obj:
-                obj.select_set(True)
-
-        # Export selected objects
-        bpy.ops.wm.stl_export(filepath=filepath, export_selected_objects=True)
+        export_objects(self._get_all_blender_objects(), filepath)
 
     def export_obj(self, filepath: str):
         """Export the assembly to OBJ format."""
-        if not self.parts:
-            return
-
-        # Select all objects in the assembly
-        bpy.ops.object.select_all(action="DESELECT")
-        for part in self.parts:
-            obj = part.get_blender_object()
-            if obj:
-                obj.select_set(True)
-
-        # Export selected objects
-        bpy.ops.wm.obj_export(filepath=filepath, export_selected_objects=True)
+        export_objects(self._get_all_blender_objects(), filepath)
 
     def __repr__(self):
         return f"<Assembly(name='{self.name}'): {len(self.parts)} parts>"

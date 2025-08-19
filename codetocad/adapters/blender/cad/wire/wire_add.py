@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
-from codetocad.core.dimensions.length import LengthType
+from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.adapters.blender.cad.edge.edge import Edge
 from codetocad.adapters.blender.cad.vertex.vertex import Vertex
 

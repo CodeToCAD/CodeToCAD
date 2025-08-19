@@ -37,11 +37,8 @@ def get_vertex_from_blender_point(
         ],
     ],
 ) -> "VertexInterface":
-    return VertexInterface(
-        location=get_vertex_location_from_blender_point(spline_point),
-        name=create_uuid_like_id(),
-        native_instance=spline_point,
-    )
+    x, y, z = get_vertex_location_from_blender_point(spline_point).to_tuple()
+    return VertexInterface(x, y, z)
 
 
 def get_edge_from_blender_edge(
@@ -78,12 +75,7 @@ def get_edge_from_blender_edge(
     else:
         raise Exception(f"Edge type {type(edge)} is not supported.")
 
-    return EdgeInterface(
-        v1=v1,
-        v2=v2,
-        name=create_uuid_like_id(),
-        native_instance=edge,
-    )
+    return EdgeInterface(v1=v1, v2=v2)
 
 
 def get_wire_from_blender_wire(
@@ -114,10 +106,12 @@ def get_wire_from_blender_wire(
     else:
         raise Exception(f"Wire type {type(wire)} is not supported.")
 
-    return WireInterface(
-        name=create_uuid_like_id(),
-        native_instance=wire,
+    codetocad_wire = WireInterface(
+        sketch=None,
     )
+    codetocad_wire.edges = edges
+
+    return codetocad_wire
 
 
 def get_wires_from_blender_entity(

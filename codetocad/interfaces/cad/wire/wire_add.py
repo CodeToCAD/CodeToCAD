@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
 from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
-from codetocad.core.dimensions.length import Length, LengthType
+from codetocad.core.dimensions.length_expression import LengthExpression, LengthType
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.wire.wire_interface import WireInterface
@@ -27,8 +27,8 @@ class WireAddInterface:
         e = EdgeInterface(v1, v2)
         self.wire.edges.append(e)
 
-        x = Length(x)
-        y = Length(y)
-        z = Length(z)
+        x = LengthExpression(x)
+        y = LengthExpression(y)
+        z = LengthExpression(z)
 
         return e

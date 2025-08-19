@@ -25,7 +25,7 @@ class PartInterface(metaclass=_PartPresetClassPropertyInterface):
         self.name = name
 
     @classmethod
-    def get_by_name(cls, name): ...
+    def get_by_name(cls, name) -> "PartInterface| None": ...
 
     def __repr__(self):
         return f"<Part: {self.name or 'Unnamed'}. {self.sketch}>"

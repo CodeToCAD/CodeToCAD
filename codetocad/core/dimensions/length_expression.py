@@ -2,7 +2,7 @@ import re
 from typing import TypeAlias
 
 
-class Length:
+class LengthExpression:
     """
     Takes a string expression of a length and converts it to meters.
     This also supports basic arithmetic operations like addition, subtraction,
@@ -21,7 +21,7 @@ class Length:
     """
 
     def __init__(self, expr):
-        if isinstance(expr, Length):
+        if isinstance(expr, LengthExpression):
             self.meters = expr.meters
         else:
             self.meters = self._eval(expr)
@@ -52,19 +52,19 @@ class Length:
         return float(self.meters)
 
     def __add__(self, other):
-        return Length(self.meters + other.meters)
+        return LengthExpression(self.meters + other.meters)
 
     def __sub__(self, other):
-        return Length(self.meters - other.meters)
+        return LengthExpression(self.meters - other.meters)
 
     def __mul__(self, scalar):
-        return Length(self.meters * scalar)
+        return LengthExpression(self.meters * scalar)
 
     def __rmul__(self, scalar):
         return self.__mul__(scalar)
 
     def __truediv__(self, scalar):
-        return Length(self.meters / scalar)
+        return LengthExpression(self.meters / scalar)
 
     def __float__(self):
         return self.value
@@ -76,4 +76,4 @@ class Length:
         return f"Length({self.meters} m)"
 
 
-LengthType: TypeAlias = str | float | int | Length
+LengthType: TypeAlias = str | float | int | LengthExpression
