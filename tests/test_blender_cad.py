@@ -5,6 +5,9 @@ Test script for Blender CAD implementations.
 """
 
 
+@pytest.mark.skipif(
+    "bpy" not in locals(), reason="This test can only be run in Blender"
+)
 def test_blender_cad_implementations():
     """Test the Blender CAD implementations."""
 
@@ -82,6 +85,9 @@ def test_blender_cad_implementations():
     return assembly
 
 
+@pytest.mark.skipif(
+    "bpy" not in locals(), reason="This test can only be run in Blender"
+)
 def create_cube():
     """Simple function to create a cube using Blender CAD implementations."""
     from codetocad.adapters.blender import Part
@@ -96,6 +102,9 @@ def create_cube():
     return cube
 
 
+@pytest.mark.skipif(
+    "bpy" not in locals(), reason="This test can only be run in Blender"
+)
 def create_complex_assembly():
     """Create a more complex assembly to test functionality."""
     from codetocad.adapters.blender import Assembly, Part, Sketch

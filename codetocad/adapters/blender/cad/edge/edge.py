@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
 from codetocad.interfaces.cad.edge.edge_transform import EdgeTransformInterface
-from codetocad.adapters.blender.cad.vertex import Vertex
+from codetocad.adapters.blender.cad.vertex.vertex import Vertex
 from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,

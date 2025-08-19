@@ -1,57 +1,15 @@
 import bpy
 import mathutils
+from typing import TYPE_CHECKING, List
 from uuid import uuid4
 
 from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
-from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAddInterface
-from codetocad.interfaces.cad.assembly.assembly_get import AssemblyGetInterface
-from codetocad.interfaces.cad.assembly.assembly_part import AssemblyPartInterface
-from codetocad.interfaces.cad.part.part_presets import PartPresetsInterface
-from codetocad.adapters.blender.cad.part import Part, PartPresets
+from codetocad.adapters.blender.cad.assembly.assembly_add import AssemblyAdd
+from codetocad.adapters.blender.cad.assembly.assembly_get import AssemblyGet
 from codetocad.adapters.blender.blender_actions.collections import create_collection
 
-
-class AssemblyAdd(AssemblyAddInterface):
-    """Blender-specific assembly add operations."""
-
-    def __init__(self, assembly: "Assembly"):
-        self.assembly = assembly
-        self.preset = PartPresets(assembly)
-
-    def __call__(self, part: Part):
-        """
-        Adds a Part to the Assembly.
-        """
-        self.assembly.parts.append(part)
-
-        # Add part's Blender object to assembly collection
-        if part.get_blender_object() and self.assembly.name in bpy.data.collections:
-            assembly_collection = bpy.data.collections[self.assembly.name]
-            part_obj = part.get_blender_object()
-
-            # Add to assembly collection if not already there
-            if part_obj.name not in assembly_collection.objects:
-                assembly_collection.objects.link(part_obj)
-
-                # Remove from scene collection to avoid duplication
-                if part_obj.name in bpy.context.scene.collection.objects:
-                    bpy.context.scene.collection.objects.unlink(part_obj)
-
-
-class AssemblyPart(AssemblyPartInterface):
-    """Blender-specific assembly part operations."""
-
-    def __init__(self, assembly: "Assembly"):
-        super().__init__(assembly)
-
-
-class AssemblyGet(AssemblyGetInterface):
-    """Blender-specific assembly get operations."""
-
-    def __init__(self, assembly: "Assembly"):
-        self.assembly = assembly
-        self.part = AssemblyPart(assembly)
-        self.parts = self.assembly.parts
+if TYPE_CHECKING:
+    from codetocad.adapters.blender.cad.part.part import Part
 
 
 class Assembly(AssemblyInterface):
@@ -63,7 +21,7 @@ class Assembly(AssemblyInterface):
         self._blender_collection: bpy.types.Collection | None = None
 
         # Initialize parent interface properties
-        self.parts: list[Part] = []
+        self.parts: List["Part"] = []
         self.add = AssemblyAdd(self)
         self.get = AssemblyGet(self)
 

@@ -1,11 +1,11 @@
 from codetocad.core import *
 
-from codetocad.adapters.blender.cad.vertex import Vertex
-from codetocad.adapters.blender.cad.edge import Edge
-from codetocad.adapters.blender.cad.wire import Wire
-from codetocad.adapters.blender.cad.sketch import Sketch
-from codetocad.adapters.blender.cad.part import Part
-from codetocad.adapters.blender.cad.assembly import Assembly
+from codetocad.adapters.blender.cad.vertex.vertex import Vertex
+from codetocad.adapters.blender.cad.edge.edge import Edge
+from codetocad.adapters.blender.cad.wire.wire import Wire
+from codetocad.adapters.blender.cad.sketch.sketch import Sketch
+from codetocad.adapters.blender.cad.part.part import Part
+from codetocad.adapters.blender.cad.assembly.assembly import Assembly
 
 from codetocad.adapters.blender.cli.blender_cli import run
 

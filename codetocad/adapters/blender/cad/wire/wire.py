@@ -1,65 +1,25 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 import bpy
-import bmesh
 from uuid import uuid4
 
-from codetocad.interfaces.cad.wire.wire_interface import (
-    _WirePresetClassPropertyInterface,
-    WireInterface,
-)
+from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterface
-from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
-from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
 from codetocad.core.dimensions.length import LengthType
-from codetocad.adapters.blender.cad.edge import Edge
-from codetocad.adapters.blender.cad.vertex import Vertex
+from codetocad.adapters.blender.cad.edge.edge import Edge
+from codetocad.adapters.blender.cad.vertex.vertex import Vertex
+from codetocad.adapters.blender.cad.wire.wire_add import WireAdd
+from codetocad.adapters.blender.cad.wire.wire_preset_class_property import (
+    _WirePresetClassProperty,
+)
 from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.collections import (
     assign_object_to_collection,
 )
-from codetocad.adapters.blender.blender_actions.curve import create_curve
-from codetocad.adapters.blender.blender_definitions import BlenderCurveTypes
 
 if TYPE_CHECKING:
-    from codetocad.adapters.blender.cad.part import Part
-    from codetocad.adapters.blender.cad.sketch import Sketch
-
-
-class _WirePresetClassProperty(_WirePresetClassPropertyInterface):
-    """Metaclass to provide a preset property for the Wire class."""
-
-    @property
-    def preset(self):
-        return WirePresetsInterface(Wire, None)
-
-
-class WireAdd(WireAddInterface):
-    """Blender-specific wire add operations."""
-
-    def __init__(self, wire: "Wire"):
-        self.wire = wire
-
-    def point(self, x: LengthType, y: LengthType, z: LengthType = 0) -> Edge:
-        v = Vertex(x, y, z)
-        e = Edge(v, v)
-        self.wire.edges.append(e)
-        return e
-
-    def line_to(self, x: LengthType, y: LengthType, z: LengthType = 0) -> Edge:
-        """
-        Draws a line from the last vertex of the wire to the specified coordinates.
-        If the wire is empty, it starts from the origin (0, 0, 0).
-        """
-        v1 = self.wire.edges[-1].v2 if self.wire.edges else Vertex(0, 0, 0)
-        v2 = Vertex(x, y, z)
-        e = Edge(v1, v2)
-        self.wire.edges.append(e)
-
-        # Update Blender representation
-        self.wire._update_blender_curve()
-
-        return e
+    from codetocad.adapters.blender.cad.part.part import Part
+    from codetocad.adapters.blender.cad.sketch.sketch import Sketch
 
 
 class Wire(WireInterface, metaclass=_WirePresetClassProperty):
@@ -79,11 +39,11 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
         # Initialize parent with sketch
         if sketch is not None:
-            self.member_sketches: list["Sketch"] = [sketch]
+            self.member_sketches: List["Sketch"] = [sketch]
         else:
-            self.member_sketches: list["Sketch"] = []
+            self.member_sketches: List["Sketch"] = []
 
-        self.edges: list[Edge] = []
+        self.edges: List[Edge] = []
         self.add = WireAdd(self)
         self.get = WireGetInterface(self)
         self.constraint = WireConstraintInterface(self)
@@ -149,7 +109,7 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
                 self.edges.append(closing_edge)
                 self._update_blender_curve()
 
-    def get_vertices(self) -> list[Vertex]:
+    def get_vertices(self) -> List[Vertex]:
         """Get all vertices in the wire."""
         vertices = []
         if self.edges:
@@ -170,8 +130,8 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
     def extude(self, length: LengthType) -> "Part":
         """Extrude the wire to create a part."""
-        from codetocad.adapters.blender.cad.part import Part
-        from codetocad.adapters.blender.cad.sketch import Sketch
+        from codetocad.adapters.blender.cad.part.part import Part
+        from codetocad.adapters.blender.cad.sketch.sketch import Sketch
 
         part = Part()
         sketch = Sketch()

@@ -1,108 +1,22 @@
 import bpy
 import bmesh
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from uuid import uuid4
 
-from codetocad.interfaces.cad.part.part_interface import (
-    _PartPresetClassPropertyInterface,
-    PartInterface,
-)
-from codetocad.interfaces.cad.part.part_presets import PartPresetsInterface
+from codetocad.interfaces.cad.part.part_interface import PartInterface
 from codetocad.core.dimensions.length import LengthType
-from codetocad.adapters.blender.cad.sketch import Sketch
-from codetocad.adapters.blender.blender_actions.objects import (
-    create_object,
-    add_primitive,
-    update_object_data_name,
-    update_object_name,
-)
-from codetocad.adapters.blender.blender_actions.collections import (
-    assign_object_to_collection,
-)
+from codetocad.adapters.blender.cad.sketch.sketch import Sketch
+from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.objects_transmute import (
     create_mesh_from_curve,
 )
 from codetocad.adapters.blender.blender_actions.modifiers import apply_modifier
-from codetocad.adapters.blender.blender_definitions import BlenderObjectPrimitiveTypes
+from codetocad.adapters.blender.cad.part.part_preset_class_property import (
+    _PartPresetClassProperty,
+)
 
 if TYPE_CHECKING:
-    from codetocad.adapters.blender.cad.assembly import Assembly
-
-
-class _PartPresetClassProperty(_PartPresetClassPropertyInterface):
-    @property
-    def preset(self):
-        return PartPresets()
-
-
-class PartPresets(PartPresetsInterface):
-    """Blender-specific part presets."""
-
-    def __init__(self, assembly: "Assembly|None" = None):
-        self.assembly = assembly
-
-    def cube(self, x: LengthType, y: LengthType, z: LengthType) -> "Part":
-        """Create a cube part using Blender primitives."""
-        part = Part()
-        part.set_name(f"cube_{str(uuid4())[:8]}")
-
-        # Create cube using Blender primitive
-        dimensions = [float(x), float(y), float(z)]
-        add_primitive(BlenderObjectPrimitiveTypes.cube, dimensions)
-
-        # Get the created object
-        cube_obj = bpy.context.active_object
-        if cube_obj:
-            update_object_name(cube_obj, part.name)
-            update_object_data_name(cube_obj, part.name)
-            part._blender_object = cube_obj
-
-        if self.assembly:
-            self.assembly.parts.append(part)
-
-        return part
-
-    def cylinder(self, radius: LengthType, height: LengthType) -> "Part":
-        """Create a cylinder part using Blender primitives."""
-        part = Part()
-        part.set_name(f"cylinder_{str(uuid4())[:8]}")
-
-        # Create cylinder using Blender primitive
-        dimensions = [float(radius), float(height)]
-        add_primitive(BlenderObjectPrimitiveTypes.cylinder, dimensions)
-
-        # Get the created object
-        cylinder_obj = bpy.context.active_object
-        if cylinder_obj:
-            update_object_name(cylinder_obj, part.name)
-            update_object_data_name(cylinder_obj, part.name)
-            part._blender_object = cylinder_obj
-
-        if self.assembly:
-            self.assembly.parts.append(part)
-
-        return part
-
-    def sphere(self, radius: LengthType) -> "Part":
-        """Create a sphere part using Blender primitives."""
-        part = Part()
-        part.set_name(f"sphere_{str(uuid4())[:8]}")
-
-        # Create sphere using Blender primitive
-        dimensions = [float(radius)]
-        add_primitive(BlenderObjectPrimitiveTypes.uvsphere, dimensions)
-
-        # Get the created object
-        sphere_obj = bpy.context.active_object
-        if sphere_obj:
-            update_object_name(sphere_obj, part.name)
-            update_object_data_name(sphere_obj, part.name)
-            part._blender_object = sphere_obj
-
-        if self.assembly:
-            self.assembly.parts.append(part)
-
-        return part
+    from codetocad.adapters.blender.cad.assembly.assembly import Assembly
 
 
 class Part(PartInterface, metaclass=_PartPresetClassProperty):
@@ -114,7 +28,7 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         self._blender_object: bpy.types.Object | None = None
 
         # Initialize parent interface properties
-        self.member_assemblies: list["Assembly"] = []
+        self.member_assemblies: List["Assembly"] = []
         self.sketch: Sketch = Sketch(f"{self.name}_sketch")
 
     def set_name(self, name: str):
