@@ -117,14 +117,14 @@ assembly.add(cube)
 
 ### Running in Blender
 ```python
-from codetocad.adapters.blender import run
+from codetocad.adapters.blender import run_blender
 
 def create_model():
     from codetocad.adapters.blender.cad import Part
     return Part.preset.cube(1, 1, 1)
 
 # Run in Blender
-run(create_model, background=True)
+run_blender(create_model, background=True)
 ```
 
 

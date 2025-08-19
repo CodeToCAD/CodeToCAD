@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type
+from typing import Any, Type
 import bpy
 
 from codetocad.adapters.blender.blender_actions.addons import enable_addon

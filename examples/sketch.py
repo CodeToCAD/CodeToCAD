@@ -46,4 +46,4 @@ def create_custom_sketch_part():
 
 
 if __name__ == "__main__":
-    run(entry_function=create_custom_sketch_part, background=False)
+    run_blender(entry_function=create_custom_sketch_part, background=False)

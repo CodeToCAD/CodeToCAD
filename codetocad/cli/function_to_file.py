@@ -1,89 +1,58 @@
-import ast
-import inspect
-import textwrap
+import os
+from pathlib import Path
 from types import FunctionType
-from typing import Set, Dict
-
-
-class FunctionCallCollector(ast.NodeVisitor):
-    def __init__(self):
-        self.called_functions: Set[str] = set()
-
-    def visit_Call(self, node: ast.Call):
-        if isinstance(node.func, ast.Name):
-            self.called_functions.add(node.func.id)
-        elif isinstance(node.func, ast.Attribute):
-            # Skip method calls for now (e.g., obj.method()) — we assume those are built-in or external
-            pass
-        self.generic_visit(node)
-
-
-def get_all_user_defined_functions(func: FunctionType) -> Dict[str, FunctionType]:
-    """
-    Return a dict of all user-defined functions accessible from the given function's global context.
-    """
-    global_scope = func.__globals__
-    return {
-        name: val
-        for name, val in global_scope.items()
-        if isinstance(val, FunctionType)
-        and inspect.getmodule(val) == inspect.getmodule(func)
-    }
-
-
-def collect_called_user_functions(func: FunctionType) -> Set[FunctionType]:
-    """
-    Collect all user-defined functions called directly or indirectly by `func`.
-    """
-    seen: Set[str] = set()
-    to_process = [func]
-    collected: Set[FunctionType] = set()
-    available_functions = get_all_user_defined_functions(func)
-
-    while to_process:
-        current = to_process.pop()
-        if current.__name__ in seen:
-            continue
-        seen.add(current.__name__)
-        collected.add(current)
-
-        try:
-            source = inspect.getsource(current)
-        except (OSError, TypeError):
-            continue
-
-        tree = ast.parse(textwrap.dedent(source))
-        visitor = FunctionCallCollector()
-        visitor.visit(tree)
-
-        for fname in visitor.called_functions:
-            if fname in available_functions:
-                to_process.append(available_functions[fname])
-
-    return collected
+import inspect
 
 
 def write_function_code_to_file(
-    func: FunctionType, output_path: str, prepend_code: str, append_code: str
+    func: FunctionType,
+    output_path: str,
+    prepend_code: str,
+    append_code: str,
+    args: list,
+    kwargs: dict,
 ):
     """
     To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by reloading it from disk.
+
+    args and kwargs must be serializable.. even then, mileage may vary.
     """
-    functions = collect_called_user_functions(func)
+    # function_filename_full = inspect.getsourcefile(func)
+    # if not function_filename_full:
+    #     raise Exception(f"Could not find source file for {func.__name__}.")
+
+    filename = inspect.getfile(func)
+    script_directory = f"{Path(filename).parent.absolute()}"
+
+    # Get the directory and base filename without extension
+    directory = os.path.dirname(filename)
+    base_filename = os.path.basename(filename).replace(".py", "")
+
+    # If the file is in the current working directory or a simple module
+    if directory == os.getcwd() or "" in directory:  # Simplified check
+        module_name = base_filename
+    else:
+        # For more complex package structures, you'd need to determine the package root
+        # and build the relative path from there. This is a placeholder.
+        module_name = base_filename  # Example: assuming it's a direct import
+
+    import_statement = f"from {module_name} import {func.__name__}"
 
     with open(output_path, "w") as f:
         f.write(prepend_code)
-        for fn in sorted(functions, key=lambda x: x.__name__):
-            try:
-                source = textwrap.dedent(inspect.getsource(fn))
-                f.write(f"# Function: {fn.__name__}\n")
-                f.write(source + "\n\n")
-            except (OSError, TypeError):
-                continue
+        f.write(
+            f"""
+import sys
+sys.path.append('{script_directory}')
+{import_statement}
+"""
+        )
         f.write(
             f"""
 if __name__ == "__main__":
-    {func.__name__}()  # Call the main function
+    {func.__name__}(
+    {"'" if len(args) >0 else ""}{"',".join(args) if len(args) > 0 else ''}{"'" if len(args) == 1 else ""}{"," if len(args) >0  and len(kwargs) >0 else ""}
+    {",".join([f"{k}='{v}'" for k, v in kwargs.items()]) if kwargs else ""})  # Call the main function
 """
         )
         f.write(append_code)

@@ -85,4 +85,4 @@ def create_architectural_model():
 
 
 if __name__ == "__main__":
-    run(create_architectural_model, background=False)
+    run_blender(create_architectural_model, background=False, debugger=True)

@@ -5,25 +5,23 @@
     "version": "0.2.0",
     "compounds": [
         {
-            "name": "Debugger",
+            "name": "Blender Debugger: Current File",
             "configurations": [
-                "Run the current file",
-                "Python Debugger: Remote Attach",
+                "Blender: Current file",
+                "Debugpy: Remote Attach Delayed",
             ],
             "stopAll": true
         }
     ],
     "configurations": [
         {
-            "name": "Run the current file",
-            "type": "debugpy",
+            "name": "Blender: Current file",
+            "type": "node-terminal",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "args": "${command:pickArgs}"
+            "command": "codetocad run --debug ${file} blender"
         },
         {
-            "name": "Python Debugger: Remote Attach",
+            "name": "Debugpy: Remote Attach",
             "type": "debugpy",
             "request": "attach",
             "connect": {
@@ -36,6 +34,22 @@
                     "remoteRoot": "."
                 }
             ]
+        },
+        {
+            "name": "Debugpy: Remote Attach Delayed",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ],
+            "preLaunchTask": "delay-before-start"
         }
     ]
 }

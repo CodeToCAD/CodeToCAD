@@ -1,4 +1,6 @@
+import threading
 import bpy
+import click
 from console_python import replace_help
 from functools import wraps
 
@@ -35,6 +37,12 @@ def install_debugpy(uninstall: bool = False):
     subprocess.call([python, "-m", "pip", "install", "--user", "debugpy"])
 
 
+def stop_debugger():
+    import pydevd
+
+    pydevd.stoptrace()
+
+
 def start_debugger(
     host: str = "localhost",
     port: int = 5678,
@@ -58,12 +66,33 @@ def start_debugger(
         return start_debugger(host, port, wait_to_connect)
 
     try:
-        if wait_to_connect:
-            debugpy.wait_for_client()
+        debugpy.listen((host, port))
         write_to_console(
-            f"debugpy server has started on {host}:{port}. You may connect to it by attaching your IDE's debugger to a remote debugger at {host}:{port}.",
+            f"""
+A debugpy server has started on {host}:{port}!
+
+You may connect to it by attaching your IDE's debugger to a remote debugger at {host}:{port}.
+
+""",
             "OUTPUT",
         )
+        if wait_to_connect:
+            is_connected = False
+
+            def cancel_wait_for_client():
+                if not is_connected:
+                    debugpy.wait_for_client.cancel()  # type:ignore
+                    raise TimeoutError(
+                        "debugpy wait_for_client timed out after 10 seconds. You can still attach the debugger, or run your script again without debugging."
+                    )
+
+            threading.Timer(10, cancel_wait_for_client).start()
+
+            debugpy.wait_for_client()
+
+            is_connected = True
+    except TimeoutError as e:
+        write_to_console(f"Cannot start the debugger server: {e}", "ERROR")
     except (Exception, RuntimeError) as e:
         write_to_console(f"Cannot start the debugger server: {e}", "ERROR")
 
@@ -105,6 +134,9 @@ def write_to_console(message: str, text_type: str = "INFO"):
     text_type is one of ('OUTPUT', 'INPUT', 'INFO', 'ERROR')
     """
     # References https://blender.stackexchange.com/a/78332
+    color = "blue"
+    if text_type == "ERROR":
+        color = "red"
     try:
         area, space, region = console_get()
 
@@ -116,13 +148,15 @@ def write_to_console(message: str, text_type: str = "INFO"):
                 "region": region,
             }
         )
-        print(message)
+        click.secho(message, fg=color)
         with bpy.context.temp_override(**context_override):
             for line in message.split("\n"):
                 bpy.ops.console.scrollback_append(text=line, type=text_type)
     except:
-        print("Warning: Console could not be found, could be running headless.")
-        print(f"{text_type}: {message}")
+        click.secho(
+            "Warning: Console could not be found, could be running headless.", fg="red"
+        )
+        click.secho(f"{text_type}: {message}", fg="red")
 
 
 def console_get():

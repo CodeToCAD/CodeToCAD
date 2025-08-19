@@ -1,14 +1,14 @@
 import os
 import subprocess
 import sys
-import click
 from codetocad.cli.launcher_args import LauncherArgs
-from codetocad.cli.run_provider import run_provider
 
 python = os.path.abspath(sys.executable)
 
 
 def codetocad_cli():
+    import click
+
     cli = click.Group()
 
     # Version command
@@ -53,6 +53,10 @@ def codetocad_cli():
         config_file_path,
         debug,
     ):
+        from codetocad.cli.run_provider import (
+            run_provider,
+        )  # avoids circular dependency
+
         args = LauncherArgs(
             script_file_path_or_action=script_file_path,
             launcher=launcher,
