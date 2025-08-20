@@ -6,13 +6,8 @@ such as tangent, parallel, perpendicular, coincident, and distance constraints.
 """
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, TypeAlias, Any
-
-from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
-from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
-
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.wire.wire_interface import WireInterface
@@ -28,7 +23,6 @@ class ConstraintType(Enum):
     DISTANCE = "distance"
     LENGTH = "length"
     CONTINUITY = "continuity"
-    MIDPOINT = "midpoint"
 
 
 class ConstraintStatus(Enum):
@@ -40,44 +34,234 @@ class ConstraintStatus(Enum):
     UNDEFINED = "undefined"
 
 
-# Legacy constraint dataclasses for backward compatibility
-@dataclass
-class WireConstraintCoincidentInterface:
-    v1: VertexInterface
-    v2: VertexInterface
+class WireConstraintInterface(ABC):
+    """
+    Interface for applying geometric constraints to wires.
 
+    Provides methods for creating and managing geometric constraints
+    that control wire shape, position, and relationships to other entities.
+    """
 
-@dataclass
-class WireConstraintMidpointInterface:
-    edge: EdgeInterface
-    target: VertexInterface
+    def __init__(self, wire: "WireInterface"):
+        """
+        Initialize the wire constraint interface.
 
+        Args:
+            wire: The wire this constraint interface belongs to
+        """
+        self.wire = wire
+        self.constraints: dict[str, "GeometricConstraint"] = {}
+        self._constraint_counter = 0
 
-@dataclass
-class WireConstraintParallelInterface:
-    edge1: EdgeInterface
-    edge2: EdgeInterface
+    @abstractmethod
+    def tangent(
+        self, target_entity: Any, point: Any, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a tangent constraint between the wire and another entity.
 
+        Args:
+            target_entity: The entity to be tangent to (curve, surface, etc.)
+            point: The point where tangency should occur
+            name: Optional name for the constraint
 
-@dataclass
-class WireConstraintPerpendicularInterface:
-    edge1: EdgeInterface
-    edge2: EdgeInterface
+        Returns:
+            Created tangent constraint or None if creation failed
+        """
+        pass
 
+    @abstractmethod
+    def parallel(
+        self, reference_entity: Any, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a parallel constraint between the wire and a reference entity.
 
-@dataclass
-class WireConstraintTangentInterface:
-    edge: EdgeInterface
-    wire: "WireInterface"
+        Args:
+            reference_entity: The entity to be parallel to (line, edge, etc.)
+            name: Optional name for the constraint
 
+        Returns:
+            Created parallel constraint or None if creation failed
+        """
+        pass
 
-WireOperationConstraintType: TypeAlias = (
-    WireConstraintCoincidentInterface
-    | WireConstraintMidpointInterface
-    | WireConstraintParallelInterface
-    | WireConstraintPerpendicularInterface
-    | WireConstraintTangentInterface
-)
+    @abstractmethod
+    def perpendicular(
+        self, reference_entity: Any, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a perpendicular constraint between the wire and a reference entity.
+
+        Args:
+            reference_entity: The entity to be perpendicular to
+            name: Optional name for the constraint
+
+        Returns:
+            Created perpendicular constraint or None if creation failed
+        """
+        pass
+
+    @abstractmethod
+    def coincident(
+        self, target_point: Any, wire_point: Any = None, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a coincident constraint between wire point and target point.
+
+        Args:
+            target_point: The point to be coincident with
+            wire_point: Point on wire (start, end, or parameter). If None, uses closest point
+            name: Optional name for the constraint
+
+        Returns:
+            Created coincident constraint or None if creation failed
+        """
+        pass
+
+    @abstractmethod
+    def distance(
+        self, target_entity: Any, distance_value: float, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a distance constraint between the wire and another entity.
+
+        Args:
+            target_entity: The entity to maintain distance from
+            distance_value: The distance to maintain
+            name: Optional name for the constraint
+
+        Returns:
+            Created distance constraint or None if creation failed
+        """
+        pass
+
+    @abstractmethod
+    def length(
+        self, length_value: float, name: str | None = None
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a length constraint for the wire.
+
+        Args:
+            length_value: The target length for the wire
+            name: Optional name for the constraint
+
+        Returns:
+            Created length constraint or None if creation failed
+        """
+        pass
+
+    @abstractmethod
+    def continuity(
+        self,
+        other_wire: "WireInterface",
+        continuity_order: int = 1,
+        name: str | None = None,
+    ) -> "GeometricConstraint" | None:
+        """
+        Create a continuity constraint between this wire and another wire.
+
+        Args:
+            other_wire: The wire to maintain continuity with
+            continuity_order: Order of continuity (0=position, 1=tangent, 2=curvature)
+            name: Optional name for the constraint
+
+        Returns:
+            Created continuity constraint or None if creation failed
+        """
+        pass
+
+    def remove_constraint(self, constraint_name: str) -> bool:
+        """
+        Remove a constraint by name.
+
+        Args:
+            constraint_name: Name of the constraint to remove
+
+        Returns:
+            True if constraint was removed successfully, False otherwise
+        """
+        if constraint_name in self.constraints:
+            constraint = self.constraints[constraint_name]
+            if constraint.remove():
+                del self.constraints[constraint_name]
+                return True
+        return False
+
+    def get_constraint(self, name: str) -> "GeometricConstraint" | None:
+        """
+        Get a constraint by name.
+
+        Args:
+            name: Name of the constraint
+
+        Returns:
+            Constraint instance or None if not found
+        """
+        return self.constraints.get(name)
+
+    def get_all_constraints(self) -> list["GeometricConstraint"]:
+        """
+        Get all constraints applied to this wire.
+
+        Returns:
+            List of all constraints
+        """
+        return list(self.constraints.values())
+
+    def validate_constraints(self) -> dict[str, bool]:
+        """
+        Validate all constraints applied to this wire.
+
+        Returns:
+            Dictionary mapping constraint names to their validity status
+        """
+        validation_results = {}
+        for name, constraint in self.constraints.items():
+            validation_results[name] = constraint.is_valid()
+        return validation_results
+
+    def solve_constraints(self) -> bool:
+        """
+        Solve all active constraints applied to this wire.
+
+        Returns:
+            True if all constraints were solved successfully, False otherwise
+        """
+        success = True
+        for constraint in self.constraints.values():
+            if constraint.status == ConstraintStatus.ACTIVE:
+                if not constraint.solve():
+                    success = False
+        return success
+
+    def clear_all_constraints(self) -> bool:
+        """
+        Remove all constraints from this wire.
+
+        Returns:
+            True if all constraints were removed successfully, False otherwise
+        """
+        constraint_names = list(self.constraints.keys())
+        success = True
+        for name in constraint_names:
+            if not self.remove_constraint(name):
+                success = False
+        return success
+
+    def _generate_constraint_name(self, constraint_type: ConstraintType) -> str:
+        """
+        Generate a unique name for a constraint.
+
+        Args:
+            constraint_type: Type of constraint
+
+        Returns:
+            Generated unique name
+        """
+        self._constraint_counter += 1
+        return f"{constraint_type.value}_{self._constraint_counter}"
 
 
 class GeometricConstraint(ABC):
@@ -202,255 +386,3 @@ class GeometricConstraint(ABC):
             f"type={self.constraint_type.value}, "
             f"status={self.status.value})"
         )
-
-
-class WireConstraintInterface(ABC):
-    """
-    Interface for applying geometric constraints to wires.
-
-    Provides methods for creating and managing geometric constraints
-    that control wire shape, position, and relationships to other entities.
-    """
-
-    def __init__(self, wire: "WireInterface"):
-        """
-        Initialize the wire constraint interface.
-
-        Args:
-            wire: The wire this constraint interface belongs to
-        """
-        self.wire = wire
-        self.constraints: dict[str, GeometricConstraint] = {}
-        self._constraint_counter = 0
-
-    # Legacy methods for backward compatibility
-    def coincident(self, v1: "VertexInterface", v2: "VertexInterface"):
-        """Legacy coincident constraint method."""
-        return self.coincident_points(v1, v2)
-
-    def midpoint(self, edge: "EdgeInterface", target: "VertexInterface"):
-        """Legacy midpoint constraint method."""
-        return self.coincident_points(target, edge, wire_point="midpoint")
-
-    def parallel(self, e1: "EdgeInterface", e2: "EdgeInterface"):
-        """Legacy parallel constraint method."""
-        return self.parallel_to(e2)
-
-    def perpendicular(self, e1: "EdgeInterface", e2: "EdgeInterface"):
-        """Legacy perpendicular constraint method."""
-        return self.perpendicular_to(e2)
-
-    def tangent(self, wire: "WireInterface", edge: "EdgeInterface"):
-        """Legacy tangent constraint method."""
-        return self.tangent_to(edge, None)
-
-    # Enhanced constraint methods
-    @abstractmethod
-    def tangent_to(
-        self, target_entity: Any, point: Any, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a tangent constraint between the wire and another entity.
-
-        Args:
-            target_entity: The entity to be tangent to (curve, surface, etc.)
-            point: The point where tangency should occur
-            name: Optional name for the constraint
-
-        Returns:
-            Created tangent constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def parallel_to(
-        self, reference_entity: Any, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a parallel constraint between the wire and a reference entity.
-
-        Args:
-            reference_entity: The entity to be parallel to (line, edge, etc.)
-            name: Optional name for the constraint
-
-        Returns:
-            Created parallel constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def perpendicular_to(
-        self, reference_entity: Any, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a perpendicular constraint between the wire and a reference entity.
-
-        Args:
-            reference_entity: The entity to be perpendicular to
-            name: Optional name for the constraint
-
-        Returns:
-            Created perpendicular constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def coincident_points(
-        self, target_point: Any, wire_point: Any = None, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a coincident constraint between wire point and target point.
-
-        Args:
-            target_point: The point to be coincident with
-            wire_point: Point on wire (start, end, or parameter). If None, uses closest point
-            name: Optional name for the constraint
-
-        Returns:
-            Created coincident constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def distance_from(
-        self, target_entity: Any, distance_value: float, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a distance constraint between the wire and another entity.
-
-        Args:
-            target_entity: The entity to maintain distance from
-            distance_value: The distance to maintain
-            name: Optional name for the constraint
-
-        Returns:
-            Created distance constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def set_length(
-        self, length_value: float, name: str | None = None
-    ) -> "GeometricConstraint | None":
-        """
-        Create a length constraint for the wire.
-
-        Args:
-            length_value: The target length for the wire
-            name: Optional name for the constraint
-
-        Returns:
-            Created length constraint or None if creation failed
-        """
-        pass
-
-    @abstractmethod
-    def continuous_with(
-        self,
-        other_wire: "WireInterface",
-        continuity_order: int = 1,
-        name: str | None = None,
-    ) -> "GeometricConstraint | None":
-        """
-        Create a continuity constraint between this wire and another wire.
-
-        Args:
-            other_wire: The wire to maintain continuity with
-            continuity_order: Order of continuity (0=position, 1=tangent, 2=curvature)
-            name: Optional name for the constraint
-
-        Returns:
-            Created continuity constraint or None if creation failed
-        """
-        pass
-
-    def remove_constraint(self, constraint_name: str) -> bool:
-        """
-        Remove a constraint by name.
-
-        Args:
-            constraint_name: Name of the constraint to remove
-
-        Returns:
-            True if constraint was removed successfully, False otherwise
-        """
-        if constraint_name in self.constraints:
-            constraint = self.constraints[constraint_name]
-            if constraint.remove():
-                del self.constraints[constraint_name]
-                return True
-        return False
-
-    def get_constraint(self, name: str) -> "GeometricConstraint | None":
-        """
-        Get a constraint by name.
-
-        Args:
-            name: Name of the constraint
-
-        Returns:
-            Constraint instance or None if not found
-        """
-        return self.constraints.get(name)
-
-    def get_all_constraints(self) -> list[GeometricConstraint]:
-        """
-        Get all constraints applied to this wire.
-
-        Returns:
-            List of all constraints
-        """
-        return list(self.constraints.values())
-
-    def validate_constraints(self) -> dict[str, bool]:
-        """
-        Validate all constraints applied to this wire.
-
-        Returns:
-            Dictionary mapping constraint names to their validity status
-        """
-        validation_results = {}
-        for name, constraint in self.constraints.items():
-            validation_results[name] = constraint.is_valid()
-        return validation_results
-
-    def solve_constraints(self) -> bool:
-        """
-        Solve all active constraints applied to this wire.
-
-        Returns:
-            True if all constraints were solved successfully, False otherwise
-        """
-        success = True
-        for constraint in self.constraints.values():
-            if constraint.status == ConstraintStatus.ACTIVE:
-                if not constraint.solve():
-                    success = False
-        return success
-
-    def clear_all_constraints(self) -> bool:
-        """
-        Remove all constraints from this wire.
-
-        Returns:
-            True if all constraints were removed successfully, False otherwise
-        """
-        constraint_names = list(self.constraints.keys())
-        success = True
-        for name in constraint_names:
-            if not self.remove_constraint(name):
-                success = False
-        return success
-
-    def _generate_constraint_name(self, constraint_type: ConstraintType) -> str:
-        """
-        Generate a unique name for a constraint.
-
-        Args:
-            constraint_type: Type of constraint
-
-        Returns:
-            Generated unique name
-        """
-        self._constraint_counter += 1
-        return f"{constraint_type.value}_{self._constraint_counter}"

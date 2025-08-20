@@ -65,4 +65,4 @@ class Angle:
         return f"Angle({self.radians} rad)"
 
 
-AngleType: TypeAlias = str | float | int | Angle
+AngleType: TypeAlias = "str | float | int | Angle"

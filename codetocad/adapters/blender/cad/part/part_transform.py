@@ -2,6 +2,7 @@
 Blender implementation of PartTransformInterface.
 """
 
+from codetocad.interfaces.cad.part.part_interface import PartInterface
 from codetocad.interfaces.cad.part.part_transform_interface import (
     PartTransformInterface,
 )

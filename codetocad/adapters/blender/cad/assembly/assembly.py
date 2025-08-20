@@ -44,10 +44,14 @@ class Assembly(AssemblyInterface):
         from codetocad.adapters.blender.cad.assembly.assembly_export import (
             AssemblyExport,
         )
+        from codetocad.adapters.blender.cad.assembly.assembly_mate import (
+            BlenderAssemblyMate,
+        )
 
         self.geometry = AssemblyGeometry(self)
         self.transform = AssemblyTransform(self)
         self.export = AssemblyExport(self)
+        self.mate = BlenderAssemblyMate(self)
 
         # Create Blender representation
         self._create_blender_assembly()
