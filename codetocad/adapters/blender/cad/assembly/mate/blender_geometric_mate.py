@@ -134,6 +134,32 @@ class BlenderGeometricMate:
             "Subclasses must implement _create_blender_constraints"
         )
 
+    def apply(self) -> bool:
+        """Apply the mate constraint."""
+        return self.apply_constraints()
+
+    def remove(self) -> bool:
+        """Remove the mate constraint."""
+        return self.remove_constraints()
+
+    def update(self, **kwargs) -> bool:
+        """Update mate parameters."""
+        try:
+            self.parameters.update(kwargs)
+            # Re-apply constraints with new parameters
+            self.remove_constraints()
+            return self.apply_constraints()
+        except Exception:
+            return False
+
+    def get_constraint_equations(self) -> list:
+        """Get constraint equations (simplified for Blender implementation)."""
+        return []  # Blender handles constraint equations internally
+
+    def calculate_transform(self) -> tuple | None:
+        """Calculate transformation (simplified for Blender implementation)."""
+        return None  # Blender handles transformations internally
+
 
 class BlenderCoincidentMate(BlenderGeometricMate, CoincidentMateInterface):
     """

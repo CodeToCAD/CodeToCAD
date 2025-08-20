@@ -132,6 +132,24 @@ class BlenderKinematicMate:
             "Subclasses must implement _create_blender_constraints"
         )
 
+    def apply(self) -> bool:
+        """Apply the mate constraint."""
+        return self.apply_constraints()
+
+    def remove(self) -> bool:
+        """Remove the mate constraint."""
+        return self.remove_constraints()
+
+    def update(self, **kwargs) -> bool:
+        """Update mate parameters."""
+        try:
+            self.parameters.update(kwargs)
+            # Re-apply constraints with new parameters
+            self.remove_constraints()
+            return self.apply_constraints()
+        except Exception:
+            return False
+
 
 class BlenderRigidMate(BlenderKinematicMate, RigidMateInterface):
     """
@@ -176,6 +194,14 @@ class BlenderRigidMate(BlenderKinematicMate, RigidMateInterface):
     def get_degrees_of_freedom(self) -> int:
         """Get degrees of freedom (0 for rigid mate)."""
         return 0
+
+    def set_position(self, **kwargs) -> bool:
+        """Set position (no-op for rigid mate)."""
+        return True  # Rigid mates don't allow position changes
+
+    def get_position(self) -> dict:
+        """Get position (returns empty dict for rigid mate)."""
+        return {}  # Rigid mates have no controllable position
 
 
 class BlenderRevoluteMate(BlenderKinematicMate, RevoluteMateInterface):
@@ -253,6 +279,17 @@ class BlenderRevoluteMate(BlenderKinematicMate, RevoluteMateInterface):
     def get_degrees_of_freedom(self) -> int:
         """Get degrees of freedom (1 for revolute mate)."""
         return 1
+
+    def set_position(self, **kwargs) -> bool:
+        """Set position (angle for revolute mate)."""
+        angle = kwargs.get("angle")
+        if angle is not None:
+            return self.set_angle(angle)
+        return False
+
+    def get_position(self) -> dict:
+        """Get position (angle for revolute mate)."""
+        return {"angle": self.get_angle()}
 
 
 class BlenderLinearMate(BlenderKinematicMate, LinearMateInterface):
@@ -520,3 +557,15 @@ class BlenderBallMate(BlenderKinematicMate, BallMateInterface):
     def get_degrees_of_freedom(self) -> int:
         """Get degrees of freedom (3 for ball mate)."""
         return 3
+
+    def set_position(self, **kwargs) -> bool:
+        """Set position (angles for ball mate)."""
+        x_angle = kwargs.get("x_angle", self.current_angles[0])
+        y_angle = kwargs.get("y_angle", self.current_angles[1])
+        z_angle = kwargs.get("z_angle", self.current_angles[2])
+        return self.set_angles(x_angle, y_angle, z_angle)
+
+    def get_position(self) -> dict:
+        """Get position (angles for ball mate)."""
+        angles = self.get_angles()
+        return {"x_angle": angles[0], "y_angle": angles[1], "z_angle": angles[2]}
