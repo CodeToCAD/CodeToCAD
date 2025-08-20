@@ -52,7 +52,7 @@ def test_fluent_mate_api():
             print(f"   ✓ Mate status: {rigid_mate.status.value}")
         else:
             print("   ✗ Failed to create rigid mate")
-            return False
+            assert False
 
         # Test 3: Create a distance mate using fluent API
         print("\n3. Creating distance mate with fluent API...")
@@ -174,18 +174,18 @@ def test_fluent_mate_api():
 
         print("\n" + "=" * 40)
         print("✓ Fluent API tests completed successfully!")
-        return True
+        assert True
 
     except ImportError as e:
         print(f"✗ Import error: {e}")
         print("Make sure the fluent mate API is properly installed")
-        return False
+        assert False
     except Exception as e:
         print(f"✗ Test failed with error: {e}")
         import traceback
 
         traceback.print_exc()
-        return False
+        assert False
 
 
 def test_api_comparison():
@@ -241,11 +241,11 @@ def test_api_comparison():
         else:
             print("\n✗ Failed to create mate using fluent API")
 
-        return True
+        assert True
 
     except Exception as e:
         print(f"✗ Comparison test failed: {e}")
-        return False
+        assert False
 
 
 if __name__ == "__main__":

@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING, List, Optional
 from uuid import uuid4
 
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface
-from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterface
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
 from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.adapters.build123d.cad.edge.edge import Edge
 from codetocad.adapters.build123d.cad.vertex.vertex import Vertex
 from codetocad.adapters.build123d.cad.wire.wire_add import WireAdd
+from codetocad.adapters.build123d.cad.wire.wire_constraint import WireConstraint
 from codetocad.adapters.build123d.cad.wire.wire_preset_class_property import (
     _WirePresetClassProperty,
 )
@@ -49,7 +49,7 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
         self.add = WireAdd(self)
         self.get = WireGetInterface(self)
-        self.constraint = WireConstraintInterface(self)
+        self.constraint = WireConstraint(self)
 
         # If no native instance provided, it will be created when edges are added
 

@@ -40,7 +40,7 @@ class WireInterface(ABC, metaclass=_WirePresetClassPropertyInterface):
         self.edges: list[EdgeInterface] = []
         self.add = WireAddInterface(self)
         self.get = WireGetInterface(self)
-        self.constraint = WireConstraintInterface(self)
+        self.constraint = None  # To be overridden by concrete implementations
         self.name: str | None = None
 
         # Method group properties
