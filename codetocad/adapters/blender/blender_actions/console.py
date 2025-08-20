@@ -73,6 +73,8 @@ A debugpy server has started on {host}:{port}!
 
 You may connect to it by attaching your IDE's debugger to a remote debugger at {host}:{port}.
 
+Waiting 10 seconds for a client to connect...
+
 """,
             "OUTPUT",
         )
@@ -135,8 +137,11 @@ def write_to_console(message: str, text_type: str = "INFO"):
     """
     # References https://blender.stackexchange.com/a/78332
     color = "blue"
-    if text_type == "ERROR":
+    if text_type == "INFO":
+        color = "yellow"
+    elif text_type == "ERROR":
         color = "red"
+
     try:
         area, space, region = console_get()
 
