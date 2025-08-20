@@ -4,11 +4,12 @@ build123d implementation of AssemblyTransformInterface.
 
 from typing import TYPE_CHECKING
 
+from codetocad.interfaces.cad.assembly.assembly_transform_interface import (
+    AssemblyTransformInterface,
+)
 
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly_transform_interface import (
-        AssemblyTransformInterface,
-    )
+    pass
 
 
 class AssemblyTransform(AssemblyTransformInterface):

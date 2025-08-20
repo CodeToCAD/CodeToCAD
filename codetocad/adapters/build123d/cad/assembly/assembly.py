@@ -53,6 +53,15 @@ class Assembly(AssemblyInterface):
         self.export = AssemblyExport(self)
         self.geometry = AssemblyGeometry(self)
 
+        # Initialize mate manager and fluent mate interface
+        from codetocad.adapters.build123d.cad.assembly.mate.mate_manager import (
+            MateManager,
+        )
+        from codetocad.adapters.build123d.cad.assembly.assembly_mate import AssemblyMate
+
+        self.mate_manager = MateManager(self)
+        self.mate = AssemblyMate(self)
+
     def set_name(self, name: str):
         """Set the assembly name."""
         self.name = name
@@ -67,6 +76,11 @@ class Assembly(AssemblyInterface):
     def remove_part(self, part: "Part"):
         """Remove a part from the assembly."""
         if part in self.parts:
+            # Remove any mates involving this part
+            mates_to_remove = self.mate_manager.get_mates_by_part(part)
+            for mate in mates_to_remove:
+                self.mate_manager.remove_mate(mate.name)
+
             self.parts.remove(part)
             if self in part.member_assemblies:
                 part.member_assemblies.remove(self)
@@ -130,8 +144,36 @@ class Assembly(AssemblyInterface):
 
     def clear(self):
         """Remove all parts from the assembly."""
+        # Clear all mates first
+        self.mate_manager.clear_all_mates()
+
         for part in self.parts[:]:  # Create a copy of the list to iterate over
             self.remove_part(part)
+
+    # Mate management methods (delegate to mate_manager)
+    def remove_mate(self, mate_name: str) -> bool:
+        """Remove a mate by name."""
+        return self.mate_manager.remove_mate(mate_name)
+
+    def get_mate(self, mate_name: str):
+        """Get a mate by name."""
+        return self.mate_manager.get_mate(mate_name)
+
+    def get_all_mates(self):
+        """Get all mates in the assembly."""
+        return self.mate_manager.get_all_mates()
+
+    def solve_mates(self) -> bool:
+        """Solve all active mate constraints."""
+        return self.mate_manager.solve_mates()
+
+    def validate_mates(self):
+        """Validate all mates in the assembly."""
+        return self.mate_manager.validate_mates()
+
+    def get_mate_statistics(self):
+        """Get statistics about mates in the assembly."""
+        return self.mate_manager.get_mate_statistics()
 
     def __len__(self):
         """Get the number of parts in the assembly."""
