@@ -15,6 +15,7 @@ from codetocad.adapters.blender.blender_definitions import (
     BlenderConstraintTypes,
     BlenderTranslationTypes,
 )
+from codetocad.core.enums.axis import Axis
 
 
 def get_constraint(
@@ -49,7 +50,7 @@ def apply_limit_location_constraint(
     x: list[float | None] | None,
     y: list[float | None] | None,
     z: list[float | None] | None,
-    relative_to_object: bpy.types.Object | None,
+    relative_to_object: "bpy.types.Object | None",
     **kwargs,
 ):
 
@@ -100,7 +101,7 @@ def apply_limit_rotation_constraint(
     x_radians: list[float | None] | None,
     y_radians: list[float | None] | None,
     z_radians: list[float | None] | None,
-    relative_to_object: bpy.types.Object | None,
+    relative_to_object: "bpy.types.Object | None",
     **kwargs,
 ):
 

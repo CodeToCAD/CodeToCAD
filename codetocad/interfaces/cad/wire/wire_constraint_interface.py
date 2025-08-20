@@ -5,8 +5,6 @@ This interface provides methods for applying geometric constraints to wires,
 such as tangent, parallel, perpendicular, coincident, and distance constraints.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import TYPE_CHECKING, Any

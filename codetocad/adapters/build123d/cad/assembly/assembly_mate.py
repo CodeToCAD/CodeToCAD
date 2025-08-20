@@ -4,8 +4,6 @@ build123d implementation of AssemblyMateInterface.
 This module provides the fluent mate creation API for build123d assemblies.
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, Tuple
 
 from codetocad.interfaces.cad.assembly.assembly_mate_interface import (
@@ -62,7 +60,7 @@ class AssemblyMate(AssemblyMateInterface):
         location1: Any,
         location2: Any,
         name: str | None = None,
-    ) -> RigidMateInterface | None:
+    ) -> "RigidMateInterface | None":
         """
         Create a rigid mate that fixes two parts together.
 
@@ -91,7 +89,7 @@ class AssemblyMate(AssemblyMateInterface):
         angle_range: Tuple[float, float] = (0, 360),
         current_angle: float = 0,
         name: str | None = None,
-    ) -> RevoluteMateInterface | None:
+    ) -> "RevoluteMateInterface | None":
         """
         Create a revolute mate for hinge-like rotation.
 
@@ -131,7 +129,7 @@ class AssemblyMate(AssemblyMateInterface):
         position_range: Tuple[float, float] = (0, float("inf")),
         current_position: float = 0,
         name: str | None = None,
-    ) -> LinearMateInterface | None:
+    ) -> "LinearMateInterface | None":
         """
         Create a linear mate for sliding motion.
 
@@ -173,7 +171,7 @@ class AssemblyMate(AssemblyMateInterface):
         current_position: float = 0,
         current_angle: float = 0,
         name: str | None = None,
-    ) -> CylindricalMateInterface | None:
+    ) -> "CylindricalMateInterface | None":
         """
         Create a cylindrical mate for screw-like motion.
 
@@ -219,7 +217,7 @@ class AssemblyMate(AssemblyMateInterface):
         ] = ((0, 360), (0, 360), (0, 360)),
         current_angles: Tuple[float, float, float] = (0, 0, 0),
         name: str | None = None,
-    ) -> BallMateInterface | None:
+    ) -> "BallMateInterface | None":
         """
         Create a ball mate for gimbal-like motion.
 
@@ -259,7 +257,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity2: Any,
         flip_alignment: bool = False,
         name: str | None = None,
-    ) -> CoincidentMateInterface | None:
+    ) -> "CoincidentMateInterface | None":
         """
         Create a coincident mate to align geometric entities.
 
@@ -292,7 +290,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> ConcentricMateInterface | None:
+    ) -> "ConcentricMateInterface | None":
         """
         Create a concentric mate to align cylindrical features.
 
@@ -319,7 +317,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity2: Any,
         distance: float,
         name: str | None = None,
-    ) -> DistanceMateInterface | None:
+    ) -> "DistanceMateInterface | None":
         """
         Create a distance mate to maintain specific spacing.
 
@@ -352,7 +350,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> ParallelMateInterface | None:
+    ) -> "ParallelMateInterface | None":
         """
         Create a parallel mate to keep entities parallel.
 
@@ -378,7 +376,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> PerpendicularMateInterface | None:
+    ) -> "PerpendicularMateInterface | None":
         """
         Create a perpendicular mate to keep entities perpendicular.
 
@@ -404,7 +402,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> TangentMateInterface | None:
+    ) -> "TangentMateInterface | None":
         """
         Create a tangent mate to make surfaces tangent.
 
@@ -431,7 +429,7 @@ class AssemblyMate(AssemblyMateInterface):
         entity2: Any,
         angle: float,
         name: str | None = None,
-    ) -> AngleMateInterface | None:
+    ) -> "AngleMateInterface | None":
         """
         Create an angle mate to maintain specific angle.
 

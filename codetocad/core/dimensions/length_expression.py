@@ -76,4 +76,4 @@ class LengthExpression:
         return f"Length({self.meters} m)"
 
 
-LengthType: TypeAlias = str | float | int | LengthExpression
+LengthType: TypeAlias = "str | float | int | LengthExpression"

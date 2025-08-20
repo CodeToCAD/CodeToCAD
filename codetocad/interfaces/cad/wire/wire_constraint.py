@@ -5,8 +5,6 @@ This interface provides methods for applying geometric constraints to wires,
 such as tangent, parallel, perpendicular, coincident, and distance constraints.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
@@ -250,7 +248,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def tangent_to(
         self, target_entity: Any, point: Any, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a tangent constraint between the wire and another entity.
 
@@ -267,7 +265,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def parallel_to(
         self, reference_entity: Any, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a parallel constraint between the wire and a reference entity.
 
@@ -283,7 +281,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def perpendicular_to(
         self, reference_entity: Any, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a perpendicular constraint between the wire and a reference entity.
 
@@ -299,7 +297,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def coincident_points(
         self, target_point: Any, wire_point: Any = None, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a coincident constraint between wire point and target point.
 
@@ -316,7 +314,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def distance_from(
         self, target_entity: Any, distance_value: float, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a distance constraint between the wire and another entity.
 
@@ -333,7 +331,7 @@ class WireConstraintInterface(ABC):
     @abstractmethod
     def set_length(
         self, length_value: float, name: str | None = None
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a length constraint for the wire.
 
@@ -352,7 +350,7 @@ class WireConstraintInterface(ABC):
         other_wire: "WireInterface",
         continuity_order: int = 1,
         name: str | None = None,
-    ) -> GeometricConstraint | None:
+    ) -> "GeometricConstraint | None":
         """
         Create a continuity constraint between this wire and another wire.
 
@@ -383,7 +381,7 @@ class WireConstraintInterface(ABC):
                 return True
         return False
 
-    def get_constraint(self, name: str) -> GeometricConstraint | None:
+    def get_constraint(self, name: str) -> "GeometricConstraint | None":
         """
         Get a constraint by name.
 

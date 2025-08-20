@@ -1,6 +1,9 @@
 import bmesh
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from uuid import uuid4
+
+from codetocad.adapters.blender.cad.blender_constraint import BlenderObjectConstraint
+
 
 from codetocad.interfaces.cad.part.part_interface import PartInterface
 from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
@@ -40,7 +43,7 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         self.name = name or f"part_{str(uuid4())[:8]}"
         self._blender_object: bpy.types.Object | None = None
 
-        self.sketch = Sketch(f"{self.name}_sketch")
+        self.sketch: Sketch = Sketch(f"{self.name}_sketch")
 
         # Override method group properties with Blender-specific implementations
         from codetocad.adapters.blender.cad.part.part_transform import PartTransform
@@ -52,6 +55,9 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         self.export = PartExport(self)
         self.boolean = PartBoolean(self)
         self.geometry = PartGeometry(self)
+
+        # Initialize constraints property (will be set when Blender object is created)
+        self._constraints: BlenderObjectConstraint | None = None
 
     def set_name(self, name: str):
         """Set the part name and update Blender object."""
@@ -73,6 +79,15 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
     def get_blender_object(self) -> "bpy.types.Object | None":
         """Get the Blender object representing this part."""
         return self._blender_object
+
+    @property
+    def constraints(self):
+        """Initialize the constraints interface when Blender object is available."""
+        if not self._blender_object:
+            raise ValueError("Blender object not created for part")
+        if self._constraints is None:
+            self._constraints = BlenderObjectConstraint(self._blender_object)
+        return self._constraints
 
     def create_from_sketch(self):
         """Create a 3D part from the sketch by extruding."""

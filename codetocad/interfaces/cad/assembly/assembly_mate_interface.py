@@ -5,8 +5,6 @@ This interface provides intuitive methods for creating different types of mates
 between parts in an assembly, using a fluent API approach.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Tuple
 
@@ -43,7 +41,7 @@ class AssemblyMateInterface(ABC):
         location1: Any,
         location2: Any,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a rigid mate that fixes two parts together.
 
@@ -70,7 +68,7 @@ class AssemblyMateInterface(ABC):
         angle_range: Tuple[float, float] = (0, 360),
         current_angle: float = 0,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a revolute mate for hinge-like rotation.
 
@@ -100,7 +98,7 @@ class AssemblyMateInterface(ABC):
         position_range: Tuple[float, float] = (0, float("inf")),
         current_position: float = 0,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a linear mate for sliding motion.
 
@@ -132,7 +130,7 @@ class AssemblyMateInterface(ABC):
         current_position: float = 0,
         current_angle: float = 0,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a cylindrical mate for screw-like motion.
 
@@ -166,7 +164,7 @@ class AssemblyMateInterface(ABC):
         ] = ((0, 360), (0, 360), (0, 360)),
         current_angles: Tuple[float, float, float] = (0, 0, 0),
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a ball mate for gimbal-like motion.
 
@@ -196,7 +194,7 @@ class AssemblyMateInterface(ABC):
         entity2: Any,
         flip_alignment: bool = False,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a coincident mate to align geometric entities.
 
@@ -221,7 +219,7 @@ class AssemblyMateInterface(ABC):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a concentric mate to align cylindrical features.
 
@@ -246,7 +244,7 @@ class AssemblyMateInterface(ABC):
         entity2: Any,
         distance: float,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a distance mate to maintain specific spacing.
 
@@ -271,7 +269,7 @@ class AssemblyMateInterface(ABC):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a parallel mate to keep entities parallel.
 
@@ -295,7 +293,7 @@ class AssemblyMateInterface(ABC):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a perpendicular mate to keep entities perpendicular.
 
@@ -319,7 +317,7 @@ class AssemblyMateInterface(ABC):
         entity1: Any,
         entity2: Any,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create a tangent mate to make surfaces tangent.
 
@@ -344,7 +342,7 @@ class AssemblyMateInterface(ABC):
         entity2: Any,
         angle: float,
         name: str | None = None,
-    ) -> "MateInterface" | None:
+    ) -> "MateInterface|None":
         """
         Create an angle mate to maintain specific angle.
 

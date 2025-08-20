@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface
-from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterface
+from codetocad.adapters.blender.cad.wire.wire_constraint import BlenderWireConstraint
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
 from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.adapters.blender.cad.edge.edge import Edge
-from codetocad.adapters.blender.cad.vertex.vertex import Vertex
+
 from codetocad.adapters.blender.cad.wire.wire_add import WireAdd
 from codetocad.adapters.blender.cad.wire.wire_preset_class_property import (
     _WirePresetClassProperty,
@@ -55,7 +55,7 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
         self.add = WireAdd(self)
         self.get = WireGetInterface(self)
-        self.constraint = WireConstraintInterface(self)
+        self.constraint = BlenderWireConstraint(self)
 
         # Create Blender representation
         self._create_blender_wire()
@@ -63,10 +63,10 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
     def _create_blender_wire(self):
         """Create a Blender curve to represent this wire."""
         # Create an empty curve initially with basic points
-        initial_points = [(0, 0, 0), (0, 0, 0)]  # Start with minimal curve
+        initial_points = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]  # Start with minimal curve
 
-        spline, curve_data, spline_points = create_curve(
-            curve_name=self.name,
+        _, curve_data, _ = create_curve(
+            curve_name=self.name or "wire",
             curve_type=BlenderCurveTypes.NURBS,
             points=initial_points,
             is_3d=True,
@@ -74,7 +74,7 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         self._curve_data = curve_data
 
         # Create object from curve
-        self._blender_object = create_object(self.name, self._curve_data)
+        self._blender_object = create_object(self.name or "wire", self._curve_data)
         assign_object_to_collection(self._blender_object)
 
     def _update_blender_curve(self):

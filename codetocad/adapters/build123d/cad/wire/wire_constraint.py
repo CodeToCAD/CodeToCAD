@@ -5,8 +5,6 @@ This module provides concrete implementations of geometric constraints
 for wires using build123d's constraint solving capabilities.
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 import math
 
@@ -41,7 +39,7 @@ class WireConstraint(WireConstraintInterface):
 
     def tangent_to(
         self, target_entity: Any, point: Any, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a tangent constraint between the wire and another entity.
 
@@ -76,7 +74,7 @@ class WireConstraint(WireConstraintInterface):
 
     def parallel_to(
         self, reference_entity: Any, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a parallel constraint between the wire and a reference entity.
 
@@ -109,7 +107,7 @@ class WireConstraint(WireConstraintInterface):
 
     def perpendicular_to(
         self, reference_entity: Any, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a perpendicular constraint between the wire and a reference entity.
 
@@ -142,7 +140,7 @@ class WireConstraint(WireConstraintInterface):
 
     def coincident_points(
         self, target_point: Any, wire_point: Any = None, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a coincident constraint between wire point and target point.
 
@@ -177,7 +175,7 @@ class WireConstraint(WireConstraintInterface):
 
     def distance_from(
         self, target_entity: Any, distance_value: float, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a distance constraint between the wire and another entity.
 
@@ -212,7 +210,7 @@ class WireConstraint(WireConstraintInterface):
 
     def set_length(
         self, length_value: float, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a length constraint for the wire.
 
@@ -245,7 +243,7 @@ class WireConstraint(WireConstraintInterface):
 
     def continuous_with(
         self, other_wire: "Wire", continuity_order: int = 1, name: str | None = None
-    ) -> "Build123dConstraint" | None:
+    ) -> "Build123dConstraint|None":
         """
         Create a continuity constraint between this wire and another wire.
 

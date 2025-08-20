@@ -54,7 +54,7 @@ class AssemblyInterface(ABC):
             if self in part.member_assemblies:
                 part.member_assemblies.remove(self)
 
-    def get_part_by_name(self, name: str) -> PartInterface | None:
+    def get_part_by_name(self, name: str) -> "PartInterface | None":
         """Get a part by name."""
         for part in self.parts:
             if part.name == name:
