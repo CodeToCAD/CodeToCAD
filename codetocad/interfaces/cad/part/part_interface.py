@@ -48,67 +48,11 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
         """Extrude the part's sketch to create a solid."""
         return self
 
-    def union(self, _other: "PartInterface") -> "PartInterface":
-        """Perform boolean union with another part."""
-        return self
-
-    def difference(self, _other: "PartInterface") -> "PartInterface":
-        """Perform boolean difference with another part."""
-        return self
-
-    def intersection(self, _other: "PartInterface") -> "PartInterface":
-        """Perform boolean intersection with another part."""
-        return self
-
-    def translate(
-        self, _dx: LengthType, _dy: LengthType, _dz: LengthType = 0
-    ) -> "PartInterface":
-        """Translate the part."""
-        return self
-
-    def rotate(
-        self, _axis: tuple[float, float, float], _angle: float
-    ) -> "PartInterface":
-        """Rotate the part around an axis."""
-        return self
-
-    def scale(
-        self, _scale_x: float, _scale_y: float, _scale_z: float = 1.0
-    ) -> "PartInterface":
-        """Scale the part."""
-        return self
-
-    def get_volume(self) -> float:
-        """Get the volume of the part."""
-        return 0.0
-
-    def get_bounding_box(
-        self,
-    ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-        """Get the bounding box of the part."""
-        return ((0, 0, 0), (0, 0, 0))
-
-    def export_step(self, _file_path: str):
-        """Export the part to STEP format."""
-        pass
-
-    def export_stl(self, _file_path: str, _tolerance: float = 0.1):
-        """Export the part to STL format."""
-        pass
-
-    def export_brep(self, _file_path: str):
-        """Export the part to BREP format."""
-        pass
-
     def copy(self) -> "PartInterface":
         """Create a copy of the part."""
         # This method should be implemented by concrete classes
         # as it requires creating new instances of the specific part type
         raise NotImplementedError("copy must be implemented by concrete classes")
-
-    def move(self, _x: float, _y: float, _z: float):
-        """Move the part to a new location."""
-        pass
 
     def hide(self):
         """Hide the part."""

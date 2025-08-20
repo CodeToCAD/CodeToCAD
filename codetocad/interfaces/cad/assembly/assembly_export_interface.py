@@ -4,6 +4,11 @@ Export operations interface for Assembly objects.
 
 from abc import ABC
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
+
 
 class AssemblyExportInterface(ABC):
     """Interface for assembly export operations."""
@@ -13,12 +18,15 @@ class AssemblyExportInterface(ABC):
 
     def step(self, file_path: str):
         """Export the assembly to STEP format."""
-        return self.assembly.export_step(file_path)
+        # Default implementation - adapters should override this
+        pass
 
     def stl(self, file_path: str, tolerance: float = 0.1):
         """Export the assembly to STL format."""
-        return self.assembly.export_stl(file_path, tolerance)
+        # Default implementation - adapters should override this
+        pass
 
     def brep(self, file_path: str):
         """Export the assembly to BREP format."""
-        return self.assembly.export_brep(file_path)
+        # Default implementation - adapters should override this
+        pass

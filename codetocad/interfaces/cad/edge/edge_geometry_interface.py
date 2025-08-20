@@ -17,22 +17,52 @@ class EdgeGeometryInterface(ABC):
 
     def length(self) -> float:
         """Get the length of the edge."""
-        return self.edge.length()
+        import numpy as np
+
+        direction = self.edge.v2.position - self.edge.v1.position
+        return float(np.linalg.norm(direction))
 
     def midpoint(self) -> "VertexInterface":
         """Get the midpoint of the edge."""
-        return self.edge.midpoint()
+        # This method should be implemented by concrete classes
+        # as it requires creating new instances of the specific vertex type
+        raise NotImplementedError("midpoint must be implemented by concrete classes")
 
     def direction_vector(self) -> tuple[float, float, float]:
         """Get the direction vector of the edge."""
-        return self.edge.direction_vector()
+        direction = self.edge.v2.position - self.edge.v1.position
+        return tuple(direction)
 
     def is_parallel_to(self, other: "EdgeInterface", tolerance: float = 1e-6) -> bool:
         """Check if this edge is parallel to another edge."""
-        return self.edge.is_parallel_to(other, tolerance)
+        import numpy as np
+
+        dir1 = self.edge.v2.position - self.edge.v1.position
+        dir2 = other.v2.position - other.v1.position
+
+        # Normalize vectors
+        dir1_norm = dir1 / np.linalg.norm(dir1)
+        dir2_norm = dir2 / np.linalg.norm(dir2)
+
+        # Check if cross product is near zero (parallel) or near 1 (anti-parallel)
+        cross_product = np.cross(dir1_norm, dir2_norm)
+        cross_magnitude = np.linalg.norm(cross_product)
+
+        return cross_magnitude < tolerance
 
     def is_perpendicular_to(
         self, other: "EdgeInterface", tolerance: float = 1e-6
     ) -> bool:
         """Check if this edge is perpendicular to another edge."""
-        return self.edge.is_perpendicular_to(other, tolerance)
+        import numpy as np
+
+        dir1 = self.edge.v2.position - self.edge.v1.position
+        dir2 = other.v2.position - other.v1.position
+
+        # Normalize vectors
+        dir1_norm = dir1 / np.linalg.norm(dir1)
+        dir2_norm = dir2 / np.linalg.norm(dir2)
+
+        # Check if dot product is near zero (perpendicular)
+        dot_product = np.dot(dir1_norm, dir2_norm)
+        return abs(dot_product) < tolerance

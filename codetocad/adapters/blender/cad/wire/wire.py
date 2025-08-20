@@ -44,6 +44,13 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
 
         self.member_sketches: list["Sketch"] = [sketch] if sketch is not None else []  # type: ignore
 
+        # Override method groups with Blender-specific implementations
+        from codetocad.adapters.blender.cad.wire.wire_geometry import WireGeometry
+        from codetocad.adapters.blender.cad.wire.wire_operations import WireOperations
+
+        self.geometry = WireGeometry(self)
+        self.operations = WireOperations(self)
+
         self.edges: list[Edge] = []  # type: ignore
 
         self.add = WireAdd(self)
@@ -107,97 +114,13 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         """Get the native Blender wire instance."""
         return self.native_instance
 
-    def close(self):
-        """Close the wire by connecting the last vertex to the first."""
-        if len(self.edges) >= 2:
-            first_vertex = self.edges[0].v1
-            last_vertex = self.edges[-1].v2
-
-            if first_vertex != last_vertex:
-                closing_edge = Edge(last_vertex, first_vertex)
-                self.edges.append(closing_edge)
-                self._update_blender_curve()
-
-    def get_vertices(self) -> List[Vertex]:
-        """Get all vertices in the wire."""
-        vertices = []
-        if self.edges:
-            vertices.append(self.edges[0].v1)
-            for edge in self.edges:
-                vertices.append(edge.v2)
-        return vertices
-
-    def length(self) -> float:
-        """Calculate the total length of the wire."""
-        return sum(edge.length() for edge in self.edges)
-
     def get_length(self) -> float:
         """Calculate the total length of the wire (legacy method)."""
-        return self.length()
-
-    def is_closed(self) -> bool:
-        """Check if the wire forms a closed loop."""
-        if len(self.edges) < 3:
-            return False
-
-        # Use a small tolerance for comparison
-        tolerance = 1e-6
-        first_vertex = self.edges[0].v1
-        last_vertex = self.edges[-1].v2
-        distance = first_vertex.distance_to(last_vertex)
-        return distance < tolerance
-
-    def get_bounding_box(
-        self,
-    ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-        """Get the bounding box of the wire as (min_point, max_point)."""
-        if not self.edges:
-            return ((0, 0, 0), (0, 0, 0))
-
-        vertices = self.get_vertices()
-        positions = [v.position for v in vertices]
-
-        min_x = min(pos[0] for pos in positions)
-        min_y = min(pos[1] for pos in positions)
-        min_z = min(pos[2] for pos in positions)
-
-        max_x = max(pos[0] for pos in positions)
-        max_y = max(pos[1] for pos in positions)
-        max_z = max(pos[2] for pos in positions)
-
-        return ((min_x, min_y, min_z), (max_x, max_y, max_z))
-
-    def reverse(self) -> "Wire":
-        """Create a new wire with reversed direction."""
-        reversed_wire = Wire(name=f"{self.name}_reversed")
-
-        # Reverse the order of edges and flip each edge
-        for edge in reversed(self.edges):
-            reversed_edge = Edge(edge.v2, edge.v1)
-            reversed_wire.edges.append(reversed_edge)
-
-        reversed_wire._update_blender_curve()
-        return reversed_wire
-
-    def extrude(self, length: LengthType) -> "Part":
-        """Extrude the wire to create a part."""
-        from codetocad.adapters.blender.cad.part.part import Part
-        from codetocad.adapters.blender.cad.sketch.sketch import Sketch
-
-        part = Part()
-        sketch = Sketch()
-        part.sketch = sketch
-        sketch.wires.append(self)
-        self.member_sketches.append(sketch)
-
-        # Apply extrusion using Blender's solidify modifier
-        part.extrude(length)
-
-        return part
+        return self.geometry.length()
 
     def extude(self, length: LengthType) -> "Part":
         """Extrude the wire to create a part (legacy method with typo)."""
-        return self.extrude(length)
+        return self.operations.extrude(length)
 
     def __repr__(self):
         return f"Wire(name='{self.name}', edges={len(self.edges)})"

@@ -13,10 +13,12 @@ class PartGeometryInterface(ABC):
 
     def volume(self) -> float:
         """Get the volume of the part."""
-        return self.part.get_volume()
+        # Default implementation - adapters should override this
+        return 0.0
 
     def bounding_box(
         self,
     ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
         """Get the bounding box of the part."""
-        return self.part.get_bounding_box()
+        # Default implementation - adapters should override this
+        return ((0, 0, 0), (0, 0, 0))

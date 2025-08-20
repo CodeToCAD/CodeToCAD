@@ -49,7 +49,7 @@ def example_basic_shapes():
         print(f"Created assembly with {len(assembly)} parts")
 
         # Boolean operations
-        result = cube.union(cylinder)
+        result = cube.boolean.union(cylinder)
         print(f"Boolean union result: {result.name}")
 
         return assembly
@@ -104,12 +104,12 @@ def example_transformations():
         print(f"Original cube: {cube.name}")
 
         # Apply transformations
-        cube.translate(5, 0, 0)
-        cube.rotate((0, 0, 1), 45)  # Rotate 45 degrees around Z-axis
-        cube.scale(1.5, 1.5, 1.0)
+        cube.transform.translate(5, 0, 0)
+        cube.transform.rotate((0, 0, 1), 45)  # Rotate 45 degrees around Z-axis
+        cube.transform.scale(1.5, 1.5, 1.0)
 
-        print(f"Transformed cube volume: {cube.get_volume()}")
-        print(f"Bounding box: {cube.get_bounding_box()}")
+        print(f"Transformed cube volume: {cube.geometry.volume()}")
+        print(f"Bounding box: {cube.geometry.bounding_box()}")
 
         return cube
 
@@ -130,13 +130,13 @@ def example_export():
 
         # Export to different formats
         try:
-            part.export_step("sphere.step")
+            part.export.step("sphere.step")
             print("Exported to STEP format")
         except Exception as e:
             print(f"STEP export failed: {e}")
 
         try:
-            part.export_stl("sphere.stl")
+            part.export.stl("sphere.stl")
             print("Exported to STL format")
         except Exception as e:
             print(f"STL export failed: {e}")

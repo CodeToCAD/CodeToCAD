@@ -42,6 +42,17 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
 
         self.sketch = Sketch(f"{self.name}_sketch")
 
+        # Override method group properties with Blender-specific implementations
+        from codetocad.adapters.blender.cad.part.part_transform import PartTransform
+        from codetocad.adapters.blender.cad.part.part_export import PartExport
+        from codetocad.adapters.blender.cad.part.part_boolean import PartBoolean
+        from codetocad.adapters.blender.cad.part.part_geometry import PartGeometry
+
+        self.transform = PartTransform(self)
+        self.export = PartExport(self)
+        self.boolean = PartBoolean(self)
+        self.geometry = PartGeometry(self)
+
     def set_name(self, name: str):
         """Set the part name and update Blender object."""
         self.name = name
@@ -101,214 +112,12 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
             # Add solidify modifier for extrusion
             apply_solidify_modifier(self._blender_object, float(distance))
 
-    def union(self, other: "PartInterface") -> "PartInterface":
-        """Perform boolean union with another part."""
-        if not isinstance(other, Part):
-            raise TypeError(
-                "Can only perform boolean operations with other Blender Parts"
-            )
-
-        result_part = Part(f"{self.name}_union_{other.name}")
-
-        # Copy this part's data to result
-        result_part.sketch = self.sketch.copy()
-        result_part.create_from_sketch()
-
-        # Apply boolean union
-        if result_part._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                result_part._blender_object,
-                BlenderBooleanTypes.UNION,
-                other._blender_object,
-            )
-
-        return result_part
-
-    def difference(self, other: "PartInterface") -> "PartInterface":
-        """Perform boolean difference with another part."""
-        if not isinstance(other, Part):
-            raise TypeError(
-                "Can only perform boolean operations with other Blender Parts"
-            )
-
-        result_part = Part(f"{self.name}_difference_{other.name}")
-
-        # Copy this part's data to result
-        result_part.sketch = self.sketch.copy()
-        result_part.create_from_sketch()
-
-        # Apply boolean difference
-        if result_part._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                result_part._blender_object,
-                BlenderBooleanTypes.DIFFERENCE,
-                other._blender_object,
-            )
-
-        return result_part
-
-    def intersection(self, other: "PartInterface") -> "PartInterface":
-        """Perform boolean intersection with another part."""
-        if not isinstance(other, Part):
-            raise TypeError(
-                "Can only perform boolean operations with other Blender Parts"
-            )
-
-        result_part = Part(f"{self.name}_intersection_{other.name}")
-
-        # Copy this part's data to result
-        result_part.sketch = self.sketch.copy()
-        result_part.create_from_sketch()
-
-        # Apply boolean intersection
-        if result_part._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                result_part._blender_object,
-                BlenderBooleanTypes.INTERSECT,
-                other._blender_object,
-            )
-
-        return result_part
-
-    def boolean_union(self, other: "Part"):
-        """Perform boolean union with another part (legacy method)."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.UNION,
-                other._blender_object,
-            )
-
-    def boolean_difference(self, other: "Part"):
-        """Perform boolean difference with another part (legacy method)."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.DIFFERENCE,
-                other._blender_object,
-            )
-
-    def boolean_intersection(self, other: "Part"):
-        """Perform boolean intersection with another part (legacy method)."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.INTERSECT,
-                other._blender_object,
-            )
-
-    def translate(self, dx: LengthType, dy: LengthType, dz: LengthType = 0) -> "Part":
-        """Translate the part."""
-        if self._blender_object:
-            current_loc = self._blender_object.location
-            self._blender_object.location = (
-                current_loc[0] + float(LengthExpression(dx)),
-                current_loc[1] + float(LengthExpression(dy)),
-                current_loc[2] + float(LengthExpression(dz)),
-            )
-        return self
-
-    def rotate(self, axis: tuple[float, float, float], angle: float) -> "Part":
-        """Rotate the part around an axis."""
-        if self._blender_object:
-            # Convert axis-angle to Euler angles (simplified)
-            # This is a basic implementation - more complex rotation would require matrix math
-            import math
-
-            magnitude = math.sqrt(sum(a * a for a in axis))
-            if magnitude > 0:
-                # Normalize axis and apply rotation
-                normalized_axis = tuple(a / magnitude for a in axis)
-                # For simplicity, apply rotation as Euler angles
-                # In a full implementation, this would use proper axis-angle to Euler conversion
-                self._blender_object.rotation_euler = (
-                    normalized_axis[0] * angle,
-                    normalized_axis[1] * angle,
-                    normalized_axis[2] * angle,
-                )
-        return self
-
-    def scale(self, scale_x: float, scale_y: float, scale_z: float = 1.0) -> "Part":
-        """Scale the part."""
-        if self._blender_object:
-            current_scale = self._blender_object.scale
-            self._blender_object.scale = (
-                current_scale[0] * scale_x,
-                current_scale[1] * scale_y,
-                current_scale[2] * scale_z,
-            )
-        return self
-
-    def move(self, x: float, y: float, z: float):
-        """Move the part to a new location"""
-        if self._blender_object:
-            self._blender_object.location = (x, y, z)
-
-    def get_volume(self) -> float:
-        """Calculate the volume of the part."""
-        if self._blender_object and isinstance(
-            self._blender_object.data, bpy.types.Mesh
-        ):
-            # Create bmesh instance
-            bm = bmesh.new()
-            bm.from_mesh(self._blender_object.data)
-            bm.transform(self._blender_object.matrix_world)
-
-            # Calculate volume
-            volume = bm.calc_volume()
-            bm.free()
-            return volume
-        return 0.0
-
-    def get_bounding_box(
-        self,
-    ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-        """Get the bounding box of the part."""
-        if self._blender_object:
-            # Get bounding box in world coordinates
-            import mathutils
-
-            bbox = [
-                self._blender_object.matrix_world @ mathutils.Vector(corner)
-                for corner in self._blender_object.bound_box
-            ]
-
-            # Find min and max coordinates
-            min_coords = [min(corner[i] for corner in bbox) for i in range(3)]
-            max_coords = [max(corner[i] for corner in bbox) for i in range(3)]
-
-            return (
-                (min_coords[0], min_coords[1], min_coords[2]),
-                (max_coords[0], max_coords[1], max_coords[2]),
-            )
-
-        return ((0, 0, 0), (0, 0, 0))
-
-    def export_step(self, _file_path: str):
-        """Export the part to STEP format."""
-        # Blender doesn't have native STEP export, would need addon
-        raise NotImplementedError("STEP export requires additional Blender addon")
-
-    def export_stl(self, _file_path: str, _tolerance: float = 0.1):
-        """Export the part to STL format."""
-        if self._blender_object:
-            # This would require using Blender's export operators
-            # For now, raise NotImplementedError as it requires bpy.ops context
-            raise NotImplementedError(
-                "STL export requires Blender context and operators"
-            )
-
-    def export_brep(self, _file_path: str):
-        """Export the part to BREP format."""
-        # Blender doesn't have native BREP export
-        raise NotImplementedError("BREP export not supported in Blender")
-
     def copy(self) -> "Part":
         """Create a copy of the part."""
         new_part = Part(f"{self.name}_copy")
 
-        # Copy the sketch
-        new_part.sketch = self.sketch.copy()
+        # Copy the sketch using operations interface
+        new_part.sketch = self.sketch.operations.copy()
 
         # Create Blender representation for the copy
         new_part.create_from_sketch()

@@ -1,18 +1,17 @@
 """
-Geometry operations interface for Vertex objects.
+Blender implementation of VertexGeometryInterface.
 """
 
-from abc import ABC
-import numpy as np
+from codetocad.interfaces.cad.vertex.vertex_geometry_interface import (
+    VertexGeometryInterface,
+)
 from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
 from codetocad.core.dimensions.point import Point
+import numpy as np
 
 
-class VertexGeometryInterface(ABC):
-    """Interface for vertex geometry operations."""
-
-    def __init__(self, vertex: "VertexInterface"):
-        self.vertex = vertex
+class VertexGeometry(VertexGeometryInterface):
+    """Blender implementation of vertex geometry operations."""
 
     def position(self) -> tuple[float, float, float]:
         """Get the current position of the vertex."""
@@ -27,6 +26,10 @@ class VertexGeometryInterface(ABC):
                 float(LengthExpression(z)),
             ]
         )
+
+        # Update Blender object location if it exists
+        if self.vertex._blender_object:
+            self.vertex._blender_object.location = self.vertex.position
 
     def distance_to(self, other: "VertexInterface") -> float:
         """Calculate distance to another vertex."""

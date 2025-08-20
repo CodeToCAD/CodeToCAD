@@ -8,11 +8,7 @@ from uuid import uuid4
 from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
 from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAddInterface
 from codetocad.interfaces.cad.assembly.assembly_get import AssemblyGetInterface
-from codetocad.adapters.build123d.build123d_actions.export import (
-    export_step,
-    export_stl,
-    export_brep,
-)
+
 from codetocad.adapters.build123d.build123d_actions.transformations import (
     translate_object,
     rotate_object,
@@ -41,6 +37,21 @@ class Assembly(AssemblyInterface):
 
         self.add = AssemblyAddInterface(self)
         self.get = AssemblyGetInterface(self)
+
+        # Override method group properties with build123d-specific implementations
+        from codetocad.adapters.build123d.cad.assembly.assembly_transform import (
+            AssemblyTransform,
+        )
+        from codetocad.adapters.build123d.cad.assembly.assembly_export import (
+            AssemblyExport,
+        )
+        from codetocad.adapters.build123d.cad.assembly.assembly_geometry import (
+            AssemblyGeometry,
+        )
+
+        self.transform = AssemblyTransform(self)
+        self.export = AssemblyExport(self)
+        self.geometry = AssemblyGeometry(self)
 
     def set_name(self, name: str):
         """Set the assembly name."""
@@ -79,72 +90,6 @@ class Assembly(AssemblyInterface):
                 instances.append(part.native_instance)
         return instances
 
-    def get_bounding_box(
-        self,
-    ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
-        """Get the bounding box of the entire assembly."""
-        if not self.parts:
-            return ((0, 0, 0), (0, 0, 0))
-
-        # Get bounding boxes of all parts
-        part_boxes = [
-            part.get_bounding_box() for part in self.parts if part.native_instance
-        ]
-
-        if not part_boxes:
-            return ((0, 0, 0), (0, 0, 0))
-
-        # Find overall min and max
-        min_x = min(box[0][0] for box in part_boxes)
-        min_y = min(box[0][1] for box in part_boxes)
-        min_z = min(box[0][2] for box in part_boxes)
-
-        max_x = max(box[1][0] for box in part_boxes)
-        max_y = max(box[1][1] for box in part_boxes)
-        max_z = max(box[1][2] for box in part_boxes)
-
-        return ((min_x, min_y, min_z), (max_x, max_y, max_z))
-
-    def get_total_volume(self) -> float:
-        """Get the total volume of all parts in the assembly."""
-        return sum(part.get_volume() for part in self.parts)
-
-    def translate_all(self, dx, dy, dz=0):
-        """Translate all parts in the assembly."""
-        for part in self.parts:
-            part.translate(dx, dy, dz)
-
-    def rotate_all(self, axis: tuple[float, float, float], angle: float):
-        """Rotate all parts in the assembly."""
-        for part in self.parts:
-            part.rotate(axis, angle)
-
-    def scale_all(self, scale_x: float, scale_y: float, scale_z: float = 1.0):
-        """Scale all parts in the assembly."""
-        for part in self.parts:
-            part.scale(scale_x, scale_y, scale_z)
-
-    def export_step(self, file_path: str):
-        """Export the assembly to STEP format."""
-        instances = self.get_all_native_instances()
-        if not instances:
-            raise ValueError("No parts with native instances to export")
-        export_step(instances, file_path)
-
-    def export_stl(self, file_path: str, tolerance: float = 0.1):
-        """Export the assembly to STL format."""
-        instances = self.get_all_native_instances()
-        if not instances:
-            raise ValueError("No parts with native instances to export")
-        export_stl(instances, file_path, tolerance)
-
-    def export_brep(self, file_path: str):
-        """Export the assembly to BREP format."""
-        instances = self.get_all_native_instances()
-        if not instances:
-            raise ValueError("No parts with native instances to export")
-        export_brep(instances, file_path)
-
     def create_compound(self) -> "bd.Compound":
         """Create a build123d compound from all parts."""
         import build123d as bd
@@ -167,7 +112,7 @@ class Assembly(AssemblyInterface):
 
         # Union with all other parts
         for part in self.parts[1:]:
-            result = result.union(part)
+            result = result.boolean.union(part)
 
         result.set_name(f"{self.name}_union")
         return result

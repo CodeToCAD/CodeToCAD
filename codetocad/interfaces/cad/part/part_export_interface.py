@@ -13,12 +13,15 @@ class PartExportInterface(ABC):
 
     def step(self, file_path: str):
         """Export the part to STEP format."""
-        return self.part.export_step(file_path)
+        # Default implementation - adapters should override this
+        pass
 
     def stl(self, file_path: str, tolerance: float = 0.1):
         """Export the part to STL format."""
-        return self.part.export_stl(file_path, tolerance)
+        # Default implementation - adapters should override this
+        pass
 
     def brep(self, file_path: str):
         """Export the part to BREP format."""
-        return self.part.export_brep(file_path)
+        # Default implementation - adapters should override this
+        pass

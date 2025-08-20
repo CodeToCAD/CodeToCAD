@@ -13,12 +13,15 @@ class PartBooleanInterface(ABC):
 
     def union(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean union with another part."""
-        return self.part.union(other)
+        # Default implementation - adapters should override this
+        return self.part
 
     def difference(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean difference with another part."""
-        return self.part.difference(other)
+        # Default implementation - adapters should override this
+        return self.part
 
     def intersection(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean intersection with another part."""
-        return self.part.intersection(other)
+        # Default implementation - adapters should override this
+        return self.part

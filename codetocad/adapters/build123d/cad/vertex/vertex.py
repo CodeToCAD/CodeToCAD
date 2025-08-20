@@ -53,32 +53,5 @@ class Vertex(VertexInterface):
         # Apply translation to the native instance
         self.native_instance = translate_object(self.native_instance, dx, dy, dz)
 
-    def get_position(self) -> tuple[float, float, float]:
-        """Get the current position of the vertex."""
-        return tuple(self.position)
-
-    def set_position(self, x: LengthType, y: LengthType, z: LengthType = 0):
-        """Set the position of the vertex."""
-        # Update the parent class position
-        from codetocad.core.dimensions.length_expression import LengthExpression
-        import numpy as np
-
-        self.position = np.array(
-            [
-                float(LengthExpression(x)),
-                float(LengthExpression(y)),
-                float(LengthExpression(z)),
-            ]
-        )
-
-        # Create new native instance with updated position
-        self.native_instance = create_vertex(x, y, z)
-
-    def distance_to(self, other: "Vertex") -> float:
-        """Calculate distance to another vertex."""
-        import numpy as np
-
-        return float(np.linalg.norm(self.position - other.position))
-
     def __repr__(self):
         return f"Vertex({self.position[0]}, {self.position[1]}, {self.position[2]})"

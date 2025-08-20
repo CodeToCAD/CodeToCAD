@@ -169,8 +169,8 @@ part.extrude_sketch(3)
 # Boolean operations
 cube1 = Part.preset.cube(2, 2, 2)
 cube2 = Part.preset.cube(1, 1, 1)
-cube2.translate(0.5, 0.5, 0.5)
-result = cube1.difference(cube2)
+cube2.transform.translate(0.5, 0.5, 0.5)
+result = cube1.boolean.difference(cube2)
 
 # Export
 result.export_step("result.step")

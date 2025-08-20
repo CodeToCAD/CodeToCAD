@@ -1,45 +1,39 @@
 """
-Geometry operations interface for Wire objects.
+Blender implementation of WireGeometryInterface.
 """
 
-from abc import ABC
+from codetocad.interfaces.cad.wire.wire_geometry_interface import WireGeometryInterface
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
 
 
-class WireGeometryInterface(ABC):
-    """Interface for wire geometry operations."""
-
-    def __init__(self, wire: "WireInterface"):
-        self.wire = wire
+class WireGeometry(WireGeometryInterface):
+    """Blender implementation of wire geometry operations."""
 
     def is_closed(self) -> bool:
-        """Check if the wire is closed."""
-        if not self.wire.edges:
+        """Check if the wire forms a closed loop."""
+        if len(self.wire.edges) < 3:
             return False
 
-        # Get first and last vertices
+        # Use a small tolerance for comparison
+        tolerance = 1e-6
         first_vertex = self.wire.edges[0].v1
         last_vertex = self.wire.edges[-1].v2
-
-        # Check if they are at the same position (within tolerance)
-        tolerance = 1e-6
         distance = first_vertex.geometry.distance_to(last_vertex)
         return distance < tolerance
 
     def length(self) -> float:
-        """Get the total length of the wire."""
+        """Calculate the total length of the wire."""
         return sum(edge.geometry.length() for edge in self.wire.edges)
 
     def vertices(self) -> list["VertexInterface"]:
-        """Get all unique vertices in the wire."""
+        """Get all vertices in the wire."""
         vertices = []
-        for edge in self.wire.edges:
-            if edge.v1 not in vertices:
-                vertices.append(edge.v1)
-            if edge.v2 not in vertices:
+        if self.wire.edges:
+            vertices.append(self.wire.edges[0].v1)
+            for edge in self.wire.edges:
                 vertices.append(edge.v2)
         return vertices
 

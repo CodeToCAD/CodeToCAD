@@ -28,6 +28,13 @@ class Edge(EdgeInterface):
         # Initialize the parent interface
         super().__init__(v1, v2)
 
+        # Override method groups with Blender-specific implementations
+        from codetocad.adapters.blender.cad.edge.edge_geometry import EdgeGeometry
+        from codetocad.adapters.blender.cad.edge.edge_operations import EdgeOperations
+
+        self.geometry = EdgeGeometry(self)
+        self.operations = EdgeOperations(self)
+
         # Blender-specific properties
         self.name = name or f"edge_{str(uuid4())[:8]}"
         self.native_instance = native_instance
@@ -80,65 +87,6 @@ class Edge(EdgeInterface):
     def direction(self):
         """Get the direction vector of the edge."""
         return self.v2.position - self.v1.position
-
-    def length(self) -> float:
-        """Calculate the length of the edge."""
-        return np.linalg.norm(self.direction())
-
-    def midpoint(self) -> "Vertex":
-        """Get the midpoint of the edge as a new Vertex."""
-        mid_pos = (self.v1.position + self.v2.position) / 2
-        return Vertex(mid_pos[0], mid_pos[1], mid_pos[2])
-
-    def direction_vector(self) -> tuple[float, float, float]:
-        """Get the direction vector of the edge."""
-        direction = self.direction()
-        return tuple(direction)
-
-    def is_parallel_to(self, other: "Edge", tolerance: float = 1e-6) -> bool:
-        """Check if this edge is parallel to another edge."""
-        import numpy as np
-
-        dir1 = self.direction()
-        dir2 = other.direction()
-
-        # Normalize vectors
-        dir1_norm = dir1 / np.linalg.norm(dir1)
-        dir2_norm = dir2 / np.linalg.norm(dir2)
-
-        # Check if cross product is near zero (parallel) or near 1 (anti-parallel)
-        cross_product = np.cross(dir1_norm, dir2_norm)
-        cross_magnitude = np.linalg.norm(cross_product)
-
-        return cross_magnitude < tolerance
-
-    def is_perpendicular_to(self, other: "Edge", tolerance: float = 1e-6) -> bool:
-        """Check if this edge is perpendicular to another edge."""
-        import numpy as np
-
-        dir1 = self.direction()
-        dir2 = other.direction()
-
-        # Normalize vectors
-        dir1_norm = dir1 / np.linalg.norm(dir1)
-        dir2_norm = dir2 / np.linalg.norm(dir2)
-
-        # Check if dot product is near zero
-        dot_product = np.dot(dir1_norm, dir2_norm)
-
-        return abs(dot_product) < tolerance
-
-    def split_at_parameter(self, parameter: float) -> tuple["Edge", "Edge"]:
-        """Split the edge at a given parameter (0.0 to 1.0)."""
-        # Calculate the split point
-        split_pos = self.v1.position + parameter * self.direction()
-        split_vertex = Vertex(split_pos[0], split_pos[1], split_pos[2])
-
-        # Create two new edges
-        edge1 = Edge(self.v1, split_vertex)
-        edge2 = Edge(split_vertex, self.v2)
-
-        return edge1, edge2
 
     def get_blender_object(self) -> "bpy.types.Object | None":
         """Get the Blender object representing this edge."""

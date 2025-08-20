@@ -1,20 +1,18 @@
 """
-Transform operations interface for Assembly objects.
+build123d implementation of AssemblyTransformInterface.
 """
-
-from abc import ABC
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
+    from codetocad.interfaces.cad.assembly.assembly_transform_interface import (
+        AssemblyTransformInterface,
+    )
 
 
-class AssemblyTransformInterface(ABC):
-    """Interface for assembly transformation operations."""
-
-    def __init__(self, assembly: "AssemblyInterface"):
-        self.assembly = assembly
+class AssemblyTransform(AssemblyTransformInterface):
+    """build123d implementation of assembly transformation operations."""
 
     def translate_all(self, dx: float, dy: float, dz: float = 0):
         """Translate all parts in the assembly."""

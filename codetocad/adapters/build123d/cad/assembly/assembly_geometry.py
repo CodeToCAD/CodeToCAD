@@ -1,21 +1,14 @@
 """
-Geometry operations interface for Assembly objects.
+build123d implementation of AssemblyGeometryInterface.
 """
 
-from abc import ABC
+from codetocad.interfaces.cad.assembly.assembly_geometry_interface import (
+    AssemblyGeometryInterface,
+)
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
-
-
-class AssemblyGeometryInterface(ABC):
-    """Interface for assembly geometry operations."""
-
-    def __init__(self, assembly: "AssemblyInterface"):
-        self.assembly = assembly
+class AssemblyGeometry(AssemblyGeometryInterface):
+    """build123d implementation of assembly geometry operations."""
 
     def bounding_box(
         self,

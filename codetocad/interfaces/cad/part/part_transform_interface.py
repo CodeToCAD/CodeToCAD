@@ -2,7 +2,7 @@
 Transform operations interface for Part objects.
 """
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from codetocad.core.dimensions.length_expression import LengthType
 
 
@@ -16,18 +16,22 @@ class PartTransformInterface(ABC):
         self, dx: LengthType, dy: LengthType, dz: LengthType = 0
     ) -> "PartInterface":
         """Translate the part."""
-        return self.part.translate(dx, dy, dz)
+        # Default implementation - adapters should override this
+        return self.part
 
     def rotate(self, axis: tuple[float, float, float], angle: float) -> "PartInterface":
         """Rotate the part around an axis."""
-        return self.part.rotate(axis, angle)
+        # Default implementation - adapters should override this
+        return self.part
 
     def scale(
         self, scale_x: float, scale_y: float, scale_z: float = 1.0
     ) -> "PartInterface":
         """Scale the part."""
-        return self.part.scale(scale_x, scale_y, scale_z)
+        # Default implementation - adapters should override this
+        return self.part
 
     def move(self, x: float, y: float, z: float):
         """Move the part to a new location."""
-        return self.part.move(x, y, z)
+        # Default implementation - adapters should override this
+        pass

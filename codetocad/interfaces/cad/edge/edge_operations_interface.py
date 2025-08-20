@@ -15,4 +15,8 @@ class EdgeOperationsInterface(ABC):
         self, parameter: float
     ) -> tuple["EdgeInterface", "EdgeInterface"]:
         """Split the edge at a given parameter (0.0 to 1.0)."""
-        return self.edge.split_at_parameter(parameter)
+        # This method should be implemented by concrete classes
+        # as it requires creating new instances of the specific edge type
+        raise NotImplementedError(
+            "split_at_parameter must be implemented by concrete classes"
+        )
