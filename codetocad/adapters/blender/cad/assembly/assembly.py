@@ -27,6 +27,9 @@ class Assembly(AssemblyInterface):
     """Blender implementation of AssemblyInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Blender-specific properties
         self.name = name or f"assembly_{str(uuid4())[:8]}"
         self._blender_collection: bpy.types.Collection | None = None

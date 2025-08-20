@@ -2,7 +2,7 @@
 build123d implementation of PartInterface.
 """
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from codetocad.interfaces.cad.part.part_interface import PartInterface
@@ -40,10 +40,13 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
     """build123d implementation of PartInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # build123d-specific properties
         self.name = name or f"part_{str(uuid4())[:8]}"
-        self.native_instance: Optional["bd.Solid"] = None
-        self.member_assemblies: List["Assembly"] = []
+        self.native_instance: "bd.Solid" | None = None
+        self.member_assemblies: list["Assembly"] = []
 
         # Initialize sketch
         self.sketch = Sketch(f"{self.name}_sketch")

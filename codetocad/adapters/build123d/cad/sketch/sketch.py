@@ -27,6 +27,9 @@ class Sketch(SketchInterface):
     def __init__(
         self, name: str | None = None, native_instance: "bd.BuildSketch | None" = None
     ):
+        # Initialize parent interface first
+        super().__init__()
+
         # build123d-specific properties
         self.name = name or f"sketch_{str(uuid4())[:8]}"
         self.native_instance = native_instance

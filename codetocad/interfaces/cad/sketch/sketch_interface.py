@@ -1,6 +1,11 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import ABC
 from codetocad.interfaces.cad.sketch.sketch_get import SketchGetInterface
+from codetocad.interfaces.cad.sketch.sketch_geometry_interface import (
+    SketchGeometryInterface,
+)
+from codetocad.interfaces.cad.sketch.sketch_operations_interface import (
+    SketchOperationsInterface,
+)
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
 from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
@@ -12,6 +17,10 @@ class SketchInterface(ABC):
         self.preset = WirePresetsInterface(WireInterface, self)
         self.get = SketchGetInterface(self)
         self.name: str | None = None
+
+        # Method group properties
+        self.geometry = SketchGeometryInterface(self)
+        self.operations = SketchOperationsInterface(self)
 
     def add(self, wire: WireInterface):
         """
@@ -60,7 +69,7 @@ class SketchInterface(ABC):
         """Get the total length of all wires in the sketch."""
         return sum(wire.length() for wire in self.wires)
 
-    def make_face(self) -> Optional[object]:
+    def make_face(self) -> object | None:
         """Create a face from the sketch if possible."""
         # This is adapter-specific and should be implemented by concrete classes
         return None

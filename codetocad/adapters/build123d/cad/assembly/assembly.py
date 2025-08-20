@@ -2,7 +2,7 @@
 build123d implementation of AssemblyInterface.
 """
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
@@ -28,13 +28,16 @@ class Assembly(AssemblyInterface):
     """build123d implementation of AssemblyInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # build123d-specific properties
         self.name = name or f"assembly_{str(uuid4())[:8]}"
 
         # Initialize parent interface
         from codetocad.adapters.build123d.cad.part.part import Part
 
-        self.parts: List[Part] = []  # type: ignore
+        self.parts: list[Part] = []  # type: ignore
 
         self.add = AssemblyAddInterface(self)
         self.get = AssemblyGetInterface(self)
@@ -68,7 +71,7 @@ class Assembly(AssemblyInterface):
         """Get a part by index."""
         return self.parts[index]
 
-    def get_all_native_instances(self) -> List["bd.Solid"]:
+    def get_all_native_instances(self) -> list["bd.Solid"]:
         """Get all native build123d instances from parts."""
         instances = []
         for part in self.parts:

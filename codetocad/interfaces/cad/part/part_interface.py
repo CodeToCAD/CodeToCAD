@@ -1,6 +1,12 @@
 from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod, ABCMeta
 from codetocad.interfaces.cad.part.part_presets import PartPresetsInterface
+from codetocad.interfaces.cad.part.part_transform_interface import (
+    PartTransformInterface,
+)
+from codetocad.interfaces.cad.part.part_export_interface import PartExportInterface
+from codetocad.interfaces.cad.part.part_boolean_interface import PartBooleanInterface
+from codetocad.interfaces.cad.part.part_geometry_interface import PartGeometryInterface
 from codetocad.core.dimensions.length_expression import LengthType
 
 if TYPE_CHECKING:
@@ -20,8 +26,13 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
         from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface
 
         self.sketch: SketchInterface = SketchInterface()
-
         self.name: str | None = None
+
+        # Method group properties
+        self.transform = PartTransformInterface(self)
+        self.export = PartExportInterface(self)
+        self.boolean = PartBooleanInterface(self)
+        self.geometry = PartGeometryInterface(self)
 
     def set_name(self, name: str):
         """Set the part name."""
@@ -33,34 +44,36 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
         """Get a part by name."""
         ...
 
-    def extrude_sketch(self, distance: LengthType) -> "PartInterface":
+    def extrude_sketch(self, _distance: LengthType) -> "PartInterface":
         """Extrude the part's sketch to create a solid."""
         return self
 
-    def union(self, other: "PartInterface") -> "PartInterface":
+    def union(self, _other: "PartInterface") -> "PartInterface":
         """Perform boolean union with another part."""
         return self
 
-    def difference(self, other: "PartInterface") -> "PartInterface":
+    def difference(self, _other: "PartInterface") -> "PartInterface":
         """Perform boolean difference with another part."""
         return self
 
-    def intersection(self, other: "PartInterface") -> "PartInterface":
+    def intersection(self, _other: "PartInterface") -> "PartInterface":
         """Perform boolean intersection with another part."""
         return self
 
     def translate(
-        self, dx: LengthType, dy: LengthType, dz: LengthType = 0
+        self, _dx: LengthType, _dy: LengthType, _dz: LengthType = 0
     ) -> "PartInterface":
         """Translate the part."""
         return self
 
-    def rotate(self, axis: tuple[float, float, float], angle: float) -> "PartInterface":
+    def rotate(
+        self, _axis: tuple[float, float, float], _angle: float
+    ) -> "PartInterface":
         """Rotate the part around an axis."""
         return self
 
     def scale(
-        self, scale_x: float, scale_y: float, scale_z: float = 1.0
+        self, _scale_x: float, _scale_y: float, _scale_z: float = 1.0
     ) -> "PartInterface":
         """Scale the part."""
         return self
@@ -93,7 +106,7 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
         # as it requires creating new instances of the specific part type
         raise NotImplementedError("copy must be implemented by concrete classes")
 
-    def move(self, x: float, y: float, z: float):
+    def move(self, _x: float, _y: float, _z: float):
         """Move the part to a new location."""
         pass
 

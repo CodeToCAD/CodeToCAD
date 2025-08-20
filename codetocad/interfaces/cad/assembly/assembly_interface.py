@@ -1,6 +1,15 @@
 from abc import ABC
 from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAddInterface
 from codetocad.interfaces.cad.assembly.assembly_get import AssemblyGetInterface
+from codetocad.interfaces.cad.assembly.assembly_transform_interface import (
+    AssemblyTransformInterface,
+)
+from codetocad.interfaces.cad.assembly.assembly_export_interface import (
+    AssemblyExportInterface,
+)
+from codetocad.interfaces.cad.assembly.assembly_geometry_interface import (
+    AssemblyGeometryInterface,
+)
 from codetocad.interfaces.cad.part.part_interface import PartInterface
 
 
@@ -11,6 +20,11 @@ class AssemblyInterface(ABC):
 
         self.add = AssemblyAddInterface(self)
         self.get = AssemblyGetInterface(self)
+
+        # Method group properties
+        self.transform = AssemblyTransformInterface(self)
+        self.export = AssemblyExportInterface(self)
+        self.geometry = AssemblyGeometryInterface(self)
 
     def set_name(self, name: str):
         """Set the assembly name."""
@@ -69,20 +83,20 @@ class AssemblyInterface(ABC):
         """Get the total volume of all parts in the assembly."""
         return sum(part.get_volume() for part in self.parts)
 
-    def translate_all(self, dx: float, dy: float, dz: float = 0):
+    def translate_all(self, _dx: float, _dy: float, _dz: float = 0):
         """Translate all parts in the assembly."""
         for part in self.parts:
-            part.translate(dx, dy, dz)
+            part.translate(_dx, _dy, _dz)
 
-    def rotate_all(self, axis: tuple[float, float, float], angle: float):
+    def rotate_all(self, _axis: tuple[float, float, float], _angle: float):
         """Rotate all parts in the assembly."""
         for part in self.parts:
-            part.rotate(axis, angle)
+            part.rotate(_axis, _angle)
 
-    def scale_all(self, scale_x: float, scale_y: float, scale_z: float = 1.0):
+    def scale_all(self, _scale_x: float, _scale_y: float, _scale_z: float = 1.0):
         """Scale all parts in the assembly."""
         for part in self.parts:
-            part.scale(scale_x, scale_y, scale_z)
+            part.scale(_scale_x, _scale_y, _scale_z)
 
     def export_step(self, _file_path: str):
         """Export the assembly to STEP format."""
@@ -107,29 +121,29 @@ class AssemblyInterface(ABC):
         for part in self.parts[:]:  # Create a copy of the list to iterate over
             self.remove_part(part)
 
-    def move(self, x: float, y: float, z: float):
+    def move(self, _x: float, _y: float, _z: float):
         """Move all parts in the assembly."""
         for part in self.parts:
-            part.move(x, y, z)
+            part.move(_x, _y, _z)
 
-    def rotate(self, x: float, y: float, z: float):
+    def rotate(self, _x: float, _y: float, _z: float):
         """Rotate all parts in the assembly."""
         for part in self.parts:
             # Convert to axis-angle representation for consistency
             import math
 
             # This is a simplified rotation - adapters should implement proper rotation
-            magnitude = math.sqrt(x * x + y * y + z * z)
+            magnitude = math.sqrt(_x * _x + _y * _y + _z * _z)
             if magnitude > 0:
-                axis = (x / magnitude, y / magnitude, z / magnitude)
+                axis = (_x / magnitude, _y / magnitude, _z / magnitude)
                 part.rotate(axis, magnitude)
 
-    def scale(self, x: float, y: float | None = None, z: float | None = None):
+    def scale(self, _x: float, _y: float | None = None, _z: float | None = None):
         """Scale all parts in the assembly."""
-        y_val = y if y is not None else x
-        z_val = z if z is not None else x
+        y_val = _y if _y is not None else _x
+        z_val = _z if _z is not None else _x
         for part in self.parts:
-            part.scale(x, y_val, z_val)
+            part.scale(_x, y_val, z_val)
 
     def hide(self):
         """Hide the assembly."""

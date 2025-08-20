@@ -1,5 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from codetocad.interfaces.cad.edge.edge_transform import EdgeTransformInterface
+from codetocad.interfaces.cad.edge.edge_geometry_interface import EdgeGeometryInterface
+from codetocad.interfaces.cad.edge.edge_operations_interface import (
+    EdgeOperationsInterface,
+)
 from codetocad.interfaces.cad.vertex.vertex_interface import VertexInterface
 
 
@@ -9,6 +13,10 @@ class EdgeInterface(ABC):
         self.v2: VertexInterface = v2
         self.transform = EdgeTransformInterface(self)
         self.name: str | None = None
+
+        # Method group properties
+        self.geometry = EdgeGeometryInterface(self)
+        self.operations = EdgeOperationsInterface(self)
 
     def direction(self):
         return self.v2.position - self.v1.position

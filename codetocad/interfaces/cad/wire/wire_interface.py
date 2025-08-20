@@ -1,10 +1,14 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from abc import ABC
 from codetocad.interfaces.cad.edge.edge_interface import EdgeInterface
 from codetocad.interfaces.cad.wire.wire_constraint import WireConstraintInterface
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
 from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 from codetocad.interfaces.cad.wire.wire_get import WireGetInterface
+from codetocad.interfaces.cad.wire.wire_geometry_interface import WireGeometryInterface
+from codetocad.interfaces.cad.wire.wire_operations_interface import (
+    WireOperationsInterface,
+)
 from codetocad.core.dimensions.length_expression import LengthType
 
 if TYPE_CHECKING:
@@ -39,6 +43,10 @@ class WireInterface(ABC, metaclass=_WirePresetClassPropertyInterface):
         self.constraint = WireConstraintInterface(self)
         self.name: str | None = None
 
+        # Method group properties
+        self.geometry = WireGeometryInterface(self)
+        self.operations = WireOperationsInterface(self)
+
     def is_closed(self) -> bool:
         """Check if the wire is closed."""
         if len(self.edges) < 3:
@@ -57,7 +65,7 @@ class WireInterface(ABC, metaclass=_WirePresetClassPropertyInterface):
         """Get the total length of the wire."""
         return sum(edge.length() for edge in self.edges)
 
-    def get_vertices(self) -> List["VertexInterface"]:
+    def get_vertices(self) -> list["VertexInterface"]:
         """Get all unique vertices in the wire."""
         vertices = []
         for edge in self.edges:

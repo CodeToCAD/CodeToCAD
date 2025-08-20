@@ -36,7 +36,10 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         name: str | None = None,
         native_instance: "bd.Wire | None" = None,
     ):
-        # Initialize the parent interface
+        # Initialize the parent interface first
+        super().__init__(sketch)
+
+        # build123d-specific properties
         self.name = name or f"wire_{str(uuid4())[:8]}"
         self.native_instance = native_instance
 

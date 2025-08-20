@@ -1,7 +1,10 @@
 import numpy as np
-from abc import ABC, abstractmethod
+from abc import ABC
 from codetocad.core.dimensions.length_expression import LengthExpression, LengthType
 from codetocad.core.dimensions.point import Point
+from codetocad.interfaces.cad.vertex.vertex_geometry_interface import (
+    VertexGeometryInterface,
+)
 
 
 class VertexInterface(ABC):
@@ -14,6 +17,9 @@ class VertexInterface(ABC):
             ]
         )
         self.name: str | None = None
+
+        # Method group properties
+        self.geometry = VertexGeometryInterface(self)
 
     def transform(self, matrix):
         pos = np.append(self.position, 1)

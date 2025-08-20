@@ -24,6 +24,9 @@ class Sketch(SketchInterface):
     """Blender implementation of SketchInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Import here to avoid circular imports
         from codetocad.adapters.blender.cad.wire.wire import Wire
         from codetocad.adapters.blender.cad.wire.wire_add import WireAdd

@@ -33,6 +33,9 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
     """Blender implementation of PartInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Blender-specific properties
         self.name = name or f"part_{str(uuid4())[:8]}"
         self._blender_object: bpy.types.Object | None = None
@@ -98,8 +101,13 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
             # Add solidify modifier for extrusion
             apply_solidify_modifier(self._blender_object, float(distance))
 
-    def union(self, other: "Part") -> "Part":
+    def union(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean union with another part."""
+        if not isinstance(other, Part):
+            raise TypeError(
+                "Can only perform boolean operations with other Blender Parts"
+            )
+
         result_part = Part(f"{self.name}_union_{other.name}")
 
         # Copy this part's data to result
@@ -116,8 +124,13 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
 
         return result_part
 
-    def difference(self, other: "Part") -> "Part":
+    def difference(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean difference with another part."""
+        if not isinstance(other, Part):
+            raise TypeError(
+                "Can only perform boolean operations with other Blender Parts"
+            )
+
         result_part = Part(f"{self.name}_difference_{other.name}")
 
         # Copy this part's data to result
@@ -134,8 +147,13 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
 
         return result_part
 
-    def intersection(self, other: "Part") -> "Part":
+    def intersection(self, other: "PartInterface") -> "PartInterface":
         """Perform boolean intersection with another part."""
+        if not isinstance(other, Part):
+            raise TypeError(
+                "Can only perform boolean operations with other Blender Parts"
+            )
+
         result_part = Part(f"{self.name}_intersection_{other.name}")
 
         # Copy this part's data to result
@@ -222,7 +240,7 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
         return self
 
     def move(self, x: float, y: float, z: float):
-        """Move the part to a new location (legacy method)."""
+        """Move the part to a new location"""
         if self._blender_object:
             self._blender_object.location = (x, y, z)
 
@@ -259,16 +277,19 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
             min_coords = [min(corner[i] for corner in bbox) for i in range(3)]
             max_coords = [max(corner[i] for corner in bbox) for i in range(3)]
 
-            return (tuple(min_coords), tuple(max_coords))
+            return (
+                (min_coords[0], min_coords[1], min_coords[2]),
+                (max_coords[0], max_coords[1], max_coords[2]),
+            )
 
         return ((0, 0, 0), (0, 0, 0))
 
-    def export_step(self, file_path: str):
+    def export_step(self, _file_path: str):
         """Export the part to STEP format."""
         # Blender doesn't have native STEP export, would need addon
         raise NotImplementedError("STEP export requires additional Blender addon")
 
-    def export_stl(self, file_path: str, tolerance: float = 0.1):
+    def export_stl(self, _file_path: str, _tolerance: float = 0.1):
         """Export the part to STL format."""
         if self._blender_object:
             # This would require using Blender's export operators
@@ -277,7 +298,7 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
                 "STL export requires Blender context and operators"
             )
 
-    def export_brep(self, file_path: str):
+    def export_brep(self, _file_path: str):
         """Export the part to BREP format."""
         # Blender doesn't have native BREP export
         raise NotImplementedError("BREP export not supported in Blender")
