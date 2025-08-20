@@ -22,4 +22,7 @@
         "**/.git": true,
         "build/": true,
     },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
 }

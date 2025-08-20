@@ -36,7 +36,7 @@ class Point:
         return self.distance_to(other) < tolerance
 
     @staticmethod
-    def from_list(point_list: List[float]) -> "Point":
+    def from_list(point_list: list[float]) -> "Point":
         assert len(point_list) == 3, "Point list must contain three Dimensions."
         return Point(point_list[0], point_list[1], point_list[2])
 

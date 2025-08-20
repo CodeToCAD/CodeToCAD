@@ -1,7 +1,8 @@
 import os
 import subprocess
 import click
-from codetocad.cli.blender_cli.blender_cli import run_blender_process
+from codetocad.adapters.blender.cli import run_blender
+from codetocad.adapters.blender.cli.config import set_blender_executable_path
 from codetocad.cli.launcher_args import LauncherArgs
 
 
@@ -28,11 +29,14 @@ def run_provider(args: LauncherArgs):
 
     # Known launchers:
     if launcher_lower == "blender":
-        return run_blender_process(
-            blender_path=args.launcher_location or args.launcher,
+        if args.launcher_location:
+            set_blender_executable_path(args.launcher_location)
+        print(f"{args=}")
+        return run_blender(
+            entry_function_or_file=args.script_file_path_or_action,
             document_name=args.document_name,
-            script_file_path=args.script_file_path_or_action,
-            background=args.background or False,
+            background=args.background if args.background is not None else True,
+            debugger=args.debug if args.debug is not None else False,
         )
     # if launcher_lower == "onshape":
     #     return run_onshape(args)

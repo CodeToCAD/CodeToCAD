@@ -14,6 +14,9 @@ dependencies = [
     "numpy>=2.3.2",
 ]
 
+[project.scripts]
+codetocad = "codetocad.cli:codetocad_cli"
+
 [project.optional-dependencies]
 build123d = [
     "build123d>=0.9.1",

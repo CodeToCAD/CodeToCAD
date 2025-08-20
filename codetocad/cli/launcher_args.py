@@ -1,18 +1,17 @@
 from dataclasses import dataclass, asdict
-from typing import Optional
-
-from codetocad.cli.config import read_config
+import dataclasses
+import sys
 
 
 @dataclass
 class LauncherArgs:
     script_file_path_or_action: str
     launcher: str
-    launcher_location: Optional[str] = None
-    background: Optional[bool] = False
-    document_name: Optional[str] = None
-    config_file_path: Optional[str] = None
-    debug: Optional[bool] = False
+    launcher_location: str | None = None
+    background: bool | None = False
+    document_name: str | None = None
+    config_file_path: str | None = None
+    debug: bool | None = False
 
     @staticmethod
     def get_sample_launcher_name():
@@ -36,3 +35,21 @@ class LauncherArgs:
             args_list.append(str(value))
 
         return args_list
+
+    @staticmethod
+    def from_subprocess_args():
+        launcher = LauncherArgs(
+            script_file_path_or_action="",
+            launcher="",
+        )
+
+        fields = dataclasses.fields(launcher)
+
+        for index in range(1, len(sys.argv)):
+            if sys.argv[index].replace("--", "") in fields:
+                setattr(
+                    launcher, sys.argv[index].replace("--", ""), sys.argv[index + 1]
+                )
+                index += 1
+
+        return launcher
