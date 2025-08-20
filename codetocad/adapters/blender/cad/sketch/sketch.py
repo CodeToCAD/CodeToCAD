@@ -118,36 +118,87 @@ class Sketch(SketchInterface):
             edges.extend(wire.edges)
         return edges
 
-    def get_bounding_box(self) -> tuple:
+    def get_bounding_box(
+        self,
+    ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
         """Get the bounding box of all objects in the sketch."""
         if not self.wires:
             return ((0, 0, 0), (0, 0, 0))
 
-        all_vertices = self.get_all_vertices()
-        if not all_vertices:
+        # Get bounding boxes of all wires
+        wire_boxes = [wire.get_bounding_box() for wire in self.wires]
+
+        if not wire_boxes:
             return ((0, 0, 0), (0, 0, 0))
 
-        positions = [v.position for v in all_vertices]
-        min_pos = [min(pos[i] for pos in positions) for i in range(3)]
-        max_pos = [max(pos[i] for pos in positions) for i in range(3)]
+        # Find overall min and max
+        min_x = min(box[0][0] for box in wire_boxes)
+        min_y = min(box[0][1] for box in wire_boxes)
+        min_z = min(box[0][2] for box in wire_boxes)
 
-        return (tuple(min_pos), tuple(max_pos))
+        max_x = max(box[1][0] for box in wire_boxes)
+        max_y = max(box[1][1] for box in wire_boxes)
+        max_z = max(box[1][2] for box in wire_boxes)
+
+        return ((min_x, min_y, min_z), (max_x, max_y, max_z))
+
+    def is_closed(self) -> bool:
+        """Check if all wires in the sketch are closed."""
+        return all(wire.is_closed() for wire in self.wires)
+
+    def total_length(self) -> float:
+        """Get the total length of all wires in the sketch."""
+        return sum(wire.length() for wire in self.wires)
+
+    def make_face(self) -> object | None:
+        """Create a face from the sketch if possible."""
+        # This would require complex Blender mesh operations
+        # For now, return None as this is adapter-specific
+        return None
 
     def clear(self):
         """Remove all wires from the sketch."""
-        # # Remove Blender objects
-        # collection = get_collection_or_none(self.name)
-        # if collection:
-        #     for obj in list(collection.objects):
-        #         if obj != self._blender_object:  # Keep the sketch origin
-        #             unlink_object_from_collection(obj, collection)
-        #             if obj.data and isinstance(obj.data, bpy.types.Mesh):
-        #                 remove_mesh(obj.data)
-        #             bpy.data.objects.remove(obj)
-        raise NotImplementedError()
+        # Remove Blender objects
+        collection = get_collection_or_none(self.name)
+        if collection:
+            for obj in list(collection.objects):
+                if obj != self._blender_object:  # Keep the sketch origin
+                    unlink_object_from_collection(obj, collection)
+                    # Note: Actual object removal would require bpy context
+                    # For now, just unlink from collection
 
         # Clear wires list
         self.wires.clear()
+
+    def copy(self) -> "Sketch":
+        """Create a copy of the sketch."""
+        new_sketch = Sketch(name=f"{self.name}_copy")
+
+        # Copy all wires
+        for wire in self.wires:
+            # Create a new wire with the same edges
+            from codetocad.adapters.blender.cad.wire.wire import Wire
+            from codetocad.adapters.blender.cad.edge.edge import Edge
+            from codetocad.adapters.blender.cad.vertex.vertex import Vertex
+
+            new_wire = Wire(new_sketch)
+
+            # Copy edges
+            for edge in wire.edges:
+                # Create new vertices with same positions
+                v1 = Vertex(
+                    edge.v1.position[0], edge.v1.position[1], edge.v1.position[2]
+                )
+                v2 = Vertex(
+                    edge.v2.position[0], edge.v2.position[1], edge.v2.position[2]
+                )
+                new_edge = Edge(v1, v2)
+                new_wire.edges.append(new_edge)
+
+            new_wire._update_blender_curve()
+            new_sketch.add(new_wire)
+
+        return new_sketch
 
     def hide(self):
         """Hide the sketch in Blender."""

@@ -1,5 +1,6 @@
-# from codetocad.adapters.blender import *
-from codetocad.adapters.build123d import *
+from codetocad.adapters.blender import *
+
+# from codetocad.adapters.build123d import *
 from codetocad.cli.config import get_temp_stl_export_path
 
 
