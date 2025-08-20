@@ -5,7 +5,7 @@ from codetocad.adapters.blender.cli.config import get_blender_executable_path
 from codetocad.cli.config import (
     get_temp_script_path,
 )
-from codetocad.cli.function_to_file import write_function_code_to_file
+from codetocad.cli.write_codetocad_to_tempfile import write_codetocad_to_tempfile
 
 
 RUNNING_IN_BLENDER_ENVIRONMENT_KEY = "RUNNING_IN_BLENDER_ENVIRONMENT"
@@ -92,7 +92,7 @@ stop_debugger()
         """
 
     script_path = str(get_temp_script_path())
-    write_function_code_to_file(
+    write_codetocad_to_tempfile(
         func=entry_function,
         output_path=script_path,
         prepend_code=custom_code_to_run_before,

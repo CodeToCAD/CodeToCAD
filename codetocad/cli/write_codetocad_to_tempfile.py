@@ -3,24 +3,10 @@ from pathlib import Path
 from types import FunctionType
 import inspect
 
+from codetocad.cli.function_to_tempfile_code import function_to_tempfile_code
 
-def write_function_code_to_file(
-    func: FunctionType,
-    output_path: str,
-    prepend_code: str,
-    append_code: str,
-    args: list,
-    kwargs: dict,
-):
-    """
-    To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by reloading it from disk.
 
-    args and kwargs must be serializable.. even then, mileage may vary.
-    """
-    # function_filename_full = inspect.getsourcefile(func)
-    # if not function_filename_full:
-    #     raise Exception(f"Could not find source file for {func.__name__}.")
-
+def parse_function_import(func: FunctionType):
     filename = inspect.getfile(func)
     script_directory = f"{Path(filename).parent.absolute()}"
 
@@ -37,16 +23,36 @@ def write_function_code_to_file(
         module_name = base_filename  # Example: assuming it's a direct import
 
     import_statement = f"from {module_name} import {func.__name__}"
-
-    with open(output_path, "w") as f:
-        f.write(prepend_code)
-        f.write(
-            f"""
+    return f"""
 import sys
 sys.path.append('{script_directory}')
 {import_statement}
 """
-        )
+
+
+def write_codetocad_to_tempfile(
+    func: FunctionType,
+    output_path: str,
+    prepend_code: str,
+    append_code: str,
+    args: list,
+    kwargs: dict,
+):
+    """
+    To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by reloading it from disk.
+
+    args and kwargs must be serializable.. even then, mileage may vary.
+    """
+    filename = inspect.getfile(func)
+
+    function_code = parse_function_import(func)
+
+    if "ipykerne" in filename:
+        function_code = function_to_tempfile_code(func)
+
+    with open(output_path, "w") as f:
+        f.write(prepend_code)
+        f.write(function_code)
         f.write(
             f"""
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 from codetocad.adapters.blender import *
 
 
-def create_architectural_model():
+def create_room():
     """Create a simple architectural model using codetocad in Blender."""
 
     print("🏛️ Creating architectural model...")
@@ -85,4 +85,4 @@ def create_architectural_model():
 
 
 if __name__ == "__main__":
-    run_blender(create_architectural_model, background=False, debugger=True)
+    run_blender(create_room, background=False, debugger=True)

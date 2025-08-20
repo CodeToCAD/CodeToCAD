@@ -1,7 +1,7 @@
 from codetocad.adapters.blender import *
 
 
-def create_custom_sketch_part():
+def create_sketch():
     """Create a part from a custom sketch."""
 
     print("✏️ Creating custom sketch part...")
@@ -46,4 +46,4 @@ def create_custom_sketch_part():
 
 
 if __name__ == "__main__":
-    run_blender(entry_function=create_custom_sketch_part, background=False)
+    run_blender(entry_function_or_file=create_sketch, background=False, debugger=True)
