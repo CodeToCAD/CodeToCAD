@@ -1,3 +1,7 @@
+"""
+To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by loading it from disk.
+"""
+
 import os
 from pathlib import Path
 from types import FunctionType
@@ -39,7 +43,7 @@ def write_codetocad_to_tempfile(
     kwargs: dict,
 ):
     """
-    To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by reloading it from disk.
+    To simplify the UX while executing CodeToCAD code, the user's script will be bundled into a single .py file and saved to disk. It can then be subsequently be consumed by loading it from disk.
 
     args and kwargs must be serializable.. even then, mileage may vary.
     """
