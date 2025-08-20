@@ -1,4 +1,3 @@
-import mathutils
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -12,35 +11,80 @@ from codetocad.adapters.blender.blender_actions.collections import (
     get_collection_or_none,
     remove_collection,
 )
-from codetocad.adapters.blender.blender_actions.context import select_object
-from codetocad.adapters.blender.blender_actions.import_export import (
-    export_object,
-    export_objects,
-)
+
 
 if TYPE_CHECKING:
     import bpy
-    from codetocad.adapters.blender.cad.part.part import Part
+    from codetocad.interfaces.cad.part.part_interface import PartInterface
 
 
 class Assembly(AssemblyInterface):
     """Blender implementation of AssemblyInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Blender-specific properties
         self.name = name or f"assembly_{str(uuid4())[:8]}"
         self._blender_collection: bpy.types.Collection | None = None
 
         # Initialize parent interface properties
-        self.parts: list["Part"] = []  # type: ignore
+        self.parts: list["PartInterface"] = []  # type: ignore
         self.add = AssemblyAdd(self)
         self.get = AssemblyGet(self)
+
+        # Override method group properties with Blender-specific implementations
+        from codetocad.adapters.blender.cad.assembly.assembly_geometry import (
+            AssemblyGeometry,
+        )
+        from codetocad.adapters.blender.cad.assembly.assembly_transform import (
+            AssemblyTransform,
+        )
+        from codetocad.adapters.blender.cad.assembly.assembly_export import (
+            AssemblyExport,
+        )
+
+        self.geometry = AssemblyGeometry(self)
+        self.transform = AssemblyTransform(self)
+        self.export = AssemblyExport(self)
 
         # Create Blender representation
         self._create_blender_assembly()
 
+    def set_name(self, name: str):
+        """Set the assembly name."""
+        self.name = name
+
+    def add_part(self, part: "PartInterface"):
+        """Add a part to the assembly."""
+        if part not in self.parts:
+            self.parts.append(part)
+            if self not in part.member_assemblies:
+                part.member_assemblies.append(self)
+
+    def remove_part(self, part: "PartInterface"):
+        """Remove a part from the assembly."""
+        if part in self.parts:
+            self.parts.remove(part)
+            if self in part.member_assemblies:
+                part.member_assemblies.remove(self)
+
+    def get_part_by_name(self, name: str) -> "PartInterface | None":
+        """Get a part by name."""
+        for part in self.parts:
+            if part.name == name:
+                return part
+        return None
+
+    def get_part_by_index(self, index: int) -> "PartInterface":
+        """Get a part by index."""
+        return self.parts[index]
+
     def _create_blender_assembly(self):
         """Create a Blender collection to represent this assembly."""
+        if self.name is None:
+            return
         try:
             create_collection(self.name)
             self._blender_collection = get_collection(self.name)
@@ -52,77 +96,6 @@ class Assembly(AssemblyInterface):
         """Get the Blender collection representing this assembly."""
         return self._blender_collection
 
-    def _get_all_blender_objects(self) -> "list[bpy.types.Object]":
-        """Get all Blender objects in the assembly."""
-        return [
-            obj
-            for obj in [part.get_blender_object() for part in self.parts]
-            if obj is not None
-        ]
-
-    def move(self, x: float, y: float, z: float):
-        """Move all parts in the assembly."""
-        for part in self.parts:
-            blender_object = part.get_blender_object()
-            if blender_object:
-                current_loc = blender_object.location
-                blender_object.location = (
-                    current_loc[0] + x,
-                    current_loc[1] + y,
-                    current_loc[2] + z,
-                )
-
-    def rotate(self, x: float, y: float, z: float):
-        """Rotate all parts in the assembly."""
-        for part in self.parts:
-            blender_object = part.get_blender_object()
-            if blender_object:
-                current_rot = blender_object.rotation_euler
-                blender_object.rotation_euler = (
-                    current_rot[0] + x,
-                    current_rot[1] + y,
-                    current_rot[2] + z,
-                )
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None):
-        """Scale all parts in the assembly."""
-        y_val = y if y is not None else x
-        z_val = z if z is not None else x
-
-        for part in self.parts:
-            blender_object = part.get_blender_object()
-            if blender_object:
-                current_scale = blender_object.scale
-                blender_object.scale = (
-                    current_scale[0] * x,
-                    current_scale[1] * y_val,
-                    current_scale[2] * z_val,
-                )
-
-    def get_bounding_box(self) -> tuple:
-        """Get the bounding box of all parts in the assembly."""
-        if not self.parts:
-            return ((0, 0, 0), (0, 0, 0))
-
-        all_objects = self._get_all_blender_objects()
-        if not all_objects:
-            return ((0, 0, 0), (0, 0, 0))
-
-        # Calculate combined bounding box
-        min_coords = [float("inf")] * 3
-        max_coords = [float("-inf")] * 3
-
-        for obj in all_objects:
-            bbox = [
-                obj.matrix_world @ mathutils.Vector(corner) for corner in obj.bound_box
-            ]
-            for corner in bbox:
-                for i in range(3):
-                    min_coords[i] = min(min_coords[i], corner[i])
-                    max_coords[i] = max(max_coords[i], corner[i])
-
-        return (tuple(min_coords), tuple(max_coords))
-
     def hide(self):
         """Hide the assembly in Blender."""
         if self._blender_collection:
@@ -133,6 +106,17 @@ class Assembly(AssemblyInterface):
         if self._blender_collection:
             self._blender_collection.hide_viewport = False
 
+    def copy(self) -> "Assembly":
+        """Create a copy of the assembly."""
+        new_assembly = Assembly(f"{self.name}_copy")
+
+        # Copy all parts
+        for part in self.parts:
+            new_part = part.copy()
+            new_assembly.add_part(new_part)
+
+        return new_assembly
+
     def clear(self):
         """Remove all parts from the assembly."""
         # Remove Blender objects
@@ -141,7 +125,8 @@ class Assembly(AssemblyInterface):
                 remove_object(obj, remove_children=True, is_remove_data=True)
 
         # Clear parts list
-        self.parts.clear()
+        for part in self.parts[:]:  # Create a copy of the list to iterate over
+            self.remove_part(part)
 
     def delete(self):
         """Delete the assembly and all its parts from Blender."""
@@ -152,13 +137,9 @@ class Assembly(AssemblyInterface):
             remove_collection(self._blender_collection, remove_children=True)
             self._blender_collection = None
 
-    def export_stl(self, filepath: str):
-        """Export the assembly to STL format."""
-        export_objects(self._get_all_blender_objects(), filepath)
-
-    def export_obj(self, filepath: str):
-        """Export the assembly to OBJ format."""
-        export_objects(self._get_all_blender_objects(), filepath)
+    def __len__(self):
+        """Get the number of parts in the assembly."""
+        return len(self.parts)
 
     def __repr__(self):
         return f"<Assembly(name='{self.name}'): {len(self.parts)} parts>"

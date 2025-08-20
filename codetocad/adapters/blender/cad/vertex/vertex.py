@@ -29,6 +29,11 @@ class Vertex(VertexInterface):
         # Initialize the parent interface
         super().__init__(x, y, z)
 
+        # Override geometry with Blender-specific implementation
+        from codetocad.adapters.blender.cad.vertex.vertex_geometry import VertexGeometry
+
+        self.geometry = VertexGeometry(self)
+
         # Blender-specific properties
         self.name = name or f"vertex_{str(uuid4())[:8]}"
         self.native_instance = native_instance
@@ -72,25 +77,8 @@ class Vertex(VertexInterface):
         return self.native_instance
 
     def set_location(self, x: LengthType, y: LengthType, z: LengthType):
-        """Set the vertex location and update Blender representation."""
-        self.position = np.array(
-            [
-                float(LengthExpression(x)),
-                float(LengthExpression(y)),
-                float(LengthExpression(z)),
-            ]
-        )
-
-        if self._blender_object:
-            self._blender_object.location = self.position
-
-    def get_point(self) -> Point:
-        """Get the vertex position as a Point object."""
-        return Point.from_list(self.position.tolist())
-
-    def distance_to(self, other: "Vertex") -> float:
-        """Calculate distance to another vertex."""
-        return np.linalg.norm(self.position - other.position)
+        """Set the vertex location and update Blender representation (legacy method)."""
+        self.geometry.set_position(x, y, z)
 
     def __repr__(self):
         return f"Vertex(name='{self.name}', position={self.position})"

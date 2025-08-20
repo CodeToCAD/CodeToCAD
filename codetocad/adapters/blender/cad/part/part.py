@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from uuid import uuid4
 
 from codetocad.interfaces.cad.part.part_interface import PartInterface
-from codetocad.core.dimensions.length_expression import LengthType
+from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
 from codetocad.adapters.blender.cad.sketch.sketch import Sketch
 from codetocad.adapters.blender.blender_actions.objects import (
     create_object,
@@ -33,11 +33,25 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
     """Blender implementation of PartInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Blender-specific properties
         self.name = name or f"part_{str(uuid4())[:8]}"
         self._blender_object: bpy.types.Object | None = None
 
         self.sketch = Sketch(f"{self.name}_sketch")
+
+        # Override method group properties with Blender-specific implementations
+        from codetocad.adapters.blender.cad.part.part_transform import PartTransform
+        from codetocad.adapters.blender.cad.part.part_export import PartExport
+        from codetocad.adapters.blender.cad.part.part_boolean import PartBoolean
+        from codetocad.adapters.blender.cad.part.part_geometry import PartGeometry
+
+        self.transform = PartTransform(self)
+        self.export = PartExport(self)
+        self.boolean = PartBoolean(self)
+        self.geometry = PartGeometry(self)
 
     def set_name(self, name: str):
         """Set the part name and update Blender object."""
@@ -74,6 +88,19 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
                 if mesh_obj:
                     self._blender_object = mesh_obj
 
+    def extrude_sketch(self, distance: LengthType) -> "Part":
+        """Extrude the part's sketch to create a solid."""
+        if not self.sketch.wires:
+            raise ValueError("No wires in sketch to extrude")
+
+        # Create from sketch first if not already done
+        if not self._blender_object:
+            self.create_from_sketch()
+
+        # Apply extrusion
+        self.extrude(distance)
+        return self
+
     def extrude(self, distance: LengthType):
         """Extrude the part along its normal."""
         if not self._blender_object:
@@ -85,65 +112,17 @@ class Part(PartInterface, metaclass=_PartPresetClassProperty):
             # Add solidify modifier for extrusion
             apply_solidify_modifier(self._blender_object, float(distance))
 
-    def boolean_union(self, other: "Part"):
-        """Perform boolean union with another part."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.UNION,
-                other._blender_object,
-            )
+    def copy(self) -> "Part":
+        """Create a copy of the part."""
+        new_part = Part(f"{self.name}_copy")
 
-    def boolean_difference(self, other: "Part"):
-        """Perform boolean difference with another part."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.DIFFERENCE,
-                other._blender_object,
-            )
+        # Copy the sketch using operations interface
+        new_part.sketch = self.sketch.operations.copy()
 
-    def boolean_intersection(self, other: "Part"):
-        """Perform boolean intersection with another part."""
-        if self._blender_object and other._blender_object:
-            apply_boolean_modifier(
-                self._blender_object,
-                BlenderBooleanTypes.INTERSECT,
-                other._blender_object,
-            )
+        # Create Blender representation for the copy
+        new_part.create_from_sketch()
 
-    def move(self, x: float, y: float, z: float):
-        """Move the part to a new location."""
-        if self._blender_object:
-            self._blender_object.location = (x, y, z)
-
-    def rotate(self, x: float, y: float, z: float):
-        """Rotate the part by the given angles (in radians)."""
-        if self._blender_object:
-            self._blender_object.rotation_euler = (x, y, z)
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None):
-        """Scale the part."""
-        if self._blender_object:
-            y_val = y if y is not None else x
-            z_val = z if z is not None else x
-            self._blender_object.scale = (x, y_val, z_val)
-
-    def get_volume(self) -> float:
-        """Calculate the volume of the part."""
-        if self._blender_object and isinstance(
-            self._blender_object.data, bpy.types.Mesh
-        ):
-            # Create bmesh instance
-            bm = bmesh.new()
-            bm.from_mesh(self._blender_object.data)
-            bm.transform(self._blender_object.matrix_world)
-
-            # Calculate volume
-            volume = bm.calc_volume()
-            bm.free()
-            return volume
-        return 0.0
+        return new_part
 
     def hide(self):
         """Hide the part in Blender."""

@@ -24,6 +24,9 @@ class Sketch(SketchInterface):
     """Blender implementation of SketchInterface."""
 
     def __init__(self, name: str | None = None):
+        # Initialize parent interface first
+        super().__init__()
+
         # Import here to avoid circular imports
         from codetocad.adapters.blender.cad.wire.wire import Wire
         from codetocad.adapters.blender.cad.wire.wire_add import WireAdd
@@ -36,6 +39,13 @@ class Sketch(SketchInterface):
         self.wires: list[Wire] = []  # type: ignore
         self.preset = WirePresetsInterface(Wire, self)
         self.get = SketchGet(self)
+
+        # Override operations with Blender-specific implementation
+        from codetocad.adapters.blender.cad.sketch.sketch_operations import (
+            SketchOperations,
+        )
+
+        self.operations = SketchOperations(self)
 
         # Create Blender representation
         self._create_blender_sketch()
@@ -117,37 +127,6 @@ class Sketch(SketchInterface):
         for wire in self.wires:
             edges.extend(wire.edges)
         return edges
-
-    def get_bounding_box(self) -> tuple:
-        """Get the bounding box of all objects in the sketch."""
-        if not self.wires:
-            return ((0, 0, 0), (0, 0, 0))
-
-        all_vertices = self.get_all_vertices()
-        if not all_vertices:
-            return ((0, 0, 0), (0, 0, 0))
-
-        positions = [v.position for v in all_vertices]
-        min_pos = [min(pos[i] for pos in positions) for i in range(3)]
-        max_pos = [max(pos[i] for pos in positions) for i in range(3)]
-
-        return (tuple(min_pos), tuple(max_pos))
-
-    def clear(self):
-        """Remove all wires from the sketch."""
-        # # Remove Blender objects
-        # collection = get_collection_or_none(self.name)
-        # if collection:
-        #     for obj in list(collection.objects):
-        #         if obj != self._blender_object:  # Keep the sketch origin
-        #             unlink_object_from_collection(obj, collection)
-        #             if obj.data and isinstance(obj.data, bpy.types.Mesh):
-        #                 remove_mesh(obj.data)
-        #             bpy.data.objects.remove(obj)
-        raise NotImplementedError()
-
-        # Clear wires list
-        self.wires.clear()
 
     def hide(self):
         """Hide the sketch in Blender."""

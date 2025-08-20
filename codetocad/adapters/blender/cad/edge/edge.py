@@ -28,6 +28,13 @@ class Edge(EdgeInterface):
         # Initialize the parent interface
         super().__init__(v1, v2)
 
+        # Override method groups with Blender-specific implementations
+        from codetocad.adapters.blender.cad.edge.edge_geometry import EdgeGeometry
+        from codetocad.adapters.blender.cad.edge.edge_operations import EdgeOperations
+
+        self.geometry = EdgeGeometry(self)
+        self.operations = EdgeOperations(self)
+
         # Blender-specific properties
         self.name = name or f"edge_{str(uuid4())[:8]}"
         self.native_instance = native_instance
@@ -80,15 +87,6 @@ class Edge(EdgeInterface):
     def direction(self):
         """Get the direction vector of the edge."""
         return self.v2.position - self.v1.position
-
-    def length(self) -> float:
-        """Calculate the length of the edge."""
-        return np.linalg.norm(self.direction())
-
-    def midpoint(self) -> "Vertex":
-        """Get the midpoint of the edge as a new Vertex."""
-        mid_pos = (self.v1.position + self.v2.position) / 2
-        return Vertex(mid_pos[0], mid_pos[1], mid_pos[2])
 
     def get_blender_object(self) -> "bpy.types.Object | None":
         """Get the Blender object representing this edge."""

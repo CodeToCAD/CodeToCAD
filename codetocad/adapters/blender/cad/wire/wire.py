@@ -33,13 +33,23 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         name: str | None = None,
         native_instance: "bpy.types.Spline | bpy.types.MeshPolygon| None" = None,
     ):
-        # Initialize the parent interface
+        # Initialize the parent interface first
+        super().__init__(sketch)
+
+        # Blender-specific properties
         self.name = name or f"wire_{str(uuid4())[:8]}"
         self.native_instance = native_instance
         self._blender_object: bpy.types.Object | None = None
         self._curve_data: bpy.types.Curve | None = None
 
         self.member_sketches: list["Sketch"] = [sketch] if sketch is not None else []  # type: ignore
+
+        # Override method groups with Blender-specific implementations
+        from codetocad.adapters.blender.cad.wire.wire_geometry import WireGeometry
+        from codetocad.adapters.blender.cad.wire.wire_operations import WireOperations
+
+        self.geometry = WireGeometry(self)
+        self.operations = WireOperations(self)
 
         self.edges: list[Edge] = []  # type: ignore
 
@@ -104,48 +114,13 @@ class Wire(WireInterface, metaclass=_WirePresetClassProperty):
         """Get the native Blender wire instance."""
         return self.native_instance
 
-    def close(self):
-        """Close the wire by connecting the last vertex to the first."""
-        if len(self.edges) >= 2:
-            first_vertex = self.edges[0].v1
-            last_vertex = self.edges[-1].v2
-
-            if first_vertex != last_vertex:
-                closing_edge = Edge(last_vertex, first_vertex)
-                self.edges.append(closing_edge)
-                self._update_blender_curve()
-
-    def get_vertices(self) -> List[Vertex]:
-        """Get all vertices in the wire."""
-        vertices = []
-        if self.edges:
-            vertices.append(self.edges[0].v1)
-            for edge in self.edges:
-                vertices.append(edge.v2)
-        return vertices
-
     def get_length(self) -> float:
-        """Calculate the total length of the wire."""
-        return sum(edge.length() for edge in self.edges)
-
-    def is_closed(self) -> bool:
-        """Check if the wire forms a closed loop."""
-        if len(self.edges) < 3:
-            return False
-        return self.edges[0].v1.position.tolist() == self.edges[-1].v2.position.tolist()
+        """Calculate the total length of the wire (legacy method)."""
+        return self.geometry.length()
 
     def extude(self, length: LengthType) -> "Part":
-        """Extrude the wire to create a part."""
-        from codetocad.adapters.blender.cad.part.part import Part
-        from codetocad.adapters.blender.cad.sketch.sketch import Sketch
-
-        part = Part()
-        sketch = Sketch()
-        part.sketch = sketch
-        sketch.wires.append(self)
-        self.member_sketches.append(sketch)
-
-        return part
+        """Extrude the wire to create a part (legacy method with typo)."""
+        return self.operations.extrude(length)
 
     def __repr__(self):
         return f"Wire(name='{self.name}', edges={len(self.edges)})"

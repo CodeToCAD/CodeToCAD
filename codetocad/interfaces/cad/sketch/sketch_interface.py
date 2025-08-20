@@ -1,14 +1,26 @@
+from abc import ABC
 from codetocad.interfaces.cad.sketch.sketch_get import SketchGetInterface
+from codetocad.interfaces.cad.sketch.sketch_geometry_interface import (
+    SketchGeometryInterface,
+)
+from codetocad.interfaces.cad.sketch.sketch_operations_interface import (
+    SketchOperationsInterface,
+)
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
 from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 
 
-class SketchInterface:
+class SketchInterface(ABC):
     def __init__(self):
         self.wires: list[WireInterface] = []
         self.preset = WirePresetsInterface(WireInterface, self)
         self.get = SketchGetInterface(self)
+        self.name: str | None = None
+
+        # Method group properties
+        self.geometry = SketchGeometryInterface(self)
+        self.operations = SketchOperationsInterface(self)
 
     def add(self, wire: WireInterface):
         """
