@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface
-from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
+
 from codetocad.adapters.blender.cad.sketch.sketch_get import SketchGet
 from codetocad.adapters.blender.blender_actions.objects import create_object
 from codetocad.adapters.blender.blender_actions.collections import (
@@ -37,7 +37,11 @@ class Sketch(SketchInterface):
 
         # Initialize parent interface properties
         self.wires: list[Wire] = []  # type: ignore
-        self.preset = WirePresetsInterface(Wire, self)
+
+        # Use the Blender-specific wire presets
+        from codetocad.adapters.blender.cad.wire.wire_presets import BlenderWirePresets
+
+        self.preset = BlenderWirePresets(Wire, self)
         self.get = SketchGet(self)
 
         # Override operations with Blender-specific implementation
