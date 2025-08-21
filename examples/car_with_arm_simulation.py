@@ -11,41 +11,24 @@ This example demonstrates the complete CodeToCAD workflow including:
 - Material and asset management integration
 """
 
-import os
-import sys
 from pathlib import Path
 
-# Add CodeToCAD to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from codetocad.adapters.assets.thingiverse_adapter import ThingiverseAdapter
 
+from codetocad.adapters.assets.ambientcg_adapter import AmbientCGAdapter
 from codetocad.adapters.build123d.cad.sketch.sketch import Sketch
 from codetocad.adapters.build123d.cad.part.part import Part
 from codetocad.adapters.build123d.cad.assembly.assembly import Assembly
 from codetocad.core.dimensions.point import Point
 from codetocad.interfaces.cad.part.part_interface import PartCategory
 
-# Import simulation adapters
-try:
-    from codetocad.adapters.pybullet.simulation.simulation import (
-        Simulation as PyBulletSimulation,
-    )
+from codetocad.adapters.pybullet.simulation.simulation import (
+    Simulation as PyBulletSimulation,
+)
 
-    PYBULLET_AVAILABLE = True
-except ImportError:
-    PYBULLET_AVAILABLE = False
-    print("PyBullet not available - skipping PyBullet simulation")
-
-try:
-    from codetocad.adapters.mujoco.simulation.simulation import (
-        Simulation as MuJoCoSimulation,
-    )
-
-    MUJOCO_AVAILABLE = True
-except ImportError:
-    MUJOCO_AVAILABLE = False
-    print("MuJoCo not available - skipping MuJoCo simulation")
-
-# Asset adapters will be imported when needed to avoid unused import warnings
+from codetocad.adapters.mujoco.simulation.simulation import (
+    Simulation as MuJoCoSimulation,
+)
 
 
 def create_rectangle_sketch(
@@ -65,10 +48,7 @@ def create_circle_sketch(
 ) -> Sketch:
     """Create a circular sketch using build123d API."""
     sketch = Sketch()
-
-    # For now, create a simple square as a placeholder since circle preset might not be available
-    # This will be improved when we have proper circle support
-    sketch.preset.rectangle(radius * 2, radius * 2)
+    sketch.preset.circle(radius * 2)
 
     return sketch
 
@@ -286,7 +266,6 @@ def demonstrate_material_assets():
         # Initialize material asset manager
         from codetocad.adapters.assets.material_asset_adapter import (
             MaterialAssetManager,
-            AmbientCGAdapter,
         )
 
         material_manager = MaterialAssetManager()
@@ -349,13 +328,12 @@ def demonstrate_model_assets():
         # Initialize model asset manager
         from codetocad.adapters.assets.model_asset_adapter import (
             ModelAssetManager,
-            FreeModelAdapter,
         )
 
         model_manager = ModelAssetManager()
 
         # Add free model adapter
-        free_adapter = FreeModelAdapter()
+        free_adapter = ThingiverseAdapter()
         model_manager.add_adapter("free_models", free_adapter)
 
         # Search for models
@@ -388,10 +366,6 @@ def demonstrate_model_assets():
 
 def run_pybullet_simulation(system: Assembly):
     """Run PyBullet physics simulation."""
-    if not PYBULLET_AVAILABLE:
-        print("⚠️  PyBullet not available - skipping simulation")
-        return
-
     print("🎮 Running PyBullet simulation...")
 
     try:
@@ -432,8 +406,8 @@ def run_pybullet_simulation(system: Assembly):
         step = 0
 
         try:
-            # while True:
-            while step < 1200:  # 5 seconds at 240 Hz
+            while True:
+                # while step < 1200:  # 5 seconds at 240 Hz
                 sim.step()
 
                 if step % 240 == 0:  # Every second
@@ -454,10 +428,6 @@ def run_pybullet_simulation(system: Assembly):
 
 def run_mujoco_simulation(system: Assembly):
     """Run MuJoCo physics simulation."""
-    if not MUJOCO_AVAILABLE:
-        print("⚠️  MuJoCo not available - skipping simulation")
-        return
-
     print("🎮 Running MuJoCo simulation...")
 
     try:

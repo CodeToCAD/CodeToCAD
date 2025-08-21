@@ -66,6 +66,19 @@ def create_circle_wire(radius: LengthType) -> bd.Circle:
     return bd.Circle(r)
 
 
+def create_regular_polygon_wire(
+    radius: LengthType, side_count: int, rotation: float = 0
+) -> bd.RegularPolygon:
+    """Create a regular polygon wire."""
+    r = float(LengthExpression(radius))
+    return bd.RegularPolygon(radius=r, side_count=side_count, rotation=rotation)
+
+
+def create_polyline_wire(points: List[Tuple[float, float]]) -> bd.Polyline:
+    """Create a polyline wire from a list of points."""
+    return bd.Polyline(*points)
+
+
 def create_face_from_wire(wire: bd.Wire) -> bd.Face:
     """Create a face from a wire."""
     return bd.Face(wire)

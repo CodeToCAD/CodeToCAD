@@ -27,8 +27,12 @@ class AssetConfig:
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
-            material_cache_dir=data.get("material_cache_dir", ""),
-            model_cache_dir=data.get("model_cache_dir", ""),
+            material_cache_dir=data.get(
+                "material_cache_dir", f"{get_codetocad_home() / 'material_cache'}"
+            ),
+            model_cache_dir=data.get(
+                "model_cache_dir", f"{get_codetocad_home() / 'model_cache'}"
+            ),
             thingiverse_api_key=data.get("thingiverse_api_key", ""),
             poliigon_api_key=data.get("poliigon_api_key", ""),
             auto_download_materials=data.get("auto_download_materials", True),
