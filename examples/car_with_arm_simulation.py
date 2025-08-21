@@ -91,9 +91,9 @@ def create_car_chassis() -> Part:
     chassis.extrude_sketch(20)  # 20mm thick chassis
 
     # Apply steel material for structural strength
-    from codetocad.core.material import MaterialPresets
+    from codetocad.core.material import Material
 
-    steel_material = MaterialPresets.steel()
+    steel_material = Material.preset.steel()
     chassis.set_material(steel_material)
 
     # Set explicit mass for reasonable simulation (instead of using density directly)
@@ -121,9 +121,9 @@ def create_wheel(radius: float = 30, width: float = 20) -> Part:
     wheel.extrude_sketch(width)
 
     # Apply rubber material
-    from codetocad.core.material import MaterialPresets
+    from codetocad.core.material import Material
 
-    rubber_material = MaterialPresets.rubber()
+    rubber_material = Material.preset.rubber()
     wheel.set_material(rubber_material)
 
     # Set reasonable mass for wheel
@@ -150,9 +150,9 @@ def create_robotic_arm_link(
     link.extrude_sketch(height)
 
     # Apply aluminum material for lightweight strength
-    from codetocad.core.material import MaterialPresets
+    from codetocad.core.material import Material
 
-    aluminum_material = MaterialPresets.aluminum()
+    aluminum_material = Material.preset.aluminum()
     link.set_material(aluminum_material)
 
     # Set reasonable mass based on link length
@@ -177,9 +177,9 @@ def create_joint_connector() -> Part:
     connector.extrude_sketch(10)  # 10mm thick
 
     # Apply steel material for joint strength
-    from codetocad.core.material import MaterialPresets
+    from codetocad.core.material import Material
 
-    steel_material = MaterialPresets.steel()
+    steel_material = Material.preset.steel()
     connector.set_material(steel_material)
 
     # Set small mass for connector
@@ -423,10 +423,12 @@ def run_pybullet_simulation(system: Assembly):
         # Run simulation
         print("Running simulation for 5 seconds...")
         sim.start()
+
         step = 0
 
         try:
             while True:
+                # while step < 1200:  # 5 seconds at 240 Hz
                 sim.step()
 
                 if step % 240 == 0:  # Every second
@@ -434,7 +436,7 @@ def run_pybullet_simulation(system: Assembly):
 
                 step += 1
         except KeyboardInterrupt:
-            print("Simulation interrupted by user")
+            print("🛑 Simulation interrupted")
 
         sim.stop()
         sim.disconnect()

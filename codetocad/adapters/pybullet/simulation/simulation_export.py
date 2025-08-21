@@ -37,8 +37,22 @@ class PyBulletSimulationExport(SimulationExportInterface):
                 # For now, use a simple box - would need actual mesh export
                 urdf_content += '        <box size="1 1 1"/>\n'
                 urdf_content += "      </geometry>\n"
-                urdf_content += '      <material name="default">\n'
-                urdf_content += '        <color rgba="0.8 0.8 0.8 1.0"/>\n'
+
+                # Extract material color from original part
+                material_name = "default"
+                color_rgba = "0.8 0.8 0.8 1.0"  # Default gray
+
+                if hasattr(body, "original_part") and body.original_part is not None:
+                    part = body.original_part
+                    if hasattr(part, "color") and part.color is not None:
+                        r, g, b, a = part.color
+                        color_rgba = f"{r} {g} {b} {a}"
+
+                    if hasattr(part, "material") and part.material is not None:
+                        material_name = str(part.material).lower().replace(" ", "_")
+
+                urdf_content += f'      <material name="{material_name}">\n'
+                urdf_content += f'        <color rgba="{color_rgba}"/>\n'
                 urdf_content += "      </material>\n"
                 urdf_content += "    </visual>\n"
 

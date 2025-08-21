@@ -34,19 +34,23 @@ def create_body_from_stl(
     position: Point | Tuple[float, float, float] = (0, 0, 0),
     orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
     mass: float = 1.0,
-    **kwargs,
+    color: Tuple[float, float, float, float] | None = None,
 ) -> int:
-    """Create a body from STL file."""
+    """Create a body from STL file with optional color."""
     if isinstance(position, Point):
         pos = (position.x, position.y, position.z)
     else:
         pos = position
 
     # Create collision shape from mesh
-    collision_shape = p.createCollisionShape(p.GEOM_MESH, fileName=stl_path, **kwargs)
+    collision_shape = p.createCollisionShape(p.GEOM_MESH, fileName=stl_path)
 
-    # Create visual shape from mesh
-    visual_shape = p.createVisualShape(p.GEOM_MESH, fileName=stl_path, **kwargs)
+    # Create visual shape from mesh with color
+    visual_kwargs = {"fileName": stl_path}
+    if color is not None:
+        visual_kwargs["rgbaColor"] = color  # type: ignore
+
+    visual_shape = p.createVisualShape(p.GEOM_MESH, **visual_kwargs)
 
     # Create multi-body
     body_id = p.createMultiBody(
@@ -67,7 +71,7 @@ def create_body_from_part(
     mass: float = 1.0,
     **kwargs,
 ) -> int:
-    """Create a body from CodeToCAD Part."""
+    """Create a body from CodeToCAD Part with material properties."""
     # Export part to temporary STL file
     with tempfile.NamedTemporaryFile(suffix=".stl", delete=False) as tmp_file:
         tmp_path = tmp_file.name
@@ -76,8 +80,13 @@ def create_body_from_part(
         # Export the part to STL
         part.export.stl(tmp_path)
 
-        # Create body from STL
-        body_id = create_body_from_stl(tmp_path, position, orientation, mass, **kwargs)
+        # Extract material color if available
+        color = None
+        if hasattr(part, "color") and part.color is not None:
+            color = part.color
+
+        # Create body from STL with material color
+        body_id = create_body_from_stl(tmp_path, position, orientation, mass, color)
 
         return body_id
     finally:
@@ -214,6 +223,28 @@ def set_body_friction(body_id: int, friction: float) -> None:
 def set_body_restitution(body_id: int, restitution: float) -> None:
     """Set body restitution."""
     p.changeDynamics(body_id, -1, restitution=restitution)
+
+
+def set_body_visual_properties(
+    body_id: int, color: Tuple[float, float, float, float] | None = None
+) -> None:
+    """Set visual properties of a body."""
+    if color is not None:
+        p.changeVisualShape(body_id, -1, rgbaColor=color)
+
+
+def apply_material_visual_properties(body_id: int, part: Any) -> None:
+    """Apply material visual properties from a part to a PyBullet body."""
+    if hasattr(part, "color") and part.color is not None:
+        set_body_visual_properties(body_id, part.color)
+
+    # Apply texture if available (placeholder for future texture support)
+    if hasattr(part, "get_material") and part.get_material() is not None:
+        material = part.get_material()
+        if hasattr(material, "textures") and material.has_textures():
+            # TODO: Implement texture loading for PyBullet
+            # This would require loading texture files and applying them
+            pass
 
 
 def get_contact_points(body_id: int) -> List[Dict[str, Any]]:

@@ -174,6 +174,9 @@ class Simulation(SimulationInterface):
         body_management.set_body_friction(body_id, part.friction)
         body_management.set_body_restitution(body_id, part.restitution)
 
+        # Apply visual properties from material
+        body_management.apply_material_visual_properties(body_id, part)
+
         # Set damping if available
         try:
             import pybullet as p

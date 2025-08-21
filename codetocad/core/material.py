@@ -4,10 +4,20 @@ Material implementation with preset materials.
 
 import copy
 from typing import Dict, Any
+from abc import ABCMeta
 from codetocad.interfaces.cad.material_interface import MaterialInterface, TextureMaps
 
 
-class Material(MaterialInterface):
+class _MaterialPresetClassProperty(ABCMeta):
+    """Metaclass to provide Material.preset class property."""
+
+    @property
+    def preset(cls):
+        """Access to material presets."""
+        return MaterialPresets()
+
+
+class Material(MaterialInterface, metaclass=_MaterialPresetClassProperty):
     """Concrete implementation of MaterialInterface."""
 
     def copy(self) -> "Material":
@@ -266,5 +276,4 @@ class MaterialPresets:
         return material
 
 
-# Add preset property to Material class
-Material.preset = MaterialPresets()
+# Material.preset is now available via the metaclass
