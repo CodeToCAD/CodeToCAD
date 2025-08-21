@@ -8,7 +8,10 @@ parallel edges, or concentric cylinders. These mates do not allow motion.
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
 
-from .mate_interface import MateInterface, MateType
+from codetocad.interfaces.cad.assembly.mate.mate_interface import (
+    MateInterface,
+    MateType,
+)
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.part.part_interface import PartInterface

@@ -20,7 +20,7 @@ from codetocad.interfaces.cad.assembly.mate.geometric_mate_interface import (
 )
 from codetocad.interfaces.cad.assembly.mate.mate_interface import MateType, MateStatus
 
-from .mate import Mate
+from codetocad.adapters.build123d.cad.assembly.mate.mate import Mate
 
 if TYPE_CHECKING:
     from codetocad.adapters.build123d.cad.part.part import Part
@@ -57,7 +57,7 @@ class GeometricMate(Mate, GeometricMateInterface):
             **kwargs: Additional mate-specific parameters
         """
         # Call Mate.__init__ directly to avoid interface conflicts
-        from .mate import Mate
+        from codetocad.adapters.build123d.cad.assembly.mate.mate import Mate
 
         Mate.__init__(self, name, mate_type, part1, part2, **kwargs)
         self.entity1 = entity1

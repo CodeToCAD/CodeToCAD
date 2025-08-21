@@ -9,7 +9,10 @@ degrees of freedom.
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Optional, Tuple, Union
 
-from .mate_interface import MateInterface, MateType
+from codetocad.interfaces.cad.assembly.mate.mate_interface import (
+    MateInterface,
+    MateType,
+)
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.part.part_interface import PartInterface

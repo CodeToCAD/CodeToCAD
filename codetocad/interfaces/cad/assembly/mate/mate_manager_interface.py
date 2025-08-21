@@ -8,7 +8,11 @@ providing methods to create, modify, delete, and solve mate constraints.
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
-from .mate_interface import MateInterface, MateType, MateStatus
+from codetocad.interfaces.cad.assembly.mate.mate_interface import (
+    MateInterface,
+    MateType,
+    MateStatus,
+)
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
