@@ -1,5 +1,6 @@
 .DS_Store
 .env
+.augment
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
