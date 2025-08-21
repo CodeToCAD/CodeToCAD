@@ -165,26 +165,27 @@ class Simulation(SimulationInterface):
         # Use part's physical properties
         effective_mass = mass if mass is not None else part.get_effective_mass()
 
-        # Extract physical properties from part
-        physics_kwargs = {
-            "friction": part.friction,
-            "restitution": part.restitution,
-            "color": part.color,
-            "material": part.material,
-            **kwargs,
-        }
-
-        # Add inertia if specified
-        if part.inertia is not None:
-            physics_kwargs["inertia"] = part.inertia
-
-        # Add damping
-        physics_kwargs["linear_damping"] = part.damping[0]
-        physics_kwargs["angular_damping"] = part.damping[1]
-
+        # Create body without material properties (they'll be set after creation)
         body_id = body_management.create_body_from_part(
-            part, position, orientation, effective_mass, **physics_kwargs
+            part, position, orientation, effective_mass, **kwargs
         )
+
+        # Apply material properties after body creation
+        body_management.set_body_friction(body_id, part.friction)
+        body_management.set_body_restitution(body_id, part.restitution)
+
+        # Set damping if available
+        try:
+            import pybullet as p
+
+            p.changeDynamics(
+                body_id,
+                -1,
+                linearDamping=part.damping[0],
+                angularDamping=part.damping[1],
+            )
+        except:
+            pass  # Ignore if damping setting fails
 
         sim_body = SimulationBody()
         sim_body.name = part.name or f"part_body_{str(uuid4())[:8]}"

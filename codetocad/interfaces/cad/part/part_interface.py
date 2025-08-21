@@ -24,6 +24,7 @@ class PartCategory(Enum):
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
+    from codetocad.interfaces.cad.material_interface import MaterialInterface
 
 
 class _PartPresetClassPropertyInterface(ABCMeta):
@@ -51,6 +52,9 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
         self.restitution: float = 0.1  # bounciness
         self.density: float = 1000.0  # kg/m³
         self.damping: tuple[float, float] = (0.1, 0.1)  # linear, angular
+
+        # Material reference
+        self._material_object: "MaterialInterface | None" = None
 
         # Method group properties
         self.transform = PartTransformInterface(self)
@@ -111,6 +115,37 @@ class PartInterface(ABC, metaclass=_PartPresetClassPropertyInterface):
             self.damping = damping
 
         return self
+
+    def set_material(self, material: "MaterialInterface") -> "PartInterface":
+        """
+        Set the material for this part, applying both physical and visual properties.
+
+        Args:
+            material: Material to apply to this part
+
+        Returns:
+            Self for method chaining
+        """
+        self._material_object = material
+
+        # Apply physical properties from material
+        self.density = material.density
+        self.friction = material.friction
+        self.restitution = material.restitution
+        self.material = material.name
+        self.color = material.color
+
+        # Store material reference for texture access
+        return self
+
+    def get_material(self) -> "MaterialInterface | None":
+        """
+        Get the material object applied to this part.
+
+        Returns:
+            Material object or None if no material is set
+        """
+        return self._material_object
 
     def get_effective_mass(self) -> float:
         """
