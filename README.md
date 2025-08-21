@@ -24,6 +24,9 @@
 - [Contributors](#contributors)
 - [FAQ](#faq)
 
+## Getting Started
+
+Follow the [0-getting-started.ipynb](./devlog/0-getting-started.ipynb) notebook to install dependencies and run CodeToCAD.
 
 ## What is CodeToCAD
 CodeToCAD is an open source digital manufacturing automation. Its goal is to allow engineers and developers to write python scripts that can be checked into source control, collaborated on, and run on any supported CAD, modeling, simulation, FEA or machining software. It's a one-stop-shop for designing hardware, electrical, software, and getting it ready for manufacturing.
