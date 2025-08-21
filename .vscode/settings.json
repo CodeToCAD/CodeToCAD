@@ -27,4 +27,5 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     "python.analysis.inlayHints.pytestParameters": true,
+    "python-envs.pythonProjects": [],
 }
