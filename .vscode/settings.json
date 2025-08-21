@@ -10,7 +10,8 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "black-formatter.importStrategy": "fromEnvironment",
     "python.testing.pytestArgs": [
-        "tests"
+        "tests",
+        "-s"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
@@ -25,4 +26,5 @@
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
     },
+    "python.analysis.inlayHints.pytestParameters": true,
 }

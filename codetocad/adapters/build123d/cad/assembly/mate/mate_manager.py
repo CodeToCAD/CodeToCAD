@@ -17,14 +17,14 @@ from codetocad.interfaces.cad.assembly.mate.mate_interface import (
 )
 
 # Import mate implementations
-from .kinematic_mate import (
+from codetocad.adapters.build123d.cad.assembly.mate.kinematic_mate import (
     RigidMate,
     RevoluteMate,
     LinearMate,
     CylindricalMate,
     BallMate,
 )
-from .geometric_mate import (
+from codetocad.adapters.build123d.cad.assembly.mate.geometric_mate import (
     CoincidentMate,
     ConcentricMate,
     DistanceMate,

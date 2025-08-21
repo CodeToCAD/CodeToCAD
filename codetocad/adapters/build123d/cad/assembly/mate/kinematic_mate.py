@@ -17,7 +17,7 @@ from codetocad.interfaces.cad.assembly.mate.kinematic_mate_interface import (
 )
 from codetocad.interfaces.cad.assembly.mate.mate_interface import MateType, MateStatus
 
-from .mate import Mate
+from codetocad.adapters.build123d.cad.assembly.mate.mate import Mate
 
 if TYPE_CHECKING:
     from codetocad.adapters.build123d.cad.part.part import Part

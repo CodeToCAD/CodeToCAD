@@ -9,6 +9,7 @@ from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface
 from codetocad.interfaces.cad.wire.wire_add import WireAddInterface
 from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 from codetocad.adapters.build123d.cad.sketch.sketch_get import SketchGet
+from codetocad.adapters.build123d.cad.wire.wire_presets import Build123dWirePresets
 from codetocad.adapters.build123d.build123d_actions.sketch_operations import (
     create_sketch_context,
     get_sketch_wires,
@@ -38,7 +39,7 @@ class Sketch(SketchInterface):
         from codetocad.adapters.build123d.cad.wire.wire import Wire
 
         self.wires: list[Wire] = []  # type: ignore
-        self.preset = WirePresetsInterface(Wire, self)
+        self.preset = Build123dWirePresets(Wire, self)
         self.get = SketchGet(self)
 
         # Override operations with build123d-specific implementation
