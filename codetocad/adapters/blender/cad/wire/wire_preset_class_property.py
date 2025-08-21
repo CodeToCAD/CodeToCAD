@@ -1,7 +1,6 @@
 from codetocad.interfaces.cad.wire.wire_interface import (
     _WirePresetClassPropertyInterface,
 )
-from codetocad.interfaces.cad.wire.wire_presets import WirePresetsInterface
 
 
 class _WirePresetClassProperty(_WirePresetClassPropertyInterface):
@@ -11,5 +10,6 @@ class _WirePresetClassProperty(_WirePresetClassPropertyInterface):
     def preset(self):
         # Import here to avoid circular imports
         from codetocad.adapters.blender.cad.wire.wire import Wire
+        from codetocad.adapters.blender.cad.wire.wire_presets import BlenderWirePresets
 
-        return WirePresetsInterface(Wire, None)
+        return BlenderWirePresets(Wire, None)

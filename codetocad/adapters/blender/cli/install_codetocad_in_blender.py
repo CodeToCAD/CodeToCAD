@@ -13,7 +13,7 @@ def install_callback():
 
     from pathlib import Path
 
-    codetocad_path = Path(__file__).parent.parent.parent.absolute()
+    codetocad_path = Path(__file__).parent.parent.parent.parent.parent.absolute()
 
     target_site = bpy.utils.script_path_user()
 
@@ -30,10 +30,23 @@ def install_callback():
         "pip",
         "install",
         "-e",
-        str(codetocad_path),
+        f"{codetocad_path}[dev]",
         "--target",
         target_site,
     ]
+    print(f"{install_command=}")
+    subprocess.call(install_command)
+
+    install_command = [
+        python,
+        "-m",
+        "pip",
+        "install",
+        "pytest",
+        "--target",
+        target_site,
+    ]
+    print(f"{install_command=}")
 
     subprocess.call(install_command)
 

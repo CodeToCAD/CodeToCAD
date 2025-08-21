@@ -9,6 +9,7 @@ repos:
     hooks:
       - id: pytest
         name: pytest
+        args: ["tests/"]
         entry: pytest
         language: system
         types: [python]
