@@ -10,7 +10,6 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "black-formatter.importStrategy": "fromEnvironment",
     "python.testing.pytestArgs": [
-        "tests",
         "-s"
     ],
     "python.testing.unittestEnabled": false,
