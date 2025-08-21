@@ -9,7 +9,6 @@ import os
 import json
 import time
 import requests
-import tempfile
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -247,16 +246,25 @@ class AmbientCGAdapter(MaterialAssetAdapter):
         return filtered[:limit]
 
     def download(
-        self, asset: MaterialAsset, temp_dir: Optional[str] = None
+        self, asset: MaterialAsset, cache_dir: Optional[str] = None
     ) -> Dict[str, str]:
         """Download material textures from ambientCG."""
-        if not temp_dir:
-            temp_dir = tempfile.mkdtemp(prefix="material_")
+        if not cache_dir:
+            from codetocad.cli.config import get_material_cache_dir
 
-        temp_path = Path(temp_dir)
-        temp_path.mkdir(parents=True, exist_ok=True)
+            cache_dir = str(get_material_cache_dir())
+
+        # Create subdirectory for this specific material
+        material_dir = Path(cache_dir) / "ambientcg" / asset.id
+        material_dir.mkdir(parents=True, exist_ok=True)
 
         downloaded_files = {}
+
+        # Check if material is already cached
+        cached_files = self._check_cached_material(material_dir, asset)
+        if cached_files:
+            print(f"Using cached material: {asset.name}")
+            return cached_files
 
         try:
             # Download ZIP file if available
@@ -271,7 +279,7 @@ class AmbientCGAdapter(MaterialAssetAdapter):
             response = self.session.get(zip_url, timeout=60)
             response.raise_for_status()
 
-            zip_path = temp_path / f"{asset.id}.zip"
+            zip_path = material_dir / f"{asset.id}.zip"
             with open(zip_path, "wb") as f:
                 f.write(response.content)
 
@@ -279,10 +287,10 @@ class AmbientCGAdapter(MaterialAssetAdapter):
             import zipfile
 
             with zipfile.ZipFile(zip_path, "r") as zip_ref:
-                zip_ref.extractall(temp_path)
+                zip_ref.extractall(material_dir)
 
             # Find extracted texture files
-            for file_path in temp_path.rglob("*.jpg"):
+            for file_path in material_dir.rglob("*.jpg"):
                 filename = file_path.name.lower()
 
                 # Map filenames to texture types
@@ -304,11 +312,58 @@ class AmbientCGAdapter(MaterialAssetAdapter):
             # Clean up ZIP file
             zip_path.unlink()
 
+            # Save metadata for caching
+            if downloaded_files:
+                self._save_material_metadata(material_dir, asset, downloaded_files)
+
             return downloaded_files
 
         except Exception as e:
             print(f"Error downloading material {asset.name}: {e}")
             return {}
+
+    def _check_cached_material(
+        self, material_dir: Path, asset: MaterialAsset
+    ) -> Dict[str, str]:
+        """Check if material is already cached and return file paths."""
+        metadata_file = material_dir / "metadata.json"
+        if not metadata_file.exists():
+            return {}
+
+        try:
+            with open(metadata_file, "r") as f:
+                metadata = json.load(f)
+
+            # Verify all files still exist
+            cached_files = {}
+            for texture_type, file_path in metadata.get("files", {}).items():
+                if Path(file_path).exists():
+                    cached_files[texture_type] = file_path
+
+            if cached_files:
+                return cached_files
+        except Exception:
+            pass
+
+        return {}
+
+    def _save_material_metadata(
+        self, material_dir: Path, asset: MaterialAsset, downloaded_files: Dict[str, str]
+    ):
+        """Save material metadata for caching."""
+        metadata = {
+            "asset_id": asset.id,
+            "asset_name": asset.name,
+            "category": asset.category,
+            "tags": asset.tags,
+            "description": asset.description,
+            "files": downloaded_files,
+            "download_date": time.time(),
+        }
+
+        metadata_file = material_dir / "metadata.json"
+        with open(metadata_file, "w") as f:
+            json.dump(metadata, f, indent=2)
 
     def create_material_from_asset(
         self, asset: MaterialAsset, downloaded_files: Dict[str, str]

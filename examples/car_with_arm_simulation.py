@@ -407,13 +407,18 @@ def run_pybullet_simulation(system: Assembly):
 
         print(f"Added {len(bodies)} bodies to simulation")
 
-        # Export URDF
+        # Export URDF with meshes and textures
         export_dir = Path("exports")
         export_dir.mkdir(exist_ok=True)
 
         urdf_file = export_dir / "car_with_arm.urdf"
         sim.export.urdf(str(urdf_file))
         print(f"📄 Exported URDF to: {urdf_file}")
+
+        # Export MJCF (MuJoCo XML) with meshes and textures
+        mjcf_file = export_dir / "car_with_arm.xml"
+        sim.export.mjcf(str(mjcf_file))
+        print(f"🎯 Exported MJCF to: {mjcf_file}")
 
         # Export scene
         scene_file = export_dir / "car_with_arm_scene.json"
@@ -427,8 +432,8 @@ def run_pybullet_simulation(system: Assembly):
         step = 0
 
         try:
-            while True:
-                # while step < 1200:  # 5 seconds at 240 Hz
+            # while True:
+            while step < 1200:  # 5 seconds at 240 Hz
                 sim.step()
 
                 if step % 240 == 0:  # Every second

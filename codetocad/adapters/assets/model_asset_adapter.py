@@ -9,7 +9,6 @@ import os
 import json
 import time
 import requests
-import tempfile
 from typing import Optional, Dict, Any, List, Tuple
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -68,9 +67,9 @@ class ModelAssetAdapter:
         raise NotImplementedError("Subclasses must implement search method")
 
     def download(
-        self, asset: ModelAsset, format: str = "stl", temp_dir: Optional[str] = None
+        self, asset: ModelAsset, format: str = "stl", cache_dir: Optional[str] = None
     ) -> Optional[str]:
-        """Download 3D model to temporary directory."""
+        """Download 3D model to cache directory."""
         raise NotImplementedError("Subclasses must implement download method")
 
     def save(self, temp_file: str, target_path: str) -> str:
@@ -198,18 +197,21 @@ class ThingiverseAdapter(ModelAssetAdapter):
             return None
 
     def download(
-        self, asset: ModelAsset, format: str = "stl", temp_dir: Optional[str] = None
+        self, asset: ModelAsset, format: str = "stl", cache_dir: Optional[str] = None
     ) -> Optional[str]:
         """Download 3D model from Thingiverse."""
         if format not in asset.download_urls:
             print(f"Format {format} not available for {asset.name}")
             return None
 
-        if not temp_dir:
-            temp_dir = tempfile.mkdtemp(prefix="model_")
+        if not cache_dir:
+            from codetocad.cli.config import get_model_cache_dir
 
-        temp_path = Path(temp_dir)
-        temp_path.mkdir(parents=True, exist_ok=True)
+            cache_dir = str(get_model_cache_dir())
+
+        # Create subdirectory for this specific model
+        model_dir = Path(cache_dir) / "thingiverse" / asset.id
+        model_dir.mkdir(parents=True, exist_ok=True)
 
         try:
             self._rate_limit()
@@ -220,7 +222,7 @@ class ThingiverseAdapter(ModelAssetAdapter):
 
             # Save file
             filename = f"{asset.id}_{asset.name.replace(' ', '_')}.{format}"
-            file_path = temp_path / filename
+            file_path = model_dir / filename
 
             with open(file_path, "wb") as f:
                 f.write(response.content)
@@ -286,19 +288,28 @@ class FreeModelAdapter(ModelAssetAdapter):
         return filtered_assets[:limit]
 
     def download(
-        self, asset: ModelAsset, format: str = "stl", temp_dir: Optional[str] = None
+        self, asset: ModelAsset, format: str = "stl", cache_dir: Optional[str] = None
     ) -> Optional[str]:
         """Download from free model repository."""
         # For example assets, create placeholder files
-        if not temp_dir:
-            temp_dir = tempfile.mkdtemp(prefix="model_")
+        if not cache_dir:
+            from codetocad.cli.config import get_model_cache_dir
 
-        temp_path = Path(temp_dir)
-        temp_path.mkdir(parents=True, exist_ok=True)
+            cache_dir = str(get_model_cache_dir())
+
+        # Create subdirectory for this specific model
+        model_dir = Path(cache_dir) / "free_models" / asset.id
+        model_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check if model is already cached
+        filename = f"{asset.id}.{format}"
+        file_path = model_dir / filename
+
+        if file_path.exists():
+            print(f"Using cached model: {asset.name}")
+            return str(file_path)
 
         # Create a placeholder STL file (in real implementation, would download actual file)
-        filename = f"{asset.id}.{format}"
-        file_path = temp_path / filename
 
         # Create a minimal STL file as placeholder
         if format == "stl":
@@ -351,11 +362,11 @@ class ModelAssetManager:
         adapter_name: str,
         asset: ModelAsset,
         format: str = "stl",
-        temp_dir: Optional[str] = None,
+        cache_dir: Optional[str] = None,
     ) -> Optional[str]:
         """Download model using specific adapter."""
         if adapter_name not in self.adapters:
             print(f"Adapter {adapter_name} not found")
             return None
 
-        return self.adapters[adapter_name].download(asset, format, temp_dir)
+        return self.adapters[adapter_name].download(asset, format, cache_dir)

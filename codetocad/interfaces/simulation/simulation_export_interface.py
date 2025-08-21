@@ -77,6 +77,20 @@ class SimulationExportInterface(ABC):
         pass
 
     @abstractmethod
+    def mjcf(self, filename: str, **kwargs) -> str:
+        """
+        Export simulation to MuJoCo MJCF XML format.
+
+        Args:
+            filename: Output filename
+            **kwargs: Additional export options
+
+        Returns:
+            Path to exported file
+        """
+        pass
+
+    @abstractmethod
     def state(
         self,
         filename: str,
