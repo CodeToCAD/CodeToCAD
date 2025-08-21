@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import TYPE_CHECKING
 from codetocad.interfaces.cad.assembly.assembly_add import AssemblyAddInterface
 from codetocad.interfaces.cad.assembly.assembly_get import AssemblyGetInterface
 from codetocad.interfaces.cad.assembly.assembly_transform_interface import (
@@ -18,11 +19,19 @@ from codetocad.interfaces.cad.assembly.assembly_mate_interface import (
     AssemblyMateInterface,
 )
 
+if TYPE_CHECKING:
+    from codetocad.interfaces.cad.camera_interface import CameraInterface
+    from codetocad.interfaces.cad.light_interface import LightInterface
+
 
 class AssemblyInterface(ABC):
     def __init__(self):
         self.parts: list[PartInterface] = []
         self.name: str | None = None
+
+        # Scene objects
+        self.cameras: list["CameraInterface"] = []
+        self.lights: list["LightInterface"] = []
 
         self.add = AssemblyAddInterface(self)
         self.get = AssemblyGetInterface(self)
@@ -53,6 +62,48 @@ class AssemblyInterface(ABC):
             self.parts.remove(part)
             if self in part.member_assemblies:
                 part.member_assemblies.remove(self)
+
+    def add_camera(self, camera: "CameraInterface"):
+        """Add a camera to the assembly."""
+        if camera not in self.cameras:
+            self.cameras.append(camera)
+
+    def remove_camera(self, camera: "CameraInterface"):
+        """Remove a camera from the assembly."""
+        if camera in self.cameras:
+            self.cameras.remove(camera)
+
+    def add_light(self, light: "LightInterface"):
+        """Add a light to the assembly."""
+        if light not in self.lights:
+            self.lights.append(light)
+
+    def remove_light(self, light: "LightInterface"):
+        """Remove a light from the assembly."""
+        if light in self.lights:
+            self.lights.remove(light)
+
+    def get_cameras(self) -> list["CameraInterface"]:
+        """Get all cameras in the assembly."""
+        return self.cameras.copy()
+
+    def get_lights(self) -> list["LightInterface"]:
+        """Get all lights in the assembly."""
+        return self.lights.copy()
+
+    def get_camera_by_name(self, name: str) -> "CameraInterface | None":
+        """Get a camera by name."""
+        for camera in self.cameras:
+            if camera.name == name:
+                return camera
+        return None
+
+    def get_light_by_name(self, name: str) -> "LightInterface | None":
+        """Get a light by name."""
+        for light in self.lights:
+            if light.name == name:
+                return light
+        return None
 
     def get_part_by_name(self, name: str) -> "PartInterface | None":
         """Get a part by name."""

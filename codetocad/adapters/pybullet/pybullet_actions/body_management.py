@@ -6,6 +6,8 @@ from typing import Optional, Tuple, Any, Dict, List
 import pybullet as p
 import tempfile
 import os
+
+import pybullet_data
 from codetocad.core.dimensions.point import Point
 
 
@@ -96,6 +98,8 @@ def create_ground_plane(
         pos = position
 
     # Create plane shape
+    p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
     plane_id = p.loadURDF("plane.urdf", basePosition=pos, **kwargs)
     return plane_id
 

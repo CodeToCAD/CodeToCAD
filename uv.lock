@@ -402,10 +402,10 @@ requires-dist = [
     { name = "fake-bpy-module-latest", marker = "extra == 'blender'", specifier = ">=20250630" },
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "ipywidgets", specifier = ">=8.1.7" },
-    { name = "mujoco", marker = "extra == 'mujoco'", specifier = ">=3.0.0" },
+    { name = "mujoco", extras = ["viewer"], marker = "extra == 'mujoco'", specifier = ">=3.0.0" },
     { name = "numpy", specifier = ">=2.3.2" },
     { name = "open3d", marker = "extra == 'open3d'", specifier = ">=0.19.0" },
-    { name = "pybullet", marker = "extra == 'pybullet'", specifier = ">=3.2.7" },
+    { name = "pybullet", extras = ["extras"], marker = "extra == 'pybullet'", specifier = ">=3.2.7" },
 ]
 provides-extras = ["open3d", "build123d", "blender", "pybullet", "mujoco"]
 

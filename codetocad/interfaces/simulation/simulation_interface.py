@@ -7,9 +7,12 @@ configure simulation parameters.
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Optional, Sequence, Tuple
 from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.core.dimensions.point import Point
+from codetocad.interfaces.simulation.simulation_export_interface import (
+    SimulationExportInterface,
+)
 
 if TYPE_CHECKING:
     from codetocad.interfaces.simulation.simulation_body_interface import (
@@ -17,6 +20,8 @@ if TYPE_CHECKING:
     )
     from codetocad.interfaces.cad.part.part_interface import PartInterface
     from codetocad.interfaces.cad.assembly.assembly_interface import AssemblyInterface
+    from codetocad.interfaces.cad.camera_interface import CameraInterface
+    from codetocad.interfaces.cad.light_interface import LightInterface
 
 
 class SimulationInterface(ABC):
@@ -36,6 +41,13 @@ class SimulationInterface(ABC):
         self.time_step: float = 1.0 / 240.0  # Default 240 Hz
         self.gravity: Point = Point(0, 0, -9.81)  # Default Earth gravity
         self.bodies: list["SimulationBodyInterface"] = []
+        self.cameras: list["CameraInterface"] = []
+        self.lights: list["LightInterface"] = []
+
+        # Export functionality
+        self.export: SimulationExportInterface = (
+            None  # To be set by concrete implementations
+        )
 
     def set_name(self, name: str):
         """Set the simulation name."""
@@ -183,15 +195,17 @@ class SimulationInterface(ABC):
         assembly: "AssemblyInterface",
         position: Point | tuple[float, float, float] = (0, 0, 0),
         orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
+        detect_constraints: bool = True,
         **kwargs,
     ) -> Sequence["SimulationBodyInterface"]:
         """
-        Add a CodeToCAD Assembly to the simulation.
+        Add a CodeToCAD Assembly to the simulation with automatic constraint detection.
 
         Args:
             assembly: The Assembly instance to add
             position: Initial position as Point or (x, y, z) tuple
             orientation: Initial orientation as quaternion (x, y, z, w)
+            detect_constraints: Whether to automatically detect and create kinematic constraints
             **kwargs: Additional parameters
 
         Returns:
@@ -222,6 +236,133 @@ class SimulationInterface(ABC):
         """
         ...
 
+    def add_camera(self, camera: "CameraInterface") -> None:
+        """
+        Add a camera to the simulation.
+
+        Args:
+            camera: The camera to add
+        """
+        if camera not in self.cameras:
+            self.cameras.append(camera)
+
+    def remove_camera(self, camera: "CameraInterface") -> None:
+        """
+        Remove a camera from the simulation.
+
+        Args:
+            camera: The camera to remove
+        """
+        if camera in self.cameras:
+            self.cameras.remove(camera)
+
+    def add_light(self, light: "LightInterface") -> None:
+        """
+        Add a light to the simulation.
+
+        Args:
+            light: The light to add
+        """
+        if light not in self.lights:
+            self.lights.append(light)
+
+    def remove_light(self, light: "LightInterface") -> None:
+        """
+        Remove a light from the simulation.
+
+        Args:
+            light: The light to remove
+        """
+        if light in self.lights:
+            self.lights.remove(light)
+
+    def get_camera_by_name(self, name: str) -> "CameraInterface | None":
+        """
+        Get a camera by name.
+
+        Args:
+            name: Name of the camera to find
+
+        Returns:
+            The camera if found, None otherwise
+        """
+        for camera in self.cameras:
+            if camera.name == name:
+                return camera
+        return None
+
+    def get_light_by_name(self, name: str) -> "LightInterface | None":
+        """
+        Get a light by name.
+
+        Args:
+            name: Name of the light to find
+
+        Returns:
+            The light if found, None otherwise
+        """
+        for light in self.lights:
+            if light.name == name:
+                return light
+        return None
+
+    def detect_kinematic_constraints(self, assembly: "AssemblyInterface") -> list[dict]:
+        """
+        Detect kinematic constraints from assembly mates.
+
+        Args:
+            assembly: Assembly to analyze
+
+        Returns:
+            List of constraint dictionaries with type, bodies, and parameters
+        """
+        constraints = []
+
+        if hasattr(assembly, "mate_manager") and assembly.mate_manager:
+            # Extract constraints from mate manager
+            for mate in assembly.mate_manager.get_all_mates():
+                constraint = self._mate_to_constraint(mate)
+                if constraint:
+                    constraints.append(constraint)
+
+        return constraints
+
+    def _mate_to_constraint(self, mate) -> dict | None:
+        """
+        Convert a mate to a constraint dictionary.
+
+        Args:
+            mate: Assembly mate object
+
+        Returns:
+            Constraint dictionary or None if not convertible
+        """
+        # This would be implemented by concrete classes based on their mate systems
+        # For now, return a basic constraint structure
+        return {
+            "type": "fixed",  # Default to fixed constraint
+            "body1": getattr(mate, "entity1", None),
+            "body2": getattr(mate, "entity2", None),
+            "position": (0, 0, 0),
+            "axis": (0, 0, 1),
+            "limits": None,
+        }
+
+    @abstractmethod
+    def create_joint_from_constraint(self, constraint: dict, body1, body2):
+        """
+        Create a simulation joint from a constraint definition.
+
+        Args:
+            constraint: Constraint dictionary
+            body1: First simulation body
+            body2: Second simulation body
+
+        Returns:
+            Created joint object
+        """
+        pass
+
     @abstractmethod
     def start(self) -> None:
         """Start the simulation."""
@@ -240,6 +381,16 @@ class SimulationInterface(ABC):
     @abstractmethod
     def resume(self) -> None:
         """Resume the simulation."""
+        ...
+
+    @abstractmethod
+    def step(self) -> None:
+        """Advance the simulation by one time step."""
+        ...
+
+    @abstractmethod
+    def reset(self) -> None:
+        """Reset the simulation to initial state."""
         ...
 
     @abstractmethod

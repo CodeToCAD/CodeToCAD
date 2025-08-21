@@ -2,8 +2,9 @@
 MuJoCo implementation of SimulationInterface.
 """
 
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional, List, Any
 from uuid import uuid4
+from build123d import Sequence
 import mujoco as mj
 import tempfile
 import os
@@ -12,6 +13,9 @@ from codetocad.interfaces.simulation.simulation_interface import SimulationInter
 from codetocad.core.dimensions.point import Point
 from codetocad.adapters.mujoco.mujoco_actions import simulation_setup
 from codetocad.adapters.mujoco.mujoco_actions import xml_generation
+from codetocad.adapters.mujoco.simulation.simulation_export import (
+    MuJoCoSimulationExport,
+)
 
 if TYPE_CHECKING:
     from codetocad.adapters.mujoco.simulation.simulation_body import SimulationBody
@@ -30,6 +34,9 @@ class Simulation(SimulationInterface):
         self.viewer: Optional[Any] = None
         self.gui_enabled: bool = False
         self._body_registry: dict[str, "SimulationBody"] = {}
+
+        # Initialize export functionality
+        self.export = MuJoCoSimulationExport(self)
 
     def initialize(self, gui: bool = False, **kwargs) -> None:
         """Initialize the MuJoCo simulation environment."""
@@ -192,11 +199,25 @@ class Simulation(SimulationInterface):
         part: "PartInterface",
         position: Point | tuple[float, float, float] = (0, 0, 0),
         orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
-        mass: float = 1.0,
+        mass: float | None = None,
         **kwargs,
     ) -> "SimulationBody":
-        """Add a CodeToCAD Part to the simulation."""
+        """Add a CodeToCAD Part to the simulation using its physical properties."""
         from codetocad.adapters.mujoco.simulation.simulation_body import SimulationBody
+
+        # Use part's physical properties
+        effective_mass = mass if mass is not None else part.get_effective_mass()
+
+        # Extract physical properties from part
+        physics_kwargs = {
+            "friction": part.friction,
+            "restitution": part.restitution,
+            "color": part.color,
+            "material": part.material,
+            "density": part.density,
+            "damping": part.damping,
+            **kwargs,
+        }
 
         # Export part to temporary STL and create body
         with tempfile.NamedTemporaryFile(suffix=".stl", delete=False) as tmp_file:
@@ -204,7 +225,9 @@ class Simulation(SimulationInterface):
 
         try:
             part.export.stl(tmp_path)
-            sim_body = self.load_stl(tmp_path, position, orientation, mass, **kwargs)
+            sim_body = self.load_stl(
+                tmp_path, position, orientation, effective_mass, **physics_kwargs
+            )
             sim_body.name = part.name or sim_body.name
             sim_body.original_part = part
             return sim_body
@@ -217,11 +240,13 @@ class Simulation(SimulationInterface):
         assembly: "AssemblyInterface",
         position: Point | tuple[float, float, float] = (0, 0, 0),
         orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
+        detect_constraints: bool = True,
         **kwargs,
-    ) -> List["SimulationBody"]:
-        """Add a CodeToCAD Assembly to the simulation."""
+    ) -> Sequence["SimulationBody"]:
+        """Add a CodeToCAD Assembly to the simulation with constraint detection."""
         sim_bodies = []
 
+        # Add all parts first
         for i, part in enumerate(assembly.parts):
             # Offset each part slightly to avoid overlap
             if isinstance(position, Point):
@@ -232,7 +257,77 @@ class Simulation(SimulationInterface):
             sim_body = self.add_part(part, part_pos, orientation, **kwargs)
             sim_bodies.append(sim_body)
 
+        # Add cameras and lights from assembly
+        for camera in assembly.cameras:
+            self.add_camera(camera)
+
+        for light in assembly.lights:
+            self.add_light(light)
+
+        # Detect and create kinematic constraints if requested
+        if detect_constraints:
+            constraints = self.detect_kinematic_constraints(assembly)
+            for constraint in constraints:
+                # Find corresponding simulation bodies
+                body1_idx = self._find_body_index_for_part(
+                    constraint.get("body1"), assembly.parts
+                )
+                body2_idx = self._find_body_index_for_part(
+                    constraint.get("body2"), assembly.parts
+                )
+
+                if (
+                    body1_idx is not None
+                    and body2_idx is not None
+                    and body1_idx < len(sim_bodies)
+                    and body2_idx < len(sim_bodies)
+                ):
+                    self.create_joint_from_constraint(
+                        constraint, sim_bodies[body1_idx], sim_bodies[body2_idx]
+                    )
+
         return sim_bodies
+
+    def _find_body_index_for_part(self, part, parts_list) -> int | None:
+        """Find the index of a part in the parts list."""
+        if part is None:
+            return None
+        try:
+            return parts_list.index(part)
+        except ValueError:
+            return None
+
+    def create_joint_from_constraint(self, constraint: dict, body1, body2):
+        """Create a MuJoCo joint from a constraint definition."""
+        from codetocad.adapters.mujoco.simulation.simulation_joint import (
+            SimulationJoint,
+        )
+        from codetocad.interfaces.simulation.simulation_joint_interface import JointType
+
+        # Map constraint types to MuJoCo joint types
+        constraint_type = constraint.get("type", "fixed")
+
+        if constraint_type == "fixed":
+            joint_type = JointType.FIXED
+        elif constraint_type == "revolute":
+            joint_type = JointType.REVOLUTE
+        elif constraint_type == "prismatic":
+            joint_type = JointType.PRISMATIC
+        else:
+            joint_type = JointType.FIXED  # Default fallback
+
+        # Create joint (MuJoCo implementation would be different from PyBullet)
+        joint = SimulationJoint()
+        joint.create_joint(
+            body1,
+            body2,
+            joint_type,
+            position=Point(*constraint.get("position", (0, 0, 0))),
+            axis=Point(*constraint.get("axis", (0, 0, 1))),
+            limits=constraint.get("limits"),
+        )
+
+        return joint
 
     def remove_body(self, body: "SimulationBody") -> None:
         """Remove a body from the simulation."""
