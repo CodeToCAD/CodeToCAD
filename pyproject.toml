@@ -34,6 +34,10 @@ pybullet = [
 mujoco = [
     "mujoco[viewer]>=3.0.0",
 ]
+kicad = [
+    "kicad-python>=0.4.0",
+]
+
 
 [tool.setuptools.packages.find]
 exclude = ["devlog*", "tests*"]
