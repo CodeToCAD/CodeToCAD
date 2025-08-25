@@ -238,8 +238,8 @@ class MaterialInterface:
     def set_visual_properties(color, metallic, roughness, ...)
     def set_textures(diffuse, normal, roughness, ...)
     def copy() -> MaterialInterface
-    def to_dict() -> Dict[str, Any]
-    def from_dict(data: Dict[str, Any]) -> MaterialInterface
+    def to_dict() -> dict[str, Any]
+    def from_dict(data: dict[str, Any]) -> MaterialInterface
 ```
 
 ### PartInterface Extensions
@@ -255,12 +255,12 @@ class PartInterface:
 
 ```python
 class MaterialAssetAdapter:
-    def search(query: str, category: str = None, limit: int = 10) -> List[MaterialAsset]
-    def download(asset: MaterialAsset, temp_dir: str = None) -> Dict[str, str]
-    def save(downloaded_files: Dict[str, str], target_dir: str) -> Dict[str, str]
+    def search(query: str, category: str = None, limit: int = 10) -> list[MaterialAsset]
+    def download(asset: MaterialAsset, temp_dir: str = None) -> dict[str, str]
+    def save(downloaded_files: dict[str, str], target_dir: str) -> dict[str, str]
 
 class ModelAssetAdapter:
-    def search(query: str, category: str = None, limit: int = 10) -> List[ModelAsset]
+    def search(query: str, category: str = None, limit: int = 10) -> list[ModelAsset]
     def download(asset: ModelAsset, format: str = "stl", temp_dir: str = None) -> str
     def save(temp_file: str, target_path: str) -> str
 ```

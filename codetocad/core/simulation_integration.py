@@ -6,7 +6,7 @@ and simulation objects (Bodies, Joints, etc.), enabling seamless integration bet
 design and physics simulation.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Tuple
 import tempfile
 import os
 from codetocad.core.dimensions.point import Point
@@ -27,8 +27,8 @@ class CADToSimulationConverter:
     def part_to_simulation_body(
         part: "PartInterface",
         simulation: "SimulationInterface",
-        position: Point | Tuple[float, float, float] = (0, 0, 0),
-        orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+        position: Point | tuple[float, float, float] = (0, 0, 0),
+        orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
         mass: float = 1.0,
         **kwargs,
     ) -> "SimulationBodyInterface":
@@ -52,10 +52,10 @@ class CADToSimulationConverter:
     def assembly_to_simulation_bodies(
         assembly: "AssemblyInterface",
         simulation: "SimulationInterface",
-        position: Point | Tuple[float, float, float] = (0, 0, 0),
-        orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+        position: Point | tuple[float, float, float] = (0, 0, 0),
+        orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
         **kwargs,
-    ) -> List["SimulationBodyInterface"]:
+    ) -> list["SimulationBodyInterface"]:
         """
         Convert a CAD Assembly to simulation bodies.
 
@@ -94,7 +94,7 @@ class CADToSimulationConverter:
     @staticmethod
     def export_assembly_to_stl_files(
         assembly: "AssemblyInterface", base_filename: str | None = None
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Export an Assembly to multiple STL files.
 
@@ -240,7 +240,7 @@ class SimulationToCADConverter:
     """Utility class for converting simulation objects back to CAD objects."""
 
     @staticmethod
-    def simulation_body_to_part_data(body: "SimulationBodyInterface") -> Dict[str, Any]:
+    def simulation_body_to_part_data(body: "SimulationBodyInterface") -> dict[str, Any]:
         """
         Extract CAD-relevant data from a simulation body.
 
@@ -265,7 +265,7 @@ class SimulationIntegrationHelper:
     @staticmethod
     def setup_simulation_from_assembly(
         assembly: "AssemblyInterface", simulation_type: str = "pybullet", **kwargs
-    ) -> Tuple["SimulationInterface", List["SimulationBodyInterface"]]:
+    ) -> tuple["SimulationInterface", list["SimulationBodyInterface"]]:
         """
         Set up a complete simulation from a CAD Assembly.
 
@@ -297,7 +297,7 @@ class SimulationIntegrationHelper:
         return sim, bodies
 
     @staticmethod
-    def cleanup_temporary_files(file_paths: List[str]) -> None:
+    def cleanup_temporary_files(file_paths: list[str]) -> None:
         """
         Clean up temporary files created during conversion.
 

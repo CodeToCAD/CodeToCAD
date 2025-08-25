@@ -32,7 +32,7 @@ class LightInterface(ABC):
         # Light parameters
         self.light_type: LightType = LightType.POINT
         self.intensity: float = 1.0
-        self.color: Tuple[float, float, float] = (1.0, 1.0, 1.0)  # RGB
+        self.color: tuple[float, float, float] = (1.0, 1.0, 1.0)  # RGB
         self.enabled: bool = True
 
         # Attenuation (for point and spot lights)
@@ -60,7 +60,7 @@ class LightInterface(ABC):
         return self
 
     def set_position(
-        self, position: Point | Tuple[float, float, float]
+        self, position: Point | tuple[float, float, float]
     ) -> "LightInterface":
         """Set light position."""
         if isinstance(position, tuple):
@@ -70,7 +70,7 @@ class LightInterface(ABC):
         return self
 
     def set_direction(
-        self, direction: Point | Tuple[float, float, float]
+        self, direction: Point | tuple[float, float, float]
     ) -> "LightInterface":
         """Set light direction (for directional and spot lights)."""
         if isinstance(direction, tuple):
@@ -89,7 +89,7 @@ class LightInterface(ABC):
         self.intensity = intensity
         return self
 
-    def set_color(self, color: Tuple[float, float, float]) -> "LightInterface":
+    def set_color(self, color: tuple[float, float, float]) -> "LightInterface":
         """Set light color (RGB values 0-1)."""
         self.color = color
         return self
@@ -134,9 +134,9 @@ class LightInterface(ABC):
 
     def create_directional_light(
         self,
-        direction: Point | Tuple[float, float, float],
+        direction: Point | tuple[float, float, float],
         intensity: float = 1.0,
-        color: Tuple[float, float, float] = (1.0, 1.0, 1.0),
+        color: tuple[float, float, float] = (1.0, 1.0, 1.0),
     ) -> "LightInterface":
         """Configure as directional light."""
         self.light_type = LightType.DIRECTIONAL
@@ -147,10 +147,10 @@ class LightInterface(ABC):
 
     def create_point_light(
         self,
-        position: Point | Tuple[float, float, float],
+        position: Point | tuple[float, float, float],
         intensity: float = 1.0,
-        color: Tuple[float, float, float] = (1.0, 1.0, 1.0),
-        attenuation: Tuple[float, float, float] = (1.0, 0.0, 0.0),
+        color: tuple[float, float, float] = (1.0, 1.0, 1.0),
+        attenuation: tuple[float, float, float] = (1.0, 0.0, 0.0),
     ) -> "LightInterface":
         """Configure as point light."""
         self.light_type = LightType.POINT
@@ -162,12 +162,12 @@ class LightInterface(ABC):
 
     def create_spot_light(
         self,
-        position: Point | Tuple[float, float, float],
-        direction: Point | Tuple[float, float, float],
+        position: Point | tuple[float, float, float],
+        direction: Point | tuple[float, float, float],
         inner_angle: float = 30.0,
         outer_angle: float = 45.0,
         intensity: float = 1.0,
-        color: Tuple[float, float, float] = (1.0, 1.0, 1.0),
+        color: tuple[float, float, float] = (1.0, 1.0, 1.0),
     ) -> "LightInterface":
         """Configure as spot light."""
         self.light_type = LightType.SPOT
@@ -180,11 +180,11 @@ class LightInterface(ABC):
 
     def create_area_light(
         self,
-        position: Point | Tuple[float, float, float],
+        position: Point | tuple[float, float, float],
         width: float = 1.0,
         height: float = 1.0,
         intensity: float = 1.0,
-        color: Tuple[float, float, float] = (1.0, 1.0, 1.0),
+        color: tuple[float, float, float] = (1.0, 1.0, 1.0),
     ) -> "LightInterface":
         """Configure as area light."""
         self.light_type = LightType.AREA
@@ -197,7 +197,7 @@ class LightInterface(ABC):
     @abstractmethod
     def get_illumination_at_point(
         self, point: Point
-    ) -> Tuple[float, Tuple[float, float, float]]:
+    ) -> tuple[float, tuple[float, float, float]]:
         """
         Calculate illumination at a given point.
 

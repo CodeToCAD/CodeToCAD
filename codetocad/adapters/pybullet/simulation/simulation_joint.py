@@ -20,9 +20,9 @@ class SimulationJoint(SimulationJointInterface):
 
     def __init__(self):
         super().__init__()
-        self.constraint_id: Optional[int] = None
-        self.body_id: Optional[int] = None
-        self.joint_index: Optional[int] = None
+        self.constraint_id: int | None = None
+        self.body_id: int | None = None
+        self.joint_index: int | None = None
 
     def create_fixed_joint(
         self,

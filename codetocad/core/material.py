@@ -49,7 +49,7 @@ class Material(MaterialInterface, metaclass=_MaterialPresetClassProperty):
 
         return new_material
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert material to dictionary representation."""
         return {
             "name": self.name,
@@ -82,7 +82,7 @@ class Material(MaterialInterface, metaclass=_MaterialPresetClassProperty):
             "custom_properties": self.custom_properties,
         }
 
-    def from_dict(self, data: Dict[str, Any]) -> "Material":
+    def from_dict(self, data: dict[str, Any]) -> "Material":
         """Load material from dictionary representation."""
         self.name = data.get("name", "default")
         self.density = data.get("density", 1000.0)

@@ -172,7 +172,7 @@ class Mate(MateInterface):
         # Default implementation - subclasses should override
         return True
 
-    def get_native_joint(self) -> Optional[Any]:
+    def get_native_joint(self) -> Any | None:
         """
         Get the underlying build123d joint object.
 
@@ -222,7 +222,7 @@ class Mate(MateInterface):
             self._last_solve_result = False
             return False
 
-    def get_last_solve_result(self) -> Optional[bool]:
+    def get_last_solve_result(self) -> bool | None:
         """
         Get the result of the last constraint solve operation.
 

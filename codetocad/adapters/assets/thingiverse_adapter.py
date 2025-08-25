@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 from urllib.parse import urljoin
 
 import requests
@@ -21,8 +21,8 @@ class ThingiverseAdapter(ModelAssetAdapter):
         self.rate_limit_delay = 2.0  # Thingiverse rate limiting
 
     def search(
-        self, query: str, category: Optional[str] = None, limit: int = 10
-    ) -> List[ModelAsset]:
+        self, query: str, category: str | None = None, limit: int = 10
+    ) -> list[ModelAsset]:
         """Search Thingiverse for 3D models."""
         self._rate_limit()
 
@@ -64,7 +64,7 @@ class ThingiverseAdapter(ModelAssetAdapter):
             print(f"Unexpected error: {e}")
             return []
 
-    def _get_thing_details(self, thing_id: str) -> Optional[ModelAsset]:
+    def _get_thing_details(self, thing_id: str) -> ModelAsset | None:
         """Get detailed information about a specific thing."""
         self._rate_limit()
 
@@ -123,8 +123,8 @@ class ThingiverseAdapter(ModelAssetAdapter):
             return None
 
     def download(
-        self, asset: ModelAsset, format: str = "stl", cache_dir: Optional[str] = None
-    ) -> Optional[str]:
+        self, asset: ModelAsset, format: str = "stl", cache_dir: str | None = None
+    ) -> str | None:
         """Download 3D model from Thingiverse."""
         if format not in asset.download_urls:
             print(f"Format {format} not available for {asset.name}")

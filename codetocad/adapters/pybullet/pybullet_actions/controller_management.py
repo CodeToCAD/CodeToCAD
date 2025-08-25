@@ -2,7 +2,7 @@
 PyBullet controller management functions.
 """
 
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, Tuple
 import pybullet as p
 
 
@@ -39,7 +39,7 @@ def create_position_controller(
     ki: float = 0.0,
     kd: float = 10.0,
     max_force: float = 1000.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Create a position controller for a joint."""
     controller = {
         "type": "position",
@@ -60,7 +60,7 @@ def create_velocity_controller(
     ki: float = 0.0,
     kd: float = 1.0,
     max_force: float = 1000.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Create a velocity controller for a joint."""
     controller = {
         "type": "velocity",
@@ -74,7 +74,7 @@ def create_velocity_controller(
     return controller
 
 
-def create_force_controller(body_id: int, joint_index: int) -> Dict[str, Any]:
+def create_force_controller(body_id: int, joint_index: int) -> dict[str, Any]:
     """Create a force controller for a joint."""
     controller = {
         "type": "force",
@@ -87,13 +87,13 @@ def create_force_controller(body_id: int, joint_index: int) -> Dict[str, Any]:
 
 
 def create_trajectory_controller(
-    body_ids: List[int],
-    joint_indices: List[int],
+    body_ids: list[int],
+    joint_indices: list[int],
     kp: float = 100.0,
     ki: float = 0.0,
     kd: float = 10.0,
-    max_forces: Optional[List[float]] = None,
-) -> Dict[str, Any]:
+    max_forces: list[float] | None = None,
+) -> dict[str, Any]:
     """Create a trajectory controller for multiple joints."""
     if max_forces is None:
         max_forces = [1000.0] * len(joint_indices)
@@ -116,29 +116,29 @@ def create_trajectory_controller(
     return trajectory_controller
 
 
-def set_controller_target_position(controller: Dict[str, Any], position: float) -> None:
+def set_controller_target_position(controller: dict[str, Any], position: float) -> None:
     """Set target position for a position controller."""
     if controller["type"] == "position":
         controller["target_position"] = position
 
 
-def set_controller_target_velocity(controller: Dict[str, Any], velocity: float) -> None:
+def set_controller_target_velocity(controller: dict[str, Any], velocity: float) -> None:
     """Set target velocity for a velocity controller."""
     if controller["type"] == "velocity":
         controller["target_velocity"] = velocity
 
 
-def set_controller_target_force(controller: Dict[str, Any], force: float) -> None:
+def set_controller_target_force(controller: dict[str, Any], force: float) -> None:
     """Set target force for a force controller."""
     if controller["type"] == "force":
         controller["target_force"] = force
 
 
 def set_trajectory(
-    controller: Dict[str, Any],
-    positions: List[List[float]],
-    velocities: Optional[List[List[float]]] = None,
-    times: Optional[List[float]] = None,
+    controller: dict[str, Any],
+    positions: list[list[float]],
+    velocities: list[list[float]] | None = None,
+    times: list[float] | None = None,
 ) -> None:
     """Set trajectory for a trajectory controller."""
     if controller["type"] == "trajectory":
@@ -156,7 +156,7 @@ def set_trajectory(
         controller["trajectory_time"] = 0.0
 
 
-def update_controller(controller: Dict[str, Any], dt: float) -> None:
+def update_controller(controller: dict[str, Any], dt: float) -> None:
     """Update a controller."""
     if not controller["enabled"]:
         return
@@ -173,7 +173,7 @@ def update_controller(controller: Dict[str, Any], dt: float) -> None:
         _update_trajectory_controller(controller, dt)
 
 
-def _update_position_controller(controller: Dict[str, Any], dt: float) -> None:
+def _update_position_controller(controller: dict[str, Any], dt: float) -> None:
     """Update position controller."""
     body_id = controller["body_id"]
     joint_index = controller["joint_index"]
@@ -198,7 +198,7 @@ def _update_position_controller(controller: Dict[str, Any], dt: float) -> None:
     )
 
 
-def _update_velocity_controller(controller: Dict[str, Any], dt: float) -> None:
+def _update_velocity_controller(controller: dict[str, Any], dt: float) -> None:
     """Update velocity controller."""
     body_id = controller["body_id"]
     joint_index = controller["joint_index"]
@@ -223,7 +223,7 @@ def _update_velocity_controller(controller: Dict[str, Any], dt: float) -> None:
     )
 
 
-def _update_force_controller(controller: Dict[str, Any], dt: float) -> None:
+def _update_force_controller(controller: dict[str, Any], dt: float) -> None:
     """Update force controller."""
     body_id = controller["body_id"]
     joint_index = controller["joint_index"]
@@ -233,7 +233,7 @@ def _update_force_controller(controller: Dict[str, Any], dt: float) -> None:
     p.setJointMotorControl2(body_id, joint_index, p.TORQUE_CONTROL, force=target_force)
 
 
-def _update_trajectory_controller(controller: Dict[str, Any], dt: float) -> None:
+def _update_trajectory_controller(controller: dict[str, Any], dt: float) -> None:
     """Update trajectory controller."""
     trajectory = controller["trajectory"]
     if not trajectory:
@@ -259,17 +259,17 @@ def _update_trajectory_controller(controller: Dict[str, Any], dt: float) -> None
         controller["current_waypoint"] += 1
 
 
-def enable_controller(controller: Dict[str, Any]) -> None:
+def enable_controller(controller: dict[str, Any]) -> None:
     """Enable a controller."""
     controller["enabled"] = True
 
 
-def disable_controller(controller: Dict[str, Any]) -> None:
+def disable_controller(controller: dict[str, Any]) -> None:
     """Disable a controller."""
     controller["enabled"] = False
 
 
-def reset_controller(controller: Dict[str, Any]) -> None:
+def reset_controller(controller: dict[str, Any]) -> None:
     """Reset controller state."""
     if "pid" in controller:
         controller["pid"].reset()

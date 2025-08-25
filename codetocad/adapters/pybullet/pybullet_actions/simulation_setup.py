@@ -5,7 +5,7 @@ This module contains functions for initializing, configuring, and managing
 PyBullet physics simulations.
 """
 
-from typing import Optional, Tuple
+from typing import Tuple
 import pybullet as p
 from codetocad.core.dimensions.point import Point
 
@@ -33,7 +33,7 @@ def initialize_physics_client(gui: bool = False, **kwargs) -> int:
     return client_id
 
 
-def disconnect_physics_client(client_id: Optional[int] = None) -> None:
+def disconnect_physics_client(client_id: int | None = None) -> None:
     """
     Disconnect from PyBullet physics client.
 
@@ -46,7 +46,7 @@ def disconnect_physics_client(client_id: Optional[int] = None) -> None:
         p.disconnect()
 
 
-def set_gravity(gravity: Point | Tuple[float, float, float]) -> None:
+def set_gravity(gravity: Point | tuple[float, float, float]) -> None:
     """
     Set gravity vector for the simulation.
 
@@ -116,7 +116,7 @@ def configure_debug_visualizer(
     camera_distance: float = 3.0,
     camera_yaw: float = 45.0,
     camera_pitch: float = -30.0,
-    camera_target: Tuple[float, float, float] = (0, 0, 0),
+    camera_target: tuple[float, float, float] = (0, 0, 0),
 ) -> None:
     """
     Configure debug visualizer settings.
@@ -144,8 +144,8 @@ def configure_debug_visualizer(
 
 def add_debug_text(
     text: str,
-    position: Point | Tuple[float, float, float],
-    color: Tuple[float, float, float] = (1, 1, 1),
+    position: Point | tuple[float, float, float],
+    color: tuple[float, float, float] = (1, 1, 1),
     size: float = 1.0,
     life_time: float = 0.0,
 ) -> int:
@@ -187,9 +187,9 @@ def remove_debug_text(text_id: int) -> None:
 
 
 def add_debug_line(
-    start_pos: Point | Tuple[float, float, float],
-    end_pos: Point | Tuple[float, float, float],
-    color: Tuple[float, float, float] = (1, 0, 0),
+    start_pos: Point | tuple[float, float, float],
+    end_pos: Point | tuple[float, float, float],
+    color: tuple[float, float, float] = (1, 0, 0),
     width: float = 1.0,
     life_time: float = 0.0,
 ) -> int:

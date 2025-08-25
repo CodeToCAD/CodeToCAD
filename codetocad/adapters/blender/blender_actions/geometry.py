@@ -3,7 +3,7 @@ Geometry creation and manipulation functions for Blender.
 """
 
 import math
-from typing import List, Tuple
+from typing import Tuple
 import bpy
 from uuid import uuid4
 
@@ -81,7 +81,7 @@ def create_regular_polygon_curve(
     return curve
 
 
-def create_polyline_curve(points: List[Tuple[float, float]]) -> "bpy.types.Curve":
+def create_polyline_curve(points: list[tuple[float, float]]) -> "bpy.types.Curve":
     """Create a polyline curve from a list of points."""
     curve_points = [Point(x, y, 0) for x, y in points]
 
@@ -92,7 +92,7 @@ def create_polyline_curve(points: List[Tuple[float, float]]) -> "bpy.types.Curve
 
 # Arc creation functions
 def create_center_arc_curve(
-    center: Tuple[float, float, float],
+    center: tuple[float, float, float],
     radius: LengthType,
     start_angle: float,
     arc_size: float,
@@ -118,9 +118,9 @@ def create_center_arc_curve(
 
 
 def create_three_point_arc_curve(
-    start: Tuple[float, float, float],
-    mid: Tuple[float, float, float],
-    end: Tuple[float, float, float],
+    start: tuple[float, float, float],
+    mid: tuple[float, float, float],
+    end: tuple[float, float, float],
     segments: int = 16,
 ) -> "bpy.types.Curve":
     """Create a three-point arc curve."""
@@ -133,8 +133,8 @@ def create_three_point_arc_curve(
 
 
 def create_radius_arc_curve(
-    start_point: Tuple[float, float, float],
-    end_point: Tuple[float, float, float],
+    start_point: tuple[float, float, float],
+    end_point: tuple[float, float, float],
     radius: LengthType,
     short_sagitta: bool = True,
     segments: int = 16,
@@ -150,9 +150,9 @@ def create_radius_arc_curve(
 
 
 def create_tangent_arc_curve(
-    start: Tuple[float, float, float],
-    end: Tuple[float, float, float],
-    tangent: Tuple[float, float, float],
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    tangent: tuple[float, float, float],
     tangent_from_first: bool = True,
     segments: int = 16,
 ) -> "bpy.types.Curve":
@@ -167,8 +167,8 @@ def create_tangent_arc_curve(
 
 # Curve creation functions
 def create_spline_curve(
-    points: List[Tuple[float, float, float]],
-    tangents: List[Tuple[float, float, float]] | None = None,
+    points: list[tuple[float, float, float]],
+    tangents: list[tuple[float, float, float]] | None = None,
     periodic: bool = False,
 ) -> "bpy.types.Curve":
     """Create a spline curve."""
@@ -183,8 +183,8 @@ def create_spline_curve(
 
 
 def create_bezier_curve(
-    control_points: List[Tuple[float, float, float]],
-    weights: List[float] | None = None,
+    control_points: list[tuple[float, float, float]],
+    weights: list[float] | None = None,
 ) -> "bpy.types.Curve":
     """Create a bezier curve."""
     curve_points = [Point(*point) for point in control_points]
@@ -196,7 +196,7 @@ def create_bezier_curve(
 
 # Line creation functions
 def create_polar_line_curve(
-    start: Tuple[float, float, float],
+    start: tuple[float, float, float],
     length: LengthType,
     angle: float,
 ) -> "bpy.types.Curve":
@@ -216,7 +216,7 @@ def create_polar_line_curve(
 
 
 def create_fillet_polyline_curve(
-    points: List[Tuple[float, float, float]],
+    points: list[tuple[float, float, float]],
     radius: LengthType,
     close: bool = False,
 ) -> "bpy.types.Curve":
@@ -282,7 +282,7 @@ def create_ellipse_curve(
     return curve
 
 
-def create_polygon_curve(points: List[Tuple[float, float, float]]) -> "bpy.types.Curve":
+def create_polygon_curve(points: list[tuple[float, float, float]]) -> "bpy.types.Curve":
     """Create a polygon curve from points."""
     curve_points = [Point(*point) for point in points]
 

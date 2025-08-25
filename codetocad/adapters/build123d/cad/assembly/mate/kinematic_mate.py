@@ -5,7 +5,7 @@ This module provides implementations for kinematic mates that wrap
 build123d's joint system for motion-based constraints.
 """
 
-from typing import TYPE_CHECKING, Any, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Tuple
 
 from codetocad.interfaces.cad.assembly.mate.kinematic_mate_interface import (
     KinematicMateInterface,
@@ -82,7 +82,7 @@ class KinematicMate(Mate, KinematicMateInterface):
             print(f"Error removing build123d joint for mate {self.name}: {e}")
             return False
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create the appropriate build123d joint for this mate type.
 
@@ -128,7 +128,7 @@ class RigidMate(KinematicMate, RigidMateInterface):
         self.location2 = location2
         self.location = location or location1  # Backward compatibility
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create a build123d RigidJoint.
 
@@ -198,7 +198,7 @@ class RevoluteMate(KinematicMate, RevoluteMateInterface):
         axis: Any,
         location1: Any = None,
         location2: Any = None,
-        angle_range: Tuple[float, float] = (0, 360),
+        angle_range: tuple[float, float] = (0, 360),
         current_angle: float = 0,
         **kwargs,
     ):
@@ -223,7 +223,7 @@ class RevoluteMate(KinematicMate, RevoluteMateInterface):
         self.angle_range = angle_range
         self.current_angle = current_angle
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create a build123d RevoluteJoint.
 
@@ -334,7 +334,7 @@ class LinearMate(KinematicMate, LinearMateInterface):
         axis: Any,
         location1: Any = None,
         location2: Any = None,
-        position_range: Tuple[float, float] = (0, float("inf")),
+        position_range: tuple[float, float] = (0, float("inf")),
         current_position: float = 0,
         **kwargs,
     ):
@@ -359,7 +359,7 @@ class LinearMate(KinematicMate, LinearMateInterface):
         self.position_range = position_range
         self.current_position = current_position
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create a build123d LinearJoint.
 
@@ -470,8 +470,8 @@ class CylindricalMate(KinematicMate, CylindricalMateInterface):
         axis: Any,
         location1: Any = None,
         location2: Any = None,
-        position_range: Tuple[float, float] = (0, float("inf")),
-        angle_range: Tuple[float, float] = (0, 360),
+        position_range: tuple[float, float] = (0, float("inf")),
+        angle_range: tuple[float, float] = (0, 360),
         current_position: float = 0,
         current_angle: float = 0,
         **kwargs,
@@ -501,7 +501,7 @@ class CylindricalMate(KinematicMate, CylindricalMateInterface):
         self.current_position = current_position
         self.current_angle = current_angle
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create a build123d CylindricalJoint.
 
@@ -628,10 +628,10 @@ class BallMate(KinematicMate, BallMateInterface):
         center_point: Any,
         location1: Any = None,
         location2: Any = None,
-        angle_ranges: Tuple[
-            Tuple[float, float], Tuple[float, float], Tuple[float, float]
+        angle_ranges: tuple[
+            tuple[float, float], tuple[float, float], tuple[float, float]
         ] = ((0, 360), (0, 360), (0, 360)),
-        current_angles: Tuple[float, float, float] = (0, 0, 0),
+        current_angles: tuple[float, float, float] = (0, 0, 0),
         **kwargs,
     ):
         """
@@ -655,7 +655,7 @@ class BallMate(KinematicMate, BallMateInterface):
         self.angle_ranges = angle_ranges
         self.current_angles = current_angles
 
-    def _create_build123d_joint(self) -> Optional[Any]:
+    def _create_build123d_joint(self) -> Any | None:
         """
         Create a build123d BallJoint.
 

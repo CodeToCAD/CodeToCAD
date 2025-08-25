@@ -18,7 +18,7 @@ class FunctionCallCollector(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def get_all_user_defined_functions(func: FunctionType) -> Dict[str, FunctionType]:
+def get_all_user_defined_functions(func: FunctionType) -> dict[str, FunctionType]:
     """
     Return a dict of all user-defined functions accessible from the given function's global context.
     """

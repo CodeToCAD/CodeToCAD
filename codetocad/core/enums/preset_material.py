@@ -12,7 +12,7 @@ class MaterialProperty:
 
     def __init__(
         self,
-        color: Tuple[float, float, float, float],
+        color: tuple[float, float, float, float],
         reflectivity: float,
         roughness: float,
     ):

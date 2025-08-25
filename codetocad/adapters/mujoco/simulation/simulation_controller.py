@@ -83,7 +83,7 @@ class SimulationController(SimulationControllerInterface):
         """Set PID gains for the controller."""
         pass
 
-    def get_pid_gains(self) -> Tuple[float, float, float]:
+    def get_pid_gains(self) -> tuple[float, float, float]:
         """Get PID gains for the controller."""
         return (0.0, 0.0, 0.0)
 

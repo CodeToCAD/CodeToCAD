@@ -2,7 +2,7 @@
 MuJoCo implementation of SimulationInterface.
 """
 
-from typing import TYPE_CHECKING, Optional, List, Any
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 from build123d import Sequence
 import mujoco as mj
@@ -29,9 +29,9 @@ class Simulation(SimulationInterface):
     def __init__(self, name: str | None = None):
         super().__init__()
         self.name = name or f"mujoco_sim_{str(uuid4())[:8]}"
-        self.model: Optional[mj.MjModel] = None
-        self.data: Optional[mj.MjData] = None
-        self.viewer: Optional[Any] = None
+        self.model: mj.MjModel | None = None
+        self.data: mj.MjData | None = None
+        self.viewer: Any | None = None
         self.gui_enabled: bool = False
         self._body_registry: dict[str, "SimulationBody"] = {}
 

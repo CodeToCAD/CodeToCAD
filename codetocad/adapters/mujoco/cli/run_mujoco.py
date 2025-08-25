@@ -11,7 +11,7 @@ import os
 import time
 import json
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 from codetocad.adapters.mujoco.simulation.simulation import Simulation
 from codetocad.core.dimensions.point import Point
@@ -19,13 +19,13 @@ from .config import get_mujoco_config, set_mujoco_config
 
 
 def run_mujoco_simulation(
-    input_file: Optional[str] = None,
-    output_dir: Optional[str] = None,
+    input_file: str | None = None,
+    output_dir: str | None = None,
     gui: bool = True,
     duration: float = 10.0,
     time_step: float = 0.002,
     gravity: tuple[float, float, float] = (0, 0, -9.81),
-    config_file: Optional[str] = None,
+    config_file: str | None = None,
     verbose: bool = False,
     **kwargs,
 ) -> bool:

@@ -19,10 +19,10 @@ class SimulationJoint(SimulationJointInterface):
 
     def __init__(self):
         super().__init__()
-        self.joint_name: Optional[str] = None
-        self.joint_id: Optional[int] = None
-        self.model: Optional[mj.MjModel] = None
-        self.data: Optional[mj.MjData] = None
+        self.joint_name: str | None = None
+        self.joint_id: int | None = None
+        self.model: mj.MjModel | None = None
+        self.data: mj.MjData | None = None
 
     def create_fixed_joint(
         self,

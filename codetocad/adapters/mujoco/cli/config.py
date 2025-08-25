@@ -58,7 +58,7 @@ class MuJoCoConfig:
     mesh_search_paths: list[str] = None
     texture_search_paths: list[str] = None
     output_directory: str = "mujoco_output"
-    log_file: Optional[str] = None
+    log_file: str | None = None
 
     # Performance settings
     enable_multithreading: bool = True
@@ -83,8 +83,8 @@ class MuJoCoConfig:
 
 
 # Global configuration instance
-_global_config: Optional[MuJoCoConfig] = None
-_config_file_path: Optional[str] = None
+_global_config: MuJoCoConfig | None = None
+_config_file_path: str | None = None
 
 
 def get_default_config_path() -> str:
@@ -95,7 +95,7 @@ def get_default_config_path() -> str:
     return str(config_dir / "config.json")
 
 
-def load_config_from_dict(config_dict: Dict[str, Any]) -> MuJoCoConfig:
+def load_config_from_dict(config_dict: dict[str, Any]) -> MuJoCoConfig:
     """
     Load configuration from dictionary.
 
@@ -112,7 +112,7 @@ def load_config_from_dict(config_dict: Dict[str, Any]) -> MuJoCoConfig:
     return MuJoCoConfig(**filtered_dict)
 
 
-def save_config_to_dict(config: MuJoCoConfig) -> Dict[str, Any]:
+def save_config_to_dict(config: MuJoCoConfig) -> dict[str, Any]:
     """
     Save configuration to dictionary.
 
@@ -165,7 +165,7 @@ def save_config_to_file(config: MuJoCoConfig, file_path: str) -> None:
         json.dump(config_dict, f, indent=2)
 
 
-def get_mujoco_config(config_file: Optional[str] = None) -> MuJoCoConfig:
+def get_mujoco_config(config_file: str | None = None) -> MuJoCoConfig:
     """
     Get MuJoCo configuration.
 
@@ -211,8 +211,8 @@ def get_mujoco_config(config_file: Optional[str] = None) -> MuJoCoConfig:
 
 
 def set_mujoco_config(
-    config: Optional[MuJoCoConfig] = None,
-    config_file: Optional[str] = None,
+    config: MuJoCoConfig | None = None,
+    config_file: str | None = None,
     save_to_file: bool = False,
     **kwargs,
 ) -> MuJoCoConfig:
@@ -338,7 +338,7 @@ def validate_config(config: MuJoCoConfig) -> list[str]:
     return errors
 
 
-def print_config(config: Optional[MuJoCoConfig] = None) -> None:
+def print_config(config: MuJoCoConfig | None = None) -> None:
     """
     Print configuration in a readable format.
 

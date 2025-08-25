@@ -225,7 +225,7 @@ def create_arc_trace(
 
 def route_net_auto(
     board: "pcbnew.BOARD", net_name: str, algorithm: str = "shortest"
-) -> List["pcbnew.BOARD_ITEM"]:
+) -> list["pcbnew.BOARD_ITEM"]:
     """
     Automatically route a net (simplified implementation).
 
@@ -235,7 +235,7 @@ def route_net_auto(
         algorithm: Routing algorithm ("shortest", "avoid_vias")
 
     Returns:
-        List[pcbnew.BOARD_ITEM]: Created routing items
+        list[pcbnew.BOARD_ITEM]: Created routing items
 
     Raises:
         RuntimeError: If operation fails
@@ -289,7 +289,7 @@ def route_net_auto(
         raise RuntimeError(f"Failed to auto-route net: {str(e)}")
 
 
-def check_design_rules(board: "pcbnew.BOARD") -> List[str]:
+def check_design_rules(board: "pcbnew.BOARD") -> list[str]:
     """
     Check design rules (simplified implementation).
 
@@ -297,7 +297,7 @@ def check_design_rules(board: "pcbnew.BOARD") -> List[str]:
         board: KiCad board object
 
     Returns:
-        List[str]: List of design rule violations
+        list[str]: List of design rule violations
 
     Raises:
         RuntimeError: If operation fails
@@ -344,7 +344,7 @@ def check_design_rules(board: "pcbnew.BOARD") -> List[str]:
         raise RuntimeError(f"Failed to check design rules: {str(e)}")
 
 
-def get_net_info(board: "pcbnew.BOARD", net_name: str) -> Dict[str, Any]:
+def get_net_info(board: "pcbnew.BOARD", net_name: str) -> dict[str, Any]:
     """
     Get information about a net.
 
@@ -353,7 +353,7 @@ def get_net_info(board: "pcbnew.BOARD", net_name: str) -> Dict[str, Any]:
         net_name: Net name
 
     Returns:
-        Dict[str, Any]: Net information
+        dict[str, Any]: Net information
 
     Raises:
         RuntimeError: If operation fails

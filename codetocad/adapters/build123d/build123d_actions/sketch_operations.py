@@ -2,7 +2,7 @@
 Sketch and wire operations for build123d.
 """
 
-from typing import List, Tuple, Optional
+from typing import Tuple, Optional
 import build123d as bd
 from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
 
@@ -18,7 +18,7 @@ def create_line_context() -> bd.BuildLine:
 
 
 def add_line_to_sketch(
-    sketch_context: bd.BuildSketch, start: Tuple[float, float], end: Tuple[float, float]
+    sketch_context: bd.BuildSketch, start: tuple[float, float], end: tuple[float, float]
 ) -> None:
     """Add a line to a sketch context."""
     with sketch_context:
@@ -29,7 +29,7 @@ def add_rectangle_to_sketch(
     sketch_context: bd.BuildSketch,
     width: LengthType,
     height: LengthType,
-    center: Tuple[float, float] = (0, 0),
+    center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add a rectangle to a sketch context."""
     w = float(LengthExpression(width))
@@ -42,7 +42,7 @@ def add_rectangle_to_sketch(
 def add_circle_to_sketch(
     sketch_context: bd.BuildSketch,
     radius: LengthType,
-    center: Tuple[float, float] = (0, 0),
+    center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add a circle to a sketch context."""
     r = float(LengthExpression(radius))
@@ -56,7 +56,7 @@ def add_arc_to_sketch(
     start_angle: float,
     end_angle: float,
     radius: LengthType,
-    center: Tuple[float, float] = (0, 0),
+    center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add an arc to a sketch context."""
     r = float(LengthExpression(radius))
@@ -71,7 +71,7 @@ def add_arc_to_sketch(
 
 
 def add_spline_to_sketch(
-    sketch_context: bd.BuildSketch, points: List[Tuple[float, float]]
+    sketch_context: bd.BuildSketch, points: list[tuple[float, float]]
 ) -> None:
     """Add a spline through points to a sketch context."""
     vertices = [bd.Vector(*point, 0) for point in points]
@@ -87,7 +87,7 @@ def close_wire_in_sketch(sketch_context: bd.BuildSketch) -> None:
     pass
 
 
-def get_sketch_wires(sketch_context: bd.BuildSketch) -> List[bd.Wire]:
+def get_sketch_wires(sketch_context: bd.BuildSketch) -> list[bd.Wire]:
     """Get all wires from a sketch context."""
     if hasattr(sketch_context, "wires"):
         return sketch_context.wires
@@ -97,7 +97,7 @@ def get_sketch_wires(sketch_context: bd.BuildSketch) -> List[bd.Wire]:
         return []
 
 
-def get_sketch_faces(sketch_context: bd.BuildSketch) -> List[bd.Face]:
+def get_sketch_faces(sketch_context: bd.BuildSketch) -> list[bd.Face]:
     """Get all faces from a sketch context."""
     if hasattr(sketch_context, "faces"):
         return sketch_context.faces

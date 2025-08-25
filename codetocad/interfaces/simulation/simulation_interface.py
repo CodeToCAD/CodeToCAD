@@ -7,7 +7,7 @@ configure simulation parameters.
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Optional, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, Sequence, Tuple
 from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.core.dimensions.point import Point
 from codetocad.interfaces.simulation.simulation_export_interface import (

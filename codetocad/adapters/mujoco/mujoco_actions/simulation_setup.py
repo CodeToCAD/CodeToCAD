@@ -2,7 +2,7 @@
 MuJoCo simulation setup and management functions.
 """
 
-from typing import Optional, Tuple, Any
+from typing import Tuple, Any
 import mujoco as mj
 import numpy as np
 from codetocad.core.dimensions.point import Point
@@ -49,7 +49,7 @@ def reset_mujoco_simulation(model: mj.MjModel, data: mj.MjData) -> None:
 
 
 def set_mujoco_gravity(
-    model: mj.MjModel, gravity: Point | Tuple[float, float, float]
+    model: mj.MjModel, gravity: Point | tuple[float, float, float]
 ) -> None:
     """Set gravity in MuJoCo model."""
     if isinstance(gravity, Point):

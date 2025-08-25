@@ -2,7 +2,7 @@
 PyBullet implementation of SimulationControllerInterface.
 """
 
-from typing import TYPE_CHECKING, List, Dict, Any, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, Any, Tuple
 from codetocad.interfaces.simulation.simulation_controller_interface import (
     SimulationControllerInterface,
     ControllerType,
@@ -22,7 +22,7 @@ class SimulationController(SimulationControllerInterface):
 
     def __init__(self):
         super().__init__()
-        self.controller_data: Dict[str, Any] = {}
+        self.controller_data: dict[str, Any] = {}
 
     def create_pid_controller(
         self,
@@ -76,7 +76,7 @@ class SimulationController(SimulationControllerInterface):
             )
 
     def create_trajectory_controller(
-        self, joints: List["SimulationJoint"], **kwargs
+        self, joints: list["SimulationJoint"], **kwargs
     ) -> None:
         """Create a trajectory controller for multiple joints."""
         self.controller_type = ControllerType.TRAJECTORY
@@ -95,7 +95,7 @@ class SimulationController(SimulationControllerInterface):
                 body_ids, joint_indices, **kwargs
             )
 
-    def set_target_position(self, position: float | List[float]) -> None:
+    def set_target_position(self, position: float | list[float]) -> None:
         """Set the target position for the controller."""
         if isinstance(position, (int, float)):
             controller_management.set_controller_target_position(
@@ -113,7 +113,7 @@ class SimulationController(SimulationControllerInterface):
                             controller, position[i]
                         )
 
-    def set_target_velocity(self, velocity: float | List[float]) -> None:
+    def set_target_velocity(self, velocity: float | list[float]) -> None:
         """Set the target velocity for the controller."""
         if isinstance(velocity, (int, float)):
             controller_management.set_controller_target_velocity(
@@ -131,7 +131,7 @@ class SimulationController(SimulationControllerInterface):
                             controller, velocity[i]
                         )
 
-    def set_target_force(self, force: float | List[float]) -> None:
+    def set_target_force(self, force: float | list[float]) -> None:
         """Set the target force for the controller."""
         if isinstance(force, (int, float)):
             controller_management.set_controller_target_force(
@@ -140,9 +140,9 @@ class SimulationController(SimulationControllerInterface):
 
     def set_trajectory(
         self,
-        positions: List[List[float]],
-        velocities: List[List[float]] | None = None,
-        times: List[float] | None = None,
+        positions: list[list[float]],
+        velocities: list[list[float]] | None = None,
+        times: list[float] | None = None,
     ) -> None:
         """Set a trajectory for the controller to follow."""
         if self.controller_type == ControllerType.TRAJECTORY:
@@ -150,7 +150,7 @@ class SimulationController(SimulationControllerInterface):
                 self.controller_data, positions, velocities, times
             )
 
-    def get_current_position(self) -> float | List[float]:
+    def get_current_position(self) -> float | list[float]:
         """Get the current position of controlled joints."""
         if len(self.controlled_joints) == 1:
             joint = self.controlled_joints[0]
@@ -158,7 +158,7 @@ class SimulationController(SimulationControllerInterface):
         else:
             return [joint.get_position() for joint in self.controlled_joints]
 
-    def get_current_velocity(self) -> float | List[float]:
+    def get_current_velocity(self) -> float | list[float]:
         """Get the current velocity of controlled joints."""
         if len(self.controlled_joints) == 1:
             joint = self.controlled_joints[0]
@@ -166,7 +166,7 @@ class SimulationController(SimulationControllerInterface):
         else:
             return [joint.get_velocity() for joint in self.controlled_joints]
 
-    def get_current_force(self) -> float | List[float]:
+    def get_current_force(self) -> float | list[float]:
         """Get the current force of controlled joints."""
         # This would require force sensors on the joints
         if len(self.controlled_joints) == 1:
@@ -182,7 +182,7 @@ class SimulationController(SimulationControllerInterface):
             pid.ki = ki
             pid.kd = kd
 
-    def get_pid_gains(self) -> Tuple[float, float, float]:
+    def get_pid_gains(self) -> tuple[float, float, float]:
         """Get PID gains for the controller."""
         if "pid" in self.controller_data:
             pid = self.controller_data["pid"]
@@ -191,9 +191,9 @@ class SimulationController(SimulationControllerInterface):
 
     def set_limits(
         self,
-        position_limits: Tuple[float, float] | None = None,
-        velocity_limits: Tuple[float, float] | None = None,
-        force_limits: Tuple[float, float] | None = None,
+        position_limits: tuple[float, float] | None = None,
+        velocity_limits: tuple[float, float] | None = None,
+        force_limits: tuple[float, float] | None = None,
     ) -> None:
         """Set controller limits."""
         # Store limits in controller data

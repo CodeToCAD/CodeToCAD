@@ -6,7 +6,7 @@ providing both physical properties for simulation and visual characteristics for
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Tuple
+from typing import Dict, Any, Tuple
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -15,14 +15,14 @@ from dataclasses import dataclass
 class TextureMaps:
     """Container for texture map file paths."""
 
-    diffuse: Optional[str] = None  # Base color/albedo map
-    normal: Optional[str] = None  # Normal/bump map
-    roughness: Optional[str] = None  # Surface roughness map
-    metallic: Optional[str] = None  # Metallic map
-    specular: Optional[str] = None  # Specular map
-    emission: Optional[str] = None  # Emission/glow map
-    displacement: Optional[str] = None  # Height/displacement map
-    ambient_occlusion: Optional[str] = None  # AO map
+    diffuse: str | None = None  # Base color/albedo map
+    normal: str | None = None  # Normal/bump map
+    roughness: str | None = None  # Surface roughness map
+    metallic: str | None = None  # Metallic map
+    specular: str | None = None  # Specular map
+    emission: str | None = None  # Emission/glow map
+    displacement: str | None = None  # Height/displacement map
+    ambient_occlusion: str | None = None  # AO map
 
 
 class MaterialInterface(ABC):
@@ -39,11 +39,11 @@ class MaterialInterface(ABC):
         self.electrical_conductivity: float = 0.0  # S/m
 
         # Visual properties
-        self.color: Tuple[float, float, float, float] = (0.8, 0.8, 0.8, 1.0)  # RGBA
+        self.color: tuple[float, float, float, float] = (0.8, 0.8, 0.8, 1.0)  # RGBA
         self.metallic: float = 0.0  # 0.0 = dielectric, 1.0 = metallic
         self.roughness: float = 0.5  # 0.0 = mirror, 1.0 = completely rough
         self.specular: float = 0.5  # Specular reflection intensity
-        self.emission: Tuple[float, float, float] = (0.0, 0.0, 0.0)  # RGB emission
+        self.emission: tuple[float, float, float] = (0.0, 0.0, 0.0)  # RGB emission
         self.transparency: float = 0.0  # 0.0 = opaque, 1.0 = transparent
         self.ior: float = 1.5  # Index of refraction
 
@@ -54,7 +54,7 @@ class MaterialInterface(ABC):
         self.category: str = "generic"
         self.description: str = ""
         self.tags: list[str] = []
-        self.custom_properties: Dict[str, Any] = {}
+        self.custom_properties: dict[str, Any] = {}
 
     def set_name(self, name: str) -> "MaterialInterface":
         """Set the material name."""
@@ -63,12 +63,12 @@ class MaterialInterface(ABC):
 
     def set_physical_properties(
         self,
-        density: Optional[float] = None,
-        friction: Optional[float] = None,
-        restitution: Optional[float] = None,
-        hardness: Optional[float] = None,
-        thermal_conductivity: Optional[float] = None,
-        electrical_conductivity: Optional[float] = None,
+        density: float | None = None,
+        friction: float | None = None,
+        restitution: float | None = None,
+        hardness: float | None = None,
+        thermal_conductivity: float | None = None,
+        electrical_conductivity: float | None = None,
     ) -> "MaterialInterface":
         """Set physical properties of the material."""
         if density is not None:
@@ -87,13 +87,13 @@ class MaterialInterface(ABC):
 
     def set_visual_properties(
         self,
-        color: Optional[Tuple[float, float, float, float]] = None,
-        metallic: Optional[float] = None,
-        roughness: Optional[float] = None,
-        specular: Optional[float] = None,
-        emission: Optional[Tuple[float, float, float]] = None,
-        transparency: Optional[float] = None,
-        ior: Optional[float] = None,
+        color: tuple[float, float, float, float] | None = None,
+        metallic: float | None = None,
+        roughness: float | None = None,
+        specular: float | None = None,
+        emission: tuple[float, float, float] | None = None,
+        transparency: float | None = None,
+        ior: float | None = None,
     ) -> "MaterialInterface":
         """Set visual properties of the material."""
         if color is not None:
@@ -114,14 +114,14 @@ class MaterialInterface(ABC):
 
     def set_textures(
         self,
-        diffuse: Optional[str] = None,
-        normal: Optional[str] = None,
-        roughness: Optional[str] = None,
-        metallic: Optional[str] = None,
-        specular: Optional[str] = None,
-        emission: Optional[str] = None,
-        displacement: Optional[str] = None,
-        ambient_occlusion: Optional[str] = None,
+        diffuse: str | None = None,
+        normal: str | None = None,
+        roughness: str | None = None,
+        metallic: str | None = None,
+        specular: str | None = None,
+        emission: str | None = None,
+        displacement: str | None = None,
+        ambient_occlusion: str | None = None,
     ) -> "MaterialInterface":
         """Set texture map file paths."""
         if diffuse is not None:
@@ -222,12 +222,12 @@ class MaterialInterface(ABC):
         pass
 
     @abstractmethod
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert material to dictionary representation."""
         pass
 
     @abstractmethod
-    def from_dict(self, data: Dict[str, Any]) -> "MaterialInterface":
+    def from_dict(self, data: dict[str, Any]) -> "MaterialInterface":
         """Load material from dictionary representation."""
         pass
 

@@ -6,7 +6,7 @@ import json
 import os
 import shutil
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from codetocad.interfaces.simulation.simulation_export_interface import (
     SimulationExportInterface,
 )
@@ -214,7 +214,7 @@ class MuJoCoSimulationExport(SimulationExportInterface):
 
     def _export_body_mesh(
         self, body, meshes_dir: Path, index: int
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """Export body geometry to mesh file."""
         try:
             if hasattr(body, "original_part") and body.original_part is not None:
@@ -241,7 +241,7 @@ class MuJoCoSimulationExport(SimulationExportInterface):
 
     def _export_body_textures(
         self, body, textures_dir: Path, index: int
-    ) -> Optional[Dict[str, str]]:
+    ) -> dict[str, str] | None:
         """Export body material textures."""
         try:
             if hasattr(body, "original_part") and body.original_part is not None:
@@ -400,7 +400,7 @@ class MuJoCoSimulationExport(SimulationExportInterface):
         self,
         filename: str,
         format: str = "csv",
-        bodies: Optional[list] = None,
+        bodies: list | None = None,
         **kwargs,
     ) -> str:
         """Export trajectory data."""

@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 import bpy
 from uuid import uuid4
 
@@ -31,7 +31,7 @@ def get_vertex_from_blender_point(
     edge: Union[
         bpy.types.Spline,
         bpy.types.MeshEdge,
-        Tuple[
+        tuple[
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],
@@ -46,7 +46,7 @@ def get_edge_from_blender_edge(
     edge: Union[
         bpy.types.Spline,
         bpy.types.MeshEdge,
-        Tuple[
+        tuple[
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
             bpy.types.SplinePoint | bpy.types.BezierSplinePoint,
         ],

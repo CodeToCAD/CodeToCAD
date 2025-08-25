@@ -34,7 +34,7 @@ def export_gerbers(
         layer_names: List of layer names to export (None for all)
 
     Returns:
-        List[str]: List of generated file paths
+        list[str]: List of generated file paths
 
     Raises:
         RuntimeError: If operation fails
@@ -102,7 +102,7 @@ def export_gerbers(
         raise RuntimeError(f"Failed to export Gerbers: {str(e)}")
 
 
-def export_drill_files(board: "pcbnew.BOARD", output_dir: str) -> List[str]:
+def export_drill_files(board: "pcbnew.BOARD", output_dir: str) -> list[str]:
     """
     Export drill files (Excellon format).
 
@@ -111,7 +111,7 @@ def export_drill_files(board: "pcbnew.BOARD", output_dir: str) -> List[str]:
         output_dir: Output directory path
 
     Returns:
-        List[str]: List of generated drill file paths
+        list[str]: List of generated drill file paths
 
     Raises:
         RuntimeError: If operation fails

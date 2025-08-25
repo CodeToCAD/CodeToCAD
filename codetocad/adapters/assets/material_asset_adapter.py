@@ -9,7 +9,7 @@ import os
 import json
 import time
 import requests
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 from dataclasses import dataclass
@@ -25,9 +25,9 @@ class MaterialAsset:
     id: str
     name: str
     category: str
-    tags: List[str]
-    preview_url: Optional[str] = None
-    download_urls: Dict[str, str] = None  # map_type -> url
+    tags: list[str]
+    preview_url: str | None = None
+    download_urls: dict[str, str] | None = None  # map_type -> url
     resolution: str = "1K"
     file_format: str = "jpg"
     license: str = "CC0"
@@ -41,7 +41,7 @@ class MaterialAsset:
 class MaterialAssetAdapter:
     """Base class for material asset adapters."""
 
-    def __init__(self, api_key: Optional[str] = None, cache_dir: Optional[str] = None):
+    def __init__(self, api_key: str | None = None, cache_dir: str | None = None):
         self.api_key = api_key
         self.cache_dir = (
             Path(cache_dir)
@@ -62,18 +62,18 @@ class MaterialAssetAdapter:
         self.last_request_time = time.time()
 
     def search(
-        self, query: str, category: Optional[str] = None, limit: int = 10
-    ) -> List[MaterialAsset]:
+        self, query: str, category: str | None = None, limit: int = 10
+    ) -> list[MaterialAsset]:
         """Search for materials by name/category."""
         raise NotImplementedError("Subclasses must implement search method")
 
     def download(
-        self, asset: MaterialAsset, cache_dir: Optional[str] = None
-    ) -> Dict[str, str]:
+        self, asset: MaterialAsset, cache_dir: str | None = None
+    ) -> dict[str, str]:
         """Download material textures to temporary directory."""
         raise NotImplementedError("Subclasses must implement download method")
 
-    def save(self, downloaded_files: Dict[str, str], target_dir: str) -> Dict[str, str]:
+    def save(self, downloaded_files: dict[str, str], target_dir: str) -> dict[str, str]:
         """Move downloaded files to permanent location."""
         target_path = Path(target_dir)
         target_path.mkdir(parents=True, exist_ok=True)
@@ -97,15 +97,15 @@ class MaterialAssetManager:
     """Manager for multiple material asset adapters."""
 
     def __init__(self):
-        self.adapters: Dict[str, MaterialAssetAdapter] = {}
+        self.adapters: dict[str, MaterialAssetAdapter] = {}
 
     def add_adapter(self, name: str, adapter: MaterialAssetAdapter):
         """Add a material asset adapter."""
         self.adapters[name] = adapter
 
     def search_all(
-        self, query: str, category: Optional[str] = None, limit: int = 10
-    ) -> Dict[str, List[MaterialAsset]]:
+        self, query: str, category: str | None = None, limit: int = 10
+    ) -> dict[str, list[MaterialAsset]]:
         """Search all registered adapters."""
         results = {}
 
@@ -120,8 +120,8 @@ class MaterialAssetManager:
         return results
 
     def download_from_adapter(
-        self, adapter_name: str, asset: MaterialAsset, temp_dir: Optional[str] = None
-    ) -> Dict[str, str]:
+        self, adapter_name: str, asset: MaterialAsset, temp_dir: str | None = None
+    ) -> dict[str, str]:
         """Download material using specific adapter."""
         if adapter_name not in self.adapters:
             print(f"Adapter {adapter_name} not found")

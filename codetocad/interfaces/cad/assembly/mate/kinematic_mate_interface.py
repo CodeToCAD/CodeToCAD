@@ -7,7 +7,7 @@ degrees of freedom.
 """
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Tuple, Union
 
 from codetocad.interfaces.cad.assembly.mate.mate_interface import (
     MateInterface,
@@ -127,7 +127,7 @@ class RevoluteMateInterface(KinematicMateInterface):
         part1: "PartInterface",
         part2: "PartInterface",
         axis: Any,
-        angle_range: Tuple[float, float] = (0, 360),
+        angle_range: tuple[float, float] = (0, 360),
         current_angle: float = 0,
         **kwargs,
     ):
@@ -187,7 +187,7 @@ class LinearMateInterface(KinematicMateInterface):
         part1: "PartInterface",
         part2: "PartInterface",
         axis: Any,
-        position_range: Tuple[float, float] = (0, float("inf")),
+        position_range: tuple[float, float] = (0, float("inf")),
         current_position: float = 0,
         **kwargs,
     ):
@@ -248,8 +248,8 @@ class CylindricalMateInterface(KinematicMateInterface):
         part1: "PartInterface",
         part2: "PartInterface",
         axis: Any,
-        position_range: Tuple[float, float] = (0, float("inf")),
-        angle_range: Tuple[float, float] = (0, 360),
+        position_range: tuple[float, float] = (0, float("inf")),
+        angle_range: tuple[float, float] = (0, 360),
         current_position: float = 0,
         current_angle: float = 0,
         **kwargs,
@@ -306,10 +306,10 @@ class BallMateInterface(KinematicMateInterface):
         part1: "PartInterface",
         part2: "PartInterface",
         center_point: Any,
-        angle_ranges: Tuple[
-            Tuple[float, float], Tuple[float, float], Tuple[float, float]
+        angle_ranges: tuple[
+            tuple[float, float], tuple[float, float], tuple[float, float]
         ] = ((0, 360), (0, 360), (0, 360)),
-        current_angles: Tuple[float, float, float] = (0, 0, 0),
+        current_angles: tuple[float, float, float] = (0, 0, 0),
         **kwargs,
     ):
         """

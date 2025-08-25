@@ -4,7 +4,7 @@ KiCad PCB Export implementation for CodeToCAD.
 This module provides KiCad-specific implementation of PCB export operations.
 """
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from pathlib import Path
 from codetocad.interfaces.cad.pcb.pcb_export_interface import (
     PCBExportInterface,
@@ -39,12 +39,12 @@ class PCBExport(PCBExportInterface):
     manufacturing files using KiCad's export capabilities.
     """
 
-    def __init__(self, board: Optional["PCBBoard"] = None):
+    def __init__(self, board: "PCBBoard" | None = None):
         super().__init__()
         self._board = board
 
     def export_gerbers(
-        self, output_path: str, layer_names: Optional[list[str]] = None
+        self, output_path: str, layer_names: list[str] | None = None
     ) -> list[str]:
         """Export Gerber files for manufacturing."""
 
@@ -167,7 +167,7 @@ class PCBExport(PCBExportInterface):
     def export_pdf_documentation(
         self,
         output_path: str,
-        include_layers: Optional[list[str]] = None,
+        include_layers: list[str] | None = None,
         include_drill_map: bool = True,
     ) -> str:
         """Export PDF documentation."""
