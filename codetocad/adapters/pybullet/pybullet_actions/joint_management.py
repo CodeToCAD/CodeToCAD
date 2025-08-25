@@ -2,7 +2,7 @@
 PyBullet joint management functions.
 """
 
-from typing import Optional, Tuple, Dict, Any
+from typing import Tuple, Dict, Any
 import pybullet as p
 from codetocad.core.dimensions.point import Point
 
@@ -11,11 +11,11 @@ def create_joint(
     parent_body_id: int,
     child_body_id: int,
     joint_type: int,
-    joint_axis: Point | Tuple[float, float, float],
-    parent_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    child_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    parent_frame_orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
-    child_frame_orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    joint_axis: Point | tuple[float, float, float],
+    parent_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    child_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    parent_frame_orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
+    child_frame_orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     **kwargs,
 ) -> int:
     """Create a joint between two bodies."""
@@ -62,8 +62,8 @@ def create_joint(
 def create_fixed_joint(
     parent_body_id: int,
     child_body_id: int,
-    parent_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    child_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
+    parent_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    child_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
     **kwargs,
 ) -> int:
     """Create a fixed joint."""
@@ -81,9 +81,9 @@ def create_fixed_joint(
 def create_revolute_joint(
     parent_body_id: int,
     child_body_id: int,
-    axis: Point | Tuple[float, float, float],
-    parent_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    child_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
+    axis: Point | tuple[float, float, float],
+    parent_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    child_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
     **kwargs,
 ) -> int:
     """Create a revolute joint."""
@@ -101,9 +101,9 @@ def create_revolute_joint(
 def create_prismatic_joint(
     parent_body_id: int,
     child_body_id: int,
-    axis: Point | Tuple[float, float, float],
-    parent_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    child_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
+    axis: Point | tuple[float, float, float],
+    parent_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    child_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
     **kwargs,
 ) -> int:
     """Create a prismatic joint."""
@@ -121,8 +121,8 @@ def create_prismatic_joint(
 def create_spherical_joint(
     parent_body_id: int,
     child_body_id: int,
-    parent_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
-    child_frame_position: Point | Tuple[float, float, float] = (0, 0, 0),
+    parent_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
+    child_frame_position: Point | tuple[float, float, float] = (0, 0, 0),
     **kwargs,
 ) -> int:
     """Create a spherical joint."""
@@ -182,13 +182,13 @@ def set_joint_limits(
     )
 
 
-def get_joint_limits(body_id: int, joint_index: int) -> Tuple[float, float]:
+def get_joint_limits(body_id: int, joint_index: int) -> tuple[float, float]:
     """Get joint limits."""
     joint_info = p.getJointInfo(body_id, joint_index)
     return joint_info[8], joint_info[9]  # Lower and upper limits
 
 
-def get_joint_info(body_id: int, joint_index: int) -> Dict[str, Any]:
+def get_joint_info(body_id: int, joint_index: int) -> dict[str, Any]:
     """Get comprehensive joint information."""
     joint_info = p.getJointInfo(body_id, joint_index)
     joint_state = p.getJointState(body_id, joint_index)
@@ -225,7 +225,7 @@ def enable_joint_force_torque_sensor(
     p.enableJointForceTorqueSensor(body_id, joint_index, enable)
 
 
-def get_joint_reaction_forces(body_id: int, joint_index: int) -> Tuple[float, ...]:
+def get_joint_reaction_forces(body_id: int, joint_index: int) -> tuple[float, ...]:
     """Get joint reaction forces."""
     joint_state = p.getJointState(body_id, joint_index)
     return joint_state[2]  # Reaction forces
@@ -235,12 +235,12 @@ def set_joint_motor_control(
     body_id: int,
     joint_index: int,
     control_mode: int,
-    target_position: Optional[float] = None,
-    target_velocity: Optional[float] = None,
-    force: Optional[float] = None,
+    target_position: float | None = None,
+    target_velocity: float | None = None,
+    force: float | None = None,
     position_gain: float = 0.1,
     velocity_gain: float = 1.0,
-    max_velocity: Optional[float] = None,
+    max_velocity: float | None = None,
 ) -> None:
     """Set joint motor control."""
     p.setJointMotorControl2(

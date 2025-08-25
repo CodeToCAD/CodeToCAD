@@ -2,7 +2,7 @@
 PyBullet implementation of SimulationInterface.
 """
 
-from typing import TYPE_CHECKING, Optional, List, Sequence
+from typing import TYPE_CHECKING, Sequence
 from uuid import uuid4
 import pybullet as p
 import tempfile
@@ -29,7 +29,7 @@ class Simulation(SimulationInterface):
     def __init__(self, name: str | None = None):
         super().__init__()
         self.name = name or f"pybullet_sim_{str(uuid4())[:8]}"
-        self.client_id: Optional[int] = None
+        self.client_id: int | None = None
         self.gui_enabled: bool = False
         self._body_registry: dict[int, "SimulationBody"] = {}
 

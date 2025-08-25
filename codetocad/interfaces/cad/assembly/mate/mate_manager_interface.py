@@ -6,7 +6,7 @@ providing methods to create, modify, delete, and solve mate constraints.
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, Union
 
 from codetocad.interfaces.cad.assembly.mate.mate_interface import (
     MateInterface,
@@ -38,7 +38,7 @@ class MateManagerInterface(ABC):
             assembly: The assembly this manager belongs to
         """
         self.assembly = assembly
-        self.mates: Dict[str, MateInterface] = {}
+        self.mates: dict[str, MateInterface] = {}
         self._mate_counter = 0
 
     @abstractmethod
@@ -47,9 +47,9 @@ class MateManagerInterface(ABC):
         mate_type: MateType,
         part1: "PartInterface",
         part2: "PartInterface",
-        name: Optional[str] = None,
+        name: str | None = None,
         **kwargs,
-    ) -> Optional[MateInterface]:
+    ) -> MateInterface | None:
         """
         Create a new mate constraint.
 
@@ -89,7 +89,7 @@ class MateManagerInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_mates(self) -> Dict[str, bool]:
+    def validate_mates(self) -> dict[str, bool]:
         """
         Validate all mates in the assembly.
 
@@ -98,7 +98,7 @@ class MateManagerInterface(ABC):
         """
         pass
 
-    def get_mate(self, name: str) -> Optional[MateInterface]:
+    def get_mate(self, name: str) -> MateInterface | None:
         """
         Get a mate by name.
 
@@ -110,7 +110,7 @@ class MateManagerInterface(ABC):
         """
         return self.mates.get(name)
 
-    def get_mates_by_type(self, mate_type: MateType) -> List[MateInterface]:
+    def get_mates_by_type(self, mate_type: MateType) -> list[MateInterface]:
         """
         Get all mates of a specific type.
 
@@ -122,7 +122,7 @@ class MateManagerInterface(ABC):
         """
         return [mate for mate in self.mates.values() if mate.mate_type == mate_type]
 
-    def get_mates_by_part(self, part: "PartInterface") -> List[MateInterface]:
+    def get_mates_by_part(self, part: "PartInterface") -> list[MateInterface]:
         """
         Get all mates involving a specific part.
 
@@ -138,7 +138,7 @@ class MateManagerInterface(ABC):
             if mate.part1 == part or mate.part2 == part
         ]
 
-    def get_mates_by_status(self, status: MateStatus) -> List[MateInterface]:
+    def get_mates_by_status(self, status: MateStatus) -> list[MateInterface]:
         """
         Get all mates with a specific status.
 
@@ -150,7 +150,7 @@ class MateManagerInterface(ABC):
         """
         return [mate for mate in self.mates.values() if mate.status == status]
 
-    def get_all_mates(self) -> List[MateInterface]:
+    def get_all_mates(self) -> list[MateInterface]:
         """
         Get all mates in the assembly.
 
@@ -228,7 +228,7 @@ class MateManagerInterface(ABC):
         """
         return len(self.mates)
 
-    def get_mate_statistics(self) -> Dict[str, int]:
+    def get_mate_statistics(self) -> dict[str, int]:
         """
         Get statistics about mates in the assembly.
 

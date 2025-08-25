@@ -2,7 +2,7 @@
 MuJoCo implementation of SimulationSensorInterface.
 """
 
-from typing import TYPE_CHECKING, Any, List, Dict
+from typing import TYPE_CHECKING, Any, Dict
 from codetocad.interfaces.simulation.simulation_sensor_interface import (
     SimulationSensorInterface,
     SensorType,
@@ -91,7 +91,7 @@ class SimulationSensor(SimulationSensorInterface):
             return self.attached_body.get_angular_velocity()
         return Point(0, 0, 0)
 
-    def read_contact_points(self) -> List[Dict[str, Any]]:
+    def read_contact_points(self) -> list[dict[str, Any]]:
         """Read contact point data."""
         if self.attached_body:
             return self.attached_body.get_contact_points()

@@ -46,8 +46,8 @@ class TraceSegment:
     layer: str
     net_name: str
     shape: TraceShape = TraceShape.STRAIGHT
-    arc_center_x: Optional[float] = None  # For arc traces
-    arc_center_y: Optional[float] = None  # For arc traces
+    arc_center_x: float | None = None  # For arc traces
+    arc_center_y: float | None = None  # For arc traces
 
 
 @dataclass
@@ -244,7 +244,7 @@ class PCBRoutingInterface(ABC):
 
     @abstractmethod
     def optimize_routing(
-        self, net_names: Optional[list[str]] = None
+        self, net_names: list[str] | None = None
     ) -> "PCBRoutingInterface":
         """
         Optimize routing for specified nets or all nets.

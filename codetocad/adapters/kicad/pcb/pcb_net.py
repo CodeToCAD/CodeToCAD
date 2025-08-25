@@ -4,7 +4,7 @@ KiCad PCB Net implementation for CodeToCAD.
 This module provides KiCad-specific implementation of PCB net operations.
 """
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from codetocad.interfaces.cad.pcb.pcb_net_interface import (
     PCBNetInterface,
     NetClass,
@@ -28,10 +28,10 @@ class PCBNet(PCBNetInterface):
     connectivity tracking, and electrical rule checking using KiCad's pcbnew API.
     """
 
-    def __init__(self, name: str, board: Optional["PCBBoard"] = None):
+    def __init__(self, name: str, board: "PCBBoard" | None = None):
         super().__init__(name)
         self._board = board
-        self._kicad_net: Optional["pcbnew.NETINFO_ITEM"] = None
+        self._kicad_net: "pcbnew.NETINFO_ITEM" | None = None
 
     @property
     def kicad_net(self) -> "pcbnew.NETINFO_ITEM":

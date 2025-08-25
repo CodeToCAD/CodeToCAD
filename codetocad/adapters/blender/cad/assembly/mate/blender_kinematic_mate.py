@@ -540,7 +540,7 @@ class BlenderBallMate(BlenderKinematicMate, BallMateInterface):
         except Exception:
             return False
 
-    def get_angles(self) -> Tuple[float, float, float]:
+    def get_angles(self) -> tuple[float, float, float]:
         """Get the current angles of the ball joint."""
         try:
             part2_obj = self.part2.get_blender_object()

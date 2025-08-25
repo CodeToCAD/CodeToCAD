@@ -2,7 +2,7 @@
 PyBullet file loading and export functions.
 """
 
-from typing import Optional, Tuple, Dict, Any
+from typing import Tuple, Dict, Any
 import pybullet as p
 import os
 import tempfile
@@ -11,8 +11,8 @@ from codetocad.core.dimensions.point import Point
 
 def load_urdf_file(
     urdf_path: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     use_fixed_base: bool = False,
     **kwargs,
 ) -> int:
@@ -38,10 +38,10 @@ def load_urdf_file(
 
 def load_stl_file(
     stl_path: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     mass: float = 1.0,
-    scale: Tuple[float, float, float] = (1, 1, 1),
+    scale: tuple[float, float, float] = (1, 1, 1),
     **kwargs,
 ) -> int:
     """Load an STL file as a rigid body."""
@@ -77,10 +77,10 @@ def load_stl_file(
 
 def load_obj_file(
     obj_path: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     mass: float = 1.0,
-    scale: Tuple[float, float, float] = (1, 1, 1),
+    scale: tuple[float, float, float] = (1, 1, 1),
     **kwargs,
 ) -> int:
     """Load an OBJ file as a rigid body."""
@@ -224,7 +224,7 @@ def create_urdf_from_assembly(assembly: Any, filename: str) -> str:
     return filename
 
 
-def get_supported_file_formats() -> Dict[str, str]:
+def get_supported_file_formats() -> dict[str, str]:
     """Get supported file formats for loading."""
     return {
         "urdf": "Unified Robot Description Format",
@@ -241,7 +241,7 @@ def validate_file_format(filename: str) -> bool:
     return ext in get_supported_file_formats()
 
 
-def get_file_info(filename: str) -> Dict[str, Any]:
+def get_file_info(filename: str) -> dict[str, Any]:
     """Get information about a file."""
     if not os.path.exists(filename):
         raise FileNotFoundError(f"File not found: {filename}")

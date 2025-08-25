@@ -5,7 +5,7 @@ This module provides the mate manager implementation for build123d,
 handling collections of mates within an assembly.
 """
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, Union
 
 from codetocad.interfaces.cad.assembly.mate.mate_manager_interface import (
     MateManagerInterface,
@@ -78,9 +78,9 @@ class MateManager(MateManagerInterface):
         mate_type: MateType,
         part1: "Part",
         part2: "Part",
-        name: Optional[str] = None,
+        name: str | None = None,
         **kwargs,
-    ) -> Optional[MateInterface]:
+    ) -> MateInterface | None:
         """
         Create a new mate constraint.
 
@@ -199,7 +199,7 @@ class MateManager(MateManagerInterface):
             print(f"Error solving mates: {e}")
             return False
 
-    def validate_mates(self) -> Dict[str, bool]:
+    def validate_mates(self) -> dict[str, bool]:
         """
         Validate all mates in the assembly.
 
@@ -228,9 +228,9 @@ class MateManager(MateManagerInterface):
         part2: "Part",
         entity1: any,
         entity2: any,
-        name: Optional[str] = None,
+        name: str | None = None,
         flip_alignment: bool = False,
-    ) -> Optional[CoincidentMate]:
+    ) -> CoincidentMate | None:
         """
         Convenience method to create a coincident mate.
 
@@ -260,10 +260,10 @@ class MateManager(MateManagerInterface):
         part1: "Part",
         part2: "Part",
         axis: any,
-        name: Optional[str] = None,
+        name: str | None = None,
         angle_range: tuple = (0, 360),
         current_angle: float = 0,
-    ) -> Optional[RevoluteMate]:
+    ) -> RevoluteMate | None:
         """
         Convenience method to create a revolute mate.
 
@@ -295,8 +295,8 @@ class MateManager(MateManagerInterface):
         entity1: any,
         entity2: any,
         distance: float,
-        name: Optional[str] = None,
-    ) -> Optional[DistanceMate]:
+        name: str | None = None,
+    ) -> DistanceMate | None:
         """
         Convenience method to create a distance mate.
 

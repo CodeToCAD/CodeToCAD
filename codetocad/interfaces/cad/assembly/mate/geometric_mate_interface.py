@@ -6,7 +6,7 @@ parallel edges, or concentric cylinders. These mates do not allow motion.
 """
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Tuple, Union
 
 from codetocad.interfaces.cad.assembly.mate.mate_interface import (
     MateInterface,
@@ -52,7 +52,7 @@ class GeometricMateInterface(MateInterface):
         self.entity2 = entity2
 
     @abstractmethod
-    def get_constraint_equations(self) -> List[Any]:
+    def get_constraint_equations(self) -> list[Any]:
         """
         Get the mathematical constraint equations for this mate.
 
@@ -62,7 +62,7 @@ class GeometricMateInterface(MateInterface):
         pass
 
     @abstractmethod
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate the transformation needed to satisfy the mate constraint.
 

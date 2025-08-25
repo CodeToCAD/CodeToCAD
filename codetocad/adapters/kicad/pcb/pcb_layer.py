@@ -27,7 +27,7 @@ class PCBLayer(PCBLayerInterface):
 
     def __init__(self, properties: LayerProperties):
         super().__init__(properties)
-        self._kicad_layer_id: Optional[int] = None
+        self._kicad_layer_id: int | None = None
 
     @property
     def kicad_layer_id(self) -> int:

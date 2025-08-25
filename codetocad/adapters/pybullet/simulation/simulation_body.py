@@ -2,7 +2,7 @@
 PyBullet implementation of SimulationBodyInterface.
 """
 
-from typing import TYPE_CHECKING, Any, List, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 from codetocad.interfaces.simulation.simulation_body_interface import (
     SimulationBodyInterface,
 )
@@ -18,7 +18,7 @@ class SimulationBody(SimulationBodyInterface):
 
     def __init__(self):
         super().__init__()
-        self.body_id: Optional[int] = None
+        self.body_id: int | None = None
 
     def get_position(self) -> Point:
         """Get the current position of the body."""
@@ -166,7 +166,7 @@ class SimulationBody(SimulationBodyInterface):
         if is_kinematic:
             self.set_static(True)
 
-    def get_contact_points(self) -> List[Dict[str, Any]]:
+    def get_contact_points(self) -> list[dict[str, Any]]:
         """Get contact points for this body."""
         if self.body_id is None:
             return []

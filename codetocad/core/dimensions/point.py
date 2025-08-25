@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import reduce
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 
 @dataclass
@@ -12,7 +12,7 @@ class Point:
     def to_list(self) -> list[float]:
         return [self.x, self.y, self.z]
 
-    def to_tuple(self) -> Tuple[float, float, float]:
+    def to_tuple(self) -> tuple[float, float, float]:
         return (self.x, self.y, self.z)
 
     def magnitude(self) -> float:

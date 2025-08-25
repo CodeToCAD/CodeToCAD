@@ -6,7 +6,7 @@ static constraints between parts without allowing motion.
 """
 
 import math
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Tuple
 
 from codetocad.interfaces.cad.assembly.mate.geometric_mate_interface import (
     GeometricMateInterface,
@@ -81,7 +81,7 @@ class GeometricMate(Mate, GeometricMateInterface):
             print(f"Error applying geometric constraint for mate {self.name}: {e}")
             return False
 
-    def _apply_transform_to_part(self, transform: Tuple[float, ...]) -> bool:
+    def _apply_transform_to_part(self, transform: tuple[float, ...]) -> bool:
         """
         Apply a transformation to part2 to satisfy the constraint.
 
@@ -102,7 +102,7 @@ class GeometricMate(Mate, GeometricMateInterface):
             print(f"Error applying transformation: {e}")
             return False
 
-    def get_constraint_equations(self) -> List[Any]:
+    def get_constraint_equations(self) -> list[Any]:
         """
         Get the mathematical constraint equations for this mate.
 
@@ -112,7 +112,7 @@ class GeometricMate(Mate, GeometricMateInterface):
         # This is a placeholder - subclasses should implement specific equations
         return self._constraint_equations
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate the transformation needed to satisfy the mate constraint.
 
@@ -159,7 +159,7 @@ class CoincidentMate(GeometricMate, CoincidentMateInterface):
         )
         self.flip_alignment = flip_alignment
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to make entities coincident.
 
@@ -220,7 +220,7 @@ class ConcentricMate(GeometricMate, ConcentricMateInterface):
             self, name, MateType.CONCENTRIC, part1, part2, entity1, entity2, **kwargs
         )
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to make entities concentric.
 
@@ -281,7 +281,7 @@ class DistanceMate(GeometricMate, DistanceMateInterface):
         )
         self.distance = distance
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to maintain the specified distance.
 
@@ -340,7 +340,7 @@ class ParallelMate(GeometricMate, ParallelMateInterface):
             self, name, MateType.PARALLEL, part1, part2, entity1, entity2, **kwargs
         )
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to make entities parallel.
 
@@ -397,7 +397,7 @@ class PerpendicularMate(GeometricMate, PerpendicularMateInterface):
             self, name, MateType.PERPENDICULAR, part1, part2, entity1, entity2, **kwargs
         )
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to make entities perpendicular.
 
@@ -454,7 +454,7 @@ class TangentMate(GeometricMate, TangentMateInterface):
             self, name, MateType.TANGENT, part1, part2, entity1, entity2, **kwargs
         )
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to make entities tangent.
 
@@ -514,7 +514,7 @@ class AngleMate(GeometricMate, AngleMateInterface):
         )
         self.angle = angle
 
-    def calculate_transform(self) -> Optional[Tuple[float, ...]]:
+    def calculate_transform(self) -> tuple[float, ...] | None:
         """
         Calculate transformation to maintain the specified angle.
 

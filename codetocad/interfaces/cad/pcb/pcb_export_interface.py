@@ -82,7 +82,7 @@ class PCBExportInterface(ABC):
 
     @abstractmethod
     def export_gerbers(
-        self, output_path: str, layer_names: Optional[list[str]] = None
+        self, output_path: str, layer_names: list[str] | None = None
     ) -> list[str]:
         """
         Export Gerber files for manufacturing.
@@ -164,7 +164,7 @@ class PCBExportInterface(ABC):
     def export_pdf_documentation(
         self,
         output_path: str,
-        include_layers: Optional[list[str]] = None,
+        include_layers: list[str] | None = None,
         include_drill_map: bool = True,
     ) -> str:
         """

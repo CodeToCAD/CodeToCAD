@@ -2,7 +2,7 @@
 MuJoCo implementation of SimulationBodyInterface.
 """
 
-from typing import TYPE_CHECKING, Any, List, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 import mujoco as mj
 import numpy as np
 from codetocad.interfaces.simulation.simulation_body_interface import (
@@ -19,10 +19,10 @@ class SimulationBody(SimulationBodyInterface):
 
     def __init__(self):
         super().__init__()
-        self.body_name: Optional[str] = None
-        self.body_id: Optional[int] = None
-        self.model: Optional[mj.MjModel] = None
-        self.data: Optional[mj.MjData] = None
+        self.body_name: str | None = None
+        self.body_id: int | None = None
+        self.model: mj.MjModel | None = None
+        self.data: mj.MjData | None = None
 
     def _get_body_id(self) -> int:
         """Get MuJoCo body ID from name."""
@@ -215,7 +215,7 @@ class SimulationBody(SimulationBodyInterface):
         """Set whether the body is kinematic."""
         self.is_kinematic = is_kinematic
 
-    def get_contact_points(self) -> List[Dict[str, Any]]:
+    def get_contact_points(self) -> list[dict[str, Any]]:
         """Get contact points for this body."""
         contacts = []
         if self.model and self.data:

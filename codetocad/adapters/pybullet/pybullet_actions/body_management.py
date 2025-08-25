@@ -2,7 +2,7 @@
 PyBullet body management functions.
 """
 
-from typing import Optional, Tuple, Any, Dict, List
+from typing import Tuple, Any, Dict, List
 import pybullet as p
 import tempfile
 import os
@@ -13,8 +13,8 @@ from codetocad.core.dimensions.point import Point
 
 def create_body_from_urdf(
     urdf_path: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     **kwargs,
 ) -> int:
     """Create a body from URDF file."""
@@ -31,10 +31,10 @@ def create_body_from_urdf(
 
 def create_body_from_stl(
     stl_path: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     mass: float = 1.0,
-    color: Tuple[float, float, float, float] | None = None,
+    color: tuple[float, float, float, float] | None = None,
 ) -> int:
     """Create a body from STL file with optional color."""
     if isinstance(position, Point):
@@ -66,8 +66,8 @@ def create_body_from_stl(
 
 def create_body_from_part(
     part: Any,  # PartInterface
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (0, 0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (0, 0, 0, 1),
     mass: float = 1.0,
     **kwargs,
 ) -> int:
@@ -96,8 +96,8 @@ def create_body_from_part(
 
 
 def create_ground_plane(
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    normal: Point | Tuple[float, float, float] = (0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    normal: Point | tuple[float, float, float] = (0, 0, 1),
     **kwargs,
 ) -> int:
     """Create a ground plane."""
@@ -120,8 +120,8 @@ def remove_body(body_id: int) -> None:
 
 def set_body_position(
     body_id: int,
-    position: Point | Tuple[float, float, float],
-    orientation: Optional[Tuple[float, float, float, float]] = None,
+    position: Point | tuple[float, float, float],
+    orientation: tuple[float, float, float, float] | None = None,
 ) -> None:
     """Set body position and orientation."""
     if isinstance(position, Point):
@@ -137,7 +137,7 @@ def set_body_position(
     p.resetBasePositionAndOrientation(body_id, pos, orientation)
 
 
-def get_body_position(body_id: int) -> Tuple[Point, Tuple[float, float, float, float]]:
+def get_body_position(body_id: int) -> tuple[Point, tuple[float, float, float, float]]:
     """Get body position and orientation."""
     pos, orn = p.getBasePositionAndOrientation(body_id)
     return Point(pos[0], pos[1], pos[2]), orn
@@ -145,8 +145,8 @@ def get_body_position(body_id: int) -> Tuple[Point, Tuple[float, float, float, f
 
 def set_body_velocity(
     body_id: int,
-    linear_velocity: Point | Tuple[float, float, float],
-    angular_velocity: Point | Tuple[float, float, float] = (0, 0, 0),
+    linear_velocity: Point | tuple[float, float, float],
+    angular_velocity: Point | tuple[float, float, float] = (0, 0, 0),
 ) -> None:
     """Set body velocity."""
     if isinstance(linear_velocity, Point):
@@ -162,7 +162,7 @@ def set_body_velocity(
     p.resetBaseVelocity(body_id, lin_vel, ang_vel)
 
 
-def get_body_velocity(body_id: int) -> Tuple[Point, Point]:
+def get_body_velocity(body_id: int) -> tuple[Point, Point]:
     """Get body velocity."""
     lin_vel, ang_vel = p.getBaseVelocity(body_id)
     return Point(lin_vel[0], lin_vel[1], lin_vel[2]), Point(
@@ -172,8 +172,8 @@ def get_body_velocity(body_id: int) -> Tuple[Point, Point]:
 
 def apply_force_to_body(
     body_id: int,
-    force: Point | Tuple[float, float, float],
-    position: Optional[Point | Tuple[float, float, float]] = None,
+    force: Point | tuple[float, float, float],
+    position: Point | tuple[float, float, float] | None = None,
 ) -> None:
     """Apply force to body."""
     if isinstance(force, Point):
@@ -193,7 +193,7 @@ def apply_force_to_body(
 
 
 def apply_torque_to_body(
-    body_id: int, torque: Point | Tuple[float, float, float]
+    body_id: int, torque: Point | tuple[float, float, float]
 ) -> None:
     """Apply torque to body."""
     if isinstance(torque, Point):
@@ -226,7 +226,7 @@ def set_body_restitution(body_id: int, restitution: float) -> None:
 
 
 def set_body_visual_properties(
-    body_id: int, color: Tuple[float, float, float, float] | None = None
+    body_id: int, color: tuple[float, float, float, float] | None = None
 ) -> None:
     """Set visual properties of a body."""
     if color is not None:
@@ -247,7 +247,7 @@ def apply_material_visual_properties(body_id: int, part: Any) -> None:
             pass
 
 
-def get_contact_points(body_id: int) -> List[Dict[str, Any]]:
+def get_contact_points(body_id: int) -> list[dict[str, Any]]:
     """Get contact points for a body."""
     contacts = p.getContactPoints(bodyA=body_id)
     contact_list = []

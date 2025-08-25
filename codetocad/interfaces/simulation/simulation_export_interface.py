@@ -6,7 +6,7 @@ to various formats like URDF, SDF, XML, etc.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 
 class SimulationExportInterface(ABC):
@@ -119,7 +119,7 @@ class SimulationExportInterface(ABC):
         self,
         filename: str,
         format: str = "csv",
-        bodies: Optional[list] = None,
+        bodies: list | None = None,
         **kwargs,
     ) -> str:
         """
@@ -158,7 +158,7 @@ class SimulationExportInterface(ABC):
         """
         pass
 
-    def get_supported_formats(self) -> Dict[str, list[str]]:
+    def get_supported_formats(self) -> dict[str, list[str]]:
         """
         Get supported export formats.
 

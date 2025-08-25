@@ -2,7 +2,7 @@
 PyBullet sensor management functions.
 """
 
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, Tuple, Optional
 import pybullet as p
 from codetocad.core.dimensions.point import Point
 
@@ -12,12 +12,12 @@ def create_force_sensor(body_id: int, link_index: int = -1) -> None:
     p.enableJointForceTorqueSensor(body_id, link_index, True)
 
 
-def create_contact_sensor(body_id: int) -> Dict[str, Any]:
+def create_contact_sensor(body_id: int) -> dict[str, Any]:
     """Create a contact sensor for a body."""
     return {"body_id": body_id, "sensor_type": "contact", "enabled": True}
 
 
-def read_sensor_data(sensor_info: Dict[str, Any]) -> Any:
+def read_sensor_data(sensor_info: dict[str, Any]) -> Any:
     """Read data from a sensor."""
     sensor_type = sensor_info.get("sensor_type")
     body_id = sensor_info.get("body_id")
@@ -35,7 +35,7 @@ def read_sensor_data(sensor_info: Dict[str, Any]) -> Any:
         return None
 
 
-def read_contact_data(body_id: int) -> List[Dict[str, Any]]:
+def read_contact_data(body_id: int) -> list[dict[str, Any]]:
     """Read contact data for a body."""
     contacts = p.getContactPoints(bodyA=body_id)
     contact_list = []
@@ -91,7 +91,7 @@ def read_position_data(body_id: int) -> Point:
     return Point(pos[0], pos[1], pos[2])
 
 
-def read_orientation_data(body_id: int) -> Tuple[float, float, float, float]:
+def read_orientation_data(body_id: int) -> tuple[float, float, float, float]:
     """Read orientation data from an orientation sensor."""
     _, orn = p.getBasePositionAndOrientation(body_id)
     return orn
@@ -127,7 +127,7 @@ def read_joint_force_data(body_id: int, joint_index: int) -> float:
     return joint_state[3]  # Applied torque
 
 
-def create_imu_sensor(body_id: int, link_index: int = -1) -> Dict[str, Any]:
+def create_imu_sensor(body_id: int, link_index: int = -1) -> dict[str, Any]:
     """Create an IMU sensor."""
     return {
         "body_id": body_id,
@@ -137,7 +137,7 @@ def create_imu_sensor(body_id: int, link_index: int = -1) -> Dict[str, Any]:
     }
 
 
-def read_imu_data(sensor_info: Dict[str, Any]) -> Dict[str, Any]:
+def read_imu_data(sensor_info: dict[str, Any]) -> dict[str, Any]:
     """Read IMU data."""
     body_id = sensor_info["body_id"]
 
@@ -156,8 +156,8 @@ def read_imu_data(sensor_info: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def get_contact_points(
-    body_id: int, other_body_id: Optional[int] = None
-) -> List[Dict[str, Any]]:
+    body_id: int, other_body_id: int | None = None
+) -> list[dict[str, Any]]:
     """Get contact points for a body."""
     if other_body_id is not None:
         contacts = p.getContactPoints(bodyA=body_id, bodyB=other_body_id)
@@ -186,7 +186,7 @@ def get_contact_points(
     return contact_list
 
 
-def enable_sensor(sensor_info: Dict[str, Any]) -> None:
+def enable_sensor(sensor_info: dict[str, Any]) -> None:
     """Enable a sensor."""
     sensor_info["enabled"] = True
 
@@ -196,7 +196,7 @@ def enable_sensor(sensor_info: Dict[str, Any]) -> None:
         p.enableJointForceTorqueSensor(body_id, link_index, True)
 
 
-def disable_sensor(sensor_info: Dict[str, Any]) -> None:
+def disable_sensor(sensor_info: dict[str, Any]) -> None:
     """Disable a sensor."""
     sensor_info["enabled"] = False
 

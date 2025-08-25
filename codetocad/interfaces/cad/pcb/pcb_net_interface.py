@@ -6,7 +6,7 @@ net management, connectivity, and electrical rules.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Any
 from enum import Enum
 from dataclasses import dataclass
 
@@ -35,10 +35,10 @@ class NetConstraints:
     max_via_size: float = 2.0  # mm
     min_clearance: float = 0.1  # mm
     max_length: float = 1000.0  # mm
-    impedance_target: Optional[float] = None  # ohms
+    impedance_target: float | None = None  # ohms
     impedance_tolerance: float = 10.0  # %
     max_stub_length: float = 0.0  # mm (0 = no stubs allowed)
-    differential_pair_spacing: Optional[float] = None  # mm
+    differential_pair_spacing: float | None = None  # mm
     custom_constraints: dict[str, Any] = None
 
     def __post_init__(self):

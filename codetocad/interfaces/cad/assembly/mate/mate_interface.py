@@ -8,7 +8,7 @@ They can be geometric constraints (like coincident, parallel) or kinematic joint
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 if TYPE_CHECKING:
     from codetocad.interfaces.cad.part.part_interface import PartInterface

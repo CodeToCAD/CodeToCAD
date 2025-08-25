@@ -2,7 +2,7 @@
 build123d implementation of WireInterface.
 """
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from codetocad.interfaces.cad.wire.wire_interface import WireInterface

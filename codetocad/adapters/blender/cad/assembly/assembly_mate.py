@@ -104,7 +104,7 @@ class BlenderAssemblyMate(AssemblyMateInterface):
         axis: Any,
         location1: Any,
         location2: Any,
-        angle_range: Tuple[float, float] = (0, 360),
+        angle_range: tuple[float, float] = (0, 360),
         current_angle: float = 0,
         name: str | None = None,
     ) -> RevoluteMateInterface | None:
@@ -156,7 +156,7 @@ class BlenderAssemblyMate(AssemblyMateInterface):
         axis: Any,
         location1: Any,
         location2: Any,
-        position_range: Tuple[float, float] = (0, float("inf")),
+        position_range: tuple[float, float] = (0, float("inf")),
         current_position: float = 0,
         name: str | None = None,
     ) -> LinearMateInterface | None:
@@ -208,8 +208,8 @@ class BlenderAssemblyMate(AssemblyMateInterface):
         axis: Any,
         location1: Any,
         location2: Any,
-        position_range: Tuple[float, float] = (0, float("inf")),
-        angle_range: Tuple[float, float] = (0, 360),
+        position_range: tuple[float, float] = (0, float("inf")),
+        angle_range: tuple[float, float] = (0, 360),
         current_position: float = 0,
         current_angle: float = 0,
         name: str | None = None,
@@ -266,10 +266,10 @@ class BlenderAssemblyMate(AssemblyMateInterface):
         center_point: Any,
         location1: Any,
         location2: Any,
-        angle_ranges: Tuple[
-            Tuple[float, float], Tuple[float, float], Tuple[float, float]
+        angle_ranges: tuple[
+            tuple[float, float], tuple[float, float], tuple[float, float]
         ] = ((0, 360), (0, 360), (0, 360)),
-        current_angles: Tuple[float, float, float] = (0, 0, 0),
+        current_angles: tuple[float, float, float] = (0, 0, 0),
         name: str | None = None,
     ) -> BallMateInterface | None:
         """

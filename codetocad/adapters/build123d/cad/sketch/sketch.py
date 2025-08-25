@@ -2,7 +2,7 @@
 build123d implementation of SketchInterface.
 """
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
 from codetocad.interfaces.cad.sketch.sketch_interface import SketchInterface

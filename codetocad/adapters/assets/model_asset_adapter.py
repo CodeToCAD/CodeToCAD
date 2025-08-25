@@ -9,7 +9,7 @@ import os
 import json
 import time
 import requests
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Dict, Any, Tuple
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 from dataclasses import dataclass
@@ -23,14 +23,14 @@ class ModelAsset:
     name: str
     description: str
     category: str
-    tags: List[str]
-    preview_url: Optional[str] = None
-    download_urls: Dict[str, str] = None  # format -> url
-    file_formats: List[str] = None  # Available formats (stl, obj, etc.)
+    tags: list[str]
+    preview_url: str | None = None
+    download_urls: dict[str, str] = None  # format -> url
+    file_formats: list[str] = None  # Available formats (stl, obj, etc.)
     license: str = "Unknown"
     author: str = ""
-    dimensions: Optional[Tuple[float, float, float]] = None  # x, y, z in mm
-    file_size: Optional[int] = None  # bytes
+    dimensions: tuple[float, float, float] | None = None  # x, y, z in mm
+    file_size: int | None = None  # bytes
 
     def __post_init__(self):
         if self.download_urls is None:
@@ -61,14 +61,14 @@ class ModelAssetAdapter:
         self.last_request_time = time.time()
 
     def search(
-        self, query: str, category: Optional[str] = None, limit: int = 10
-    ) -> List[ModelAsset]:
+        self, query: str, category: str | None = None, limit: int = 10
+    ) -> list[ModelAsset]:
         """Search for 3D models by keywords."""
         raise NotImplementedError("Subclasses must implement search method")
 
     def download(
-        self, asset: ModelAsset, format: str = "stl", cache_dir: Optional[str] = None
-    ) -> Optional[str]:
+        self, asset: ModelAsset, format: str = "stl", cache_dir: str | None = None
+    ) -> str | None:
         """Download 3D model to cache directory."""
         raise NotImplementedError("Subclasses must implement download method")
 
@@ -88,15 +88,15 @@ class ModelAssetManager:
     """Manager for multiple model asset adapters."""
 
     def __init__(self):
-        self.adapters: Dict[str, ModelAssetAdapter] = {}
+        self.adapters: dict[str, ModelAssetAdapter] = {}
 
     def add_adapter(self, name: str, adapter: ModelAssetAdapter):
         """Add a model asset adapter."""
         self.adapters[name] = adapter
 
     def search_all(
-        self, query: str, category: Optional[str] = None, limit: int = 10
-    ) -> Dict[str, List[ModelAsset]]:
+        self, query: str, category: str | None = None, limit: int = 10
+    ) -> dict[str, list[ModelAsset]]:
         """Search all registered adapters."""
         results = {}
 
@@ -115,8 +115,8 @@ class ModelAssetManager:
         adapter_name: str,
         asset: ModelAsset,
         format: str = "stl",
-        cache_dir: Optional[str] = None,
-    ) -> Optional[str]:
+        cache_dir: str | None = None,
+    ) -> str | None:
         """Download model using specific adapter."""
         if adapter_name not in self.adapters:
             print(f"Adapter {adapter_name} not found")

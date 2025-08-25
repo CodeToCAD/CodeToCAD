@@ -2,7 +2,7 @@
 PyBullet implementation of SimulationSensorInterface.
 """
 
-from typing import TYPE_CHECKING, Any, List, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 from codetocad.interfaces.simulation.simulation_sensor_interface import (
     SimulationSensorInterface,
     SensorType,
@@ -20,7 +20,7 @@ class SimulationSensor(SimulationSensorInterface):
 
     def __init__(self):
         super().__init__()
-        self.sensor_data: Dict[str, Any] = {}
+        self.sensor_data: dict[str, Any] = {}
 
     def create_force_sensor(
         self,
@@ -146,7 +146,7 @@ class SimulationSensor(SimulationSensorInterface):
             )
         return Point(0, 0, 0)
 
-    def read_contact_points(self) -> List[Dict[str, Any]]:
+    def read_contact_points(self) -> list[dict[str, Any]]:
         """Read contact point data."""
         if self.attached_body and self.attached_body.body_id is not None:
             return sensor_management.read_contact_data(self.attached_body.body_id)

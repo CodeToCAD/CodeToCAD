@@ -36,7 +36,7 @@ class CameraInterface(ABC):
         self.far_plane: float = 1000.0
 
         # Resolution
-        self.resolution: Tuple[int, int] = (1920, 1080)
+        self.resolution: tuple[int, int] = (1920, 1080)
 
         # Orthographic parameters (used when camera_type is ORTHOGRAPHIC)
         self.orthographic_scale: float = 10.0
@@ -50,7 +50,7 @@ class CameraInterface(ABC):
         return self
 
     def set_position(
-        self, position: Point | Tuple[float, float, float]
+        self, position: Point | tuple[float, float, float]
     ) -> "CameraInterface":
         """Set camera position."""
         if isinstance(position, tuple):
@@ -60,7 +60,7 @@ class CameraInterface(ABC):
         return self
 
     def set_target(
-        self, target: Point | Tuple[float, float, float]
+        self, target: Point | tuple[float, float, float]
     ) -> "CameraInterface":
         """Set camera target (look-at point)."""
         if isinstance(target, tuple):
@@ -70,7 +70,7 @@ class CameraInterface(ABC):
         return self
 
     def set_up_vector(
-        self, up: Point | Tuple[float, float, float]
+        self, up: Point | tuple[float, float, float]
     ) -> "CameraInterface":
         """Set camera up vector."""
         if isinstance(up, tuple):
@@ -118,9 +118,9 @@ class CameraInterface(ABC):
 
     def look_at(
         self,
-        position: Point | Tuple[float, float, float],
-        target: Point | Tuple[float, float, float],
-        up: Point | Tuple[float, float, float] = (0, 0, 1),
+        position: Point | tuple[float, float, float],
+        target: Point | tuple[float, float, float],
+        up: Point | tuple[float, float, float] = (0, 0, 1),
     ) -> "CameraInterface":
         """Set camera position, target, and up vector in one call."""
         self.set_position(position)
@@ -128,7 +128,7 @@ class CameraInterface(ABC):
         self.set_up_vector(up)
         return self
 
-    def get_view_matrix(self) -> Tuple[Tuple[float, ...], ...]:
+    def get_view_matrix(self) -> tuple[tuple[float, ...], ...]:
         """
         Get the view matrix for this camera.
 
@@ -139,7 +139,7 @@ class CameraInterface(ABC):
         # Return identity matrix as placeholder
         return ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1))
 
-    def get_projection_matrix(self) -> Tuple[Tuple[float, ...], ...]:
+    def get_projection_matrix(self) -> tuple[tuple[float, ...], ...]:
         """
         Get the projection matrix for this camera.
 
@@ -164,7 +164,7 @@ class CameraInterface(ABC):
         pass
 
     @abstractmethod
-    def get_ray(self, screen_x: float, screen_y: float) -> Tuple[Point, Point]:
+    def get_ray(self, screen_x: float, screen_y: float) -> tuple[Point, Point]:
         """
         Get a ray from the camera through a screen coordinate.
 

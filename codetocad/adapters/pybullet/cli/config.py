@@ -44,7 +44,7 @@ class PyBulletConfig:
     # File paths
     urdf_search_paths: list[str] = None
     output_directory: str = "pybullet_output"
-    log_file: Optional[str] = None
+    log_file: str | None = None
 
     # Performance settings
     enable_file_caching: bool = True
@@ -58,8 +58,8 @@ class PyBulletConfig:
 
 
 # Global configuration instance
-_global_config: Optional[PyBulletConfig] = None
-_config_file_path: Optional[str] = None
+_global_config: PyBulletConfig | None = None
+_config_file_path: str | None = None
 
 
 def get_default_config_path() -> str:
@@ -70,7 +70,7 @@ def get_default_config_path() -> str:
     return str(config_dir / "config.json")
 
 
-def load_config_from_dict(config_dict: Dict[str, Any]) -> PyBulletConfig:
+def load_config_from_dict(config_dict: dict[str, Any]) -> PyBulletConfig:
     """
     Load configuration from dictionary.
 
@@ -87,7 +87,7 @@ def load_config_from_dict(config_dict: Dict[str, Any]) -> PyBulletConfig:
     return PyBulletConfig(**filtered_dict)
 
 
-def save_config_to_dict(config: PyBulletConfig) -> Dict[str, Any]:
+def save_config_to_dict(config: PyBulletConfig) -> dict[str, Any]:
     """
     Save configuration to dictionary.
 
@@ -140,7 +140,7 @@ def save_config_to_file(config: PyBulletConfig, file_path: str) -> None:
         json.dump(config_dict, f, indent=2)
 
 
-def get_pybullet_config(config_file: Optional[str] = None) -> PyBulletConfig:
+def get_pybullet_config(config_file: str | None = None) -> PyBulletConfig:
     """
     Get PyBullet configuration.
 
@@ -186,8 +186,8 @@ def get_pybullet_config(config_file: Optional[str] = None) -> PyBulletConfig:
 
 
 def set_pybullet_config(
-    config: Optional[PyBulletConfig] = None,
-    config_file: Optional[str] = None,
+    config: PyBulletConfig | None = None,
+    config_file: str | None = None,
     save_to_file: bool = False,
     **kwargs,
 ) -> PyBulletConfig:
@@ -294,7 +294,7 @@ def validate_config(config: PyBulletConfig) -> list[str]:
     return errors
 
 
-def print_config(config: Optional[PyBulletConfig] = None) -> None:
+def print_config(config: PyBulletConfig | None = None) -> None:
     """
     Print configuration in a readable format.
 

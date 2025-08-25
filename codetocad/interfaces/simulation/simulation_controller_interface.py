@@ -8,7 +8,7 @@ including PID controllers, trajectory controllers, and force controllers.
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional, Callable
+from typing import TYPE_CHECKING, Any, Callable
 from codetocad.core.dimensions.point import Point
 
 if TYPE_CHECKING:

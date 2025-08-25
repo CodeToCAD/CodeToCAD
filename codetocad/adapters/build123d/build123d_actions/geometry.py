@@ -2,7 +2,7 @@
 Geometry creation and manipulation functions for build123d.
 """
 
-from typing import List, Tuple
+from typing import Tuple
 import build123d as bd
 from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
 
@@ -25,7 +25,7 @@ def create_edge_from_vertices(v1: bd.Vertex, v2: bd.Vertex) -> bd.Edge:
 
 
 def create_line_edge(
-    start: Tuple[float, float, float], end: Tuple[float, float, float]
+    start: tuple[float, float, float], end: tuple[float, float, float]
 ) -> bd.Edge:
     """Create a line edge between two points."""
     line = bd.Line(start, end)
@@ -36,9 +36,9 @@ def create_line_edge(
 
 
 def create_arc_edge(
-    start: Tuple[float, float, float],
-    mid: Tuple[float, float, float],
-    end: Tuple[float, float, float],
+    start: tuple[float, float, float],
+    mid: tuple[float, float, float],
+    end: tuple[float, float, float],
 ) -> bd.Edge:
     """Create an arc edge through three points."""
     arc = bd.ThreePointArc(start, mid, end)
@@ -48,7 +48,7 @@ def create_arc_edge(
     return edge
 
 
-def create_wire_from_edges(edges: List[bd.Edge]) -> bd.Wire:
+def create_wire_from_edges(edges: list[bd.Edge]) -> bd.Wire:
     """Create a build123d Wire from a list of edges."""
     return bd.Wire(edges)
 
@@ -74,14 +74,14 @@ def create_regular_polygon_wire(
     return bd.RegularPolygon(radius=r, side_count=side_count, rotation=rotation)
 
 
-def create_polyline_wire(points: List[Tuple[float, float]]) -> bd.Polyline:
+def create_polyline_wire(points: list[tuple[float, float]]) -> bd.Polyline:
     """Create a polyline wire from a list of points."""
     return bd.Polyline(*points)
 
 
 # Arc creation functions
 def create_center_arc_wire(
-    center: Tuple[float, float, float],
+    center: tuple[float, float, float],
     radius: LengthType,
     start_angle: float,
     arc_size: float,
@@ -92,17 +92,17 @@ def create_center_arc_wire(
 
 
 def create_three_point_arc_wire(
-    start: Tuple[float, float, float],
-    mid: Tuple[float, float, float],
-    end: Tuple[float, float, float],
+    start: tuple[float, float, float],
+    mid: tuple[float, float, float],
+    end: tuple[float, float, float],
 ) -> bd.ThreePointArc:
     """Create a three-point arc wire."""
     return bd.ThreePointArc(start, mid, end)
 
 
 def create_radius_arc_wire(
-    start_point: Tuple[float, float, float],
-    end_point: Tuple[float, float, float],
+    start_point: tuple[float, float, float],
+    end_point: tuple[float, float, float],
     radius: LengthType,
     short_sagitta: bool = True,
 ) -> bd.RadiusArc:
@@ -112,9 +112,9 @@ def create_radius_arc_wire(
 
 
 def create_tangent_arc_wire(
-    start: Tuple[float, float, float],
-    end: Tuple[float, float, float],
-    tangent: Tuple[float, float, float],
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    tangent: tuple[float, float, float],
     tangent_from_first: bool = True,
 ) -> bd.TangentArc:
     """Create a tangent arc wire."""
@@ -125,8 +125,8 @@ def create_tangent_arc_wire(
 
 # Curve creation functions
 def create_spline_wire(
-    points: List[Tuple[float, float, float]],
-    tangents: List[Tuple[float, float, float]] | None = None,
+    points: list[tuple[float, float, float]],
+    tangents: list[tuple[float, float, float]] | None = None,
     periodic: bool = False,
 ) -> bd.Spline:
     """Create a spline wire."""
@@ -134,8 +134,8 @@ def create_spline_wire(
 
 
 def create_bezier_wire(
-    control_points: List[Tuple[float, float, float]],
-    weights: List[float] | None = None,
+    control_points: list[tuple[float, float, float]],
+    weights: list[float] | None = None,
 ) -> bd.Bezier:
     """Create a bezier curve wire."""
     return bd.Bezier(*control_points, weights=weights)
@@ -143,7 +143,7 @@ def create_bezier_wire(
 
 # Line creation functions
 def create_polar_line_wire(
-    start: Tuple[float, float, float],
+    start: tuple[float, float, float],
     length: LengthType,
     angle: float,
 ) -> bd.PolarLine:
@@ -153,7 +153,7 @@ def create_polar_line_wire(
 
 
 def create_fillet_polyline_wire(
-    points: List[Tuple[float, float, float]],
+    points: list[tuple[float, float, float]],
     radius: LengthType,
     close: bool = False,
 ) -> bd.FilletPolyline:
@@ -172,7 +172,7 @@ def create_ellipse_wire(
     return bd.Ellipse(x_r, y_r, rotation=rotation)
 
 
-def create_polygon_wire(points: List[Tuple[float, float, float]]) -> bd.Polygon:
+def create_polygon_wire(points: list[tuple[float, float, float]]) -> bd.Polygon:
     """Create a polygon wire from points."""
     return bd.Polygon(*points)
 

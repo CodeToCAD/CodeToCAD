@@ -2,7 +2,7 @@
 MuJoCo XML generation utilities.
 """
 
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, Tuple, Optional
 import xml.etree.ElementTree as ET
 from codetocad.core.dimensions.point import Point
 
@@ -27,8 +27,8 @@ def create_basic_xml_structure() -> ET.Element:
 
 def generate_body_xml(
     name: str,
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    orientation: Tuple[float, float, float, float] = (1, 0, 0, 0),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    orientation: tuple[float, float, float, float] = (1, 0, 0, 0),
     mass: float = 1.0,
     **kwargs,
 ) -> ET.Element:
@@ -56,9 +56,9 @@ def generate_body_xml(
 def generate_geom_xml(
     name: str,
     geom_type: str = "box",
-    size: Tuple[float, ...] = (1, 1, 1),
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
-    rgba: Tuple[float, float, float, float] = (0.8, 0.8, 0.8, 1.0),
+    size: tuple[float, ...] = (1, 1, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
+    rgba: tuple[float, float, float, float] = (0.8, 0.8, 0.8, 1.0),
     **kwargs,
 ) -> ET.Element:
     """Generate XML for a geometry."""
@@ -87,10 +87,10 @@ def generate_geom_xml(
 def generate_joint_xml(
     name: str,
     joint_type: str = "hinge",
-    axis: Point | Tuple[float, float, float] = (0, 0, 1),
-    position: Point | Tuple[float, float, float] = (0, 0, 0),
+    axis: Point | tuple[float, float, float] = (0, 0, 1),
+    position: Point | tuple[float, float, float] = (0, 0, 0),
     limited: bool = False,
-    range_limits: Tuple[float, float] | None = None,
+    range_limits: tuple[float, float] | None = None,
     **kwargs,
 ) -> ET.Element:
     """Generate XML for a joint."""
@@ -156,7 +156,7 @@ def generate_sensor_xml(
 
 
 def generate_mesh_xml(
-    name: str, filename: str, scale: Tuple[float, float, float] = (1, 1, 1)
+    name: str, filename: str, scale: tuple[float, float, float] = (1, 1, 1)
 ) -> ET.Element:
     """Generate XML for a mesh asset."""
     mesh = ET.Element("mesh")
@@ -197,9 +197,9 @@ def create_ground_plane_xml() -> ET.Element:
 
 def create_robot_xml(
     name: str,
-    bodies: List[Dict[str, Any]],
-    joints: List[Dict[str, Any]] | None = None,
-    actuators: List[Dict[str, Any]] | None = None,
+    bodies: list[dict[str, Any]],
+    joints: list[dict[str, Any]] | None = None,
+    actuators: list[dict[str, Any]] | None = None,
 ) -> ET.Element:
     """Create XML for a complete robot."""
     root = create_basic_xml_structure()
