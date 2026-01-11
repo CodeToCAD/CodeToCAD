@@ -8,7 +8,7 @@ class Shape:
     """Common solid generation methods."""
 
     def __new__(cls, *args, **kwargs):
-        raise TypeError("Do not instantiate a Shape class, use its methods instead.")
+        raise TypeError(f"Do not instantiate a {cls.__name__} class, use its methods instead.")
     
     @staticmethod
     def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0, ) -> Solid:

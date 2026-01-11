@@ -1,15 +1,21 @@
+from dataclasses import dataclass
 import math
 
+from codetocad.core.cad.native import NativeObject
 from codetocad.core.dimensions.angle import Angle, AngleType
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
 from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
 
+@dataclass
+class Sketch(NativeObject):
+    """A sketch is a 2D drawing in a plane."""
+    
 
 class Draw:
     """Common edge generation methods."""
 
     def __new__(cls, *args, **kwargs):
-        raise TypeError("Do not instantiate a Draw class, use its methods instead.")
+        raise TypeError(f"Do not instantiate a {cls.__name__}  class, use its methods instead.")
 
     @staticmethod
     def line(v1: Vertex, v2: Vertex) -> Edge:

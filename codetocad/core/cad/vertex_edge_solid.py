@@ -55,6 +55,8 @@ class Edge(NativeObject):
 
     is_construction: bool = False
 
+    is_closed: bool = False
+
     is_hidden: bool = False
 
 
