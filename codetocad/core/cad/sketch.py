@@ -170,14 +170,14 @@ class Draw:
         return Edge(v1=v1, v2=v2, knots=knots)
 
     @staticmethod
-    def arc(
+    def _arc(
         center: Vertex,
         radius: LengthType,
         start_angle: AngleType,
         end_angle: AngleType,
         curve_type: CurveType = CurveType.BEZIER,
     ) -> Edge:
-        """Create an arc from center point with start and end angles."""
+        """Create an arc from center point with start and end angles (internal method)."""
         r = LengthExp(radius)
         start_rad = Angle(start_angle).value
         end_rad = Angle(end_angle).value
@@ -209,13 +209,13 @@ class Draw:
         return Edge(v1=segments[0].v1, v2=segments[-1].v2, sub_edges=segments)
 
     @staticmethod
-    def arc_3point(
+    def arc(
         start: Vertex,
         mid: Vertex,
         end: Vertex,
         curve_type: CurveType = CurveType.BEZIER,
     ) -> Edge:
-        """Create an arc passing through three points."""
+        """Create an arc passing through three points (start, mid, end)."""
         # Calculate the center and radius from three points
         # Using circumcenter formula
         ax, ay = start._x.value, start._y.value
@@ -267,7 +267,139 @@ class Draw:
             # Go the other way
             start_angle, end_angle = end_angle, start_angle
 
-        return Draw.arc(center, radius, start_angle, end_angle, curve_type)
+        return Draw._arc(center, radius, start_angle, end_angle, curve_type)
+
+    @staticmethod
+    def arc_center(
+        start: Vertex,
+        end: Vertex,
+        radius: LengthType,
+        short_sagitta: bool = True,
+        curve_type: CurveType = CurveType.BEZIER,
+    ) -> Edge:
+        """Create an arc from start to end with a given radius.
+
+        Args:
+            start: Start vertex of the arc
+            end: End vertex of the arc
+            radius: Radius of the arc
+            short_sagitta: If True, use the shorter arc; if False, use the longer arc
+            curve_type: Type of curve to use (BEZIER or NURBS)
+
+        Returns:
+            Edge representing the arc
+        """
+        r = LengthExp(radius)
+
+        # Calculate the chord between start and end
+        ax, ay = start._x.value, start._y.value
+        bx, by = end._x.value, end._y.value
+
+        # Midpoint of the chord
+        mx, my = (ax + bx) / 2, (ay + by) / 2
+
+        # Chord length and half-chord
+        dx, dy = bx - ax, by - ay
+        chord_length = math.sqrt(dx * dx + dy * dy)
+        half_chord = chord_length / 2
+
+        if r.value < half_chord:
+            raise ValueError(f"Radius {r.value} is too small for chord length {chord_length}")
+
+        # Distance from midpoint to center
+        h = math.sqrt(r.value ** 2 - half_chord ** 2)
+
+        # Unit normal to the chord (perpendicular direction)
+        # Two possible centers: one on each side of the chord
+        nx, ny = -dy / chord_length, dx / chord_length
+
+        # Choose center based on short_sagitta
+        if short_sagitta:
+            center_x = mx + h * nx
+            center_y = my + h * ny
+        else:
+            center_x = mx - h * nx
+            center_y = my - h * ny
+
+        center = Vertex(x=center_x, y=center_y, z=start._z.value)
+
+        # Calculate angles
+        start_angle = math.atan2(ay - center_y, ax - center_x)
+        end_angle = math.atan2(by - center_y, bx - center_x)
+
+        return Draw._arc(center, r, start_angle, end_angle, curve_type)
+
+    @staticmethod
+    def tangent_arc(
+        start: Vertex,
+        end: Vertex,
+        tangent: Vertex,
+        tangent_from_first: bool = True,
+        curve_type: CurveType = CurveType.BEZIER,
+    ) -> Edge:
+        """Create an arc from start to end with a specified tangent direction.
+
+        Args:
+            start: Start vertex of the arc
+            end: End vertex of the arc
+            tangent: Tangent direction vector (as a Vertex)
+            tangent_from_first: If True, tangent is at start; if False, tangent is at end
+            curve_type: Type of curve to use (BEZIER or NURBS)
+
+        Returns:
+            Edge representing the arc
+        """
+        # Get coordinates
+        ax, ay = start._x.value, start._y.value
+        bx, by = end._x.value, end._y.value
+        tx, ty = tangent._x.value, tangent._y.value
+
+        # Normalize tangent vector
+        t_len = math.sqrt(tx * tx + ty * ty)
+        if t_len < 1e-10:
+            raise ValueError("Tangent vector cannot be zero")
+        tx, ty = tx / t_len, ty / t_len
+
+        # The center lies on a line perpendicular to the tangent passing through
+        # the tangent point, and equidistant from both start and end
+        if tangent_from_first:
+            # Tangent at start point
+            # Center is on the perpendicular at start: (ax - ty*t, ay + tx*t)
+            # Distance from center to start equals distance from center to end
+            # Let center be at (ax - ty*t, ay + tx*t), then:
+            # t = 0 gives center at start (invalid)
+            # We need: (ax - ty*t - ax)^2 + (ay + tx*t - ay)^2 = (ax - ty*t - bx)^2 + (ay + tx*t - by)^2
+            # (-ty*t)^2 + (tx*t)^2 = (ax - ty*t - bx)^2 + (ay + tx*t - by)^2
+            # t^2 = (ax - bx - ty*t)^2 + (ay - by + tx*t)^2
+            # t^2 = (ax-bx)^2 - 2*(ax-bx)*ty*t + ty^2*t^2 + (ay-by)^2 + 2*(ay-by)*tx*t + tx^2*t^2
+            # t^2 = d^2 + t^2 - 2*t*((ax-bx)*ty - (ay-by)*tx)  where d^2 = (ax-bx)^2 + (ay-by)^2
+            # 0 = d^2 - 2*t*((ax-bx)*ty - (ay-by)*tx)
+            # t = d^2 / (2*((ax-bx)*ty - (ay-by)*tx))
+            d2 = (ax - bx) ** 2 + (ay - by) ** 2
+            denom = 2 * ((ax - bx) * ty - (ay - by) * tx)
+            if abs(denom) < 1e-10:
+                raise ValueError("Tangent is parallel to the line from start to end")
+            t = d2 / denom
+            center_x = ax - ty * t
+            center_y = ay + tx * t
+        else:
+            # Tangent at end point
+            d2 = (bx - ax) ** 2 + (by - ay) ** 2
+            denom = 2 * ((bx - ax) * ty - (by - ay) * tx)
+            if abs(denom) < 1e-10:
+                raise ValueError("Tangent is parallel to the line from start to end")
+            t = d2 / denom
+            center_x = bx - ty * t
+            center_y = by + tx * t
+
+        center = Vertex(x=center_x, y=center_y, z=start._z.value)
+        radius = math.sqrt((ax - center_x) ** 2 + (ay - center_y) ** 2)
+
+        # Calculate angles
+        start_angle = math.atan2(ay - center_y, ax - center_x)
+        end_angle = math.atan2(by - center_y, bx - center_x)
+
+        return Draw._arc(center, radius, start_angle, end_angle, curve_type)
 
     @staticmethod
     def circle(
@@ -276,7 +408,7 @@ class Draw:
         curve_type: CurveType = CurveType.BEZIER,
     ) -> Edge:
         """Create a full circle."""
-        return Draw.arc(center, radius, 0, "360deg", curve_type)
+        return Draw._arc(center, radius, 0, "360deg", curve_type)
 
     @staticmethod
     def spline(

@@ -76,39 +76,98 @@ class Draw(BaseDraw):
     ) -> Edge:
         """Create a full circle."""
         # Create Edge with arc sub-edges from parent
-        arc_edge = BaseDraw.arc(center, radius, 0, "360deg", curve_type)
-        
+        arc_edge = BaseDraw._arc(center, radius, 0, "360deg", curve_type)
+
         # Create native build123d circle
         native_circle = create_circle_wire(radius)
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
         arc_edge.native = native_circle
-        
+
         return arc_edge
 
     @staticmethod
-    def arc(
+    def _arc(
         center: Vertex,
         radius: LengthType,
         start_angle: AngleType,
         end_angle: AngleType,
         curve_type: CurveType = CurveType.BEZIER,
     ) -> Edge:
-        """Create an arc from center point with start and end angles."""
+        """Create an arc from center point with start and end angles (internal method)."""
         # Use parent class for the Edge structure
-        arc_edge = BaseDraw.arc(center, radius, start_angle, end_angle, curve_type)
-        
+        arc_edge = BaseDraw._arc(center, radius, start_angle, end_angle, curve_type)
+
         # Create native build123d arc
         r = float(LengthExp(radius))
         start_deg = math.degrees(Angle(start_angle).value)
         end_deg = math.degrees(Angle(end_angle).value)
         arc_size = end_deg - start_deg
-        
+
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_arc = bd.CenterArc((cx, cy, cz), r, start_deg, arc_size)
         arc_edge.native = native_arc
-        
+
+        return arc_edge
+
+    @staticmethod
+    def arc(
+        start: Vertex,
+        mid: Vertex,
+        end: Vertex,
+        curve_type: CurveType = CurveType.BEZIER,
+    ) -> Edge:
+        """Create an arc passing through three points (start, mid, end)."""
+        # Use parent class for the Edge structure
+        arc_edge = BaseDraw.arc(start, mid, end, curve_type)
+
+        # Create native build123d three-point arc
+        native_arc = bd.ThreePointArc(start.to_tuple(), mid.to_tuple(), end.to_tuple())
+        arc_edge.native = native_arc
+
+        return arc_edge
+
+    @staticmethod
+    def arc_center(
+        start: Vertex,
+        end: Vertex,
+        radius: LengthType,
+        short_sagitta: bool = True,
+        curve_type: CurveType = CurveType.BEZIER,
+    ) -> Edge:
+        """Create an arc from start to end with a given radius."""
+        # Use parent class for the Edge structure
+        arc_edge = BaseDraw.arc_center(start, end, radius, short_sagitta, curve_type)
+
+        # Create native build123d radius arc
+        r = float(LengthExp(radius))
+        native_arc = bd.RadiusArc(start.to_tuple(), end.to_tuple(), r, short_sagitta)
+        arc_edge.native = native_arc
+
+        return arc_edge
+
+    @staticmethod
+    def tangent_arc(
+        start: Vertex,
+        end: Vertex,
+        tangent: Vertex,
+        tangent_from_first: bool = True,
+        curve_type: CurveType = CurveType.BEZIER,
+    ) -> Edge:
+        """Create an arc from start to end with a specified tangent direction."""
+        # Use parent class for the Edge structure
+        arc_edge = BaseDraw.tangent_arc(start, end, tangent, tangent_from_first, curve_type)
+
+        # Create native build123d tangent arc
+        native_arc = bd.TangentArc(
+            start.to_tuple(),
+            end.to_tuple(),
+            tangent=tangent.to_tuple(),
+            tangent_from_first=tangent_from_first,
+        )
+        arc_edge.native = native_arc
+
         return arc_edge
 
     @staticmethod

@@ -46,6 +46,17 @@ class Shape(BaseShape):
     def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0) -> Solid:
         """Extrude a 2D shape into a 3D solid."""
         native = edge.native
+
+        # If edge has no native but has sub_edges, combine sub_edge natives into a Wire
+        if native is None and edge.sub_edges:
+            native_edges = []
+            for sub in edge.sub_edges:
+                if sub.native is not None:
+                    native_edges.append(sub.native)
+            if native_edges:
+                # Combine edges into a Curve (Wire)
+                native = bd.Curve() + native_edges
+
         if native is None:
             raise ValueError("Edge has no native build123d object")
 

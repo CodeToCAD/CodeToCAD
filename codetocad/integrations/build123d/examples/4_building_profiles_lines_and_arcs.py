@@ -38,23 +38,9 @@ def main() -> Solid:
 
     line1 = Draw.line(v1, v2)
     line2 = Draw.line(v2, v3)
-    arc = Draw.arc_3point(v3, Vertex(x=width, y=width * 1.5, z=0), v4)
+    arc = Draw.arc(v3, Vertex(x=width, y=width * 1.5, z=0), v4)
     line3 = Draw.line(v4, v1)
     edge = Edge(v1=v1, v2=v1, sub_edges=[line1, line2, arc, line3])
-
-    # # Note: For this example we use build123d directly for ThreePointArc
-    # # since Draw.arc is center-based, not three-point based
-    # lines = bd.Curve() + [
-    #     bd.Line((0, 0), (length, 0)),
-    #     bd.Line((length, 0), (length, width)),
-    #     bd.ThreePointArc((length, width), (width, width * 1.5), (0.0, width)),
-    #     bd.Line((0.0, width), (0, 0)),
-    # ]
-    # sk4 = bd.make_face(lines)
-
-    # # Wrap in Edge for extrusion
-    # edge = Edge(v1=v1, v2=v1)
-    # edge.native = sk4
 
     result = Shape.extrude(edge, height=thickness)
 
