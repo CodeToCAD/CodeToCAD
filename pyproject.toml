@@ -1,17 +1,15 @@
 [project]
 name = "codetocad"
 version = "0.20.0"
-description = "Automate Digital Manufacturing With Your Existing Tools"
+description = "A framework for mechatronics design and digital manufacturing."
 authors = [
     { name="Shehab Attia", email="shehab@codethatdown.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 dependencies = [
     "click>=8.1.8",
-    "ipykernel>=6.29.5",
-    "ipywidgets>=8.1.7",
     "numpy>=2.3.2",
 ]
 
@@ -37,11 +35,15 @@ mujoco = [
 kicad = [
     "kicad-python>=0.4.0",
 ]
+pycam = [
+    "pycam>=0.6.4",
+]
 
 
 [tool.setuptools.packages.find]
-exclude = ["devlog*", "tests*"]
 where = ["."]
+include = ["codetocad*"]
+exclude = ["devlog*", "tests*", ".venv*"]
 
 [tool.black]
 line-length = 88

@@ -1,0 +1,55 @@
+from dataclasses import dataclass, asdict
+import dataclasses
+import sys
+
+
+@dataclass
+class LauncherArgs:
+    script_file_path_or_action: str
+    launcher: str
+    launcher_location: str | None = None
+    background: bool | None = False
+    document_name: str | None = None
+    config_file_path: str | None = None
+    debug: bool | None = False
+
+    @staticmethod
+    def get_sample_launcher_name():
+        return "sample"
+
+    def is_sample_launcher(self):
+        return self.launcher == LauncherArgs.get_sample_launcher_name()
+
+    def to_subprocess_args(self):
+        args = asdict(
+            self, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+        )
+
+        args_list = [self.launcher_location or self.launcher]
+
+        del args["launcher"]
+        del args["launcher_location"]
+
+        for key, value in args.items():
+            args_list.append(f"--{key}")
+            args_list.append(str(value))
+
+        return args_list
+
+    @staticmethod
+    def from_subprocess_args():
+        launcher = LauncherArgs(
+            script_file_path_or_action="",
+            launcher="",
+        )
+
+        fields = dataclasses.fields(launcher)
+
+        for index in range(1, len(sys.argv)):
+            if sys.argv[index].replace("--", "") in fields:
+                setattr(
+                    launcher, sys.argv[index].replace("--", ""), sys.argv[index + 1]
+                )
+                index += 1
+
+        return launcher
