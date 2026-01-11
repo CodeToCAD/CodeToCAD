@@ -52,12 +52,18 @@ class Shape:
         raise NotImplementedError("Method not implemented.")
 
     @staticmethod
-    def fillet(edge: Edge, radius: LengthType) -> Solid:
+    def fillet(
+        solid: Solid,
+        length: LengthType,
+        edges: "list[Edge] | None" = None,) -> Solid:
         """Round the corners of an edge."""
         raise NotImplementedError("Method not implemented.")
 
     @staticmethod
-    def chamfer(edge: Edge, distance: LengthType) -> Solid:
+    def chamfer(
+        solid: Solid,
+        length: LengthType,
+        edges: "list[Edge] | None" = None,) -> Solid:
         """Bevel the corners of an edge."""
         raise NotImplementedError("Method not implemented.")
 

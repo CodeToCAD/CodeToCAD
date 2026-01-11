@@ -7,6 +7,7 @@ https://build123d.readthedocs.io/en/latest/introductory_examples.html#selectors-
 import build123d as bd
 
 from codetocad.core.cad.vertex_edge_solid import Vertex, Solid
+from codetocad.core.enums.axis import Axis
 from codetocad.integrations.build123d.cad import Shape
 from codetocad.integrations.open3d.adapter.show import show_in_open3d
 
@@ -22,31 +23,22 @@ def original() -> bd.Part:
 
 
 def main() -> Solid:
-    """CodeToCAD implementation using Shape class.
-
-    Note: For fillet and chamfer, we need to work with the native
-    build123d objects since edge selection requires the solid context.
-    """
+    """CodeToCAD implementation using Shape class."""
     length, width, thickness = 80.0, 60.0, 10.0
 
     # Create the box
     center = Vertex(x=0, y=0, z=0)
     box = Shape.cuboid(center, width=length, height=width, depth=thickness)
 
-    # Get native part for edge operations
-    native_part = box.native
+    # Get top edges (highest Z group) and apply chamfer
+    top_edges = Shape.edges(box, group_axis=Axis.Z, group_index=-1)
+    box = Shape.chamfer(box, length=4, edges=top_edges)
 
-    # Apply chamfer to top edges (highest Z group)
-    native_part = bd.chamfer(native_part.edges().group_by(bd.Axis.Z)[-1], length=4)
+    # Get vertical edges (parallel to Z axis) and apply fillet
+    vertical_edges = Shape.edges(box, filter_axis=Axis.Z)
+    box = Shape.fillet(box, radius=5, edges=vertical_edges)
 
-    # Apply fillet to vertical edges (filtered by Z axis)
-    native_part = bd.fillet(native_part.edges().filter_by(bd.Axis.Z), radius=5)
-
-    # Wrap result back in Solid
-    result = Solid(is_hidden=False)
-    result.native = native_part
-
-    return result
+    return box
 
 
 if __name__ == "__main__":

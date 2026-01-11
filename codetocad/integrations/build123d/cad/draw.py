@@ -8,6 +8,7 @@ import build123d as bd
 
 from codetocad.core.cad.sketch import Draw as BaseDraw
 from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
+from codetocad.core.enums.plane import Plane
 from codetocad.core.dimensions.angle import Angle, AngleType
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
 
@@ -252,6 +253,107 @@ class Draw(BaseDraw):
         spline_edge.native = native_spline
 
         return spline_edge
+
+    @staticmethod
+    def polyline(points: "list[tuple[float, float]] | list[Vertex]") -> Edge:
+        """Create a polyline from a list of points.
+
+        Args:
+            points: List of 2D coordinate tuples (x, y) or Vertex objects
+
+        Returns:
+            Edge representing the polyline
+        """
+        # Use parent class for the Edge structure
+        poly_edge = BaseDraw.polyline(points)
+
+        # Convert to tuples for build123d
+        point_tuples = []
+        for p in points:
+            if isinstance(p, Vertex):
+                point_tuples.append((p._x.value, p._y.value))
+            else:
+                point_tuples.append(p)
+
+        # Create native build123d polyline
+        native_polyline = bd.Polyline(point_tuples)
+        poly_edge.native = native_polyline
+
+        return poly_edge
+
+    @staticmethod
+    def mirror(
+        edge: Edge,
+        across: "Plane | Edge",
+    ) -> Edge:
+        """Mirror an edge across a plane or edge, with options to union and create a face.
+
+        Args:
+            edge: Edge to mirror
+            across: Plane (XY, XZ, or YZ) or Edge to mirror across
+            union: If True, combine the original and mirrored edges (default True)
+            make_face: If True, create a face from the result (default False)
+            face_plane: Plane to place the face on (defaults to across if across is a Plane)
+
+        Returns:
+            Mirrored edge (combined with original if union=True, as face if make_face=True)
+        """
+        union: bool = True
+        make_face: bool = False
+        face_plane: "Plane | None" = None
+        
+        native = edge.native
+        if native is None:
+            raise ValueError("Edge has no native build123d object")
+
+        # Determine the build123d plane for mirroring
+        if isinstance(across, Edge):
+            # Mirror across an Edge - use the edge's native as the mirror plane
+            mirror_native = across.native
+            if mirror_native is None:
+                raise ValueError("Mirror edge has no native build123d object")
+            native_mirrored = bd.mirror(native, mirror_native)
+            bd_plane = None  # Will use face_plane for make_face
+        else:
+            # Mirror across a Plane
+            if across == Plane.XY:
+                bd_plane = bd.Plane.XY
+            elif across == Plane.XZ:
+                bd_plane = bd.Plane.XZ
+            else:  # YZ
+                bd_plane = bd.Plane.YZ
+            native_mirrored = bd.mirror(native, bd_plane)
+
+        # Union if requested
+        if union:
+            native_result = native + native_mirrored
+        else:
+            native_result = native_mirrored
+
+        # Make face if requested
+        if make_face:
+            # Determine the face plane
+            if face_plane is not None:
+                if face_plane == Plane.XY:
+                    face_bd_plane = bd.Plane.XY
+                elif face_plane == Plane.XZ:
+                    face_bd_plane = bd.Plane.XZ
+                else:
+                    face_bd_plane = bd.Plane.YZ
+            elif bd_plane is not None:
+                face_bd_plane = bd_plane
+            else:
+                face_bd_plane = bd.Plane.XY  # Default
+
+            # Transform and make face
+            transformed = face_bd_plane * native_result
+            native_result = bd.make_face(transformed)
+
+        # Create the result edge
+        result_edge = BaseDraw.mirror(edge, across)
+        result_edge.native = native_result
+
+        return result_edge
 
     @staticmethod
     def import_file(file_path: str) -> Edge:  # noqa: ARG004

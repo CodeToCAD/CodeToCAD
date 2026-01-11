@@ -7,6 +7,7 @@ import build123d as bd
 from codetocad.core.cad.shape import Shape as BaseShape
 from codetocad.core.cad.sketch import Draw as BaseDraw
 from codetocad.core.cad.vertex_edge_solid import Edge, Solid, Vertex
+from codetocad.core.enums.axis import Axis
 from codetocad.core.dimensions.angle import AngleType
 from codetocad.core.dimensions.length_expression import LengthType
 
@@ -149,32 +150,136 @@ class Shape(BaseShape):
         return solid
 
     @staticmethod
-    def fillet(edge: Edge, radius: LengthType) -> Solid:
-        """Round the corners of an edge."""
-        native = edge.native
-        if native is None:
-            raise ValueError("Edge has no native build123d object")
+    def fillet(
+        solid: Solid,
+        radius: LengthType,
+        edges: "list[Edge] | None" = None,
+    ) -> Solid:
+        """Apply fillet to edges on a solid.
 
-        result = fillet_edges(
-            native, [native] if isinstance(native, bd.Edge) else None, radius
-        )
-        solid = Solid(is_hidden=False)
-        solid.native = result
-        return solid
+        Args:
+            solid: Solid to fillet
+            radius: Fillet radius
+            edges: List of edges to fillet, or None to fillet ALL edges
+
+        Returns:
+            Solid with filleted edges
+        """
+        from codetocad.core.dimensions.length_expression import LengthExp
+
+        native = solid.native
+        if native is None:
+            raise ValueError("Solid has no native build123d object")
+
+        r = float(LengthExp(radius))
+
+        if edges is None:
+            # Apply to all edges
+            native_edges = native.edges()
+        else:
+            # Get native edges from the provided Edge objects
+            native_edges = [e.native for e in edges if e.native is not None]
+
+        result = bd.fillet(native_edges, radius=r)
+
+        new_solid = Solid(is_hidden=False)
+        new_solid.native = result
+        return new_solid
 
     @staticmethod
-    def chamfer(edge: Edge, distance: LengthType) -> Solid:
-        """Bevel the corners of an edge."""
-        native = edge.native
-        if native is None:
-            raise ValueError("Edge has no native build123d object")
+    def chamfer(
+        solid: Solid,
+        length: LengthType,
+        edges: "list[Edge] | None" = None,
+    ) -> Solid:
+        """Apply chamfer to edges on a solid.
 
-        result = chamfer_edges(
-            native, [native] if isinstance(native, bd.Edge) else None, distance
-        )
-        solid = Solid(is_hidden=False)
-        solid.native = result
-        return solid
+        Args:
+            solid: Solid to chamfer
+            length: Chamfer length
+            edges: List of edges to chamfer, or None to chamfer ALL edges
+
+        Returns:
+            Solid with chamfered edges
+        """
+        from codetocad.core.dimensions.length_expression import LengthExp
+
+        native = solid.native
+        if native is None:
+            raise ValueError("Solid has no native build123d object")
+
+        dist = float(LengthExp(length))
+
+        if edges is None:
+            # Apply to all edges
+            native_edges = native.edges()
+        else:
+            # Get native edges from the provided Edge objects
+            native_edges = [e.native for e in edges if e.native is not None]
+
+        result = bd.chamfer(native_edges, length=dist)
+
+        new_solid = Solid(is_hidden=False)
+        new_solid.native = result
+        return new_solid
+
+    @staticmethod
+    def edges(
+        solid: Solid,
+        filter_axis: "Axis | None" = None,
+        group_axis: "Axis | None" = None,
+        group_index: int = -1,
+    ) -> "list[Edge]":
+        """Get edges from a solid with optional filtering.
+
+        Args:
+            solid: Solid to get edges from
+            filter_axis: Filter edges parallel to this axis (optional)
+            group_axis: Group edges by position along this axis, then select group (optional)
+            group_index: Index of group to select (default -1 for last group)
+
+        Returns:
+            List of Edge objects
+        """
+        native = solid.native
+        if native is None:
+            raise ValueError("Solid has no native build123d object")
+
+        # Get all edges
+        native_edges = native.edges()
+
+        if group_axis is not None:
+            # Group edges by axis position and select the group
+            bd_axis = Shape._get_bd_axis(group_axis)
+            edge_groups = native_edges.group_by(bd_axis)
+            native_edges = edge_groups[group_index]
+
+        if filter_axis is not None:
+            # Filter edges parallel to the axis
+            bd_axis = Shape._get_bd_axis(filter_axis)
+            native_edges = native_edges.filter_by(bd_axis)
+
+        # Convert to Edge objects
+        result: list[Edge] = []
+        for native_edge in native_edges:
+            edge = Edge(
+                v1=Vertex(x=0, y=0, z=0),  # Placeholder vertices
+                v2=Vertex(x=0, y=0, z=0),
+            )
+            edge.native = native_edge
+            result.append(edge)
+
+        return result
+
+    @staticmethod
+    def _get_bd_axis(axis: Axis) -> bd.Axis:
+        """Convert our Axis enum to build123d Axis."""
+        if axis == Axis.X:
+            return bd.Axis.X
+        elif axis == Axis.Y:
+            return bd.Axis.Y
+        else:
+            return bd.Axis.Z
 
     @staticmethod
     def mirror(solid: Solid, across: "Edge|Solid") -> Solid:

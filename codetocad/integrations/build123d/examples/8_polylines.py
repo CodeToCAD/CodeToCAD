@@ -7,8 +7,9 @@ https://build123d.readthedocs.io/en/latest/introductory_examples.html#polylines
 
 import build123d as bd
 
-from codetocad.core.cad.vertex_edge_solid import Solid, Vertex, Edge
-from codetocad.integrations.build123d.cad import Shape
+from codetocad.core.cad.vertex_edge_solid import Solid
+from codetocad.core.enums.plane import Plane
+from codetocad.integrations.build123d.cad import Shape, Draw
 from codetocad.integrations.open3d.adapter.show import show_in_open3d
 
 
@@ -48,18 +49,14 @@ def main() -> Solid:
         (0, H / -2.0),
     ]
 
-    # Create polyline using build123d directly for this complex case
-    ln = bd.Polyline(pts)
-    ln += bd.mirror(ln, bd.Plane.YZ)
+    # Create polyline using Draw class
+    polyline = Draw.polyline(pts)
 
-    sk8 = bd.make_face(bd.Plane.YZ * ln)
+    # Mirror across YZ plane, union with original, and create face
+    face = Draw.mirror(polyline, Plane.YZ, union=True, make_face=True, face_plane=Plane.YZ)
 
-    # Wrap in Edge for extrusion
-    v1 = Vertex(x=0, y=H / 2.0, z=0)
-    edge = Edge(v1=v1, v2=v1)
-    edge.native = sk8
-
-    result = Shape.extrude(edge, height=-L)
+    # Extrude the face
+    result = Shape.extrude(face, height=-L)
 
     return result
 

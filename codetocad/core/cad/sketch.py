@@ -5,6 +5,7 @@ from codetocad.core.cad.native import NativeObject
 from codetocad.core.dimensions.angle import Angle, AngleType
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
 from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
+from codetocad.core.enums.plane import Plane
 
 
 @dataclass
@@ -511,6 +512,79 @@ class Draw:
             return Edge(
                 v1=vertices[0], v2=vertices[-1], sub_edges=segments, knots=knots
             )
+
+    @staticmethod
+    def polyline(points: "list[tuple[float, float]] | list[Vertex]") -> Edge:
+        """Create a polyline from a list of points.
+
+        Args:
+            points: List of 2D coordinate tuples (x, y) or Vertex objects
+
+        Returns:
+            Edge representing the polyline
+        """
+        if len(points) < 2:
+            raise ValueError("Polyline requires at least 2 points")
+
+        # Convert tuples to vertices if needed
+        vertices: list[Vertex] = []
+        for p in points:
+            if isinstance(p, Vertex):
+                vertices.append(p)
+            else:
+                vertices.append(Vertex(x=p[0], y=p[1], z=0))
+
+        # Create line segments
+        edges: list[Edge] = []
+        for i in range(len(vertices) - 1):
+            edges.append(Draw.line(vertices[i], vertices[i + 1]))
+
+        # Check if closed (first and last points are the same)
+        is_closed = (
+            abs(vertices[0]._x.value - vertices[-1]._x.value) < 1e-10 and
+            abs(vertices[0]._y.value - vertices[-1]._y.value) < 1e-10
+        )
+
+        if is_closed:
+            return Edge(v1=vertices[0], v2=vertices[0], sub_edges=edges)
+        else:
+            return Edge(v1=vertices[0], v2=vertices[-1], sub_edges=edges)
+
+    @staticmethod
+    def mirror(edge: Edge, across: "Plane | Edge") -> Edge:
+        """Mirror an edge across a plane or edge.
+
+        Args:
+            edge: Edge to mirror
+            across: Plane (XY, XZ, or YZ) or Edge to mirror across
+
+        Returns:
+            Mirrored edge
+        """
+        def mirror_vertex(v: Vertex, mirror_plane: Plane) -> Vertex:
+            """Mirror a single vertex across a plane."""
+            x, y, z = v._x.value, v._y.value, v._z.value
+            if mirror_plane == Plane.XY:
+                return Vertex(x=x, y=y, z=-z)
+            elif mirror_plane == Plane.XZ:
+                return Vertex(x=x, y=-y, z=z)
+            else:  # YZ
+                return Vertex(x=-x, y=y, z=z)
+
+        # Handle Edge as mirror plane - not implemented in base class
+        if isinstance(across, Edge):
+            raise NotImplementedError("Mirror across Edge is not implemented in base class")
+
+        # Mirror across a Plane
+        new_v1 = mirror_vertex(edge.v1, across)
+        new_v2 = mirror_vertex(edge.v2, across)
+
+        # Mirror sub-edges if present
+        new_sub_edges = None
+        if edge.sub_edges:
+            new_sub_edges = [Draw.mirror(sub, across) for sub in edge.sub_edges]
+
+        return Edge(v1=new_v1, v2=new_v2, sub_edges=new_sub_edges, knots=edge.knots)
 
     @staticmethod
     def text(text: str, font: str, size: LengthType) -> Edge:
