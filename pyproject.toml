@@ -6,7 +6,7 @@ authors = [
     { name="Shehab Attia", email="shehab@codethatdown.com" },
 ]
 readme = "README.md"
-requires-python = "==3.12"
+requires-python = "==3.12.*"
 
 dependencies = [
     "click>=8.1.8",
@@ -21,14 +21,14 @@ open3d = [
     "open3d>=0.19.0",
 ]
 build123d = [
-    "build123d>=0.9.1",
+    "build123d>=0.10.0",
 ]
 blender = [
     "fake-bpy-module-latest>=20250630",
 ]
-pybullet = [
-    "pybullet[extras]>=3.2.7"
-]
+# pybullet = [
+#     "pybullet[extras]>=3.2.7"
+# ]
 mujoco = [
     "mujoco[viewer]>=3.0.0",
 ]

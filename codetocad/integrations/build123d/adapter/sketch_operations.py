@@ -4,7 +4,7 @@ Sketch and wire operations for build123d.
 
 from typing import Tuple, Optional
 import build123d as bd
-from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
+from codetocad.core.dimensions.length_expression import LengthType, LengthExp
 
 
 def create_sketch_context() -> bd.BuildSketch:
@@ -32,8 +32,8 @@ def add_rectangle_to_sketch(
     center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add a rectangle to a sketch context."""
-    w = float(LengthExpression(width))
-    h = float(LengthExpression(height))
+    w = float(LengthExp(width))
+    h = float(LengthExp(height))
 
     with sketch_context:
         bd.Rectangle(w, h, align=(bd.Align.CENTER, bd.Align.CENTER))
@@ -45,7 +45,7 @@ def add_circle_to_sketch(
     center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add a circle to a sketch context."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
 
     with sketch_context:
         bd.Circle(r)
@@ -59,7 +59,7 @@ def add_arc_to_sketch(
     center: tuple[float, float] = (0, 0),
 ) -> None:
     """Add an arc to a sketch context."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
 
     with sketch_context:
         bd.Arc(
@@ -122,7 +122,7 @@ def make_face_from_sketch(sketch_context: bd.BuildSketch) -> bd.Face:
 
 def extrude_sketch(sketch_context: bd.BuildSketch, distance: LengthType) -> bd.Solid:
     """Extrude a sketch to create a solid."""
-    dist = float(LengthExpression(distance))
+    dist = float(LengthExp(distance))
     face = make_face_from_sketch(sketch_context)
     return bd.Solid.extrude(face, bd.Vector(0, 0, dist))
 

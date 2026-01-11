@@ -1,6 +1,6 @@
 version = 1
 revision = 1
-requires-python = "==3.12"
+requires-python = "==3.12.*"
 
 [[package]]
 name = "absl-py"
@@ -323,9 +323,6 @@ mujoco = [
 open3d = [
     { name = "open3d" },
 ]
-pybullet = [
-    { name = "pybullet" },
-]
 pycam = [
     { name = "pycam" },
 ]
@@ -340,17 +337,16 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "build123d", marker = "extra == 'build123d'", specifier = ">=0.9.1" },
+    { name = "build123d", marker = "extra == 'build123d'", specifier = ">=0.10.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "fake-bpy-module-latest", marker = "extra == 'blender'", specifier = ">=20250630" },
     { name = "kicad-python", marker = "extra == 'kicad'", specifier = ">=0.4.0" },
     { name = "mujoco", extras = ["viewer"], marker = "extra == 'mujoco'", specifier = ">=3.0.0" },
     { name = "numpy", specifier = ">=2.3.2" },
     { name = "open3d", marker = "extra == 'open3d'", specifier = ">=0.19.0" },
-    { name = "pybullet", extras = ["extras"], marker = "extra == 'pybullet'", specifier = ">=3.2.7" },
     { name = "pycam", marker = "extra == 'pycam'", specifier = ">=0.6.4" },
 ]
-provides-extras = ["open3d", "build123d", "blender", "pybullet", "mujoco", "kicad", "pycam"]
+provides-extras = ["open3d", "build123d", "blender", "mujoco", "kicad", "pycam"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1438,12 +1434,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a57
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0", size = 11842 },
 ]
-
-[[package]]
-name = "pybullet"
-version = "3.2.7"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/de/95/b9a98cd4ed948d4f25a7d0b13cb0c1f87e58dc6d113be9e18940641eb25f/pybullet-3.2.7.tar.gz", hash = "sha256:042879db8d101ac7590dee475fc6aded508b85fe1273fdbbfde1d88bd200e14f", size = 80508379 }
 
 [[package]]
 name = "pycam"

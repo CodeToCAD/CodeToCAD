@@ -4,7 +4,7 @@ Transformation functions for build123d objects.
 
 from typing import Union
 import build123d as bd
-from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
+from codetocad.core.dimensions.length_expression import LengthType, LengthExp
 
 
 def translate_object(
@@ -14,9 +14,9 @@ def translate_object(
     dz: LengthType = 0,
 ) -> Union[bd.Vertex, bd.Edge, bd.Wire, bd.Face, bd.Solid]:
     """Translate a build123d object."""
-    dx_val = float(LengthExpression(dx))
-    dy_val = float(LengthExpression(dy))
-    dz_val = float(LengthExpression(dz))
+    dx_val = float(LengthExp(dx))
+    dy_val = float(LengthExp(dy))
+    dz_val = float(LengthExp(dz))
 
     translation = bd.Vector(dx_val, dy_val, dz_val)
     return obj.moved(bd.Location(translation))

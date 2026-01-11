@@ -4,14 +4,14 @@ Geometry creation and manipulation functions for build123d.
 
 from typing import Tuple
 import build123d as bd
-from codetocad.core.dimensions.length_expression import LengthType, LengthExpression
+from codetocad.core.dimensions.length_expression import LengthType, LengthExp
 
 
 def create_vertex(x: LengthType, y: LengthType, z: LengthType = 0) -> bd.Vertex:
     """Create a build123d Vertex from coordinates."""
-    x_val = float(LengthExpression(x))
-    y_val = float(LengthExpression(y))
-    z_val = float(LengthExpression(z))
+    x_val = float(LengthExp(x))
+    y_val = float(LengthExp(y))
+    z_val = float(LengthExp(z))
     return bd.Vertex(x_val, y_val, z_val)
 
 
@@ -102,14 +102,14 @@ def create_wire_from_edges(edges: list[bd.Edge]) -> bd.Wire:
 
 def create_rectangle_wire(width: LengthType, height: LengthType) -> bd.Rectangle:
     """Create a rectangular wire."""
-    w = float(LengthExpression(width))
-    h = float(LengthExpression(height))
+    w = float(LengthExp(width))
+    h = float(LengthExp(height))
     return bd.Rectangle(w, h)
 
 
 def create_circle_wire(radius: LengthType) -> bd.Circle:
     """Create a circular wire."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.Circle(r)
 
 
@@ -117,7 +117,7 @@ def create_regular_polygon_wire(
     radius: LengthType, side_count: int, rotation: float = 0
 ) -> bd.RegularPolygon:
     """Create a regular polygon wire."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.RegularPolygon(radius=r, side_count=side_count, rotation=rotation)
 
 
@@ -134,7 +134,7 @@ def create_center_arc_wire(
     arc_size: float,
 ) -> bd.CenterArc:
     """Create a center arc wire."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.CenterArc(center, r, start_angle, arc_size)
 
 
@@ -154,7 +154,7 @@ def create_radius_arc_wire(
     short_sagitta: bool = True,
 ) -> bd.RadiusArc:
     """Create a radius arc wire."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.RadiusArc(start_point, end_point, r, short_sagitta)
 
 
@@ -195,7 +195,7 @@ def create_polar_line_wire(
     angle: float,
 ) -> bd.PolarLine:
     """Create a polar line wire."""
-    length_val = float(LengthExpression(length))
+    length_val = float(LengthExp(length))
     return bd.PolarLine(start, length_val, angle)
 
 
@@ -205,7 +205,7 @@ def create_fillet_polyline_wire(
     close: bool = False,
 ) -> bd.FilletPolyline:
     """Create a filleted polyline wire."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.FilletPolyline(*points, radius=r, close=close)
 
 
@@ -214,8 +214,8 @@ def create_ellipse_wire(
     x_radius: LengthType, y_radius: LengthType, rotation: float = 0
 ) -> bd.Ellipse:
     """Create an ellipse wire."""
-    x_r = float(LengthExpression(x_radius))
-    y_r = float(LengthExpression(y_radius))
+    x_r = float(LengthExp(x_radius))
+    y_r = float(LengthExp(y_radius))
     return bd.Ellipse(x_r, y_r, rotation=rotation)
 
 
@@ -228,9 +228,9 @@ def create_rectangle_rounded_wire(
     width: LengthType, height: LengthType, radius: LengthType
 ) -> bd.RectangleRounded:
     """Create a rounded rectangle wire."""
-    w = float(LengthExpression(width))
-    h = float(LengthExpression(height))
-    r = float(LengthExpression(radius))
+    w = float(LengthExp(width))
+    h = float(LengthExp(height))
+    r = float(LengthExp(radius))
     return bd.RectangleRounded(w, h, r)
 
 
@@ -253,8 +253,8 @@ def create_trapezoid_wire(
     right_side_angle: float | None = None,
 ) -> bd.Trapezoid:
     """Create a trapezoid wire."""
-    w = float(LengthExpression(width))
-    h = float(LengthExpression(height))
+    w = float(LengthExp(width))
+    h = float(LengthExp(height))
     return bd.Trapezoid(w, h, left_side_angle, right_side_angle)
 
 
@@ -265,7 +265,7 @@ def create_text_wire(
     font_path: str | None = None,
 ) -> bd.Wire:
     """Create a text wire using build123d primitives."""
-    font_size_val = float(LengthExpression(font_size))
+    font_size_val = float(LengthExp(font_size))
     # Create text face and extract its outer wire
     text_face = bd.Text(
         txt=text, font_size=font_size_val, font=font, font_path=font_path
@@ -324,28 +324,28 @@ def create_face_with_holes(
 
 def extrude_face(face: bd.Face, distance: LengthType) -> bd.Part:
     """Extrude a face to create a solid."""
-    dist = float(LengthExpression(distance))
+    dist = float(LengthExp(distance))
     return bd.extrude(face, dist)
 
 
 def create_cube(x: LengthType, y: LengthType, z: LengthType) -> bd.Box:
     """Create a cube solid."""
-    x_val = float(LengthExpression(x))
-    y_val = float(LengthExpression(y))
-    z_val = float(LengthExpression(z))
+    x_val = float(LengthExp(x))
+    y_val = float(LengthExp(y))
+    z_val = float(LengthExp(z))
     return bd.Box(x_val, y_val, z_val)
 
 
 def create_cylinder(radius: LengthType, height: LengthType) -> bd.Cylinder:
     """Create a cylinder solid."""
-    r = float(LengthExpression(radius))
-    h = float(LengthExpression(height))
+    r = float(LengthExp(radius))
+    h = float(LengthExp(height))
     return bd.Cylinder(r, h)
 
 
 def create_sphere(radius: LengthType) -> bd.Sphere:
     """Create a sphere solid."""
-    r = float(LengthExpression(radius))
+    r = float(LengthExp(radius))
     return bd.Sphere(r)
 
 
