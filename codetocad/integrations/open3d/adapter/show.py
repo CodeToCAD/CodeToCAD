@@ -13,6 +13,7 @@ else:
 def show_in_open3d(shape: Solid):
     """Export and visualize a shape."""
     from codetocad.integrations.build123d.cad import Shape
+
     Shape.export_file(shape, str(get_temp_stl_export_path()))
 
     mesh = o3d.io.read_triangle_mesh(str(get_temp_stl_export_path()))

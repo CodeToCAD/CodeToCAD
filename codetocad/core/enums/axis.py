@@ -65,4 +65,5 @@ class Axis(str, Enum):
     def __truediv__(self, other):
         return f"{self.value}/{other}"
 
+
 type AxisType = "str | Axis"

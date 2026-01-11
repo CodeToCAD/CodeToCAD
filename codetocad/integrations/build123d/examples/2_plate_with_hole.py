@@ -51,4 +51,3 @@ if __name__ == "__main__":
     print(f"Volumes match: {abs(original_volume - main_volume) < 0.001}")
 
     show_in_open3d(main_solid)
-

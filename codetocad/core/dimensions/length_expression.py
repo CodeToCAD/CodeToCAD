@@ -1,9 +1,10 @@
 import math
 import re
 
+
 class LengthExp:
     """
-    Takes a string|int|float expression of a length and converts it to meters. 
+    Takes a string|int|float expression of a length and converts it to meters.
 
     If it's int or float, it's assumed it's in meters.
 
@@ -70,76 +71,76 @@ class LengthExp:
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return LengthExp(self.value / other.value)
-    
+
     def __lt__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value < other.value
-    
+
     def __le__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value <= other.value
-    
+
     def __gt__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value > other.value
-    
+
     def __ge__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value >= other.value
-    
+
     def __eq__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value == other.value
-    
+
     def __ne__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return self.value != other.value
-    
+
     def __floordiv__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return LengthExp(self.value // other.value)
-    
+
     def __mod__(self, other):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return LengthExp(self.value % other.value)
-    
+
     def __pow__(self, other, mod=None):
         if not isinstance(other, LengthExp):
             other = LengthExp(other)
         return LengthExp(pow(self.value, other, mod))
-    
+
     def __abs__(self):
         return LengthExp(abs(self.value))
-    
+
     def __round__(self, ndigits=None):
         return LengthExp(round(self.value, ndigits))
-    
+
     def __floor__(self):
         return LengthExp(math.floor(self.value))
-    
+
     def __ceil__(self):
         return LengthExp(math.ceil(self.value))
-    
+
     def __trunc__(self):
         return LengthExp(math.trunc(self.value))
-    
+
     def __copy__(self):
         return self.__deepcopy__()
-    
+
     def __deepcopy__(self):
         return LengthExp(self.value)
-    
+
     def copy(self):
         return self.__deepcopy__()
-    
+
     def __float__(self):
         return self.value
 
@@ -148,6 +149,7 @@ class LengthExp:
 
     def __repr__(self):
         return f"Length({self.value} m)"
+
 
 type LengthType = "str | float | int | LengthExp"
 
@@ -162,4 +164,4 @@ if __name__ == "__main__":
     y = LengthExp("1in")
     x = LengthExp("1mm")
     val = x * y
-    assert math.isclose(val ,2.54e-5), f"Expected 0.000254m but got {val}m"
+    assert math.isclose(val, 2.54e-5), f"Expected 0.000254m but got {val}m"

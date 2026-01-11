@@ -16,7 +16,7 @@ def extrude_wire(
     """Extrude a wire/sketch/face to create a 3D solid."""
     h = float(LengthExp(height))
     draft = math.degrees(Angle(draft_angle).value)  # build123d uses degrees
-    
+
     # Get face from wire/sketch if needed
     if isinstance(wire, bd.Sketch):
         face = wire.face()
@@ -24,7 +24,7 @@ def extrude_wire(
         face = bd.Face(wire)
     else:
         face = wire
-    
+
     if draft != 0:
         return bd.extrude(face, h, taper=draft)
     return bd.extrude(face, h)
@@ -37,7 +37,7 @@ def revolve_wire(
 ) -> bd.Part:
     """Revolve a wire/sketch/face around an axis to create a 3D solid."""
     angle_deg = math.degrees(Angle(angle).value)  # build123d uses degrees
-    
+
     # Get face from wire/sketch if needed
     if isinstance(wire, bd.Sketch):
         face = wire.face()
@@ -45,12 +45,12 @@ def revolve_wire(
         face = bd.Face(wire)
     else:
         face = wire
-    
+
     if isinstance(axis, tuple):
         # Create axis from origin and direction
         origin, direction = axis
         axis = bd.Axis(origin, direction)
-    
+
     return bd.revolve(face, axis, angle_deg)
 
 
@@ -68,7 +68,7 @@ def loft_wires(
             sections.append(bd.Face(w))
         else:
             sections.append(w)
-    
+
     return bd.loft(sections, ruled=ruled)
 
 
@@ -84,7 +84,7 @@ def sweep_wire(
         face = bd.Face(profile)
     else:
         face = profile
-    
+
     return bd.sweep(face, path)
 
 
@@ -95,7 +95,7 @@ def fillet_edges(
 ) -> bd.Part:
     """Apply fillet to edges of a solid."""
     r = float(LengthExp(radius))
-    
+
     if edges is None:
         # Fillet all edges
         return bd.fillet(solid.edges(), r)
@@ -109,7 +109,7 @@ def chamfer_edges(
 ) -> bd.Part:
     """Apply chamfer to edges of a solid."""
     d = float(LengthExp(distance))
-    
+
     if edges is None:
         # Chamfer all edges
         return bd.chamfer(solid.edges(), d)
@@ -132,10 +132,10 @@ def pattern_linear(
 ) -> "list[bd.Part]":
     """Create a linear pattern of solids."""
     s = float(LengthExp(spacing))
-    
+
     # Create locations for the pattern
     locations = [bd.Location(axis.direction * (i * s)) for i in range(count)]
-    
+
     return [solid.moved(loc) for loc in locations]
 
 
@@ -148,12 +148,12 @@ def pattern_polar(
     """Create a polar/circular pattern of solids."""
     total_angle = math.degrees(Angle(angle).value)
     angle_step = total_angle / count
-    
+
     results = []
     for i in range(count):
         rotation = bd.Rotation(axis.direction, angle_step * i)
         results.append(solid.moved(bd.Location(rotation)))
-    
+
     return results
 
 
@@ -177,4 +177,3 @@ def create_cone(
     h = float(LengthExp(height))
     top_r = float(LengthExp(top_radius))
     return bd.Cone(r, top_r, h)
-

@@ -157,7 +157,9 @@ class Draw(BaseDraw):
     ) -> Edge:
         """Create an arc from start to end with a specified tangent direction."""
         # Use parent class for the Edge structure
-        arc_edge = BaseDraw.tangent_arc(start, end, tangent, tangent_from_first, curve_type)
+        arc_edge = BaseDraw.tangent_arc(
+            start, end, tangent, tangent_from_first, curve_type
+        )
 
         # Create native build123d tangent arc
         native_arc = bd.TangentArc(
@@ -177,24 +179,24 @@ class Draw(BaseDraw):
         """Create a regular polygon with the given number of sides."""
         # Use parent class for the Edge structure
         poly_edge = BaseDraw.polygon(center, radius, sides, rotation)
-        
+
         # Create native build123d polygon
         r = float(LengthExp(radius))
         rot_deg = math.degrees(Angle(rotation).value)
         native_poly = bd.RegularPolygon(radius=r, side_count=sides, rotation=rot_deg)
-        
+
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
         poly_edge.native = native_poly
-        
+
         return poly_edge
 
     @staticmethod
     def text(text: str, font: str, size: LengthType) -> Edge:
         """Create a text string."""
         native_text = create_text_wire(text, size, font)
-        
+
         # Create a simple edge wrapper
         edge = Edge(
             v1=Vertex(x=0, y=0, z=0),
@@ -204,19 +206,29 @@ class Draw(BaseDraw):
         return edge
 
     @staticmethod
-    def trapezoid(center: Vertex, width: LengthType, height: LengthType, angle: AngleType) -> Edge:
+    def trapezoid(
+        center: Vertex, width: LengthType, height: LengthType, angle: AngleType
+    ) -> Edge:
         """Create a trapezoid."""
         angle_deg = math.degrees(Angle(angle).value)
         native_trap = create_trapezoid_wire(width, height, angle_deg)
-        
+
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
-        
+
         # Create edge wrapper
         edge = Edge(
-            v1=Vertex(x=center._x - LengthExp(width)/2, y=center._y - LengthExp(height)/2, z=center._z),
-            v2=Vertex(x=center._x - LengthExp(width)/2, y=center._y - LengthExp(height)/2, z=center._z),
+            v1=Vertex(
+                x=center._x - LengthExp(width) / 2,
+                y=center._y - LengthExp(height) / 2,
+                z=center._z,
+            ),
+            v2=Vertex(
+                x=center._x - LengthExp(width) / 2,
+                y=center._y - LengthExp(height) / 2,
+                z=center._z,
+            ),
         )
         edge.native = native_trap
         return edge
@@ -256,8 +268,7 @@ class Draw(BaseDraw):
             raise ValueError("Edge has no native build123d object")
 
         # Export as SVG if 2D
-        if file_path.lower().endswith('.svg'):
+        if file_path.lower().endswith(".svg"):
             bd.export_svg(native, file_path)
         else:
             raise ValueError(f"Unsupported 2D export format: {file_path}")
-

@@ -55,7 +55,7 @@ def main() -> Solid:
     sk8 = bd.make_face(bd.Plane.YZ * ln)
 
     # Wrap in Edge for extrusion
-    v1 = Vertex(x=0, y=H/2.0, z=0)
+    v1 = Vertex(x=0, y=H / 2.0, z=0)
     edge = Edge(v1=v1, v2=v1)
     edge.native = sk8
 
@@ -76,4 +76,3 @@ if __name__ == "__main__":
     print(f"Volumes match: {abs(original_volume - main_volume) < 0.001}")
 
     show_in_open3d(main_solid)
-

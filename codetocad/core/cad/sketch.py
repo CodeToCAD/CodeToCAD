@@ -6,16 +6,19 @@ from codetocad.core.dimensions.angle import Angle, AngleType
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
 from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
 
+
 @dataclass
 class Sketch(NativeObject):
     """A sketch is a 2D drawing in a plane."""
-    
+
 
 class Draw:
     """Common edge generation methods."""
 
     def __new__(cls, *args, **kwargs):
-        raise TypeError(f"Do not instantiate a {cls.__name__}  class, use its methods instead.")
+        raise TypeError(
+            f"Do not instantiate a {cls.__name__}  class, use its methods instead."
+        )
 
     @staticmethod
     def line(v1: Vertex, v2: Vertex) -> Edge:
@@ -304,10 +307,12 @@ class Draw:
         half_chord = chord_length / 2
 
         if r.value < half_chord:
-            raise ValueError(f"Radius {r.value} is too small for chord length {chord_length}")
+            raise ValueError(
+                f"Radius {r.value} is too small for chord length {chord_length}"
+            )
 
         # Distance from midpoint to center
-        h = math.sqrt(r.value ** 2 - half_chord ** 2)
+        h = math.sqrt(r.value**2 - half_chord**2)
 
         # Unit normal to the chord (perpendicular direction)
         # Two possible centers: one on each side of the chord
@@ -503,15 +508,19 @@ class Draw:
             for i in range(n - 1):
                 segments.append(Edge(v1=vertices[i], v2=vertices[i + 1], knots=knots))
 
-            return Edge(v1=vertices[0], v2=vertices[-1], sub_edges=segments, knots=knots)
+            return Edge(
+                v1=vertices[0], v2=vertices[-1], sub_edges=segments, knots=knots
+            )
 
     @staticmethod
     def text(text: str, font: str, size: LengthType) -> Edge:
         """Create a text string."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
-    def trapezoid(center: Vertex, width: LengthType, height: LengthType, angle: AngleType) -> Edge:
+    def trapezoid(
+        center: Vertex, width: LengthType, height: LengthType, angle: AngleType
+    ) -> Edge:
         """Create a trapezoid."""
         raise NotImplementedError("Method not implemented.")
 
@@ -519,9 +528,8 @@ class Draw:
     def import_file(file_path: str) -> Edge:
         """Import an edge from a file."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
     def export_file(edge: Edge, file_path: str) -> None:
         """Export an edge to a file."""
         raise NotImplementedError("Method not implemented.")
-

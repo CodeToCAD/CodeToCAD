@@ -15,7 +15,11 @@ def original() -> bd.Part:
     """Original build123d algebra mode example."""
     a, b, c, d = 90, 45, 15, 7.5
 
-    sk5 = bd.Circle(a) - bd.Pos(b, 0.0) * bd.Rectangle(c, c) - bd.Pos(0.0, b) * bd.Circle(d)
+    sk5 = (
+        bd.Circle(a)
+        - bd.Pos(b, 0.0) * bd.Rectangle(c, c)
+        - bd.Pos(0.0, b) * bd.Circle(d)
+    )
     ex5 = bd.extrude(sk5, c)
     return ex5
 
@@ -60,4 +64,3 @@ if __name__ == "__main__":
     print(f"Volumes match: {abs(original_volume - main_volume) < 0.001}")
 
     show_in_open3d(main_solid)
-

@@ -155,7 +155,9 @@ class Shape(BaseShape):
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
-        result = fillet_edges(native, [native] if isinstance(native, bd.Edge) else None, radius)
+        result = fillet_edges(
+            native, [native] if isinstance(native, bd.Edge) else None, radius
+        )
         solid = Solid(is_hidden=False)
         solid.native = result
         return solid
@@ -167,7 +169,9 @@ class Shape(BaseShape):
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
-        result = chamfer_edges(native, [native] if isinstance(native, bd.Edge) else None, distance)
+        result = chamfer_edges(
+            native, [native] if isinstance(native, bd.Edge) else None, distance
+        )
         solid = Solid(is_hidden=False)
         solid.native = result
         return solid
@@ -195,7 +199,12 @@ class Shape(BaseShape):
         return new_solid
 
     @staticmethod
-    def pattern(solid: Solid, count: int, amount: LengthType, around: "Vertex|Edge|Solid|None" = None) -> Solid:
+    def pattern(
+        solid: Solid,
+        count: int,
+        amount: LengthType,
+        around: "Vertex|Edge|Solid|None" = None,
+    ) -> Solid:
         """Create an array of solids."""
         native = solid.native
         if native is None:
@@ -207,7 +216,9 @@ class Shape(BaseShape):
         elif isinstance(around, (Vertex, Edge)):
             # Polar pattern around the axis
             if isinstance(around, Vertex):
-                axis = bd.Axis((around._x.value, around._y.value, around._z.value), (0, 0, 1))
+                axis = bd.Axis(
+                    (around._x.value, around._y.value, around._z.value), (0, 0, 1)
+                )
             else:
                 v1 = around.v1.to_tuple()
                 v2 = around.v2.to_tuple()
@@ -235,9 +246,9 @@ class Shape(BaseShape):
     @staticmethod
     def import_file(file_path: str) -> Solid:
         """Import a solid from a file."""
-        if file_path.lower().endswith('.step') or file_path.lower().endswith('.stp'):
+        if file_path.lower().endswith(".step") or file_path.lower().endswith(".stp"):
             result = import_step(file_path)
-        elif file_path.lower().endswith('.stl'):
+        elif file_path.lower().endswith(".stl"):
             result = import_stl(file_path)
         else:
             raise ValueError(f"Unsupported file format: {file_path}")
@@ -253,18 +264,21 @@ class Shape(BaseShape):
         if native is None:
             raise ValueError("Solid has no native build123d object")
 
-        if file_path.lower().endswith('.step') or file_path.lower().endswith('.stp'):
+        if file_path.lower().endswith(".step") or file_path.lower().endswith(".stp"):
             export_step(native, file_path)
-        elif file_path.lower().endswith('.stl'):
+        elif file_path.lower().endswith(".stl"):
             export_stl(native, file_path)
         else:
             raise ValueError(f"Unsupported file format: {file_path}")
 
     @staticmethod
-    def cuboid(center: Vertex, width: LengthType, height: LengthType, depth: LengthType) -> Solid:
+    def cuboid(
+        center: Vertex, width: LengthType, height: LengthType, depth: LengthType
+    ) -> Solid:
         """Create a cuboid."""
         # Import here to avoid circular import
         from codetocad.integrations.build123d.cad.draw import Draw
+
         edge = Draw.rectangle(center, width, height)
         return Shape.extrude(edge, depth)
 
@@ -272,19 +286,27 @@ class Shape(BaseShape):
     def cylinder(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
         """Create a cylinder."""
         from codetocad.integrations.build123d.cad.draw import Draw
+
         edge = Draw.circle(center, radius)
         return Shape.extrude(edge, height)
 
     @staticmethod
-    def sphere(center: Vertex, radius: LengthType, angle: AngleType = "360deg") -> Solid:
+    def sphere(
+        center: Vertex, radius: LengthType, angle: AngleType = "360deg"
+    ) -> Solid:
         """Create a sphere."""
         from codetocad.integrations.build123d.cad.draw import Draw
+
         edge = Draw.circle(center, radius)
-        around = BaseDraw.line(center, Vertex(x=center._x + radius, y=center._y, z=center._z))
+        around = BaseDraw.line(
+            center, Vertex(x=center._x + radius, y=center._y, z=center._z)
+        )
         return Shape.revolve(edge, around, angle)
 
     @staticmethod
-    def torus(center: Vertex, major_radius: LengthType, minor_radius: LengthType) -> Solid:
+    def torus(
+        center: Vertex, major_radius: LengthType, minor_radius: LengthType
+    ) -> Solid:
         """Create a torus."""
         result = create_torus(major_radius, minor_radius)
         # Move to center
@@ -308,7 +330,9 @@ class Shape(BaseShape):
         return solid
 
     @staticmethod
-    def pyramid(center: Vertex, width: LengthType, height: LengthType, depth: LengthType) -> Solid:
+    def pyramid(
+        center: Vertex, width: LengthType, height: LengthType, depth: LengthType
+    ) -> Solid:
         """Create a pyramid."""
         # Use extrude with draft angle to create a pyramid
         from codetocad.core.dimensions.length_expression import LengthExp
@@ -324,4 +348,3 @@ class Shape(BaseShape):
 
         edge = Draw.rectangle(center, width, height)
         return Shape.extrude(edge, depth, draft_angle=f"{draft_angle}deg")
-

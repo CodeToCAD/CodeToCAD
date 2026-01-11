@@ -8,10 +8,16 @@ class Shape:
     """Common solid generation methods."""
 
     def __new__(cls, *args, **kwargs):
-        raise TypeError(f"Do not instantiate a {cls.__name__} class, use its methods instead.")
-    
+        raise TypeError(
+            f"Do not instantiate a {cls.__name__} class, use its methods instead."
+        )
+
     @staticmethod
-    def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0, ) -> Solid:
+    def extrude(
+        edge: Edge,
+        height: LengthType,
+        draft_angle: AngleType = 0,
+    ) -> Solid:
         """Extrude a 2D shape into a 3D solid."""
         raise NotImplementedError("Method not implemented.")
 
@@ -59,54 +65,67 @@ class Shape:
     def mirror(solid: Solid, across: "Edge|Solid") -> Solid:
         """Mirror a solid across a something."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
-    def pattern(solid: Solid, count: int, amount: LengthType, around:"Vertex|Edge|Solid|None" = None) -> Solid:
+    def pattern(
+        solid: Solid,
+        count: int,
+        amount: LengthType,
+        around: "Vertex|Edge|Solid|None" = None,
+    ) -> Solid:
         """Create an array of solids."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
     def import_file(file_path: str) -> Solid:
         """Import a solid from a file."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
     def export_file(solid: Solid, file_path: str) -> None:
         """Export a solid to a file."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
-    def cuboid(center: Vertex, width: LengthType, height: LengthType, depth: LengthType) -> Solid:
+    def cuboid(
+        center: Vertex, width: LengthType, height: LengthType, depth: LengthType
+    ) -> Solid:
         """Create a cuboid."""
         edge = Draw.rectangle(center, width, height)
         return Shape.extrude(edge, depth)
-    
+
     @staticmethod
     def cylinder(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
         """Create a cylinder."""
         edge = Draw.circle(center, radius)
         return Shape.extrude(edge, height)
-    
+
     @staticmethod
-    def sphere(center: Vertex, radius: LengthType, angle: AngleType = "360deg") -> Solid:
+    def sphere(
+        center: Vertex, radius: LengthType, angle: AngleType = "360deg"
+    ) -> Solid:
         """Create a sphere."""
         edge = Draw.circle(center, radius)
-        around = Draw.line(center, Vertex(x=center._x + radius, y=center._y, z=center._z))
+        around = Draw.line(
+            center, Vertex(x=center._x + radius, y=center._y, z=center._z)
+        )
         return Shape.revolve(edge, around, angle)
-    
+
     @staticmethod
-    def torus(center: Vertex, major_radius: LengthType, minor_radius: LengthType) -> Solid:
+    def torus(
+        center: Vertex, major_radius: LengthType, minor_radius: LengthType
+    ) -> Solid:
         """Create a torus."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
     def cone(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
         """Create a cone."""
         raise NotImplementedError("Method not implemented.")
-    
+
     @staticmethod
-    def pyramid(center: Vertex, width: LengthType, height: LengthType, depth: LengthType) -> Solid:
+    def pyramid(
+        center: Vertex, width: LengthType, height: LengthType, depth: LengthType
+    ) -> Solid:
         """Create a pyramid."""
         raise NotImplementedError("Method not implemented.")
-    
-
