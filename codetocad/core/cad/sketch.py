@@ -2,7 +2,7 @@ import math
 
 from codetocad.core.dimensions.angle import Angle, AngleType
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
-from codetocad.core.cad.shapes import CurveType, Edge, Vertex
+from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
 
 
 class Draw:
@@ -366,3 +366,24 @@ class Draw:
                 segments.append(Edge(v1=vertices[i], v2=vertices[i + 1], knots=knots))
 
             return Edge(v1=vertices[0], v2=vertices[-1], sub_edges=segments, knots=knots)
+
+    @staticmethod
+    def text(text: str, font: str, size: LengthType) -> Edge:
+        """Create a text string."""
+        raise NotImplementedError("Method not implemented.")
+    
+    @staticmethod
+    def trapezoid(center: Vertex, width: LengthType, height: LengthType, angle: AngleType) -> Edge:
+        """Create a trapezoid."""
+        raise NotImplementedError("Method not implemented.")
+
+    @staticmethod
+    def import_file(file_path: str) -> Edge:
+        """Import an edge from a file."""
+        raise NotImplementedError("Method not implemented.")
+    
+    @staticmethod
+    def export_file(edge: Edge, file_path: str) -> None:
+        """Export an edge to a file."""
+        raise NotImplementedError("Method not implemented.")
+

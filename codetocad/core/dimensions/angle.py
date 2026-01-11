@@ -1,6 +1,5 @@
 import math
 import re
-from typing import TypeAlias
 
 
 class Angle:
@@ -65,4 +64,4 @@ class Angle:
         return f"Angle({self.radians} rad)"
 
 
-AngleType: TypeAlias = "str | float | int | Angle"
+type AngleType = "str | float | int | Angle"

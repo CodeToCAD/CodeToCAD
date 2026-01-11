@@ -1,6 +1,8 @@
 """
 Shapes make up the building blocks of 3D models.
 
+To simplify the code-CAD experience, we will combine edges, wires and faces into Edges. Faces are implicitly closed wires. Wires contain many edges.
+
 CodeToCAD uses these building blocks:
 * Vertex
 * Edge
