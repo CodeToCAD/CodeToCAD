@@ -6,7 +6,7 @@ authors = [
     { name="Shehab Attia", email="shehab@codethatdown.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = "==3.12"
 
 dependencies = [
     "click>=8.1.8",
