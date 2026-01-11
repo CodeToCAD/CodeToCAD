@@ -27,18 +27,17 @@ class Edge(NativeObject):
     v1: Vertex
     v2: Vertex
 
-    verts_between: "list[Vertex]|None" = None
+    sub_edges: "list[Edge]|None" = None
 
     coincide: "Vertex|Edge|None"  = None
     parallel: "Edge|None"  = None
     perpendicular: "Edge|None"  = None
+    tangent: "Edge|None"  = None
+
 
     is_construction: bool = False
 
     is_hidden: bool = False
-
-    def to_vertices(self) -> list[Vertex]:
-        return [self.v1] + (self.verts_between or []) + [self.v2]
 
 
 @dataclass(kw_only=True)

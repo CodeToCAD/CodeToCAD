@@ -49,4 +49,4 @@ class Draw:
             line1.v1,
         )
 
-        return Edge(v1=line1.v1, v2=line4.v2, verts_between=line1.to_vertices() + line2.to_vertices() + line3.to_vertices() + line4.to_vertices())
+        return Edge(v1=line1.v1, v2=line4.v2, sub_edges=[line1, line2, line3, line4])
