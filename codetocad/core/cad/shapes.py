@@ -1,5 +1,5 @@
 """
-Shapes make up the building blocks of 3D models. 
+Shapes make up the building blocks of 3D models.
 
 CodeToCAD uses these building blocks:
 * Vertex
@@ -7,33 +7,49 @@ CodeToCAD uses these building blocks:
 * Solid
 """
 from dataclasses import dataclass
+from enum import Enum, auto
+
 from codetocad.core.cad.native import NativeObject
-from codetocad.core.dimensions.length_expression import LengthType
 from codetocad.core.dimensions.point import Point
 
-    
+
+class CurveType(Enum):
+    """Curve representation type for arcs, circles, and splines."""
+    BEZIER = auto()
+    NURBS = auto()
+
+
 @dataclass(kw_only=True)
 class Vertex(NativeObject, Point):
     """A vertex is a point in 3D space."""
+    # Constraints
     coincide: "Vertex|Edge|None" = None
     midpoint: "Edge|None" = None
+
+    # Bezier handles for curve control
+    handle_in: "Vertex|None" = None    # Control point for incoming curve
+    handle_out: "Vertex|None" = None   # Control point for outgoing curve
+    weight: "float|None" = None       # Weight for rational curves (circles/arcs)
 
     is_hidden: bool = False
 
 
 @dataclass(kw_only=True)
 class Edge(NativeObject):
-    """An edge in CodeToCAD is a continous line between two vertices, there may be other vertices between the two vertices."""
+    """An edge in CodeToCAD is a continuous line between two vertices."""
     v1: Vertex
     v2: Vertex
 
     sub_edges: "list[Edge]|None" = None
 
-    coincide: "Vertex|Edge|None"  = None
-    parallel: "Edge|None"  = None
-    perpendicular: "Edge|None"  = None
-    tangent: "Edge|None"  = None
+    # NURBS knot vector (only needed for NURBS curves)
+    knots: "list[float]|None" = None
 
+    # Constraints
+    coincide: "Vertex|Edge|None" = None
+    parallel: "Edge|None" = None
+    perpendicular: "Edge|None" = None
+    tangent: "Edge|None" = None
 
     is_construction: bool = False
 
