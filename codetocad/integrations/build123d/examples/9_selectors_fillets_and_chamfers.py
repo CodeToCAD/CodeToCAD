@@ -46,7 +46,7 @@ if __name__ == "__main__":
     main_solid = main()
 
     original_volume = original_part.volume
-    main_volume = main_solid.native.volume
+    main_volume = main_solid.native_ref.volume
 
     print(f"Original volume: {original_volume}")
     print(f"Main volume: {main_volume}")

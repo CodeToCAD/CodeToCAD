@@ -53,13 +53,13 @@ class Constraint(BaseConstraint):
             target = at.v1.to_tuple()
 
         # Get the native object to move
-        native = this.native
+        native = this.native_ref
         if native is None:
             raise ValueError("Object has no native build123d object")
 
         # Apply the fix constraint (move to location)
         result = fix_at_location(native, target, offset)
-        this.native = result
+        this.native_ref = result
 
     @staticmethod
     def tangent(this: Edge, at: Edge) -> None:
@@ -68,8 +68,8 @@ class Constraint(BaseConstraint):
         Note: This is an approximation - build123d doesn't support
         true parametric tangent constraints.
         """
-        native_this = this.native
-        native_at = at.native
+        native_this = this.native_ref
+        native_at = at.native_ref
 
         if native_this is None or native_at is None:
             raise ValueError("Edges have no native build123d objects")
@@ -88,15 +88,15 @@ class Constraint(BaseConstraint):
 
         Note: This rotates the object but doesn't maintain the constraint.
         """
-        native_this = this.native
-        native_at = at.native
+        native_this = this.native_ref
+        native_at = at.native_ref
 
         if native_this is None or native_at is None:
             raise ValueError("Edges have no native build123d objects")
 
         if isinstance(native_this, bd.Edge) and isinstance(native_at, bd.Edge):
             result = make_parallel(native_this, native_this, native_at)
-            this.native = result
+            this.native_ref = result
         else:
             raise NotImplementedError(
                 "Parallel constraint requires native build123d Edge objects"
@@ -108,15 +108,15 @@ class Constraint(BaseConstraint):
 
         Note: This rotates the object but doesn't maintain the constraint.
         """
-        native_this = this.native
-        native_at = at.native
+        native_this = this.native_ref
+        native_at = at.native_ref
 
         if native_this is None or native_at is None:
             raise ValueError("Edges have no native build123d objects")
 
         if isinstance(native_this, bd.Edge) and isinstance(native_at, bd.Edge):
             result = make_perpendicular(native_this, native_this, native_at)
-            this.native = result
+            this.native_ref = result
         else:
             raise NotImplementedError(
                 "Perpendicular constraint requires native build123d Edge objects"
@@ -142,12 +142,12 @@ class Constraint(BaseConstraint):
         # Create the joint location
         location = create_revolute_joint_location(center, axis)
 
-        native = this.native
+        native = this.native_ref
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
         # Move to joint location
-        this.native = native.moved(location)
+        this.native_ref = native.moved(location)
 
     @staticmethod
     def prismatic(
@@ -168,9 +168,9 @@ class Constraint(BaseConstraint):
         # Create the joint location
         location = create_prismatic_joint_location(center, axis)
 
-        native = this.native
+        native = this.native_ref
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
         # Move to joint location
-        this.native = native.moved(location)
+        this.native_ref = native.moved(location)

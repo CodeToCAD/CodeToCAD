@@ -34,7 +34,7 @@ class Draw(BaseDraw):
         start = v1.to_tuple()
         end = v2.to_tuple()
         native_line = bd.Line(start, end)
-        edge.native = native_line
+        edge.native_ref = native_line
         return edge
 
     @staticmethod
@@ -65,7 +65,7 @@ class Draw(BaseDraw):
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
-        edge.native = native_rect
+        edge.native_ref = native_rect
 
         return edge
 
@@ -84,7 +84,7 @@ class Draw(BaseDraw):
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
-        arc_edge.native = native_circle
+        arc_edge.native_ref = native_circle
 
         return arc_edge
 
@@ -108,7 +108,7 @@ class Draw(BaseDraw):
 
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_arc = bd.CenterArc((cx, cy, cz), r, start_deg, arc_size)
-        arc_edge.native = native_arc
+        arc_edge.native_ref = native_arc
 
         return arc_edge
 
@@ -125,7 +125,7 @@ class Draw(BaseDraw):
 
         # Create native build123d three-point arc
         native_arc = bd.ThreePointArc(start.to_tuple(), mid.to_tuple(), end.to_tuple())
-        arc_edge.native = native_arc
+        arc_edge.native_ref = native_arc
 
         return arc_edge
 
@@ -144,7 +144,7 @@ class Draw(BaseDraw):
         # Create native build123d radius arc
         r = float(LengthExp(radius))
         native_arc = bd.RadiusArc(start.to_tuple(), end.to_tuple(), r, short_sagitta)
-        arc_edge.native = native_arc
+        arc_edge.native_ref = native_arc
 
         return arc_edge
 
@@ -169,7 +169,7 @@ class Draw(BaseDraw):
             tangent=tangent.to_tuple(),
             tangent_from_first=tangent_from_first,
         )
-        arc_edge.native = native_arc
+        arc_edge.native_ref = native_arc
 
         return arc_edge
 
@@ -189,7 +189,7 @@ class Draw(BaseDraw):
         # Move to center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
-        poly_edge.native = native_poly
+        poly_edge.native_ref = native_poly
 
         return poly_edge
 
@@ -203,7 +203,7 @@ class Draw(BaseDraw):
             v1=Vertex(x=0, y=0, z=0),
             v2=Vertex(x=0, y=0, z=0),
         )
-        edge.native = native_text
+        edge.native_ref = native_text
         return edge
 
     @staticmethod
@@ -231,7 +231,7 @@ class Draw(BaseDraw):
                 z=center._z,
             ),
         )
-        edge.native = native_trap
+        edge.native_ref = native_trap
         return edge
 
     @staticmethod
@@ -250,7 +250,7 @@ class Draw(BaseDraw):
             point_tuples = point_tuples + [point_tuples[0]]
 
         native_spline = bd.Spline(*point_tuples, periodic=closed)
-        spline_edge.native = native_spline
+        spline_edge.native_ref = native_spline
 
         return spline_edge
 
@@ -277,7 +277,7 @@ class Draw(BaseDraw):
 
         # Create native build123d polyline
         native_polyline = bd.Polyline(point_tuples)
-        poly_edge.native = native_polyline
+        poly_edge.native_ref = native_polyline
 
         return poly_edge
 
@@ -302,14 +302,14 @@ class Draw(BaseDraw):
         make_face: bool = False
         face_plane: "Plane | None" = None
         
-        native = edge.native
+        native = edge.native_ref
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
         # Determine the build123d plane for mirroring
         if isinstance(across, Edge):
             # Mirror across an Edge - use the edge's native as the mirror plane
-            mirror_native = across.native
+            mirror_native = across.native_ref
             if mirror_native is None:
                 raise ValueError("Mirror edge has no native build123d object")
             native_mirrored = bd.mirror(native, mirror_native)
@@ -351,7 +351,7 @@ class Draw(BaseDraw):
 
         # Create the result edge
         result_edge = BaseDraw.mirror(edge, across)
-        result_edge.native = native_result
+        result_edge.native_ref = native_result
 
         return result_edge
 
@@ -365,7 +365,7 @@ class Draw(BaseDraw):
     @staticmethod
     def export_file(edge: Edge, file_path: str) -> None:
         """Export an edge to a file."""
-        native = edge.native
+        native = edge.native_ref
         if native is None:
             raise ValueError("Edge has no native build123d object")
 
