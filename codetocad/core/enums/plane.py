@@ -7,4 +7,3 @@ class Plane(Enum):
     XY = auto()  # Z is normal
     XZ = auto()  # Y is normal (also known as ZX)
     YZ = auto()  # X is normal (also known as ZY)
-

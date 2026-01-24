@@ -4,7 +4,10 @@ repos:
     hooks:
       - id: black
         args: [".", "--check"]
-
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+      - id: codespell
   - repo: local
     hooks:
       - id: pytest

@@ -1,12 +1,15 @@
 from dataclasses import dataclass
-from codetocad.core import BoundaryAxis
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from codetocad.core.dimensions.boundary_axis import BoundaryAxis
 
 
 @dataclass
 class BoundaryBox:
-    x: BoundaryAxis
-    y: BoundaryAxis
-    z: BoundaryAxis
+    x: "BoundaryAxis"
+    y: "BoundaryAxis"
+    z: "BoundaryAxis"
 
     def __str__(self):
         return f"""    min   max   unit

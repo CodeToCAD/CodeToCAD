@@ -185,7 +185,7 @@ def add_codetocad_convenience_words_to_console(namespace):
     """
     This allows the user to use CodeToCAD classes in the built-in blender console without first importing CodeToCAD via `from codetocad import *`
 
-    This implmentation references https://blender.stackexchange.com/a/2751 and may break for future releases since it's not using the official api.
+    This implementation references https://blender.stackexchange.com/a/2751 and may break for future releases since it's not using the official api.
     """
 
     print("Adding Blender Console Convenience Words")

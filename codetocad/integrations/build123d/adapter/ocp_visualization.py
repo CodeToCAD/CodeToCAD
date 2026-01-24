@@ -148,7 +148,9 @@ def get_joint_info(part: "bd.Part | bd.Solid | bd.Compound") -> list[dict[str, A
             if hasattr(joint, "linear_range"):
                 info["linear_range"] = joint.linear_range
             if hasattr(joint, "axis"):
-                info["axis"] = str(joint.axis) if hasattr(joint.axis, "__str__") else None
+                info["axis"] = (
+                    str(joint.axis) if hasattr(joint.axis, "__str__") else None
+                )
 
             joints_info.append(info)
 
@@ -168,4 +170,3 @@ def print_joint_summary(parts: list["bd.Part | bd.Solid | bd.Compound"]) -> None
                     print(f"    Angular range: {joint['angular_range']}")
                 if joint.get("linear_range"):
                     print(f"    Linear range: {joint['linear_range']}")
-

@@ -12,7 +12,7 @@
    <!-- <a href="https://codetocad.github.io/CodeToCAD/examples.html"><img alt="Static Badge" src="https://img.shields.io/badge/Examples-white?logo=internetarchive&logoColor=black"></a> -->
 </p>
 
-**Maintainers Note**: This month (January 2026) we're focused on defining basic shapes, contstraints and visualizations.
+**Maintainers Note**: This month (January 2026) we're focused on defining basic shapes, constraints and visualizations.
 
 
 <div align="center">
