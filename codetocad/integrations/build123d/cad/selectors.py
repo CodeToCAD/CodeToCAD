@@ -106,6 +106,17 @@ def _get_default_search_radius(bbox: bd.BoundBox) -> float:
     return diagonal * 0.1
 
 
+def _convert_search_radius(search_radius: "LengthType") -> float:
+    """Convert a search radius to the same units as build123d coordinates (mm).
+
+    LengthExp converts to meters internally, but build123d uses mm by convention.
+    So we multiply by 1000 to convert meters back to mm.
+    """
+    meters = float(LengthExp(search_radius))
+    # Convert meters to millimeters (build123d default unit)
+    return meters * 1000
+
+
 def _distance_to_point(
     element: "bd.Vertex | bd.Edge | bd.Face", target: bd.Vector
 ) -> float:
@@ -202,7 +213,7 @@ def find_vertex(
 
     # Determine search radius
     if search_radius is not None:
-        radius = float(LengthExp(search_radius))
+        radius = _convert_search_radius(search_radius)
     else:
         radius = _get_default_search_radius(bbox)
 
@@ -250,7 +261,7 @@ def find_edge(
 
     # Determine search radius
     if search_radius is not None:
-        radius = float(LengthExp(search_radius))
+        radius = _convert_search_radius(search_radius)
     else:
         radius = _get_default_search_radius(bbox)
 
@@ -302,7 +313,7 @@ def find_face(
 
     # Determine search radius
     if search_radius is not None:
-        radius = float(LengthExp(search_radius))
+        radius = _convert_search_radius(search_radius)
     else:
         radius = _get_default_search_radius(bbox)
 
@@ -323,15 +334,23 @@ def find_face(
     return [_convert_bd_face_to_codetocad(f) for _, f in results]
 
 
+def _convert_bd_solid_to_codetocad(native: "bd.Shape") -> Solid:
+    """Convert a build123d Solid/Part to a CodeToCAD Solid."""
+    solid = Solid(is_hidden=False)
+    solid.native_ref = native
+    return solid
+
+
 def find_shape(
     obj: "Solid | Edge | Sketch",
     cardinal: CardinalDirection,
     search_radius: "LengthType | None" = None,
-) -> "list[Vertex | Edge]":
+) -> "list[Vertex | Edge | Solid]":
     """
-    Find any topology element (vertex or edge) at or near a cardinal direction.
+    Find any topology element (vertex, edge, or solid) at or near a cardinal direction.
 
     Note: Face boundaries are returned as Edge objects (the outer wire of each face).
+    The solid itself is included if its center is within the search radius.
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
@@ -340,7 +359,7 @@ def find_shape(
             If None, uses 10% of the object's bounding box diagonal.
 
     Returns:
-        A list of topology elements (Vertex or Edge) sorted by distance
+        A list of topology elements (Vertex, Edge, or Solid) sorted by distance
         from the ideal cardinal position. Returns an empty list if no elements
         are found within the search radius.
     """
@@ -353,11 +372,11 @@ def find_shape(
 
     # Determine search radius
     if search_radius is not None:
-        radius = float(LengthExp(search_radius))
+        radius = _convert_search_radius(search_radius)
     else:
         radius = _get_default_search_radius(bbox)
 
-    results: list[tuple[float, "Vertex | Edge"]] = []
+    results: list[tuple[float, "Vertex | Edge | Solid"]] = []
 
     # Collect vertices
     try:
@@ -385,6 +404,17 @@ def find_shape(
                 results.append((dist, _convert_bd_face_to_codetocad(f)))
     except AttributeError:
         pass
+
+    # Include the solid itself if its center is within the search radius
+    # The solid's center is the center of its bounding box
+    solid_center = bd.Vector(
+        (bbox.min.X + bbox.max.X) / 2,
+        (bbox.min.Y + bbox.max.Y) / 2,
+        (bbox.min.Z + bbox.max.Z) / 2,
+    )
+    solid_dist = (solid_center - target).length
+    if solid_dist <= radius:
+        results.append((solid_dist, _convert_bd_solid_to_codetocad(native)))
 
     results.sort(key=lambda x: x[0])
     return [elem for _, elem in results]

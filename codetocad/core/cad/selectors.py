@@ -123,15 +123,16 @@ def find_shape(
     obj: "Solid | Edge | Sketch",
     cardinal: CardinalDirection,
     search_radius: "LengthType | None" = None,
-) -> "list[Vertex | Edge]":
+) -> "list[Vertex | Edge | Solid]":
     """
-    Find any topology element (vertex or edge) at or near a cardinal direction.
+    Find any topology element (vertex, edge, or solid) at or near a cardinal direction.
 
     This is a general-purpose selector that returns all matching topology elements,
     regardless of type. Useful when you want to select whatever is nearest to a
     cardinal position.
 
     Note: Face boundaries are returned as Edge objects (the outer wire of each face).
+    The solid itself is included if its center is within the search radius.
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
@@ -140,7 +141,7 @@ def find_shape(
             If None, a reasonable default is used based on the object's dimensions.
 
     Returns:
-        A list of topology elements (Vertex or Edge) sorted by distance
+        A list of topology elements (Vertex, Edge, or Solid) sorted by distance
         from the ideal cardinal position. Returns an empty list if no elements
         are found within the search radius.
 
