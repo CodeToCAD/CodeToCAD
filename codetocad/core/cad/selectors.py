@@ -25,12 +25,12 @@ Example usage:
 from codetocad.core.cad.sketch import Sketch
 from codetocad.core.cad.vertex_edge_solid import Edge, Solid, Vertex
 from codetocad.core.dimensions.length_expression import LengthType
-from codetocad.core.enums.cardinal_directions import CardinalDirection
+from codetocad.core.enums.cardinal_directions import CardinalDirection, CardinalOffset
 
 
 def find_vertex(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Vertex]":
     """
@@ -38,7 +38,8 @@ def find_vertex(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, a reasonable default is used based on the object's dimensions.
 
@@ -51,13 +52,15 @@ def find_vertex(
         >>> corners = find_vertex(my_box, CardinalDirection.TOP_FRONT)
         >>> if corners:
         ...     print(f"Found {len(corners)} vertices at top-front")
+        >>> # Find vertices at an offset position
+        >>> corners = find_vertex(my_box, offset(CardinalDirection.TOP_FRONT, Point(x="5mm")))
     """
     raise NotImplementedError("Method not implemented.")
 
 
 def find_edge(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Edge]":
     """
@@ -68,7 +71,8 @@ def find_edge(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, a reasonable default is used based on the object's dimensions.
 
@@ -85,7 +89,7 @@ def find_edge(
 
 def find_face(
     obj: Solid,
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Edge]":
     """
@@ -100,7 +104,8 @@ def find_face(
 
     Args:
         obj: The Solid object to search within.
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, a reasonable default is used based on the object's dimensions.
 
@@ -121,7 +126,7 @@ def find_face(
 
 def find_shape(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Vertex | Edge | Solid]":
     """
@@ -136,7 +141,8 @@ def find_shape(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, a reasonable default is used based on the object's dimensions.
 

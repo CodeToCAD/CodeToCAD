@@ -10,7 +10,7 @@ import build123d as bd
 from codetocad.core.cad.sketch import Sketch
 from codetocad.core.cad.vertex_edge_solid import Edge, Solid, Vertex
 from codetocad.core.dimensions.length_expression import LengthExp, LengthType
-from codetocad.core.enums.cardinal_directions import CardinalDirection
+from codetocad.core.enums.cardinal_directions import CardinalDirection, CardinalOffset
 from codetocad.integrations.build123d.adapter.transformations import get_bounding_box
 
 
@@ -117,6 +117,35 @@ def _convert_search_radius(search_radius: "LengthType") -> float:
     return meters * 1000
 
 
+def _get_target_position(
+    bbox: bd.BoundBox, cardinal: "CardinalDirection | CardinalOffset"
+) -> bd.Vector:
+    """
+    Calculate the target position from either a CardinalDirection or CardinalOffset.
+
+    If cardinal is a CardinalOffset, the offset is applied to the base cardinal position.
+    The offset values are converted from LengthExp (meters) to mm.
+
+    Args:
+        bbox: The bounding box of the object.
+        cardinal: Either a CardinalDirection or CardinalOffset.
+
+    Returns:
+        A Vector representing the target position.
+    """
+    if isinstance(cardinal, CardinalOffset):
+        # Get the base position from the cardinal direction
+        base_target = _get_cardinal_position(bbox, cardinal.cardinal)
+        # Apply the offset (convert Point coordinates from meters to mm)
+        offset_x = float(LengthExp(cardinal.offset.x)) * 1000
+        offset_y = float(LengthExp(cardinal.offset.y)) * 1000
+        offset_z = float(LengthExp(cardinal.offset.z)) * 1000
+        return base_target + bd.Vector(offset_x, offset_y, offset_z)
+    else:
+        # It's a plain CardinalDirection
+        return _get_cardinal_position(bbox, cardinal)
+
+
 def _distance_to_point(
     element: "bd.Vertex | bd.Edge | bd.Face", target: bd.Vector
 ) -> float:
@@ -162,9 +191,17 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
 
     The returned Edge represents the outer wire of the face. The original bd.Face
     is stored in native_parent_ref for later retrieval if needed.
+    The sub_edges list contains all the individual edges of the outer wire.
     """
     # Get the outer wire of the face
     outer_wire = bd_face.outer_wire()
+
+    # Get all edges from the outer wire and convert them to sub_edges
+    wire_edges = outer_wire.edges()
+    sub_edges: list[Edge] = []
+    for bd_edge in wire_edges:
+        sub_edge = _convert_bd_edge_to_codetocad(bd_edge)
+        sub_edges.append(sub_edge)
 
     # Get the vertices of the outer wire to create Edge endpoints
     wire_vertices = outer_wire.vertices()
@@ -180,7 +217,7 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
         v1 = Vertex(x=0, y=0, z=0)
         v2 = v1
 
-    edge = Edge(v1=v1, v2=v2)
+    edge = Edge(v1=v1, v2=v2, sub_edges=sub_edges if sub_edges else None)
     edge.native_ref = outer_wire  # Store the wire as native_ref
     edge.native_parent_ref = bd_face  # Store the original face for later retrieval
     return edge
@@ -188,7 +225,7 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
 
 def find_vertex(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Vertex]":
     """
@@ -196,7 +233,8 @@ def find_vertex(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, uses 10% of the object's bounding box diagonal.
 
@@ -209,7 +247,7 @@ def find_vertex(
         return []
 
     bbox = get_bounding_box(native)
-    target = _get_cardinal_position(bbox, cardinal)
+    target = _get_target_position(bbox, cardinal)
 
     # Determine search radius
     if search_radius is not None:
@@ -236,7 +274,7 @@ def find_vertex(
 
 def find_edge(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Edge]":
     """
@@ -244,7 +282,8 @@ def find_edge(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, uses 10% of the object's bounding box diagonal.
 
@@ -257,7 +296,7 @@ def find_edge(
         return []
 
     bbox = get_bounding_box(native)
-    target = _get_cardinal_position(bbox, cardinal)
+    target = _get_target_position(bbox, cardinal)
 
     # Determine search radius
     if search_radius is not None:
@@ -284,7 +323,7 @@ def find_edge(
 
 def find_face(
     obj: Solid,
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Edge]":
     """
@@ -295,7 +334,8 @@ def find_face(
 
     Args:
         obj: The Solid object to search within.
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, uses 10% of the object's bounding box diagonal.
 
@@ -309,7 +349,7 @@ def find_face(
         return []
 
     bbox = get_bounding_box(native)
-    target = _get_cardinal_position(bbox, cardinal)
+    target = _get_target_position(bbox, cardinal)
 
     # Determine search radius
     if search_radius is not None:
@@ -343,7 +383,7 @@ def _convert_bd_solid_to_codetocad(native: "bd.Shape") -> Solid:
 
 def find_shape(
     obj: "Solid | Edge | Sketch",
-    cardinal: CardinalDirection,
+    cardinal: "CardinalDirection | CardinalOffset",
     search_radius: "LengthType | None" = None,
 ) -> "list[Vertex | Edge | Solid]":
     """
@@ -354,7 +394,8 @@ def find_shape(
 
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
-        cardinal: The cardinal direction indicating where to search.
+        cardinal: The cardinal direction or CardinalOffset indicating where to search.
+            If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
             If None, uses 10% of the object's bounding box diagonal.
 
@@ -368,7 +409,7 @@ def find_shape(
         return []
 
     bbox = get_bounding_box(native)
-    target = _get_cardinal_position(bbox, cardinal)
+    target = _get_target_position(bbox, cardinal)
 
     # Determine search radius
     if search_radius is not None:

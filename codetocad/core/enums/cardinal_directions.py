@@ -23,9 +23,10 @@ When viewing from the standard orientation (looking at the front face of an obje
 Each cardinal direction represents a point on or within the object's bounding box.
 """
 
+from dataclasses import dataclass
 from enum import Enum, auto
 
-from codetocad.core.dimensions.length_expression import LengthExp, LengthType
+from codetocad.core.dimensions.point import Point
 
 
 class CardinalDirection(Enum):
@@ -160,34 +161,53 @@ class CardinalDirection(Enum):
         )
 
 
-def offset(cardinal: CardinalDirection, distance: LengthType) -> str:
+@dataclass
+class CardinalOffset:
     """
-    Create a string descriptor for an offset position from a cardinal point.
+    Represents an offset from a cardinal direction by a 3D point.
 
     This is useful for describing positions that are offset from a cardinal
-    direction by a specific distance.
+    direction by specific distances in X, Y, and Z.
+
+    Attributes:
+        cardinal: The cardinal direction to offset from.
+        offset: The 3D offset as a Point (x, y, z distances).
+
+    Examples:
+        >>> CardinalOffset(CardinalDirection.TOP_LEFT, Point(x="5mm", y=0, z=0))
+        >>> CardinalOffset(CardinalDirection.CENTER, Point(x=0, y=0, z="10mm"))
+    """
+
+    cardinal: CardinalDirection
+    offset: Point
+
+    def __str__(self) -> str:
+        """Return a string representation of the offset."""
+        return (
+            f"{self.cardinal.name}+({self.offset.x}, {self.offset.y}, {self.offset.z})"
+        )
+
+
+def offset(cardinal: CardinalDirection, point: Point) -> CardinalOffset:
+    """
+    Create an offset descriptor from a cardinal direction and a 3D point.
+
+    This is useful for describing positions that are offset from a cardinal
+    direction by specific distances in each axis.
 
     Args:
         cardinal: The cardinal direction to offset from.
-        distance: The distance to offset (accepts any LengthType: str, float, int, LengthExp).
+        point: The 3D offset as a Point (x, y, z distances).
 
     Returns:
-        A string in the format "{cardinal_name}+{distance}" that can be parsed
-        by position-aware functions.
+        A CardinalOffset instance containing the cardinal direction and offset point.
 
     Examples:
-        >>> offset(CardinalDirection.TOP_LEFT, "5mm")
-        'TOP_LEFT+5mm'
-        >>> offset(CardinalDirection.CENTER, 0.01)
-        'CENTER+0.01'
-        >>> offset(CardinalDirection.BOTTOM_FRONT, "2in + 1cm")
-        'BOTTOM_FRONT+2in + 1cm'
+        >>> offset(CardinalDirection.TOP_LEFT, Point(x="5mm", y=0, z=0))
+        CardinalOffset(cardinal=TOP_LEFT, offset=Point(5mm, 0, 0))
+        >>> offset(CardinalDirection.CENTER, Point(x=0, y=0, z="10mm"))
+        CardinalOffset(cardinal=CENTER, offset=Point(0, 0, 10mm))
+        >>> offset(CardinalDirection.BOTTOM_FRONT, Point(x="2in", y="1cm", z=0))
+        CardinalOffset(cardinal=BOTTOM_FRONT, offset=Point(2in, 1cm, 0))
     """
-    # Convert distance to string representation
-    if isinstance(distance, LengthExp):
-        # Use the meter value for LengthExp objects
-        distance_str = str(distance.value)
-    else:
-        distance_str = str(distance)
-
-    return f"{cardinal.name}+{distance_str}"
+    return CardinalOffset(cardinal=cardinal, offset=point)

@@ -58,4 +58,5 @@ dev = [
     "pytest>=8.3.5",
     "nbdime>=4.0.2",
     "pre-commit>=4.2.0",
+    "codespell>=2.4.1",
 ]

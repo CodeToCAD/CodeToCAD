@@ -8,14 +8,13 @@ The selectors work by calculating a target position from a CardinalDirection
 and the object's bounding box, then finding geometry elements within a search
 radius of that position.
 
-Visualization: Found elements are marked with small spheres at vertex positions
-and cylinders along edges to make them easier to identify.
+Each sub-example is visualized independently - close the window to continue.
 """
 
-import build123d as bd
-
 from codetocad.core.cad.vertex_edge_solid import Solid, Vertex, Edge
+from codetocad.core.dimensions.point import Point
 from codetocad.core.enums import CardinalDirection
+from codetocad.core.enums.cardinal_directions import offset
 from codetocad.integrations.build123d.cad import Shape
 from codetocad.integrations.build123d.cad.selectors import (
     find_vertex,
@@ -39,267 +38,351 @@ YELLOW = (1.0, 1.0, 0.0)
 CYAN = (0.0, 1.0, 1.0)
 MAGENTA = (1.0, 0.0, 1.0)
 ORANGE = (1.0, 0.5, 0.0)
+GRAY = (0.5, 0.5, 0.5)
 
 
-def _get_coord(val) -> float:
-    """Extract float value from a coordinate (handles both float and LengthType)."""
-    if isinstance(val, (int, float)):
-        return float(val)
-    # Handle LengthType (could be LengthExp or str)
-    if hasattr(val, "value"):
-        return float(val.value)
-    return float(val)
-
-
-def create_vertex_marker(vertex: Vertex, radius: float = 0.5) -> "bd.Part":
-    """Create a small sphere marker at a vertex position (for ocp_vscode)."""
-    x = _get_coord(vertex.x)
-    y = _get_coord(vertex.y)
-    z = _get_coord(vertex.z)
-    return bd.Sphere(radius).moved(bd.Location((x, y, z)))
-
-
-def create_edge_marker(edge: Edge, radius: float = 0.3) -> "bd.Part":
-    """Create a cylinder marker along an edge."""
-    # Get edge endpoints as floats
-    x1 = _get_coord(edge.v1.x)
-    y1 = _get_coord(edge.v1.y)
-    z1 = _get_coord(edge.v1.z)
-    x2 = _get_coord(edge.v2.x)
-    y2 = _get_coord(edge.v2.y)
-    z2 = _get_coord(edge.v2.z)
-
-    p1 = bd.Vector(x1, y1, z1)
-    p2 = bd.Vector(x2, y2, z2)
-
-    # Create a cylinder along the edge
-    length = (p2 - p1).length
-    if length < 0.001:
-        # Degenerate edge, create a sphere instead
-        return bd.Sphere(radius).moved(bd.Location((x1, y1, z1)))
-
-    # Create cylinder at origin, then move and rotate to align with edge
-    cyl = bd.Cylinder(radius, length)
-
-    # Move to midpoint and align with edge direction
-    midpoint = (p1 + p2) / 2
-    direction = (p2 - p1).normalized()
-
-    # Calculate rotation to align Z axis with edge direction
-    z_axis = bd.Vector(0, 0, 1)
-    if abs(direction.dot(z_axis)) < 0.9999:
-        rotation_axis = z_axis.cross(direction)
-        angle = z_axis.get_angle(direction)
-        cyl = cyl.rotate(bd.Axis.Z, 0).rotate(bd.Axis((0, 0, 0), rotation_axis), angle)
-    elif direction.Z < 0:
-        # Edge is pointing down, flip the cylinder
-        cyl = cyl.rotate(bd.Axis.X, 180)
-
-    cyl = cyl.moved(bd.Location((midpoint.X, midpoint.Y, midpoint.Z)))
-    return cyl
-
-
-def main(visualize: bool = False) -> Solid:
-    """Demonstrate all four selector functions with optional visualization.
-
-    Args:
-        visualize: If True, creates visual markers for found elements and
-                   displays using ocp_vscode (if available).
-    """
-    # Create a simple 20x20x20 box centered at origin
+def _create_box() -> Solid:
+    """Create a simple 20x20x20 box centered at origin."""
     center = Vertex(x=0, y=0, z=0)
-    box = Shape.cuboid(center, width=20, height=20, depth=20)
+    return Shape.cuboid(center, width=20, height=20, depth=20)
 
-    print("=" * 60)
-    print("TOPOLOGY SELECTORS TUTORIAL")
-    print("=" * 60)
-    print("\nCreated a 20x20x20 box centered at origin\n")
 
-    # Collect markers for visualization (ocp_vscode)
-    vertex_markers: "list[bd.Part]" = []
-    edge_markers: "list[bd.Part]" = []
+def _visualize(
+    box: Solid,
+    title: str,
+    vertices: "list[Vertex] | None" = None,
+    edges: "list[Edge] | None" = None,
+    faces: "list[Edge] | None" = None,
+) -> None:
+    """Visualize the box with optional highlighted elements."""
+    print(f"\n  Visualizing: {title}")
 
-    # Collect found elements for colored visualization (Open3D)
-    found_vertices: list[Vertex] = []
-    found_edges: list[Edge] = []
-    found_faces: list[Edge] = []  # Faces are returned as Edge boundaries
+    colored_vertices = [ColoredVertex(vertex=v, color=RED) for v in (vertices or [])]
+    colored_edges = [ColoredEdge(edge=e, color=GREEN) for e in (edges or [])]
+    colored_faces = [ColoredFace(face=f, color=BLUE) for f in (faces or [])]
 
-    # =========================================================================
-    # 1. find_vertex() - Find vertices at cardinal positions
-    # =========================================================================
-    print("-" * 60)
-    print("1. FIND_VERTEX - Find vertices at cardinal positions")
-    print("-" * 60)
+    show_in_open3d(
+        box,
+        color=GRAY,
+        vertices=colored_vertices,
+        edges=colored_edges,
+        faces=colored_faces,
+        vertex_radius=1.5,
+        edge_radius=0.8,
+    )
 
-    # Find the top-front-right corner vertex
-    # Note: Shape.cuboid extrudes from z=0 upward, so box spans z=0 to z=20
+
+def example_find_vertex_top_front_right() -> None:
+    """Find vertex at TOP_FRONT_RIGHT corner."""
+    print("\n--- find_vertex: TOP_FRONT_RIGHT ---")
+    box = _create_box()
     vertices = find_vertex(box, CardinalDirection.TOP_FRONT_RIGHT)
+    print(f"  Found {len(vertices)} vertex(es)")
+    for i, v in enumerate(vertices):
+        print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
     if vertices:
-        v = vertices[0]
-        print(f"\n  TOP_FRONT_RIGHT vertex: ({v.x}, {v.y}, {v.z})")
-        if visualize:
-            vertex_markers.append(create_vertex_marker(v, radius=1.0))
-            found_vertices.append(v)
+        _visualize(
+            box,
+            f"TOP_FRONT_RIGHT - {len(vertices)} vertex(es) (RED)",
+            vertices=vertices,
+        )
 
-    # Find the bottom-back-left corner vertex
+
+def example_find_vertex_bottom_back_left() -> None:
+    """Find vertex at BOTTOM_BACK_LEFT corner."""
+    print("\n--- find_vertex: BOTTOM_BACK_LEFT ---")
+    box = _create_box()
     vertices = find_vertex(box, CardinalDirection.BOTTOM_BACK_LEFT)
+    print(f"  Found {len(vertices)} vertex(es)")
+    for i, v in enumerate(vertices):
+        print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
     if vertices:
-        v = vertices[0]
-        print(f"\n  BOTTOM_BACK_LEFT vertex: ({v.x}, {v.y}, {v.z})")
-        if visualize:
-            vertex_markers.append(create_vertex_marker(v, radius=1.0))
-            found_vertices.append(v)
+        _visualize(
+            box,
+            f"BOTTOM_BACK_LEFT - {len(vertices)} vertex(es) (RED)",
+            vertices=vertices,
+        )
 
-    # Using from_string() to create CardinalDirection from string
+
+def example_find_vertex_from_string() -> None:
+    """Find vertex using from_string() method."""
+    print("\n--- find_vertex: Using from_string('top-left') ---")
+    box = _create_box()
     direction = CardinalDirection.from_string("top-left")
     vertices = find_vertex(box, direction)
+    print(f"  Found {len(vertices)} vertex(es)")
+    for i, v in enumerate(vertices):
+        print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
     if vertices:
-        v = vertices[0]
-        print(f"\n  Using from_string('top-left'): ({v.x}, {v.y}, {v.z})")
+        _visualize(
+            box,
+            f"TOP_LEFT via from_string - {len(vertices)} vertex(es) (RED)",
+            vertices=vertices,
+        )
 
-    # =========================================================================
-    # 2. find_edge() - Find edges at cardinal positions
-    # =========================================================================
-    print("\n" + "-" * 60)
-    print("2. FIND_EDGE - Find edges at cardinal positions")
-    print("-" * 60)
 
-    # Find the top-front edge
+def example_find_edge_front_top() -> None:
+    """Find edge at FRONT_TOP position."""
+    print("\n--- find_edge: FRONT_TOP ---")
+    box = _create_box()
     edges = find_edge(box, CardinalDirection.FRONT_TOP)
+    print(f"  Found {len(edges)} edge(s)")
+    for i, e in enumerate(edges):
+        print(
+            f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
+        )
     if edges:
-        e = edges[0]
-        print(f"\n  FRONT_TOP edge:")
-        print(f"    From: ({e.v1.x}, {e.v1.y}, {e.v1.z})")
-        print(f"    To:   ({e.v2.x}, {e.v2.y}, {e.v2.z})")
-        if visualize:
-            edge_markers.append(create_edge_marker(e, radius=0.5))
-            found_edges.append(e)
+        _visualize(box, f"FRONT_TOP - {len(edges)} edge(s) (GREEN)", edges=edges)
 
-    # Find the left-back edge
-    edges = find_edge(box, CardinalDirection.LEFT_BACK)
+
+def example_find_edge_left_back() -> None:
+    """Find edge at LEFT_BACK position."""
+    print("\n--- find_edge: LEFT_BACK ---")
+    box = _create_box()
+    edges = find_edge(box, CardinalDirection.LEFT_BACK, search_radius="7mm")
+    print(f"  Found {len(edges)} edge(s)")
+    for i, e in enumerate(edges):
+        print(
+            f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
+        )
     if edges:
-        e = edges[0]
-        print(f"\n  LEFT_BACK edge:")
-        print(f"    From: ({e.v1.x}, {e.v1.y}, {e.v1.z})")
-        print(f"    To:   ({e.v2.x}, {e.v2.y}, {e.v2.z})")
-        if visualize:
-            edge_markers.append(create_edge_marker(e, radius=0.5))
-            found_edges.append(e)
+        _visualize(box, f"LEFT_BACK - {len(edges)} edge(s) (GREEN)", edges=edges)
 
-    # =========================================================================
-    # 3. find_face() - Find faces at cardinal positions
-    # =========================================================================
-    print("\n" + "-" * 60)
-    print("3. FIND_FACE - Find faces (returned as outer boundary Edge)")
-    print("-" * 60)
 
-    # Find the top face
+def example_find_edge_bottom_right() -> None:
+    """Find edge at BOTTOM_RIGHT position."""
+    print("\n--- find_edge: BOTTOM_RIGHT ---")
+    box = _create_box()
+    edges = find_edge(box, CardinalDirection.BOTTOM_RIGHT)
+    print(f"  Found {len(edges)} edge(s)")
+    for i, e in enumerate(edges):
+        print(
+            f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
+        )
+    if edges:
+        _visualize(box, f"BOTTOM_RIGHT - {len(edges)} edge(s) (GREEN)", edges=edges)
+
+
+def example_find_face_top() -> None:
+    """Find face at TOP_CENTER position."""
+    print("\n--- find_face: TOP_CENTER ---")
+    box = _create_box()
     faces = find_face(box, CardinalDirection.TOP_CENTER)
-    if faces:
-        print(f"\n  TOP_CENTER: Found {len(faces)} face(s)")
-        f = faces[0]
-        print(f"    Outer wire boundary: ({f.v1.x}, {f.v1.y}, {f.v1.z})")
-        # The original bd.Face is stored in native_parent_ref
+    print(f"  Found {len(faces)} face(s)")
+    for i, f in enumerate(faces):
+        sub_count = len(f.sub_edges) if f.sub_edges else 0
+        print(f"    {i+1}. Face with {sub_count} boundary edges")
         if f.native_parent_ref:
-            print(f"    Native face available: {type(f.native_parent_ref).__name__}")
-        if visualize:
-            found_faces.append(f)
-
-    # Find the front face
-    faces = find_face(box, CardinalDirection.FRONT_CENTER)
+            print(f"       Native type: {type(f.native_parent_ref).__name__}")
     if faces:
-        print(f"\n  FRONT_CENTER: Found {len(faces)} face(s)")
-        if visualize:
-            found_faces.append(faces[0])
+        _visualize(box, f"TOP_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
 
-    # =========================================================================
-    # 4. find_shape() - Find any element at cardinal positions
-    # =========================================================================
-    print("\n" + "-" * 60)
-    print("4. FIND_SHAPE - Find any element (vertex, edge, solid)")
-    print("-" * 60)
 
-    # Find any element at the top-front-right corner with custom search radius
+def example_find_face_front() -> None:
+    """Find face at FRONT_CENTER position."""
+    print("\n--- find_face: FRONT_CENTER ---")
+    box = _create_box()
+    faces = find_face(box, CardinalDirection.FRONT_CENTER)
+    print(f"  Found {len(faces)} face(s)")
+    for i, f in enumerate(faces):
+        sub_count = len(f.sub_edges) if f.sub_edges else 0
+        print(f"    {i+1}. Face with {sub_count} boundary edges")
+    if faces:
+        _visualize(box, f"FRONT_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
+
+
+def example_find_face_right() -> None:
+    """Find face at RIGHT_CENTER position."""
+    print("\n--- find_face: RIGHT_CENTER ---")
+    box = _create_box()
+    faces = find_face(box, CardinalDirection.RIGHT_CENTER)
+    print(f"  Found {len(faces)} face(s)")
+    for i, f in enumerate(faces):
+        sub_count = len(f.sub_edges) if f.sub_edges else 0
+        print(f"    {i+1}. Face with {sub_count} boundary edges")
+    if faces:
+        _visualize(box, f"RIGHT_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
+
+
+def example_find_shape_small_radius() -> None:
+    """Find elements at TOP_FRONT_RIGHT with small search radius."""
+    print("\n--- find_shape: TOP_FRONT_RIGHT (5mm radius) ---")
+    box = _create_box()
     shapes = find_shape(box, CardinalDirection.TOP_FRONT_RIGHT, search_radius="5mm")
-    print(f"\n  TOP_FRONT_RIGHT with 5mm radius:")
-    print(f"    Found {len(shapes)} element(s)")
-    for i, s in enumerate(shapes[:3]):  # Show first 3
+    print(f"  Found {len(shapes)} element(s):")
+    for i, s in enumerate(shapes[:5]):
         print(f"    {i+1}. {type(s).__name__}")
 
-    # Find elements at the center (now includes solid if within radius)
+    found_vertices = [s for s in shapes if isinstance(s, Vertex)]
+    found_edges = [s for s in shapes if isinstance(s, Edge)]
+    _visualize(box, "TOP_FRONT_RIGHT (5mm)", vertices=found_vertices, edges=found_edges)
+
+
+def example_find_shape_center() -> None:
+    """Find elements at CENTER with small search radius (includes solid)."""
+    print("\n--- find_shape: CENTER (5mm radius) ---")
+    box = _create_box()
     shapes = find_shape(box, CardinalDirection.CENTER, search_radius="5mm")
-    print(f"\n  CENTER with 5mm radius:")
-    print(f"    Found {len(shapes)} element(s)")
+    print(f"  Found {len(shapes)} element(s):")
     for s in shapes:
         print(f"    - {type(s).__name__}")
 
-    # Find elements with larger search radius to capture all geometry
+    found_vertices = [s for s in shapes if isinstance(s, Vertex)]
+    found_edges = [s for s in shapes if isinstance(s, Edge)]
+    _visualize(
+        box, "CENTER (5mm) - includes Solid", vertices=found_vertices, edges=found_edges
+    )
+
+
+def example_find_shape_large_radius() -> None:
+    """Find all elements with large search radius."""
+    print("\n--- find_shape: CENTER (100mm radius - all elements) ---")
+    box = _create_box()
     shapes = find_shape(box, CardinalDirection.CENTER, search_radius="100mm")
-    print(f"\n  CENTER with 100mm radius (captures all geometry):")
-    print(f"    Found {len(shapes)} element(s)")
-    # Count by type
     type_counts: dict[str, int] = {}
     for s in shapes:
         t = type(s).__name__
         type_counts[t] = type_counts.get(t, 0) + 1
-    print(f"    Type counts: {type_counts}")
+    print(f"  Found {len(shapes)} element(s)")
+    print(f"  Type counts: {type_counts}")
+
+    found_vertices = [s for s in shapes if isinstance(s, Vertex)][:4]
+    found_edges = [s for s in shapes if isinstance(s, Edge)][:4]
+    _visualize(
+        box, "All elements (100mm radius)", vertices=found_vertices, edges=found_edges
+    )
+
+
+def example_offset_basic() -> None:
+    """Demonstrate basic offset() with Point."""
+    print("\n--- offset: Basic usage with Point ---")
+    box = _create_box()
+
+    # offset() now takes a Point for 3D offset
+    desc1 = offset(CardinalDirection.TOP_LEFT, Point(x="5mm", y=0, z=0))
+    print(f"  offset(TOP_LEFT, Point(x='5mm')) = '{desc1}'")
+
+    desc2 = offset(CardinalDirection.CENTER, Point(x=0, y=0, z="10mm"))
+    print(f"  offset(CENTER, Point(z='10mm')) = '{desc2}'")
+
+    desc3 = offset(CardinalDirection.BOTTOM_FRONT, Point(x="2mm", y="3mm", z="1mm"))
+    print(f"  offset(BOTTOM_FRONT, Point(x='2mm', y='3mm', z='1mm')) = '{desc3}'")
+
+    # Find vertex at TOP_LEFT and visualize
+    vertices = find_vertex(box, CardinalDirection.TOP_LEFT)
+    if vertices:
+        _visualize(box, "TOP_LEFT with offset descriptor", vertices=[vertices[0]])
+
+
+def example_offset_face_directions() -> None:
+    """Demonstrate offset() for all face directions."""
+    print("\n--- offset: Face directions with Point offsets ---")
+    box = _create_box()
+
+    face_directions = [
+        CardinalDirection.TOP_CENTER,
+        CardinalDirection.BOTTOM_CENTER,
+        CardinalDirection.FRONT_CENTER,
+        CardinalDirection.BACK_CENTER,
+        CardinalDirection.LEFT_CENTER,
+        CardinalDirection.RIGHT_CENTER,
+    ]
+
+    print("  Offset descriptors for cube faces:")
+    for direction in face_directions:
+        desc = offset(direction, Point(x="3mm", y="3mm", z="3mm"))
+        print(f"    {desc}")
+
+    # Find and visualize the TOP face
+    faces = find_face(box, CardinalDirection.TOP_CENTER)
+    if faces:
+        _visualize(box, "TOP_CENTER face with offset", faces=[faces[0]])
+
+
+def example_offset_with_selectors() -> None:
+    """Use offset() with selectors to find elements."""
+    print("\n--- offset: Combined with selectors ---")
+    box = _create_box()
+
+    # Create offset descriptor
+    desc = offset(CardinalDirection.TOP_FRONT_RIGHT, Point(x="1mm", y="1mm", z="1mm"))
+    print(f"  Using offset: {desc}")
+
+    # Find vertex at the cardinal direction
+    vertices = find_vertex(box, CardinalDirection.TOP_FRONT_RIGHT)
+    edges = find_edge(box, CardinalDirection.TOP_RIGHT)
+
+    if vertices:
+        v = vertices[0]
+        print(f"  Found vertex at: ({v.x}, {v.y}, {v.z})")
+
+    if edges:
+        e = edges[0]
+        print(
+            f"  Found edge: ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
+        )
+
+    _visualize(
+        box,
+        "TOP_FRONT_RIGHT with selectors",
+        vertices=vertices[:1] if vertices else [],
+        edges=edges[:1] if edges else [],
+    )
+
+
+def main() -> None:
+    """Run all tutorial examples with independent visualization."""
+    print("=" * 60)
+    print("TOPOLOGY SELECTORS TUTORIAL")
+    print("=" * 60)
+    print("\nThis tutorial demonstrates topology selectors and offset functions.")
+    print("Each sub-example is visualized independently.")
+    print("\nClose each visualization window to continue to the next example.")
+
+    # find_vertex examples
+    print("\n" + "=" * 60)
+    print("SECTION 1: find_vertex()")
+    print("=" * 60)
+    example_find_vertex_top_front_right()
+    example_find_vertex_bottom_back_left()
+    example_find_vertex_from_string()
+
+    # find_edge examples
+    print("\n" + "=" * 60)
+    print("SECTION 2: find_edge()")
+    print("=" * 60)
+    example_find_edge_front_top()
+    example_find_edge_left_back()
+    example_find_edge_bottom_right()
+
+    # find_face examples
+    print("\n" + "=" * 60)
+    print("SECTION 3: find_face()")
+    print("=" * 60)
+    example_find_face_top()
+    example_find_face_front()
+    example_find_face_right()
+
+    # find_shape examples
+    print("\n" + "=" * 60)
+    print("SECTION 4: find_shape()")
+    print("=" * 60)
+    example_find_shape_small_radius()
+    example_find_shape_center()
+    example_find_shape_large_radius()
+
+    # offset examples
+    print("\n" + "=" * 60)
+    print("SECTION 5: offset()")
+    print("=" * 60)
+    example_offset_basic()
+    example_offset_face_directions()
+    example_offset_with_selectors()
 
     print("\n" + "=" * 60)
     print("TUTORIAL COMPLETE")
     print("=" * 60)
 
-    # =========================================================================
-    # Visualization (if enabled)
-    # =========================================================================
-    if visualize:
-        print("\n" + "-" * 60)
-        print("VISUALIZATION")
-        print("-" * 60)
-
-        # Get native box
-        native_box = box.native_ref
-
-        # Combine all markers (for ocp_vscode)
-        all_markers = vertex_markers + edge_markers
-
-        print(f"\n  Created {len(vertex_markers)} vertex markers (spheres)")
-        print(f"  Created {len(edge_markers)} edge markers (cylinders)")
-
-        # Collect colored elements for Open3D visualization
-        colored_vertices = [ColoredVertex(vertex=v, color=RED) for v in found_vertices]
-        colored_edges = [ColoredEdge(edge=e, color=GREEN) for e in found_edges]
-        colored_faces = [ColoredFace(face=f, color=BLUE) for f in found_faces]
-
-        try:
-            from ocp_vscode import show
-
-            print("\n  Showing in ocp_vscode viewer...")
-            print("  - Box: gray")
-            print("  - Vertex markers: spheres at found vertex positions")
-            print("  - Edge markers: cylinders along found edges")
-
-            # Show the box and all markers together
-            show(native_box, *all_markers, reset_camera=True)
-
-        except ImportError:
-            print("\n  ocp_vscode not available. Install with: pip install ocp-vscode")
-            print("  Using Open3D visualization with colored markers...")
-            print("  - Box: gray")
-            print("  - Vertices: RED spheres")
-            print("  - Edges: GREEN cylinders")
-            print("  - Faces: BLUE boundary cylinders")
-            show_in_open3d(
-                box,
-                vertices=colored_vertices,
-                edges=colored_edges,
-                faces=colored_faces,
-                vertex_radius=1.5,
-                edge_radius=0.8,
-            )
-
-    return box
-
 
 if __name__ == "__main__":
-    # Set visualize=True to see markers for found elements
-    solid = main(visualize=True)
+    main()
