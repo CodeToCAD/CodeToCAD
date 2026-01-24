@@ -1,0 +1,589 @@
+import math
+
+from codetocad.core.dimensions.angle import Angle, AngleType
+from codetocad.core.dimensions.length_expression import LengthExp, LengthType
+from codetocad.core.cad.vertex_edge_solid import CurveType, Edge, Vertex
+from codetocad.core.enums.plane import Plane
+
+
+def line(v1: Vertex, v2: Vertex) -> Edge:
+    """Create a straight line between two vertices."""
+    return Edge(v1=v1, v2=v2)
+
+
+def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
+    """Create a rectangle centered at the given vertex."""
+    start_x = LengthExp(width) / 2
+    start_y = LengthExp(height) / 2
+    line1 = line(
+        Vertex(x=center._x - start_x, y=center._y - start_y, z=center._z),
+        Vertex(x=center._x + start_x, y=center._y - start_y, z=center._z),
+    )
+    line2 = line(
+        line1.v2,
+        Vertex(x=center._x + start_x, y=center._y + start_y, z=center._z),
+    )
+    line3 = line(
+        line2.v2,
+        Vertex(x=center._x - start_x, y=center._y + start_y, z=center._z),
+    )
+    line4 = line(line3.v2, line1.v1)
+
+    return Edge(v1=line1.v1, v2=line4.v2, sub_edges=[line1, line2, line3, line4])
+
+
+def polygon(
+    center: Vertex, radius: LengthType, sides: int, rotation: AngleType = 0
+) -> Edge:
+    """Create a regular polygon with the given number of sides."""
+    if sides < 3:
+        raise ValueError("Polygon must have at least 3 sides")
+
+    r = LengthExp(radius)
+    rot = Angle(rotation).value
+    angle_step = 2 * math.pi / sides
+
+    vertices: list[Vertex] = []
+    for i in range(sides):
+        angle = rot + i * angle_step
+        vertices.append(
+            Vertex(
+                x=center._x + r * math.cos(angle),
+                y=center._y + r * math.sin(angle),
+                z=center._z,
+            )
+        )
+
+    edges: list[Edge] = []
+    for i in range(sides):
+        edges.append(line(vertices[i], vertices[(i + 1) % sides]))
+
+    return Edge(v1=vertices[0], v2=vertices[0], sub_edges=edges)
+
+
+def _bezier_arc_segment(
+    center: Vertex,
+    radius: LengthExp,
+    start_angle: float,
+    end_angle: float,
+) -> Edge:
+    """Create a single Bezier arc segment (max 90°)."""
+    sweep = end_angle - start_angle
+    if abs(sweep) > math.pi / 2 + 1e-9:
+        raise ValueError("Bezier arc segment cannot exceed 90°")
+
+    cos_start, sin_start = math.cos(start_angle), math.sin(start_angle)
+    cos_end, sin_end = math.cos(end_angle), math.sin(end_angle)
+
+    # Start and end points on the arc
+    v1 = Vertex(
+        x=center._x + radius * cos_start,
+        y=center._y + radius * sin_start,
+        z=center._z,
+    )
+    v2 = Vertex(
+        x=center._x + radius * cos_end,
+        y=center._y + radius * sin_end,
+        z=center._z,
+    )
+
+    # Control point: intersection of tangent lines at start and end
+    # For a circular arc, the control point lies along the angle bisector
+    half_sweep = sweep / 2
+    mid_angle = start_angle + half_sweep
+    # Distance from center to control point for exact circular arc
+    control_dist = radius.value / math.cos(half_sweep)
+
+    control_point = Vertex(
+        x=center._x.value + control_dist * math.cos(mid_angle),
+        y=center._y.value + control_dist * math.sin(mid_angle),
+        z=center._z.value,
+    )
+
+    # Weight for rational quadratic Bezier
+    weight = math.cos(half_sweep)
+
+    v1.handle_out = control_point
+    v2.handle_in = control_point
+    v2.weight = weight
+
+    return Edge(v1=v1, v2=v2)
+
+
+def _nurbs_arc_segment(
+    center: Vertex,
+    radius: LengthExp,
+    start_angle: float,
+    end_angle: float,
+) -> Edge:
+    """Create a single NURBS arc segment (max 90°)."""
+    sweep = end_angle - start_angle
+    if abs(sweep) > math.pi / 2 + 1e-9:
+        raise ValueError("NURBS arc segment cannot exceed 90°")
+
+    cos_start, sin_start = math.cos(start_angle), math.sin(start_angle)
+    cos_end, sin_end = math.cos(end_angle), math.sin(end_angle)
+
+    v1 = Vertex(
+        x=center._x + radius * cos_start,
+        y=center._y + radius * sin_start,
+        z=center._z,
+        weight=1.0,
+    )
+    v2 = Vertex(
+        x=center._x + radius * cos_end,
+        y=center._y + radius * sin_end,
+        z=center._z,
+        weight=1.0,
+    )
+
+    # Control point for NURBS (same geometry as Bezier)
+    half_sweep = sweep / 2
+    mid_angle = start_angle + half_sweep
+    control_dist = radius.value / math.cos(half_sweep)
+
+    control_point = Vertex(
+        x=center._x.value + control_dist * math.cos(mid_angle),
+        y=center._y.value + control_dist * math.sin(mid_angle),
+        z=center._z.value,
+    )
+
+    v1.handle_out = control_point
+    v2.handle_in = control_point
+    v2.weight = math.cos(half_sweep)
+
+    # NURBS knot vector for degree 2 with 3 control points
+    knots = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
+
+    return Edge(v1=v1, v2=v2, knots=knots)
+
+
+def _arc(
+    center: Vertex,
+    radius: LengthType,
+    start_angle: AngleType,
+    end_angle: AngleType,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create an arc from center point with start and end angles (internal method)."""
+    r = LengthExp(radius)
+    start_rad = Angle(start_angle).value
+    end_rad = Angle(end_angle).value
+
+    # Normalize sweep to be positive
+    sweep = end_rad - start_rad
+    if sweep < 0:
+        sweep += 2 * math.pi
+
+    # Split into segments of max 90°
+    num_segments = max(1, math.ceil(sweep / (math.pi / 2)))
+    segment_sweep = sweep / num_segments
+
+    arc_func = (
+        _bezier_arc_segment if curve_type == CurveType.BEZIER else _nurbs_arc_segment
+    )
+
+    segments: list[Edge] = []
+    for i in range(num_segments):
+        seg_start = start_rad + i * segment_sweep
+        seg_end = seg_start + segment_sweep
+        segments.append(arc_func(center, r, seg_start, seg_end))
+
+    if len(segments) == 1:
+        return segments[0]
+
+    return Edge(v1=segments[0].v1, v2=segments[-1].v2, sub_edges=segments)
+
+
+def arc(
+    start: Vertex,
+    mid: Vertex,
+    end: Vertex,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create an arc passing through three points (start, mid, end)."""
+    # Calculate the center and radius from three points
+    # Using circumcenter formula
+    ax, ay = start._x.value, start._y.value
+    bx, by = mid._x.value, mid._y.value
+    cx, cy = end._x.value, end._y.value
+
+    d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+    if abs(d) < 1e-10:
+        raise ValueError("Points are collinear, cannot form an arc")
+
+    ux = (
+        (ax * ax + ay * ay) * (by - cy)
+        + (bx * bx + by * by) * (cy - ay)
+        + (cx * cx + cy * cy) * (ay - by)
+    ) / d
+    uy = (
+        (ax * ax + ay * ay) * (cx - bx)
+        + (bx * bx + by * by) * (ax - cx)
+        + (cx * cx + cy * cy) * (bx - ax)
+    ) / d
+
+    center = Vertex(x=ux, y=uy, z=start._z.value)
+    radius = math.sqrt((ax - ux) ** 2 + (ay - uy) ** 2)
+
+    # Calculate angles
+    start_angle = math.atan2(ay - uy, ax - ux)
+    mid_angle = math.atan2(by - uy, bx - ux)
+    end_angle = math.atan2(cy - uy, cx - ux)
+
+    # Determine arc direction based on mid point
+    def normalize_angle(a: float) -> float:
+        while a < 0:
+            a += 2 * math.pi
+        while a >= 2 * math.pi:
+            a -= 2 * math.pi
+        return a
+
+    start_angle = normalize_angle(start_angle)
+    mid_angle = normalize_angle(mid_angle)
+    end_angle = normalize_angle(end_angle)
+
+    # Check if mid is between start and end going counterclockwise
+    def is_between_ccw(start: float, mid: float, end: float) -> bool:
+        if start <= end:
+            return start <= mid <= end
+        return mid >= start or mid <= end
+
+    if not is_between_ccw(start_angle, mid_angle, end_angle):
+        # Go the other way
+        start_angle, end_angle = end_angle, start_angle
+
+    return _arc(center, radius, start_angle, end_angle, curve_type)
+
+
+def arc_center(
+    start: Vertex,
+    end: Vertex,
+    radius: LengthType,
+    short_sagitta: bool = True,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create an arc from start to end with a given radius.
+
+    Args:
+        start: Start vertex of the arc
+        end: End vertex of the arc
+        radius: Radius of the arc
+        short_sagitta: If True, use the shorter arc; if False, use the longer arc
+        curve_type: Type of curve to use (BEZIER or NURBS)
+
+    Returns:
+        Edge representing the arc
+    """
+    r = LengthExp(radius)
+
+    # Calculate the chord between start and end
+    ax, ay = start._x.value, start._y.value
+    bx, by = end._x.value, end._y.value
+
+    # Midpoint of the chord
+    mx, my = (ax + bx) / 2, (ay + by) / 2
+
+    # Chord length and half-chord
+    dx, dy = bx - ax, by - ay
+    chord_length = math.sqrt(dx * dx + dy * dy)
+    half_chord = chord_length / 2
+
+    if r.value < half_chord:
+        raise ValueError(
+            f"Radius {r.value} is too small for chord length {chord_length}"
+        )
+
+    # Distance from midpoint to center
+    h = math.sqrt(r.value**2 - half_chord**2)
+
+    # Unit normal to the chord (perpendicular direction)
+    # Two possible centers: one on each side of the chord
+    nx, ny = -dy / chord_length, dx / chord_length
+
+    # Choose center based on short_sagitta
+    if short_sagitta:
+        center_x = mx + h * nx
+        center_y = my + h * ny
+    else:
+        center_x = mx - h * nx
+        center_y = my - h * ny
+
+    center = Vertex(x=center_x, y=center_y, z=start._z.value)
+
+    # Calculate angles
+    start_angle = math.atan2(ay - center_y, ax - center_x)
+    end_angle = math.atan2(by - center_y, bx - center_x)
+
+    return _arc(center, r, start_angle, end_angle, curve_type)
+
+
+def tangent_arc(
+    start: Vertex,
+    end: Vertex,
+    tangent: Vertex,
+    tangent_from_first: bool = True,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create an arc from start to end with a specified tangent direction.
+
+    Args:
+        start: Start vertex of the arc
+        end: End vertex of the arc
+        tangent: Tangent direction vector (as a Vertex)
+        tangent_from_first: If True, tangent is at start; if False, tangent is at end
+        curve_type: Type of curve to use (BEZIER or NURBS)
+
+    Returns:
+        Edge representing the arc
+    """
+    # Get coordinates
+    ax, ay = start._x.value, start._y.value
+    bx, by = end._x.value, end._y.value
+    tx, ty = tangent._x.value, tangent._y.value
+
+    # Normalize tangent vector
+    t_len = math.sqrt(tx * tx + ty * ty)
+    if t_len < 1e-10:
+        raise ValueError("Tangent vector cannot be zero")
+    tx, ty = tx / t_len, ty / t_len
+
+    # The center lies on a line perpendicular to the tangent passing through
+    # the tangent point, and equidistant from both start and end
+    if tangent_from_first:
+        # Tangent at start point
+        # Center is on the perpendicular at start: (ax - ty*t, ay + tx*t)
+        # Distance from center to start equals distance from center to end
+        # Let center be at (ax - ty*t, ay + tx*t), then:
+        # t = 0 gives center at start (invalid)
+        # We need: (ax - ty*t - ax)^2 + (ay + tx*t - ay)^2 = (ax - ty*t - bx)^2 + (ay + tx*t - by)^2
+        # (-ty*t)^2 + (tx*t)^2 = (ax - ty*t - bx)^2 + (ay + tx*t - by)^2
+        # t^2 = (ax - bx - ty*t)^2 + (ay - by + tx*t)^2
+        # t^2 = (ax-bx)^2 - 2*(ax-bx)*ty*t + ty^2*t^2 + (ay-by)^2 + 2*(ay-by)*tx*t + tx^2*t^2
+        # t^2 = d^2 + t^2 - 2*t*((ax-bx)*ty - (ay-by)*tx)  where d^2 = (ax-bx)^2 + (ay-by)^2
+        # 0 = d^2 - 2*t*((ax-bx)*ty - (ay-by)*tx)
+        # t = d^2 / (2*((ax-bx)*ty - (ay-by)*tx))
+        d2 = (ax - bx) ** 2 + (ay - by) ** 2
+        denom = 2 * ((ax - bx) * ty - (ay - by) * tx)
+        if abs(denom) < 1e-10:
+            raise ValueError("Tangent is parallel to the line from start to end")
+        t = d2 / denom
+        center_x = ax - ty * t
+        center_y = ay + tx * t
+    else:
+        # Tangent at end point
+        d2 = (bx - ax) ** 2 + (by - ay) ** 2
+        denom = 2 * ((bx - ax) * ty - (by - ay) * tx)
+        if abs(denom) < 1e-10:
+            raise ValueError("Tangent is parallel to the line from start to end")
+        t = d2 / denom
+        center_x = bx - ty * t
+        center_y = by + tx * t
+
+    center = Vertex(x=center_x, y=center_y, z=start._z.value)
+    radius = math.sqrt((ax - center_x) ** 2 + (ay - center_y) ** 2)
+
+    # Calculate angles
+    start_angle = math.atan2(ay - center_y, ax - center_x)
+    end_angle = math.atan2(by - center_y, bx - center_x)
+
+    return _arc(center, radius, start_angle, end_angle, curve_type)
+
+
+def circle(
+    center: Vertex,
+    radius: LengthType,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create a full circle."""
+    return _arc(center, radius, 0, "360deg", curve_type)
+
+
+def spline(
+    points: "list[Vertex]",
+    closed: bool = False,
+    curve_type: CurveType = CurveType.BEZIER,
+) -> Edge:
+    """Create a smooth spline through the given points."""
+    if len(points) < 2:
+        raise ValueError("Spline requires at least 2 points")
+
+    if closed and points[0] != points[-1]:
+        points = points + [points[0]]
+
+    n = len(points)
+
+    if curve_type == CurveType.BEZIER:
+        # Catmull-Rom style: compute tangents and convert to Bezier handles
+        segments: list[Edge] = []
+
+        for i in range(n - 1):
+            p0 = points[max(0, i - 1)]
+            p1 = points[i]
+            p2 = points[i + 1]
+            p3 = points[min(n - 1, i + 2)]
+
+            # Tangent at p1 (scaled for cubic Bezier)
+            t1_x = (p2._x.value - p0._x.value) / 6
+            t1_y = (p2._y.value - p0._y.value) / 6
+            t1_z = (p2._z.value - p0._z.value) / 6
+
+            # Tangent at p2
+            t2_x = (p3._x.value - p1._x.value) / 6
+            t2_y = (p3._y.value - p1._y.value) / 6
+            t2_z = (p3._z.value - p1._z.value) / 6
+
+            v1 = Vertex(
+                x=p1._x.value,
+                y=p1._y.value,
+                z=p1._z.value,
+                handle_out=Vertex(
+                    x=p1._x.value + t1_x,
+                    y=p1._y.value + t1_y,
+                    z=p1._z.value + t1_z,
+                ),
+            )
+            v2 = Vertex(
+                x=p2._x.value,
+                y=p2._y.value,
+                z=p2._z.value,
+                handle_in=Vertex(
+                    x=p2._x.value - t2_x,
+                    y=p2._y.value - t2_y,
+                    z=p2._z.value - t2_z,
+                ),
+            )
+            segments.append(Edge(v1=v1, v2=v2))
+
+        if len(segments) == 1:
+            return segments[0]
+        return Edge(v1=segments[0].v1, v2=segments[-1].v2, sub_edges=segments)
+
+    else:  # NURBS
+        # Create a cubic NURBS curve through points
+        # Using uniform knot vector with interpolation
+        degree = 3
+        n_ctrl = n
+        n_knots = n_ctrl + degree + 1
+
+        # Uniform knot vector with clamped ends
+        knots: list[float] = []
+        for i in range(n_knots):
+            if i < degree + 1:
+                knots.append(0.0)
+            elif i >= n_knots - degree - 1:
+                knots.append(1.0)
+            else:
+                knots.append((i - degree) / (n_ctrl - degree))
+
+        # For simplicity, use points directly as control points with unit weights
+        # (This is an approximating spline, not interpolating)
+        vertices = [
+            Vertex(x=p._x.value, y=p._y.value, z=p._z.value, weight=1.0) for p in points
+        ]
+
+        if n == 2:
+            return Edge(v1=vertices[0], v2=vertices[1], knots=knots)
+
+        # Build sub-edges for each segment
+        segments = []
+        for i in range(n - 1):
+            segments.append(Edge(v1=vertices[i], v2=vertices[i + 1], knots=knots))
+
+        return Edge(v1=vertices[0], v2=vertices[-1], sub_edges=segments, knots=knots)
+
+
+def polyline(points: "list[tuple[float, float]] | list[Vertex]") -> Edge:
+    """Create a polyline from a list of points.
+
+    Args:
+        points: List of 2D coordinate tuples (x, y) or Vertex objects
+
+    Returns:
+        Edge representing the polyline
+    """
+    if len(points) < 2:
+        raise ValueError("Polyline requires at least 2 points")
+
+    # Convert tuples to vertices if needed
+    vertices: list[Vertex] = []
+    for p in points:
+        if isinstance(p, Vertex):
+            vertices.append(p)
+        else:
+            vertices.append(Vertex(x=p[0], y=p[1], z=0))
+
+    # Create line segments
+    edges: list[Edge] = []
+    for i in range(len(vertices) - 1):
+        edges.append(line(vertices[i], vertices[i + 1]))
+
+    # Check if closed (first and last points are the same)
+    is_closed = (
+        abs(vertices[0]._x.value - vertices[-1]._x.value) < 1e-10
+        and abs(vertices[0]._y.value - vertices[-1]._y.value) < 1e-10
+    )
+
+    if is_closed:
+        return Edge(v1=vertices[0], v2=vertices[0], sub_edges=edges)
+    else:
+        return Edge(v1=vertices[0], v2=vertices[-1], sub_edges=edges)
+
+
+def mirror(edge: Edge, across: "Plane | Edge") -> Edge:
+    """Mirror an edge across a plane or edge.
+
+    Args:
+        edge: Edge to mirror
+        across: Plane (XY, XZ, or YZ) or Edge to mirror across
+
+    Returns:
+        Mirrored edge
+    """
+
+    def mirror_vertex(v: Vertex, mirror_plane: Plane) -> Vertex:
+        """Mirror a single vertex across a plane."""
+        x, y, z = v._x.value, v._y.value, v._z.value
+        if mirror_plane == Plane.XY:
+            return Vertex(x=x, y=y, z=-z)
+        elif mirror_plane == Plane.XZ:
+            return Vertex(x=x, y=-y, z=z)
+        else:  # YZ
+            return Vertex(x=-x, y=y, z=z)
+
+    # Handle Edge as mirror plane - not implemented in base class
+    if isinstance(across, Edge):
+        raise NotImplementedError("Mirror across Edge is not implemented in base class")
+
+    # Mirror across a Plane
+    new_v1 = mirror_vertex(edge.v1, across)
+    new_v2 = mirror_vertex(edge.v2, across)
+
+    # Mirror sub-edges if present
+    new_sub_edges = None
+    if edge.sub_edges:
+        new_sub_edges = [mirror(sub, across) for sub in edge.sub_edges]
+
+    return Edge(v1=new_v1, v2=new_v2, sub_edges=new_sub_edges, knots=edge.knots)
+
+
+def text(text: str, font: str, size: LengthType) -> Edge:
+    """Create a text string."""
+    raise NotImplementedError("Method not implemented.")
+
+
+def trapezoid(
+    center: Vertex, width: LengthType, height: LengthType, angle: AngleType
+) -> Edge:
+    """Create a trapezoid."""
+    raise NotImplementedError("Method not implemented.")
+
+
+def import_file(file_path: str) -> Edge:
+    """Import an edge from a file."""
+    raise NotImplementedError("Method not implemented.")
+
+
+def export_file(edge: Edge, file_path: str) -> None:
+    """Export an edge to a file."""
+    raise NotImplementedError("Method not implemented.")

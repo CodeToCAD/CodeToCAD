@@ -26,7 +26,7 @@ def get_constraint(
     blender_object: "bpy.types.Object", constraint_name
 ) -> "bpy.types.Constraint | None":
     """
-    Get contraint from Blender
+    Get constraint from Blender
     """
     return blender_object.constraints.get(constraint_name)
 

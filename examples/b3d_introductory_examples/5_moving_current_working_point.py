@@ -6,9 +6,10 @@ https://build123d.readthedocs.io/en/latest/introductory_examples.html#moving-the
 
 import build123d as bd
 
-from codetocad.core.cad.vertex_edge_solid import Solid, Vertex
-from codetocad.integrations.build123d.cad import Shape, Draw
-from codetocad.integrations.open3d.adapter.show import show_in_open3d
+
+from codetocad.core import Solid, Vertex
+from codetocad.integrations.build123d import Shape, Draw
+from codetocad.integrations.open3d import show_in_open3d
 
 
 def original() -> bd.Part:
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     main_solid = main()
 
     original_volume = original_part.volume
-    main_volume = main_solid.native.volume
+    main_volume = main_solid.native_ref.volume
 
     print(f"Original volume: {original_volume}")
     print(f"Main volume: {main_volume}")

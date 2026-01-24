@@ -12,7 +12,7 @@
    <!-- <a href="https://codetocad.github.io/CodeToCAD/examples.html"><img alt="Static Badge" src="https://img.shields.io/badge/Examples-white?logo=internetarchive&logoColor=black"></a> -->
 </p>
 
-**Maintainers Note**: This month (January 2026) we're focused on defining basic shapes, contstraints and visualizations.
+**Maintainers Note**: This month (January 2026) we're focused on defining basic shapes, constraints and visualizations.
 
 
 <div align="center">
@@ -30,7 +30,13 @@
 
 ## Getting Started
 
-Follow the [0-getting-started.ipynb](./devlog/0-getting-started.ipynb) notebook to install dependencies and run CodeToCAD.
+The new API is not yet available on pypi.
+
+For developers, you may clone the repository and run the following commands to get started:
+
+```bash
+uv sync --all-groups --all-extras # Install dependencies
+```
 
 ## What is CodeToCAD
 CodeToCAD is an open source mechatronics framework and digital manufacturing automation. Its goal is to allow engineers and developers to write scripts that can be checked into source control, collaborated on, and run on any supported CAD, modeling, simulation, FEA or machining software. It's a one-stop-shop for designing hardware, electrical, software, and getting it ready for manufacturing.
