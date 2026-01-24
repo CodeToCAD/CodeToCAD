@@ -101,8 +101,11 @@ def _get_native_object(obj: "Solid | Edge | Sketch") -> "bd.Shape | None":
 
 def _get_default_search_radius(bbox: bd.BoundBox) -> float:
     """Calculate a default search radius based on the bounding box diagonal."""
+    return max(
+        bbox.max.X - bbox.min.X, bbox.max.Y - bbox.min.Y, bbox.max.Z - bbox.min.Z
+    )
     diagonal = (bbox.max - bbox.min).length
-    # Use 10% of the diagonal as default search radius
+    # Use a percentage of the diagonal as default search radius
     return diagonal * 0.1
 
 
@@ -152,6 +155,13 @@ def _distance_to_point(
     """Calculate distance from an element's center to a target point."""
     if isinstance(element, bd.Vertex):
         elem_pos = bd.Vector(element.X, element.Y, element.Z)
+    elif isinstance(element, bd.Edge):
+        vertices = element.vertices()
+        # elem_pos is the point furthest from the target point
+        elem_pos = max(
+            vertices, key=lambda v: (bd.Vector(v.X, v.Y, v.Z) - target).length
+        )
+        elem_pos = bd.Vector(elem_pos.X, elem_pos.Y, elem_pos.Z)
     else:
         # For edges and faces, use the center
         elem_pos = element.center()

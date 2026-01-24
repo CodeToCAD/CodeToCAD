@@ -56,6 +56,7 @@ def _visualize(
 ) -> None:
     """Visualize the box with optional highlighted elements."""
     print(f"\n  Visualizing: {title}")
+    print("    Coordinate frame: X=Red, Y=Green, Z=Blue")
 
     colored_vertices = [ColoredVertex(vertex=v, color=RED) for v in (vertices or [])]
     colored_edges = [ColoredEdge(edge=e, color=GREEN) for e in (edges or [])]
@@ -69,6 +70,7 @@ def _visualize(
         faces=colored_faces,
         vertex_radius=1.5,
         edge_radius=0.8,
+        show_coordinate_frame=True,
     )
 
 
@@ -139,7 +141,7 @@ def example_find_edge_left_back() -> None:
     """Find edge at LEFT_BACK position."""
     print("\n--- find_edge: LEFT_BACK ---")
     box = _create_box()
-    edges = find_edge(box, CardinalDirection.LEFT_BACK, search_radius="7mm")
+    edges = find_edge(box, CardinalDirection.LEFT_BACK, search_radius="20mm")
     print(f"  Found {len(edges)} edge(s)")
     for i, e in enumerate(edges):
         print(

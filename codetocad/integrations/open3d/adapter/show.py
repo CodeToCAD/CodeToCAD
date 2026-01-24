@@ -128,6 +128,76 @@ def _create_edge_cylinder(
     return cylinder
 
 
+def _create_coordinate_frame(
+    origin: "tuple[float, float, float]",
+    size: float = 15.0,
+    radius: float = 0.5,
+) -> "list[o3d.geometry.TriangleMesh]":
+    """Create coordinate frame axes (X=red, Y=green, Z=blue) at the given origin.
+
+    Args:
+        origin: (x, y, z) position for the origin of the coordinate frame
+        size: Length of each axis arrow
+        radius: Radius of the axis cylinders
+
+    Returns:
+        List of Open3D meshes representing the coordinate frame
+    """
+    geometries = []
+    ox, oy, oz = origin
+
+    # Colors: X=red, Y=green, Z=blue
+    axis_colors = [
+        (1.0, 0.0, 0.0),  # X - Red
+        (0.0, 1.0, 0.0),  # Y - Green
+        (0.0, 0.0, 1.0),  # Z - Blue
+    ]
+    axis_directions = [
+        np.array([1, 0, 0]),  # X
+        np.array([0, 1, 0]),  # Y
+        np.array([0, 0, 1]),  # Z
+    ]
+
+    for color, direction in zip(axis_colors, axis_directions):
+        # Create cylinder for axis shaft
+        cylinder = o3d.geometry.TriangleMesh.create_cylinder(
+            radius=radius, height=size * 0.85
+        )
+        # Create cone for arrow head
+        cone = o3d.geometry.TriangleMesh.create_cone(
+            radius=radius * 2.5, height=size * 0.15
+        )
+
+        # Rotate to align with axis direction
+        z_axis = np.array([0, 0, 1])
+        if not np.allclose(direction, z_axis):
+            rotation_axis = np.cross(z_axis, direction)
+            rotation_axis = rotation_axis / np.linalg.norm(rotation_axis)
+            angle = np.arccos(np.dot(z_axis, direction))
+            rotation_matrix = o3d.geometry.get_rotation_matrix_from_axis_angle(
+                rotation_axis * angle
+            )
+            cylinder.rotate(rotation_matrix, center=[0, 0, 0])
+            cone.rotate(rotation_matrix, center=[0, 0, 0])
+
+        # Position cylinder (centered at half height along axis)
+        cylinder.translate(np.array([ox, oy, oz]) + direction * (size * 0.85 / 2))
+        # Position cone (at end of cylinder)
+        cone.translate(
+            np.array([ox, oy, oz]) + direction * (size * 0.85 + size * 0.15 / 2)
+        )
+
+        cylinder.paint_uniform_color(list(color))
+        cone.paint_uniform_color(list(color))
+        cylinder.compute_vertex_normals()
+        cone.compute_vertex_normals()
+
+        geometries.append(cylinder)
+        geometries.append(cone)
+
+    return geometries
+
+
 def show_in_open3d(
     shape: Solid,
     color: "ColorType" = (0.5, 0.5, 0.5),
@@ -136,6 +206,9 @@ def show_in_open3d(
     faces: "list[ColoredFace] | None" = None,
     vertex_radius: float = 1.0,
     edge_radius: float = 0.5,
+    show_coordinate_frame: bool = False,
+    coordinate_frame_origin: "tuple[float, float, float] | None" = None,
+    coordinate_frame_size: float = 15.0,
 ):
     """Export and visualize a shape with optional colored vertices, edges, and faces.
 
@@ -147,6 +220,10 @@ def show_in_open3d(
         faces: List of ColoredFace objects to highlight (rendered as edge boundaries)
         vertex_radius: Radius of vertex marker spheres
         edge_radius: Radius of edge marker cylinders
+        show_coordinate_frame: Whether to show XYZ coordinate frame axes
+        coordinate_frame_origin: (x, y, z) position for coordinate frame origin.
+            If None, automatically placed outside the shape's bounding box.
+        coordinate_frame_size: Size of the coordinate frame axes (default 15mm)
     """
     from codetocad.integrations.build123d.cad.shape import export_file
 
@@ -158,6 +235,25 @@ def show_in_open3d(
 
     # Collect all geometries to display
     geometries = [mesh]
+
+    # Add coordinate frame if requested
+    if show_coordinate_frame:
+        if coordinate_frame_origin is None:
+            # Place coordinate frame outside the bounding box
+            bbox = mesh.get_axis_aligned_bounding_box()
+            min_bound = bbox.get_min_bound()
+            # Place it at the corner minus some offset
+            origin = (
+                min_bound[0] - coordinate_frame_size * 0.5,
+                min_bound[1] - coordinate_frame_size * 0.5,
+                min_bound[2] - coordinate_frame_size * 0.5,
+            )
+        else:
+            origin = coordinate_frame_origin
+        frame_geoms = _create_coordinate_frame(
+            origin, coordinate_frame_size, radius=coordinate_frame_size * 0.03
+        )
+        geometries.extend(frame_geoms)
 
     # Add vertex markers
     if vertices:

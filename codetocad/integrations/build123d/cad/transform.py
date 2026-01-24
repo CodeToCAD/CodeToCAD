@@ -27,7 +27,8 @@ def translate(
             f"Cannot translate {type(obj).__name__}: no native object available"
         )
 
-    # Convert to mm for build123d (LengthExp returns meters)
+    # LengthExp returns meters, but build123d uses mm by convention.
+    # Convert meters to mm by multiplying by 1000.
     dx = float(LengthExp(x)) * 1000
     dy = float(LengthExp(y)) * 1000
     dz = float(LengthExp(z)) * 1000
@@ -90,7 +91,8 @@ def rotate_around_axis(
             f"Cannot rotate {type(obj).__name__}: no native object available"
         )
 
-    # Get axis direction from edge (convert to mm for build123d)
+    # Get axis direction from edge. LengthExp returns meters, but build123d uses mm.
+    # Convert meters to mm by multiplying by 1000.
     x1 = float(LengthExp(axis.v1.x)) * 1000
     y1 = float(LengthExp(axis.v1.y)) * 1000
     z1 = float(LengthExp(axis.v1.z)) * 1000
@@ -140,30 +142,87 @@ def scale_uniform(
     return scale(obj, x=factor, y=factor, z=factor)
 
 
+def _get_vertex_world_position(bd_vertex: "bd.Vertex") -> "tuple[float, float, float]":
+    """Get the world position of a build123d vertex, accounting for transformations."""
+    # Use center() which gives the correct world coordinates
+    center = bd_vertex.center()
+    return (float(center.X), float(center.Y), float(center.Z))
+
+
 def _wrap_native(
     original: "Vertex | Edge | Solid",
     native: "bd.Vertex | bd.Edge | bd.Wire | bd.Face | bd.Solid",
 ) -> "Vertex | Edge | Solid":
     """Wrap a native build123d object in the appropriate CodeToCAD wrapper."""
     if isinstance(original, Vertex):
-        # For vertices, extract coordinates from native
-        native_vertex = native  # type: bd.Vertex
+        # For vertices, use center() to get world coordinates after transformations
+        try:
+            center = native.center()
+            result = Vertex(
+                x=float(center.X),
+                y=float(center.Y),
+                z=float(center.Z),
+                is_hidden=original.is_hidden,
+            )
+            result.native_ref = native
+            return result
+        except AttributeError:
+            pass
+        # Last resort: keep original coordinates
         result = Vertex(
-            x=float(native_vertex.X),
-            y=float(native_vertex.Y),
-            z=float(native_vertex.Z),
+            x=original.x,
+            y=original.y,
+            z=original.z,
             is_hidden=original.is_hidden,
         )
         result.native_ref = native
+        return result
     elif isinstance(original, Edge):
-        result = Edge(
-            v1=Vertex(x=0, y=0, z=0),  # Placeholder, native has actual geometry
-            v2=Vertex(x=0, y=0, z=0),
-            is_hidden=original.is_hidden,
-        )
+        # For edges, extract actual vertex world coordinates from the transformed shape
+        try:
+            verts = native.vertices()
+            if len(verts) >= 2:
+                x1, y1, z1 = _get_vertex_world_position(verts[0])
+                x2, y2, z2 = _get_vertex_world_position(verts[1])
+                v1 = Vertex(x=x1, y=y1, z=z1)
+                v2 = Vertex(x=x2, y=y2, z=z2)
+            else:
+                v1 = Vertex(x=0, y=0, z=0)
+                v2 = Vertex(x=0, y=0, z=0)
+        except AttributeError:
+            v1 = Vertex(x=0, y=0, z=0)
+            v2 = Vertex(x=0, y=0, z=0)
+
+        result = Edge(v1=v1, v2=v2, is_hidden=original.is_hidden)
         result.native_ref = native
+        # Copy over native_parent_ref if it exists (for faces)
+        if (
+            hasattr(original, "native_parent_ref")
+            and original.native_parent_ref is not None
+        ):
+            result.native_parent_ref = native  # The transformed shape
+
+        # Handle sub_edges for face boundaries
+        if original.sub_edges:
+            result.sub_edges = []
+            try:
+                # Get edges from the transformed shape
+                edges = native.edges() if hasattr(native, "edges") else []
+                for bd_edge in edges:
+                    everts = bd_edge.vertices()
+                    if len(everts) >= 2:
+                        x1, y1, z1 = _get_vertex_world_position(everts[0])
+                        x2, y2, z2 = _get_vertex_world_position(everts[1])
+                        sub_v1 = Vertex(x=x1, y=y1, z=z1)
+                        sub_v2 = Vertex(x=x2, y=y2, z=z2)
+                        sub_edge = Edge(v1=sub_v1, v2=sub_v2)
+                        sub_edge.native_ref = bd_edge
+                        result.sub_edges.append(sub_edge)
+            except AttributeError:
+                pass
+
+        return result
     else:  # Solid
         result = Solid(is_hidden=original.is_hidden)
         result.native_ref = native
-
-    return result
+        return result
