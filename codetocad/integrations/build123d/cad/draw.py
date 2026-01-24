@@ -27,7 +27,7 @@ def line(v1: Vertex, v2: Vertex) -> Edge:
     start = v1.to_tuple()
     end = v2.to_tuple()
     native_line = bd.Line(start, end)
-    edge.native_ref = native_line
+    edge.set_native(native_line)
     return edge
 
 
@@ -58,7 +58,7 @@ def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
     # Move to center position
     cx, cy, cz = center._x.value, center._y.value, center._z.value
     native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
-    edge.native_ref = native_rect
+    edge.set_native(native_rect)
 
     return edge
 
@@ -77,7 +77,7 @@ def circle(
     # Move to center position
     cx, cy, cz = center._x.value, center._y.value, center._z.value
     native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
-    arc_edge.native_ref = native_circle
+    arc_edge.set_native(native_circle)
 
     return arc_edge
 
@@ -101,7 +101,7 @@ def _arc(
 
     cx, cy, cz = center._x.value, center._y.value, center._z.value
     native_arc = bd.CenterArc((cx, cy, cz), r, start_deg, arc_size)
-    arc_edge.native_ref = native_arc
+    arc_edge.set_native(native_arc)
 
     return arc_edge
 
@@ -118,7 +118,7 @@ def arc(
 
     # Create native build123d three-point arc
     native_arc = bd.ThreePointArc(start.to_tuple(), mid.to_tuple(), end.to_tuple())
-    arc_edge.native_ref = native_arc
+    arc_edge.set_native(native_arc)
 
     return arc_edge
 
@@ -137,7 +137,7 @@ def arc_center(
     # Create native build123d radius arc
     r = float(LengthExp(radius))
     native_arc = bd.RadiusArc(start.to_tuple(), end.to_tuple(), r, short_sagitta)
-    arc_edge.native_ref = native_arc
+    arc_edge.set_native(native_arc)
 
     return arc_edge
 
@@ -160,7 +160,7 @@ def tangent_arc(
         tangent=tangent.to_tuple(),
         tangent_from_first=tangent_from_first,
     )
-    arc_edge.native_ref = native_arc
+    arc_edge.set_native(native_arc)
 
     return arc_edge
 
@@ -180,7 +180,7 @@ def polygon(
     # Move to center position
     cx, cy, cz = center._x.value, center._y.value, center._z.value
     native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
-    poly_edge.native_ref = native_poly
+    poly_edge.set_native(native_poly)
 
     return poly_edge
 
@@ -194,7 +194,7 @@ def text(text: str, font: str, size: LengthType) -> Edge:
         v1=Vertex(x=0, y=0, z=0),
         v2=Vertex(x=0, y=0, z=0),
     )
-    edge.native_ref = native_text
+    edge.set_native(native_text)
     return edge
 
 
@@ -222,7 +222,7 @@ def trapezoid(
             z=center._z,
         ),
     )
-    edge.native_ref = native_trap
+    edge.set_native(native_trap)
     return edge
 
 
@@ -241,7 +241,7 @@ def spline(
         point_tuples = point_tuples + [point_tuples[0]]
 
     native_spline = bd.Spline(*point_tuples, periodic=closed)
-    spline_edge.native_ref = native_spline
+    spline_edge.set_native(native_spline)
 
     return spline_edge
 
@@ -268,7 +268,7 @@ def polyline(points: "list[tuple[float, float]] | list[Vertex]") -> Edge:
 
     # Create native build123d polyline
     native_polyline = bd.Polyline(point_tuples)
-    poly_edge.native_ref = native_polyline
+    poly_edge.set_native(native_polyline)
 
     return poly_edge
 
@@ -293,14 +293,14 @@ def mirror(
     make_face: bool = False
     face_plane: "Plane | None" = None
 
-    native = edge.native_ref
+    native = edge.get_native()
     if native is None:
         raise ValueError("Edge has no native build123d object")
 
     # Determine the build123d plane for mirroring
     if isinstance(across, Edge):
         # Mirror across an Edge - use the edge's native as the mirror plane
-        mirror_native = across.native_ref
+        mirror_native = across.get_native()
         if mirror_native is None:
             raise ValueError("Mirror edge has no native build123d object")
         native_mirrored = bd.mirror(native, mirror_native)
@@ -342,7 +342,7 @@ def mirror(
 
     # Create the result edge
     result_edge = BaseDraw.mirror(edge, across)
-    result_edge.native_ref = native_result
+    result_edge.set_native(native_result)
 
     return result_edge
 
@@ -356,7 +356,7 @@ def import_file(file_path: str) -> Edge:  # noqa: ARG004
 
 def export_file(edge: Edge, file_path: str) -> None:
     """Export an edge to a file."""
-    native = edge.native_ref
+    native = edge.get_native()
     if native is None:
         raise ValueError("Edge has no native build123d object")
 

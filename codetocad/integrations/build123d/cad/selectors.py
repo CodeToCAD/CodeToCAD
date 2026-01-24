@@ -94,8 +94,10 @@ def _get_native_object(obj: "Solid | Edge | Sketch") -> "bd.Shape | None":
     """Extract the native build123d object from a CodeToCAD object."""
     if hasattr(obj, "native") and obj.native is not None:
         return obj.native
-    if hasattr(obj, "native_ref") and obj.native_ref is not None:
-        return obj.native_ref
+    if hasattr(obj, "get_native"):
+        native = obj.get_native()
+        if native is not None:
+            return native
     return None
 
 
@@ -171,7 +173,7 @@ def _distance_to_point(
 def _convert_bd_vertex_to_codetocad(bd_vertex: bd.Vertex) -> Vertex:
     """Convert a build123d Vertex to a CodeToCAD Vertex."""
     vertex = Vertex(x=bd_vertex.X, y=bd_vertex.Y, z=bd_vertex.Z)
-    vertex.native_ref = bd_vertex
+    vertex.set_native(bd_vertex)
     return vertex
 
 
@@ -192,7 +194,7 @@ def _convert_bd_edge_to_codetocad(bd_edge: bd.Edge) -> Edge:
         v2 = v1
 
     edge = Edge(v1=v1, v2=v2)
-    edge.native_ref = bd_edge
+    edge.set_native(bd_edge)
     return edge
 
 
@@ -200,7 +202,7 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
     """Convert a build123d Face to a CodeToCAD Edge representing the outer boundary.
 
     The returned Edge represents the outer wire of the face. The original bd.Face
-    is stored in native_parent_ref for later retrieval if needed.
+    is stored in native_refs["face"] for later retrieval if needed.
     The sub_edges list contains all the individual edges of the outer wire.
     """
     # Get the outer wire of the face
@@ -228,8 +230,8 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
         v2 = v1
 
     edge = Edge(v1=v1, v2=v2, sub_edges=sub_edges if sub_edges else None)
-    edge.native_ref = outer_wire  # Store the wire as native_ref
-    edge.native_parent_ref = bd_face  # Store the original face for later retrieval
+    edge.set_native(outer_wire)  # Store the wire as default native
+    edge.set_native(bd_face, "face")  # Store the original face for later retrieval
     return edge
 
 
@@ -340,7 +342,8 @@ def find_face(
     Find faces in a solid at or near a cardinal direction.
 
     The returned Edge represents the outer boundary wire of the face. The original
-    native face object is stored in the Edge's native_parent_ref attribute.
+    native face object is stored in native_refs["face"] and can be retrieved with
+    edge.get_native("face").
 
     Args:
         obj: The Solid object to search within.
@@ -387,7 +390,7 @@ def find_face(
 def _convert_bd_solid_to_codetocad(native: "bd.Shape") -> Solid:
     """Convert a build123d Solid/Part to a CodeToCAD Solid."""
     solid = Solid(is_hidden=False)
-    solid.native_ref = native
+    solid.set_native(native)
     return solid
 
 

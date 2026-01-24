@@ -99,8 +99,8 @@ def find_face(
     For example, TOP_CENTER would find the top face of a box.
 
     The returned Edge represents the outer boundary wire of the face. The original
-    native face object is stored in the Edge's native_parent_ref attribute for
-    later retrieval if needed by CAD operations.
+    native face object is stored in native_refs["face"] and can be retrieved with
+    edge.get_native("face").
 
     Args:
         obj: The Solid object to search within.
@@ -119,7 +119,7 @@ def find_face(
         >>> top_faces = find_face(my_box, CardinalDirection.TOP_CENTER)
         >>> if top_faces:
         ...     top_face = top_faces[0]  # Get the closest match (outer wire)
-        ...     native_face = top_face.native_parent_ref  # Get original face
+        ...     native_face = top_face.get_native("face")  # Get original face
     """
     raise NotImplementedError("Method not implemented.")
 

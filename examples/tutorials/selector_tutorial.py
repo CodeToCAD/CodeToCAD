@@ -11,7 +11,7 @@ radius of that position.
 Each sub-example is visualized independently - close the window to continue.
 """
 
-from codetocad.core.cad.vertex_edge_solid import Solid, Vertex, Edge
+from codetocad.core import Solid, Vertex, Edge, PresetMaterial
 from codetocad.core.dimensions.point import Point
 from codetocad.core.enums import CardinalDirection
 from codetocad.core.enums.cardinal_directions import offset
@@ -174,8 +174,8 @@ def example_find_face_top() -> None:
     for i, f in enumerate(faces):
         sub_count = len(f.sub_edges) if f.sub_edges else 0
         print(f"    {i+1}. Face with {sub_count} boundary edges")
-        if f.native_parent_ref:
-            print(f"       Native type: {type(f.native_parent_ref).__name__}")
+        if f.get_native("face"):
+            print(f"       Native type: {type(f.get_native('face')).__name__}")
     if faces:
         _visualize(box, f"TOP_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
 

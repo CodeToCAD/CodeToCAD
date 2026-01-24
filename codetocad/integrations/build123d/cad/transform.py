@@ -21,7 +21,7 @@ def translate(
     z: LengthType = 0,
 ) -> "Vertex | Edge | Solid":
     """Translate an object by the specified distances."""
-    native = obj.native_ref
+    native = obj.get_native()
     if native is None:
         raise NotImplementedError(
             f"Cannot translate {type(obj).__name__}: no native object available"
@@ -56,7 +56,7 @@ def rotate(
     z: AngleType = 0,
 ) -> "Vertex | Edge | Solid":
     """Rotate an object around the X, Y, and Z axes (Euler angles)."""
-    native = obj.native_ref
+    native = obj.get_native()
     if native is None:
         raise NotImplementedError(
             f"Cannot rotate {type(obj).__name__}: no native object available"
@@ -85,7 +85,7 @@ def rotate_around_axis(
     angle: AngleType,
 ) -> "Vertex | Edge | Solid":
     """Rotate an object around an arbitrary axis defined by an Edge."""
-    native = obj.native_ref
+    native = obj.get_native()
     if native is None:
         raise NotImplementedError(
             f"Cannot rotate {type(obj).__name__}: no native object available"
@@ -122,7 +122,7 @@ def scale(
     if isinstance(obj, Vertex):
         raise TypeError("Cannot scale a Vertex. Vertices are points with no dimension.")
 
-    native = obj.native_ref
+    native = obj.get_native()
     if native is None:
         raise NotImplementedError(
             f"Cannot scale {type(obj).__name__}: no native object available"
@@ -164,7 +164,7 @@ def _wrap_native(
                 z=float(center.Z),
                 is_hidden=original.is_hidden,
             )
-            result.native_ref = native
+            result.set_native(native)
             return result
         except AttributeError:
             pass
@@ -175,7 +175,7 @@ def _wrap_native(
             z=original.z,
             is_hidden=original.is_hidden,
         )
-        result.native_ref = native
+        result.set_native(native)
         return result
     elif isinstance(original, Edge):
         # For edges, extract actual vertex world coordinates from the transformed shape
@@ -194,13 +194,11 @@ def _wrap_native(
             v2 = Vertex(x=0, y=0, z=0)
 
         result = Edge(v1=v1, v2=v2, is_hidden=original.is_hidden)
-        result.native_ref = native
-        # Copy over native_parent_ref if it exists (for faces)
-        if (
-            hasattr(original, "native_parent_ref")
-            and original.native_parent_ref is not None
-        ):
-            result.native_parent_ref = native  # The transformed shape
+        result.set_native(native)
+        # Copy over face reference if it exists
+        original_face = original.get_native("face")
+        if original_face is not None:
+            result.set_native(native, "face")  # The transformed shape
 
         # Handle sub_edges for face boundaries
         if original.sub_edges:
@@ -216,7 +214,7 @@ def _wrap_native(
                         sub_v1 = Vertex(x=x1, y=y1, z=z1)
                         sub_v2 = Vertex(x=x2, y=y2, z=z2)
                         sub_edge = Edge(v1=sub_v1, v2=sub_v2)
-                        sub_edge.native_ref = bd_edge
+                        sub_edge.set_native(bd_edge)
                         result.sub_edges.append(sub_edge)
             except AttributeError:
                 pass
@@ -224,5 +222,5 @@ def _wrap_native(
         return result
     else:  # Solid
         result = Solid(is_hidden=original.is_hidden)
-        result.native_ref = native
+        result.set_native(native)
         return result

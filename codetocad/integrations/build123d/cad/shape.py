@@ -41,14 +41,15 @@ from codetocad.integrations.build123d.adapter.export import (
 
 def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0) -> Solid:
     """Extrude a 2D shape into a 3D solid."""
-    native = edge.native_ref
+    native = edge.get_native()
 
     # If edge has no native but has sub_edges, combine sub_edge natives into a Wire
     if native is None and edge.sub_edges:
         native_edges = []
         for sub in edge.sub_edges:
-            if sub.native_ref is not None:
-                native_edges.append(sub.native_ref)
+            sub_native = sub.get_native()
+            if sub_native is not None:
+                native_edges.append(sub_native)
         if native_edges:
             # Combine edges into a Curve (Wire)
             native = bd.Curve() + native_edges
@@ -58,13 +59,13 @@ def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0) -> Solid
 
     result = extrude_wire(native, height, draft_angle)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def revolve(edge: Edge, around: Edge, angle: AngleType) -> Solid:
     """Revolve a 2D shape around an axis to create a 3D solid."""
-    native = edge.native_ref
+    native = edge.get_native()
     if native is None:
         raise ValueError("Edge has no native build123d object")
 
@@ -76,72 +77,72 @@ def revolve(edge: Edge, around: Edge, angle: AngleType) -> Solid:
 
     result = revolve_wire(native, axis, angle)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def loft(this: Edge, to: Edge, merge: bool = True) -> Solid:
     """Create a 3D solid by lofting between 2D shapes."""
-    native1 = this.native_ref
-    native2 = to.native_ref
+    native1 = this.get_native()
+    native2 = to.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Edges have no native build123d objects")
 
     result = loft_wires([native1, native2], ruled=not merge)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def sweep(edge: Edge, path: Edge) -> Solid:
     """Sweep a 2D shape along a path to create a 3D solid."""
-    profile_native = edge.native_ref
-    path_native = path.native_ref
+    profile_native = edge.get_native()
+    path_native = path.get_native()
     if profile_native is None or path_native is None:
         raise ValueError("Edges have no native build123d objects")
 
     result = sweep_wire(profile_native, path_native)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def union(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     """Combine this and that."""
-    native1 = this.native_ref
-    native2 = that.native_ref
+    native1 = this.get_native()
+    native2 = that.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
 
     result = boolean_union(native1, native2)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def subtract(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     """Subtract this solid from that."""
-    native1 = this.native_ref
-    native2 = that.native_ref
+    native1 = this.get_native()
+    native2 = that.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
 
     result = boolean_difference(native1, native2)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
 def intersection(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     """Keep only the overlapping parts of this and that solids."""
-    native1 = this.native_ref
-    native2 = that.native_ref
+    native1 = this.get_native()
+    native2 = that.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
 
     result = boolean_intersection(native1, native2)
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
@@ -161,7 +162,7 @@ def fillet(
         Solid with filleted edges
     """
 
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -172,12 +173,12 @@ def fillet(
         native_edges = native.edges()
     else:
         # Get native edges from the provided Edge objects
-        native_edges = [e.native_ref for e in edges if e.native_ref is not None]
+        native_edges = [e.get_native() for e in edges if e.get_native() is not None]
 
     result = bd.fillet(native_edges, radius=r)
 
     new_solid = Solid(is_hidden=False)
-    new_solid.native_ref = result
+    new_solid.set_native(result)
     return new_solid
 
 
@@ -197,7 +198,7 @@ def chamfer(
         Solid with chamfered edges
     """
 
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -208,12 +209,12 @@ def chamfer(
         native_edges = native.edges()
     else:
         # Get native edges from the provided Edge objects
-        native_edges = [e.native_ref for e in edges if e.native_ref is not None]
+        native_edges = [e.get_native() for e in edges if e.get_native() is not None]
 
     result = bd.chamfer(native_edges, length=dist)
 
     new_solid = Solid(is_hidden=False)
-    new_solid.native_ref = result
+    new_solid.set_native(result)
     return new_solid
 
 
@@ -234,7 +235,7 @@ def edges(
     Returns:
         List of Edge objects
     """
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -259,7 +260,7 @@ def edges(
             v1=Vertex(x=0, y=0, z=0),  # Placeholder vertices
             v2=Vertex(x=0, y=0, z=0),
         )
-        edge.native_ref = native_edge
+        edge.set_native(native_edge)
         result.append(edge)
 
     return result
@@ -277,7 +278,7 @@ def _get_bd_axis(axis: Axis) -> bd.Axis:
 
 def mirror(solid: Solid, across: "Edge|Solid") -> Solid:
     """Mirror a solid across something."""
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -293,7 +294,7 @@ def mirror(solid: Solid, across: "Edge|Solid") -> Solid:
 
     result = mirror_solid(native, plane)
     new_solid = Solid(is_hidden=False)
-    new_solid.native_ref = result
+    new_solid.set_native(result)
     return new_solid
 
 
@@ -304,7 +305,7 @@ def pattern(
     around: "Vertex|Edge|Solid|None" = None,
 ) -> Solid:
     """Create an array of solids."""
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -333,11 +334,11 @@ def pattern(
         for r in results[1:]:
             compound = compound + r
         new_solid = Solid(is_hidden=False)
-        new_solid.native_ref = compound
+        new_solid.set_native(compound)
         return new_solid
     elif results:
         new_solid = Solid(is_hidden=False)
-        new_solid.native_ref = results[0]
+        new_solid.set_native(results[0])
         return new_solid
     return solid
 
@@ -352,13 +353,13 @@ def import_file(file_path: str) -> Solid:
         raise ValueError(f"Unsupported file format: {file_path}")
 
     solid = Solid(is_hidden=False)
-    solid.native_ref = result[0] if isinstance(result, list) else result
+    solid.set_native(result[0] if isinstance(result, list) else result)
     return solid
 
 
 def export_file(solid: Solid, file_path: str) -> None:
     """Export a solid to a file."""
-    native = solid.native_ref
+    native = solid.get_native()
     if native is None:
         raise ValueError("Solid has no native build123d object")
 
@@ -402,7 +403,7 @@ def torus(center: Vertex, major_radius: LengthType, minor_radius: LengthType) ->
     result = result.moved(bd.Location((cx, cy, cz)))
 
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
@@ -414,7 +415,7 @@ def cone(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
     result = result.moved(bd.Location((cx, cy, cz)))
 
     solid = Solid(is_hidden=False)
-    solid.native_ref = result
+    solid.set_native(result)
     return solid
 
 
