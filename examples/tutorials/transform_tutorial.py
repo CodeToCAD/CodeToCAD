@@ -339,111 +339,128 @@ def example_combined() -> None:
 
 
 def example_transform_vertex() -> None:
-    """Query a vertex and transform it, showing before and after."""
-    print("\n--- transform: Query and transform vertex ---")
+    """
+    Demonstrate vertex transformation that updates the solid geometry.
+
+    In B-Rep CAD systems, modifying a vertex requires rebuilding the solid.
+    When a vertex is queried from a solid, it stores a reference to its parent,
+    so translate() automatically rebuilds the solid with the modified vertex.
+    """
+    print("\n--- transform: Modify vertex and rebuild solid ---")
     box = _create_box()
     print("  Created 20x20x20 box centered at origin")
 
-    # Query the top-front-right vertex
-    vertices = find_vertex(box, CardinalDirection.TOP_FRONT_RIGHT)
+    # Query a bottom vertex (we modify the base face for extruded solids)
+    vertices = find_vertex(box, CardinalDirection.BOTTOM_FRONT_RIGHT)
     if not vertices:
-        print("  ERROR: No vertex found at TOP_FRONT_RIGHT")
+        print("  ERROR: No vertex found at BOTTOM_FRONT_RIGHT")
         return
 
     original_vertex = vertices[0]
     print(
-        f"  Found vertex at TOP_FRONT_RIGHT: "
+        f"  Found vertex at BOTTOM_FRONT_RIGHT: "
         f"({_get_coord_value(original_vertex.x):.1f}, "
         f"{_get_coord_value(original_vertex.y):.1f}, "
         f"{_get_coord_value(original_vertex.z):.1f})"
     )
 
-    # Translate the vertex
-    translated = translate(original_vertex, x="10mm", y="5mm", z="3mm")
-    assert isinstance(translated, Vertex)
-    print(
-        f"  Translated vertex to: "
-        f"({_get_coord_value(translated.x):.1f}, "
-        f"{_get_coord_value(translated.y):.1f}, "
-        f"{_get_coord_value(translated.z):.1f})"
-    )
+    # Translate the vertex to a new position
+    # Since the vertex has a parent solid, translate() automatically rebuilds
+    # the solid and returns the modified Solid
+    modified_box = translate(original_vertex, x="5mm", y="5mm", z="0mm")
+    assert isinstance(modified_box, Solid)
+    print("  Translated vertex by: x=5mm, y=5mm")
+    print("  Solid automatically rebuilt with modified vertex")
 
-    _visualize_element_transform(
+    # Visualize: original solid (gray) vs modified solid (green)
+    _visualize_transform(
         box,
-        before_vertices=[original_vertex],
-        after_vertices=[translated],
-        title="Transform vertex (red=before, green=after)",
+        modified_box,
+        "Vertex modification rebuilds solid (gray=before, green=after)",
     )
 
 
 def example_transform_edge() -> None:
-    """Query an edge and transform it, showing before and after."""
-    print("\n--- transform: Query and transform edge ---")
+    """
+    Demonstrate edge transformation that updates the solid geometry.
+
+    In B-Rep CAD systems, modifying an edge requires rebuilding the solid.
+    When an edge is queried from a solid, it stores a reference to its parent,
+    so translate() automatically rebuilds the solid with the modified edge.
+    """
+    print("\n--- transform: Modify edge and rebuild solid ---")
     box = _create_box()
     print("  Created 20x20x20 box centered at origin")
 
-    # Query the front-top edge
-    # Use a search radius large enough to include both endpoints of the edge
-    edges = find_edge(box, CardinalDirection.FRONT_TOP, search_radius="15mm")
+    # Query a bottom edge (we modify the base face for extruded solids)
+    edges = find_edge(box, CardinalDirection.BOTTOM_FRONT, search_radius="15mm")
     if not edges:
-        print("  ERROR: No edge found at FRONT_TOP")
+        print("  ERROR: No edge found at BOTTOM_FRONT")
         return
 
     original_edge = edges[0]
     print(
-        f"  Found edge at FRONT_TOP: "
+        f"  Found edge at BOTTOM_FRONT: "
         f"({_get_coord_value(original_edge.v1.x):.1f}, {_get_coord_value(original_edge.v1.y):.1f}, "
         f"{_get_coord_value(original_edge.v1.z):.1f}) -> "
         f"({_get_coord_value(original_edge.v2.x):.1f}, {_get_coord_value(original_edge.v2.y):.1f}, "
         f"{_get_coord_value(original_edge.v2.z):.1f})"
     )
 
-    # Translate the edge
-    translated = translate(original_edge, x="0mm", y="5mm", z="10mm")
-    assert isinstance(translated, Edge)
-    print("  Translated edge by: y=5mm, z=10mm")
+    # Translate the edge to a new position
+    # Since the edge has a parent solid, translate() automatically rebuilds
+    # the solid and returns the modified Solid
+    modified_box = translate(original_edge, x="0mm", y="5mm", z="0mm")
+    assert isinstance(modified_box, Solid)
+    print("  Translated edge by: y=5mm")
+    print("  Solid automatically rebuilt with modified edge")
 
-    _visualize_element_transform(
+    # Visualize: original solid (gray) vs modified solid (green)
+    _visualize_transform(
         box,
-        before_edges=[original_edge],
-        after_edges=[translated],
-        title="Transform edge (red=before, green=after)",
+        modified_box,
+        "Edge modification rebuilds solid (gray=before, green=after)",
     )
 
 
 def example_transform_face() -> None:
-    """Query a face and transform it, showing before and after."""
-    print("\n--- transform: Query and transform face ---")
+    """
+    Demonstrate face transformation that updates the solid geometry.
+
+    In B-Rep CAD systems, modifying a face requires rebuilding the solid.
+    When a face is queried from a solid, it stores a reference to its parent,
+    so translate() automatically rebuilds the solid with all face vertices moved.
+    """
+    print("\n--- transform: Modify face and rebuild solid ---")
     box = _create_box()
     print("  Created 20x20x20 box centered at origin")
 
-    # Query the top face
-    faces = find_face(box, CardinalDirection.TOP_CENTER)
+    # Query the bottom face (we modify the base face for extruded solids)
+    faces = find_face(box, CardinalDirection.BOTTOM_CENTER)
     if not faces:
-        print("  ERROR: No face found at TOP_CENTER")
+        print("  ERROR: No face found at BOTTOM_CENTER")
         return
 
     original_face = faces[0]
-    print("  Found face at TOP_CENTER")
+    print("  Found face at BOTTOM_CENTER")
 
-    # Get face boundary edges for visualization
-    original_edges = (
-        original_face.sub_edges if original_face.sub_edges else [original_face]
-    )
+    # Get number of edges in the face
+    original_edges = original_face.sub_edges if original_face.sub_edges else [original_face]
+    print(f"  Face has {len(original_edges)} edges")
 
-    # Translate the face
-    translated = translate(original_face, x="0mm", y="0mm", z="15mm")
-    assert isinstance(translated, Edge)
-    print("  Translated face by: z=15mm")
+    # Translate the face to a new position
+    # Since the face has a parent solid, translate() automatically rebuilds
+    # the solid and returns the modified Solid (all face vertices are moved)
+    modified_box = translate(original_face, x="5mm", y="5mm", z="0mm")
+    assert isinstance(modified_box, Solid)
+    print("  Translated face by: x=5mm, y=5mm")
+    print("  Solid automatically rebuilt with modified face (all edges moved)")
 
-    # Get translated boundary edges
-    translated_edges = translated.sub_edges if translated.sub_edges else [translated]
-
-    _visualize_element_transform(
+    # Visualize: original solid (gray) vs modified solid (green)
+    _visualize_transform(
         box,
-        before_edges=original_edges,
-        after_edges=translated_edges,
-        title="Transform face (red=before, green=after)",
+        modified_box,
+        "Face modification rebuilds solid (gray=before, green=after)",
     )
 
 

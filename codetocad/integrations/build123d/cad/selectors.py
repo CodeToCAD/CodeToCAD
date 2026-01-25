@@ -170,24 +170,48 @@ def _distance_to_point(
     return (elem_pos - target).length
 
 
-def _convert_bd_vertex_to_codetocad(bd_vertex: bd.Vertex) -> Vertex:
-    """Convert a build123d Vertex to a CodeToCAD Vertex."""
+def _convert_bd_vertex_to_codetocad(
+    bd_vertex: bd.Vertex,
+    parent_solid: "Solid | None" = None,
+) -> Vertex:
+    """Convert a build123d Vertex to a CodeToCAD Vertex.
+
+    Args:
+        bd_vertex: The build123d Vertex to convert
+        parent_solid: Optional parent Solid that contains this vertex
+
+    Returns:
+        A CodeToCAD Vertex with native and parent references set
+    """
     vertex = Vertex(x=bd_vertex.X, y=bd_vertex.Y, z=bd_vertex.Z)
     vertex.set_native(bd_vertex)
+    if parent_solid is not None:
+        vertex.set_native(parent_solid.get_native(), "parent")
     return vertex
 
 
-def _convert_bd_edge_to_codetocad(bd_edge: bd.Edge) -> Edge:
-    """Convert a build123d Edge to a CodeToCAD Edge."""
+def _convert_bd_edge_to_codetocad(
+    bd_edge: bd.Edge,
+    parent_solid: "Solid | None" = None,
+) -> Edge:
+    """Convert a build123d Edge to a CodeToCAD Edge.
+
+    Args:
+        bd_edge: The build123d Edge to convert
+        parent_solid: Optional parent Solid that contains this edge
+
+    Returns:
+        A CodeToCAD Edge with native and parent references set
+    """
     # Get endpoints
     vertices = bd_edge.vertices()
     if len(vertices) >= 2:
-        v1 = _convert_bd_vertex_to_codetocad(vertices[0])
-        v2 = _convert_bd_vertex_to_codetocad(vertices[1])
+        v1 = _convert_bd_vertex_to_codetocad(vertices[0], parent_solid)
+        v2 = _convert_bd_vertex_to_codetocad(vertices[1], parent_solid)
     else:
         # For closed curves (circles), use the same vertex
         v1 = (
-            _convert_bd_vertex_to_codetocad(vertices[0])
+            _convert_bd_vertex_to_codetocad(vertices[0], parent_solid)
             if vertices
             else Vertex(x=0, y=0, z=0)
         )
@@ -195,15 +219,27 @@ def _convert_bd_edge_to_codetocad(bd_edge: bd.Edge) -> Edge:
 
     edge = Edge(v1=v1, v2=v2)
     edge.set_native(bd_edge)
+    if parent_solid is not None:
+        edge.set_native(parent_solid.get_native(), "parent")
     return edge
 
 
-def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
+def _convert_bd_face_to_codetocad(
+    bd_face: bd.Face,
+    parent_solid: "Solid | None" = None,
+) -> Edge:
     """Convert a build123d Face to a CodeToCAD Edge representing the outer boundary.
 
     The returned Edge represents the outer wire of the face. The original bd.Face
     is stored in native_refs["face"] for later retrieval if needed.
     The sub_edges list contains all the individual edges of the outer wire.
+
+    Args:
+        bd_face: The build123d Face to convert
+        parent_solid: Optional parent Solid that contains this face
+
+    Returns:
+        A CodeToCAD Edge representing the face boundary with native and parent refs
     """
     # Get the outer wire of the face
     outer_wire = bd_face.outer_wire()
@@ -212,17 +248,17 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
     wire_edges = outer_wire.edges()
     sub_edges: list[Edge] = []
     for bd_edge in wire_edges:
-        sub_edge = _convert_bd_edge_to_codetocad(bd_edge)
+        sub_edge = _convert_bd_edge_to_codetocad(bd_edge, parent_solid)
         sub_edges.append(sub_edge)
 
     # Get the vertices of the outer wire to create Edge endpoints
     wire_vertices = outer_wire.vertices()
     if len(wire_vertices) >= 2:
-        v1 = _convert_bd_vertex_to_codetocad(wire_vertices[0])
-        v2 = _convert_bd_vertex_to_codetocad(wire_vertices[1])
+        v1 = _convert_bd_vertex_to_codetocad(wire_vertices[0], parent_solid)
+        v2 = _convert_bd_vertex_to_codetocad(wire_vertices[1], parent_solid)
     elif wire_vertices:
         # For closed single-vertex curves, use the same vertex
-        v1 = _convert_bd_vertex_to_codetocad(wire_vertices[0])
+        v1 = _convert_bd_vertex_to_codetocad(wire_vertices[0], parent_solid)
         v2 = v1
     else:
         # Fallback for empty wire
@@ -232,6 +268,8 @@ def _convert_bd_face_to_codetocad(bd_face: bd.Face) -> Edge:
     edge = Edge(v1=v1, v2=v2, sub_edges=sub_edges if sub_edges else None)
     edge.set_native(outer_wire)  # Store the wire as default native
     edge.set_native(bd_face, "face")  # Store the original face for later retrieval
+    if parent_solid is not None:
+        edge.set_native(parent_solid.get_native(), "parent")
     return edge
 
 
@@ -281,7 +319,9 @@ def find_vertex(
             results.append((dist, v))
 
     results.sort(key=lambda x: x[0])
-    return [_convert_bd_vertex_to_codetocad(v) for _, v in results]
+    # Pass parent solid if obj is a Solid
+    parent_solid = obj if isinstance(obj, Solid) else None
+    return [_convert_bd_vertex_to_codetocad(v, parent_solid) for _, v in results]
 
 
 def find_edge(
@@ -330,7 +370,9 @@ def find_edge(
             results.append((dist, e))
 
     results.sort(key=lambda x: x[0])
-    return [_convert_bd_edge_to_codetocad(e) for _, e in results]
+    # Pass parent solid if obj is a Solid
+    parent_solid = obj if isinstance(obj, Solid) else None
+    return [_convert_bd_edge_to_codetocad(e, parent_solid) for _, e in results]
 
 
 def find_face(
@@ -384,7 +426,8 @@ def find_face(
             results.append((dist, f))
 
     results.sort(key=lambda x: x[0])
-    return [_convert_bd_face_to_codetocad(f) for _, f in results]
+    # Pass parent solid (obj is always a Solid for find_face)
+    return [_convert_bd_face_to_codetocad(f, obj) for _, f in results]
 
 
 def _convert_bd_solid_to_codetocad(native: "bd.Shape") -> Solid:
