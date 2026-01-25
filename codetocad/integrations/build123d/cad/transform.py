@@ -62,9 +62,7 @@ def translate(
         parent_solid.set_native(parent_native)
 
         if isinstance(obj, Vertex) and isinstance(translated_obj, Vertex):
-            return rebuild_solid_with_modified_vertex(
-                parent_solid, obj, translated_obj
-            )
+            return rebuild_solid_with_modified_vertex(parent_solid, obj, translated_obj)
         elif isinstance(obj, Edge) and isinstance(translated_obj, Edge):
             # Check if this is a face (Edge with sub_edges) or a simple edge
             if obj.sub_edges is not None:
@@ -194,18 +192,21 @@ def rebuild_solid_with_modified_vertex(
     new_vertex: Vertex,
 ) -> Solid:
     """
-    Rebuild a solid by modifying a vertex position.
+    Rebuild a solid by modifying a single vertex position.
 
     This works by:
-    1. Finding the base face of the solid (bottom face for extruded solids)
-    2. Extracting the outer wire from that face
-    3. Modifying edges that contain the target vertex (using native object identity)
-    4. Rebuilding the wire and face
-    5. Extruding to create a new solid
+    1. Finding the base (bottom) and top faces of the solid
+    2. Determining which face contains the target vertex
+    3. Modifying only that face's vertex
+    4. Lofting between the modified face and the unchanged face
+       to create a tapered/skewed solid
+
+    Only the single specified vertex is moved - the corresponding vertex
+    on the opposite face stays in place, creating non-vertical edges.
 
     Args:
         solid: The original solid to modify
-        original_vertex: The vertex to move (must be on the base face)
+        original_vertex: The vertex to move
         new_vertex: The new position for the vertex
 
     Returns:
@@ -220,62 +221,74 @@ def rebuild_solid_with_modified_vertex(
     if native_orig_vertex is None:
         raise ValueError("Original vertex has no native build123d object")
 
-    # 1. Get the base face (bottom face for extruded solids)
+    # 1. Get the base face (bottom) and top face
     faces = native_solid.faces()
-    # Sort by Z to get bottom face
-    base_face = sorted(faces, key=lambda f: f.center().Z)[0]
+    sorted_faces = sorted(faces, key=lambda f: f.center().Z)
+    base_face = sorted_faces[0]  # Bottom face
+    top_face = sorted_faces[-1]  # Top face
 
-    # 2. Get the outer wire and its edges
-    outer_wire = base_face.outer_wire()
-    original_edges = outer_wire.edges()
+    # 2. Determine which face contains the target vertex
+    vertex_on_base = False
+    for v in base_face.vertices():
+        if native_orig_vertex.is_same(v):
+            vertex_on_base = True
+            break
+
+    vertex_on_top = False
+    for v in top_face.vertices():
+        if native_orig_vertex.is_same(v):
+            vertex_on_top = True
+            break
 
     # 3. Get new vertex position
-    # Vertex coordinates from selectors are already in mm (build123d units)
     new_x = float(new_vertex.x)
     new_y = float(new_vertex.y)
     new_z = float(new_vertex.z)
 
-    # 4. Rebuild edges with modified vertex using native object identity
-    new_edges = []
+    # 4. Build modified and unchanged faces
+    def rebuild_face_with_vertex(face, modify_vertex: bool):
+        """Rebuild a face, optionally modifying the target vertex."""
+        outer_wire = face.outer_wire()
+        original_edges = outer_wire.edges()
+        new_edges = []
 
-    for edge in original_edges:
-        verts = edge.vertices()
-        start_vert = verts[0]
-        end_vert = verts[1] if len(verts) > 1 else start_vert
-        start = start_vert.center()
-        end = end_vert.center()
+        for edge in original_edges:
+            verts = edge.vertices()
+            start_vert = verts[0]
+            end_vert = verts[1] if len(verts) > 1 else start_vert
+            start = start_vert.center()
+            end = end_vert.center()
 
-        # Check if start vertex is the EXACT vertex we want to modify
-        start_x, start_y, start_z = start.X, start.Y, start.Z
-        if native_orig_vertex.is_same(start_vert):
-            start_x, start_y, start_z = new_x, new_y, new_z
+            start_pos = (start.X, start.Y, start.Z)
+            end_pos = (end.X, end.Y, end.Z)
 
-        # Check if end vertex is the EXACT vertex we want to modify
-        end_x, end_y, end_z = end.X, end.Y, end.Z
-        if native_orig_vertex.is_same(end_vert):
-            end_x, end_y, end_z = new_x, new_y, new_z
+            if modify_vertex:
+                if native_orig_vertex.is_same(start_vert):
+                    start_pos = (new_x, new_y, new_z)
+                if native_orig_vertex.is_same(end_vert):
+                    end_pos = (new_x, new_y, new_z)
 
-        # Create new edge
-        new_edge = bd.Line((start_x, start_y, start_z), (end_x, end_y, end_z)).edge()
-        new_edges.append(new_edge)
+            new_edge = bd.Line(start_pos, end_pos).edge()
+            new_edges.append(new_edge)
 
-    # 5. Rebuild wire and face
-    new_wire = bd.Wire(new_edges)
-    new_face = bd.Face(new_wire)
+        new_wire = bd.Wire(new_edges)
+        return bd.Face(new_wire)
 
-    # 6. Calculate extrusion height from original solid
-    bbox = native_solid.bounding_box()
-    height = bbox.max.Z - bbox.min.Z
-
-    # 7. Extrude to create new solid
-    # The face normal may point down (-Z), so we need to check and use negative
-    # height if needed to extrude upward (in +Z direction)
-    face_normal_z = new_face.normal_at().Z
-    if face_normal_z < 0:
-        # Normal points down, use negative height to extrude upward
-        new_native = bd.extrude(new_face, -height)
+    # Rebuild faces - modify only the face containing the vertex
+    if vertex_on_base:
+        modified_base = rebuild_face_with_vertex(base_face, modify_vertex=True)
+        unchanged_top = rebuild_face_with_vertex(top_face, modify_vertex=False)
+    elif vertex_on_top:
+        modified_base = rebuild_face_with_vertex(base_face, modify_vertex=False)
+        unchanged_top = rebuild_face_with_vertex(top_face, modify_vertex=True)
     else:
-        new_native = bd.extrude(new_face, height)
+        # Vertex not on base or top face - fallback to modifying base
+        modified_base = rebuild_face_with_vertex(base_face, modify_vertex=True)
+        unchanged_top = rebuild_face_with_vertex(top_face, modify_vertex=False)
+
+    # 5. Loft between the two faces to create the solid
+    # Order matters: bottom face first, top face second
+    new_native = bd.loft([modified_base, unchanged_top], ruled=True)
 
     # Wrap in CodeToCAD Solid
     result = Solid(is_hidden=solid.is_hidden)
@@ -291,15 +304,15 @@ def rebuild_solid_with_modified_edge(
     """
     Rebuild a solid by replacing an edge with a modified version.
 
-    When an edge is moved, the vertices it shares with adjacent edges must also
-    be updated. This function maps original vertex positions to new positions
-    and updates ALL edges that share those vertices, maintaining a connected wire.
+    When an edge is moved, only the vertices of that specific edge on that
+    specific face are modified. The corresponding vertices on the opposite
+    face stay in place, creating a tapered/skewed solid.
 
     Uses native object identity to identify exactly which edge/vertices to modify.
 
     Args:
         solid: The original solid to modify
-        original_edge: The edge to replace (must be on the base face)
+        original_edge: The edge to replace (must be on the base or top face)
         new_edge: The new edge to use
 
     Returns:
@@ -319,62 +332,79 @@ def rebuild_solid_with_modified_edge(
     native_v1 = native_orig_verts[0] if len(native_orig_verts) > 0 else None
     native_v2 = native_orig_verts[1] if len(native_orig_verts) > 1 else native_v1
 
-    # 1. Get the base face (bottom face for extruded solids)
+    # 1. Get the base face (bottom) and top face
     faces = native_solid.faces()
-    base_face = sorted(faces, key=lambda f: f.center().Z)[0]
+    sorted_faces = sorted(faces, key=lambda f: f.center().Z)
+    base_face = sorted_faces[0]  # Bottom face
+    top_face = sorted_faces[-1]  # Top face
 
-    # 2. Get the outer wire and its edges
-    outer_wire = base_face.outer_wire()
-    original_edges = outer_wire.edges()
+    # 2. Determine which face contains the target edge's vertices
+    def face_contains_vertices(face, v1, v2):
+        """Check if face contains both vertices."""
+        found_v1 = False
+        found_v2 = False
+        for v in face.vertices():
+            if v1 is not None and v1.is_same(v):
+                found_v1 = True
+            if v2 is not None and v2.is_same(v):
+                found_v2 = True
+        return found_v1 and found_v2
+
+    edge_on_base = face_contains_vertices(base_face, native_v1, native_v2)
+    edge_on_top = face_contains_vertices(top_face, native_v1, native_v2)
 
     # 3. Get the new vertex positions
     new_v1_pos = (float(new_edge.v1.x), float(new_edge.v1.y), float(new_edge.v1.z))
     new_v2_pos = (float(new_edge.v2.x), float(new_edge.v2.y), float(new_edge.v2.z))
 
-    # 4. Rebuild all edges, mapping vertices to new positions using native identity
-    new_edges = []
+    # 4. Build modified and unchanged faces
+    def rebuild_face_with_edge(face, modify_edge: bool):
+        """Rebuild a face, optionally modifying the target edge's vertices."""
+        outer_wire = face.outer_wire()
+        original_edges = outer_wire.edges()
+        new_edges = []
 
-    for edge in original_edges:
-        verts = edge.vertices()
-        start_vert = verts[0]
-        end_vert = verts[1] if len(verts) > 1 else start_vert
-        start = start_vert.center()
-        end = end_vert.center()
+        for edge in original_edges:
+            verts = edge.vertices()
+            start_vert = verts[0]
+            end_vert = verts[1] if len(verts) > 1 else start_vert
+            start = start_vert.center()
+            end = end_vert.center()
 
-        # Check if this vertex matches one of the original edge's vertices
-        start_pos = (start.X, start.Y, start.Z)
-        end_pos = (end.X, end.Y, end.Z)
+            start_pos = (start.X, start.Y, start.Z)
+            end_pos = (end.X, end.Y, end.Z)
 
-        if native_v1 is not None and native_v1.is_same(start_vert):
-            start_pos = new_v1_pos
-        elif native_v2 is not None and native_v2.is_same(start_vert):
-            start_pos = new_v2_pos
+            if modify_edge:
+                if native_v1 is not None and native_v1.is_same(start_vert):
+                    start_pos = new_v1_pos
+                elif native_v2 is not None and native_v2.is_same(start_vert):
+                    start_pos = new_v2_pos
 
-        if native_v1 is not None and native_v1.is_same(end_vert):
-            end_pos = new_v1_pos
-        elif native_v2 is not None and native_v2.is_same(end_vert):
-            end_pos = new_v2_pos
+                if native_v1 is not None and native_v1.is_same(end_vert):
+                    end_pos = new_v1_pos
+                elif native_v2 is not None and native_v2.is_same(end_vert):
+                    end_pos = new_v2_pos
 
-        rebuilt_edge = bd.Line(start_pos, end_pos).edge()
-        new_edges.append(rebuilt_edge)
+            rebuilt_edge = bd.Line(start_pos, end_pos).edge()
+            new_edges.append(rebuilt_edge)
 
-    # 5. Rebuild wire and face
-    new_wire = bd.Wire(new_edges)
-    new_face = bd.Face(new_wire)
+        new_wire = bd.Wire(new_edges)
+        return bd.Face(new_wire)
 
-    # 6. Calculate extrusion height from original solid
-    bbox = native_solid.bounding_box()
-    height = bbox.max.Z - bbox.min.Z
-
-    # 7. Extrude to create new solid
-    # The face normal may point down (-Z), so we need to check and use negative
-    # height if needed to extrude upward (in +Z direction)
-    face_normal_z = new_face.normal_at().Z
-    if face_normal_z < 0:
-        # Normal points down, use negative height to extrude upward
-        new_native = bd.extrude(new_face, -height)
+    # Rebuild faces - modify only the face containing the edge
+    if edge_on_base:
+        modified_base = rebuild_face_with_edge(base_face, modify_edge=True)
+        unchanged_top = rebuild_face_with_edge(top_face, modify_edge=False)
+    elif edge_on_top:
+        modified_base = rebuild_face_with_edge(base_face, modify_edge=False)
+        unchanged_top = rebuild_face_with_edge(top_face, modify_edge=True)
     else:
-        new_native = bd.extrude(new_face, height)
+        # Edge not on base or top face - fallback to modifying base
+        modified_base = rebuild_face_with_edge(base_face, modify_edge=True)
+        unchanged_top = rebuild_face_with_edge(top_face, modify_edge=False)
+
+    # 5. Loft between the two faces to create the solid
+    new_native = bd.loft([modified_base, unchanged_top], ruled=True)
 
     # Wrap in CodeToCAD Solid
     result = Solid(is_hidden=solid.is_hidden)
@@ -390,9 +420,8 @@ def rebuild_solid_with_modified_face(
     """
     Rebuild a solid by replacing a face with a modified version.
 
-    When a face is moved, all vertices of that face need to be mapped to their
-    new positions. This function maps original vertex positions to new positions
-    for ALL vertices in the face and updates the solid accordingly.
+    When a face is moved, only the vertices on that specific face are modified.
+    The vertices on the opposite face stay in place, creating a tapered/skewed solid.
 
     Uses native object identity to identify exactly which vertices to modify.
 
@@ -439,56 +468,69 @@ def rebuild_solid_with_modified_face(
         if len(orig_verts) >= 2:
             vertex_new_pos[id(orig_verts[1].wrapped)] = new_v2_pos
 
-    # 1. Get the base face (bottom face for extruded solids)
+    # 1. Get the base face (bottom) and top face
     faces = native_solid.faces()
-    base_face = sorted(faces, key=lambda f: f.center().Z)[0]
+    sorted_faces = sorted(faces, key=lambda f: f.center().Z)
+    base_face = sorted_faces[0]  # Bottom face
+    top_face = sorted_faces[-1]  # Top face
 
-    # 2. Get the outer wire and its edges
-    outer_wire = base_face.outer_wire()
-    original_edges = outer_wire.edges()
+    # 2. Determine which face contains the target vertices
+    def face_contains_any_mapped_vertex(face, vertex_map):
+        """Check if face contains any of the mapped vertices."""
+        for v in face.vertices():
+            if id(v.wrapped) in vertex_map:
+                return True
+        return False
 
-    # 3. Rebuild all edges, mapping vertices to new positions using native identity
-    new_edges = []
+    vertices_on_base = face_contains_any_mapped_vertex(base_face, vertex_new_pos)
+    vertices_on_top = face_contains_any_mapped_vertex(top_face, vertex_new_pos)
 
-    for edge in original_edges:
-        verts = edge.vertices()
-        start_vert = verts[0]
-        end_vert = verts[1] if len(verts) > 1 else start_vert
-        start = start_vert.center()
-        end = end_vert.center()
+    # 3. Build modified and unchanged faces
+    def rebuild_face_with_vertices(face, modify_vertices: bool):
+        """Rebuild a face, optionally modifying mapped vertices."""
+        outer_wire = face.outer_wire()
+        original_edges = outer_wire.edges()
+        new_edges = []
 
-        # Check if this vertex should be mapped to a new position
-        start_pos = (start.X, start.Y, start.Z)
-        end_pos = (end.X, end.Y, end.Z)
+        for edge in original_edges:
+            verts = edge.vertices()
+            start_vert = verts[0]
+            end_vert = verts[1] if len(verts) > 1 else start_vert
+            start = start_vert.center()
+            end = end_vert.center()
 
-        start_id = id(start_vert.wrapped)
-        end_id = id(end_vert.wrapped)
+            start_pos = (start.X, start.Y, start.Z)
+            end_pos = (end.X, end.Y, end.Z)
 
-        if start_id in vertex_new_pos:
-            start_pos = vertex_new_pos[start_id]
-        if end_id in vertex_new_pos:
-            end_pos = vertex_new_pos[end_id]
+            if modify_vertices:
+                start_id = id(start_vert.wrapped)
+                end_id = id(end_vert.wrapped)
 
-        rebuilt_edge = bd.Line(start_pos, end_pos).edge()
-        new_edges.append(rebuilt_edge)
+                if start_id in vertex_new_pos:
+                    start_pos = vertex_new_pos[start_id]
+                if end_id in vertex_new_pos:
+                    end_pos = vertex_new_pos[end_id]
 
-    # 4. Rebuild wire and face
-    new_wire = bd.Wire(new_edges)
-    new_face_bd = bd.Face(new_wire)
+            rebuilt_edge = bd.Line(start_pos, end_pos).edge()
+            new_edges.append(rebuilt_edge)
 
-    # 5. Calculate extrusion height from original solid
-    bbox = native_solid.bounding_box()
-    height = bbox.max.Z - bbox.min.Z
+        new_wire = bd.Wire(new_edges)
+        return bd.Face(new_wire)
 
-    # 6. Extrude to create new solid
-    # The face normal may point down (-Z), so we need to check and use negative
-    # height if needed to extrude upward (in +Z direction)
-    face_normal_z = new_face_bd.normal_at().Z
-    if face_normal_z < 0:
-        # Normal points down, use negative height to extrude upward
-        new_native = bd.extrude(new_face_bd, -height)
+    # Rebuild faces - modify only the face containing the vertices
+    if vertices_on_base:
+        modified_base = rebuild_face_with_vertices(base_face, modify_vertices=True)
+        unchanged_top = rebuild_face_with_vertices(top_face, modify_vertices=False)
+    elif vertices_on_top:
+        modified_base = rebuild_face_with_vertices(base_face, modify_vertices=False)
+        unchanged_top = rebuild_face_with_vertices(top_face, modify_vertices=True)
     else:
-        new_native = bd.extrude(new_face_bd, height)
+        # Vertices not on base or top face - fallback to modifying base
+        modified_base = rebuild_face_with_vertices(base_face, modify_vertices=True)
+        unchanged_top = rebuild_face_with_vertices(top_face, modify_vertices=False)
+
+    # 4. Loft between the two faces to create the solid
+    new_native = bd.loft([modified_base, unchanged_top], ruled=True)
 
     # Wrap in CodeToCAD Solid
     result = Solid(is_hidden=solid.is_hidden)

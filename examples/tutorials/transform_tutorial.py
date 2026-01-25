@@ -445,7 +445,9 @@ def example_transform_face() -> None:
     print("  Found face at BOTTOM_CENTER")
 
     # Get number of edges in the face
-    original_edges = original_face.sub_edges if original_face.sub_edges else [original_face]
+    original_edges = (
+        original_face.sub_edges if original_face.sub_edges else [original_face]
+    )
     print(f"  Face has {len(original_edges)} edges")
 
     # Translate the face to a new position
