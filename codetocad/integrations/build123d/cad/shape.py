@@ -218,54 +218,6 @@ def chamfer(
     return new_solid
 
 
-def edges(
-    solid: Solid,
-    filter_axis: "Axis | None" = None,
-    group_axis: "Axis | None" = None,
-    group_index: int = -1,
-) -> "list[Edge]":
-    """Get edges from a solid with optional filtering.
-
-    Args:
-        solid: Solid to get edges from
-        filter_axis: Filter edges parallel to this axis (optional)
-        group_axis: Group edges by position along this axis, then select group (optional)
-        group_index: Index of group to select (default -1 for last group)
-
-    Returns:
-        List of Edge objects
-    """
-    native = solid.get_native()
-    if native is None:
-        raise ValueError("Solid has no native build123d object")
-
-    # Get all edges
-    native_edges = native.edges()
-
-    if group_axis is not None:
-        # Group edges by axis position and select the group
-        bd_axis = _get_bd_axis(group_axis)
-        edge_groups = native_edges.group_by(bd_axis)
-        native_edges = edge_groups[group_index]
-
-    if filter_axis is not None:
-        # Filter edges parallel to the axis
-        bd_axis = _get_bd_axis(filter_axis)
-        native_edges = native_edges.filter_by(bd_axis)
-
-    # Convert to Edge objects
-    result: list[Edge] = []
-    for native_edge in native_edges:
-        edge = Edge(
-            v1=Vertex(x=0, y=0, z=0),  # Placeholder vertices
-            v2=Vertex(x=0, y=0, z=0),
-        )
-        edge.set_native(native_edge)
-        result.append(edge)
-
-    return result
-
-
 def _get_bd_axis(axis: Axis) -> bd.Axis:
     """Convert our Axis enum to build123d Axis."""
     if axis == Axis.X:

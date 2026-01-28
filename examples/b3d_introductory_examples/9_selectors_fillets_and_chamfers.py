@@ -8,7 +8,8 @@ import build123d as bd
 
 
 from codetocad.core import Solid, Vertex, Axis
-from codetocad.integrations.build123d import Shape
+from codetocad.core.enums import CardinalDirection
+from codetocad.integrations.build123d import Shape, Selectors
 from codetocad.integrations.open3d import show_in_open3d
 
 
@@ -30,12 +31,33 @@ def main() -> Solid:
     center = Vertex(x=0, y=0, z=0)
     box = Shape.cuboid(center, width=length, height=width, depth=thickness)
 
-    # Get top edges (highest Z group) and apply chamfer
-    top_edges = Shape.edges(box, group_axis=Axis.Z, group_index=-1)
+    # Get top perimeter edges using cardinal-direction edge selectors and apply chamfer
+    top_edge_directions = (
+        CardinalDirection.TOP_FRONT,
+        CardinalDirection.TOP_BACK,
+        CardinalDirection.TOP_LEFT,
+        CardinalDirection.TOP_RIGHT,
+    )
+    top_edges = []
+    for direction in top_edge_directions:
+        edges_at_direction = Selectors.find_edge(box, direction)
+        if edges_at_direction:
+            # Take the closest edge to the ideal cardinal position
+            top_edges.append(edges_at_direction[0])
     box = Shape.chamfer(box, length=4, edges=top_edges)
 
-    # Get vertical edges (parallel to Z axis) and apply fillet
-    vertical_edges = Shape.edges(box, filter_axis=Axis.Z)
+    # Get vertical corner edges (parallel to Z axis) using corner selectors and apply fillet
+    vertical_edge_directions = (
+        CardinalDirection.FRONT_LEFT,
+        CardinalDirection.FRONT_RIGHT,
+        CardinalDirection.BACK_LEFT,
+        CardinalDirection.BACK_RIGHT,
+    )
+    vertical_edges = []
+    for direction in vertical_edge_directions:
+        edges_at_direction = Selectors.find_edge(box, direction)
+        if edges_at_direction:
+            vertical_edges.append(edges_at_direction[0])
     box = Shape.fillet(box, radius=5, edges=vertical_edges)
 
     return box
