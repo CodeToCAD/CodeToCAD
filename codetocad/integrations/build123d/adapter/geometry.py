@@ -263,15 +263,18 @@ def create_text_wire(
     font_size: LengthType,
     font: str = "Arial",
     font_path: str | None = None,
-) -> bd.Wire:
-    """Create a text wire using build123d primitives."""
+) -> bd.Sketch:
+    """Create text as a Sketch with multiple wires (one per letter/glyph).
+
+    Returns a Sketch object containing all wires of the text, allowing
+    proper extrusion of multi-letter text where each letter is a separate wire.
+    """
     font_size_val = float(LengthExp(font_size))
-    # Create text face and extract its outer wire
-    text_face = bd.Text(
+    # Create text sketch - build123d Text is a Sketch with one or more wires
+    text_sketch = bd.Text(
         txt=text, font_size=font_size_val, font=font, font_path=font_path
     )
-    # Get the outer wire from the text face
-    return text_face.wires()[0] if text_face.wires() else bd.Wire()
+    return text_sketch
 
 
 def _get_wire_from_native(native: "bd.Wire | bd.Sketch") -> bd.Wire:
@@ -349,16 +352,16 @@ def create_sphere(radius: LengthType) -> bd.Sphere:
     return bd.Sphere(r)
 
 
-def boolean_union(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
+def union(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
     """Perform boolean union of two solids."""
     return solid1 + solid2
 
 
-def boolean_difference(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
+def difference(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
     """Perform boolean difference of two solids."""
     return solid1 - solid2
 
 
-def boolean_intersection(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
+def intersection(solid1: bd.Part, solid2: bd.Part) -> bd.Compound:
     """Perform boolean intersection of two solids."""
     return solid1 & solid2

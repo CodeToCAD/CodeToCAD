@@ -27,9 +27,9 @@ from codetocad.integrations.build123d.adapter.solid_operations import (
     create_cone,
 )
 from codetocad.integrations.build123d.adapter.geometry import (
-    boolean_union,
-    boolean_difference,
-    boolean_intersection,
+    union as boolean_union,
+    difference as boolean_difference,
+    intersection as boolean_intersection,
 )
 from codetocad.integrations.build123d.adapter.export import (
     export_step,

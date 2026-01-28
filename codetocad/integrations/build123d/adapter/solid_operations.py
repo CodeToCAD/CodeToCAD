@@ -13,14 +13,43 @@ def extrude_wire(
     height: LengthType,
     draft_angle: AngleType = 0,
 ) -> bd.Part:
-    """Extrude a wire/sketch/face to create a 3D solid."""
+    """Extrude a wire/sketch/face to create a 3D solid.
+
+    Handles sketches with multiple wires (e.g., text where each letter
+    is a separate wire) by extruding all wires and combining them.
+    """
     h = float(LengthExp(height))
     draft = math.degrees(Angle(draft_angle).value)  # build123d uses degrees
 
-    # Get face from wire/sketch if needed
+    # Handle Sketch with multiple wires (e.g., text)
     if isinstance(wire, bd.Sketch):
-        face = wire.face()
-    elif isinstance(wire, bd.Wire):
+        wires = wire.wires()
+        if len(wires) == 1:
+            # Single wire - extrude normally
+            face = wire.face()
+            if draft != 0:
+                return bd.extrude(face, h, taper=draft)
+            return bd.extrude(face, h)
+        else:
+            # Multiple wires - extrude each and combine
+            solids = []
+            for w in wires:
+                face = bd.Face(w)
+                if draft != 0:
+                    solid = bd.extrude(face, h, taper=draft)
+                else:
+                    solid = bd.extrude(face, h)
+                solids.append(solid)
+            # Combine all extruded solids
+            if len(solids) == 1:
+                return solids[0]
+            result = solids[0]
+            for s in solids[1:]:
+                result = result + s
+            return result
+
+    # Handle Wire
+    if isinstance(wire, bd.Wire):
         face = bd.Face(wire)
     else:
         face = wire
