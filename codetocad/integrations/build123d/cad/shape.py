@@ -41,7 +41,12 @@ from codetocad.integrations.build123d.adapter.export import (
 )
 
 
-def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0) -> Solid:
+def extrude(
+    edge: Edge,
+    height: LengthType,
+    draft_angle: AngleType = 0,
+    subtract: list[Edge] | None = None,
+) -> Solid:
     """Extrude a 2D shape into a 3D solid."""
     native = edge.get_native()
 
@@ -65,7 +70,12 @@ def extrude(edge: Edge, height: LengthType, draft_angle: AngleType = 0) -> Solid
     return solid
 
 
-def revolve(edge: Edge, around: Edge, angle: AngleType) -> Solid:
+def revolve(
+    edge: Edge,
+    around: Edge,
+    angle: AngleType,
+    subtract: list[Edge] | None = None,
+) -> Solid:
     """Revolve a 2D shape around an axis to create a 3D solid."""
     native = edge.get_native()
     if native is None:
@@ -83,7 +93,12 @@ def revolve(edge: Edge, around: Edge, angle: AngleType) -> Solid:
     return solid
 
 
-def loft(this: Edge, to: Edge, merge: bool = True) -> Solid:
+def loft(
+    this: Edge,
+    to: Edge,
+    merge: bool = True,
+    subtract: list[Edge] | None = None,
+) -> Solid:
     """Create a 3D solid by lofting between 2D shapes."""
     native1 = this.get_native()
     native2 = to.get_native()
@@ -116,6 +131,10 @@ def union(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
 
+    # Check if solids are touching before performing union
+    if not _are_solids_touching(native1, native2):
+        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
+
     result = boolean_union(native1, native2)
     solid = Solid(is_hidden=False)
     solid.set_native(result)
@@ -128,6 +147,10 @@ def subtract(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     native2 = that.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
+
+    # Check if solids are touching before performing subtraction
+    if not _are_solids_touching(native1, native2):
+        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
 
     result = boolean_difference(native1, native2)
     solid = Solid(is_hidden=False)
@@ -142,7 +165,37 @@ def intersection(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     if native1 is None or native2 is None:
         raise ValueError("Solids have no native build123d objects")
 
+    # Check if solids are touching before performing intersection
+    if not _are_solids_touching(native1, native2):
+        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
+
     result = boolean_intersection(native1, native2)
+    solid = Solid(is_hidden=False)
+    solid.set_native(result)
+    return solid
+
+
+def concat(this: Solid, that: Solid) -> Solid:
+    """Concatenate/combine two solids into a compound without performing a boolean union.
+
+    This method preserves both geometries as separate entities within a compound object,
+    unlike union() which merges them into a single solid.
+
+    Args:
+        this: First solid to combine
+        that: Second solid to combine
+
+    Returns:
+        A compound solid containing both input solids
+    """
+    native1 = this.get_native()
+    native2 = that.get_native()
+    if native1 is None or native2 is None:
+        raise ValueError("Solids have no native build123d objects")
+
+    # Create a compound by adding the two solids together
+    # In build123d, the + operator creates a Compound when used on solids
+    result = bd.Compound([native1, native2])
     solid = Solid(is_hidden=False)
     solid.set_native(result)
     return solid
@@ -228,6 +281,29 @@ def _get_bd_axis(axis: Axis) -> bd.Axis:
         return bd.Axis.Y
     else:
         return bd.Axis.Z
+
+
+def _are_solids_touching(native1: "bd.Shape", native2: "bd.Shape") -> bool:
+    """Check if two build123d solids are touching or intersecting.
+
+    Args:
+        native1: First build123d solid
+        native2: Second build123d solid
+
+    Returns:
+        True if the solids are touching (bounding boxes overlap), False otherwise
+    """
+    # Get bounding boxes
+    bbox1 = native1.bounding_box()
+    bbox2 = native2.bounding_box()
+
+    # Check if bounding boxes overlap in all three dimensions
+    # Two boxes overlap if they overlap in X AND Y AND Z
+    x_overlap = not (bbox1.max.X < bbox2.min.X or bbox2.max.X < bbox1.min.X)
+    y_overlap = not (bbox1.max.Y < bbox2.min.Y or bbox2.max.Y < bbox1.min.Y)
+    z_overlap = not (bbox1.max.Z < bbox2.min.Z or bbox2.max.Z < bbox1.min.Z)
+
+    return x_overlap and y_overlap and z_overlap
 
 
 def mirror(solid: Solid, across: "Edge|Solid") -> Solid:

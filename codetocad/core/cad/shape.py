@@ -54,9 +54,25 @@ def intersection(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
     raise NotImplementedError("Method not implemented.")
 
 
+def concat(this: Solid, that: Solid) -> Solid:
+    """Concatenate/combine two solids into a compound without performing a boolean union.
+
+    This method preserves both geometries as separate entities within a compound object,
+    unlike union() which merges them into a single solid.
+
+    Args:
+        this: First solid to combine
+        that: Second solid to combine
+
+    Returns:
+        A compound solid containing both input solids
+    """
+    raise NotImplementedError("Method not implemented.")
+
+
 def fillet(
     solid: Solid,
-    length: LengthType,
+    radius: LengthType,
     edges: "list[Edge] | None" = None,
 ) -> Solid:
     """Round the corners of an edge."""

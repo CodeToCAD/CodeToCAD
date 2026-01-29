@@ -11,7 +11,12 @@ def line(v1: Vertex, v2: Vertex) -> Edge:
     return Edge(v1=v1, v2=v2)
 
 
-def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
+def rectangle(
+    center: Vertex,
+    width: LengthType,
+    height: LengthType,
+    plane: "Plane | Edge" = Plane.XY,
+) -> Edge:
     """Create a rectangle centered at the given vertex."""
     start_x = LengthExp(width) / 2
     start_y = LengthExp(height) / 2
@@ -33,7 +38,11 @@ def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
 
 
 def polygon(
-    center: Vertex, radius: LengthType, sides: int, rotation: AngleType = 0
+    center: Vertex,
+    radius: LengthType,
+    sides: int,
+    rotation: AngleType = 0,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a regular polygon with the given number of sides."""
     if sides < 3:
@@ -394,6 +403,7 @@ def circle(
     center: Vertex,
     radius: LengthType,
     curve_type: CurveType = CurveType.BEZIER,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a full circle."""
     return _arc(center, radius, 0, "360deg", curve_type)
@@ -567,13 +577,23 @@ def mirror(edge: Edge, across: "Plane | Edge") -> Edge:
     return Edge(v1=new_v1, v2=new_v2, sub_edges=new_sub_edges, knots=edge.knots)
 
 
-def text(text: str, font: str, size: LengthType) -> Edge:
+def text(
+    text: str,
+    font: str,
+    size: LengthType,
+    center: "Vertex | None" = None,
+    plane: "Plane | Edge" = Plane.XY,
+) -> Edge:
     """Create a text string."""
     raise NotImplementedError("Method not implemented.")
 
 
 def trapezoid(
-    center: Vertex, width: LengthType, height: LengthType, angle: AngleType
+    center: Vertex,
+    width: LengthType,
+    height: LengthType,
+    angle: AngleType,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a trapezoid."""
     raise NotImplementedError("Method not implemented.")

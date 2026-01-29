@@ -20,24 +20,36 @@ from codetocad.integrations.build123d.adapter.geometry import (
 )
 
 
-def _get_bd_plane_for_sketch(center: Vertex, plane: Plane = Plane.XY) -> "bd.Plane":
+def _get_bd_plane_for_sketch(
+    center: Vertex, plane: "Plane | Edge" = Plane.XY
+) -> "bd.Plane":
     """Get a build123d plane for sketching at the given center position.
 
     Args:
         center: The center vertex for the sketch
-        plane: The plane to create the sketch on (XY, XZ, or YZ)
+        plane: The plane to create the sketch on (XY, XZ, or YZ) or an Edge representing a Face
 
     Returns:
         A build123d Plane positioned at the center
     """
     cx, cy, cz = center._x.value, center._y.value, center._z.value
 
+    # If plane is an Edge (representing a Face), extract the native face
+    if isinstance(plane, Edge):
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Use the face's plane
+            return bd.Plane(native_face)
+        # Fallback to XY if no face is stored
+        return bd.Plane(origin=(cx, cy, cz), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
+
+    # Handle Plane enum
     if plane == Plane.XY:
-        return bd.Plane.XY.offset((cx, cy, cz))
+        return bd.Plane(origin=(cx, cy, cz), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
     elif plane == Plane.XZ:
-        return bd.Plane.XZ.offset((cx, cy, cz))
+        return bd.Plane(origin=(cx, cy, cz), x_dir=(1, 0, 0), z_dir=(0, 1, 0))
     else:  # YZ
-        return bd.Plane.YZ.offset((cx, cy, cz))
+        return bd.Plane(origin=(cx, cy, cz), x_dir=(0, 1, 0), z_dir=(0, 0, 1))
 
 
 def line(v1: Vertex, v2: Vertex) -> Edge:
@@ -55,7 +67,7 @@ def rectangle(
     center: Vertex,
     width: LengthType,
     height: LengthType,
-    plane: Plane = Plane.XY,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a rectangle centered at the given vertex.
 
@@ -63,7 +75,7 @@ def rectangle(
         center: Center vertex of the rectangle
         width: Width of the rectangle
         height: Height of the rectangle
-        plane: The plane to create the rectangle on (default: XY)
+        plane: The plane to create the rectangle on (default: XY) or an Edge representing a Face
 
     Returns:
         Edge representing the rectangle
@@ -93,8 +105,19 @@ def rectangle(
 
     cx, cy, cz = center._x.value, center._y.value, center._z.value
 
-    # Move to center position on the appropriate plane
-    if plane == Plane.XY:
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Position on the face's plane
+            face_plane = bd.Plane(native_face)
+            # Transform the wire to the face's plane
+            native_rect = face_plane * native_rect
+        else:
+            # Fallback to XY plane
+            native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XY:
         native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
     elif plane == Plane.XZ:
         native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
@@ -114,7 +137,7 @@ def circle(
     center: Vertex,
     radius: LengthType,
     curve_type: CurveType = CurveType.BEZIER,
-    plane: Plane = Plane.XY,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a full circle.
 
@@ -122,7 +145,7 @@ def circle(
         center: Center vertex of the circle
         radius: Radius of the circle
         curve_type: Type of curve to use (default: BEZIER)
-        plane: The plane to create the circle on (default: XY)
+        plane: The plane to create the circle on (default: XY) or an Edge representing a Face
 
     Returns:
         Edge representing the circle
@@ -135,8 +158,18 @@ def circle(
 
     cx, cy, cz = center._x.value, center._y.value, center._z.value
 
-    # Move to center position on the appropriate plane
-    if plane == Plane.XY:
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Position on the face's plane
+            face_plane = bd.Plane(native_face)
+            native_circle = face_plane * native_circle
+        else:
+            # Fallback to XY plane
+            native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XY:
         native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
     elif plane == Plane.XZ:
         native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
@@ -240,7 +273,7 @@ def polygon(
     radius: LengthType,
     sides: int,
     rotation: AngleType = 0,
-    plane: Plane = Plane.XY,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a regular polygon with the given number of sides.
 
@@ -249,30 +282,39 @@ def polygon(
         radius: Radius of the polygon
         sides: Number of sides (minimum 3)
         rotation: Rotation angle in degrees (default 0)
-        plane: The plane to create the polygon on (default: XY)
+        plane: The plane to create the polygon on (default: XY) or an Edge representing a Face
 
     Returns:
         Edge representing the polygon
     """
     # Use parent class for the Edge structure
-    poly_edge = BaseDraw.polygon(center, radius, sides, rotation)
+    poly_edge = BaseDraw.polygon(center, radius, sides, rotation, plane)
 
     # Create native build123d polygon
     r = float(LengthExp(radius))
     rot_deg = math.degrees(Angle(rotation).value)
     native_poly = bd.RegularPolygon(radius=r, side_count=sides, rotation=rot_deg)
 
-    # Move to center position on the appropriate plane
-    if plane == Plane.XY:
-        cx, cy, cz = center._x.value, center._y.value, center._z.value
+    cx, cy, cz = center._x.value, center._y.value, center._z.value
+
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Position on the face's plane
+            face_plane = bd.Plane(native_face)
+            native_poly = face_plane * native_poly
+        else:
+            # Fallback to XY plane
+            native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XY:
         native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
     elif plane == Plane.XZ:
-        cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
         # Rotate to XZ plane (rotate 90 degrees around X to make Z become Y)
         native_poly = native_poly.rotate(bd.Axis.X, 90)
     else:  # YZ plane
-        cx, cy, cz = center._x.value, center._y.value, center._z.value
         native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
         # Rotate to YZ plane (rotate 90 degrees around Y to make X become Z)
         native_poly = native_poly.rotate(bd.Axis.Y, -90)
@@ -287,7 +329,7 @@ def text(
     font: str,
     size: LengthType,
     center: "Vertex | None" = None,
-    plane: Plane = Plane.XY,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a text string.
 
@@ -296,7 +338,7 @@ def text(
         font: Font name (e.g., "Arial", "Helvetica")
         size: Font size
         center: Optional center vertex for positioning the text
-        plane: The plane to create the text on (default: XY)
+        plane: The plane to create the text on (default: XY) or an Edge representing a Face
 
     Returns:
         Edge representing the text
@@ -306,13 +348,28 @@ def text(
     if center is not None:
         # Move to the specified center position
         cx, cy, cz = center._x.value, center._y.value, center._z.value
-        native_text = native_text.moved(bd.Location((cx, cy, cz)))
+
+        # Handle plane positioning - support both Plane enum and Edge (Face)
+        if isinstance(plane, Edge):
+            # If plane is an Edge representing a Face, use the face's plane
+            native_face = plane.get_native("face")
+            if native_face is not None:
+                # Position on the face's plane
+                face_plane = bd.Plane(native_face)
+                native_text = face_plane * native_text
+            else:
+                # Fallback to XY plane
+                native_text = native_text.moved(bd.Location((cx, cy, cz)))
+        else:
+            # Standard plane positioning
+            native_text = native_text.moved(bd.Location((cx, cy, cz)))
 
         # Update edge vertices to reflect the new position
         # For text, we don't have clear v1/v2, so use a simplified approach
+        size_val = float(LengthExp(size))
         edge = Edge(
-            v1=Vertex(x=cx - size / 2, y=cy, z=cz),
-            v2=Vertex(x=cx + size / 2, y=cy, z=cz),
+            v1=Vertex(x=cx - size_val / 2, y=cy, z=cz),
+            v2=Vertex(x=cx + size_val / 2, y=cy, z=cz),
         )
     else:
         edge = Edge(
@@ -329,7 +386,7 @@ def trapezoid(
     width: LengthType,
     height: LengthType,
     angle: AngleType,
-    plane: Plane = Plane.XY,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Edge:
     """Create a trapezoid.
 
@@ -338,7 +395,7 @@ def trapezoid(
         width: Width of the trapezoid
         height: Height of the trapezoid
         angle: Trapezoid angle
-        plane: The plane to create the trapezoid on (default: XY)
+        plane: The plane to create the trapezoid on (default: XY) or an Edge representing a Face
 
     Returns:
         Edge representing the trapezoid
@@ -348,8 +405,18 @@ def trapezoid(
 
     cx, cy, cz = center._x.value, center._y.value, center._z.value
 
-    # Move to center position on the appropriate plane
-    if plane == Plane.XY:
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Position on the face's plane
+            face_plane = bd.Plane(native_face)
+            native_trap = face_plane * native_trap
+        else:
+            # Fallback to XY plane
+            native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XY:
         native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
     elif plane == Plane.XZ:
         native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
