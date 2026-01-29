@@ -46,8 +46,20 @@ def extrude(
     height: LengthType,
     draft_angle: AngleType = 0,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Extrude a 2D shape into a 3D solid."""
+    """Extrude a 2D shape into a 3D solid.
+
+    Args:
+        edge: The 2D shape to extrude
+        height: The extrusion height
+        draft_angle: Optional draft angle for the extrusion
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to extrude from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     native = edge.get_native()
 
     # If edge has no native but has sub_edges, combine sub_edge natives into a Wire
@@ -64,6 +76,16 @@ def extrude(
     if native is None:
         raise ValueError("Edge has no native build123d object")
 
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane for extrusion
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Create a plane from the face
+            face_plane = bd.Plane(native_face)
+            # Transform the wire to the face's plane before extruding
+            native = face_plane * native
+
     result = extrude_wire(native, height, draft_angle)
     solid = Solid(is_hidden=False)
     solid.set_native(result)
@@ -75,11 +97,33 @@ def revolve(
     around: Edge,
     angle: AngleType,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Revolve a 2D shape around an axis to create a 3D solid."""
+    """Revolve a 2D shape around an axis to create a 3D solid.
+
+    Args:
+        edge: The 2D shape to revolve
+        around: The axis to revolve around
+        angle: The angle of revolution
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to revolve from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     native = edge.get_native()
     if native is None:
         raise ValueError("Edge has no native build123d object")
+
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Create a plane from the face
+            face_plane = bd.Plane(native_face)
+            # Transform the wire to the face's plane before revolving
+            native = face_plane * native
 
     # Create axis from the around edge
     v1 = around.v1.to_tuple()
@@ -98,12 +142,35 @@ def loft(
     to: Edge,
     merge: bool = True,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Create a 3D solid by lofting between 2D shapes."""
+    """Create a 3D solid by lofting between 2D shapes.
+
+    Args:
+        this: The first 2D shape
+        to: The second 2D shape
+        merge: If True, the two solids are merged (if the edges were part of solids)
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to loft from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     native1 = this.get_native()
     native2 = to.get_native()
     if native1 is None or native2 is None:
         raise ValueError("Edges have no native build123d objects")
+
+    # Handle plane positioning - support both Plane enum and Edge (Face)
+    if isinstance(plane, Edge):
+        # If plane is an Edge representing a Face, use the face's plane
+        native_face = plane.get_native("face")
+        if native_face is not None:
+            # Create a plane from the face
+            face_plane = bd.Plane(native_face)
+            # Transform both wires to the face's plane before lofting
+            native1 = face_plane * native1
+            native2 = face_plane * native2
 
     result = loft_wires([native1, native2], ruled=not merge)
     solid = Solid(is_hidden=False)

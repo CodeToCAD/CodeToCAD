@@ -15,6 +15,8 @@ def get_function_signatures(file_path: str) -> dict[str, dict[str, Any]]:
     """
     Extract function signatures from a Python file using AST.
 
+    Only extracts top-level function definitions, not nested functions.
+
     Args:
         file_path: Path to the Python file to parse
 
@@ -26,7 +28,9 @@ def get_function_signatures(file_path: str) -> dict[str, dict[str, Any]]:
 
     signatures = {}
 
-    for node in ast.walk(tree):
+    # Only iterate through top-level nodes in the module body
+    # This avoids capturing nested function definitions
+    for node in tree.body:
         if isinstance(node, ast.FunctionDef):
             # Extract parameter information
             params = []

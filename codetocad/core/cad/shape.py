@@ -2,6 +2,7 @@ import codetocad.core.cad.draw as Draw
 from codetocad.core.cad.vertex_edge_solid import Edge, Solid, Vertex
 from codetocad.core.dimensions.angle import AngleType
 from codetocad.core.dimensions.length_expression import LengthType
+from codetocad.core.enums.plane import Plane
 
 
 def extrude(
@@ -9,8 +10,20 @@ def extrude(
     height: LengthType,
     draft_angle: AngleType = 0,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Extrude a 2D shape into a 3D solid."""
+    """Extrude a 2D shape into a 3D solid.
+
+    Args:
+        edge: The 2D shape to extrude
+        height: The extrusion height
+        draft_angle: Optional draft angle for the extrusion
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to extrude from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     raise NotImplementedError("Method not implemented.")
 
 
@@ -19,8 +32,20 @@ def revolve(
     around: Edge,
     angle: AngleType,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Revolve a 2D shape around an axis to create a 3D solid."""
+    """Revolve a 2D shape around an axis to create a 3D solid.
+
+    Args:
+        edge: The 2D shape to revolve
+        around: The axis to revolve around
+        angle: The angle of revolution
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to revolve from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     raise NotImplementedError("Method not implemented.")
 
 
@@ -29,8 +54,20 @@ def loft(
     to: Edge,
     merge: bool = True,
     subtract: list[Edge] | None = None,
+    plane: "Plane | Edge" = Plane.XY,
 ) -> Solid:
-    """Create a 3D solid by lofting between 2D shapes. If merge is True, the two solids are merged, if the edges were part of solids."""
+    """Create a 3D solid by lofting between 2D shapes.
+
+    Args:
+        this: The first 2D shape
+        to: The second 2D shape
+        merge: If True, the two solids are merged (if the edges were part of solids)
+        subtract: Optional list of edges to subtract from the result
+        plane: The plane to loft from (default: XY) or an Edge representing a Face
+
+    Returns:
+        A 3D solid
+    """
     raise NotImplementedError("Method not implemented.")
 
 
@@ -121,9 +158,11 @@ def cuboid(
     return extrude(edge, depth)
 
 
-def cylinder(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
+def cylinder(
+    center: Vertex, radius: LengthType, height: LengthType, plane: Plane = Plane.XY
+) -> Solid:
     """Create a cylinder."""
-    edge = Draw.circle(center, radius)
+    edge = Draw.circle(center, radius, plane=plane)
     return extrude(edge, height)
 
 
