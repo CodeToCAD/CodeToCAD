@@ -8,9 +8,11 @@ import build123d as bd
 
 from codetocad.core.cad.vertex_edge_solid import Edge, Solid, Vertex
 from codetocad.core.enums.axis import Axis
+from codetocad.core.enums.plane import Plane
 from codetocad.core.dimensions.angle import AngleType
 from codetocad.core.dimensions.length_expression import LengthType, LengthExp
 import codetocad.integrations.build123d.cad.draw as Draw
+import codetocad.integrations.build123d.cad.transform as Transform
 
 
 from codetocad.integrations.build123d.adapter.solid_operations import (
@@ -332,10 +334,28 @@ def cuboid(
     return extrude(edge, depth)
 
 
-def cylinder(center: Vertex, radius: LengthType, height: LengthType) -> Solid:
-    """Create a cylinder."""
+def cylinder(
+    center: Vertex,
+    radius: LengthType,
+    height: LengthType,
+    plane: Plane = Plane.XY,
+) -> Solid:
+    """Create a cylinder.
 
-    edge = Draw.circle(center, radius)
+    Args:
+        center: Center vertex of the cylinder
+        radius: Radius of the cylinder
+        height: Height of the cylinder
+        plane: The plane to create the cylinder on (default: XY)
+              - XY: cylinder extends along Z axis
+              - XZ: cylinder extends along Y axis
+              - YZ: cylinder extends along X axis
+
+    Returns:
+        Solid representing the cylinder
+    """
+
+    edge = Draw.circle(center, radius, plane=plane)
     return extrude(edge, height)
 
 
@@ -385,3 +405,18 @@ def pyramid(
 
     edge = Draw.rectangle(center, width, height)
     return extrude(edge, depth, draft_angle=f"{draft_angle}deg")
+
+
+def rotate(solid: Solid, x: AngleType = 0, y: AngleType = 0, z: AngleType = 0) -> Solid:
+    """Rotate a solid around the X, Y, and Z axes.
+
+    Args:
+        solid: The solid to rotate
+        x: Rotation angle around X axis (default 0)
+        y: Rotation angle around Y axis (default 0)
+        z: Rotation angle around Z axis (default 0)
+
+    Returns:
+        The rotated solid
+    """
+    return Transform.rotate(solid, x=x, y=y, z=z)

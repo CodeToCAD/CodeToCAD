@@ -20,6 +20,26 @@ from codetocad.integrations.build123d.adapter.geometry import (
 )
 
 
+def _get_bd_plane_for_sketch(center: Vertex, plane: Plane = Plane.XY) -> "bd.Plane":
+    """Get a build123d plane for sketching at the given center position.
+
+    Args:
+        center: The center vertex for the sketch
+        plane: The plane to create the sketch on (XY, XZ, or YZ)
+
+    Returns:
+        A build123d Plane positioned at the center
+    """
+    cx, cy, cz = center._x.value, center._y.value, center._z.value
+
+    if plane == Plane.XY:
+        return bd.Plane.XY.offset((cx, cy, cz))
+    elif plane == Plane.XZ:
+        return bd.Plane.XZ.offset((cx, cy, cz))
+    else:  # YZ
+        return bd.Plane.YZ.offset((cx, cy, cz))
+
+
 def line(v1: Vertex, v2: Vertex) -> Edge:
     """Create a straight line between two vertices."""
     edge = Edge(v1=v1, v2=v2)
@@ -31,8 +51,23 @@ def line(v1: Vertex, v2: Vertex) -> Edge:
     return edge
 
 
-def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
-    """Create a rectangle centered at the given vertex."""
+def rectangle(
+    center: Vertex,
+    width: LengthType,
+    height: LengthType,
+    plane: Plane = Plane.XY,
+) -> Edge:
+    """Create a rectangle centered at the given vertex.
+
+    Args:
+        center: Center vertex of the rectangle
+        width: Width of the rectangle
+        height: Height of the rectangle
+        plane: The plane to create the rectangle on (default: XY)
+
+    Returns:
+        Edge representing the rectangle
+    """
     # Use parent class logic for the Edge structure
     start_x = LengthExp(width) / 2
     start_y = LengthExp(height) / 2
@@ -55,9 +90,21 @@ def rectangle(center: Vertex, width: LengthType, height: LengthType) -> Edge:
 
     # Create native build123d rectangle
     native_rect = create_rectangle_wire(width, height)
-    # Move to center position
+
     cx, cy, cz = center._x.value, center._y.value, center._z.value
-    native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
+
+    # Move to center position on the appropriate plane
+    if plane == Plane.XY:
+        native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XZ:
+        native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
+        # Rotate to XZ plane (rotate 90 degrees around X to make Z become Y)
+        native_rect = native_rect.rotate(bd.Axis.X, 90)
+    else:  # YZ plane
+        native_rect = native_rect.moved(bd.Location((cx, cy, cz)))
+        # Rotate to YZ plane (rotate 90 degrees around Y to make X become Z)
+        native_rect = native_rect.rotate(bd.Axis.Y, -90)
+
     edge.set_native(native_rect)
 
     return edge
@@ -67,16 +114,39 @@ def circle(
     center: Vertex,
     radius: LengthType,
     curve_type: CurveType = CurveType.BEZIER,
+    plane: Plane = Plane.XY,
 ) -> Edge:
-    """Create a full circle."""
+    """Create a full circle.
+
+    Args:
+        center: Center vertex of the circle
+        radius: Radius of the circle
+        curve_type: Type of curve to use (default: BEZIER)
+        plane: The plane to create the circle on (default: XY)
+
+    Returns:
+        Edge representing the circle
+    """
     # Create Edge with arc sub-edges from parent
     arc_edge = _arc(center, radius, 0, "360deg", curve_type)
 
     # Create native build123d circle
     native_circle = create_circle_wire(radius)
-    # Move to center position
+
     cx, cy, cz = center._x.value, center._y.value, center._z.value
-    native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
+
+    # Move to center position on the appropriate plane
+    if plane == Plane.XY:
+        native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XZ:
+        native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
+        # Rotate to XZ plane (rotate 90 degrees around X to make Z become Y)
+        native_circle = native_circle.rotate(bd.Axis.X, 90)
+    else:  # YZ plane
+        native_circle = native_circle.moved(bd.Location((cx, cy, cz)))
+        # Rotate to YZ plane (rotate 90 degrees around Y to make X become Z)
+        native_circle = native_circle.rotate(bd.Axis.Y, -90)
+
     arc_edge.set_native(native_circle)
 
     return arc_edge
@@ -166,9 +236,24 @@ def tangent_arc(
 
 
 def polygon(
-    center: Vertex, radius: LengthType, sides: int, rotation: AngleType = 0
+    center: Vertex,
+    radius: LengthType,
+    sides: int,
+    rotation: AngleType = 0,
+    plane: Plane = Plane.XY,
 ) -> Edge:
-    """Create a regular polygon with the given number of sides."""
+    """Create a regular polygon with the given number of sides.
+
+    Args:
+        center: Center vertex of the polygon
+        radius: Radius of the polygon
+        sides: Number of sides (minimum 3)
+        rotation: Rotation angle in degrees (default 0)
+        plane: The plane to create the polygon on (default: XY)
+
+    Returns:
+        Edge representing the polygon
+    """
     # Use parent class for the Edge structure
     poly_edge = BaseDraw.polygon(center, radius, sides, rotation)
 
@@ -177,37 +262,103 @@ def polygon(
     rot_deg = math.degrees(Angle(rotation).value)
     native_poly = bd.RegularPolygon(radius=r, side_count=sides, rotation=rot_deg)
 
-    # Move to center position
-    cx, cy, cz = center._x.value, center._y.value, center._z.value
-    native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
+    # Move to center position on the appropriate plane
+    if plane == Plane.XY:
+        cx, cy, cz = center._x.value, center._y.value, center._z.value
+        native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XZ:
+        cx, cy, cz = center._x.value, center._y.value, center._z.value
+        native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
+        # Rotate to XZ plane (rotate 90 degrees around X to make Z become Y)
+        native_poly = native_poly.rotate(bd.Axis.X, 90)
+    else:  # YZ plane
+        cx, cy, cz = center._x.value, center._y.value, center._z.value
+        native_poly = native_poly.moved(bd.Location((cx, cy, cz)))
+        # Rotate to YZ plane (rotate 90 degrees around Y to make X become Z)
+        native_poly = native_poly.rotate(bd.Axis.Y, -90)
+
     poly_edge.set_native(native_poly)
 
     return poly_edge
 
 
-def text(text: str, font: str, size: LengthType) -> Edge:
-    """Create a text string."""
+def text(
+    text: str,
+    font: str,
+    size: LengthType,
+    center: "Vertex | None" = None,
+    plane: Plane = Plane.XY,
+) -> Edge:
+    """Create a text string.
+
+    Args:
+        text: The text string to create
+        font: Font name (e.g., "Arial", "Helvetica")
+        size: Font size
+        center: Optional center vertex for positioning the text
+        plane: The plane to create the text on (default: XY)
+
+    Returns:
+        Edge representing the text
+    """
     native_text = create_text_wire(text, size, font)
 
-    # Create a simple edge wrapper
-    edge = Edge(
-        v1=Vertex(x=0, y=0, z=0),
-        v2=Vertex(x=0, y=0, z=0),
-    )
+    if center is not None:
+        # Move to the specified center position
+        cx, cy, cz = center._x.value, center._y.value, center._z.value
+        native_text = native_text.moved(bd.Location((cx, cy, cz)))
+
+        # Update edge vertices to reflect the new position
+        # For text, we don't have clear v1/v2, so use a simplified approach
+        edge = Edge(
+            v1=Vertex(x=cx - size / 2, y=cy, z=cz),
+            v2=Vertex(x=cx + size / 2, y=cy, z=cz),
+        )
+    else:
+        edge = Edge(
+            v1=Vertex(x=0, y=0, z=0),
+            v2=Vertex(x=0, y=0, z=0),
+        )
+
     edge.set_native(native_text)
     return edge
 
 
 def trapezoid(
-    center: Vertex, width: LengthType, height: LengthType, angle: AngleType
+    center: Vertex,
+    width: LengthType,
+    height: LengthType,
+    angle: AngleType,
+    plane: Plane = Plane.XY,
 ) -> Edge:
-    """Create a trapezoid."""
+    """Create a trapezoid.
+
+    Args:
+        center: Center vertex of the trapezoid
+        width: Width of the trapezoid
+        height: Height of the trapezoid
+        angle: Trapezoid angle
+        plane: The plane to create the trapezoid on (default: XY)
+
+    Returns:
+        Edge representing the trapezoid
+    """
     angle_deg = math.degrees(Angle(angle).value)
     native_trap = create_trapezoid_wire(width, height, angle_deg)
 
-    # Move to center position
     cx, cy, cz = center._x.value, center._y.value, center._z.value
-    native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
+
+    # Move to center position on the appropriate plane
+    if plane == Plane.XY:
+        native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
+    elif plane == Plane.XZ:
+        native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
+        # Rotate to XZ plane (rotate 90 degrees around X to make Z become Y)
+        native_trap = native_trap.rotate(bd.Axis.X, 90)
+    else:  # YZ plane
+        native_trap = native_trap.moved(bd.Location((cx, cy, cz)))
+        # Rotate to YZ plane (rotate 90 degrees around Y to make X become Z)
+        native_trap = native_trap.rotate(bd.Axis.Y, -90)
 
     # Create edge wrapper
     edge = Edge(
