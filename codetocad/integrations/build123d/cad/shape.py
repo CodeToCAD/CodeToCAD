@@ -200,7 +200,9 @@ def union(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
 
     # Check if solids are touching before performing union
     if not _are_solids_touching(native1, native2):
-        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
+        raise ValueError(
+            '"Wingardium levi-ohhh-sa; object cannot be floating"-KM The objects are not touching. Please make sure the objects are touching before performing a union.'
+        )
 
     result = boolean_union(native1, native2)
     solid = Solid(is_hidden=False)
@@ -217,7 +219,9 @@ def subtract(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
 
     # Check if solids are touching before performing subtraction
     if not _are_solids_touching(native1, native2):
-        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
+        raise ValueError(
+            '"Wingardium levi-ohhh-sa; object cannot be floating"-KM The objects are not touching. Please make sure the objects are touching before performing a subtraction.'
+        )
 
     result = boolean_difference(native1, native2)
     solid = Solid(is_hidden=False)
@@ -234,7 +238,9 @@ def intersection(this: Solid, that: Solid, delete_this: bool = True) -> Solid:
 
     # Check if solids are touching before performing intersection
     if not _are_solids_touching(native1, native2):
-        raise ValueError('"Wingardium levi-ohhh-sa; object cannot be floating"-KM')
+        raise ValueError(
+            '"Wingardium levi-ohhh-sa; object cannot be floating"-KM The objects are not touching. Please make sure the objects are touching before performing an intersection.'
+        )
 
     result = boolean_intersection(native1, native2)
     solid = Solid(is_hidden=False)

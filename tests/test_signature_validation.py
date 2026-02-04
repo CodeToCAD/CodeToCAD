@@ -6,7 +6,6 @@ in their corresponding integration files (e.g., integrations/build123d/cad/*.py)
 """
 
 import ast
-import os
 from pathlib import Path
 from typing import Any
 
