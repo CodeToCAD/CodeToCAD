@@ -36,6 +36,9 @@ def find_vertex(
     """
     Find vertices in an object at or near a cardinal direction.
 
+    If no existing vertices are found within the search radius, a new vertex
+    is created at the exact cardinal position (e.g., at edge midpoints).
+
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
         cardinal: The cardinal direction or CardinalOffset indicating where to search.
@@ -45,7 +48,8 @@ def find_vertex(
 
     Returns:
         A list of Vertex objects sorted by distance from the ideal cardinal position.
-        Returns an empty list if no vertices are found within the search radius.
+        If no existing vertices are found, returns a list with a single vertex created
+        at the target position.
 
     Example:
         >>> # Find vertices at the top-front corner
@@ -54,6 +58,8 @@ def find_vertex(
         ...     print(f"Found {len(corners)} vertices at top-front")
         >>> # Find vertices at an offset position
         >>> corners = find_vertex(my_box, offset(CardinalDirection.TOP_FRONT, Point(x="5mm")))
+        >>> # Find vertex at edge midpoint (will be created if it doesn't exist)
+        >>> midpoint = find_vertex(my_box, CardinalDirection.FRONT_TOP)
     """
     raise NotImplementedError("Method not implemented.")
 

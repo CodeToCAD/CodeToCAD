@@ -53,13 +53,28 @@ def _visualize(
     vertices: "list[Vertex] | None" = None,
     edges: "list[Edge] | None" = None,
     faces: "list[Edge] | None" = None,
+    cardinal_label: "str | None" = None,
 ) -> None:
-    """Visualize the box with optional highlighted elements."""
+    """Visualize the box with optional highlighted elements.
+
+    Args:
+        box: The solid to visualize
+        title: Title for the visualization
+        vertices: List of vertices to highlight
+        edges: List of edges to highlight
+        faces: List of faces to highlight
+        cardinal_label: Optional cardinal direction label to display on elements
+    """
     print(f"\n  Visualizing: {title}")
     print("    Coordinate frame: X=Red, Y=Green, Z=Blue")
 
-    colored_vertices = [ColoredVertex(vertex=v, color=RED) for v in (vertices or [])]
-    colored_edges = [ColoredEdge(edge=e, color=GREEN) for e in (edges or [])]
+    colored_vertices = [
+        ColoredVertex(vertex=v, color=RED, label=cardinal_label)
+        for v in (vertices or [])
+    ]
+    colored_edges = [
+        ColoredEdge(edge=e, color=GREEN, label=cardinal_label) for e in (edges or [])
+    ]
     colored_faces = [ColoredFace(face=f, color=BLUE) for f in (faces or [])]
 
     show_in_open3d(
@@ -74,11 +89,30 @@ def _visualize(
     )
 
 
+def example_find_vertex_left_center() -> None:
+    """Find vertex at LEFT_CENTER corner."""
+    print("\n--- find_vertex: LEFT_CENTER ---")
+    box = _create_box()
+    cardinal = CardinalDirection.LEFT_CENTER
+    vertices = find_vertex(box, cardinal)
+    print(f"  Found {len(vertices)} vertex(es)")
+    for i, v in enumerate(vertices):
+        print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
+    if vertices:
+        _visualize(
+            box,
+            f"LEFT_CENTER - {len(vertices)} vertex(es) (RED)",
+            vertices=vertices,
+            cardinal_label=cardinal.name,
+        )
+
+
 def example_find_vertex_top_front_right() -> None:
     """Find vertex at TOP_FRONT_RIGHT corner."""
     print("\n--- find_vertex: TOP_FRONT_RIGHT ---")
     box = _create_box()
-    vertices = find_vertex(box, CardinalDirection.TOP_FRONT_RIGHT)
+    cardinal = CardinalDirection.TOP_FRONT_RIGHT
+    vertices = find_vertex(box, cardinal)
     print(f"  Found {len(vertices)} vertex(es)")
     for i, v in enumerate(vertices):
         print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
@@ -87,6 +121,7 @@ def example_find_vertex_top_front_right() -> None:
             box,
             f"TOP_FRONT_RIGHT - {len(vertices)} vertex(es) (RED)",
             vertices=vertices,
+            cardinal_label=cardinal.name,
         )
 
 
@@ -94,7 +129,8 @@ def example_find_vertex_bottom_back_left() -> None:
     """Find vertex at BOTTOM_BACK_LEFT corner."""
     print("\n--- find_vertex: BOTTOM_BACK_LEFT ---")
     box = _create_box()
-    vertices = find_vertex(box, CardinalDirection.BOTTOM_BACK_LEFT)
+    cardinal = CardinalDirection.BOTTOM_BACK_LEFT
+    vertices = find_vertex(box, cardinal)
     print(f"  Found {len(vertices)} vertex(es)")
     for i, v in enumerate(vertices):
         print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
@@ -103,6 +139,7 @@ def example_find_vertex_bottom_back_left() -> None:
             box,
             f"BOTTOM_BACK_LEFT - {len(vertices)} vertex(es) (RED)",
             vertices=vertices,
+            cardinal_label=cardinal.name,
         )
 
 
@@ -110,8 +147,8 @@ def example_find_vertex_from_string() -> None:
     """Find vertex using from_string() method."""
     print("\n--- find_vertex: Using from_string('top-left') ---")
     box = _create_box()
-    direction = CardinalDirection.from_string("top-left")
-    vertices = find_vertex(box, direction)
+    cardinal = CardinalDirection.from_string("top-left")
+    vertices = find_vertex(box, cardinal)
     print(f"  Found {len(vertices)} vertex(es)")
     for i, v in enumerate(vertices):
         print(f"    {i+1}. ({v.x}, {v.y}, {v.z})")
@@ -120,6 +157,7 @@ def example_find_vertex_from_string() -> None:
             box,
             f"TOP_LEFT via from_string - {len(vertices)} vertex(es) (RED)",
             vertices=vertices,
+            cardinal_label=cardinal.name,
         )
 
 
@@ -127,49 +165,88 @@ def example_find_edge_front_top() -> None:
     """Find edge at FRONT_TOP position."""
     print("\n--- find_edge: FRONT_TOP ---")
     box = _create_box()
-    edges = find_edge(box, CardinalDirection.FRONT_TOP)
+    cardinal = CardinalDirection.FRONT_TOP
+    edges = find_edge(box, cardinal)
     print(f"  Found {len(edges)} edge(s)")
     for i, e in enumerate(edges):
         print(
             f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
         )
     if edges:
-        _visualize(box, f"FRONT_TOP - {len(edges)} edge(s) (GREEN)", edges=edges)
+        _visualize(
+            box,
+            f"FRONT_TOP - {len(edges)} edge(s) (GREEN)",
+            edges=edges,
+            cardinal_label=cardinal.name,
+        )
+
+
+def example_find_edge_left() -> None:
+    """Find edge at LEFT_CENTER position."""
+    print("\n--- find_edge: LEFT_CENTER ---")
+    box = _create_box()
+    cardinal = CardinalDirection.LEFT_CENTER
+    edges = find_edge(box, cardinal, search_radius="20mm")
+    print(f"  Found {len(edges)} edge(s)")
+    for i, e in enumerate(edges):
+        print(
+            f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
+        )
+    if edges:
+        _visualize(
+            box,
+            f"LEFT_CENTER - {len(edges)} edge(s) (GREEN)",
+            edges=edges,
+            cardinal_label=cardinal.name,
+        )
 
 
 def example_find_edge_left_back() -> None:
     """Find edge at LEFT_BACK position."""
     print("\n--- find_edge: LEFT_BACK ---")
     box = _create_box()
-    edges = find_edge(box, CardinalDirection.LEFT_BACK, search_radius="20mm")
+    cardinal = CardinalDirection.LEFT_BACK
+    edges = find_edge(box, cardinal, search_radius="20mm")
     print(f"  Found {len(edges)} edge(s)")
     for i, e in enumerate(edges):
         print(
             f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
         )
     if edges:
-        _visualize(box, f"LEFT_BACK - {len(edges)} edge(s) (GREEN)", edges=edges)
+        _visualize(
+            box,
+            f"LEFT_BACK - {len(edges)} edge(s) (GREEN)",
+            edges=edges,
+            cardinal_label=cardinal.name,
+        )
 
 
 def example_find_edge_bottom_right() -> None:
     """Find edge at BOTTOM_RIGHT position."""
     print("\n--- find_edge: BOTTOM_RIGHT ---")
     box = _create_box()
-    edges = find_edge(box, CardinalDirection.BOTTOM_RIGHT)
+    cardinal = CardinalDirection.BOTTOM_RIGHT
+    edges = find_edge(box, cardinal)
     print(f"  Found {len(edges)} edge(s)")
     for i, e in enumerate(edges):
         print(
             f"    {i+1}. ({e.v1.x}, {e.v1.y}, {e.v1.z}) -> ({e.v2.x}, {e.v2.y}, {e.v2.z})"
         )
     if edges:
-        _visualize(box, f"BOTTOM_RIGHT - {len(edges)} edge(s) (GREEN)", edges=edges)
+        _visualize(
+            box,
+            f"BOTTOM_RIGHT - {len(edges)} edge(s) (GREEN)",
+            edges=edges,
+            cardinal_label=cardinal.name,
+        )
 
 
 def example_find_face_top() -> None:
     """Find face at TOP_CENTER position."""
     print("\n--- find_face: TOP_CENTER ---")
     box = _create_box()
-    faces = find_face(box, CardinalDirection.TOP_CENTER)
+    cardinal = CardinalDirection.TOP_CENTER
+    faces = find_face(box, cardinal)
     print(f"  Found {len(faces)} face(s)")
     for i, f in enumerate(faces):
         sub_count = len(f.sub_edges) if f.sub_edges else 0
@@ -177,20 +254,31 @@ def example_find_face_top() -> None:
         if f.get_native("face"):
             print(f"       Native type: {type(f.get_native('face')).__name__}")
     if faces:
-        _visualize(box, f"TOP_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
+        _visualize(
+            box,
+            f"TOP_CENTER - {len(faces)} face(s) (BLUE)",
+            faces=faces,
+            cardinal_label=cardinal.name,
+        )
 
 
 def example_find_face_front() -> None:
     """Find face at FRONT_CENTER position."""
     print("\n--- find_face: FRONT_CENTER ---")
     box = _create_box()
-    faces = find_face(box, CardinalDirection.FRONT_CENTER)
+    cardinal = CardinalDirection.FRONT_CENTER
+    faces = find_face(box, cardinal)
     print(f"  Found {len(faces)} face(s)")
     for i, f in enumerate(faces):
         sub_count = len(f.sub_edges) if f.sub_edges else 0
         print(f"    {i+1}. Face with {sub_count} boundary edges")
     if faces:
-        _visualize(box, f"FRONT_CENTER - {len(faces)} face(s) (BLUE)", faces=faces)
+        _visualize(
+            box,
+            f"FRONT_CENTER - {len(faces)} face(s) (BLUE)",
+            faces=faces,
+            cardinal_label=cardinal.name,
+        )
 
 
 def example_find_face_right() -> None:
@@ -345,6 +433,7 @@ def main() -> None:
     print("\n" + "=" * 60)
     print("SECTION 1: find_vertex()")
     print("=" * 60)
+    example_find_vertex_left_center()
     example_find_vertex_top_front_right()
     example_find_vertex_bottom_back_left()
     example_find_vertex_from_string()
@@ -354,6 +443,7 @@ def main() -> None:
     print("SECTION 2: find_edge()")
     print("=" * 60)
     example_find_edge_front_top()
+    example_find_edge_left()
     example_find_edge_left_back()
     example_find_edge_bottom_right()
 

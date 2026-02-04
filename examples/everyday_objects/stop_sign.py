@@ -53,7 +53,9 @@ def main() -> Solid:
     # Create the pole (cylinder) extending downward from the sign
     # The pole is on the XZ plane so it extends along the Y axis (downward)
     pole = Shape.cylinder(
-        center=Selectors.find_face(hexagon_solid, CardinalDirection.BOTTOM_LEFT)[0].v1,
+        center=Selectors.find_face(hexagon_solid, CardinalDirection.BOTTOM_CENTER)[
+            0
+        ].v1,
         radius=pole_radius,
         height=pole_height,
         plane=Plane.XZ,

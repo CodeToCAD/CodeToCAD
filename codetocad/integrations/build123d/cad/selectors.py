@@ -34,7 +34,7 @@ def _get_cardinal_position(bbox: bd.BoundBox, cardinal: CardinalDirection) -> bd
 
     # Map cardinal directions to positions
     # X: left=-X, right=+X, center=center_x
-    # Y: back=-Y, front=+Y, center=center_y
+    # Y: front=-Y, back=+Y, center=center_y
     # Z: bottom=-Z, top=+Z, center=center_z
 
     positions = {
@@ -44,44 +44,44 @@ def _get_cardinal_position(bbox: bd.BoundBox, cardinal: CardinalDirection) -> bd
         CardinalDirection.TOP_CENTER: (center_x, center_y, max_z),
         CardinalDirection.TOP_LEFT: (min_x, center_y, max_z),
         CardinalDirection.TOP_RIGHT: (max_x, center_y, max_z),
-        CardinalDirection.TOP_FRONT: (center_x, max_y, max_z),
-        CardinalDirection.TOP_BACK: (center_x, min_y, max_z),
-        CardinalDirection.TOP_FRONT_LEFT: (min_x, max_y, max_z),
-        CardinalDirection.TOP_FRONT_RIGHT: (max_x, max_y, max_z),
-        CardinalDirection.TOP_BACK_LEFT: (min_x, min_y, max_z),
-        CardinalDirection.TOP_BACK_RIGHT: (max_x, min_y, max_z),
+        CardinalDirection.TOP_FRONT: (center_x, min_y, max_z),
+        CardinalDirection.TOP_BACK: (center_x, max_y, max_z),
+        CardinalDirection.TOP_FRONT_LEFT: (min_x, min_y, max_z),
+        CardinalDirection.TOP_FRONT_RIGHT: (max_x, min_y, max_z),
+        CardinalDirection.TOP_BACK_LEFT: (min_x, max_y, max_z),
+        CardinalDirection.TOP_BACK_RIGHT: (max_x, max_y, max_z),
         # Bottom face (Z = min_z)
         CardinalDirection.BOTTOM_CENTER: (center_x, center_y, min_z),
         CardinalDirection.BOTTOM_LEFT: (min_x, center_y, min_z),
         CardinalDirection.BOTTOM_RIGHT: (max_x, center_y, min_z),
-        CardinalDirection.BOTTOM_FRONT: (center_x, max_y, min_z),
-        CardinalDirection.BOTTOM_BACK: (center_x, min_y, min_z),
-        CardinalDirection.BOTTOM_FRONT_LEFT: (min_x, max_y, min_z),
-        CardinalDirection.BOTTOM_FRONT_RIGHT: (max_x, max_y, min_z),
-        CardinalDirection.BOTTOM_BACK_LEFT: (min_x, min_y, min_z),
-        CardinalDirection.BOTTOM_BACK_RIGHT: (max_x, min_y, min_z),
-        # Front face (Y = max_y)
-        CardinalDirection.FRONT_CENTER: (center_x, max_y, center_z),
-        CardinalDirection.FRONT_LEFT: (min_x, max_y, center_z),
-        CardinalDirection.FRONT_RIGHT: (max_x, max_y, center_z),
-        CardinalDirection.FRONT_TOP: (center_x, max_y, max_z),
-        CardinalDirection.FRONT_BOTTOM: (center_x, max_y, min_z),
-        # Back face (Y = min_y)
-        CardinalDirection.BACK_CENTER: (center_x, min_y, center_z),
-        CardinalDirection.BACK_LEFT: (min_x, min_y, center_z),
-        CardinalDirection.BACK_RIGHT: (max_x, min_y, center_z),
-        CardinalDirection.BACK_TOP: (center_x, min_y, max_z),
-        CardinalDirection.BACK_BOTTOM: (center_x, min_y, min_z),
+        CardinalDirection.BOTTOM_FRONT: (center_x, min_y, min_z),
+        CardinalDirection.BOTTOM_BACK: (center_x, max_y, min_z),
+        CardinalDirection.BOTTOM_FRONT_LEFT: (min_x, min_y, min_z),
+        CardinalDirection.BOTTOM_FRONT_RIGHT: (max_x, min_y, min_z),
+        CardinalDirection.BOTTOM_BACK_LEFT: (min_x, max_y, min_z),
+        CardinalDirection.BOTTOM_BACK_RIGHT: (max_x, max_y, min_z),
+        # Front face (Y = min_y)
+        CardinalDirection.FRONT_CENTER: (center_x, min_y, center_z),
+        CardinalDirection.FRONT_LEFT: (min_x, min_y, center_z),
+        CardinalDirection.FRONT_RIGHT: (max_x, min_y, center_z),
+        CardinalDirection.FRONT_TOP: (center_x, min_y, max_z),
+        CardinalDirection.FRONT_BOTTOM: (center_x, min_y, min_z),
+        # Back face (Y = max_y)
+        CardinalDirection.BACK_CENTER: (center_x, max_y, center_z),
+        CardinalDirection.BACK_LEFT: (min_x, max_y, center_z),
+        CardinalDirection.BACK_RIGHT: (max_x, max_y, center_z),
+        CardinalDirection.BACK_TOP: (center_x, max_y, max_z),
+        CardinalDirection.BACK_BOTTOM: (center_x, max_y, min_z),
         # Left face (X = min_x)
         CardinalDirection.LEFT_CENTER: (min_x, center_y, center_z),
-        CardinalDirection.LEFT_FRONT: (min_x, max_y, center_z),
-        CardinalDirection.LEFT_BACK: (min_x, min_y, center_z),
+        CardinalDirection.LEFT_FRONT: (min_x, min_y, center_z),
+        CardinalDirection.LEFT_BACK: (min_x, max_y, center_z),
         CardinalDirection.LEFT_TOP: (min_x, center_y, max_z),
         CardinalDirection.LEFT_BOTTOM: (min_x, center_y, min_z),
         # Right face (X = max_x)
         CardinalDirection.RIGHT_CENTER: (max_x, center_y, center_z),
-        CardinalDirection.RIGHT_FRONT: (max_x, max_y, center_z),
-        CardinalDirection.RIGHT_BACK: (max_x, min_y, center_z),
+        CardinalDirection.RIGHT_FRONT: (max_x, min_y, center_z),
+        CardinalDirection.RIGHT_BACK: (max_x, max_y, center_z),
         CardinalDirection.RIGHT_TOP: (max_x, center_y, max_z),
         CardinalDirection.RIGHT_BOTTOM: (max_x, center_y, min_z),
     }
@@ -102,13 +102,15 @@ def _get_native_object(obj: "Solid | Edge | Sketch") -> "bd.Shape | None":
 
 
 def _get_default_search_radius(bbox: bd.BoundBox) -> float:
-    """Calculate a default search radius based on the bounding box diagonal."""
-    return max(
-        bbox.max.X - bbox.min.X, bbox.max.Y - bbox.min.Y, bbox.max.Z - bbox.min.Z
-    )
+    """Calculate a default search radius based on the bounding box diagonal.
+
+    Uses a small percentage of the diagonal to ensure we only get vertices
+    very close to the target position (e.g., exactly at corners or edge midpoints).
+    """
     diagonal = (bbox.max - bbox.min).length
-    # Use a percentage of the diagonal as default search radius
-    return diagonal * 0.1
+    # Use a small percentage of the diagonal as default search radius
+    # This ensures we only get vertices very close to the target position
+    return diagonal * 0.05
 
 
 def _convert_search_radius(search_radius: "LengthType") -> float:
@@ -281,16 +283,20 @@ def find_vertex(
     """
     Find vertices in an object at or near a cardinal direction.
 
+    If no existing vertices are found within the search radius, a new vertex
+    is created at the exact cardinal position (e.g., at edge midpoints).
+
     Args:
         obj: The CAD object to search within (Solid, Edge, or Sketch).
         cardinal: The cardinal direction or CardinalOffset indicating where to search.
             If a CardinalOffset is provided, the offset is applied to the cardinal position.
         search_radius: Optional maximum distance from the ideal cardinal position.
-            If None, uses 10% of the object's bounding box diagonal.
+            If None, uses 5% of the object's bounding box diagonal.
 
     Returns:
         A list of Vertex objects sorted by distance from the ideal cardinal position.
-        Returns an empty list if no vertices are found within the search radius.
+        If no existing vertices are found, returns a list with a single vertex created
+        at the target position.
     """
     native = _get_native_object(obj)
     if native is None:
@@ -321,6 +327,19 @@ def find_vertex(
     results.sort(key=lambda x: x[0])
     # Pass parent solid if obj is a Solid
     parent_solid = obj if isinstance(obj, Solid) else None
+
+    # If no vertices found, create one at the target position
+    if not results:
+        created_vertex = Vertex(
+            x=target.X,
+            y=target.Y,
+            z=target.Z,
+        )
+        # Optionally set the parent solid reference
+        if parent_solid:
+            created_vertex.set_native(parent_solid.get_native())
+        return [created_vertex]
+
     return [_convert_bd_vertex_to_codetocad(v, parent_solid) for _, v in results]
 
 

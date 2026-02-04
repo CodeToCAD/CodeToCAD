@@ -7,14 +7,14 @@ convention used in most CAD systems:
 
     - +X: Right
     - -X: Left
-    - +Y: Front
-    - -Y: Back
+    - +Y: Back
+    - -Y: Front
     - +Z: Up (Top)
     - -Z: Down (Bottom)
 
 When viewing from the standard orientation (looking at the front face of an object):
-    - "Front" is the face closest to the viewer (+Y direction)
-    - "Back" is the face away from the viewer (-Y direction)
+    - "Front" is the face closest to the viewer (-Y direction)
+    - "Back" is the face away from the viewer (+Y direction)
     - "Left" is the face on the viewer's left side (-X direction)
     - "Right" is the face on the viewer's right side (+X direction)
     - "Top" is the upper face (+Z direction)
@@ -43,11 +43,11 @@ class CardinalDirection(Enum):
         BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM_FRONT, BOTTOM_BACK,
         BOTTOM_FRONT_LEFT, BOTTOM_FRONT_RIGHT, BOTTOM_BACK_LEFT, BOTTOM_BACK_RIGHT
 
-    Front face (XZ plane at +Y):
+    Front face (XZ plane at -Y):
         FRONT_CENTER, FRONT_LEFT, FRONT_RIGHT, FRONT_TOP, FRONT_BOTTOM
         (corners are covered by TOP/BOTTOM variants)
 
-    Back face (XZ plane at -Y):
+    Back face (XZ plane at +Y):
         BACK_CENTER, BACK_LEFT, BACK_RIGHT, BACK_TOP, BACK_BOTTOM
 
     Left face (YZ plane at -X):
