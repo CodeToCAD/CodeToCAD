@@ -45,7 +45,7 @@ def main() -> Solid:
         "STOP",
         "Arial",
         size=sign_radius * 0.4,
-        center=Vertex(x=0, y=0, z=sign_thickness + text_height / 2),
+        center=Selectors.find_vertex(hexagon_solid, CardinalDirection.TOP_CENTER)[0],
         # plane=Plane.XZ,
     )
     stop_text_solid = Shape.extrude(stop_text_edge, height=text_height)
@@ -53,9 +53,7 @@ def main() -> Solid:
     # Create the pole (cylinder) extending downward from the sign
     # The pole is on the XZ plane so it extends along the Y axis (downward)
     pole = Shape.cylinder(
-        center=Selectors.find_face(hexagon_solid, CardinalDirection.BOTTOM_CENTER)[
-            0
-        ].v1,
+        center=Selectors.find_vertex(hexagon_solid, CardinalDirection.BOTTOM_CENTER)[0],
         radius=pole_radius,
         height=pole_height,
         plane=Plane.XZ,

@@ -264,13 +264,14 @@ def create_text_wire(
     font: str = "Arial",
     font_path: str | None = None,
 ) -> bd.Sketch:
-    """Create text as a Sketch with multiple wires (one per letter/glyph).
+    """Create text as a Sketch with multiple faces (one per letter/glyph).
 
-    Returns a Sketch object containing all wires of the text, allowing
-    proper extrusion of multi-letter text where each letter is a separate wire.
+    Returns a Sketch object containing all faces of the text. Each face
+    properly includes inner wires (holes) for letters like O, P, A, B, etc.
+    This allows proper extrusion of text where holes are preserved.
     """
     font_size_val = float(LengthExp(font_size))
-    # Create text sketch - build123d Text is a Sketch with one or more wires
+    # Create text sketch - build123d Text is a Sketch with faces that include holes
     text_sketch = bd.Text(
         txt=text, font_size=font_size_val, font=font, font_path=font_path
     )

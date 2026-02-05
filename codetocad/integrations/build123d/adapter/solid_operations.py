@@ -15,26 +15,28 @@ def extrude_wire(
 ) -> bd.Part:
     """Extrude a wire/sketch/face to create a 3D solid.
 
-    Handles sketches with multiple wires (e.g., text where each letter
-    is a separate wire) by extruding all wires and combining them.
+    Handles sketches with multiple faces (e.g., text where each letter
+    is a separate face with holes properly defined) by extruding all faces
+    and combining them.
     """
     h = float(LengthExp(height))
     draft = math.degrees(Angle(draft_angle).value)  # build123d uses degrees
 
-    # Handle Sketch with multiple wires (e.g., text)
+    # Handle Sketch (e.g., text, complex shapes)
     if isinstance(wire, bd.Sketch):
-        wires = wire.wires()
-        if len(wires) == 1:
-            # Single wire - extrude normally
-            face = wire.face()
+        # Use faces() instead of wires() to properly handle holes in letters
+        # Each face already has inner wires (holes) properly defined
+        faces = wire.faces()
+        if len(faces) == 1:
+            # Single face - extrude normally
             if draft != 0:
-                return bd.extrude(face, h, taper=draft)
-            return bd.extrude(face, h)
+                return bd.extrude(faces[0], h, taper=draft)
+            return bd.extrude(faces[0], h)
         else:
-            # Multiple wires - extrude each and combine
+            # Multiple faces - extrude each and combine
+            # Each face preserves its holes (e.g., the hole in "O", "P", etc.)
             solids = []
-            for w in wires:
-                face = bd.Face(w)
+            for face in faces:
                 if draft != 0:
                     solid = bd.extrude(face, h, taper=draft)
                 else:
