@@ -30,12 +30,10 @@ def main() -> Solid:
     sign_thickness = 10
     text_height = 20
 
-    # Create the hexagonal sign face on the XZ plane (vertical orientation)
     hexagon = Draw.polygon(
         center=Vertex(x=0, y=0, z=sign_thickness / 2),
         radius=sign_radius,
         sides=6,
-        # plane=Plane.XZ,
     )
     hexagon_solid = Shape.extrude(hexagon, height=sign_thickness)
 
@@ -46,7 +44,6 @@ def main() -> Solid:
         "Arial",
         size=sign_radius * 0.4,
         center=Selectors.find_vertex(hexagon_solid, CardinalDirection.TOP_CENTER)[0],
-        # plane=Plane.XZ,
     )
     stop_text_solid = Shape.extrude(stop_text_edge, height=text_height)
 
