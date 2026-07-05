@@ -70,7 +70,7 @@ def test_shell_fillet_chamfer_hole_recorded():
     part.shell(thickness="5mm")
     part.fillet(amount="1mm")
     part.chamfer(amount="1mm")
-    part.hole(Location(), amount="1cm")
+    part.hole(Location(), radius="2mm", amount="1cm")
     operations = [op["operation"] for op in part.operations]
     assert operations == ["shell", "fillet", "chamfer", "hole"]
     assert part.operations[0]["thickness"].value == pytest.approx(0.005)
@@ -79,9 +79,9 @@ def test_shell_fillet_chamfer_hole_recorded():
 def test_hole_requires_exactly_one_of_amount_or_end_location():
     part = cube(1, 1, 1)
     with pytest.raises(ValueError):
-        part.hole(Location())
+        part.hole(Location(), radius="1mm")
     with pytest.raises(ValueError):
-        part.hole(Location(), amount=1, end_location=Location())
+        part.hole(Location(), radius="1mm", amount=1, end_location=Location())
 
 
 def test_geometry_queries_on_cube():

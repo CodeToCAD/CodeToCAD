@@ -19,6 +19,7 @@ class AssemblyCommon:
         self.description = description
         self.ledger = AssemblyLedger()
         self._origin = Vec3()
+        self._start_origin = Vec3()
 
     def build(self):
         """This method must be implemented to create the shape in your target
@@ -51,6 +52,14 @@ class AssemblyCommon:
             raise ValueError("Supply exactly one of absolute= or relative=")
         transformation = absolute if absolute is not None else relative
         self.ledger.transformations += [transformation]
+        if hasattr(self, "operations"):
+            self.operations.append(
+                {
+                    "operation": "transform",
+                    "mode": "absolute" if absolute is not None else "relative",
+                    "location": transformation,
+                }
+            )
         offset = Vec3(
             transformation.x.value, transformation.y.value, transformation.z.value
         )

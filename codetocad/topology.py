@@ -6,6 +6,7 @@ These are used to interact with native topology in the federated application.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 from .location import Location
 from .units import LengthMeters
@@ -14,12 +15,16 @@ from .units import LengthMeters
 @dataclass
 class Vertex:
     location: Location
+    native: Any = None
+    """Handle to the native topology object in the federated application."""
 
 
 @dataclass
 class Edge:
     start: Vertex
     end: Vertex
+    native: Any = None
+    """Handle to the native topology object in the federated application."""
 
     @property
     def midpoint(self) -> Location:
@@ -37,6 +42,8 @@ class Edge:
 @dataclass
 class Face:
     vertices: list[Vertex] = field(default_factory=list)
+    native: Any = None
+    """Handle to the native topology object in the federated application."""
 
     @property
     def center(self) -> Location:
@@ -51,3 +58,5 @@ class Face:
 @dataclass
 class Solid:
     faces: list[Face] = field(default_factory=list)
+    native: Any = None
+    """Handle to the native topology object in the federated application."""

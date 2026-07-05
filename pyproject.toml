@@ -8,13 +8,20 @@ version = "0.1.0"
 description = "One language to define your mechanical and electrical CAD designs, federated to your modeling application."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "numpy>=2.5.1",
+]
 
 [project.optional-dependencies]
 dev = ["pytest"]
+build123d = ["build123d"]
 
 [project.scripts]
 codetocad = "codetocad.cli:main"
 
 [tool.setuptools]
-packages = ["codetocad"]
+packages = [
+    "codetocad",
+    "codetocad_integrations",
+    "codetocad_integrations.build123d",
+]

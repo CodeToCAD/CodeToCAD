@@ -11,6 +11,9 @@ from .vectors import Vec3
 def _apply_start_location(part, start_location: Location | None) -> None:
     if start_location is not None:
         part._origin = Vec3(*start_location.to_tuple())
+        # Where the primitive was created, before any transform() calls;
+        # federated backends place the base solid here and replay transforms.
+        part._start_origin = Vec3(*start_location.to_tuple())
 
 
 def _make_part3d(

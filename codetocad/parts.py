@@ -13,6 +13,8 @@ import math
 import shutil
 from pathlib import Path
 
+import numpy as np
+
 from .assembly import Assembly2D, Assembly3D
 from .location import Location, LocationMixin
 from .materials import MaterialMixin
@@ -21,9 +23,7 @@ from .topology import Edge, Face
 from .units import LengthMeters, LengthWithUnit
 from .vectors import Vec3
 
-_Triangle = tuple[
-    tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]
-]
+# Meshes are numpy arrays of shape (N, 3, 3): N triangles x 3 vertices x xyz.
 
 
 class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixin):
@@ -151,6 +151,7 @@ class Part3D(
     def hole(
         self,
         start_location: Location,
+        radius: LengthWithUnit,
         *,
         amount: LengthWithUnit | None = None,
         end_location: Location | None = None,
@@ -161,6 +162,7 @@ class Part3D(
             {
                 "operation": "hole",
                 "start_location": start_location,
+                "radius": LengthMeters(radius),
                 "amount": LengthMeters(amount) if amount is not None else None,
                 "end_location": end_location,
             }
@@ -186,7 +188,7 @@ class Part3D(
         _write_ascii_stl(location, triangles, self.name or "codetocad_part")
         return location
 
-    def _generate_mesh(self) -> list[_Triangle] | None:
+    def _generate_mesh(self) -> np.ndarray | None:
         if self._primitive is None:
             return None
         kind = self._primitive["kind"]
@@ -240,89 +242,91 @@ def _bbox_around(origin: Vec3, half: Vec3) -> tuple[Vec3, Vec3]:
     )
 
 
-def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> list[_Triangle]:
+def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> np.ndarray:
     x0, y0, z0 = bbox_min.to_tuple()
     x1, y1, z1 = bbox_max.to_tuple()
-    v = [
-        (x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
-        (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1),
-    ]
-    quads = [
-        (0, 3, 2, 1),  # bottom
-        (4, 5, 6, 7),  # top
-        (0, 1, 5, 4),  # front
-        (2, 3, 7, 6),  # back
-        (0, 4, 7, 3),  # left
-        (1, 2, 6, 5),  # right
-    ]
-    triangles: list[_Triangle] = []
-    for a, b, c, d in quads:
-        triangles.append((v[a], v[b], v[c]))
-        triangles.append((v[a], v[c], v[d]))
-    return triangles
+    vertices = np.array(
+        [
+            (x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
+            (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1),
+        ],
+        dtype=np.float64,
+    )
+    quads = np.array(
+        [
+            (0, 3, 2, 1),  # bottom
+            (4, 5, 6, 7),  # top
+            (0, 1, 5, 4),  # front
+            (2, 3, 7, 6),  # back
+            (0, 4, 7, 3),  # left
+            (1, 2, 6, 5),  # right
+        ]
+    )
+    triangle_indices = np.concatenate(
+        [quads[:, (0, 1, 2)], quads[:, (0, 2, 3)]]
+    )
+    return vertices[triangle_indices]
 
 
 def _cylinder_mesh(
     radius: float, height: float, origin: Vec3, segments: int = 48
-) -> list[_Triangle]:
+) -> np.ndarray:
     z0, z1 = origin.z - height / 2, origin.z + height / 2
-    ring = [
-        (
-            origin.x + radius * math.cos(2 * math.pi * i / segments),
-            origin.y + radius * math.sin(2 * math.pi * i / segments),
-        )
-        for i in range(segments)
-    ]
-    bottom_center = (origin.x, origin.y, z0)
-    top_center = (origin.x, origin.y, z1)
-    triangles: list[_Triangle] = []
-    for i in range(segments):
-        (ax, ay), (bx, by) = ring[i], ring[(i + 1) % segments]
-        triangles.append(((ax, ay, z0), (bx, by, z0), (bx, by, z1)))
-        triangles.append(((ax, ay, z0), (bx, by, z1), (ax, ay, z1)))
-        triangles.append((bottom_center, (bx, by, z0), (ax, ay, z0)))
-        triangles.append((top_center, (ax, ay, z1), (bx, by, z1)))
-    return triangles
+    angles = np.linspace(0.0, 2 * math.pi, segments, endpoint=False)
+    xs = origin.x + radius * np.cos(angles)
+    ys = origin.y + radius * np.sin(angles)
+    bottom = np.column_stack([xs, ys, np.full(segments, z0)])
+    top = np.column_stack([xs, ys, np.full(segments, z1)])
+    bottom_next = np.roll(bottom, -1, axis=0)
+    top_next = np.roll(top, -1, axis=0)
+    bottom_center = np.tile((origin.x, origin.y, z0), (segments, 1))
+    top_center = np.tile((origin.x, origin.y, z1), (segments, 1))
+    return np.concatenate(
+        [
+            np.stack([bottom, bottom_next, top_next], axis=1),  # side
+            np.stack([bottom, top_next, top], axis=1),  # side
+            np.stack([bottom_center, bottom_next, bottom], axis=1),  # bottom cap
+            np.stack([top_center, top, top_next], axis=1),  # top cap
+        ]
+    )
 
 
 def _sphere_mesh(
     radius: float, origin: Vec3, slices: int = 32, stacks: int = 16
-) -> list[_Triangle]:
-    def point(stack: int, slice_: int) -> tuple[float, float, float]:
-        phi = math.pi * stack / stacks
-        theta = 2 * math.pi * slice_ / slices
-        return (
-            origin.x + radius * math.sin(phi) * math.cos(theta),
-            origin.y + radius * math.sin(phi) * math.sin(theta),
-            origin.z + radius * math.cos(phi),
-        )
+) -> np.ndarray:
+    phi = np.linspace(0.0, math.pi, stacks + 1)
+    theta = np.linspace(0.0, 2 * math.pi, slices + 1)
+    phi_grid, theta_grid = np.meshgrid(phi, theta, indexing="ij")
+    points = np.stack(
+        [
+            origin.x + radius * np.sin(phi_grid) * np.cos(theta_grid),
+            origin.y + radius * np.sin(phi_grid) * np.sin(theta_grid),
+            origin.z + radius * np.cos(phi_grid),
+        ],
+        axis=-1,
+    )
+    p00 = points[:-1, :-1].reshape(-1, 3)
+    p01 = points[:-1, 1:].reshape(-1, 3)
+    p10 = points[1:, :-1].reshape(-1, 3)
+    p11 = points[1:, 1:].reshape(-1, 3)
+    upper = np.stack([p00, p01, p11], axis=1)
+    lower = np.stack([p00, p11, p10], axis=1)
+    # Drop degenerate triangles at the poles (first stack for the upper
+    # fan, last stack for the lower fan).
+    keep_upper = np.repeat(np.arange(stacks) > 0, slices)
+    keep_lower = np.repeat(np.arange(stacks) < stacks - 1, slices)
+    return np.concatenate([upper[keep_upper], lower[keep_lower]])
 
-    triangles: list[_Triangle] = []
-    for stack in range(stacks):
-        for slice_ in range(slices):
-            p00 = point(stack, slice_)
-            p01 = point(stack, slice_ + 1)
-            p10 = point(stack + 1, slice_)
-            p11 = point(stack + 1, slice_ + 1)
-            if stack > 0:
-                triangles.append((p00, p01, p11))
-            if stack < stacks - 1:
-                triangles.append((p00, p11, p10))
-    return triangles
 
-
-def _write_ascii_stl(path: str, triangles: list[_Triangle], name: str) -> None:
-    def normal(tri: _Triangle) -> tuple[float, float, float]:
-        (ax, ay, az), (bx, by, bz), (cx, cy, cz) = tri
-        ux, uy, uz = bx - ax, by - ay, bz - az
-        vx, vy, vz = cx - ax, cy - ay, cz - az
-        nx, ny, nz = uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx
-        magnitude = math.sqrt(nx * nx + ny * ny + nz * nz) or 1.0
-        return (nx / magnitude, ny / magnitude, nz / magnitude)
+def _write_ascii_stl(path: str, triangles: np.ndarray, name: str) -> None:
+    edge1 = triangles[:, 1] - triangles[:, 0]
+    edge2 = triangles[:, 2] - triangles[:, 0]
+    normals = np.cross(edge1, edge2)
+    magnitudes = np.linalg.norm(normals, axis=1, keepdims=True)
+    normals = normals / np.where(magnitudes == 0, 1.0, magnitudes)
 
     lines = [f"solid {name}"]
-    for tri in triangles:
-        nx, ny, nz = normal(tri)
+    for (nx, ny, nz), tri in zip(normals, triangles):
         lines.append(f"  facet normal {nx:e} {ny:e} {nz:e}")
         lines.append("    outer loop")
         for vx, vy, vz in tri:

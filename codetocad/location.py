@@ -13,6 +13,8 @@ from dataclasses import dataclass, field
 from enum import Enum, EnumMeta
 from typing import Callable
 
+import numpy as np
+
 from .units import AngleRadians, AngleWithUnit, LengthMeters, LengthWithUnit
 
 
@@ -32,31 +34,55 @@ def euler_to_quat(
 ) -> tuple[float, float, float, float]:
     """Convert intrinsic roll(x)-pitch(y)-yaw(z) angles to a quaternion
     ``(x, y, z, w)``. Bare numbers are degrees; strings may carry units."""
-    rx = _angle_to_radians(x_deg, floats_are_degrees=True)
-    ry = _angle_to_radians(y_deg, floats_are_degrees=True)
-    rz = _angle_to_radians(z_deg, floats_are_degrees=True)
-    cx, sx = math.cos(rx / 2), math.sin(rx / 2)
-    cy, sy = math.cos(ry / 2), math.sin(ry / 2)
-    cz, sz = math.cos(rz / 2), math.sin(rz / 2)
-    return (
-        sx * cy * cz - cx * sy * sz,
-        cx * sy * cz + sx * cy * sz,
-        cx * cy * sz - sx * sy * cz,
-        cx * cy * cz + sx * sy * sz,
+    half_angles = (
+        np.array(
+            [
+                _angle_to_radians(x_deg, floats_are_degrees=True),
+                _angle_to_radians(y_deg, floats_are_degrees=True),
+                _angle_to_radians(z_deg, floats_are_degrees=True),
+            ]
+        )
+        / 2
     )
+    (cx, cy, cz), (sx, sy, sz) = np.cos(half_angles), np.sin(half_angles)
+    return (
+        float(sx * cy * cz - cx * sy * sz),
+        float(cx * sy * cz + sx * cy * sz),
+        float(cx * cy * sz - sx * sy * cz),
+        float(cx * cy * cz + sx * sy * sz),
+    )
+
+
+def quat_to_axis_angle(
+    quat: tuple[float, float, float, float],
+) -> tuple[tuple[float, float, float], float]:
+    """Convert a quaternion ``(x, y, z, w)`` to a rotation ``(axis, degrees)``."""
+    vector = np.array(quat[:3])
+    magnitude = float(np.linalg.norm(vector))
+    if magnitude < 1e-12:
+        return ((0.0, 0.0, 1.0), 0.0)
+    angle = 2.0 * math.atan2(magnitude, quat[3])
+    axis = vector / magnitude
+    return ((float(axis[0]), float(axis[1]), float(axis[2])), math.degrees(angle))
+
+
+def quat_rotate_vector(
+    quat: tuple[float, float, float, float], vector: tuple[float, float, float]
+) -> np.ndarray:
+    """Rotate a 3-vector by a quaternion ``(x, y, z, w)``."""
+    q_vec = np.array(quat[:3])
+    v = np.asarray(vector, dtype=np.float64)
+    return v + 2.0 * np.cross(q_vec, np.cross(q_vec, v) + quat[3] * v)
 
 
 def quat_multiply(
     a: tuple[float, float, float, float], b: tuple[float, float, float, float]
 ) -> tuple[float, float, float, float]:
-    ax, ay, az, aw = a
-    bx, by, bz, bw = b
-    return (
-        aw * bx + ax * bw + ay * bz - az * by,
-        aw * by - ax * bz + ay * bw + az * bx,
-        aw * bz + ax * by - ay * bx + az * bw,
-        aw * bw - ax * bx - ay * by - az * bz,
-    )
+    av, aw = np.array(a[:3]), a[3]
+    bv, bw = np.array(b[:3]), b[3]
+    vector = aw * bv + bw * av + np.cross(av, bv)
+    scalar = aw * bw - float(np.dot(av, bv))
+    return (float(vector[0]), float(vector[1]), float(vector[2]), float(scalar))
 
 
 @dataclass
@@ -152,15 +178,16 @@ class Location:
 
     def distance_to(self, other: "Location") -> LengthMeters:
         return LengthMeters(
-            math.sqrt(
-                (self.x.value - other.x.value) ** 2
-                + (self.y.value - other.y.value) ** 2
-                + (self.z.value - other.z.value) ** 2
-            )
+            float(np.linalg.norm(self.to_numpy() - other.to_numpy()))
         )
 
     def to_tuple(self) -> tuple[float, float, float]:
         return (self.x.value, self.y.value, self.z.value)
+
+    def to_numpy(self) -> np.ndarray:
+        return np.array(
+            [self.x.value, self.y.value, self.z.value], dtype=np.float64
+        )
 
 
 class _CubeLocationsMeta(EnumMeta):
@@ -299,6 +326,19 @@ def location(func):
 class LocationMixin:
     loc = CubeLocations
     """Quick access to cube locations."""
+
+    def __getattr__(self, name: str):
+        """Expose cube locations as attributes resolved against this part's
+        bounding box, e.g. ``part.top_center`` or ``part.bottom_front_left``."""
+        if name.startswith("_"):
+            raise AttributeError(name)
+        try:
+            member = CubeLocations[name.upper()]
+        except KeyError:
+            raise AttributeError(
+                f"{type(self).__name__!r} object has no attribute {name!r}"
+            ) from None
+        return member.to_location(self)
 
     def get_locations(self) -> list[Location]:
         """Retrieves user-defined locations in the Part class marked with the

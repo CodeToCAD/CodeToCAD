@@ -56,6 +56,6 @@ class CommonFasteners(Enum):
         return part
 
     def apply_to(self, part: Part3D, location: Location) -> Part3D:
-        """Apply this fastener's feature (a clearance hole) to ``part`` at
-        ``location``."""
-        return part.hole(location, amount=self.length)
+        """Apply this fastener's feature (a clearance hole, ~10% over the
+        thread radius) to ``part`` at ``location``."""
+        return part.hole(location, radius=self.diameter * 0.55, amount=self.length)

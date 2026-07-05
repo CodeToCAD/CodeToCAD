@@ -10,6 +10,8 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from .ledgers import BooleanLedger
 from .location import Location
 from .topology import Edge, Face, Vertex
@@ -20,10 +22,22 @@ if TYPE_CHECKING:
 
 class BooleanMixin:
     """CSG boolean operations. Operations are recorded on the
-    ``boolean_ledger`` for the federated application to build."""
+    ``boolean_ledger`` (and in order on ``operations``) for the federated
+    application to build."""
 
     def _init_boolean(self):
         self.boolean_ledger = BooleanLedger()
+
+    def _record_boolean(self, operation, location, other_part, other_location):
+        if hasattr(self, "operations"):
+            self.operations.append(
+                {
+                    "operation": operation,
+                    "location": location,
+                    "other_part": other_part,
+                    "other_location": other_location,
+                }
+            )
 
     def subtract(
         self,
@@ -32,6 +46,7 @@ class BooleanMixin:
         other_location: Location | None = None,
     ) -> "Part3D":
         self.boolean_ledger.subtracted_parts += [other_part]
+        self._record_boolean("subtract", location, other_part, other_location)
         return self
 
     def union(
@@ -41,6 +56,7 @@ class BooleanMixin:
         other_location: Location | None = None,
     ) -> "Part3D":
         self.boolean_ledger.unioned_parts += [other_part]
+        self._record_boolean("union", location, other_part, other_location)
         return self
 
     def intersect(
@@ -50,6 +66,7 @@ class BooleanMixin:
         other_location: Location | None = None,
     ) -> "Part3D":
         self.boolean_ledger.intersected_parts += [other_part]
+        self._record_boolean("intersect", location, other_part, other_location)
         return self
 
 
@@ -93,24 +110,23 @@ class GeometryQueryMixin:
     def _nearest(entities, key, target: Location, tolerance: float):
         if not entities:
             raise ValueError("The part has no topology to query")
-        best = min(entities, key=lambda e: key(e).distance_to(target).value)
-        if key(best).distance_to(target).value > tolerance:
+        points = np.array([key(entity).to_numpy() for entity in entities])
+        distances = np.linalg.norm(points - target.to_numpy(), axis=1)
+        best_index = int(np.argmin(distances))
+        if distances[best_index] > tolerance:
             raise ValueError(
                 f"No geometry found within {tolerance} of {target.to_tuple()}"
             )
-        return best
+        return entities[best_index]
 
     @staticmethod
-    def _bounds_of(locations: list[Location], tolerance: float):
-        points = [loc.to_tuple() for loc in locations]
-        lower = [min(p[axis] for p in points) - tolerance for axis in range(3)]
-        upper = [max(p[axis] for p in points) + tolerance for axis in range(3)]
-
-        def contains(loc: Location) -> bool:
-            point = loc.to_tuple()
-            return all(lower[axis] <= point[axis] <= upper[axis] for axis in range(3))
-
-        return contains
+    def _filter_bounded(entities, key, locations: list[Location], tolerance: float):
+        bounds = np.array([loc.to_numpy() for loc in locations])
+        lower = bounds.min(axis=0) - tolerance
+        upper = bounds.max(axis=0) + tolerance
+        points = np.array([key(entity).to_numpy() for entity in entities])
+        inside = np.all((points >= lower) & (points <= upper), axis=1)
+        return [entity for entity, keep in zip(entities, inside) if keep]
 
     def _resolve(self, loc) -> Location:
         if hasattr(self, "resolve_location"):
@@ -141,9 +157,8 @@ class GeometryQueryMixin:
     ) -> list[Face]:
         """Get faces bounded by locations."""
         locations = [self._resolve(l) for l in (location1, location2, location3, location4) if l is not None]
-        contains = self._bounds_of(locations, tolerance)
         _, _, faces = self._bounding_box_topology()
-        return [face for face in faces if contains(face.center)]
+        return self._filter_bounded(faces, lambda f: f.center, locations, tolerance)
 
     def get_edges(
         self,
@@ -155,9 +170,8 @@ class GeometryQueryMixin:
     ) -> list[Edge]:
         """Get edges bounded by locations."""
         locations = [self._resolve(l) for l in (location1, location2, location3, location4) if l is not None]
-        contains = self._bounds_of(locations, tolerance)
         _, edges, _ = self._bounding_box_topology()
-        return [edge for edge in edges if contains(edge.midpoint)]
+        return self._filter_bounded(edges, lambda e: e.midpoint, locations, tolerance)
 
     def get_vertices(
         self,
@@ -169,9 +183,10 @@ class GeometryQueryMixin:
     ) -> list[Vertex]:
         """Get vertices bounded by locations."""
         locations = [self._resolve(l) for l in (location1, location2, location3, location4) if l is not None]
-        contains = self._bounds_of(locations, tolerance)
         vertices, _, _ = self._bounding_box_topology()
-        return [vertex for vertex in vertices if contains(vertex.location)]
+        return self._filter_bounded(
+            vertices, lambda v: v.location, locations, tolerance
+        )
 
 
 class GeometryAnalysisMixin:

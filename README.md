@@ -59,6 +59,28 @@ body.export("cup.stl")
 - **Fasteners**: `CommonFasteners` enum that can `build()` a part or apply
   features (clearance holes) to another part.
 
+## Build123D integration
+
+Install the extra (`uv sync --extra build123d`) and your parts are federated
+to real OpenCascade solids — booleans, shells, fillets, chamfers, holes and
+transforms are replayed natively, and geometry queries, analysis and STL/STEP
+export use the native topology:
+
+```python
+from codetocad_integrations.build123d import make_cube
+
+if __name__ == "__main__":
+    cube = make_cube("10cm", "10cm", "5cm")
+    cube.hole(cube.top_center, radius="4cm", amount="5cm")
+    cube.export("my_cube.stl")
+```
+
+Subclass `codetocad_integrations.build123d.Part3D` and override
+`build_native()` to model a custom base shape with the Build123D API; all
+CodeToCAD operations still apply on top. `adapt(part)` converts any core
+CodeToCAD part (including `led()`, `resistor()`, fasteners, ...) into a
+Build123D-federated one.
+
 ## User-defined parts
 
 Define a part with the API of your choice (for example
