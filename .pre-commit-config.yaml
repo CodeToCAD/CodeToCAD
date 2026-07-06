@@ -1,0 +1,20 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        args: [".", "--check"]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+      - id: codespell
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        args: ["tests/"]
+        entry: pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true 

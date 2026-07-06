@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "delay-before-start",
+            "command": "sleep",
+            "args": ["5"],
+            "type": "shell"
+        }
+    ]
+}

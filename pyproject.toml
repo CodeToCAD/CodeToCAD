@@ -1,0 +1,62 @@
+[project]
+name = "codetocad"
+version = "0.20.0"
+description = "A framework for mechatronics design and digital manufacturing."
+authors = [
+    { name="Shehab Attia", email="shehab@codethatdown.com" },
+]
+readme = "README.md"
+requires-python = "==3.12.*"
+
+dependencies = [
+    "click>=8.1.8",
+    "numpy>=2.3.2",
+]
+
+[project.scripts]
+codetocad = "codetocad.cli:codetocad_cli"
+
+[project.optional-dependencies]
+open3d = [
+    "open3d>=0.19.0",
+]
+build123d = [
+    "build123d>=0.10.0",
+]
+blender = [
+    "fake-bpy-module-latest>=20250630",
+]
+# pybullet = [
+#     "pybullet[extras]>=3.2.7"
+# ]
+mujoco = [
+    "mujoco[viewer]>=3.0.0",
+]
+kicad = [
+    "kicad-python>=0.4.0",
+]
+pycam = [
+    "pycam>=0.6.4",
+]
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["codetocad*"]
+exclude = ["devlog*", "tests*", ".venv*"]
+
+[tool.black]
+line-length = 88
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "black[jupyter]>=25.1.0",
+    "pytest>=8.3.5",
+    "nbdime>=4.0.2",
+    "pre-commit>=4.2.0",
+    "codespell>=2.4.1",
+]
