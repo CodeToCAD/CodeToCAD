@@ -173,6 +173,28 @@ solver is auto-discovered from `CODETOCAD_CCX`, the PATH, or
 
 <img src="codetocad_integrations/calculix/examples/images/beam_fea.png" width="500">
 
+## Visualization (Open3D)
+
+Display any `Part3D` — core, Build123D- or Blender-federated — in an Open3D
+window, or render a screenshot headlessly for docs/CI:
+
+```python
+from codetocad_integrations.build123d import make_cube
+from codetocad_integrations.open3d import show, render
+
+cube = make_cube("10cm", "10cm", "5cm")
+cube.hole(cube.top_center, radius="4cm", amount="5cm")
+
+show(cube)                          # interactive window
+render(cube, path="cube.png")       # offscreen screenshot
+```
+
+The part is exported (`part.export()`) to a temporary mesh and loaded into
+Open3D, so it works with any backend — Open3D itself isn't a CAD kernel. See
+[codetocad_integrations/open3d/examples/](codetocad_integrations/open3d/examples/).
+
+<img src="codetocad_integrations/open3d/examples/images/embossed_text_logo.png" width="500">
+
 ## User-defined parts
 
 Define a part with the API of your choice (for example

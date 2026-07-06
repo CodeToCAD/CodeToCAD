@@ -18,6 +18,9 @@ build123d = ["build123d"]
 pybullet = ["pybullet"]
 mujoco = ["mujoco"]
 calculix = ["pygccx", "matplotlib"]
+open3d = [
+    "open3d>=0.19.0",
+]
 
 [project.scripts]
 codetocad = "codetocad.cli:main"
@@ -31,6 +34,7 @@ packages = [
     "codetocad_integrations.pybullet",
     "codetocad_integrations.mujoco",
     "codetocad_integrations.calculix",
+    "codetocad_integrations.open3d",
 ]
 
 [tool.uv.sources]
