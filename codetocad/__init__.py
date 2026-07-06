@@ -59,6 +59,14 @@ from .primitives import (
 )
 from .ecad import ElectricalComponent, capacitor, led, resistor
 from .fasteners import CommonFasteners
+from .simulation import (
+    CONSTRAINT_OPERATIONS,
+    JointSpec,
+    Lighting,
+    LinkSpec,
+    Simulation,
+    extract_links,
+)
 from .cli import main
 
 __version__ = "0.1.0"
@@ -132,6 +140,13 @@ __all__ = [
     "capacitor",
     # fasteners
     "CommonFasteners",
+    # simulation
+    "Simulation",
+    "Lighting",
+    "LinkSpec",
+    "JointSpec",
+    "extract_links",
+    "CONSTRAINT_OPERATIONS",
     # cli
     "main",
 ]

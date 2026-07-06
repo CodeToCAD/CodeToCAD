@@ -102,6 +102,34 @@ Subclass `codetocad_integrations.blender.Part3D` and override
 `build_native()` to model with bpy/bmesh directly. See
 [codetocad_integrations/blender/examples/](codetocad_integrations/blender/examples/).
 
+## Simulation (PyBullet & MuJoCo)
+
+Model in Build123D or Blender, assemble with joint constraints, and import
+right into physics simulation — `simulate(part)` walks the assembly, exports
+the meshes and generates a URDF (PyBullet) or MJCF (MuJoCo):
+
+```python
+from codetocad import Location
+from codetocad_integrations.build123d import make_cube, make_cylinder
+from codetocad_integrations.pybullet import simulate  # or ...mujoco
+
+mount = make_cube("6cm", "6cm", "4cm", start_location=Location(z="52cm"))
+rod = make_cylinder("1cm", "40cm", start_location=Location(z="30cm"))
+pivot = Location.from_euler(0, 0, "50cm", x_deg=-90, name="pivot")
+mount.revolute(pivot, rod, pivot)  # hinge about the Y axis
+
+sim = simulate(mount, gui=True)
+sim.set_joint_value("pivot", 1.0)
+sim.run(10.0, realtime=True)
+```
+
+Joint axes come from the constraint Location's orientation, limits from
+`min_limits`/`max_limits`, masses/inertias from part materials and geometry,
+and `codetocad.Lighting` describes scene lights. See the examples in
+[codetocad_integrations/pybullet/examples/](codetocad_integrations/pybullet/examples/)
+and [codetocad_integrations/mujoco/examples/](codetocad_integrations/mujoco/examples/)
+(6-DOF keyboard-controlled arm, pendulum, double pendulum).
+
 ## User-defined parts
 
 Define a part with the API of your choice (for example

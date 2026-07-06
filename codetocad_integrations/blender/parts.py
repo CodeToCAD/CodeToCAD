@@ -294,6 +294,10 @@ class Part3D(codetocad.Part3D):
 
     def _apply_operation(self, obj: bpy.types.Object, operation: dict) -> None:
         name = operation["operation"]
+        if name in codetocad.CONSTRAINT_OPERATIONS:
+            # Assembly constraints don't change geometry; simulation
+            # integrations turn them into joints.
+            return
         if name == "hole":
             self._apply_hole(obj, operation)
         elif name == "shell":

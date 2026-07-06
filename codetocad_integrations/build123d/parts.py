@@ -142,6 +142,10 @@ class Part3D(codetocad.Part3D):
 
     def _apply_operation(self, solid, origin: np.ndarray, operation: dict):
         name = operation["operation"]
+        if name in codetocad.CONSTRAINT_OPERATIONS:
+            # Assembly constraints don't change geometry; simulation
+            # integrations turn them into joints.
+            return solid, origin
         if name == "hole":
             return self._apply_hole(solid, operation), origin
         if name == "shell":

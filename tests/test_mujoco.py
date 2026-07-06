@@ -1,0 +1,59 @@
+import math
+
+import pytest
+
+pytest.importorskip("mujoco")
+
+from codetocad import Location, cube, cylinder, sphere
+from codetocad_integrations.mujoco import simulate
+
+
+def build_pendulum():
+    mount = cube("6cm", "6cm", "4cm", start_location=Location(z="52cm"))
+    mount.name = "mount"
+    rod = cylinder("1cm", "40cm", start_location=Location(z="30cm"))
+    rod.name = "rod"
+    bob = sphere("5cm", start_location=Location(z="10cm"))
+    bob.name = "bob"
+    pivot = Location.from_euler(0, 0, "50cm", x_deg=-90, name="pivot")
+    mount.revolute(pivot, rod, pivot)
+    rod.fixed(Location(z="10cm"), bob, Location(z="10cm"))
+    return mount
+
+
+def test_pendulum_swings_and_conserves_amplitude(tmp_path):
+    sim = simulate(build_pendulum(), actuated=False, output_dir=tmp_path)
+    assert sim.joint_names == ["pivot"]
+    assert (tmp_path / "robot.xml").exists()
+    # Meshes were converted to binary STL for MuJoCo.
+    assert not (tmp_path / "rod.stl").read_bytes().startswith(b"solid")
+    initial = math.radians(60)
+    sim.set_joint_value("pivot", initial)
+    angles = []
+    for _ in range(720):  # 3 seconds
+        sim.step()
+        angles.append(sim.get_joint_value("pivot"))
+    assert min(angles) < -math.radians(20)
+    assert max(angles) <= initial * 1.05
+    assert max(angles[-240:]) > initial * 0.7
+
+
+def test_position_control(tmp_path):
+    base = cube("10cm", "10cm", "4cm", start_location=Location(z="2cm"))
+    base.name = "base"
+    arm = cylinder("1.5cm", "20cm", start_location=Location(z="14cm"))
+    arm.name = "arm"
+    base.revolute(
+        Location(z="4cm", name="shoulder"), arm, Location(z="4cm"),
+        min_limits=-math.pi, max_limits=math.pi,
+    )
+    sim = simulate(base, output_dir=tmp_path)
+    sim.set_joint_target("shoulder", 1.0)
+    sim.step(1200)
+    assert sim.get_joint_value("shoulder") == pytest.approx(1.0, abs=0.1)
+
+
+def test_unactuated_rejects_targets(tmp_path):
+    sim = simulate(build_pendulum(), actuated=False, output_dir=tmp_path)
+    with pytest.raises(RuntimeError, match="actuated"):
+        sim.set_joint_target("pivot", 1.0)
