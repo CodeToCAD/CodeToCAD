@@ -81,6 +81,12 @@ CodeToCAD operations still apply on top. `adapt(part)` converts any core
 CodeToCAD part (including `led()`, `resistor()`, fasteners, ...) into a
 Build123D-federated one.
 
+<img src="codetocad_integrations/build123d/examples/images/gallery_vase.png" width="360">
+<img src="codetocad_integrations/build123d/examples/images/gallery_handle.png" width="360">
+
+See [codetocad_integrations/build123d/examples/](codetocad_integrations/build123d/examples/)
+for the full gallery.
+
 ## Blender integration
 
 With Blender on your PATH (or `CODETOCAD_BLENDER` pointing at it), the same
@@ -101,6 +107,9 @@ if __name__ == "__main__":
 Subclass `codetocad_integrations.blender.Part3D` and override
 `build_native()` to model with bpy/bmesh directly. See
 [codetocad_integrations/blender/examples/](codetocad_integrations/blender/examples/).
+
+<img src="codetocad_integrations/blender/examples/images/suzanne.png" width="360">
+<img src="codetocad_integrations/blender/examples/images/shelled_cup.png" width="360">
 
 ## Simulation (PyBullet & MuJoCo)
 
@@ -130,6 +139,9 @@ and `codetocad.Lighting` describes scene lights. See the examples in
 and [codetocad_integrations/mujoco/examples/](codetocad_integrations/mujoco/examples/)
 (6-DOF keyboard-controlled arm, pendulum, double pendulum).
 
+<img src="codetocad_integrations/pybullet/examples/images/arm_6dof.png" width="360">
+<img src="codetocad_integrations/mujoco/examples/images/double_pendulum.png" width="360">
+
 ## FEA (CalculiX)
 
 Analyze the same parts with finite elements — `analyze(part)` meshes the
@@ -158,6 +170,8 @@ or set `youngs_modulus`/`poissons_ratio` on any `MaterialBase`). The ccx
 solver is auto-discovered from `CODETOCAD_CCX`, the PATH, or
 `~/.codetocad/ccx/bin/ccx`. See
 [codetocad_integrations/calculix/examples/](codetocad_integrations/calculix/examples/).
+
+<img src="codetocad_integrations/calculix/examples/images/beam_fea.png" width="500">
 
 ## User-defined parts
 

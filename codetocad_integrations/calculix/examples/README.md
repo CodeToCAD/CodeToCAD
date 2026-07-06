@@ -5,6 +5,8 @@
   renders the deformed shape colored by von Mises stress and displacement.
   The results match the Euler-Bernoulli analytic solution to ~1%.
 
+  <img src="images/beam_fea.png" width="400"> <img src="images/beam_deflection.png" width="400">
+
 Requirements: `uv sync --extra calculix --extra build123d` plus the
 CalculiX solver. Install `ccx` any of these ways:
 

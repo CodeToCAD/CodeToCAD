@@ -4,7 +4,7 @@ CodeToCAD is a tool that accelerates mechanical and electrical CAD design, simul
 1. A cli interface to init a project, then interactively design parts.
 1. A set of classes that define geometric topography such as a vertex, edge, face, or solid. These are used to interact with native topology in the federated application.
 1. A set of classes to define Part2D, Part3D, Assembly2D, Assembly3D
-1. Methods to generate primitive shapes in Part3D or Part 2D such as cubes, cyclinders, circles, recangles, e.g. `def cube(width,length,height) -> Part3D
+1. Methods to generate primitive shapes in Part3D or Part 2D such as cubes, cylinders, circles, rectangles, e.g. `def cube(width,length,height) -> Part3D
 1. Methods to generate common electrical components such as LEDs, resistors, capacitors that uses the ECAD Components mixin.
 1. A mixin for each of sensors Camera, IMU, Microphone that a custom Part3D class can inherit and override the relevant methods
 1. A mixin for actuators DC motor, BLDC motor  that a custom Part3D class can inherit and override the relevant methods
@@ -168,7 +168,7 @@ class CubeLocations(Enum):
 
 
     def to_location(self, part:AssemblyCommon):
-        return Location() # calculate based on part dimentions
+        return Location() # calculate based on part dimensions
 ```
 
 ```

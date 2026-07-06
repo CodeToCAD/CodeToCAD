@@ -6,10 +6,21 @@ or `python <example>.py`) — `ensure_blender()` relaunches the script inside
 `CODETOCAD_BLENDER` at the executable).
 
 - `plate_with_hole.py` — cube primitive + `hole()`
+
+  <img src="images/plate_with_hole.png" width="400">
+
 - `shelled_cup.py` — cylinder + `shell()` with a top opening + material,
   exported as STL and a .blend scene
+
+  <img src="images/shelled_cup.png" width="400">
+
 - `embossed_text.py` — text extruded and unioned into / subtracted from a
   plate using anchor locations
+
+  <img src="images/embossed_text.png" width="400">
+
 - `suzanne.py` — a custom user part built with the bpy/bmesh API directly
   (Blender's monkey), with a CodeToCAD fillet and transform applied on top,
   exported to glTF and STL
+
+  <img src="images/suzanne.png" width="400">
