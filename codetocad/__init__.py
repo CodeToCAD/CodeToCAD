@@ -33,6 +33,7 @@ from .materials import (
     aluminum_material,
     green_material,
     red_material,
+    steel_material,
     white_material,
 )
 from .mixins import (
@@ -67,6 +68,7 @@ from .simulation import (
     Simulation,
     extract_links,
 )
+from .fea import FEA, FEAResults
 from .cli import main
 
 __version__ = "0.1.0"
@@ -109,6 +111,7 @@ __all__ = [
     "red_material",
     "green_material",
     "aluminum_material",
+    "steel_material",
     # mixins
     "BooleanMixin",
     "GeometryQueryMixin",
@@ -147,6 +150,9 @@ __all__ = [
     "JointSpec",
     "extract_links",
     "CONSTRAINT_OPERATIONS",
+    # fea
+    "FEA",
+    "FEAResults",
     # cli
     "main",
 ]

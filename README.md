@@ -130,6 +130,35 @@ and `codetocad.Lighting` describes scene lights. See the examples in
 and [codetocad_integrations/mujoco/examples/](codetocad_integrations/mujoco/examples/)
 (6-DOF keyboard-controlled arm, pendulum, double pendulum).
 
+## FEA (CalculiX)
+
+Analyze the same parts with finite elements — `analyze(part)` meshes the
+exported geometry with gmsh, applies fixtures/loads described with
+Locations, solves with CalculiX via [pygccx](https://github.com/calculix/pygccx),
+and returns displacement and von Mises stress fields with visualization:
+
+```python
+from codetocad import steel_material
+from codetocad_integrations.build123d import make_cube
+from codetocad_integrations.calculix import analyze
+
+beam = make_cube("200mm", "20mm", "10mm")
+beam.set_material(steel_material())
+
+fea = analyze(beam)
+fea.fix(beam.left_center)                          # clamp the left face
+fea.add_force(beam.right_center, force=(0, 0, -100))
+results = fea.solve()
+print(results.max_displacement, results.max_von_mises)
+results.visualize("beam_fea.png")
+```
+
+Materials carry elastic properties (`steel_material()`, `aluminum_material()`
+or set `youngs_modulus`/`poissons_ratio` on any `MaterialBase`). The ccx
+solver is auto-discovered from `CODETOCAD_CCX`, the PATH, or
+`~/.codetocad/ccx/bin/ccx`. See
+[codetocad_integrations/calculix/examples/](codetocad_integrations/calculix/examples/).
+
 ## User-defined parts
 
 Define a part with the API of your choice (for example

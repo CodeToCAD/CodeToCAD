@@ -18,6 +18,8 @@ class MaterialBase:
         mass: WeightWithUnit | None = None,
         density: DensityWithUnit | None = None,
         color_rgba: Vec4 | None = None,
+        youngs_modulus: float | None = None,
+        poissons_ratio: float | None = None,
     ):
         self.name = name
         self.mass = WeightKilograms(mass) if mass is not None else None
@@ -25,6 +27,10 @@ class MaterialBase:
             DensityKilogramsPerCubicMeter(density) if density is not None else None
         )
         self.color_rgba = color_rgba
+        self.youngs_modulus = youngs_modulus
+        """Young's modulus in pascals (used by FEA integrations)."""
+        self.poissons_ratio = poissons_ratio
+        """Poisson's ratio (used by FEA integrations)."""
 
     def __repr__(self):
         return f"MaterialBase(name={self.name!r})"
@@ -72,4 +78,16 @@ def aluminum_material() -> MaterialBase:
         "aluminum",
         density="2700 kg/m3",
         color_rgba=Vec4(0.77, 0.77, 0.78, 1.0),
+        youngs_modulus=69e9,
+        poissons_ratio=0.33,
+    )
+
+
+def steel_material() -> MaterialBase:
+    return MaterialBase(
+        "steel",
+        density="7850 kg/m3",
+        color_rgba=Vec4(0.55, 0.57, 0.6, 1.0),
+        youngs_modulus=210e9,
+        poissons_ratio=0.3,
     )
