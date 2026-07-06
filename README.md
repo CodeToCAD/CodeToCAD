@@ -81,6 +81,27 @@ CodeToCAD operations still apply on top. `adapt(part)` converts any core
 CodeToCAD part (including `led()`, `resistor()`, fasteners, ...) into a
 Build123D-federated one.
 
+## Blender integration
+
+With Blender on your PATH (or `CODETOCAD_BLENDER` pointing at it), the same
+designs federate to Blender mesh objects — booleans, shells (solidify),
+fillets/chamfers (bevel), holes and transforms are replayed with modifiers,
+and you can export .stl, .obj, .glb, .fbx or a full .blend scene:
+
+```python
+from codetocad_integrations.blender import ensure_blender, make_cube
+
+if __name__ == "__main__":
+    ensure_blender()  # relaunches this script under `blender --background`
+    cube = make_cube("10cm", "10cm", "5cm")
+    cube.hole(cube.top_center, radius="4cm", amount="5cm")
+    cube.export("my_cube.blend")
+```
+
+Subclass `codetocad_integrations.blender.Part3D` and override
+`build_native()` to model with bpy/bmesh directly. See
+[codetocad_integrations/blender/examples/](codetocad_integrations/blender/examples/).
+
 ## User-defined parts
 
 Define a part with the API of your choice (for example

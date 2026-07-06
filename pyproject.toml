@@ -24,4 +24,5 @@ packages = [
     "codetocad",
     "codetocad_integrations",
     "codetocad_integrations.build123d",
+    "codetocad_integrations.blender",
 ]
