@@ -35,3 +35,11 @@ packages = [
 
 [tool.uv.sources]
 pygccx = { git = "https://github.com/calculix/pygccx.git" }
+
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pre-commit>=4.2.0",
+    "codespell>=2.4.1",
+]
