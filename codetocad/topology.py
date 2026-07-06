@@ -8,8 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .location import Location
-from .units import LengthMeters
+from codetocad.location import Location
+from codetocad.units import LengthMeters
 
 
 @dataclass

@@ -13,7 +13,7 @@ are replayed on real Build123D solids, and geometry queries/analysis use the
 native OpenCascade topology.
 """
 
-from .parts import (
+from codetocad_integrations.build123d.parts import (
     ElectricalComponent,
     Part2D,
     Part3D,

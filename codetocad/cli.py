@@ -406,7 +406,7 @@ class InteractiveSession:
             )
         else:
             member = raw.upper().replace(" ", "_")
-            from .location import CubeLocations
+            from codetocad.location import CubeLocations
 
             if member not in CubeLocations.__members__:
                 self._print(f"Unknown cube location {raw!r}.")
@@ -538,7 +538,7 @@ def main(argv: list[str] | None = None) -> int:
         print(USAGE)
         return 0
     if args[0] == "--version":
-        from . import __version__
+        from codetocad import __version__
 
         print(__version__)
         return 0

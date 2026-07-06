@@ -15,13 +15,13 @@ from pathlib import Path
 
 import numpy as np
 
-from .assembly import Assembly2D, Assembly3D
-from .location import Location, LocationMixin
-from .materials import MaterialMixin
-from .mixins import BooleanMixin, GeometryAnalysisMixin, GeometryQueryMixin
-from .topology import Edge, Face
-from .units import LengthMeters, LengthWithUnit
-from .vectors import Vec3
+from codetocad.assembly import Assembly2D, Assembly3D
+from codetocad.location import Location, LocationMixin
+from codetocad.materials import MaterialMixin
+from codetocad.mixins import BooleanMixin, GeometryAnalysisMixin, GeometryQueryMixin
+from codetocad.topology import Edge, Face
+from codetocad.units import LengthMeters, LengthWithUnit
+from codetocad.vectors import Vec3
 
 # Meshes are numpy arrays of shape (N, 3, 3): N triangles x 3 vertices x xyz.
 

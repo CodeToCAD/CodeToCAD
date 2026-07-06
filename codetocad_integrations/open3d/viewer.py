@@ -51,9 +51,9 @@ def render(
     path: str,
     width: int = 1000,
     height: int = 800,
-    background: tuple[float, float, float] = (0.97, 0.97, 0.98),
-    front: tuple[float, float, float] = (-0.5, -0.75, 0.65),
-    up: tuple[float, float, float] = (0.0, 0.0, 1.0),
+    background: tuple[float, float, float] = (0.6,0.6,0.6),
+    front: tuple[float, float, float] = (0,0.5,0),
+    up: tuple[float, float, float] = (0.0, 0.0, 0.5),
     zoom: float = 0.7,
 ) -> str:
     """Render one or more parts to a PNG with an offscreen Open3D window

@@ -15,6 +15,6 @@ feature-by-feature. Use ``render()`` to save a screenshot instead of
 opening a window (docs, CI, headless scripts).
 """
 
-from .viewer import render, show, to_mesh
+from codetocad_integrations.open3d.viewer import render, show, to_mesh
 
 __all__ = ["to_mesh", "show", "render"]

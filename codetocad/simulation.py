@@ -21,10 +21,10 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .location import quat_rotate_vector
+from codetocad.location import quat_rotate_vector
 
 if TYPE_CHECKING:
-    from .parts import Part3D
+    from codetocad.parts import Part3D
 
 #: Assembly constraint operations recorded on ``Part.operations``. Geometry
 #: backends skip these; simulation backends turn them into joints.

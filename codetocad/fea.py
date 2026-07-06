@@ -15,11 +15,11 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .materials import MaterialBase, steel_material
+from codetocad.materials import MaterialBase, steel_material
 
 if TYPE_CHECKING:
-    from .location import Location
-    from .parts import Part3D
+    from codetocad.location import Location
+    from codetocad.parts import Part3D
 
 
 @dataclass

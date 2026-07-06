@@ -12,12 +12,12 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .ledgers import BooleanLedger
-from .location import Location
-from .topology import Edge, Face, Vertex
+from codetocad.ledgers import BooleanLedger
+from codetocad.location import Location
+from codetocad.topology import Edge, Face, Vertex
 
 if TYPE_CHECKING:
-    from .parts import Part3D
+    from codetocad.parts import Part3D
 
 
 class BooleanMixin:

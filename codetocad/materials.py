@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from .units import (
+from codetocad.units import (
     DensityKilogramsPerCubicMeter,
     DensityWithUnit,
     WeightKilograms,
     WeightWithUnit,
 )
-from .vectors import Vec4
+from codetocad.vectors import Vec4
 
 
 class MaterialBase:

@@ -16,5 +16,5 @@ if __name__ == "__main__":
     logo = make_text("CodeToCAD", font="Arial", size=font_size).extrude(font_height)
     plate.union(plate.top_center, logo, logo.bottom_center)
 
-    render(plate, path="images/embossed_text_logo.png")
+    render(plate, path="images/embossed_text_logo.png", front=(0,-0.5,1.5), up=(0,0,1.))
     print(f"volume: {plate.get_volume() * 1e9:.0f} mm^3")

@@ -5,12 +5,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .ledgers import AssemblyLedger
-from .location import Location
-from .vectors import Vec3
+from codetocad.ledgers import AssemblyLedger
+from codetocad.location import Location
+from codetocad.vectors import Vec3
 
 if TYPE_CHECKING:
-    from .parts import Part2D, Part3D
+    from codetocad.parts import Part2D, Part3D
 
 
 class AssemblyCommon:

@@ -19,7 +19,12 @@ Set the ``CODETOCAD_BLENDER`` environment variable to point at a specific
 Blender executable (defaults to ``blender`` on the PATH).
 """
 
-from .launcher import INSIDE_BLENDER, blender_command, ensure_blender, run_in_blender
+from codetocad_integrations.blender.launcher import (
+    INSIDE_BLENDER,
+    blender_command,
+    ensure_blender,
+    run_in_blender,
+)
 
 _ADAPTER_NAMES = {
     "Part2D",
@@ -63,7 +68,7 @@ def _make_stub(name: str):
 def __getattr__(name: str):
     if name in _ADAPTER_NAMES:
         if INSIDE_BLENDER:
-            from . import parts
+            from codetocad_integrations.blender import parts
 
             return getattr(parts, name)
         return _make_stub(name)

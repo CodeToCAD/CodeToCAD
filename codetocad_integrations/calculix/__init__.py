@@ -23,6 +23,6 @@ its path, have it on the PATH, or install it to ``~/.codetocad/ccx`` (e.g.
 ``micromamba create -p ~/.codetocad/ccx -c conda-forge calculix``).
 """
 
-from .fea import CalculixFEA, analyze, find_ccx
+from codetocad_integrations.calculix.fea import CalculixFEA, analyze, find_ccx
 
 __all__ = ["analyze", "CalculixFEA", "find_ccx"]

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from .location import Location
-from .parts import Part2D, Part3D
-from .units import LengthMeters, LengthWithUnit
-from .vectors import Vec3
+from codetocad.location import Location
+from codetocad.parts import Part2D, Part3D
+from codetocad.units import LengthMeters, LengthWithUnit
+from codetocad.vectors import Vec3
 
 
 def _apply_start_location(part, start_location: Location | None) -> None:

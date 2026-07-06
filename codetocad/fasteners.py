@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from enum import Enum
 
-from .location import Location
-from .parts import Part3D
-from .units import LengthMeters, LengthWithUnit
+from codetocad.location import Location
+from codetocad.parts import Part3D
+from codetocad.units import LengthMeters, LengthWithUnit
 
 
 class CommonFasteners(Enum):
@@ -42,7 +42,7 @@ class CommonFasteners(Enum):
     def build(self, length: LengthWithUnit | None = None) -> Part3D:
         """Build a simplified Part3D of this fastener (a cylinder proxy; a
         federated backend can substitute an exact model)."""
-        from .primitives import cylinder
+        from codetocad.primitives import cylinder
 
         body_length = (
             LengthMeters(length) if length is not None else self.length

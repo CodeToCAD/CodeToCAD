@@ -9,6 +9,6 @@ Note: on macOS the interactive viewer must run under ``mjpython`` (ships
 with the mujoco package); headless simulation works with any Python.
 """
 
-from .simulation import MujocoSimulation, build_mjcf, simulate
+from codetocad_integrations.mujoco.simulation import MujocoSimulation, build_mjcf, simulate
 
 __all__ = ["simulate", "MujocoSimulation", "build_mjcf"]

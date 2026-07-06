@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from .location import Location
-from .materials import MaterialBase, red_material
-from .mixins import ECADMixin
-from .parts import Part3D
-from .primitives import _make_part3d
-from .vectors import Vec4
+from codetocad.location import Location
+from codetocad.materials import MaterialBase, red_material
+from codetocad.mixins import ECADMixin
+from codetocad.parts import Part3D
+from codetocad.primitives import _make_part3d
+from codetocad.vectors import Vec4
 
 
 class ElectricalComponent(Part3D, ECADMixin):

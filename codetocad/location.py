@@ -15,7 +15,7 @@ from typing import Callable
 
 import numpy as np
 
-from .units import AngleRadians, AngleWithUnit, LengthMeters, LengthWithUnit
+from codetocad.units import AngleRadians, AngleWithUnit, LengthMeters, LengthWithUnit
 
 
 def _angle_to_radians(value: AngleWithUnit, *, floats_are_degrees: bool) -> float:

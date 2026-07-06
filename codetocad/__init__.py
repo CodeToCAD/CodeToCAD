@@ -4,7 +4,7 @@ Define parts and assemblies in Python; when you run ``codetocad``, your
 script is federated to the modeling or design application automatically.
 """
 
-from .units import (
+from codetocad.units import (
     AngleRadians,
     AngleWithUnit,
     DensityKilogramsPerCubicMeter,
@@ -15,8 +15,8 @@ from .units import (
     WeightKilograms,
     WeightWithUnit,
 )
-from .vectors import Vec3, Vec4
-from .location import (
+from codetocad.vectors import Vec3, Vec4
+from codetocad.location import (
     BoxLocations,
     CubeLocationExpr,
     CubeLocations,
@@ -25,9 +25,9 @@ from .location import (
     euler_to_quat,
     location,
 )
-from .topology import Edge, Face, Solid, Vertex
-from .ledgers import AssemblyLedger, BooleanLedger
-from .materials import (
+from codetocad.topology import Edge, Face, Solid, Vertex
+from codetocad.ledgers import AssemblyLedger, BooleanLedger
+from codetocad.materials import (
     MaterialBase,
     MaterialMixin,
     aluminum_material,
@@ -36,7 +36,7 @@ from .materials import (
     steel_material,
     white_material,
 )
-from .mixins import (
+from codetocad.mixins import (
     BLDCMotorMixin,
     BooleanMixin,
     CameraMixin,
@@ -47,9 +47,9 @@ from .mixins import (
     IMUMixin,
     MicrophoneMixin,
 )
-from .assembly import Assembly2D, Assembly3D, AssemblyCommon
-from .parts import Part2D, Part3D
-from .primitives import (
+from codetocad.assembly import Assembly2D, Assembly3D, AssemblyCommon
+from codetocad.parts import Part2D, Part3D
+from codetocad.primitives import (
     circle,
     cube,
     cylinder,
@@ -58,9 +58,9 @@ from .primitives import (
     sphere,
     text,
 )
-from .ecad import ElectricalComponent, capacitor, led, resistor
-from .fasteners import CommonFasteners
-from .simulation import (
+from codetocad.ecad import ElectricalComponent, capacitor, led, resistor
+from codetocad.fasteners import CommonFasteners
+from codetocad.simulation import (
     CONSTRAINT_OPERATIONS,
     JointSpec,
     Lighting,
@@ -68,8 +68,8 @@ from .simulation import (
     Simulation,
     extract_links,
 )
-from .fea import FEA, FEAResults
-from .cli import main
+from codetocad.fea import FEA, FEAResults
+from codetocad.cli import main
 
 __version__ = "0.1.0"
 

@@ -17,6 +17,6 @@ into simulation right away::
     sim.run(2.0, realtime=True)
 """
 
-from .simulation import PyBulletSimulation, build_urdf, simulate
+from codetocad_integrations.pybullet.simulation import PyBulletSimulation, build_urdf, simulate
 
 __all__ = ["simulate", "PyBulletSimulation", "build_urdf"]
