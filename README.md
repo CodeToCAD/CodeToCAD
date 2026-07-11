@@ -52,8 +52,10 @@ body.export("cup.stl")
   fixed, revolute, prismatic, ...) recorded in ledgers.
 - **Primitives**: `cube`, `cylinder`, `sphere`, `rectangle`, `circle`,
   `text`, `import_file` and material presets.
-- **ECAD**: `led`, `resistor`, `capacitor` components and an `ECADMixin` for
-  electrical properties.
+- **ECAD**: `led`, `diode`, `resistor`, `capacitor`, `inductor`,
+  `voltage_source`, `current_source` components (each a `Part3D` with pins, a
+  value and a `Footprint`) wired into a `Circuit` of `Net`s — capture
+  schematics with skidl and simulate with SPICE (below).
 - **Mixins**: sensors (`CameraMixin`, `IMUMixin`, `MicrophoneMixin`) and
   actuators (`DCMotorMixin`, `BLDCMotorMixin`) for custom parts.
 - **Fasteners**: `CommonFasteners` enum that can `build()` a part or apply
@@ -194,6 +196,54 @@ Open3D, so it works with any backend — Open3D itself isn't a CAD kernel. See
 [codetocad_integrations/open3d/examples/](codetocad_integrations/open3d/examples/).
 
 <img src="codetocad_integrations/open3d/examples/images/embossed_text_logo.png" width="500">
+
+## ECAD: schematics (skidl) & simulation (SPICE)
+
+Describe a circuit once as a `Circuit` of components and nets, then federate
+it to schematic capture and circuit simulation — the same components are
+`Part3D`s (each carries a `Footprint`), so they drop straight into a board
+assembly:
+
+```python
+from codetocad import Circuit, resistor, voltage_source
+from codetocad_integrations.skidl import export_netlist, export_schematic
+from codetocad_integrations.spice import simulate
+
+circuit = Circuit("divider")
+v1 = circuit.add(voltage_source(dc=9))
+r1, r2 = circuit.add(resistor("10k"), resistor("20k"))
+circuit.connect(v1["+"], r1[1], name="VIN")
+circuit.connect(r1[2], r2[1], name="VOUT")
+circuit.connect(r2[2], v1["-"], circuit.gnd)
+
+export_netlist(circuit, "divider.net")     # KiCad netlist (with footprints)
+export_schematic(circuit, "divider.svg")   # schematic SVG (netlistsvg)
+
+op = simulate(circuit).operating_point()
+print(op.voltage("VOUT"))                   # 6.0
+```
+
+**Schematics (skidl).** `codetocad_integrations.skidl` converts a `Circuit`
+into a [skidl](https://github.com/devbisme/skidl) circuit to run its ERC and
+write KiCad netlists/XML, and renders schematic SVGs with standard analog
+symbols via [netlistsvg](https://github.com/nturley/netlistsvg). Install with
+`uv sync --extra skidl` plus `npm install -g netlistsvg`. See
+[codetocad_integrations/skidl/examples/](codetocad_integrations/skidl/examples/).
+
+<img src="codetocad_integrations/skidl/examples/images/voltage_divider.png" height="260">
+<img src="codetocad_integrations/skidl/examples/images/led_board.png" height="260">
+<img src="codetocad_integrations/skidl/examples/images/led_board_3d.png" height="200">
+
+**Simulation (SPICE).** `codetocad_integrations.spice` builds a SPICE netlist
+from the `Circuit` (diode/LED models are derived from each component's
+electrical properties) and runs it with [ngspice](https://ngspice.sourceforge.io):
+operating point, DC sweep, transient and AC analyses come back as numpy
+vectors with `plot()`/`bode()` helpers. Install with `uv sync --extra spice`
+plus ngspice (`brew install ngspice` / `apt install ngspice`). See
+[codetocad_integrations/spice/examples/](codetocad_integrations/spice/examples/).
+
+<img src="codetocad_integrations/spice/examples/images/rc_lowpass_bode.png" width="360">
+<img src="codetocad_integrations/spice/examples/images/led_driver_current.png" width="360">
 
 ## User-defined parts
 

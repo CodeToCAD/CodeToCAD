@@ -4,6 +4,15 @@
 
 *fea_output/
 
+# ECAD scratch: skidl (netlists, ERC reports, log, generated symbol libs)
+# and ngspice (rawfiles, decks, logs) byproducts written next to scripts
+*.net
+*.erc
+*.log
+*_sklib.py
+*.raw
+*.cir
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

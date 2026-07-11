@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:s="https://github.com/nturley/netlistsvg" width="106" height="311">
+  <style>svg {
+    stroke: #000;
+    fill: none;
+  }
+  text {
+    fill: #000;
+    stroke: none;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: "Courier New", monospace;
+  }
+  .nodelabel {
+    text-anchor: middle;
+  }
+  .inputPortLabel {
+    text-anchor: end;
+  }
+  .splitjoinBody {
+    fill: #000;
+  }
+  .symbol {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+  .detail {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: #000;
+  }</style>
+  <g s:type="voltage_source" s:width="32" s:height="52" transform="translate(12,127)" id="cell_V1">
+    <s:alias val="v"/>
+    <text x="35" y="20" s:attribute="ref" class="cell_V1">V1</text>
+    <text x="35" y="35" s:attribute="value" class="cell_V1">5V</text>
+    <circle cx="16" cy="26" r="16" class="symbol cell_V1"/>
+    <path d="M16,10 V42" class="detail cell_V1"/>
+    <path d="M16,0 V10 M16,42 V52" class="connect cell_V1"/>
+    <g s:x="16" s:y="0" s:pid="+" s:position="top"/>
+    <g s:x="16" s:y="52" s:pid="-" s:position="bottom"/>
+  </g>
+  <g s:type="resistor_v" s:width="10" s:height="50" transform="translate(49,72)" id="cell_R1">
+    <s:alias val="r_v"/>
+    <text x="15" y="15" s:attribute="ref" class="cell_R1">R1</text>
+    <text x="15" y="30" s:attribute="value" class="cell_R1">150</text>
+    <path d="M0,10 V40 H10 V10 Z" class="symbol cell_R1"/>
+    <path d="M5,0 V10 M5,40 V50" class="connect cell_R1"/>
+    <g s:x="5" s:y="0" s:pid="A" s:position="top"/>
+    <g s:x="5" s:y="50" s:pid="B" s:position="bottom"/>
+  </g>
+  <g s:type="diode_led_v" s:width="20" s:height="50" transform="translate(44,184)" id="cell_D1">
+    <s:alias val="d_led_v"/>
+    <text x="25" y="25" s:attribute="ref" class="cell_D1">D1</text>
+    <path d="M0,15 H20 L10,35 Z M0,35 H20" class="symbol cell_D1"/>
+    <path d="M10,0 V15 M10,35 V50" class="connect cell_D1"/>
+    <path d="m-5,20 -7,7" class="detail cell_D1"/>
+    <path d="m-12,24 -3,6 6,-3 z" class="detail cell_D1"/>
+    <path d="m0,25 -7,7" class="detail cell_D1"/>
+    <path d="m-7,29 -3,6 6,-3 z" class="detail cell_D1"/>
+    <g s:x="10" s:y="0" s:pid="+" s:position="top"/>
+    <g s:x="10" s:y="50" s:pid="-" s:position="bottom"/>
+  </g>
+  <g s:type="vcc" s:width="20" s:height="30" transform="translate(18,22)" id="cell_vcc_VCC">
+    <s:alias val="vcc"/>
+    <text x="10" y="-4" class="nodelabel cell_vcc_VCC" s:attribute="name">VCC</text>
+    <path d="M0,0 H20 L10,15 Z M10,15 V30" class="cell_vcc_VCC"/>
+    <g s:x="10" s:y="30" s:pid="A" s:position="bottom"/>
+  </g>
+  <g s:type="outputExt" s:width="30" s:height="20" transform="translate(64,159)" id="cell_VLED">
+    <text x="15" y="-4" class="cell_VLED" s:attribute="ref">VLED</text>
+    <s:alias val="$_outputExt_"/>
+    <path d="M30,0 V20 H15 L0,10 15,0 Z" class="cell_VLED"/>
+    <g s:x="0" s:y="10" s:pid="A" s:position="left"/>
+  </g>
+  <g s:type="gnd" s:width="20" s:height="30" transform="translate(18,269)" id="cell_gnd_GND">
+    <s:alias val="gnd"/>
+    <text x="30" y="20" class="nodelabel cell_gnd_GND" s:attribute="name"></text>
+    <path d="M0,0 H20 M3,5 H17 M7,10 H13 M10,0 V-15" class="cell_gnd_GND"/>
+    <g s:x="10" s:y="-15" s:pid="A" s:position="top"/>
+  </g>
+  <line x1="28" x2="28" y1="52" y2="127" class="net_2"/>
+  <line x1="28" x2="28" y1="52" y2="62" class="net_2"/>
+  <line x1="28" x2="54" y1="62" y2="62" class="net_2"/>
+  <circle cx="28" cy="62" r="2" style="fill:#000" class="net_2"/>
+  <line x1="54" x2="54" y1="62" y2="72" class="net_2"/>
+  <line x1="54" x2="54" y1="122" y2="169" class="net_3"/>
+  <circle cx="54" cy="169" r="2" style="fill:#000" class="net_3"/>
+  <line x1="54" x2="64" y1="169" y2="169" class="net_3"/>
+  <line x1="64" x2="54" y1="169" y2="169" class="net_3"/>
+  <circle cx="54" cy="169" r="2" style="fill:#000" class="net_3"/>
+  <line x1="54" x2="54" y1="169" y2="184" class="net_3"/>
+  <line x1="28" x2="28" y1="179" y2="254" class="net_4"/>
+  <line x1="54" x2="54" y1="234" y2="244" class="net_4"/>
+  <line x1="54" x2="28" y1="244" y2="244" class="net_4"/>
+  <circle cx="28" cy="244" r="2" style="fill:#000" class="net_4"/>
+  <line x1="28" x2="28" y1="244" y2="254" class="net_4"/>
+</svg>

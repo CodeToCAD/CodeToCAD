@@ -58,7 +58,25 @@ from codetocad.primitives import (
     sphere,
     text,
 )
-from codetocad.ecad import ElectricalComponent, capacitor, led, resistor
+from codetocad.ecad import (
+    Circuit,
+    CommonFootprints,
+    ComponentType,
+    ElectricalComponent,
+    Footprint,
+    Net,
+    Pin,
+    PinType,
+    capacitor,
+    current_source,
+    diode,
+    format_si,
+    inductor,
+    led,
+    parse_si,
+    resistor,
+    voltage_source,
+)
 from codetocad.fasteners import CommonFasteners
 from codetocad.simulation import (
     CONSTRAINT_OPERATIONS,
@@ -138,9 +156,22 @@ __all__ = [
     "import_file",
     # ecad
     "ElectricalComponent",
+    "Circuit",
+    "Net",
+    "Pin",
+    "PinType",
+    "ComponentType",
+    "Footprint",
+    "CommonFootprints",
     "led",
+    "diode",
     "resistor",
     "capacitor",
+    "inductor",
+    "voltage_source",
+    "current_source",
+    "parse_si",
+    "format_si",
     # fasteners
     "CommonFasteners",
     # simulation
