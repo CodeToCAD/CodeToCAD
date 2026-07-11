@@ -29,6 +29,12 @@ skidl = [
 spice = [
     "matplotlib",
 ]
+pyserial = ["pyserial"]
+micropython = ["mpremote", "pyserial"]
+mqtt = ["paho-mqtt"]
+vesc = ["pyvesc", "pyserial"]
+nicegui = ["nicegui"]
+rerun = ["rerun-sdk"]
 
 [project.scripts]
 codetocad = "codetocad.cli:main"
@@ -45,6 +51,12 @@ packages = [
     "codetocad_integrations.open3d",
     "codetocad_integrations.skidl",
     "codetocad_integrations.spice",
+    "codetocad_integrations.micropython",
+    "codetocad_integrations.pyserial",
+    "codetocad_integrations.mqtt",
+    "codetocad_integrations.vesc",
+    "codetocad_integrations.nicegui",
+    "codetocad_integrations.rerun",
 ]
 
 [tool.uv.sources]

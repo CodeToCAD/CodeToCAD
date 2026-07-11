@@ -299,7 +299,59 @@ class ECADMixin:
         }
 
 
-class CameraMixin:
+class SensorMixin:
+    """Base sensor mixin: a device that produces values.
+
+    Bind an instance to a ``Microcontroller`` pin with
+    ``microcontroller.bind_sensor(sensor, pin=...)``; telemetry received
+    over the microcontroller's communication channel then updates
+    ``read()`` and is emitted on ``events`` (an ``EventStream``, so it can
+    be mapped through ``codetocad.signals`` filters). Without a
+    microcontroller, override ``read()`` for direct hardware access."""
+
+    sample_rate_hz: float = 10.0
+
+    @property
+    def events(self):
+        from codetocad.communication import EventStream
+
+        stream = getattr(self, "_sensor_events", None)
+        if stream is None:
+            stream = self._sensor_events = EventStream()
+        return stream
+
+    def read(self):
+        """The latest sample; None before the first one arrives."""
+        return getattr(self, "_last_value", None)
+
+    def _update(self, value, t: float | None = None):
+        """Record a sample (called by the bound Microcontroller)."""
+        self._last_value = value
+        self._last_sample_time = t
+        self.events.emit(value)
+        return value
+
+
+class ActuatorMixin:
+    """Base actuator mixin: a device that accepts commands.
+
+    Bind an instance to a ``Microcontroller`` pin with
+    ``microcontroller.bind_actuator(actuator, pin=...)``; ``write()`` then
+    sends the command over the microcontroller's communication channel when
+    connected (and always records it locally)."""
+
+    def write(self, value):
+        self._last_command = value
+        binding = getattr(self, "_binding", None)
+        if binding is not None:
+            binding.send(value)
+        return self
+
+    def get_last_command(self):
+        return getattr(self, "_last_command", None)
+
+
+class CameraMixin(SensorMixin):
     """Camera sensor. Inherit in a custom Part3D class and override the
     relevant methods."""
 
@@ -317,45 +369,155 @@ class CameraMixin:
         raise NotImplementedError("Override capture_image() for your camera")
 
 
-class IMUMixin:
-    """Inertial measurement unit sensor mixin."""
+class IMUMixin(SensorMixin):
+    """Inertial measurement unit sensor mixin (e.g. MPU6050/MPU9250 over
+    I2C). Bound telemetry values are dicts; these helpers pull out the
+    conventional keys."""
 
     def read_acceleration(self):
-        raise NotImplementedError("Override read_acceleration() for your IMU")
+        """(ax, ay, az) in m/s^2 from the ``accel`` telemetry key."""
+        return (self.read() or {}).get("accel")
 
     def read_angular_velocity(self):
-        raise NotImplementedError("Override read_angular_velocity() for your IMU")
+        """(gx, gy, gz) in rad/s from the ``gyro`` telemetry key."""
+        return (self.read() or {}).get("gyro")
 
     def read_magnetic_field(self):
-        raise NotImplementedError("Override read_magnetic_field() for your IMU")
+        """(mx, my, mz) in uT from the ``mag`` telemetry key."""
+        return (self.read() or {}).get("mag")
 
 
-class MicrophoneMixin:
+class MicrophoneMixin(SensorMixin):
     """Microphone sensor mixin."""
 
-    sample_rate_hz: int = 48000
+    sample_rate_hz: float = 48000
 
     def record_audio(self, duration_seconds: float):
         raise NotImplementedError("Override record_audio() for your microphone")
 
 
-class DCMotorMixin:
-    """DC motor actuator mixin."""
+class EncoderMixin(SensorMixin):
+    """Rotary encoder sensor (quadrature or single-channel).
+
+    Telemetry values are dicts ``{"count": <ticks>, "rpm": <velocity>}``
+    (the micropython integration's encoder routine emits both)."""
+
+    counts_per_revolution: int = 2048
+
+    def read_count(self) -> int | None:
+        value = self.read()
+        return value.get("count") if isinstance(value, dict) else value
+
+    def read_position_degrees(self) -> float | None:
+        count = self.read_count()
+        if count is None:
+            return None
+        return 360.0 * count / self.counts_per_revolution
+
+    def read_velocity_rpm(self) -> float | None:
+        value = self.read()
+        return value.get("rpm") if isinstance(value, dict) else None
+
+
+class CurrentSensorMixin(SensorMixin):
+    """Current measurement sensor (shunt + amplifier like the INA219/ACS712,
+    or a motor driver's current-sense pin read through an ADC).
+
+    ``amps_per_volt`` converts the raw ADC voltage to amps (e.g. the
+    ACS712-05B outputs 185 mV/A -> ``amps_per_volt = 1/0.185``);
+    ``zero_offset_volts`` is the output at zero current (VCC/2 for
+    bidirectional hall sensors)."""
+
+    amps_per_volt: float = 1.0
+    zero_offset_volts: float = 0.0
+
+    def read_current(self) -> float | None:
+        volts = self.read()
+        if volts is None:
+            return None
+        return (float(volts) - self.zero_offset_volts) * self.amps_per_volt
+
+
+class MotorMixin(ActuatorMixin):
+    """Common motor control API for DC/BLDC/stepper motors.
+
+    Commands are dicts like ``{"velocity_rpm": 100}`` sent to the bound
+    microcontroller channel (see ``ActuatorMixin``), where a motor routine
+    executes them. Typical hardware protocols the routines target:
+
+    - Brushed DC: H-bridge driver (L298N, TB6612, DRV8871) — one PWM pin
+      for magnitude, one direction pin (velocity control; add an
+      ``EncoderMixin`` for closed-loop position).
+    - Stepper: STEP/DIR driver (A4988, DRV8825, TMC2209) — position moves
+      as step counts.
+    - BLDC: an ESC via 1-2 ms servo PWM, or a VESC over UART/CAN
+      (``codetocad_integrations.vesc``, which drives pyvesc).
+    - Current control/measurement: driver current-sense output into an ADC
+      (see ``CurrentSensorMixin``)."""
+
+    def set_velocity(self, rpm: float):
+        self._target_velocity_rpm = float(rpm)
+        return self.write({"velocity_rpm": float(rpm)})
+
+    def get_velocity(self) -> float:
+        return getattr(self, "_target_velocity_rpm", 0.0)
+
+    def set_position(self, degrees: float):
+        self._target_position_degrees = float(degrees)
+        return self.write({"position_degrees": float(degrees)})
+
+    def get_position(self) -> float:
+        return getattr(self, "_target_position_degrees", 0.0)
+
+    def set_current(self, amps: float):
+        self._target_current_amps = float(amps)
+        return self.write({"current_amps": float(amps)})
+
+    def get_current(self) -> float:
+        return getattr(self, "_target_current_amps", 0.0)
+
+    def set_duty(self, duty: float):
+        """Open-loop duty cycle in [-1, 1] (sign is direction)."""
+        return self.write({"duty": float(duty)})
+
+    def stop(self):
+        self._target_velocity_rpm = 0.0
+        return self.write({"stop": True})
+
+
+class DCMotorMixin(MotorMixin):
+    """Brushed DC motor actuator mixin."""
 
     nominal_voltage: float | None = None
     stall_torque_nm: float | None = None
     no_load_speed_rpm: float | None = None
 
     def set_speed(self, rpm: float):
-        self._target_speed_rpm = float(rpm)
-        return self
+        """Alias of ``set_velocity`` kept for symmetry with datasheets."""
+        return self.set_velocity(rpm)
 
     def get_speed(self) -> float:
-        return getattr(self, "_target_speed_rpm", 0.0)
+        return self.get_velocity()
 
 
 class BLDCMotorMixin(DCMotorMixin):
-    """Brushless DC motor actuator mixin."""
+    """Brushless DC motor actuator mixin. Drive through an ESC or a VESC
+    (``codetocad_integrations.vesc``)."""
 
     kv_rating: float | None = None
     pole_pairs: int | None = None
+
+
+class StepperMotorMixin(MotorMixin):
+    """Stepper motor actuator mixin (STEP/DIR drivers)."""
+
+    steps_per_revolution: int = 200
+    microsteps: int = 16
+
+    def move_steps(self, steps: int):
+        return self.write({"steps": int(steps)})
+
+    def set_position(self, degrees: float):
+        self._target_position_degrees = float(degrees)
+        steps = degrees / 360.0 * self.steps_per_revolution * self.microsteps
+        return self.write({"position_steps": int(round(steps))})

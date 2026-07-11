@@ -37,15 +37,21 @@ from codetocad.materials import (
     white_material,
 )
 from codetocad.mixins import (
+    ActuatorMixin,
     BLDCMotorMixin,
     BooleanMixin,
     CameraMixin,
+    CurrentSensorMixin,
     DCMotorMixin,
     ECADMixin,
+    EncoderMixin,
     GeometryAnalysisMixin,
     GeometryQueryMixin,
     IMUMixin,
     MicrophoneMixin,
+    MotorMixin,
+    SensorMixin,
+    StepperMotorMixin,
 )
 from codetocad.assembly import Assembly2D, Assembly3D, AssemblyCommon
 from codetocad.parts import Part2D, Part3D
@@ -87,6 +93,31 @@ from codetocad.simulation import (
     extract_links,
 )
 from codetocad.fea import FEA, FEAResults
+from codetocad.communication import (
+    BluetoothCommunication,
+    Communication,
+    CommunicationMixin,
+    EventStream,
+    MqttCommunication,
+    SerialCommunication,
+    WifiCommunication,
+)
+from codetocad.signals import (
+    LowPassFilter,
+    MedianFilter,
+    MovingAverageFilter,
+    apply_filter,
+)
+from codetocad.microcontroller import (
+    I2CBus,
+    Microcontroller,
+    MicrocontrollerBoard,
+    MicrocontrollerRuntime,
+    PinBinding,
+    SPIBus,
+    UARTBus,
+)
+from codetocad.apps import AppBase, Control, PythonApp, RerunApp, WebApp
 from codetocad.cli import main
 
 __version__ = "0.1.0"
@@ -135,11 +166,17 @@ __all__ = [
     "GeometryQueryMixin",
     "GeometryAnalysisMixin",
     "ECADMixin",
+    "SensorMixin",
+    "ActuatorMixin",
     "CameraMixin",
     "IMUMixin",
     "MicrophoneMixin",
+    "EncoderMixin",
+    "CurrentSensorMixin",
+    "MotorMixin",
     "DCMotorMixin",
     "BLDCMotorMixin",
+    "StepperMotorMixin",
     # assemblies & parts
     "AssemblyCommon",
     "Assembly2D",
@@ -184,6 +221,33 @@ __all__ = [
     # fea
     "FEA",
     "FEAResults",
+    # communication
+    "Communication",
+    "CommunicationMixin",
+    "EventStream",
+    "SerialCommunication",
+    "WifiCommunication",
+    "BluetoothCommunication",
+    "MqttCommunication",
+    # signals
+    "LowPassFilter",
+    "MovingAverageFilter",
+    "MedianFilter",
+    "apply_filter",
+    # microcontroller
+    "Microcontroller",
+    "MicrocontrollerBoard",
+    "MicrocontrollerRuntime",
+    "PinBinding",
+    "I2CBus",
+    "SPIBus",
+    "UARTBus",
+    # apps
+    "AppBase",
+    "Control",
+    "PythonApp",
+    "WebApp",
+    "RerunApp",
     # cli
     "main",
 ]
