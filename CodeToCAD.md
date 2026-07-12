@@ -438,3 +438,104 @@ from my_project.my_assembly import MyAssembly
 if __name__ == "__main__":
     MyAssembly().build()
 ```
+
+# Microcontroller, Sensors/Actuators definition, and communication to local or remote mediums
+
+- A microcontroller class should be made available to enable defining a microcontroller. Sensor and Actuator mixin classes could be added to the microcontroller class to define the data being read or transmitted. A communication mixin can be added to the microcontroller class to define data transfer to a remote computer or a local storage device.
+- Common methods for microcontroller routines like motor position and velocity control for DC/BLDC/Stepper motors, current measurement, encoder readings, signal filtering, VESC control, in python should be made available either using libraries or implemented; the components or protocols should be documented for such methods. The idea is to facilitate using the Part3D and mixins such as MotorMixin and SensorMixin interface to common components for quick prototyping.
+- Microcontroller integration should be made available for common boards using PySerial, Micropython and VESC with python. The idea is to be able to define the microcontroller type (for example esp32, esp 8266, raspberry pi running python with serial), and the user would be able to run the script to upload to the microcontroller and establish communication with it with their PythonApp or WebApp instances.
+- Common wireless communication protocols to the microcontrollers should also be made available via Mixins like Bluetooth and Wifi connection enablement, MQTT messaging, Reactive (Rx) eventing should be available so that the user can subscribe to and transform sensor streams.
+- A quick python or web gui using NiceGUI or Rerun integration should be made available to establish communication between a computer and a microcontroller. This should be a PythonApp or WebApp or RerunApp class and it would take the same Communication mixin as the microcontroller to be able to connect, and display controls to control actuators or display sensor values.
+
+## Microcontroller
+
+`Microcontroller` is an `ElectricalComponent` (so it has a footprint and can be placed on board assemblies) that declares which sensor/actuator parts hang off which GPIO pins, plus a `Communication` channel to the computer. `MicrocontrollerBoard` selects the board and runtime: `ESP32`, `ESP8266` and `RASPBERRY_PI_PICO` run MicroPython; `RASPBERRY_PI` runs plain Python (gpiozero).
+
+```python
+from codetocad import Microcontroller, MicrocontrollerBoard, SerialCommunication
+from codetocad.mixins import DCMotorMixin, EncoderMixin, SensorMixin
+
+class GearMotor(DCMotorMixin):
+    no_load_speed_rpm = 200
+
+motor, encoder, throttle = GearMotor(), EncoderMixin(), SensorMixin()
+
+mcu = Microcontroller("motor-lab", board=MicrocontrollerBoard.ESP32)
+mcu.bind_actuator(motor, name="wheel", pwm_pin=5, dir_pin=18)   # H-bridge PWM+DIR
+mcu.bind_sensor(encoder, name="enc", a=32, b=33)                # quadrature encoder
+mcu.bind_sensor(throttle, name="throttle", pin=34)              # ADC input
+mcu.set_communication(SerialCommunication("/dev/ttyUSB0"))
+
+mcu.upload()          # generate main.py from the bindings and flash it (mpremote)
+mcu.connect()
+motor.set_velocity(120)          # -> {"type": "command", "name": "wheel", ...}
+mcu.poll()                       # pump telemetry into the bound sensors
+print(encoder.read_velocity_rpm(), throttle.read())
+```
+
+Bindings infer a firmware *driver* from the mixin type (`dc_motor`, `stepper`, `encoder`, `current`, `imu_mpu6050`, `analog`, `pwm`, ...); the wiring each driver expects (L298N/DRV8871 H-bridges, A4988/TMC2209 step-dir drivers, ACS712/INA219 current sensing, MPU6050 over I2C) is documented in `codetocad_integrations.micropython`. Both ends speak a JSON-lines wire protocol: telemetry `{"type": "telemetry", "name": <channel>, "value": ..., "t": ...}` and commands `{"type": "command", "name": <channel>, "value": ...}`.
+
+### I2C, SPI and UART devices
+
+Sensors, motors and motor controllers that sit on a bus instead of raw GPIO are bound through a shared bus declaration: `I2CBus(sda, scl)` plus a per-device `address=`, `SPIBus(sck, mosi, miso)` plus a per-device `cs=` chip select, or `UARTBus(tx, rx)` for serial peripherals. The driver is again inferred from the mixin type — an `IMUMixin` on I2C becomes an MPU6050, a `CurrentSensorMixin` an INA219 (telemetry directly in amps), a `MotorMixin` a DRV8830 I2C motor driver, a plain actuator a PCA9685 PWM channel, a `MotorMixin` on UART a VESC — or can be set explicitly with `driver=` (e.g. the generic `i2c_register` sensor for any register-mapped chip):
+
+```python
+i2c = I2CBus(sda=21, scl=22)
+spi = SPIBus(sck=14, mosi=13, miso=12)
+
+mcu.bind_sensor(imu, bus=i2c, address=0x68)                      # MPU6050
+mcu.bind_sensor(current, bus=i2c, address=0x40)                  # INA219
+mcu.bind_sensor(temperature, bus=i2c, address=0x48,              # any register chip
+                params={"register": 0x00, "scale": 0.0078125, "signed": True})
+mcu.bind_sensor(joystick, bus=spi, cs=5, params={"channel": 2})  # MCP3008 ADC
+mcu.bind_actuator(pan_servo, bus=i2c, address=0x40, driver="servo_pca9685",
+                  params={"channel": 0})                         # PCA9685
+mcu.bind_actuator(gear_motor, bus=i2c, address=0x60)             # DRV8830
+mcu.bind_actuator(bldc, bus=UARTBus(tx=17, rx=16))               # VESC over UART
+```
+
+The generated firmware sets each bus up once and shares it between devices. On MicroPython boards this uses `machine.I2C/SPI/UART`; on a Raspberry Pi the same bindings generate `smbus2` (I2C), gpiozero `MCP3008` (SPI) and pyserial (UART) code. VESC commands are framed on-device (CRC16 short packets: `COMM_SET_DUTY`/`COMM_SET_CURRENT`/`COMM_SET_RPM`), so `bldc.set_velocity(rpm)` works the same whether the VESC hangs off the microcontroller's UART or is driven directly from the computer with `codetocad_integrations.vesc.VESCMotor`.
+
+## Sensor, Actuator and Motor mixins
+
+`SensorMixin` (values in via `read()`/`events`) and `ActuatorMixin` (commands out via `write()`) are the bases; on top of them sit `EncoderMixin`, `CurrentSensorMixin`, `IMUMixin`, `CameraMixin`, `MicrophoneMixin`, and `MotorMixin` with `DCMotorMixin`, `BLDCMotorMixin` and `StepperMotorMixin`. Motors expose `set_velocity(rpm)`, `set_position(degrees)`, `set_current(amps)`, `set_duty(-1..1)` and `stop()`. Any Part3D class can inherit these, so the same object is both geometry and device. VESC controllers are driven directly with `codetocad_integrations.vesc.VESCMotor` (pyvesc over serial), which implements the same MotorMixin API.
+
+## Communication and reactive streams
+
+`SerialCommunication`, `WifiCommunication`, `BluetoothCommunication` (SPP serial port) and `MqttCommunication` describe the medium; the same instance is shared by the microcontroller and the app so both ends agree. Transports are federated: pyserial (`codetocad_integrations.pyserial`), stdlib TCP for wifi, paho-mqtt (`codetocad_integrations.mqtt`). Incoming messages are exposed as Rx-style `EventStream`s (`subscribe`/`map`/`filter`/`throttle`), and `codetocad.signals` provides streaming `LowPassFilter`, `MovingAverageFilter` and `MedianFilter` that can be mapped over them:
+
+```python
+smooth_rpm = encoder.events.map(lambda v: v["rpm"]).map(LowPassFilter(alpha=0.2))
+smooth_rpm.subscribe(print)
+```
+
+## PythonApp, WebApp and RerunApp
+
+Control-panel apps declare sliders/buttons/toggles that command actuators and gauges/plots that display sensor telemetry, then federate to NiceGUI (`PythonApp` = native window, `WebApp` = browser, via `codetocad_integrations.nicegui`) or the Rerun viewer (`RerunApp`, via `codetocad_integrations.rerun`):
+
+```python
+app = WebApp("Motor lab").set_communication(mcu.communication)
+app.add_slider("speed (rpm)", target=motor, command="velocity_rpm", maximum=200)
+app.add_button("stop", target=motor, value={"stop": True})
+app.add_gauge("throttle (V)", source=throttle, maximum=3.3, units="V")
+app.add_plot("measured rpm", source=encoder)
+app.run()
+```
+
+Extras: `uv sync --extra micropython --extra pyserial --extra mqtt --extra vesc --extra nicegui --extra rerun`. A complete example lives at `codetocad_integrations/micropython/examples/motor_lab.py`.
+
+## Emulating a microcontroller (simulation in the loop)
+
+`EmulatedMicrocontroller` runs the device side of a `Microcontroller` definition in-process — command dispatch and periodic telemetry over an in-memory loopback, speaking the same JSON-lines wire protocol as real firmware. Wire its handlers to a physics simulation and the unchanged `WebApp` drives the simulated robot; swap the emulator's communication for a `SerialCommunication` and the same app drives hardware:
+
+```python
+emulator = EmulatedMicrocontroller(mcu)   # also becomes mcu.communication
+emulator.on_command("left_motor", lambda v: sim.set_joint_velocity_target("left_axle", ...))
+emulator.set_sensor("left_encoder", lambda: {"count": ..., "rpm": ...})
+emulator.add_telemetry("pose", read_pose, sample_rate_hz=10)
+emulator.step(sim.data.time)              # call from the simulation loop
+
+app = WebApp("robot lab").set_communication(emulator.communication)
+```
+
+A complete simulated differential-drive TurtleBot (TurtleBot3 Burger dimensions, Dynamixel XL430-W250 motor/encoder specs, MuJoCo physics with a ground plane and velocity-controlled wheels, WebApp with motor sliders and encoder/pose readouts) lives at `codetocad_integrations/robotics/turtlebot/turtlebot_diff_drive.py`. For mobile robots the mujoco integration's `simulate()` accepts `ground_plane=True`, `fixed_base=False`, per-joint `actuator_types` ("position"/"velocity"), `actuator_forcerange` (stall torque), `joint_damping` and `joint_armature` (a geared servo's reflected rotor inertia), plus per-link `geom_friction`.
