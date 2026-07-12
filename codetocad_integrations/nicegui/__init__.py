@@ -30,6 +30,16 @@ def _numeric(value):
     return value if isinstance(value, (int, float)) else None
 
 
+def _control_value(control: Control, latest: dict):
+    """The scalar a gauge/plot should show: the control's `key` entry of
+    dict telemetry when given, else the best-effort scalar."""
+    value = latest.get(control.source_channel)
+    key = control.params.get("key")
+    if key is not None and isinstance(value, dict):
+        value = value.get(key)
+    return _numeric(value)
+
+
 def serve(
     app: AppBase,
     *,
@@ -39,7 +49,11 @@ def serve(
     poll_interval_seconds: float = 0.05,
     show: bool = True,
 ):
-    """Build a NiceGUI page from ``app.controls`` and run it (blocks)."""
+    """Build a NiceGUI page from ``app.controls`` and run it (blocks).
+
+    The page is passed to NiceGUI as a root function (rebuilt per client),
+    so this also works from a background thread — e.g. while a physics
+    viewer owns the main thread."""
     latest: dict[str, object] = {}
     communication = app.communication
     if communication is not None:
@@ -47,33 +61,36 @@ def serve(
             lambda message: latest.__setitem__(message.get("name"), message.get("value"))
         )
 
-    updaters = []
-    with ui.column().classes("w-full max-w-xl mx-auto gap-4"):
-        ui.label(app.title).classes("text-2xl")
-        for control in app.controls:
-            _build_control(app, control, latest, updaters)
+    def root():
+        updaters = []
+        with ui.column().classes("w-full max-w-xl mx-auto gap-4"):
+            ui.label(app.title).classes("text-2xl")
+            for control in app.controls:
+                _build_control(app, control, latest, updaters)
 
-    def on_tick():
-        if communication is not None:
-            communication.poll()
-        for update in updaters:
-            update()
+        def on_tick():
+            if communication is not None:
+                communication.poll()
+            for update in updaters:
+                update()
 
-    ui.timer(poll_interval_seconds, on_tick)
+        ui.timer(poll_interval_seconds, on_tick)
 
     if communication is not None:
 
-        async def on_startup():
+        def on_startup():
             try:
-                communication.connect()
+                if not communication.is_connected:
+                    communication.connect()
             except Exception as error:  # device offline: keep UI usable
-                ui.notify(f"Could not connect: {error}", type="warning")
+                print(f"codetocad: could not connect: {error}")
 
         from nicegui import app as nicegui_app
 
         nicegui_app.on_startup(on_startup)
 
     ui.run(
+        root=root,
         title=app.title,
         native=native,
         host=host,
@@ -109,13 +126,12 @@ def _build_control(app: AppBase, control: Control, latest: dict, updaters: list)
         )
     elif control.kind == "gauge":
         label = ui.label(f"{control.label}: —")
-        channel = control.source_channel
 
-        def update_gauge(label=label, channel=channel, control=control):
-            value = _numeric(latest.get(channel))
+        def update_gauge(label=label, control=control):
+            value = _control_value(control, latest)
             if value is not None:
                 units = control.params.get("units") or ""
-                label.text = f"{control.label}: {value:.3g} {units}".rstrip()
+                label.text = f"{control.label}: {value:.4g} {units}".rstrip()
 
         updaters.append(update_gauge)
     elif control.kind == "plot":
@@ -130,11 +146,10 @@ def _build_control(app: AppBase, control: Control, latest: dict, updaters: list)
         ).classes("w-full h-64")
         window = params["window_seconds"]
         points: deque = deque()
-        channel = control.source_channel
         start = time.monotonic()
 
-        def update_plot(chart=chart, points=points, channel=channel):
-            value = _numeric(latest.get(channel))
+        def update_plot(chart=chart, points=points, control=control):
+            value = _control_value(control, latest)
             now = time.monotonic() - start
             if value is not None:
                 points.append((now, value))

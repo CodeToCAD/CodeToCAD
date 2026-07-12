@@ -523,3 +523,19 @@ app.run()
 ```
 
 Extras: `uv sync --extra micropython --extra pyserial --extra mqtt --extra vesc --extra nicegui --extra rerun`. A complete example lives at `codetocad_integrations/micropython/examples/motor_lab.py`.
+
+## Emulating a microcontroller (simulation in the loop)
+
+`EmulatedMicrocontroller` runs the device side of a `Microcontroller` definition in-process — command dispatch and periodic telemetry over an in-memory loopback, speaking the same JSON-lines wire protocol as real firmware. Wire its handlers to a physics simulation and the unchanged `WebApp` drives the simulated robot; swap the emulator's communication for a `SerialCommunication` and the same app drives hardware:
+
+```python
+emulator = EmulatedMicrocontroller(mcu)   # also becomes mcu.communication
+emulator.on_command("left_motor", lambda v: sim.set_joint_velocity_target("left_axle", ...))
+emulator.set_sensor("left_encoder", lambda: {"count": ..., "rpm": ...})
+emulator.add_telemetry("pose", read_pose, sample_rate_hz=10)
+emulator.step(sim.data.time)              # call from the simulation loop
+
+app = WebApp("robot lab").set_communication(emulator.communication)
+```
+
+A complete simulated differential-drive TurtleBot (TurtleBot3 Burger dimensions, Dynamixel XL430-W250 motor/encoder specs, MuJoCo physics with a ground plane and velocity-controlled wheels, WebApp with motor sliders and encoder/pose readouts) lives at `codetocad_integrations/mujoco/examples/turtlebot_diff_drive.py`. For mobile robots the mujoco integration's `simulate()` accepts `ground_plane=True`, `fixed_base=False`, per-joint `actuator_types` ("position"/"velocity"), `actuator_forcerange` (stall torque), `joint_damping` and `joint_armature` (a geared servo's reflected rotor inertia), plus per-link `geom_friction`.

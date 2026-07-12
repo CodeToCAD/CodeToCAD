@@ -118,6 +118,11 @@ from codetocad.microcontroller import (
     UARTBus,
 )
 from codetocad.apps import AppBase, Control, PythonApp, RerunApp, WebApp
+from codetocad.emulation import (
+    EmulatedCommunication,
+    EmulatedMicrocontroller,
+    EmulatedTransport,
+)
 from codetocad.cli import main
 
 __version__ = "0.1.0"
@@ -248,6 +253,10 @@ __all__ = [
     "PythonApp",
     "WebApp",
     "RerunApp",
+    # emulation
+    "EmulatedMicrocontroller",
+    "EmulatedCommunication",
+    "EmulatedTransport",
     # cli
     "main",
 ]

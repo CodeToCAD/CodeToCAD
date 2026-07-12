@@ -33,7 +33,7 @@ pyserial = ["pyserial"]
 micropython = ["mpremote", "pyserial"]
 mqtt = ["paho-mqtt"]
 vesc = ["pyvesc", "pyserial"]
-nicegui = ["nicegui"]
+nicegui = ["nicegui>=3"]
 rerun = ["rerun-sdk"]
 
 [project.scripts]

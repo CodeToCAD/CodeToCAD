@@ -565,7 +565,7 @@ requires-dist = [
     { name = "matplotlib", marker = "extra == 'spice'" },
     { name = "mpremote", marker = "extra == 'micropython'" },
     { name = "mujoco", marker = "extra == 'mujoco'" },
-    { name = "nicegui", marker = "extra == 'nicegui'" },
+    { name = "nicegui", marker = "extra == 'nicegui'", specifier = ">=3" },
     { name = "numpy", specifier = ">=2.5.1" },
     { name = "open3d", marker = "extra == 'open3d'", specifier = ">=0.19.0" },
     { name = "paho-mqtt", marker = "extra == 'mqtt'" },

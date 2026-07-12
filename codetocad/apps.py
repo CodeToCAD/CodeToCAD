@@ -135,15 +135,38 @@ class AppBase(CommunicationMixin):
         minimum: float = 0.0,
         maximum: float = 100.0,
         units: str | None = None,
+        key: str | None = None,
     ) -> Control:
-        """A live numeric readout of ``source``'s telemetry."""
+        """A live numeric readout of ``source``'s telemetry. For dict
+        telemetry (encoders, IMUs, poses) ``key=`` picks the entry to show,
+        e.g. ``add_gauge("ticks", source=encoder, key="count")``."""
         return self._add(
-            Control("gauge", label, source=source, minimum=minimum, maximum=maximum, units=units)
+            Control(
+                "gauge",
+                label,
+                source=source,
+                minimum=minimum,
+                maximum=maximum,
+                units=units,
+                key=key,
+            )
         )
 
-    def add_plot(self, label: str, source, *, window_seconds: float = 30.0) -> Control:
-        """A scrolling time-series plot of ``source``'s telemetry."""
-        return self._add(Control("plot", label, source=source, window_seconds=window_seconds))
+    def add_plot(
+        self,
+        label: str,
+        source,
+        *,
+        window_seconds: float = 30.0,
+        key: str | None = None,
+    ) -> Control:
+        """A scrolling time-series plot of ``source``'s telemetry. ``key=``
+        picks one entry of dict telemetry (see ``add_gauge``)."""
+        return self._add(
+            Control(
+                "plot", label, source=source, window_seconds=window_seconds, key=key
+            )
+        )
 
     def add_label(self, text: str) -> Control:
         return self._add(Control("label", text))
