@@ -1,0 +1,136 @@
+<robot name="turtlebot">
+  <link name="chassis">
+    <visual>
+      <origin xyz="-0 -0 -0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/chassis.stl" />
+      </geometry>
+      <material name="chassis_material">
+        <color rgba="0.15 0.35 0.75 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 -0 -0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/chassis.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.09" rpy="0 0 0" />
+      <mass value="0.82" />
+      <inertia ixx="0.00264067333" iyy="0.00264067333" izz="0.00260268" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <link name="left_wheel">
+    <visual>
+      <origin xyz="-0.03 -0.08 -0.033" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/left_wheel.stl" />
+      </geometry>
+      <material name="left_wheel_material">
+        <color rgba="0.12 0.12 0.12 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 -0.08 -0.033" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/left_wheel.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.03" />
+      <inertia ixx="1.27125e-05" iyy="2.178e-05" izz="1.27125e-05" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <link name="right_wheel">
+    <visual>
+      <origin xyz="-0.03 0.08 -0.033" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/right_wheel.stl" />
+      </geometry>
+      <material name="right_wheel_material">
+        <color rgba="0.12 0.12 0.12 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 0.08 -0.033" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/right_wheel.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.03" />
+      <inertia ixx="1.27125e-05" iyy="2.178e-05" izz="1.27125e-05" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <link name="caster">
+    <visual>
+      <origin xyz="0.055 -0 -0.0127" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/caster.stl" />
+      </geometry>
+      <material name="caster_material">
+        <color rgba="0.55 0.57 0.6 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.055 -0 -0.0127" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/caster.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.0673549362" />
+      <inertia ixx="7.24245177e-06" iyy="7.24245177e-06" izz="7.24245177e-06" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <link name="camera">
+    <visual>
+      <origin xyz="-0.062 -0 -0.145" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/camera.stl" />
+      </geometry>
+      <material name="camera_material">
+        <color rgba="0.06 0.06 0.06 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.062 -0 -0.145" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/camera.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.02" />
+      <inertia ixx="2.08333333e-06" iyy="2.08333333e-06" izz="2.08333333e-06" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+  <joint name="left_axle" type="continuous">
+    <parent link="chassis" />
+    <child link="left_wheel" />
+    <origin xyz="0.03 0.08 0.033" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="10" />
+  </joint>
+  <joint name="right_axle" type="continuous">
+    <parent link="chassis" />
+    <child link="right_wheel" />
+    <origin xyz="0.03 -0.08 0.033" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="10" />
+  </joint>
+  <joint name="caster_joint" type="fixed">
+    <parent link="chassis" />
+    <child link="caster" />
+    <origin xyz="-0.055 0 0.0127" rpy="0 0 0" />
+  </joint>
+  <joint name="camera_joint" type="fixed">
+    <parent link="chassis" />
+    <child link="camera" />
+    <origin xyz="0.062 0 0.145" rpy="0 0 0" />
+  </joint>
+</robot>

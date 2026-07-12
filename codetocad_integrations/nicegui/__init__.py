@@ -159,6 +159,25 @@ def _build_control(app: AppBase, control: Control, latest: dict, updaters: list)
             chart.update()
 
         updaters.append(update_plot)
+    elif control.kind == "image":
+        ui.label(control.label)
+        image = ui.image().classes("w-full").props("no-transition")
+        state = {"last": None}
+
+        def update_image(image=image, control=control, state=state):
+            value = latest.get(control.source_channel)
+            key = control.params.get("key")
+            if key is not None and isinstance(value, dict):
+                value = value.get(key)
+            if not isinstance(value, str) or value == state["last"]:
+                return
+            state["last"] = value
+            image.set_source(
+                value if value.startswith("data:")
+                else f"data:image/png;base64,{value}"
+            )
+
+        updaters.append(update_image)
     else:
         raise ValueError(f"Unknown control kind {control.kind!r}")
 

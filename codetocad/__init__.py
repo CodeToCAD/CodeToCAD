@@ -90,6 +90,7 @@ from codetocad.simulation import (
     Lighting,
     LinkSpec,
     Simulation,
+    encode_png,
     extract_links,
 )
 from codetocad.fea import FEA, FEAResults
@@ -222,6 +223,7 @@ __all__ = [
     "LinkSpec",
     "JointSpec",
     "extract_links",
+    "encode_png",
     "CONSTRAINT_OPERATIONS",
     # fea
     "FEA",

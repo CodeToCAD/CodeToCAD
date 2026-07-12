@@ -17,7 +17,7 @@ from turtlebot_diff_drive import MOTOR_NO_LOAD_RPM, build_turtlebot, make_simula
 
 from _render_common import record_gif
 
-chassis, left_wheel, right_wheel = build_turtlebot()
+chassis, left_wheel, right_wheel, camera = build_turtlebot()
 sim = make_simulation(chassis)
 
 record_gif(

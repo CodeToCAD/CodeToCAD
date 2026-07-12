@@ -28,10 +28,10 @@ from turtlebot_diff_drive import (
 
 from codetocad_integrations.playwright import screenshot_webapp
 
-chassis, left_wheel, right_wheel = build_turtlebot()
+chassis, left_wheel, right_wheel, camera = build_turtlebot()
 sim = make_simulation(chassis)
 mcu, left_encoder, right_encoder = make_microcontroller(left_wheel, right_wheel)
-emulator = wire_emulation(sim, mcu)
+emulator = wire_emulation(sim, mcu, camera)
 emulator.communication.connect()
 left_wheel.set_velocity(0.5 * MOTOR_NO_LOAD_RPM)
 right_wheel.set_velocity(0.5 * MOTOR_NO_LOAD_RPM)

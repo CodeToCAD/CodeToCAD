@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import re
 import struct
+import zlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -257,6 +258,40 @@ def ensure_binary_stl(path: str | Path) -> None:
             for vertex in triangle:
                 f.write(struct.pack("<3f", *vertex))
             f.write(struct.pack("<H", 0))
+
+
+def encode_png(pixels: np.ndarray) -> bytes:
+    """Encode an (H, W, 3) RGB or (H, W) grayscale uint8 array as a PNG
+    (stdlib only) — e.g. a simulated camera frame for telemetry: base64
+    the result and show it with ``app.add_image``."""
+    pixels = np.ascontiguousarray(pixels, dtype=np.uint8)
+    if pixels.ndim == 2:
+        color_type = 0  # grayscale
+    elif pixels.ndim == 3 and pixels.shape[2] == 3:
+        color_type = 2  # RGB
+    else:
+        raise ValueError("Expected an (H, W) or (H, W, 3) uint8 array")
+    height, width = pixels.shape[:2]
+    rows = pixels.reshape(height, -1)
+    # Each scanline starts with a filter byte (0 = unfiltered).
+    raw = np.zeros((height, rows.shape[1] + 1), dtype=np.uint8)
+    raw[:, 1:] = rows
+
+    def chunk(tag: bytes, payload: bytes) -> bytes:
+        return (
+            struct.pack(">I", len(payload))
+            + tag
+            + payload
+            + struct.pack(">I", zlib.crc32(tag + payload))
+        )
+
+    header = struct.pack(">IIBBBBB", width, height, 8, color_type, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", header)
+        + chunk(b"IDAT", zlib.compress(raw.tobytes(), 6))
+        + chunk(b"IEND", b"")
+    )
 
 
 class Simulation:

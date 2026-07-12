@@ -168,6 +168,13 @@ class AppBase(CommunicationMixin):
             )
         )
 
+    def add_image(self, label: str, source, *, key: str | None = None) -> Control:
+        """A live image view of ``source``'s telemetry — e.g. a robot
+        camera's frames. The telemetry value (or its ``key=`` entry of
+        dict telemetry) must be a base64-encoded PNG/JPEG string or a
+        ``data:image/...`` URL."""
+        return self._add(Control("image", label, source=source, key=key))
+
     def add_label(self, text: str) -> Control:
         return self._add(Control("label", text))
 

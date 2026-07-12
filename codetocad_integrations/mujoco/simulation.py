@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import tempfile
+from dataclasses import dataclass, field
 from pathlib import Path
 from xml.etree import ElementTree as ET
+
+import numpy as np
 
 from codetocad.parts import Part3D
 from codetocad.simulation import (
@@ -19,6 +22,52 @@ from codetocad.simulation import (
 
 def _fmt(vector) -> str:
     return " ".join(f"{float(v):.9g}" for v in vector)
+
+
+@dataclass
+class CameraSpec:
+    """A fixed camera mounted on one of the robot's links.
+
+    ``position`` is in world coordinates with the robot in its modeled
+    pose (the same convention as parts and joint anchors). ``xyaxes`` are
+    the camera frame's X (image right) and Y (image up) axes; the camera
+    looks along -Z. The default looks towards +X with +Z up — a
+    forward-facing camera on a mobile robot."""
+
+    name: str = "camera"
+    link: str | None = None  # link (body) to mount on; None = the root link
+    position: tuple[float, float, float] = (0.0, 0.0, 0.1)
+    xyaxes: tuple[float, float, float, float, float, float] = (0, -1, 0, 0, 0, 1)
+    fovy: float = 60.0  # vertical field of view, degrees
+    resolution: tuple[int, int] = (320, 240)  # (width, height) pixels
+
+
+@dataclass
+class TerrainSpec:
+    """A heightfield floor for the robot to drive on.
+
+    ``heights`` is an (nrow, ncol) array of elevations in meters (>= 0);
+    row r maps to y and column c to x across ``extent``, so
+    ``heights[0, 0]`` is the corner at ``position - extent/2``. The
+    heightfield sits at z=0, on top of a thin base slab."""
+
+    heights: np.ndarray = field(default_factory=lambda: np.zeros((2, 2)))
+    extent: tuple[float, float] = (5.0, 5.0)  # total x/y size, meters
+    position: tuple[float, float] = (0.0, 0.0)  # center of the field
+    base_thickness: float = 0.01
+    rgba: tuple[float, float, float, float] = (0.5, 0.55, 0.4, 1.0)
+    #: Second checker color; the two-tone grid gives cameras and the
+    #: viewer a sense of scale and motion. None renders flat ``rgba``.
+    checker_rgba: tuple[float, float, float, float] | None = (0.42, 0.47, 0.33, 1.0)
+
+    @property
+    def max_height(self) -> float:
+        return max(float(np.max(self.heights)), 1e-6)
+
+    @property
+    def normalized(self) -> np.ndarray:
+        """Elevation data scaled to [0, 1], as MuJoCo stores it."""
+        return np.asarray(self.heights, dtype=np.float64) / self.max_height
 
 
 def build_mjcf(
@@ -39,6 +88,8 @@ def build_mjcf(
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
     lighting: list[Lighting] | None = None,
     scene_links: list[LinkSpec] | None = None,
+    cameras: list[CameraSpec] | None = None,
+    terrain: TerrainSpec | None = None,
 ) -> str:
     """Build an MJCF document from an extracted kinematic tree. Mesh paths
     must already be filled in and be binary STLs in one directory.
@@ -58,10 +109,15 @@ def build_mjcf(
     ``geom_friction`` overrides contact friction (slide, spin, roll) per
     link name — e.g. a low-slide caster ball. ``scene_links`` are
     free-floating bodies (a ``freejoint`` each) that collide with the
-    robot — loose objects it can push or pick up."""
+    robot — loose objects it can push or pick up. ``cameras`` mounts
+    fixed cameras on links (render them with
+    ``MujocoSimulation.get_camera_image``); ``terrain`` adds a
+    heightfield floor (elevation data is uploaded after model load, so
+    load this MJCF via ``MujocoSimulation`` for a non-flat field)."""
     actuator_types = actuator_types or {}
     actuator_forcerange = actuator_forcerange or {}
     scene_links = scene_links or []
+    cameras = cameras or []
 
     def damping_for(joint_name: str) -> float:
         if isinstance(joint_damping, dict):
@@ -86,8 +142,66 @@ def build_mjcf(
         ET.SubElement(
             asset, "mesh", name=link.name, file=Path(link.mesh_path).name
         )
+    if terrain is not None:
+        nrow, ncol = np.asarray(terrain.heights).shape
+        ET.SubElement(
+            asset,
+            "hfield",
+            name="terrain",
+            nrow=str(nrow),
+            ncol=str(ncol),
+            size=_fmt(
+                (
+                    terrain.extent[0] / 2,
+                    terrain.extent[1] / 2,
+                    terrain.max_height,
+                    terrain.base_thickness,
+                )
+            ),
+        )
+        if terrain.checker_rgba is not None:
+            ET.SubElement(
+                asset,
+                "texture",
+                name="terrain_checker",
+                type="2d",
+                builtin="checker",
+                rgb1=_fmt(terrain.rgba[:3]),
+                rgb2=_fmt(terrain.checker_rgba[:3]),
+                width="512",
+                height="512",
+            )
+            ET.SubElement(
+                asset,
+                "material",
+                name="terrain_material",
+                texture="terrain_checker",
+                texrepeat=_fmt((terrain.extent[0] * 2, terrain.extent[1] * 2)),
+            )
+    if cameras:
+        # Size the offscreen framebuffer for the largest camera.
+        visual = ET.SubElement(mujoco_el, "visual")
+        ET.SubElement(
+            visual,
+            "global",
+            offwidth=str(max(c.resolution[0] for c in cameras)),
+            offheight=str(max(c.resolution[1] for c in cameras)),
+        )
 
     worldbody = ET.SubElement(mujoco_el, "worldbody")
+    if terrain is not None:
+        terrain_geom = ET.SubElement(
+            worldbody,
+            "geom",
+            name="terrain",
+            type="hfield",
+            hfield="terrain",
+            pos=_fmt((*terrain.position, 0.0)),
+            rgba=_fmt(terrain.rgba),
+        )
+        if terrain.checker_rgba is not None:
+            terrain_geom.set("material", "terrain_material")
+            terrain_geom.set("rgba", "1 1 1 1")  # let the texture color it
     if ground_plane:
         ET.SubElement(
             worldbody,
@@ -158,6 +272,16 @@ def build_mjcf(
             if armature > 0:
                 joint.set("armature", f"{armature:.9g}")
         emit_geom_and_inertial(body, link)
+        for camera in cameras:
+            if (camera.link or links[0].name) == link.name:
+                ET.SubElement(
+                    body,
+                    "camera",
+                    name=camera.name,
+                    pos=_fmt(np.asarray(camera.position, dtype=float) - link.frame),
+                    xyaxes=_fmt(camera.xyaxes),
+                    fovy=f"{camera.fovy:.9g}",
+                )
         for child in link.children:
             emit_body(child, body)
 
@@ -224,12 +348,17 @@ class MujocoSimulation(Simulation):
         joint_armature: float | dict[str, float] = 0.0,
         ground_plane: bool = False,
         geom_friction: dict[str, tuple[float, float, float]] | None = None,
+        cameras: list[CameraSpec] | None = None,
+        terrain: TerrainSpec | None = None,
         **kwargs,
     ):
         super().__init__(root_part, **kwargs)
         import mujoco
 
         self._mujoco = mujoco
+        self.cameras = {camera.name: camera for camera in cameras or []}
+        self.terrain = terrain
+        self._renderers: dict[tuple[int, int], object] = {}
         self.output_dir = Path(
             output_dir
             if output_dir is not None
@@ -253,11 +382,17 @@ class MujocoSimulation(Simulation):
             ground_plane=ground_plane,
             geom_friction=geom_friction,
             lighting=self.lighting,
+            cameras=cameras,
+            terrain=terrain,
         )
         self.mjcf_path = self.output_dir / "robot.xml"
         self.mjcf_path.write_text(mjcf)
 
         self.model = mujoco.MjModel.from_xml_path(str(self.mjcf_path))
+        if terrain is not None:
+            # The MJCF declares the heightfield's shape; the elevation
+            # data (normalized to [0, 1]) is uploaded here.
+            self.model.hfield("terrain").data[:] = terrain.normalized
         self.data = mujoco.MjData(self.model)
         mujoco.mj_forward(self.model, self.data)
 
@@ -314,6 +449,41 @@ class MujocoSimulation(Simulation):
         body = self.data.body(name)
         return tuple(map(float, body.xpos)), tuple(map(float, body.xquat))
 
+    def get_camera_image(
+        self,
+        camera: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+    ) -> np.ndarray:
+        """Render a mounted camera offscreen: an (height, width, 3) uint8
+        RGB array of what the robot sees right now. ``camera`` defaults to
+        the first declared camera; ``width``/``height`` default to the
+        camera's ``resolution``."""
+        if not self.cameras:
+            raise RuntimeError(
+                "No cameras mounted; pass cameras=[CameraSpec(...)] to simulate()"
+            )
+        if camera is None:
+            camera = next(iter(self.cameras))
+        spec = self.cameras.get(camera)
+        if spec is None:
+            raise KeyError(
+                f"Unknown camera {camera!r}; cameras are {list(self.cameras)}"
+            )
+        width = width or spec.resolution[0]
+        height = height or spec.resolution[1]
+        renderer = self._renderers.get((width, height))
+        if renderer is None:
+            renderer = self._mujoco.Renderer(self.model, height=height, width=width)
+            self._renderers[(width, height)] = renderer
+        renderer.update_scene(self.data, camera=camera)
+        return renderer.render()
+
+    def close(self) -> None:
+        for renderer in self._renderers.values():
+            renderer.close()
+        self._renderers.clear()
+
     def launch_viewer(self, key_callback=None, on_step=None) -> None:
         """Open the interactive viewer and step in real time until closed.
         On macOS this must run under ``mjpython``. ``on_step`` is called
@@ -352,6 +522,8 @@ def simulate(
     ground_plane: bool = False,
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
     scene_parts: list[Part3D] | None = None,
+    cameras: list[CameraSpec] | None = None,
+    terrain: TerrainSpec | None = None,
     output_dir: str | Path | None = None,
 ) -> MujocoSimulation:
     """Export ``part``'s assembly (meshes + joint constraints) to an MJCF
@@ -361,11 +533,16 @@ def simulate(
     ``joint_damping`` and the motor's stall torque as
     ``actuator_forcerange``. ``scene_parts`` are loose, free-floating
     bodies the robot can collide with (e.g. an object to pick up) — pair
-    them with ``ground_plane=True`` so they have a floor to rest on."""
+    them with ``ground_plane=True`` so they have a floor to rest on.
+    ``cameras`` mounts fixed ``CameraSpec`` cameras on links, rendered
+    with ``sim.get_camera_image()``; ``terrain`` adds a ``TerrainSpec``
+    heightfield floor to drive on."""
     return MujocoSimulation(
         part,
         lighting=lighting,
         scene_parts=scene_parts,
+        cameras=cameras,
+        terrain=terrain,
         gravity=gravity,
         time_step=time_step,
         fixed_base=fixed_base,

@@ -22,10 +22,14 @@ def _fmt(vector) -> str:
     return " ".join(f"{float(v):.9g}" for v in vector)
 
 
-def build_urdf(links: list[LinkSpec], name: str = "codetocad_robot") -> str:
+def build_urdf(
+    links: list[LinkSpec], name: str = "codetocad_robot", mesh_dir: str = ""
+) -> str:
     """Build a URDF document from an extracted kinematic tree. Mesh paths
     must already be filled in (relative paths are resolved by pybullet
-    against the URDF's directory)."""
+    against the URDF's directory). ``mesh_dir`` prefixes the mesh
+    filenames, for meshes exported to a subdirectory next to the URDF
+    (e.g. ``mesh_dir="meshes"``)."""
     robot = ET.Element("robot", name=name)
     for link in links:
         element = ET.SubElement(robot, "link", name=link.name)
@@ -34,9 +38,10 @@ def build_urdf(links: list[LinkSpec], name: str = "codetocad_robot") -> str:
             section = ET.SubElement(element, tag)
             ET.SubElement(section, "origin", xyz=_fmt(mesh_offset), rpy="0 0 0")
             geometry = ET.SubElement(section, "geometry")
-            ET.SubElement(
-                geometry, "mesh", filename=Path(link.mesh_path).name
-            )
+            filename = Path(link.mesh_path).name
+            if mesh_dir:
+                filename = f"{mesh_dir}/{filename}"
+            ET.SubElement(geometry, "mesh", filename=filename)
             if tag == "visual":
                 material = ET.SubElement(
                     section, "material", name=f"{link.name}_material"

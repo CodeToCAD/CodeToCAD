@@ -4,9 +4,14 @@ Model with Build123D (or Blender), then `simulate(part)` exports the meshes
 and joint constraints to a URDF and loads it into PyBullet. Requires
 `pybullet` and `build123d` installed.
 
-- `arm_6dof.py` — a 6-DOF arm; in the GUI, keys **a/s/d/f/g/h** move joints
-  1-6 and holding **Shift** reverses the direction of the joint value.
-  `--test` runs headless position control.
+- `arm_6dof.py` — a 6-DOF arm with a parallel-jaw gripper and a cube on
+  the floor to pick up. Every joint is visible hardware: hinge joints are
+  clevis slots cut into the link cubes with protruding pin cylinders, yaw
+  joints are cylinder necks seated in recesses, and the gripper fingers
+  are cubes on prismatic joints. In the GUI, keys **a/s/d/f/g/h** move
+  joints 1-6, **j/k** close/open the gripper, and holding **Shift**
+  reverses the direction of the joint value. `--test` runs a headless
+  scripted pick-and-lift.
 
   <img src="images/arm_6dof.png" width="400">
 

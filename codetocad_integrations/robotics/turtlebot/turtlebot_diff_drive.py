@@ -12,8 +12,14 @@ Everything a real robot would have, emulated in-process:
   motor commands drive MuJoCo velocity actuators and encoder telemetry is
   read back from the simulated joints, over the same JSON-lines wire
   protocol real firmware speaks.
-- **A WebApp** with sliders for the left/right motors, live encoder
-  gauges/plots, and the robot's pose.
+- **A camera**: a housing part on the chassis front
+  (``FrontCamera(Part3D, CameraMixin)``) with a matching MuJoCo camera
+  mounted at its lens. Frames render offscreen, are PNG-encoded and
+  streamed over the same telemetry channel as the encoders.
+- **A WebApp** with sliders for the left/right motors, the live camera
+  feed, encoder gauges/plots, and the robot's pose.
+- **Terrain**: gentle rolling bumps (a MuJoCo heightfield) with a flat
+  launch pad at the origin, so there is something to see and climb.
 
 Run it (needs the mujoco and nicegui extras)::
 
@@ -31,6 +37,7 @@ physical hardware from the same app.
 
 from __future__ import annotations
 
+import base64
 import math
 import threading
 import time
@@ -48,11 +55,12 @@ from codetocad import (
     Vec4,
     WebApp,
     cylinder,
+    encode_png,
     sphere,
     steel_material,
 )
-from codetocad.mixins import DCMotorMixin, EncoderMixin
-from codetocad.parts import _cylinder_mesh
+from codetocad.mixins import CameraMixin, DCMotorMixin, EncoderMixin
+from codetocad.parts import _box_mesh, _cylinder_mesh
 
 # TurtleBot3 Burger / Dynamixel XL430-W250 numbers.
 WHEEL_RADIUS = 0.033  # 66 mm tire
@@ -66,6 +74,13 @@ CASTER_RADIUS = 0.0127  # 1" steel transfer ball
 CASTER_X = -0.055
 MOTOR_NO_LOAD_RPM = 57.0
 ENCODER_CPR = 4096
+
+# The camera module on the chassis front, just below the top plate.
+CAMERA_SIZE = 0.025
+CAMERA_X = 0.062
+CAMERA_Z = 0.145
+CAMERA_TILT_DEG = 15.0  # pitched down to see the terrain ahead
+CAMERA_FPS = 8.0
 
 
 class DrivenWheel(Part3D, DCMotorMixin):
@@ -111,9 +126,44 @@ class XL430Encoder(EncoderMixin):
     sample_rate_hz = 20.0
 
 
-def build_turtlebot() -> tuple[Part3D, DrivenWheel, DrivenWheel]:
+class FrontCamera(Part3D, CameraMixin):
+    """A camera module on the chassis front: the part *is also* the camera
+    sensor (like ``DrivenWheel`` is its motor). The housing is a small
+    cube; ``capture_image()`` renders the MuJoCo camera mounted at its
+    lens once the simulation wires it up."""
+
+    resolution = (320, 240)
+    field_of_view = "60 deg"
+    sample_rate_hz = CAMERA_FPS
+
+    def __init__(self, name: str, center: tuple[float, float, float]):
+        super().__init__(name)
+        self._origin = Vec3(*center)
+        self._capture = None  # set by wire_emulation
+        self.set_material(
+            MaterialBase("camera_housing", mass=0.02, color_rgba=Vec4(0.06, 0.06, 0.06, 1.0))
+        )
+
+    def get_bounding_box(self):
+        origin, half = self._origin, CAMERA_SIZE / 2
+        return (
+            Vec3(origin.x - half, origin.y - half, origin.z - half),
+            Vec3(origin.x + half, origin.y + half, origin.z + half),
+        )
+
+    def _generate_mesh(self):
+        return _box_mesh(*self.get_bounding_box())
+
+    def capture_image(self):
+        if self._capture is None:
+            raise RuntimeError("Camera not wired to a simulation yet")
+        return self._capture()
+
+
+def build_turtlebot() -> tuple[Part3D, DrivenWheel, DrivenWheel, FrontCamera]:
     """The robot assembly, modeled in place: chassis at the origin, wheel
-    axles at z = wheel radius, caster ball touching the floor (z=0)."""
+    axles at z = wheel radius, caster ball touching the floor (z=0), and
+    the camera module on the chassis front."""
     chassis = cylinder(
         CHASSIS_DIAMETER / 2,
         CHASSIS_HEIGHT,
@@ -146,19 +196,55 @@ def build_turtlebot() -> tuple[Part3D, DrivenWheel, DrivenWheel]:
     chassis.fixed(
         Location(x=CASTER_X, z=CASTER_RADIUS), caster, Location(x=CASTER_X, z=CASTER_RADIUS)
     )
-    return chassis, left_wheel, right_wheel
+
+    camera = FrontCamera("camera", (CAMERA_X, 0.0, CAMERA_Z))
+    chassis.fixed(
+        Location(x=CAMERA_X, z=CAMERA_Z), camera, Location(x=CAMERA_X, z=CAMERA_Z)
+    )
+    return chassis, left_wheel, right_wheel, camera
+
+
+def make_terrain():
+    """Gentle rolling bumps to drive over: a 6 x 6 m heightfield of
+    crossed sine waves, faded to a flat launch pad around the origin so
+    the robot starts level. 4 cm crests over a 1.2 m wavelength keep the
+    slopes within what the XL430s can climb."""
+    from codetocad_integrations.mujoco import TerrainSpec
+
+    extent = 6.0
+    coords = np.linspace(-extent / 2, extent / 2, 128)
+    x, y = np.meshgrid(coords, coords)  # heightfield rows map to y, columns to x
+    bumps = 0.5 * (1 + np.sin(2 * np.pi * x / 1.2) * np.sin(2 * np.pi * y / 1.2))
+    ramp = np.clip((np.hypot(x, y) - 0.4) / 0.6, 0.0, 1.0)
+    ramp = ramp * ramp * (3 - 2 * ramp)  # smoothstep: no kink at the pad edge
+    return TerrainSpec(heights=0.04 * bumps * ramp, extent=(extent, extent))
 
 
 def make_simulation(chassis: Part3D, output_dir=None):
-    """MuJoCo with a floor, a free-floating base and velocity-controlled
+    """MuJoCo with terrain, a free-floating base and velocity-controlled
     wheel joints. The caster ball is rigidly attached and nearly
-    frictionless, which is how a transfer-ball caster behaves."""
-    from codetocad_integrations.mujoco import simulate
+    frictionless, which is how a transfer-ball caster behaves. The
+    front camera is mounted at the housing's lens, pitched down to see
+    the terrain ahead."""
+    from codetocad_integrations.mujoco import CameraSpec, simulate
 
+    tilt = math.radians(CAMERA_TILT_DEG)
+    front_camera = CameraSpec(
+        name="front_camera",
+        link="camera",
+        # The lens sits just outside the housing's front face; the camera
+        # looks along +X (image up = +Z), pitched down by the tilt.
+        position=(CAMERA_X + CAMERA_SIZE / 2 + 0.002, 0.0, CAMERA_Z),
+        xyaxes=(0, -1, 0, math.sin(tilt), 0, math.cos(tilt)),
+        fovy=60.0,
+        resolution=FrontCamera.resolution,
+    )
     return simulate(
         chassis,
         fixed_base=False,
         ground_plane=True,
+        cameras=[front_camera],
+        terrain=make_terrain(),
         actuator_types={"left_axle": "velocity", "right_axle": "velocity"},
         # XL430-W250 stall torque; keeps reaction torques on the 1 kg
         # chassis realistic so the robot cannot backflip off the line.
@@ -191,11 +277,15 @@ def make_microcontroller(
     return mcu, left_encoder, right_encoder
 
 
-def wire_emulation(sim, mcu: Microcontroller) -> EmulatedMicrocontroller:
+def wire_emulation(
+    sim, mcu: Microcontroller, camera: FrontCamera
+) -> EmulatedMicrocontroller:
     """Connect the microcontroller's channels to the simulation: motor
     commands set wheel joint velocity targets, encoder telemetry reads the
-    joint state back, and the chassis pose is published for the app."""
+    joint state back, and the chassis pose and camera frames are published
+    for the app."""
     emulator = EmulatedMicrocontroller(mcu)
+    camera._capture = lambda: sim.get_camera_image("front_camera")
 
     def motor_handler(joint_name):
         def handle(value):
@@ -235,11 +325,16 @@ def wire_emulation(sim, mcu: Microcontroller) -> EmulatedMicrocontroller:
             "heading_deg": round(math.degrees(yaw), 2),
         }
 
+    def read_frame():
+        png = encode_png(camera.capture_image())
+        return {"png": base64.b64encode(png).decode("ascii")}
+
     emulator.on_command("left_motor", motor_handler("left_axle"))
     emulator.on_command("right_motor", motor_handler("right_axle"))
     emulator.set_sensor("left_encoder", encoder_reader("left_axle"))
     emulator.set_sensor("right_encoder", encoder_reader("right_axle"))
     emulator.add_telemetry("pose", read_pose, sample_rate_hz=10.0)
+    emulator.add_telemetry("camera", read_frame, sample_rate_hz=CAMERA_FPS)
     return emulator
 
 
@@ -269,6 +364,7 @@ def make_app(communication, left_wheel, right_wheel, left_encoder, right_encoder
     )
     app.add_button("stop left", target=left_wheel, value={"stop": True})
     app.add_button("stop right", target=right_wheel, value={"stop": True})
+    app.add_image("front camera", source="camera", key="png")
     app.add_plot("left wheel (rpm)", source=left_encoder, key="rpm")
     app.add_plot("right wheel (rpm)", source=right_encoder, key="rpm")
     app.add_gauge("left encoder", source=left_encoder, key="count", units="ticks")
@@ -293,10 +389,10 @@ def main(argv=None):
     parser.add_argument("--port", type=int, default=8080, help="WebApp port")
     args = parser.parse_args(argv)
 
-    chassis, left_wheel, right_wheel = build_turtlebot()
+    chassis, left_wheel, right_wheel, camera = build_turtlebot()
     sim = make_simulation(chassis)
     mcu, left_encoder, right_encoder = make_microcontroller(left_wheel, right_wheel)
-    emulator = wire_emulation(sim, mcu)
+    emulator = wire_emulation(sim, mcu, camera)
     emulator.communication.connect()
     app = make_app(
         emulator.communication, left_wheel, right_wheel, left_encoder, right_encoder

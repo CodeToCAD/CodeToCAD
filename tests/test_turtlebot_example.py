@@ -2,6 +2,7 @@
 stack — WebApp-style commands over the emulated wire protocol, into MuJoCo,
 and encoder/pose telemetry back out."""
 
+import base64
 import importlib.util
 import math
 from pathlib import Path
@@ -24,12 +25,12 @@ ENCODER_MIN_TICKS = 8000
 
 @pytest.fixture()
 def rig(tmp_path):
-    chassis, left_wheel, right_wheel = turtlebot.build_turtlebot()
+    chassis, left_wheel, right_wheel, camera = turtlebot.build_turtlebot()
     sim = turtlebot.make_simulation(chassis, output_dir=tmp_path)
     mcu, left_encoder, right_encoder = turtlebot.make_microcontroller(
         left_wheel, right_wheel
     )
-    emulator = turtlebot.wire_emulation(sim, mcu)
+    emulator = turtlebot.wire_emulation(sim, mcu, camera)
     emulator.communication.connect()
     return sim, mcu, emulator, left_wheel, right_wheel, left_encoder, right_encoder
 
@@ -92,3 +93,27 @@ def test_app_controls_target_the_wire_channels(rig):
         "right_encoder",
         "pose",
     }
+    images = [c for c in app.controls if c.kind == "image"]
+    assert [i.source_channel for i in images] == ["camera"]
+
+
+def test_camera_streams_png_frames(rig):
+    sim, mcu, emulator, *_ = rig
+    frames = []
+    mcu.communication.telemetry.subscribe(
+        lambda message: frames.append(message)
+        if message.get("name") == "camera"
+        else None
+    )
+    turtlebot.drive(sim, emulator, duration_seconds=0.5)
+    mcu.poll()
+    assert frames  # ~4 frames at 8 fps
+    png = base64.b64decode(frames[-1]["value"]["png"])
+    assert png.startswith(b"\x89PNG")
+
+
+def test_terrain_heightfield_is_loaded(rig):
+    sim, *_ = rig
+    hfield = sim.model.hfield("terrain")
+    assert hfield.data.max() == pytest.approx(1.0)  # normalized bumps
+    assert hfield.size[2] == pytest.approx(0.04, rel=0.01)  # 4 cm crests
