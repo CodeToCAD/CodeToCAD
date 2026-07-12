@@ -141,8 +141,8 @@ and `codetocad.Lighting` describes scene lights. See the examples in
 and [codetocad_integrations/mujoco/examples/](codetocad_integrations/mujoco/examples/)
 (6-DOF keyboard-controlled arm, pendulum, double pendulum).
 
-<img src="codetocad_integrations/pybullet/examples/images/arm_6dof.png" width="360">
-<img src="codetocad_integrations/mujoco/examples/images/double_pendulum.png" width="360">
+<img src="codetocad_integrations/pybullet/examples/images/arm_6dof.gif" width="360">
+<img src="codetocad_integrations/mujoco/examples/images/double_pendulum.gif" width="360">
 
 ## FEA (CalculiX)
 
@@ -244,6 +244,63 @@ plus ngspice (`brew install ngspice` / `apt install ngspice`). See
 
 <img src="codetocad_integrations/spice/examples/images/rc_lowpass_bode.png" width="360">
 <img src="codetocad_integrations/spice/examples/images/led_driver_current.png" width="360">
+
+## WebApp control panels
+
+Any `Part3D` can double as a sensor or actuator via mixins (`DCMotorMixin`,
+`EncoderMixin`, `IMUMixin`, ...). Bind them to a `Microcontroller`'s pins and
+a `PythonApp`/`WebApp` federates sliders, buttons, gauges and plots to the
+same JSON-lines wire protocol the firmware speaks:
+
+```python
+from codetocad import Microcontroller, MicrocontrollerBoard, SerialCommunication, WebApp
+from codetocad.mixins import DCMotorMixin, EncoderMixin
+
+class GearMotor(DCMotorMixin):
+    no_load_speed_rpm = 200
+
+motor, encoder = GearMotor(), EncoderMixin()
+mcu = Microcontroller("motor-lab", board=MicrocontrollerBoard.ESP32)
+mcu.bind_actuator(motor, name="wheel", pwm_pin=5, dir_pin=18)
+mcu.bind_sensor(encoder, name="enc", a=32, b=33)
+mcu.set_communication(SerialCommunication("/dev/ttyUSB0"))
+
+app = WebApp("motor lab").set_communication(mcu.communication)
+app.add_slider("speed (rpm)", target=motor, command="velocity_rpm", maximum=200)
+app.add_plot("measured rpm", source=encoder)
+app.run()
+```
+
+`PythonApp` opens a native window instead of a browser page and `RerunApp`
+streams telemetry to the [Rerun](https://rerun.io) viewer instead — all
+three take the same `Communication` instance as the microcontroller so both
+ends agree, and `EmulatedMicrocontroller` can stand in for real hardware to
+drive a physics simulation instead (see Robotics, below). Install with
+`uv sync --extra nicegui` (or `--extra rerun`). See
+[Microcontroller, Sensors/Actuators definition, and communication](CodeToCAD.md)
+in the design doc for I2C/SPI/UART buses, wireless transports and signal
+filtering.
+
+<img src="codetocad_integrations/robotics/turtlebot/images/turtlebot_gui.png" width="500">
+
+## Robotics examples: putting it all together
+
+[codetocad_integrations/robotics/](codetocad_integrations/robotics/) contains examples that combine everything above into one script:
+**MCAD** (the assembled parts and joint constraints), **ECAD** (the
+microcontroller as an `ElectricalComponent` with pin bindings), an **MCU**
+definition (run by real firmware or, for simulation, an in-process
+`EmulatedMicrocontroller`), and a **WebApp** control panel — all driving the
+same physics simulation.
+
+[codetocad_integrations/robotics/turtlebot/](codetocad_integrations/robotics/turtlebot/)
+is a differential-drive TurtleBot3 Burger: real chassis/wheel/caster
+dimensions, Dynamixel XL430-W250 motor/encoder specs, an ESP32
+`Microcontroller` definition, MuJoCo physics with velocity-controlled
+wheels, and a `WebApp` with motor sliders and encoder/pose readouts.
+Swapping the emulator for a `SerialCommunication` to a real board is the
+only change needed to drive physical hardware from the same app.
+
+<img src="codetocad_integrations/robotics/turtlebot/images/turtlebot_drive.gif" width="480">
 
 ## User-defined parts
 
