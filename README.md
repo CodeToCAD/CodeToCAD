@@ -136,10 +136,13 @@ sim.run(10.0, realtime=True)
 
 Joint axes come from the constraint Location's orientation, limits from
 `min_limits`/`max_limits`, masses/inertias from part materials and geometry,
-and `codetocad.Lighting` describes scene lights. See the examples in
+and `codetocad.Lighting` describes scene lights. Free-floating `scene_parts`
+(objects the robot can interact with) and a `ground_plane` complete the
+scene. See the examples in
 [codetocad_integrations/pybullet/examples/](codetocad_integrations/pybullet/examples/)
 and [codetocad_integrations/mujoco/examples/](codetocad_integrations/mujoco/examples/)
-(6-DOF keyboard-controlled arm, pendulum, double pendulum).
+(a 6-DOF arm with a parallel-jaw gripper that picks up a cube, pendulum,
+double pendulum).
 
 <img src="codetocad_integrations/pybullet/examples/images/arm_6dof.gif" width="360">
 <img src="codetocad_integrations/mujoco/examples/images/double_pendulum.gif" width="360">

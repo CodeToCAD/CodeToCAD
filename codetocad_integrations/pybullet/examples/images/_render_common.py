@@ -33,11 +33,17 @@ def _frame(sim, view_matrix, proj_matrix, width, height):
     return Image.fromarray(rgba[:, :, :3], "RGB")
 
 
+def _ensure_plane(sim):
+    if getattr(sim, "ground_plane", False):
+        return  # the simulation already has its own floor
+    p.setAdditionalSearchPath(pybullet_data.getDataPath())
+    p.loadURDF("plane.urdf", physicsClientId=sim.client)
+
+
 def capture(sim, out_png, eye, target, fov=48, width=1000, height=850):
     """Add a ground plane and save a DIRECT-mode render of ``sim`` to
     ``out_png``, looking from ``eye`` towards ``target``."""
-    p.setAdditionalSearchPath(pybullet_data.getDataPath())
-    p.loadURDF("plane.urdf", physicsClientId=sim.client)
+    _ensure_plane(sim)
 
     view_matrix, proj_matrix = _matrices(sim, eye, target, fov, width, height)
     _frame(sim, view_matrix, proj_matrix, width, height).save(out_png)
@@ -45,12 +51,23 @@ def capture(sim, out_png, eye, target, fov=48, width=1000, height=850):
 
 
 def record_gif(
-    sim, out_gif, *, duration_seconds, fps, eye, target, fov=48, width=480, height=360
+    sim,
+    out_gif,
+    *,
+    duration_seconds,
+    fps,
+    eye,
+    target,
+    fov=48,
+    width=480,
+    height=360,
+    on_frame=None,
 ):
     """Add a ground plane, step ``sim``, and record a DIRECT-mode render
-    every ``1/fps`` seconds into an animated GIF."""
-    p.setAdditionalSearchPath(pybullet_data.getDataPath())
-    p.loadURDF("plane.urdf", physicsClientId=sim.client)
+    every ``1/fps`` seconds into an animated GIF. ``on_frame`` is called
+    with the simulated time before each batch of steps — use it to drive
+    joint targets along a trajectory while recording."""
+    _ensure_plane(sim)
 
     view_matrix, proj_matrix = _matrices(sim, eye, target, fov, width, height)
     steps_per_frame = max(1, round((1.0 / fps) / sim.time_step))
@@ -64,6 +81,8 @@ def record_gif(
         frame = _frame(sim, view_matrix, proj_matrix, width, height)
         frames.append(frame.convert("P", palette=Image.ADAPTIVE))
         if i < frame_count - 1:
+            if on_frame is not None:
+                on_frame(i / fps)
             sim.step(steps_per_frame)
 
     frames[0].save(

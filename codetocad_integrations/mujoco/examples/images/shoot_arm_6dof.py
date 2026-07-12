@@ -1,5 +1,5 @@
-"""Generate images/arm_6dof.png: pose the 6-DOF arm example mid-motion and
-render it offscreen.
+"""Generate images/arm_6dof.png: the 6-DOF arm holding the picked-up cube,
+rendered offscreen.
 
     python shoot_arm_6dof.py
 
@@ -13,27 +13,25 @@ IMAGES_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(EXAMPLES_DIR))
 sys.path.insert(0, str(IMAGES_DIR))
 
-from arm_6dof import build_arm
+from arm_6dof import build_arm, build_pick_cube, run_pick
 from codetocad import Lighting
 from codetocad_integrations.mujoco import simulate
 from _render_common import capture
 
-arm = build_arm()
 sim = simulate(
-    arm, lighting=[Lighting(light_type="directional", position=(1.0, 1.0, 2.0))]
+    build_arm(),
+    ground_plane=True,
+    scene_parts=[build_pick_cube()],
+    lighting=[Lighting(light_type="directional", position=(1.0, 1.0, 2.0))],
 )
-names = sim.joint_names
-goals = (0.5, 0.4, -0.6, 0.8, 0.5, -1.0)
-for name, goal in zip(names, goals):
-    sim.set_joint_target(name, goal)
-sim.run(5.0)
+run_pick(sim, verbose=False)
 
 capture(
     sim,
     sim.data.qpos.copy(),
     str(IMAGES_DIR / "arm_6dof.png"),
-    lookat=[0, 0, 0.28],
-    distance=1.1,
+    lookat=[0.1, 0, 0.22],
+    distance=0.8,
     azimuth=135,
     elevation=-18,
 )

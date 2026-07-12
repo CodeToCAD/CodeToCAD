@@ -101,6 +101,7 @@ class PyBulletSimulation(Simulation):
         root_part: Part3D,
         *,
         gui: bool = False,
+        ground_plane: bool = False,
         output_dir: str | Path | None = None,
         **kwargs,
     ):
@@ -108,12 +109,13 @@ class PyBulletSimulation(Simulation):
         import pybullet as p
 
         self._p = p
+        self.ground_plane = ground_plane
         self.output_dir = Path(
             output_dir
             if output_dir is not None
             else tempfile.mkdtemp(prefix="codetocad_pybullet_")
         ).resolve()
-        export_link_meshes(self.links, self.output_dir)
+        export_link_meshes(self.links + self.scene_links, self.output_dir)
         urdf = build_urdf(self.links, name=root_part.name or "codetocad_robot")
         self.urdf_path = self.output_dir / "robot.urdf"
         self.urdf_path.write_text(urdf)
@@ -126,11 +128,29 @@ class PyBulletSimulation(Simulation):
             p.configureDebugVisualizer(
                 lightPosition=light.position, physicsClientId=self.client
             )
+        if ground_plane:
+            import pybullet_data
+
+            p.setAdditionalSearchPath(pybullet_data.getDataPath())
+            p.loadURDF("plane.urdf", physicsClientId=self.client)
         self.body = p.loadURDF(
             str(self.urdf_path),
             useFixedBase=self.fixed_base,
             physicsClientId=self.client,
         )
+        # Each scene part is its own free body in a one-link URDF, so it
+        # collides with the robot (self-collision within the robot's URDF
+        # stays disabled, loadURDF's default).
+        self.scene_bodies: dict[str, int] = {}
+        for link in self.scene_links:
+            path = self.output_dir / f"{link.name}.urdf"
+            path.write_text(build_urdf([link], name=link.name))
+            self.scene_bodies[link.name] = p.loadURDF(
+                str(path),
+                basePosition=tuple(link.frame),
+                useFixedBase=False,
+                physicsClientId=self.client,
+            )
         self._joint_indices: dict[str, int] = {}
         for index in range(p.getNumJoints(self.body, physicsClientId=self.client)):
             info = p.getJointInfo(self.body, index, physicsClientId=self.client)
@@ -159,13 +179,15 @@ class PyBulletSimulation(Simulation):
         for _ in range(count):
             self._p.stepSimulation(physicsClientId=self.client)
 
-    def set_joint_target(self, name: str, value: float) -> None:
+    def set_joint_target(self, name: str, value: float, force: float = 100.0) -> None:
+        """Position-control a joint towards ``value``. ``force`` caps the
+        motor's torque (N*m) or thrust (N) — e.g. a gripper's grip force."""
         self._p.setJointMotorControl2(
             self.body,
             self._joint(name),
             self._p.POSITION_CONTROL,
             targetPosition=value,
-            force=100,
+            force=force,
             physicsClientId=self.client,
         )
 
@@ -179,6 +201,21 @@ class PyBulletSimulation(Simulation):
             self.body, self._joint(name), physicsClientId=self.client
         )
         return float(state[0])
+
+    def get_body_pose(self, name: str) -> tuple[tuple[float, ...], tuple[float, ...]]:
+        """World position and quaternion (w, x, y, z) of a scene body or of
+        the robot's root link."""
+        if name in self.scene_bodies:
+            body = self.scene_bodies[name]
+        elif name == self.links[0].name:
+            body = self.body
+        else:
+            known = [self.links[0].name, *self.scene_bodies]
+            raise KeyError(f"Unknown body {name!r}; bodies are {known}")
+        position, (x, y, z, w) = self._p.getBasePositionAndOrientation(
+            body, physicsClientId=self.client
+        )
+        return tuple(map(float, position)), (w, x, y, z)
 
     def get_keyboard_events(self) -> dict:
         """PyBullet GUI keyboard events (key code -> state)."""
@@ -201,11 +238,16 @@ def simulate(
     time_step: float = 1.0 / 240.0,
     fixed_base: bool = True,
     actuated: bool = True,
+    ground_plane: bool = False,
+    scene_parts: list[Part3D] | None = None,
     output_dir: str | Path | None = None,
 ) -> PyBulletSimulation:
     """Export ``part``'s assembly (meshes + joint constraints) to a URDF and
     load it into PyBullet. Joints are passive until ``set_joint_target`` is
-    called."""
+    called. ``ground_plane`` adds a static floor at z=0. ``scene_parts``
+    are loose, free-floating bodies the robot can collide with (e.g. an
+    object to pick up) — pair them with ``ground_plane=True`` so they have
+    a floor to rest on."""
     return PyBulletSimulation(
         part,
         gui=gui,
@@ -214,5 +256,7 @@ def simulate(
         time_step=time_step,
         fixed_base=fixed_base,
         actuated=actuated,
+        ground_plane=ground_plane,
+        scene_parts=scene_parts,
         output_dir=output_dir,
     )

@@ -1,4 +1,6 @@
 """Shared offscreen rendering helpers for the MuJoCo example renders."""
+import re
+
 import mujoco
 from PIL import Image
 
@@ -21,7 +23,16 @@ def _render_model(sim):
     into a fresh (render-only) model."""
     xml = sim.mjcf_path.read_text()
     xml = xml.replace("<asset>", _ASSET_XML)
-    xml = xml.replace("<worldbody>", _WORLDBODY_XML)
+    if 'name="floor"' in xml:
+        # The simulation has its own plain floor (ground_plane=True);
+        # restyle it with the checkered grid instead of adding a second one.
+        xml = re.sub(
+            r'<geom name="floor"[^/]*/>',
+            '<geom name="floor" type="plane" size="1.5 1.5 0.1" material="grid" />',
+            xml,
+        )
+    else:
+        xml = xml.replace("<worldbody>", _WORLDBODY_XML)
     mod_path = sim.mjcf_path.with_name("robot_render.xml")
     mod_path.write_text(xml)
     return mujoco.MjModel.from_xml_path(str(mod_path))

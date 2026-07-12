@@ -38,6 +38,7 @@ def build_mjcf(
     ground_plane: bool = False,
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
     lighting: list[Lighting] | None = None,
+    scene_links: list[LinkSpec] | None = None,
 ) -> str:
     """Build an MJCF document from an extracted kinematic tree. Mesh paths
     must already be filled in and be binary STLs in one directory.
@@ -55,9 +56,12 @@ def build_mjcf(
     static floor at z=0
     (use with ``fixed_base=False`` so the robot can drive on it), and
     ``geom_friction`` overrides contact friction (slide, spin, roll) per
-    link name — e.g. a low-slide caster ball."""
+    link name — e.g. a low-slide caster ball. ``scene_links`` are
+    free-floating bodies (a ``freejoint`` each) that collide with the
+    robot — loose objects it can push or pick up."""
     actuator_types = actuator_types or {}
     actuator_forcerange = actuator_forcerange or {}
+    scene_links = scene_links or []
 
     def damping_for(joint_name: str) -> float:
         if isinstance(joint_damping, dict):
@@ -78,7 +82,7 @@ def build_mjcf(
         timestep=f"{time_step:.9g}",
     )
     asset = ET.SubElement(mujoco_el, "asset")
-    for link in links:
+    for link in links + scene_links:
         ET.SubElement(
             asset, "mesh", name=link.name, file=Path(link.mesh_path).name
         )
@@ -102,6 +106,25 @@ def build_mjcf(
             dir=_fmt(light.direction),
             diffuse=_fmt(light.diffuse),
             directional="true" if light.light_type == "directional" else "false",
+        )
+
+    def emit_geom_and_inertial(body: ET.Element, link: LinkSpec) -> None:
+        geom = ET.SubElement(
+            body,
+            "geom",
+            type="mesh",
+            mesh=link.name,
+            pos=_fmt(-link.frame),
+            rgba=_fmt(link.color_rgba),
+        )
+        if geom_friction and link.name in geom_friction:
+            geom.set("friction", _fmt(geom_friction[link.name]))
+        ET.SubElement(
+            body,
+            "inertial",
+            pos=_fmt(link.center_of_mass - link.frame),
+            mass=f"{link.mass:.9g}",
+            diaginertia=_fmt(link.inertia_diagonal),
         )
 
     def emit_body(link: LinkSpec, parent_element: ET.Element) -> None:
@@ -134,27 +157,17 @@ def build_mjcf(
             armature = armature_for(joint_spec.name)
             if armature > 0:
                 joint.set("armature", f"{armature:.9g}")
-        geom = ET.SubElement(
-            body,
-            "geom",
-            type="mesh",
-            mesh=link.name,
-            pos=_fmt(-link.frame),
-            rgba=_fmt(link.color_rgba),
-        )
-        if geom_friction and link.name in geom_friction:
-            geom.set("friction", _fmt(geom_friction[link.name]))
-        ET.SubElement(
-            body,
-            "inertial",
-            pos=_fmt(link.center_of_mass - link.frame),
-            mass=f"{link.mass:.9g}",
-            diaginertia=_fmt(link.inertia_diagonal),
-        )
+        emit_geom_and_inertial(body, link)
         for child in link.children:
             emit_body(child, body)
 
     emit_body(links[0], worldbody)
+    for link in scene_links:
+        body = ET.SubElement(
+            worldbody, "body", name=link.name, pos=_fmt(link.frame)
+        )
+        ET.SubElement(body, "freejoint", name=f"{link.name}_free")
+        emit_geom_and_inertial(body, link)
 
     # Parts touch at their joint anchors by construction; exclude all
     # self-collisions within the assembly (matching PyBullet's loadURDF
@@ -222,11 +235,12 @@ class MujocoSimulation(Simulation):
             if output_dir is not None
             else tempfile.mkdtemp(prefix="codetocad_mujoco_")
         ).resolve()
-        export_link_meshes(self.links, self.output_dir)
-        for link in self.links:
+        export_link_meshes(self.links + self.scene_links, self.output_dir)
+        for link in self.links + self.scene_links:
             ensure_binary_stl(link.mesh_path)  # MuJoCo needs binary STL
         mjcf = build_mjcf(
             self.links,
+            scene_links=self.scene_links,
             name=root_part.name or "codetocad_robot",
             gravity=self.gravity,
             time_step=self.time_step,
@@ -337,6 +351,7 @@ def simulate(
     joint_armature: float | dict[str, float] = 0.0,
     ground_plane: bool = False,
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
+    scene_parts: list[Part3D] | None = None,
     output_dir: str | Path | None = None,
 ) -> MujocoSimulation:
     """Export ``part``'s assembly (meshes + joint constraints) to an MJCF
@@ -344,10 +359,13 @@ def simulate(
     ``fixed_base=False, ground_plane=True``, declare the wheel joints in
     ``actuator_types={...: "velocity"}``, and give the wheels small
     ``joint_damping`` and the motor's stall torque as
-    ``actuator_forcerange``."""
+    ``actuator_forcerange``. ``scene_parts`` are loose, free-floating
+    bodies the robot can collide with (e.g. an object to pick up) — pair
+    them with ``ground_plane=True`` so they have a floor to rest on."""
     return MujocoSimulation(
         part,
         lighting=lighting,
+        scene_parts=scene_parts,
         gravity=gravity,
         time_step=time_step,
         fixed_base=fixed_base,

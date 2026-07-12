@@ -198,6 +198,28 @@ def extract_links(root: "Part3D") -> list[LinkSpec]:
     return links
 
 
+def extract_scene_links(
+    parts: list["Part3D"], taken: set[str] | None = None
+) -> list[LinkSpec]:
+    """LinkSpecs for free-floating scene bodies (no parent, no joint): loose
+    objects a robot can interact with, e.g. something to pick up. Each
+    link's frame sits at the part's (bounding-box) center, so the free
+    body's pose is the object's pose."""
+    taken = set(taken or ())
+    links = []
+    for part in parts:
+        base = part.name or "scene_part"
+        name, counter = base, 1
+        while name in taken:
+            counter += 1
+            name = f"{base}_{counter}"
+        taken.add(name)
+        bbox_min, bbox_max = part.get_bounding_box()
+        center = (np.array(bbox_min.to_tuple()) + np.array(bbox_max.to_tuple())) / 2
+        links.append(LinkSpec(part=part, name=name, frame=center))
+    return links
+
+
 def export_link_meshes(links: list[LinkSpec], directory: str | Path) -> None:
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
@@ -253,6 +275,7 @@ class Simulation:
         time_step: float = 1.0 / 240.0,
         fixed_base: bool = True,
         actuated: bool = True,
+        scene_parts: list["Part3D"] | None = None,
     ):
         self.root_part = root_part
         self.lighting = lighting if lighting is not None else [Lighting()]
@@ -261,6 +284,9 @@ class Simulation:
         self.fixed_base = fixed_base
         self.actuated = actuated
         self.links = extract_links(root_part)
+        self.scene_links = extract_scene_links(
+            scene_parts or [], taken={link.name for link in self.links}
+        )
 
     @property
     def joint_names(self) -> list[str]:
