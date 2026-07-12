@@ -172,10 +172,14 @@ def _build_control(app: AppBase, control: Control, latest: dict, updaters: list)
             if not isinstance(value, str) or value == state["last"]:
                 return
             state["last"] = value
-            image.set_source(
-                value if value.startswith("data:")
-                else f"data:image/png;base64,{value}"
-            )
+            if value.startswith("data:"):
+                source = value
+            else:
+                # Sniff the format from the base64 prefix: JPEG frames come
+                # from real camera hardware (ESP32-CAM), PNG from simulation.
+                mime = "image/jpeg" if value.startswith("/9j/") else "image/png"
+                source = f"data:{mime};base64,{value}"
+            image.set_source(source)
 
         updaters.append(update_image)
     else:

@@ -2,26 +2,31 @@
 
 Everything a real robot would have, emulated in-process:
 
-- **Parts** with real TurtleBot3 Burger dimensions: a 138 mm chassis,
-  66 x 27 mm wheels with a 160 mm track, and a 1-inch steel caster ball.
-  Each wheel is a custom Part3D that *is also* a DC motor
-  (``DrivenWheel(Part3D, DCMotorMixin)``) with Dynamixel XL430-W250 specs
-  (57 rpm no-load at 11.1 V, 1.4 N*m stall, 4096-tick encoder).
+- **Parts** modeled with Build123D, with real TurtleBot3 Burger
+  dimensions: a 138 mm chassis, 66 x 27 mm wheels with a 160 mm track,
+  and a 1-inch steel caster ball. Each wheel is a custom Build123D part
+  that *is also* a DC motor (``DrivenWheel(Part3D, DCMotorMixin)``) with
+  Dynamixel XL430-W250 specs (57 rpm no-load at 11.1 V, 1.4 N*m stall,
+  4096-tick encoder).
 - **A microcontroller** (ESP32 definition with pin bindings for both
   motors and both quadrature encoders) run by ``EmulatedMicrocontroller``:
   motor commands drive MuJoCo velocity actuators and encoder telemetry is
   read back from the simulated joints, over the same JSON-lines wire
   protocol real firmware speaks.
 - **A camera**: a housing part on the chassis front
-  (``FrontCamera(Part3D, CameraMixin)``) with a matching MuJoCo camera
-  mounted at its lens. Frames render offscreen, are PNG-encoded and
-  streamed over the same telemetry channel as the encoders.
+  (``FrontCamera(Part3D, CameraMixin)``), bound to the microcontroller
+  like an ESP32-CAM, with a matching MuJoCo camera mounted at its lens.
+  Frames render offscreen, are PNG-encoded and streamed over the same
+  telemetry channel real camera firmware uses (flash an
+  ``MicrocontrollerBoard.ESP32_CAM`` with
+  ``codetocad_integrations.micropython`` to stream real JPEG frames to
+  the same app).
 - **A WebApp** with sliders for the left/right motors, the live camera
   feed, encoder gauges/plots, and the robot's pose.
 - **Terrain**: gentle rolling bumps (a MuJoCo heightfield) with a flat
   launch pad at the origin, so there is something to see and climb.
 
-Run it (needs the mujoco and nicegui extras)::
+Run it (needs the build123d, mujoco and nicegui extras)::
 
     uv run python codetocad_integrations/robotics/turtlebot/turtlebot_diff_drive.py
 
@@ -42,6 +47,7 @@ import math
 import threading
 import time
 
+import build123d as bd
 import numpy as np
 
 from codetocad import (
@@ -50,17 +56,13 @@ from codetocad import (
     MaterialBase,
     Microcontroller,
     MicrocontrollerBoard,
-    Part3D,
-    Vec3,
     Vec4,
     WebApp,
-    cylinder,
     encode_png,
-    sphere,
     steel_material,
 )
 from codetocad.mixins import CameraMixin, DCMotorMixin, EncoderMixin
-from codetocad.parts import _box_mesh, _cylinder_mesh
+from codetocad_integrations.build123d import Part3D, make_cylinder, make_sphere
 
 # TurtleBot3 Burger / Dynamixel XL430-W250 numbers.
 WHEEL_RADIUS = 0.033  # 66 mm tire
@@ -87,8 +89,8 @@ class DrivenWheel(Part3D, DCMotorMixin):
     """A tire on a Dynamixel XL430-W250: the part is the wheel geometry
     *and* the motor actuator, so a UI slider can target it directly.
 
-    The built-in cylinder primitive is Z-aligned; a wheel spins about Y,
-    so this part generates its own Y-axis cylinder mesh."""
+    Build123D's ``Cylinder`` is Z-aligned; a wheel spins about Y, so
+    ``build_native`` lays it on its side at the axle."""
 
     nominal_voltage = 11.1
     no_load_speed_rpm = MOTOR_NO_LOAD_RPM
@@ -98,25 +100,15 @@ class DrivenWheel(Part3D, DCMotorMixin):
         super().__init__(name)
         self.radius = WHEEL_RADIUS
         self.width = WHEEL_WIDTH
-        self._origin = Vec3(*center)
+        self._center = center
         self.set_material(
             MaterialBase("tire", mass=0.030, color_rgba=Vec4(0.12, 0.12, 0.12, 1.0))
         )
 
-    def get_bounding_box(self):
-        origin = self._origin
-        half = Vec3(self.radius, self.width / 2, self.radius)
-        return (
-            Vec3(origin.x - half.x, origin.y - half.y, origin.z - half.z),
-            Vec3(origin.x + half.x, origin.y + half.y, origin.z + half.z),
+    def build_native(self) -> bd.Part:
+        return bd.Location(self._center, (1, 0, 0), 90) * bd.Cylinder(
+            self.radius, self.width
         )
-
-    def _generate_mesh(self):
-        mesh = _cylinder_mesh(self.radius, self.width, Vec3(0.0, 0.0, 0.0))
-        rotated = mesh.copy()  # rotate +90 deg about X: (x, y, z) -> (x, -z, y)
-        rotated[..., 1] = -mesh[..., 2]
-        rotated[..., 2] = mesh[..., 1]
-        return rotated + np.array(self._origin.to_tuple())
 
 
 class XL430Encoder(EncoderMixin):
@@ -128,9 +120,12 @@ class XL430Encoder(EncoderMixin):
 
 class FrontCamera(Part3D, CameraMixin):
     """A camera module on the chassis front: the part *is also* the camera
-    sensor (like ``DrivenWheel`` is its motor). The housing is a small
-    cube; ``capture_image()`` renders the MuJoCo camera mounted at its
-    lens once the simulation wires it up."""
+    sensor (like ``DrivenWheel`` is its motor). The housing is a cube with
+    a lens barrel poking out of the front face; ``capture_image()``
+    renders the MuJoCo camera mounted at the lens once the simulation
+    wires it up. Bound to the microcontroller it streams frames on its
+    telemetry channel, exactly like an ESP32-CAM running the generated
+    firmware would."""
 
     resolution = (320, 240)
     field_of_view = "60 deg"
@@ -138,21 +133,21 @@ class FrontCamera(Part3D, CameraMixin):
 
     def __init__(self, name: str, center: tuple[float, float, float]):
         super().__init__(name)
-        self._origin = Vec3(*center)
+        self._center = center
         self._capture = None  # set by wire_emulation
         self.set_material(
             MaterialBase("camera_housing", mass=0.02, color_rgba=Vec4(0.06, 0.06, 0.06, 1.0))
         )
 
-    def get_bounding_box(self):
-        origin, half = self._origin, CAMERA_SIZE / 2
-        return (
-            Vec3(origin.x - half, origin.y - half, origin.z - half),
-            Vec3(origin.x + half, origin.y + half, origin.z + half),
+    def build_native(self) -> bd.Part:
+        housing = bd.Pos(*self._center) * bd.Box(
+            CAMERA_SIZE, CAMERA_SIZE, CAMERA_SIZE
         )
-
-    def _generate_mesh(self):
-        return _box_mesh(*self.get_bounding_box())
+        x, y, z = self._center
+        lens = bd.Location(
+            (x + CAMERA_SIZE / 2, y, z), (0, 1, 0), 90
+        ) * bd.Cylinder(0.004, 0.006)
+        return housing + lens
 
     def capture_image(self):
         if self._capture is None:
@@ -164,7 +159,7 @@ def build_turtlebot() -> tuple[Part3D, DrivenWheel, DrivenWheel, FrontCamera]:
     """The robot assembly, modeled in place: chassis at the origin, wheel
     axles at z = wheel radius, caster ball touching the floor (z=0), and
     the camera module on the chassis front."""
-    chassis = cylinder(
+    chassis = make_cylinder(
         CHASSIS_DIAMETER / 2,
         CHASSIS_HEIGHT,
         start_location=Location(z=CHASSIS_CLEARANCE + CHASSIS_HEIGHT / 2),
@@ -179,7 +174,7 @@ def build_turtlebot() -> tuple[Part3D, DrivenWheel, DrivenWheel, FrontCamera]:
     left_wheel = DrivenWheel("left_wheel", (WHEEL_X, WHEEL_SEPARATION / 2, axle_z))
     right_wheel = DrivenWheel("right_wheel", (WHEEL_X, -WHEEL_SEPARATION / 2, axle_z))
 
-    caster = sphere(CASTER_RADIUS, start_location=Location(x=CASTER_X, z=CASTER_RADIUS))
+    caster = make_sphere(CASTER_RADIUS, start_location=Location(x=CASTER_X, z=CASTER_RADIUS))
     caster.name = "caster"
     caster.set_material(steel_material())
 
@@ -232,9 +227,9 @@ def make_simulation(chassis: Part3D, output_dir=None):
     front_camera = CameraSpec(
         name="front_camera",
         link="camera",
-        # The lens sits just outside the housing's front face; the camera
-        # looks along +X (image up = +Z), pitched down by the tilt.
-        position=(CAMERA_X + CAMERA_SIZE / 2 + 0.002, 0.0, CAMERA_Z),
+        # The eye sits just past the lens barrel's tip; the camera looks
+        # along +X (image up = +Z), pitched down by the tilt.
+        position=(CAMERA_X + CAMERA_SIZE / 2 + 0.004, 0.0, CAMERA_Z),
         xyaxes=(0, -1, 0, math.sin(tilt), 0, math.cos(tilt)),
         fovy=60.0,
         resolution=FrontCamera.resolution,
@@ -264,16 +259,20 @@ def make_simulation(chassis: Part3D, output_dir=None):
 
 
 def make_microcontroller(
-    left_wheel: DrivenWheel, right_wheel: DrivenWheel
+    left_wheel: DrivenWheel, right_wheel: DrivenWheel, camera: FrontCamera
 ) -> tuple[Microcontroller, XL430Encoder, XL430Encoder]:
     """The same definition that would run on a physical robot: two H-bridge
-    motor channels and two quadrature encoder channels on an ESP32."""
+    motor channels, two quadrature encoder channels, and the camera (its
+    sensor lives on dedicated pins, ESP32-CAM style, so the binding takes
+    no GPIO). ``MicrocontrollerBoard.ESP32_CAM`` runs the identical
+    definition on real hardware, streaming JPEG frames on this channel."""
     mcu = Microcontroller("turtlebot", board=MicrocontrollerBoard.ESP32)
     mcu.bind_actuator(left_wheel, name="left_motor", pwm_pin=4, dir_pin=16)
     mcu.bind_actuator(right_wheel, name="right_motor", pwm_pin=5, dir_pin=17)
     left_encoder, right_encoder = XL430Encoder(), XL430Encoder()
     mcu.bind_sensor(left_encoder, name="left_encoder", a=34, b=35)
     mcu.bind_sensor(right_encoder, name="right_encoder", a=32, b=33)
+    mcu.bind_sensor(camera, name="camera")
     return mcu, left_encoder, right_encoder
 
 
@@ -326,15 +325,17 @@ def wire_emulation(
         }
 
     def read_frame():
+        # Same telemetry shape as ESP32-CAM firmware ({"frame": <base64
+        # JPEG>}); the simulation encodes PNG and the app sniffs either.
         png = encode_png(camera.capture_image())
-        return {"png": base64.b64encode(png).decode("ascii")}
+        return {"frame": base64.b64encode(png).decode("ascii")}
 
     emulator.on_command("left_motor", motor_handler("left_axle"))
     emulator.on_command("right_motor", motor_handler("right_axle"))
     emulator.set_sensor("left_encoder", encoder_reader("left_axle"))
     emulator.set_sensor("right_encoder", encoder_reader("right_axle"))
+    emulator.set_sensor("camera", read_frame)
     emulator.add_telemetry("pose", read_pose, sample_rate_hz=10.0)
-    emulator.add_telemetry("camera", read_frame, sample_rate_hz=CAMERA_FPS)
     return emulator
 
 
@@ -352,7 +353,9 @@ def drive(sim, emulator: EmulatedMicrocontroller, duration_seconds: float,
                 time.sleep(lag)
 
 
-def make_app(communication, left_wheel, right_wheel, left_encoder, right_encoder) -> WebApp:
+def make_app(
+    communication, left_wheel, right_wheel, camera, left_encoder, right_encoder
+) -> WebApp:
     app = WebApp("TurtleBot diff drive").set_communication(communication)
     app.add_slider(
         "left motor (rpm)", target=left_wheel, command="velocity_rpm",
@@ -364,7 +367,7 @@ def make_app(communication, left_wheel, right_wheel, left_encoder, right_encoder
     )
     app.add_button("stop left", target=left_wheel, value={"stop": True})
     app.add_button("stop right", target=right_wheel, value={"stop": True})
-    app.add_image("front camera", source="camera", key="png")
+    app.add_image("front camera", source=camera, key="frame")
     app.add_plot("left wheel (rpm)", source=left_encoder, key="rpm")
     app.add_plot("right wheel (rpm)", source=right_encoder, key="rpm")
     app.add_gauge("left encoder", source=left_encoder, key="count", units="ticks")
@@ -391,11 +394,14 @@ def main(argv=None):
 
     chassis, left_wheel, right_wheel, camera = build_turtlebot()
     sim = make_simulation(chassis)
-    mcu, left_encoder, right_encoder = make_microcontroller(left_wheel, right_wheel)
+    mcu, left_encoder, right_encoder = make_microcontroller(
+        left_wheel, right_wheel, camera
+    )
     emulator = wire_emulation(sim, mcu, camera)
     emulator.communication.connect()
     app = make_app(
-        emulator.communication, left_wheel, right_wheel, left_encoder, right_encoder
+        emulator.communication, left_wheel, right_wheel, camera,
+        left_encoder, right_encoder,
     )
 
     if args.no_gui:

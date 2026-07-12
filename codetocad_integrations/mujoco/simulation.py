@@ -203,7 +203,7 @@ def build_mjcf(
             terrain_geom.set("material", "terrain_material")
             terrain_geom.set("rgba", "1 1 1 1")  # let the texture color it
     if ground_plane:
-        ET.SubElement(
+        floor = ET.SubElement(
             worldbody,
             "geom",
             name="floor",
@@ -211,6 +211,10 @@ def build_mjcf(
             size="20 20 0.1",
             rgba="0.85 0.85 0.85 1",
         )
+        if terrain is not None:
+            # Sink the plane below the heightfield so zero-elevation
+            # terrain (a launch pad, wave troughs) doesn't z-fight it.
+            floor.set("pos", "0 0 -0.005")
     for light in lighting or []:
         ET.SubElement(
             worldbody,

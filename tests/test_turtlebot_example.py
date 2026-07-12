@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("mujoco")
+pytest.importorskip("build123d")
 
 _EXAMPLE = (
     Path(__file__).parent.parent
@@ -23,18 +24,43 @@ _spec.loader.exec_module(turtlebot)
 ENCODER_MIN_TICKS = 8000
 
 
+def _offscreen_gl_available() -> bool:
+    """MuJoCo camera rendering needs an OpenGL context; headless CI (no
+    display and no EGL/OSMesa backend) can't create one and raises
+    ``gladLoadGL error``. Probe once so the render-dependent tests skip
+    cleanly there instead of failing."""
+    import mujoco
+
+    try:
+        model = mujoco.MjModel.from_xml_string("<mujoco/>")
+        renderer = mujoco.Renderer(model, height=1, width=1)
+        renderer.close()
+    except Exception:
+        return False
+    return True
+
+
+# The camera sensor renders offscreen (directly, or sampled during drive());
+# skip those tests where no GL context is available (e.g. headless CI).
+requires_gl = pytest.mark.skipif(
+    not _offscreen_gl_available(),
+    reason="offscreen OpenGL context unavailable (headless CI without EGL/OSMesa)",
+)
+
+
 @pytest.fixture()
 def rig(tmp_path):
     chassis, left_wheel, right_wheel, camera = turtlebot.build_turtlebot()
     sim = turtlebot.make_simulation(chassis, output_dir=tmp_path)
     mcu, left_encoder, right_encoder = turtlebot.make_microcontroller(
-        left_wheel, right_wheel
+        left_wheel, right_wheel, camera
     )
     emulator = turtlebot.wire_emulation(sim, mcu, camera)
     emulator.communication.connect()
     return sim, mcu, emulator, left_wheel, right_wheel, left_encoder, right_encoder
 
 
+@requires_gl
 def test_drives_straight_and_reports_encoders(rig):
     sim, mcu, emulator, left_wheel, right_wheel, left_encoder, right_encoder = rig
     left_wheel.set_velocity(57)
@@ -55,6 +81,7 @@ def test_drives_straight_and_reports_encoders(rig):
     assert mcu.communication.telemetry.last_value is pose  # shared channel
 
 
+@requires_gl
 def test_opposite_wheels_spin_in_place(rig):
     sim, mcu, emulator, left_wheel, right_wheel, _, _ = rig
     left_wheel.set_velocity(57)
@@ -68,6 +95,7 @@ def test_opposite_wheels_spin_in_place(rig):
     assert abs(yaw) > math.radians(30)  # but has rotated
 
 
+@requires_gl
 def test_stop_command_halts_wheel(rig):
     sim, mcu, emulator, left_wheel, right_wheel, left_encoder, _ = rig
     left_wheel.set_velocity(57)
@@ -82,8 +110,10 @@ def test_stop_command_halts_wheel(rig):
 
 def test_app_controls_target_the_wire_channels(rig):
     _, mcu, emulator, left_wheel, right_wheel, left_encoder, right_encoder = rig
+    camera = mcu.get_binding("camera").device
     app = turtlebot.make_app(
-        emulator.communication, left_wheel, right_wheel, left_encoder, right_encoder
+        emulator.communication, left_wheel, right_wheel, camera,
+        left_encoder, right_encoder,
     )
     sliders = [c for c in app.controls if c.kind == "slider"]
     assert [s.target_channel for s in sliders] == ["left_motor", "right_motor"]
@@ -97,6 +127,7 @@ def test_app_controls_target_the_wire_channels(rig):
     assert [i.source_channel for i in images] == ["camera"]
 
 
+@requires_gl
 def test_camera_streams_png_frames(rig):
     sim, mcu, emulator, *_ = rig
     frames = []
@@ -108,7 +139,7 @@ def test_camera_streams_png_frames(rig):
     turtlebot.drive(sim, emulator, duration_seconds=0.5)
     mcu.poll()
     assert frames  # ~4 frames at 8 fps
-    png = base64.b64decode(frames[-1]["value"]["png"])
+    png = base64.b64decode(frames[-1]["value"]["frame"])
     assert png.startswith(b"\x89PNG")
 
 

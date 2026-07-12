@@ -303,6 +303,44 @@ def _mp_encoder(binding) -> str:
     )
 
 
+#: MicroPython ``camera`` module framesize constants by (width, height).
+_CAMERA_FRAMESIZES = {
+    (160, 120): "FRAME_QQVGA",
+    (240, 176): "FRAME_HQVGA",
+    (320, 240): "FRAME_QVGA",
+    (640, 480): "FRAME_VGA",
+    (800, 600): "FRAME_SVGA",
+    (1024, 768): "FRAME_XGA",
+    (1280, 1024): "FRAME_SXGA",
+    (1600, 1200): "FRAME_UXGA",
+}
+
+
+def _mp_camera(binding) -> str:
+    """An ESP32-CAM (or any board running a camera-enabled MicroPython
+    build with the ``camera`` module). Telemetry is
+    ``{"frame": <base64 JPEG>}`` — the same shape the simulated camera
+    streams (base64 PNG), so the app's ``add_image`` shows either."""
+    var = _identifier(binding.name)
+    resolution = tuple(getattr(binding.device, "resolution", (320, 240)))
+    framesize = binding.params.get(
+        "framesize", _CAMERA_FRAMESIZES.get(resolution, "FRAME_QVGA")
+    )
+    quality = binding.params.get("quality", 12)
+    return (
+        f"# --- sensor {binding.name!r}: camera (ESP32-CAM) ---\n"
+        f"import binascii\n"
+        f"import camera\n"
+        f"camera.init(0, format=camera.JPEG, framesize=camera.{framesize})\n"
+        f"camera.quality({quality})\n"
+        f"def read_{var}():\n"
+        f"    frame = camera.capture()\n"
+        f"    if not frame:\n"
+        f"        return None\n"
+        f"    return {{'frame': binascii.b2a_base64(frame).decode().strip()}}\n"
+    )
+
+
 def _mp_imu(binding) -> str:
     var = _identifier(binding.name)
     address = binding.address if binding.address is not None else 0x68
@@ -604,6 +642,7 @@ _MICROPYTHON_DRIVERS = {
     "digital_in": _mp_digital_in,
     "encoder": _mp_encoder,
     "imu_mpu6050": _mp_imu,
+    "camera": _mp_camera,
     "pwm": _mp_pwm,
     "digital_out": _mp_digital_out,
     "servo": _mp_servo,

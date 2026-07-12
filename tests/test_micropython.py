@@ -58,6 +58,23 @@ def test_micropython_firmware_compiles_and_wires_bindings():
     assert "sys.stdin" in firmware  # default serial communication
 
 
+def test_micropython_esp32_cam_camera_firmware():
+    from codetocad.mixins import CameraMixin
+
+    class BoardCamera(CameraMixin):
+        resolution = (640, 480)
+        sample_rate_hz = 5.0
+
+    mcu = Microcontroller("cam", board=MicrocontrollerBoard.ESP32_CAM)
+    binding = mcu.bind_sensor(BoardCamera(), name="camera")
+    assert binding.driver == "camera"  # inferred from CameraMixin
+    firmware = generate_main_py(mcu)
+    compile(firmware, "main.py", "exec")
+    assert "camera.init(0, format=camera.JPEG, framesize=camera.FRAME_VGA)" in firmware
+    assert "'frame': binascii.b2a_base64(frame).decode().strip()" in firmware
+    assert "['camera', read_camera, 200, 0]" in firmware  # 5 Hz -> 200 ms
+
+
 def test_micropython_wifi_and_mqtt_comm_sections():
     mcu = _esp32_rig()
     mcu.set_communication(

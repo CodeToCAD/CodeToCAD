@@ -3,20 +3,23 @@
 A differential-drive TurtleBot simulated in MuJoCo, driven from a WebApp —
 everything a real robot would have, emulated in-process:
 
-- **Parts** with real TurtleBot3 Burger dimensions: a 138 mm chassis,
-  66 x 27 mm wheels with a 160 mm track, and a 1-inch steel caster ball.
-  Each wheel is a custom Part3D that *is also* a DC motor
-  (`DrivenWheel(Part3D, DCMotorMixin)`) with Dynamixel XL430-W250 specs
-  (57 rpm no-load at 11.1 V, 1.4 N*m stall, 4096-tick encoder).
+- **Parts** modeled with Build123D, with real TurtleBot3 Burger
+  dimensions: a 138 mm chassis, 66 x 27 mm wheels with a 160 mm track,
+  and a 1-inch steel caster ball. Each wheel is a custom Build123D part
+  that *is also* a DC motor (`DrivenWheel(Part3D, DCMotorMixin)`) with
+  Dynamixel XL430-W250 specs (57 rpm no-load at 11.1 V, 1.4 N*m stall,
+  4096-tick encoder).
 - **A microcontroller** (ESP32 definition with pin bindings for both
   motors and both quadrature encoders) run by `EmulatedMicrocontroller`:
   motor commands drive MuJoCo velocity actuators and encoder telemetry is
   read back from the simulated joints, over the same JSON-lines wire
   protocol real firmware speaks.
 - **A camera**: a housing part on the chassis front
-  (`FrontCamera(Part3D, CameraMixin)`) with a matching MuJoCo camera at
-  its lens; frames render offscreen and stream to the app as PNG
-  telemetry.
+  (`FrontCamera(Part3D, CameraMixin)`), bound to the microcontroller
+  like an ESP32-CAM, with a matching MuJoCo camera at its lens; frames
+  render offscreen and stream to the app as base64 telemetry. Flashing a
+  `MicrocontrollerBoard.ESP32_CAM` with the micropython integration
+  streams real JPEG frames on the same channel.
 - **A WebApp** with sliders for the left/right motors, the live camera
   feed, encoder gauges/plots, and the robot's pose.
 - **Terrain**: gentle rolling bumps (a MuJoCo heightfield with a checker
@@ -28,7 +31,7 @@ everything a real robot would have, emulated in-process:
 
 ## Run it
 
-Needs the mujoco and nicegui extras:
+Needs the build123d, mujoco and nicegui extras:
 
 ```
 uv run python codetocad_integrations/robotics/turtlebot/turtlebot_diff_drive.py

@@ -30,6 +30,10 @@ current            pin                   ADC volts; convert with CurrentSensorMi
 encoder            a, b                  quadrature; telemetry {"count", "rpm"}
 imu_mpu6050        bus+address           MPU6050; {"accel", "gyro"} (also accepts
                                          legacy sda/scl pins on MicroPython)
+camera             (on-board)            ESP32-CAM (or any camera-enabled
+                                         MicroPython build); telemetry
+                                         {"frame": <base64 JPEG>}; params
+                                         {"framesize", "quality"}
 i2c_register       bus+address           generic register read; params
                                          {"register", "length", "scale", "signed"}
 current_ina219     bus+address           INA219 shunt monitor; telemetry is amps;

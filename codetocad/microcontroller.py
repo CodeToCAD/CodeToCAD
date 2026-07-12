@@ -41,6 +41,7 @@ from codetocad.communication import Communication, CommunicationMixin
 from codetocad.ecad import ComponentType, ElectricalComponent
 from codetocad.mixins import (
     ActuatorMixin,
+    CameraMixin,
     CurrentSensorMixin,
     EncoderMixin,
     IMUMixin,
@@ -60,6 +61,7 @@ class MicrocontrollerBoard(Enum):
     analog samples to volts."""
 
     ESP32 = ("esp32", MicrocontrollerRuntime.MICROPYTHON, 4095, 3.3)
+    ESP32_CAM = ("esp32_cam", MicrocontrollerRuntime.MICROPYTHON, 4095, 3.3)
     ESP8266 = ("esp8266", MicrocontrollerRuntime.MICROPYTHON, 1023, 3.3)
     RASPBERRY_PI_PICO = (
         "raspberry_pi_pico",
@@ -85,6 +87,7 @@ SENSOR_DRIVERS = (
     "encoder",
     "current",
     "imu_mpu6050",
+    "camera",
     # bus sensors
     "i2c_register",
     "current_ina219",
@@ -102,6 +105,10 @@ ACTUATOR_DRIVERS = (
     "dc_motor_drv8830",
     "vesc_uart",
 )
+
+#: Drivers for on-board peripherals that live on dedicated pins (an
+#: ESP32-CAM's sensor), so their bindings take no GPIO or bus.
+_ON_BOARD_DRIVERS = frozenset({"camera"})
 
 
 class I2CBus:
@@ -233,6 +240,8 @@ def _infer_driver(device, role: str, bus=None) -> str:
             return "vesc_uart"
         raise ValueError("No default UART driver for this device; pass driver=")
     if role == "sensor":
+        if isinstance(device, CameraMixin):
+            return "camera"
         if isinstance(device, EncoderMixin):
             return "encoder"
         if isinstance(device, CurrentSensorMixin):
@@ -321,7 +330,7 @@ class Microcontroller(ElectricalComponent, CommunicationMixin):
     def _bind(
         self, device, name, role, driver, pins, sample_rate_hz, params, bus, address
     ):
-        if not pins and bus is None:
+        if not pins and bus is None and driver not in _ON_BOARD_DRIVERS:
             raise ValueError(
                 "Give at least one GPIO pin (e.g. pin=34 or pwm_pin=5) or a "
                 "bus= (I2CBus/SPIBus/UARTBus)"
