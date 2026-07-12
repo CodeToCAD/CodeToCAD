@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "codetocad"
-version = "2026.07.05.01"
+dynamic = ["version"]
 description = "One language to define your mechanical and electrical CAD designs, federated to your modeling application."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -60,6 +60,9 @@ packages = [
     "codetocad_integrations.rerun",
     "codetocad_integrations.playwright",
 ]
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0"
 
 [tool.uv.sources]
 pygccx = { git = "https://github.com/calculix/pygccx.git" }

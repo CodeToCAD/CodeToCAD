@@ -495,7 +495,6 @@ wheels = [
 
 [[package]]
 name = "codetocad"
-version = "2026.7.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "numpy" },
