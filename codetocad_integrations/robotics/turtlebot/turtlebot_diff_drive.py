@@ -17,7 +17,7 @@ Everything a real robot would have, emulated in-process:
 
 Run it (needs the mujoco and nicegui extras)::
 
-    uv run python codetocad_integrations/mujoco/examples/turtlebot_diff_drive.py
+    uv run python codetocad_integrations/robotics/turtlebot/turtlebot_diff_drive.py
 
 then open http://localhost:8080 and drive. Equal slider values drive
 straight; opposite values spin in place. By default the MuJoCo viewer

@@ -12,7 +12,7 @@ pytest.importorskip("mujoco")
 
 _EXAMPLE = (
     Path(__file__).parent.parent
-    / "codetocad_integrations/mujoco/examples/turtlebot_diff_drive.py"
+    / "codetocad_integrations/robotics/turtlebot/turtlebot_diff_drive.py"
 )
 _spec = importlib.util.spec_from_file_location("turtlebot_diff_drive", _EXAMPLE)
 turtlebot = importlib.util.module_from_spec(_spec)
