@@ -54,7 +54,7 @@ from codetocad.mixins import (
     StepperMotorMixin,
 )
 from codetocad.assembly import Assembly2D, Assembly3D, AssemblyCommon
-from codetocad.parts import Part2D, Part3D
+from codetocad.parts import PATTERN_OPERATIONS, Part2D, Part3D
 from codetocad.primitives import (
     circle,
     cube,
@@ -230,6 +230,7 @@ __all__ = [
     "extract_links",
     "encode_png",
     "CONSTRAINT_OPERATIONS",
+    "PATTERN_OPERATIONS",
     # fea
     "FEA",
     "FEAResults",

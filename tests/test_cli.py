@@ -403,7 +403,7 @@ def test_backend_switch_retrofits_existing_files(tmp_path):
     inputs = [
         "1", "1", "1", "body", "3", "6in, 0.5in, 2in",  # no integration
         "1",  # Part
-        "8",  # Set modeling backend
+        "10",  # Set modeling backend
         "2",  # Build123D
         "y",  # rewrite existing files
         "q",
@@ -514,3 +514,135 @@ def test_main_usage_and_run(tmp_path, capsys):
 
     with pytest.raises(SystemExit):
         main([str(tmp_path / "missing.py")])
+
+
+def test_duplicate_part_flow(tmp_path):
+    inputs = [
+        "1", "1", "1", "wheel", "4", "2cm, 1cm",  # cylinder part
+        "1",  # Part
+        "7",  # Duplicate selected part
+        "",  # default name (wheel_copy)
+        "0, 0, 5cm",  # offset for the copy
+        "q",
+    ]
+    project_dir, _, session = run_session(tmp_path, inputs)
+    part_file = (project_dir / "wheel.py").read_text()
+    assert "wheel_copy = wheel.duplicate(name='wheel_copy')" in part_file
+    assert (
+        "wheel_copy.transform(relative=codetocad.Location(x='0', y='0', z='5cm'))"
+        in part_file
+    )
+    assert session.parts["wheel_copy"]["kind"] == "part"
+    assert session.selected == "wheel_copy"
+    # The duplicated var survives a reload even without the manifest.
+    (project_dir / STATE_FILE_NAME).unlink()
+    _, resumed = resume_session(project_dir, ["q"])
+    assert resumed.parts["wheel_copy"]["kind"] == "part"
+
+
+def test_pattern_part_flow(tmp_path):
+    inputs = [
+        "1", "1", "1", "post", "4", "1cm, 10cm",  # cylinder part
+        "1", "8",  # Part > Pattern selected part
+        "1",  # Linear
+        "4",  # instances
+        "5cm, 0, 0",  # offset
+        "1", "8",  # Part > Pattern selected part
+        "2",  # Circular
+        "",  # instances (default 3)
+        "",  # angle (default 120)
+        "",  # axis (default z)
+        "",  # center (default origin)
+        "q",
+    ]
+    project_dir, _, _ = run_session(tmp_path, inputs)
+    part_file = (project_dir / "post.py").read_text()
+    assert (
+        "post.linear_pattern(4, codetocad.Location(x='5cm', y='0', z='0'))"
+        in part_file
+    )
+    assert "post.circular_pattern(3, 120, axis='z')" in part_file
+    # The generated file runs with the recorded operations.
+    import runpy
+
+    namespace = runpy.run_path(str(project_dir / "post.py"))
+    assert len(namespace["post"].operations) == 2
+
+
+# A 1x1 pixel PNG for reference-image tests.
+_PNG_1PX = bytes.fromhex(
+    "89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+    "1f15c4890000000d49444154789c63f8cfc0f01f0005050202b9cdb1b2"
+    "0000000049454e44ae426082"
+)
+
+
+def test_reference_image_flow_and_persistence(tmp_path):
+    image = tmp_path / "blueprint.png"
+    image.write_bytes(_PNG_1PX)
+    inputs = [
+        "8",  # Preview
+        "3",  # Add a reference image
+        str(image),
+        "1",  # Front view (xz)
+        "0.5",  # width in meters
+        "",  # center (default origin)
+        "q",
+    ]
+    project_dir, output, session = run_session(tmp_path, inputs)
+    references = session.preview.references
+    assert references == [
+        {
+            "path": str(image.resolve()),
+            "plane": "xz",
+            "width": 0.5,
+            "center": [0.0, 0.0, 0.0],
+        }
+    ]
+    assert any("Added the reference image" in line for line in output)
+    # Persisted in the manifest and restored on load.
+    _, resumed = resume_session(project_dir, ["q"])
+    assert resumed.preview.references == references
+    # A missing image file is dropped on restore instead of breaking the viewer.
+    image.unlink()
+    _, resumed = resume_session(project_dir, ["q"])
+    assert resumed.preview.references == []
+
+
+def test_reference_image_rejects_missing_file(tmp_path):
+    inputs = [
+        "8", "3", str(tmp_path / "nope.png"),
+        "q",
+    ]
+    _, output, session = run_session(tmp_path, inputs)
+    assert any("No such image" in line for line in output)
+    assert session.preview.references == []
+
+
+def test_preview_publishes_references_json(tmp_path, monkeypatch):
+    pytest.importorskip("open3d")
+    import json
+
+    from codetocad.cli import LivePreview
+
+    monkeypatch.setattr(LivePreview, "_ensure_viewer", lambda self: None)
+    image = tmp_path / "sketch.png"
+    image.write_bytes(_PNG_1PX)
+    inputs = [
+        "8", "3", str(image), "3", "", "",  # add a floor reference image
+        "8", "1",  # Preview > Open/refresh (references only, no parts yet)
+        "q",
+    ]
+    _, _, session = run_session(tmp_path, inputs)
+    directory = session.preview.directory
+    references = json.loads((directory / "references.json").read_text())
+    assert references[0]["plane"] == "xy"
+    assert (directory / "version.txt").exists()
+
+
+def test_viewer_source_compiles():
+    from codetocad.cli import _VIEWER_SOURCE
+
+    compile(_VIEWER_SOURCE, "viewer", "exec")
+    assert "create_coordinate_frame" in _VIEWER_SOURCE
+    assert "references.json" in _VIEWER_SOURCE

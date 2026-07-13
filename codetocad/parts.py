@@ -9,6 +9,7 @@ the federated application to build.
 
 from __future__ import annotations
 
+import copy
 import math
 import shutil
 from pathlib import Path
@@ -16,14 +17,22 @@ from pathlib import Path
 import numpy as np
 
 from codetocad.assembly import Assembly2D, Assembly3D
-from codetocad.location import Location, LocationMixin
+from codetocad.ledgers import AssemblyLedger, BooleanLedger
+from codetocad.location import Location, LocationMixin, _angle_to_radians
 from codetocad.materials import MaterialMixin
 from codetocad.mixins import BooleanMixin, GeometryAnalysisMixin, GeometryQueryMixin
 from codetocad.topology import Edge, Face
-from codetocad.units import LengthMeters, LengthWithUnit
+from codetocad.units import AngleRadians, AngleWithUnit, LengthMeters, LengthWithUnit
 from codetocad.vectors import Vec3
 
 # Meshes are numpy arrays of shape (N, 3, 3): N triangles x 3 vertices x xyz.
+
+#: Pattern operations recorded on ``Part.operations``. Unlike other feature
+#: operations, patterns are also baked into core meshes and bounding boxes
+#: (they are rigid copies of the base mesh, which needs no CAD kernel).
+PATTERN_OPERATIONS = frozenset({"linear_pattern", "circular_pattern"})
+
+_PATTERN_AXES = {"x": (1.0, 0.0, 0.0), "y": (0.0, 1.0, 0.0), "z": (0.0, 0.0, 1.0)}
 
 
 class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixin):
@@ -99,8 +108,78 @@ class Part3D(
         return self
 
     def get_bounding_box(self) -> tuple[Vec3, Vec3]:
+        if any(op["operation"] in PATTERN_OPERATIONS for op in self.operations):
+            triangles = self._generate_mesh()
+            if triangles is not None:
+                points = triangles.reshape(-1, 3)
+                return (Vec3(*points.min(axis=0)), Vec3(*points.max(axis=0)))
         half = _half_extents(self._primitive)
         return _bbox_around(self._origin, half)
+
+    def duplicate(self, name: str | None = None) -> "Part3D":
+        """An independent copy of this part: same primitive, recorded
+        operations, placement and material. Parts referenced by operations
+        (e.g. boolean cutters) are shared, not copied; backend geometry is
+        rebuilt lazily on the copy."""
+        part = type(self)(
+            name=name or (f"{self.name}_copy" if self.name else None),
+            description=self.description,
+        )
+        part._primitive = copy.deepcopy(self._primitive)
+        part.operations = [dict(operation) for operation in self.operations]
+        part._origin = Vec3(self._origin.x, self._origin.y, self._origin.z)
+        part._start_origin = Vec3(
+            self._start_origin.x, self._start_origin.y, self._start_origin.z
+        )
+        part.material = self.material
+        part.ledger = AssemblyLedger(
+            **{key: list(value) for key, value in vars(self.ledger).items()}
+        )
+        part.boolean_ledger = BooleanLedger(
+            **{key: list(value) for key, value in vars(self.boolean_ledger).items()}
+        )
+        return part
+
+    def linear_pattern(self, count: int, offset: Location) -> "Part3D":
+        """Repeat this part ``count`` times in total (including this
+        instance), each instance translated by ``offset`` from the previous
+        one. ``offset`` may be a Location or an (x, y, z) sequence."""
+        if int(count) < 1:
+            raise ValueError("count must be at least 1 (it includes the original)")
+        if not isinstance(offset, Location):
+            offset = Location(*offset)
+        self.operations.append(
+            {"operation": "linear_pattern", "count": int(count), "offset": offset}
+        )
+        return self
+
+    def circular_pattern(
+        self,
+        count: int,
+        separation_angle: AngleWithUnit,
+        center: Location | None = None,
+        axis: str | tuple[float, float, float] = "z",
+    ) -> "Part3D":
+        """Repeat this part ``count`` times in total (including this
+        instance), each instance rotated ``separation_angle`` further about
+        ``axis`` through ``center`` (the origin by default). Bare numbers are
+        degrees; strings may carry units ("0.5rad")."""
+        if int(count) < 1:
+            raise ValueError("count must be at least 1 (it includes the original)")
+        self.operations.append(
+            {
+                "operation": "circular_pattern",
+                "count": int(count),
+                "separation_angle": AngleRadians(
+                    _angle_to_radians(separation_angle, floats_are_degrees=True)
+                ),
+                "center": (
+                    self.resolve_location(center) if center is not None else Location()
+                ),
+                "axis": _pattern_axis(axis),
+            }
+        )
+        return self
 
     def shell(
         self, thickness: LengthWithUnit, start_at_location: Location | None = None
@@ -189,13 +268,24 @@ class Part3D(
         return location
 
     def _generate_mesh(self) -> np.ndarray | None:
+        triangles = self._base_mesh()
+        if triangles is None:
+            return None
+        for operation in self.operations:
+            if operation["operation"] == "linear_pattern":
+                triangles = _linear_pattern_mesh(triangles, operation)
+            elif operation["operation"] == "circular_pattern":
+                triangles = _circular_pattern_mesh(triangles, operation)
+        return triangles
+
+    def _base_mesh(self) -> np.ndarray | None:
         if self._primitive is None:
             return None
         kind = self._primitive["kind"]
         origin = self._origin
         if kind == "cube":
-            bbox_min, bbox_max = self.get_bounding_box()
-            return _box_mesh(bbox_min, bbox_max)
+            half = _half_extents(self._primitive)
+            return _box_mesh(*_bbox_around(origin, half))
         if kind == "cylinder":
             return _cylinder_mesh(
                 self._primitive["radius"], self._primitive["height"], origin
@@ -240,6 +330,46 @@ def _bbox_around(origin: Vec3, half: Vec3) -> tuple[Vec3, Vec3]:
         Vec3(origin.x - half.x, origin.y - half.y, origin.z - half.z),
         Vec3(origin.x + half.x, origin.y + half.y, origin.z + half.z),
     )
+
+
+def _pattern_axis(axis) -> tuple[float, float, float]:
+    if isinstance(axis, str):
+        try:
+            return _PATTERN_AXES[axis.lower()]
+        except KeyError:
+            raise ValueError(
+                f"Unknown pattern axis {axis!r}; use 'x', 'y', 'z' or a 3-vector"
+            ) from None
+    vector = np.asarray(axis, dtype=np.float64)
+    magnitude = float(np.linalg.norm(vector))
+    if vector.shape != (3,) or magnitude < 1e-12:
+        raise ValueError("A pattern axis must be 'x', 'y', 'z' or a non-zero 3-vector")
+    vector = vector / magnitude
+    return (float(vector[0]), float(vector[1]), float(vector[2]))
+
+
+def _rotation_matrix(axis: tuple[float, float, float], angle: float) -> np.ndarray:
+    """Rodrigues rotation matrix about the unit vector ``axis``."""
+    x, y, z = axis
+    skew = np.array([[0.0, -z, y], [z, 0.0, -x], [-y, x, 0.0]])
+    return np.eye(3) + math.sin(angle) * skew + (1 - math.cos(angle)) * (skew @ skew)
+
+
+def _linear_pattern_mesh(triangles: np.ndarray, operation: dict) -> np.ndarray:
+    offset = operation["offset"].to_numpy()
+    return np.concatenate(
+        [triangles + offset * i for i in range(operation["count"])]
+    )
+
+
+def _circular_pattern_mesh(triangles: np.ndarray, operation: dict) -> np.ndarray:
+    center = operation["center"].to_numpy()
+    angle = operation["separation_angle"].value
+    instances = []
+    for i in range(operation["count"]):
+        rotation = _rotation_matrix(operation["axis"], angle * i)
+        instances.append((triangles - center) @ rotation.T + center)
+    return np.concatenate(instances)
 
 
 def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> np.ndarray:

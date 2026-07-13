@@ -85,6 +85,21 @@ t_min, t_max = label.get_bounding_box()
 approx(t_max.z - t_min.z, 0.004, 1e-3)
 assert label.get_volume() > 0
 
+# 9b. Duplicate and patterns (instances unioned into the mesh)
+row = make_cube("2cm", "2cm", "2cm")
+row.linear_pattern(3, Location(x="5cm"))
+approx(row.get_volume(), 3 * 0.02**3, 1e-3)
+
+ring = make_cylinder("1cm", "2cm")
+ring.transform(relative=Location(x="6cm"))
+ring.circular_pattern(4, 90)
+approx(ring.get_volume(), 4 * math.pi * 0.01**2 * 0.02, 5e-3)
+
+twin = row.duplicate("row_twin")
+twin.transform(relative=Location(y="10cm"))
+approx(twin.get_volume(), 3 * 0.02**3, 1e-3)
+approx(row.get_volume(), 3 * 0.02**3, 1e-3)
+
 # 10. Material and mass
 block = make_cube("10cm", "10cm", "10cm")
 block.set_material(aluminum_material())

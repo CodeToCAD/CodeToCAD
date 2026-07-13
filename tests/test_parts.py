@@ -152,3 +152,62 @@ def test_blank_part_requires_build_override():
     with pytest.raises(NotImplementedError):
         codetocad.Part3D().build()
     assert cube(1, 1, 1).build() is not None
+
+
+def test_duplicate_is_independent():
+    part = cube(1, 2, 3)
+    part.name = "original"
+    part.set_material(aluminum_material())
+    part.shell(thickness="1mm")
+    copy = part.duplicate()
+    assert copy.name == "original_copy"
+    assert copy.get_volume() == pytest.approx(part.get_volume())
+    assert copy.material is part.material
+    # Changes to the copy do not leak back into the original.
+    copy.transform(relative=Location(x=1))
+    copy.hole(Location(), radius="1mm", amount="1cm")
+    assert [op["operation"] for op in part.operations] == ["shell"]
+    assert len(part.ledger.transformations) == 0
+    assert part._origin.x == pytest.approx(0)
+    assert part.duplicate(name="explicit").name == "explicit"
+
+
+def test_linear_pattern_expands_mesh_and_bounding_box():
+    part = cube(1, 1, 1).linear_pattern(3, Location(x=2))
+    assert part.operations[0]["operation"] == "linear_pattern"
+    bbox_min, bbox_max = part.get_bounding_box()
+    assert bbox_min.x == pytest.approx(-0.5)
+    assert bbox_max.x == pytest.approx(4.5)
+    assert bbox_max.y == pytest.approx(0.5)
+    # 3 instances x 12 triangles per cube.
+    assert part._generate_mesh().shape == (36, 3, 3)
+
+
+def test_circular_pattern_rotates_about_center():
+    part = cube(1, 1, 1, start_location=Location(x=2)).circular_pattern(
+        4, "90deg", center=Location(), axis="z"
+    )
+    operation = part.operations[0]
+    assert operation["separation_angle"].value == pytest.approx(math.pi / 2)
+    assert operation["axis"] == pytest.approx((0, 0, 1))
+    bbox_min, bbox_max = part.get_bounding_box()
+    assert bbox_min.x == pytest.approx(-2.5)
+    assert bbox_max.x == pytest.approx(2.5)
+    assert bbox_max.y == pytest.approx(2.5)
+
+
+def test_pattern_validation():
+    with pytest.raises(ValueError):
+        cube(1, 1, 1).linear_pattern(0, Location(x=1))
+    with pytest.raises(ValueError):
+        cube(1, 1, 1).circular_pattern(0, 90)
+    with pytest.raises(ValueError):
+        cube(1, 1, 1).circular_pattern(4, 90, axis="w")
+    with pytest.raises(ValueError):
+        cube(1, 1, 1).circular_pattern(4, 90, axis=(0, 0, 0))
+
+
+def test_patterned_export_stl(tmp_path):
+    destination = tmp_path / "row.stl"
+    cube(1, 1, 1).linear_pattern(4, Location(y=3)).export(str(destination))
+    assert destination.read_text().count("facet normal") == 4 * 12

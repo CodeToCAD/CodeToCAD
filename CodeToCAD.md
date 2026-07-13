@@ -372,6 +372,17 @@ class Part3D(Assembly3D, LocationMixin, GeometryQueryMixin, BooleanMixin, Materi
     def chamfer(self, edges:list[Edge]|None = None, faces:list[Face]|None = None, amount: LengthWithUnit)
     def hole(self, start_location:Location, radius: LengthWithUnit, *, amount: LengthWithUnit|None = None, end_location: Location|None=None)
 
+    def duplicate(self, name:str|None = None) -> Part3D
+        # An independent copy of the part: same primitive, recorded
+        # operations, placement and material.
+
+    # Instancing. count includes the original instance; patterns are baked
+    # into core meshes/bounding boxes (they need no CAD kernel) and replayed
+    # natively by the Build123D/Blender adapters.
+    def linear_pattern(self, count:int, offset:Location) -> Part3D
+    def circular_pattern(self, count:int, separation_angle:AngleWithUnit, center:Location|None = None, axis:str|tuple = "z") -> Part3D
+        # separation_angle: bare numbers are degrees; strings may carry units
+
 ```
 
 ## Primitives

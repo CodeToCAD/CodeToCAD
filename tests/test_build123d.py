@@ -139,3 +139,29 @@ def test_adapted_components_and_material():
 
     bolt = adapt(CommonFasteners.M3_BOLT.build())
     assert bolt.get_volume() == pytest.approx(math.pi * 0.0015**2 * 0.012, rel=1e-6)
+
+
+def test_linear_pattern_native_volume():
+    box = make_cube(1, 1, 1)
+    box.linear_pattern(3, Location(x=2))
+    assert box.get_volume() == pytest.approx(3.0, rel=1e-6)
+
+
+def test_circular_pattern_after_transform():
+    post = make_cylinder(0.2, 1)
+    post.transform(relative=Location(x=1))
+    post.circular_pattern(4, 90)
+    assert post.get_volume() == pytest.approx(4 * math.pi * 0.2**2, rel=1e-6)
+
+
+def test_duplicate_adapted_part_is_independent():
+    box = make_cube(1, 1, 1)
+    box.hole(box.top_center, radius=0.1, amount=1)
+    expected = 1 - math.pi * 0.1**2
+    copy = box.duplicate("box2")
+    assert isinstance(copy, Part3D)
+    assert copy.get_volume() == pytest.approx(expected, rel=1e-6)
+    copy.transform(relative=Location(x=5))
+    assert box.get_volume() == pytest.approx(expected, rel=1e-6)
+    assert box.top_center.x.value == pytest.approx(0)
+    assert copy.top_center.x.value == pytest.approx(5)

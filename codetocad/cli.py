@@ -72,12 +72,76 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import open3d as o3d
 
 directory = Path(sys.argv[1])
 vis = o3d.visualization.Visualizer()
 vis.create_window(window_name="CodeToCAD preview", width=1000, height=800)
 vis.get_render_option().mesh_show_back_face = True
+
+# World-orientation gizmo: coordinate-axes arrows (x=red, y=green, z=blue)
+# re-anchored to the bottom-left of the view every frame.
+axes = o3d.geometry.TriangleMesh.create_coordinate_frame(size=1.0)
+axes_vertices = np.asarray(axes.vertices).copy()
+vis.add_geometry(axes, reset_bounding_box=False)
+scene_center = np.zeros(3)
+
+
+def anchor_axes():
+    parameters = vis.get_view_control().convert_to_pinhole_camera_parameters()
+    intrinsic, extrinsic = parameters.intrinsic, parameters.extrinsic
+    fx, fy = intrinsic.get_focal_length()
+    cx, cy = intrinsic.get_principal_point()
+    camera_to_world = np.linalg.inv(extrinsic)
+    # Anchor at the scene center's depth so the gizmo stays inside the
+    # near/far clipping planes at any zoom.
+    depth = max(float(np.linalg.norm(camera_to_world[:3, 3] - scene_center)), 1e-3)
+    margin = 90.0  # pixels from the window corner
+    u, v = margin, intrinsic.height - margin
+    point = np.array([(u - cx) / fx * depth, (v - cy) / fy * depth, depth, 1.0])
+    anchor = (camera_to_world @ point)[:3]
+    scale = 45.0 * depth / fx  # ~45 px arrows regardless of zoom
+    axes.vertices = o3d.utility.Vector3dVector(axes_vertices * scale + anchor)
+    vis.update_geometry(axes)
+
+
+def reference_mesh(reference):
+    image = o3d.io.read_image(reference["path"])
+    pixels = np.asarray(image)
+    if pixels.size == 0:
+        return None
+    width = float(reference.get("width", 1.0))
+    height = width * pixels.shape[0] / pixels.shape[1]
+    x, y, z = reference.get("center", (0.0, 0.0, 0.0))
+    plane = reference.get("plane", "xz")
+    w, h = width / 2, height / 2
+    if plane == "xy":  # flat on the floor, top of the image towards +y
+        corners = [
+            (x - w, y - h, z), (x + w, y - h, z),
+            (x + w, y + h, z), (x - w, y + h, z),
+        ]
+    elif plane == "yz":  # side elevation
+        corners = [
+            (x, y - w, z - h), (x, y + w, z - h),
+            (x, y + w, z + h), (x, y - w, z + h),
+        ]
+    else:  # "xz" front elevation
+        corners = [
+            (x - w, y, z - h), (x + w, y, z - h),
+            (x + w, y, z + h), (x - w, y, z + h),
+        ]
+    mesh = o3d.geometry.TriangleMesh()
+    mesh.vertices = o3d.utility.Vector3dVector(np.array(corners, dtype=np.float64))
+    mesh.triangles = o3d.utility.Vector3iVector([[0, 1, 2], [0, 2, 3]])
+    uvs = np.array([(0, 1), (1, 1), (1, 0), (0, 0)], dtype=np.float64)
+    mesh.triangle_uvs = o3d.utility.Vector2dVector(uvs[[0, 1, 2, 0, 2, 3]])
+    mesh.triangle_material_ids = o3d.utility.IntVector([0, 0])
+    mesh.textures = [image]
+    mesh.compute_vertex_normals()
+    return mesh
+
+
 version = None
 populated = False
 while True:
@@ -89,15 +153,38 @@ while True:
         color_file = directory / "colors.json"
         if color_file.exists():
             colors = json.loads(color_file.read_text())
+        reference_file = directory / "references.json"
+        references = (
+            json.loads(reference_file.read_text()) if reference_file.exists() else []
+        )
         vis.clear_geometries()
+        vis.add_geometry(axes, reset_bounding_box=False)
+        bounds = []
+        meshes = []
         for stl in sorted(directory.glob("*.stl")):
             mesh = o3d.io.read_triangle_mesh(str(stl))
             if mesh.is_empty():
                 continue
             mesh.compute_vertex_normals()
             mesh.paint_uniform_color(colors.get(stl.stem, [0.62, 0.66, 0.7]))
+            meshes.append(mesh)
+        for reference in references:
+            try:
+                mesh = reference_mesh(reference)
+            except Exception:
+                mesh = None
+            if mesh is not None:
+                meshes.append(mesh)
+        for mesh in meshes:
             vis.add_geometry(mesh, reset_bounding_box=not populated)
             populated = True
+            box = mesh.get_axis_aligned_bounding_box()
+            bounds.append((box.get_min_bound(), box.get_max_bound()))
+        if bounds:
+            low = np.min([b[0] for b in bounds], axis=0)
+            high = np.max([b[1] for b in bounds], axis=0)
+            scene_center = (low + high) / 2
+    anchor_axes()
     if not vis.poll_events():
         break
     vis.update_renderer()
@@ -120,9 +207,17 @@ class LivePreview:
         self._directory: Path | None = None
         self._warned = False
         self.live = False
+        # Reference images shown in the viewer to build around: dicts with
+        # "path", "plane" ("xy"/"xz"/"yz"), "width" (m) and "center" [x, y, z].
+        self.references: list[dict] = []
 
     def available(self) -> bool:
         return importlib.util.find_spec("open3d") is not None
+
+    @property
+    def running(self) -> bool:
+        """Whether a viewer window process is currently open."""
+        return self._process is not None and self._process.poll() is None
 
     def warn_unavailable(self) -> None:
         if not self._warned:
@@ -166,6 +261,7 @@ class LivePreview:
         if not self.available():
             self.warn_unavailable()
             return
+        (self.directory / "references.json").write_text(json.dumps(self.references))
         (self.directory / "version.txt").write_text(str(time.time_ns()))
         self._ensure_viewer()
 
@@ -382,6 +478,7 @@ class InteractiveSession:
             "project": self.project_name,
             "backend": self.backend,
             "selected": self.selected,
+            "reference_images": self.preview.references,
             "joints": self.joints,
             "parts": {
                 var_name: {
@@ -412,6 +509,11 @@ class InteractiveSession:
         if data:
             self.project_name = data.get("project") or self.project_name
             self.backend = data.get("backend")
+            self.preview.references = [
+                reference
+                for reference in data.get("reference_images", [])
+                if Path(str(reference.get("path", ""))).is_file()
+            ]
             for var_name, info in data.get("parts", {}).items():
                 file = self.project_dir / str(info.get("file", ""))
                 if not file.exists():
@@ -505,7 +607,7 @@ class InteractiveSession:
                 else "part"
             )
             self.parts[match.group(1)] = {"file": path, "kind": kind}
-        for match in re.finditer(r"^(\w+) = \w+\.extrude\(", text, re.M):
+        for match in re.finditer(r"^(\w+) = \w+\.(extrude|duplicate)\(", text, re.M):
             self.parts[match.group(1)] = {"file": path, "kind": "part"}
         if "codetocad.Part3D" in text:  # blank part: var = ClassName(name=...)
             for match in re.finditer(r"^(\w+) = [A-Z]\w*\(name=", text, re.M):
@@ -858,7 +960,10 @@ class InteractiveSession:
         if not force and not (self.preview.live and self.preview.available()):
             return
         if not self._vars_of_kind("part"):
-            if force:
+            if self.preview.references and self.preview.available():
+                # Nothing solid yet, but reference images can be shown.
+                self.preview.publish()
+            elif force:
                 self._print("Nothing to preview yet - create a part first.")
             return
         if self.backend == "blender":
@@ -960,6 +1065,8 @@ class InteractiveSession:
                 ("Boolean selected part (subtract/union/intersect)", has_part),
                 ("Shell selected part", has_part),
                 ("Cut a hole in selected part", has_part),
+                ("Duplicate selected part", has_part),
+                ("Pattern selected part (linear or circular instances)", has_part),
                 ("Define a location on selected part", has_part),
                 ("Set modeling backend (bakes booleans into exports)", True),
             ],
@@ -974,6 +1081,8 @@ class InteractiveSession:
             self._boolean_selected,
             self._shell_selected,
             self._hole_selected,
+            self._duplicate_selected,
+            self._pattern_selected,
             self._define_location,
             self._set_backend,
         )[choice - 1]()
@@ -1140,6 +1249,90 @@ class InteractiveSession:
         )
         self._print(f"Added a hole to {self.selected}.")
         self._warn_core_operation()
+        self._refresh_preview()
+
+    def _duplicate_selected(self) -> None:
+        source = self.selected
+        self._print("")
+        default = self._unique_var(f"{source}_copy")
+        var_name = self._unique_var(
+            _sanitize_identifier(
+                self._ask(f"Enter a name for the copy (default {default}): ") or default
+            )
+        )
+        self._append_line(source, f"{var_name} = {source}.duplicate(name={var_name!r})")
+        raw = self._ask(
+            "Enter an x, y, z offset for the copy (blank to leave it in place): "
+        )
+        if raw:
+            coords = [coord.strip() for coord in raw.split(",")]
+            coords += ["0"] * (3 - len(coords))
+            self._append_line(
+                source,
+                f"{var_name}.transform(relative=codetocad.Location("
+                f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r}))",
+            )
+        self._register(var_name, "part", self._part_file(source))
+        self._print(f"Duplicated {source} into the part {var_name}.")
+        self._refresh_preview()
+
+    def _pattern_selected(self) -> None:
+        choice = self._menu(
+            "Pattern:",
+            [
+                ("Linear (repeat along an offset)", True),
+                ("Circular (repeat around an axis)", True),
+            ],
+        )
+        if choice == 0:
+            return
+        (count,) = self._ask_numbers(
+            "Enter the number of instances, including the original (blank for 3): ",
+            [3],
+        )
+        count = max(int(count), 1)
+        if choice == 1:
+            dims = self._ask_dimensions(
+                "Enter the offset between instances x, y, z: ", 3
+            )
+            if dims is None:
+                return
+            self._append_line(
+                self.selected,
+                f"{self.selected}.linear_pattern({count}, codetocad.Location("
+                f"x={dims[0]!r}, y={dims[1]!r}, z={dims[2]!r}))",
+            )
+        else:
+            default_angle = 360.0 / count
+            (angle,) = self._ask_numbers(
+                f"Enter the angle between instances in degrees "
+                f"(blank for {default_angle:g}): ",
+                [default_angle],
+            )
+            axis = (
+                self._ask("Enter the rotation axis x, y or z (blank for z): ").lower()
+                or "z"
+            )
+            if axis not in ("x", "y", "z"):
+                self._print(f"Unknown axis {axis!r}; use x, y or z.")
+                return
+            center_arg = ""
+            raw = self._ask(
+                "Enter the center of rotation x, y, z (blank for the origin): "
+            )
+            if raw:
+                coords = [coord.strip() for coord in raw.split(",")]
+                coords += ["0"] * (3 - len(coords))
+                center_arg = (
+                    f", center=codetocad.Location("
+                    f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r})"
+                )
+            self._append_line(
+                self.selected,
+                f"{self.selected}.circular_pattern({count}, {angle:g}"
+                f"{center_arg}, axis={axis!r})",
+            )
+        self._print(f"Added the pattern to {self.selected}.")
         self._refresh_preview()
 
     def _define_location(self) -> None:
@@ -2096,9 +2289,12 @@ class InteractiveSession:
             [
                 ("Open/refresh the preview window", True),
                 (live_label, True),
+                ("Add a reference image to build around", True),
+                ("Remove a reference image", bool(self.preview.references)),
                 ("Save a PNG snapshot", True),
                 ("Close the preview window", True),
             ],
+            hint="add a reference image first",
         )
         if choice == 1:
             self._refresh_preview(force=True)
@@ -2113,9 +2309,70 @@ class InteractiveSession:
             else:
                 self._print("Live preview is off.")
         elif choice == 3:
-            self._snapshot()
+            self._add_reference_image()
         elif choice == 4:
+            self._remove_reference_image()
+        elif choice == 5:
+            self._snapshot()
+        elif choice == 6:
             self.preview.close()
+
+    def _add_reference_image(self) -> None:
+        self._print("")
+        raw = self._ask("Enter the path of the image (png/jpg): ")
+        file = Path(raw).expanduser()
+        if not file.is_file():
+            self._print(f"No such image: {raw}")
+            return
+        choice = self._menu(
+            "Which plane should it stand on?",
+            [
+                ("Front view (upright, facing the Y axis)", True),
+                ("Side view (upright, facing the X axis)", True),
+                ("Floor (flat on the ground)", True),
+            ],
+        )
+        if choice == 0:
+            return
+        plane = ("xz", "yz", "xy")[choice - 1]
+        (width,) = self._ask_numbers(
+            "Enter the image width in meters (blank for 1): ", [1.0]
+        )
+        center = self._ask_numbers(
+            "Enter the image center x, y, z in meters (blank for 0, 0, 0): ",
+            [0.0, 0.0, 0.0],
+        )
+        self.preview.references.append(
+            {
+                "path": str(file.resolve()),
+                "plane": plane,
+                "width": width,
+                "center": center,
+            }
+        )
+        self._print(f"Added the reference image {file.name}.")
+        if self.preview.available() and (self.preview.running or self.preview.live):
+            self.preview.publish()
+
+    def _remove_reference_image(self) -> None:
+        references = self.preview.references
+        options = [
+            (f"{Path(reference['path']).name} ({reference['plane']})", True)
+            for reference in references
+        ]
+        if len(references) > 1:
+            options.append(("Remove all reference images", True))
+        choice = self._menu("Remove which reference image?", options)
+        if choice == 0:
+            return
+        if choice > len(references):
+            references.clear()
+            self._print("Removed all reference images.")
+        else:
+            removed = references.pop(choice - 1)
+            self._print(f"Removed {Path(removed['path']).name}.")
+        if self.preview.available() and self.preview.running:
+            self.preview.publish()
 
     def _snapshot(self) -> None:
         if self.backend == "blender":

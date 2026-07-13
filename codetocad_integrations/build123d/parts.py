@@ -154,6 +154,8 @@ class Part3D(codetocad.Part3D):
             return self._apply_fillet_chamfer(solid, operation), origin
         if name in ("subtract", "union", "intersect"):
             return self._apply_boolean(solid, operation), origin
+        if name in codetocad.PATTERN_OPERATIONS:
+            return self._apply_pattern(solid, operation), origin
         if name == "transform":
             return self._apply_transform(solid, origin, operation)
         raise NotImplementedError(
@@ -232,6 +234,25 @@ class Part3D(codetocad.Part3D):
         if operation["operation"] == "union":
             return solid + other_solid
         return solid & other_solid
+
+    def _apply_pattern(self, solid, operation: dict):
+        count = operation["count"]
+        result = solid
+        if operation["operation"] == "linear_pattern":
+            offset = operation["offset"].to_numpy()
+            for i in range(1, count):
+                result = result + bd.Pos(*(offset * i)) * solid
+            return result
+        center = operation["center"].to_numpy()
+        axis = operation["axis"]
+        step_deg = math.degrees(operation["separation_angle"].value)
+        for i in range(1, count):
+            rotated = bd.Pos(*center) * (
+                bd.Location((0, 0, 0), axis, step_deg * i)
+                * (bd.Pos(*(-center)) * solid)
+            )
+            result = result + rotated
+        return result
 
     def _apply_transform(self, solid, origin: np.ndarray, operation: dict):
         location: Location = operation["location"]

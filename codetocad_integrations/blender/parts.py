@@ -306,6 +306,8 @@ class Part3D(codetocad.Part3D):
             self._apply_bevel(obj, operation)
         elif name in ("subtract", "union", "intersect"):
             self._apply_boolean(obj, operation)
+        elif name in codetocad.PATTERN_OPERATIONS:
+            self._apply_pattern(obj, operation)
         elif name == "transform":
             self._apply_transform(obj, operation)
         else:
@@ -440,6 +442,39 @@ class Part3D(codetocad.Part3D):
         modifier.solver = "EXACT"
         modifier.object = other_obj
         _bake_modifiers(obj)
+
+    def _apply_pattern(self, obj: bpy.types.Object, operation: dict) -> None:
+        from mathutils import Matrix
+
+        count = operation["count"]
+        if operation["operation"] == "linear_pattern":
+            offset = operation["offset"].to_numpy()
+            transforms = [
+                Matrix.Translation(tuple(offset * i)) for i in range(1, count)
+            ]
+        else:
+            center = BVector(tuple(operation["center"].to_numpy()))
+            axis = BVector(operation["axis"])
+            step = operation["separation_angle"].value
+            transforms = [
+                Matrix.Translation(center)
+                @ Matrix.Rotation(step * i, 4, axis)
+                @ Matrix.Translation(-center)
+                for i in range(1, count)
+            ]
+        # Duplicate the base object for every instance before any union, so
+        # later instances don't copy the already-unioned result.
+        base_matrix = _world_matrix(obj).copy()
+        instances = []
+        for transform in transforms:
+            instance = obj.copy()
+            instance.data = obj.data.copy()
+            _link(instance)
+            instance.matrix_world = transform @ base_matrix
+            instances.append(instance)
+        for instance in instances:
+            self._boolean_with_object(obj, instance, "UNION")
+            _remove_object(instance)
 
     def _apply_transform(self, obj: bpy.types.Object, operation: dict) -> None:
         location: Location = operation["location"]
