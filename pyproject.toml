@@ -10,32 +10,28 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.5.1",
+    "build123d",
+    "open3d>=0.19.0",
+    "mujoco",
+    "nicegui>=3",
+    "matplotlib",
+    "pillow",
+    "skidl>=2.2.3",
+    "pyserial",
+    "mpremote",
+    "paho-mqtt",
+    "rerun-sdk",
+    "playwright",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest"]
-build123d = ["build123d"]
+# pybullet builds from source (no universal wheels; needs CFLAGS=-Dfdopen=fdopen
+# on some Macs), calculix needs the external ccx solver, and pyvesc has a
+# broken dependency declaration (missing PyCRC), so these stay opt-in.
 pybullet = ["pybullet"]
-mujoco = ["mujoco"]
 calculix = ["pygccx", "matplotlib"]
-open3d = [
-    "open3d>=0.19.0",
-]
-skidl = [
-    "skidl>=2.2.3",
-    "matplotlib",
-    "pillow",
-]
-spice = [
-    "matplotlib",
-]
-pyserial = ["pyserial"]
-micropython = ["mpremote", "pyserial"]
-mqtt = ["paho-mqtt"]
 vesc = ["pyvesc", "pyserial"]
-nicegui = ["nicegui>=3"]
-rerun = ["rerun-sdk"]
-playwright = ["playwright"]
 
 [project.scripts]
 codetocad = "codetocad.cli:main"

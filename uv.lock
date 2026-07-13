@@ -497,13 +497,22 @@ wheels = [
 name = "codetocad"
 source = { editable = "." }
 dependencies = [
+    { name = "build123d" },
+    { name = "matplotlib" },
+    { name = "mpremote" },
+    { name = "mujoco" },
+    { name = "nicegui" },
     { name = "numpy" },
+    { name = "open3d" },
+    { name = "paho-mqtt" },
+    { name = "pillow" },
+    { name = "playwright" },
+    { name = "pyserial" },
+    { name = "rerun-sdk" },
+    { name = "skidl" },
 ]
 
 [package.optional-dependencies]
-build123d = [
-    { name = "build123d" },
-]
 calculix = [
     { name = "matplotlib" },
     { name = "pygccx" },
@@ -511,41 +520,8 @@ calculix = [
 dev = [
     { name = "pytest" },
 ]
-micropython = [
-    { name = "mpremote" },
-    { name = "pyserial" },
-]
-mqtt = [
-    { name = "paho-mqtt" },
-]
-mujoco = [
-    { name = "mujoco" },
-]
-nicegui = [
-    { name = "nicegui" },
-]
-open3d = [
-    { name = "open3d" },
-]
-playwright = [
-    { name = "playwright" },
-]
 pybullet = [
     { name = "pybullet" },
-]
-pyserial = [
-    { name = "pyserial" },
-]
-rerun = [
-    { name = "rerun-sdk" },
-]
-skidl = [
-    { name = "matplotlib" },
-    { name = "pillow" },
-    { name = "skidl" },
-]
-spice = [
-    { name = "matplotlib" },
 ]
 vesc = [
     { name = "pyserial" },
@@ -561,29 +537,27 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "build123d", marker = "extra == 'build123d'" },
+    { name = "build123d" },
+    { name = "matplotlib" },
     { name = "matplotlib", marker = "extra == 'calculix'" },
-    { name = "matplotlib", marker = "extra == 'skidl'" },
-    { name = "matplotlib", marker = "extra == 'spice'" },
-    { name = "mpremote", marker = "extra == 'micropython'" },
-    { name = "mujoco", marker = "extra == 'mujoco'" },
-    { name = "nicegui", marker = "extra == 'nicegui'", specifier = ">=3" },
+    { name = "mpremote" },
+    { name = "mujoco" },
+    { name = "nicegui", specifier = ">=3" },
     { name = "numpy", specifier = ">=2.5.1" },
-    { name = "open3d", marker = "extra == 'open3d'", specifier = ">=0.19.0" },
-    { name = "paho-mqtt", marker = "extra == 'mqtt'" },
-    { name = "pillow", marker = "extra == 'skidl'" },
-    { name = "playwright", marker = "extra == 'playwright'" },
+    { name = "open3d", specifier = ">=0.19.0" },
+    { name = "paho-mqtt" },
+    { name = "pillow" },
+    { name = "playwright" },
     { name = "pybullet", marker = "extra == 'pybullet'" },
     { name = "pygccx", marker = "extra == 'calculix'", git = "https://github.com/calculix/pygccx.git" },
-    { name = "pyserial", marker = "extra == 'micropython'" },
-    { name = "pyserial", marker = "extra == 'pyserial'" },
+    { name = "pyserial" },
     { name = "pyserial", marker = "extra == 'vesc'" },
     { name = "pytest", marker = "extra == 'dev'" },
     { name = "pyvesc", marker = "extra == 'vesc'" },
-    { name = "rerun-sdk", marker = "extra == 'rerun'" },
-    { name = "skidl", marker = "extra == 'skidl'", specifier = ">=2.2.3" },
+    { name = "rerun-sdk" },
+    { name = "skidl", specifier = ">=2.2.3" },
 ]
-provides-extras = ["dev", "build123d", "pybullet", "mujoco", "calculix", "open3d", "skidl", "spice", "pyserial", "micropython", "mqtt", "vesc", "nicegui", "rerun", "playwright"]
+provides-extras = ["dev", "pybullet", "calculix", "vesc"]
 
 [package.metadata.requires-dev]
 dev = [
