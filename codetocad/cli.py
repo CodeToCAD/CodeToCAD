@@ -595,8 +595,10 @@ class InteractiveSession:
         self.selected = geometry[-1] if geometry else None
 
     def _scan_file(self, path: Path, text: str) -> None:
+        # Factories may be wrapped in the backend's adapt(), e.g.
+        # ``part = adapt(codetocad.cube(...))`` with build123d/blender.
         for match in re.finditer(
-            r"^(\w+) = codetocad\."
+            r"^(\w+) = (?:adapt\()?codetocad\."
             r"(rectangle|circle|text|cube|cylinder|sphere|import_file)\(",
             text,
             re.M,
