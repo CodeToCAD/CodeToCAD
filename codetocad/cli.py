@@ -50,6 +50,81 @@ _RESET = "\x1b[0m"
 #: Registry kinds that are geometry (selectable, imported by the project file).
 _GEOMETRY_KINDS = ("sketch", "part")
 
+#: Shown whenever an answer is rejected and the question is asked again.
+_RETRY_HINT = "Please enter it again (b to go back, q to quit)."
+
+
+def _validate_length(value: str) -> str:
+    """Return ``value`` if CodeToCAD can read it as a length (``2``, ``1cm``,
+    ``0.5in``, ``2 * 3mm``), otherwise raise ValueError."""
+    from codetocad.units import LengthMeters
+
+    try:
+        LengthMeters.value_to_meters(value)
+    except ValueError:
+        raise ValueError(
+            f"{value!r} is not a length - use a number or a unit, e.g. 2, 1cm, 0.5in."
+        ) from None
+    return value
+
+
+def _parse_nonempty(value: str) -> str:
+    if not value:
+        raise ValueError("That cannot be empty.")
+    return value
+
+
+def _parse_optional_mass(value: str) -> str:
+    """A mass such as ``0.5``, ``500g`` or ``2lb``; blank means "no mass"."""
+    from codetocad.units import WeightKilograms
+
+    if not value:
+        return ""
+    try:
+        WeightKilograms.value_to_kilograms(value)
+    except ValueError:
+        raise ValueError(
+            f"{value!r} is not a mass - use a number or a unit, e.g. 0.5, 500g."
+        ) from None
+    return value
+
+
+def _parse_optional_rgba(value: str) -> list[str]:
+    """Four colour channels in 0-1; blank means "no colour"."""
+    if not value:
+        return []
+    channels = [channel.strip() for channel in value.split(",") if channel.strip()]
+    if len(channels) != 4:
+        raise ValueError(f"Expected 4 channels (r, g, b, a), got {len(channels)}.")
+    for channel in channels:
+        try:
+            number = float(channel)
+        except ValueError:
+            raise ValueError(f"{channel!r} is not a number.") from None
+        if not 0.0 <= number <= 1.0:
+            raise ValueError(f"{channel} is outside the 0-1 range.")
+    return channels
+
+
+def _parse_cube_location_or_coordinates(value: str) -> list[str] | str:
+    """Either x, y, z coordinates (a list) or the name of a CubeLocations
+    member such as ``TOP_CENTER`` (a string)."""
+    from codetocad.location import CubeLocations
+
+    if "," in value:
+        coords = [coord.strip() for coord in value.split(",") if coord.strip()]
+        if len(coords) > 3:
+            raise ValueError(f"Expected at most 3 coordinates, got {len(coords)}.")
+        coords = [_validate_length(coord) for coord in coords]
+        return coords + ["0"] * (3 - len(coords))
+    member = value.upper().replace(" ", "_")
+    if member not in CubeLocations.__members__:
+        raise ValueError(
+            f"{value!r} is neither x, y, z coordinates nor a cube location "
+            f"({', '.join(sorted(CubeLocations.__members__)[:3])}, ...)."
+        )
+    return member
+
 
 def _sanitize_identifier(name: str) -> str:
     identifier = re.sub(r"\W+", "_", name.strip()).strip("_")
@@ -311,11 +386,34 @@ class InteractiveSession:
 
     # -- IO helpers --
 
-    def _ask(self, prompt: str) -> str:
+    def _ask(self, prompt: str, error: str = "") -> str:
+        """Ask for free text. ``error`` explains why the previous answer was
+        rejected and is shown right before asking again."""
+        if error:
+            self._print(error)
         try:
             return self._input(prompt).strip()
         except (EOFError, StopIteration):
             raise _QuitSession()
+
+    def _ask_valid(self, prompt: str, parse):
+        """Ask until ``parse`` accepts the answer, re-asking with the reason
+        whenever it raises ValueError.
+
+        Returns the parsed value, or None when the user backs out. These
+        prompts also accept ``b``/``q`` like the menus do, so a wrong answer
+        never traps the session in a question it cannot leave."""
+        error = ""
+        while True:
+            raw = self._ask(prompt, error)
+            if raw.lower() in ("q", "quit", "exit"):
+                raise _QuitSession()
+            if raw.lower() in ("b", "back"):
+                return None
+            try:
+                return parse(raw)
+            except ValueError as invalid:
+                error = f"{invalid} {_RETRY_HINT}"
 
     def _header(self) -> None:
         self._print("")
@@ -364,26 +462,102 @@ class InteractiveSession:
             self._print("Please enter one of the listed numbers.")
 
     def _ask_dimensions(self, prompt: str, count: int) -> list[str] | None:
-        raw = self._ask(prompt)
-        dims = [dim.strip() for dim in raw.split(",") if dim.strip()]
-        if len(dims) != count:
-            self._print(f"Expected {count} comma-separated value(s), got {len(dims)}.")
-            return None
-        return dims
+        """Exactly ``count`` comma-separated lengths, e.g. ``2, 1cm, 0.5in``.
+        Re-asks on the wrong number of values or an unreadable length."""
 
-    def _ask_numbers(self, prompt: str, defaults: list[float]) -> list[float]:
+        def parse(raw: str) -> list[str]:
+            dims = [dim.strip() for dim in raw.split(",") if dim.strip()]
+            if len(dims) != count:
+                raise ValueError(
+                    f"Expected {count} comma-separated value(s), got {len(dims)}."
+                )
+            return [_validate_length(dim) for dim in dims]
+
+        return self._ask_valid(prompt, parse)
+
+    def _ask_coordinates(self, prompt: str) -> list[str] | None:
+        """Up to three comma-separated lengths, padded with zeroes. Blank
+        yields an empty list (the caller's "leave it out" case); None means
+        the user backed out. Re-asks on an unreadable length or too many
+        values."""
+
+        def parse(raw: str) -> list[str]:
+            coords = [coord.strip() for coord in raw.split(",") if coord.strip()]
+            if not coords:
+                return []
+            if len(coords) > 3:
+                raise ValueError(f"Expected at most 3 values, got {len(coords)}.")
+            coords = [_validate_length(coord) for coord in coords]
+            return coords + ["0"] * (3 - len(coords))
+
+        return self._ask_valid(prompt, parse)
+
+    def _ask_optional_degrees(self, prompt: str) -> list[str] | None:
+        """Up to three comma-separated angles in degrees, each of which may be
+        left blank to keep that axis unset. None means the user backed out."""
+
+        def parse(raw: str) -> list[str]:
+            degrees = [degree.strip() for degree in raw.split(",")] if raw else []
+            if len(degrees) > 3:
+                raise ValueError(f"Expected at most 3 values, got {len(degrees)}.")
+            for degree in degrees:
+                if degree:
+                    try:
+                        float(degree)
+                    except ValueError:
+                        raise ValueError(
+                            f"{degree!r} is not an angle in degrees."
+                        ) from None
+            return degrees
+
+        return self._ask_valid(prompt, parse)
+
+    def _ask_numbers(self, prompt: str, defaults: list[float]) -> list[float] | None:
         """Comma-separated numbers with per-position defaults; blank keeps
-        the default."""
-        raw = self._ask(prompt)
-        values = list(defaults)
-        for index, token in enumerate(part.strip() for part in raw.split(",")):
-            if not token or index >= len(values):
-                continue
-            try:
-                values[index] = float(token)
-            except ValueError:
-                self._print(f"Could not parse {token!r}; using {values[index]}.")
-        return values
+        the default. Re-asks on an unreadable number or too many values."""
+
+        def parse(raw: str) -> list[float]:
+            tokens = [token.strip() for token in raw.split(",")] if raw else []
+            if len(tokens) > len(defaults):
+                raise ValueError(
+                    f"Expected at most {len(defaults)} comma-separated "
+                    f"number(s), got {len(tokens)}."
+                )
+            values = list(defaults)
+            for index, token in enumerate(tokens):
+                if not token:
+                    continue  # blank position keeps its default
+                try:
+                    values[index] = float(token)
+                except ValueError:
+                    raise ValueError(f"{token!r} is not a number.") from None
+            return values
+
+        return self._ask_valid(prompt, parse)
+
+    def _ask_choice(self, prompt: str, choices: tuple[str, ...], default: str) -> str | None:
+        """One of ``choices`` (blank picks ``default``); re-asks otherwise."""
+
+        def parse(raw: str) -> str:
+            choice = raw.lower() or default
+            if choice not in choices:
+                raise ValueError(
+                    f"{raw!r} is not one of {', '.join(choices)}."
+                )
+            return choice
+
+        return self._ask_valid(prompt, parse)
+
+    def _ask_existing_file(self, prompt: str, what: str = "file") -> Path | None:
+        """A path to a file that exists; re-asks until it does."""
+
+        def parse(raw: str) -> Path:
+            file = Path(raw).expanduser()
+            if not file.is_file():
+                raise ValueError(f"No such {what}: {raw}")
+            return file
+
+        return self._ask_valid(prompt, parse)
 
     # -- registry helpers --
 
@@ -1124,8 +1298,10 @@ class InteractiveSession:
                 f"{var_name} = {_camel(var_name)}(name={var_name!r})\n"
             )
         elif choice == 2:
-            file_path = self._ask("Enter the path of the file to import: ")
-            factory = self._factory(f"codetocad.import_file({file_path!r})")
+            file = self._ask_existing_file("Enter the path of the file to import: ")
+            if file is None:
+                return
+            factory = self._factory(f"codetocad.import_file({str(file)!r})")
             code = f"{var_name} = {factory}\n"
             code += f"{var_name}.name = {var_name!r}\n"
         elif choice == 3:
@@ -1175,14 +1351,22 @@ class InteractiveSession:
             line = f"{var_name}.set_material(codetocad.aluminum_material())"
         else:
             name = self._ask("Enter a material name: ") or "material"
-            mass = self._ask("Enter the mass in kg (blank to skip): ")
-            rgba = self._ask("Enter the color r, g, b, a in 0-1 (blank to skip): ")
+            mass = self._ask_valid(
+                "Enter the mass in kg (blank to skip): ", _parse_optional_mass
+            )
+            if mass is None:
+                return
+            rgba = self._ask_valid(
+                "Enter the color r, g, b, a in 0-1 (blank to skip): ",
+                _parse_optional_rgba,
+            )
+            if rgba is None:
+                return
             args = [repr(name)]
             if mass:
                 args.append(f"mass={mass}")
             if rgba:
-                channels = ", ".join(part.strip() for part in rgba.split(","))
-                args.append(f"color_rgba=codetocad.Vec4({channels})")
+                args.append(f"color_rgba=codetocad.Vec4({', '.join(rgba)})")
             line = f"{var_name}.set_material(codetocad.MaterialBase({', '.join(args)}))"
         self._append_line(var_name, line)
         self._print(f"Set the material of {var_name}.")
@@ -1230,14 +1414,16 @@ class InteractiveSession:
 
     def _shell_selected(self) -> None:
         self._print("")
-        thickness = self._ask("Enter a shell thickness: ")
-        raw = self._ask(
+        thickness = self._ask_dimensions("Enter a shell thickness: ", 1)
+        if thickness is None:
+            return
+        coords = self._ask_coordinates(
             "Enter the shell opening (start) location x, y, z "
             "(blank for a fully closed shell): "
         )
-        if raw.strip():
-            coords = [coord.strip() for coord in raw.split(",")]
-            coords += ["0"] * (3 - len(coords))
+        if coords is None:
+            return
+        if coords:
             start = (
                 f", start_at_location=codetocad.Location("
                 f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r})"
@@ -1245,7 +1431,7 @@ class InteractiveSession:
         else:
             start = ""
         self._append_line(
-            self.selected, f"{self.selected}.shell(thickness={thickness!r}{start})"
+            self.selected, f"{self.selected}.shell(thickness={thickness[0]!r}{start})"
         )
         self._print(f"Added shell to {self.selected}.")
         self._warn_core_operation()
@@ -1256,13 +1442,17 @@ class InteractiveSession:
         dims = self._ask_dimensions("Enter the hole start x, y, z: ", 3)
         if dims is None:
             return
-        radius = self._ask("Enter the hole radius: ")
-        depth = self._ask("Enter the hole depth: ")
+        radius = self._ask_dimensions("Enter the hole radius: ", 1)
+        if radius is None:
+            return
+        depth = self._ask_dimensions("Enter the hole depth: ", 1)
+        if depth is None:
+            return
         self._append_line(
             self.selected,
             f"{self.selected}.hole(codetocad.Location("
             f"x={dims[0]!r}, y={dims[1]!r}, z={dims[2]!r}), "
-            f"radius={radius!r}, amount={depth!r})",
+            f"radius={radius[0]!r}, amount={depth[0]!r})",
         )
         self._print(f"Added a hole to {self.selected}.")
         self._warn_core_operation()
@@ -1278,12 +1468,10 @@ class InteractiveSession:
             )
         )
         self._append_line(source, f"{var_name} = {source}.duplicate(name={var_name!r})")
-        raw = self._ask(
+        coords = self._ask_coordinates(
             "Enter an x, y, z offset for the copy (blank to leave it in place): "
         )
-        if raw:
-            coords = [coord.strip() for coord in raw.split(",")]
-            coords += ["0"] * (3 - len(coords))
+        if coords:
             self._append_line(
                 source,
                 f"{var_name}.transform(relative=codetocad.Location("
@@ -1303,11 +1491,13 @@ class InteractiveSession:
         )
         if choice == 0:
             return
-        (count,) = self._ask_numbers(
+        counts = self._ask_numbers(
             "Enter the number of instances, including the original (blank for 3): ",
             [3],
         )
-        count = max(int(count), 1)
+        if counts is None:
+            return
+        count = max(int(counts[0]), 1)
         if choice == 1:
             dims = self._ask_dimensions(
                 "Enter the offset between instances x, y, z: ", 3
@@ -1321,32 +1511,34 @@ class InteractiveSession:
             )
         else:
             default_angle = 360.0 / count
-            (angle,) = self._ask_numbers(
+            angles = self._ask_numbers(
                 f"Enter the angle between instances in degrees "
                 f"(blank for {default_angle:g}): ",
                 [default_angle],
             )
-            axis = (
-                self._ask("Enter the rotation axis x, y or z (blank for z): ").lower()
-                or "z"
+            if angles is None:
+                return
+            axis = self._ask_choice(
+                "Enter the rotation axis x, y or z (blank for z): ",
+                ("x", "y", "z"),
+                "z",
             )
-            if axis not in ("x", "y", "z"):
-                self._print(f"Unknown axis {axis!r}; use x, y or z.")
+            if axis is None:
                 return
             center_arg = ""
-            raw = self._ask(
+            coords = self._ask_coordinates(
                 "Enter the center of rotation x, y, z (blank for the origin): "
             )
-            if raw:
-                coords = [coord.strip() for coord in raw.split(",")]
-                coords += ["0"] * (3 - len(coords))
+            if coords is None:
+                return
+            if coords:
                 center_arg = (
                     f", center=codetocad.Location("
                     f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r})"
                 )
             self._append_line(
                 self.selected,
-                f"{self.selected}.circular_pattern({count}, {angle:g}"
+                f"{self.selected}.circular_pattern({count}, {angles[0]:g}"
                 f"{center_arg}, axis={axis!r})",
             )
         self._print(f"Added the pattern to {self.selected}.")
@@ -1357,28 +1549,23 @@ class InteractiveSession:
         location_name = _sanitize_identifier(
             self._ask("Enter a name for the location: ") or "location"
         )
-        raw = self._ask(
-            "Enter a cube location (e.g. TOP_CENTER) or x, y, z coordinates: "
+        answer = self._ask_valid(
+            "Enter a cube location (e.g. TOP_CENTER) or x, y, z coordinates: ",
+            _parse_cube_location_or_coordinates,
         )
+        if answer is None:
+            return
         var_name = self.selected
-        if "," in raw:
-            coords = [coord.strip() for coord in raw.split(",")]
-            coords += ["0"] * (3 - len(coords))
+        if isinstance(answer, list):
             line = (
                 f"{var_name}_{location_name} = codetocad.Location("
-                f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r}, "
+                f"x={answer[0]!r}, y={answer[1]!r}, z={answer[2]!r}, "
                 f"name={location_name!r})"
             )
         else:
-            member = raw.upper().replace(" ", "_")
-            from codetocad.location import CubeLocations
-
-            if member not in CubeLocations.__members__:
-                self._print(f"Unknown cube location {raw!r}.")
-                return
             line = (
                 f"{var_name}_{location_name} = "
-                f"codetocad.CubeLocations.{member}.to_location({var_name})"
+                f"codetocad.CubeLocations.{answer}.to_location({var_name})"
             )
         self._append_line(var_name, line)
         self._print(f"Defined location {var_name}_{location_name}.")
@@ -1432,11 +1619,15 @@ class InteractiveSession:
                 return
             factory = self._factory(f"codetocad.circle(radius={dims[0]!r})")
         else:
-            content = self._ask("Enter the text: ")
+            content = self._ask_valid("Enter the text: ", _parse_nonempty)
+            if content is None:
+                return
             font = self._ask("Enter the font (leave blank for default): ") or "Arial"
-            size = self._ask("Enter the text size: ")
+            size = self._ask_dimensions("Enter the text size: ", 1)
+            if size is None:
+                return
             factory = self._factory(
-                f"codetocad.text({content!r}, font={font!r}, size={size!r})"
+                f"codetocad.text({content!r}, font={font!r}, size={size[0]!r})"
             )
         code = f"{var_name} = {factory}\n{var_name}.name = {var_name!r}\n"
         path = self._new_part_file(var_name, description or None, code)
@@ -1444,11 +1635,15 @@ class InteractiveSession:
 
     def _extrude_selected(self) -> None:
         self._print("")
-        height = self._ask("Enter the extrude height: ")
+        height = self._ask_dimensions("Enter the extrude height: ", 1)
+        if height is None:
+            return
         default = f"{self.selected}_solid"
         raw = self._ask(f"Enter a name for the new part (default {default}): ")
         var_name = self._unique_var(_sanitize_identifier(raw or default))
-        self._append_line(self.selected, f"{var_name} = {self.selected}.extrude({height!r})")
+        self._append_line(
+            self.selected, f"{var_name} = {self.selected}.extrude({height[0]!r})"
+        )
         self._append_line(self.selected, f"{var_name}.name = {var_name!r}")
         self._register(var_name, "part", self._part_file(self.selected))
         self._print(f"Extruded {self.selected} into the part {var_name}.")
@@ -1465,18 +1660,17 @@ class InteractiveSession:
         axis = {1: "y", 2: "x", 3: "z"}[axis_choice]
         # Bare numbers are degrees to the core revolve(); emit a numeric
         # literal (a quoted string would be read as radians).
-        angle_text = self._ask("Enter the revolve angle in degrees (default 360): ")
-        try:
-            angle = float(angle_text) if angle_text.strip() else 360.0
-        except ValueError:
-            self._print("Angle must be a number in degrees; using 360.")
-            angle = 360.0
+        angles = self._ask_numbers(
+            "Enter the revolve angle in degrees (default 360): ", [360.0]
+        )
+        if angles is None:
+            return
         default = f"{self.selected}_solid"
         raw = self._ask(f"Enter a name for the new part (default {default}): ")
         var_name = self._unique_var(_sanitize_identifier(raw or default))
         self._append_line(
             self.selected,
-            f"{var_name} = {self.selected}.revolve({angle!r}, axis={axis!r})",
+            f"{var_name} = {self.selected}.revolve({angles[0]!r}, axis={axis!r})",
         )
         self._append_line(self.selected, f"{var_name}.name = {var_name!r}")
         self._register(var_name, "part", self._part_file(self.selected))
@@ -1547,15 +1741,15 @@ class InteractiveSession:
             )
         else:
             axis_args = ""
-            raw = self._ask(
+            degrees = self._ask_optional_degrees(
                 "Enter the axis tilt x_deg, y_deg, z_deg "
                 "(blank keeps the joint axis on Z; -90 on x points it along Y): "
             )
-            if raw:
-                degrees = [part.strip() for part in raw.split(",")]
-                for keyword, value in zip(("x_deg", "y_deg", "z_deg"), degrees):
-                    if value:
-                        axis_args += f", {keyword}={value}"
+            if degrees is None:
+                return
+            for keyword, value in zip(("x_deg", "y_deg", "z_deg"), degrees):
+                if value:
+                    axis_args += f", {keyword}={value}"
             self._append_line(
                 self.selected,
                 f"{joint_name} = codetocad.Location.from_euler("
@@ -1657,11 +1851,14 @@ class InteractiveSession:
             return
         info: dict = {"kind": ("dc", "bldc", "stepper")[choice - 1]}
         if choice == 1:
-            rpm, stall, volts = self._ask_numbers(
+            values = self._ask_numbers(
                 "Enter no-load rpm, stall torque N*m, voltage "
                 "(blank for 57, 1.4, 11.1 - a Dynamixel XL430): ",
                 [57.0, 1.4, 11.1],
             )
+            if values is None:
+                return
+            rpm, stall, volts = values
             mixin, suffix = "DCMotorMixin", "DCMotor"
             body = (
                 f"    no_load_speed_rpm = {rpm}\n"
@@ -1670,16 +1867,22 @@ class InteractiveSession:
             )
             info.update(no_load_rpm=rpm, stall_torque=stall)
         elif choice == 2:
-            kv, poles = self._ask_numbers(
+            values = self._ask_numbers(
                 "Enter kv rating, pole pairs (blank for 900, 7): ", [900.0, 7]
             )
+            if values is None:
+                return
+            kv, poles = values
             mixin, suffix = "BLDCMotorMixin", "BLDCMotor"
             body = f"    kv_rating = {kv}\n    pole_pairs = {int(poles)}\n"
         else:
-            steps, microsteps = self._ask_numbers(
+            values = self._ask_numbers(
                 "Enter steps per revolution, microsteps (blank for 200, 16): ",
                 [200, 16],
             )
+            if values is None:
+                return
+            steps, microsteps = values
             mixin, suffix = "StepperMotorMixin", "StepperMotor"
             body = (
                 f"    steps_per_revolution = {int(steps)}\n"
@@ -1699,10 +1902,13 @@ class InteractiveSession:
 
     def _camerize_selected(self) -> None:
         var_name = self.selected
-        width, height, fps = self._ask_numbers(
+        values = self._ask_numbers(
             "Enter resolution width, height and fps (blank for 320, 240, 8): ",
             [320, 240, 8],
         )
+        if values is None:
+            return
+        width, height, fps = values
         class_name = f"{_camel(var_name)}Camera"
         self._append_block(
             var_name,
@@ -1722,9 +1928,12 @@ class InteractiveSession:
             self._ask(f"Enter a name for the encoder (default {default}): ") or default
         )
         var_name = self._unique_var(var_name)
-        (cpr,) = self._ask_numbers(
+        counts = self._ask_numbers(
             "Enter counts per revolution (blank for 4096): ", [4096]
         )
+        if counts is None:
+            return
+        cpr = counts[0]
         joint = None
         moving_joints = [
             name
@@ -1772,20 +1981,24 @@ class InteractiveSession:
             return
         var_name, kind = devices[choice - 1]
         if kind == "motor":
-            pwm, direction = self._ask_numbers(
+            pins = self._ask_numbers(
                 "Enter PWM pin, direction pin (blank for 4, 16): ", [4, 16]
             )
+            if pins is None:
+                return
             line = (
                 f"{mcu}.bind_actuator({var_name}, name={var_name!r}, "
-                f"pwm_pin={int(pwm)}, dir_pin={int(direction)})"
+                f"pwm_pin={int(pins[0])}, dir_pin={int(pins[1])})"
             )
         elif kind == "encoder":
-            pin_a, pin_b = self._ask_numbers(
+            pins = self._ask_numbers(
                 "Enter encoder pin A, pin B (blank for 34, 35): ", [34, 35]
             )
+            if pins is None:
+                return
             line = (
                 f"{mcu}.bind_sensor({var_name}, name={var_name!r}, "
-                f"a={int(pin_a)}, b={int(pin_b)})"
+                f"a={int(pins[0])}, b={int(pins[1])})"
             )
         else:
             # Camera sensors live on dedicated pins (ESP32-CAM style).
@@ -1896,9 +2109,14 @@ class InteractiveSession:
                 "Enter the camera eye x, y, z (blank for 0.06, 0, 0.14): ",
                 [0.06, 0.0, 0.14],
             )
-            (tilt,) = self._ask_numbers(
+            if camera_position is None:
+                return
+            tilts = self._ask_numbers(
                 "Enter the downward tilt in degrees (blank for 15): ", [15.0]
             )
+            if tilts is None:
+                return
+            tilt = tilts[0]
 
         lines = ["import math", ""]
         imports = ["simulate"]
@@ -2287,8 +2505,10 @@ class InteractiveSession:
         if "if __name__ ==" in path.read_text():
             self._print(f"{path.name} is already runnable.")
             return
-        (port,) = self._ask_numbers("Enter the port (blank for 8080): ", [8080])
-        port = int(port)
+        ports = self._ask_numbers("Enter the port (blank for 8080): ", [8080])
+        if ports is None:
+            return
+        port = int(ports[0])
         emulated_sims = [
             var
             for var in self._vars_of_kind("sim")
@@ -2368,10 +2588,10 @@ class InteractiveSession:
 
     def _add_reference_image(self) -> None:
         self._print("")
-        raw = self._ask("Enter the path of the image (png/jpg): ")
-        file = Path(raw).expanduser()
-        if not file.is_file():
-            self._print(f"No such image: {raw}")
+        file = self._ask_existing_file(
+            "Enter the path of the image (png/jpg): ", what="image"
+        )
+        if file is None:
             return
         choice = self._menu(
             "Which plane should it stand on?",
@@ -2384,18 +2604,22 @@ class InteractiveSession:
         if choice == 0:
             return
         plane = ("xz", "yz", "xy")[choice - 1]
-        (width,) = self._ask_numbers(
+        widths = self._ask_numbers(
             "Enter the image width in meters (blank for 1): ", [1.0]
         )
+        if widths is None:
+            return
         center = self._ask_numbers(
             "Enter the image center x, y, z in meters (blank for 0, 0, 0): ",
             [0.0, 0.0, 0.0],
         )
+        if center is None:
+            return
         self.preview.references.append(
             {
                 "path": str(file.resolve()),
                 "plane": plane,
-                "width": width,
+                "width": widths[0],
                 "center": center,
             }
         )
@@ -2538,6 +2762,57 @@ def run_script(path: str) -> None:
         sys.path.remove(str(script.parent))
 
 
+def _single_argument(args: list[str], usage: str, prompt: str, validate) -> object:
+    """The one argument a subcommand takes.
+
+    The wrong number of parameters, or a value ``validate`` rejects, is
+    reported and asked again on a terminal. Without anyone to ask (a pipe,
+    a script, CI) it stays a usage error."""
+    value = args[1] if len(args) == 2 else None
+    if len(args) > 2:
+        print(f"Expected 1 argument, got {len(args) - 1}: {' '.join(args[1:])}")
+    while True:
+        if value is not None:
+            try:
+                return validate(value)
+            except ValueError as invalid:
+                if not sys.stdin.isatty():
+                    raise SystemExit(str(invalid))
+                print(str(invalid))
+        elif not sys.stdin.isatty():
+            raise SystemExit(usage)
+        try:
+            value = input(prompt).strip()
+        except (EOFError, KeyboardInterrupt):
+            print("")
+            raise SystemExit(usage)
+
+
+def _validate_project_name(name: str) -> str:
+    if not name:
+        raise ValueError("A project name is required.")
+    return _sanitize_identifier(name)
+
+
+def _validate_project_dir(path: str) -> Path:
+    project_dir = Path(path).expanduser()
+    if not project_dir.is_dir():
+        raise ValueError(f"No such project folder: {path}")
+    return project_dir
+
+
+def _validate_script(path: str) -> Path:
+    script = Path(path).expanduser()
+    if script.is_dir():
+        candidate = script / f"{script.name}.py"
+        if not candidate.exists():
+            raise ValueError(f"No script named {candidate.name} in {script}")
+        return candidate
+    if not script.exists():
+        raise ValueError(f"No such script: {path}")
+    return script
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     if not args or args[0] in ("-h", "--help", "help"):
@@ -2549,31 +2824,47 @@ def main(argv: list[str] | None = None) -> int:
         print(__version__)
         return 0
     if args[0] == "init":
-        if len(args) < 2:
-            print("Usage: codetocad init <project_name>")
-            return 1
-        name = _sanitize_identifier(args[1])
-        project_dir = init_project(name)
-        session = InteractiveSession(project_dir, name)
+        name = _single_argument(
+            args,
+            "Usage: codetocad init <project_name>",
+            "Enter a project name: ",
+            _validate_project_name,
+        )
+        project_dir = init_project(str(name))
+        session = InteractiveSession(project_dir, str(name))
         if (project_dir / STATE_FILE_NAME).exists():
             session.restore()
         session.run()
         return 0
     if args[0] == "load":
-        if len(args) < 2:
-            print("Usage: codetocad load <path/to/project>")
-            return 1
-        project_dir = Path(args[1]).expanduser()
-        if not project_dir.is_dir():
-            raise SystemExit(f"No such project folder: {args[1]}")
+        project_dir = _single_argument(
+            args,
+            "Usage: codetocad load <path/to/project>",
+            "Enter the path of the project folder: ",
+            _validate_project_dir,
+        )
+        assert isinstance(project_dir, Path)
         name = _sanitize_identifier(project_dir.name)
         session = InteractiveSession(project_dir, name)
         if not session.restore():
             print(f"Note: no CodeToCAD project found in {project_dir}; starting fresh.")
         session.run()
         return 0
-    target = args[1] if args[0] == "run" and len(args) > 1 else args[0]
-    run_script(target)
+    if args[0] == "run":
+        target = _single_argument(
+            args,
+            "Usage: codetocad run <path/to/script>",
+            "Enter the path of the script to run: ",
+            _validate_script,
+        )
+    else:
+        try:
+            target = _validate_script(args[0])
+        except ValueError as invalid:
+            # Also the "unknown command" case: it is neither a subcommand nor
+            # a script we can run.
+            raise SystemExit(f"{invalid}\n\n{USAGE}")
+    run_script(str(target))
     return 0
 
 

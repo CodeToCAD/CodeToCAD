@@ -692,3 +692,93 @@ def test_viewer_source_compiles():
     compile(_VIEWER_SOURCE, "viewer", "exec")
     assert "create_coordinate_frame" in _VIEWER_SOURCE
     assert "references.json" in _VIEWER_SOURCE
+
+
+def test_wrong_number_of_dimensions_asks_again(tmp_path):
+    """A wrong number of parameters is reported and the question is asked
+    again, instead of dropping back to the menu."""
+    inputs = [
+        "1", "1", "1", "box", "3",
+        "1cm, 1cm",  # only two of the three dimensions
+        "1cm, 1cm, 1cm",  # asked again, answered correctly
+        "q",
+    ]
+    project_dir, output, _ = run_session(tmp_path, inputs)
+    assert any(
+        "Expected 3 comma-separated value(s), got 2." in line for line in output
+    )
+    assert "codetocad.cube(length='1cm', width='1cm', height='1cm')" in (
+        project_dir / "box.py"
+    ).read_text()
+
+
+def test_unreadable_length_asks_again(tmp_path):
+    inputs = [
+        "1", "1", "1", "box", "3",
+        "1cm, wide, 1cm",  # 'wide' is not a length
+        "1cm, 2cm, 1cm",
+        "q",
+    ]
+    project_dir, output, _ = run_session(tmp_path, inputs)
+    assert any("'wide' is not a length" in line for line in output)
+    assert "width='2cm'" in (project_dir / "box.py").read_text()
+
+
+def test_invalid_number_asks_again(tmp_path):
+    """_ask_numbers used to keep the default silently; it now asks again."""
+    inputs = [
+        "1", "1", "1", "wheel", "4", "3cm, 1cm",
+        "4",  # Electronics
+        "2",  # Make selected part a motor
+        "1",  # DC motor
+        "fast, 1.4, 11.1",  # 'fast' is not a number
+        "57, 1.4, 11.1",
+        "q",
+    ]
+    project_dir, output, _ = run_session(tmp_path, inputs)
+    assert any("'fast' is not a number." in line for line in output)
+    assert "no_load_speed_rpm = 57.0" in (project_dir / "wheel.py").read_text()
+
+
+def test_invalid_axis_asks_again(tmp_path):
+    inputs = [
+        "1", "1", "1", "post", "4", "1cm, 10cm",
+        "1", "8", "2",  # Part > Pattern > Circular
+        "", "",  # instances, angle
+        "w",  # not an axis
+        "y",
+        "",  # center
+        "q",
+    ]
+    project_dir, output, _ = run_session(tmp_path, inputs)
+    assert any("'w' is not one of x, y, z." in line for line in output)
+    assert "axis='y'" in (project_dir / "post.py").read_text()
+
+
+def test_back_leaves_a_rejected_prompt(tmp_path):
+    """'b' escapes a question the user cannot answer, without writing code."""
+    inputs = [
+        "1", "1", "1", "box", "3",
+        "nope",  # invalid dimensions
+        "b",  # back out of the question
+        "q",
+    ]
+    project_dir, output, session = run_session(tmp_path, inputs)
+    assert any("Expected 3 comma-separated value(s), got 1." in line for line in output)
+    assert not (project_dir / "box.py").exists()
+    assert session.parts == {}
+
+
+def test_main_init_reports_wrong_number_of_parameters(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit):
+        main(["init", "cup", "extra"])
+    assert "Expected 1 argument, got 2" in capsys.readouterr().out
+
+
+def test_main_unknown_command_shows_usage(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit) as error:
+        main(["frobnicate"])
+    assert "No such script: frobnicate" in str(error.value)
+    assert "codetocad init" in str(error.value)
