@@ -609,7 +609,9 @@ class InteractiveSession:
                 else "part"
             )
             self.parts[match.group(1)] = {"file": path, "kind": kind}
-        for match in re.finditer(r"^(\w+) = \w+\.(extrude|duplicate)\(", text, re.M):
+        for match in re.finditer(
+            r"^(\w+) = \w+\.(extrude|revolve|duplicate)\(", text, re.M
+        ):
             self.parts[match.group(1)] = {"file": path, "kind": "part"}
         if "codetocad.Part3D" in text:  # blank part: var = ClassName(name=...)
             for match in re.finditer(r"^(\w+) = [A-Z]\w*\(name=", text, re.M):
@@ -1229,8 +1231,21 @@ class InteractiveSession:
     def _shell_selected(self) -> None:
         self._print("")
         thickness = self._ask("Enter a shell thickness: ")
+        raw = self._ask(
+            "Enter the shell opening (start) location x, y, z "
+            "(blank for a fully closed shell): "
+        )
+        if raw.strip():
+            coords = [coord.strip() for coord in raw.split(",")]
+            coords += ["0"] * (3 - len(coords))
+            start = (
+                f", start_at_location=codetocad.Location("
+                f"x={coords[0]!r}, y={coords[1]!r}, z={coords[2]!r})"
+            )
+        else:
+            start = ""
         self._append_line(
-            self.selected, f"{self.selected}.shell(thickness={thickness!r})"
+            self.selected, f"{self.selected}.shell(thickness={thickness!r}{start})"
         )
         self._print(f"Added shell to {self.selected}.")
         self._warn_core_operation()
@@ -1378,6 +1393,7 @@ class InteractiveSession:
             [
                 ("Create a sketch", True),
                 ("Extrude selected sketch into a part", has_sketch),
+                ("Revolve selected sketch into a part", has_sketch),
                 ("Transform selected sketch", has_sketch),
             ],
             hint="select a sketch first (main menu > Select geometry)",
@@ -1387,6 +1403,8 @@ class InteractiveSession:
         elif choice == 2:
             self._extrude_selected()
         elif choice == 3:
+            self._revolve_selected()
+        elif choice == 4:
             self._transform_selected()
 
     def _create_sketch(self) -> None:
@@ -1434,6 +1452,35 @@ class InteractiveSession:
         self._append_line(self.selected, f"{var_name}.name = {var_name!r}")
         self._register(var_name, "part", self._part_file(self.selected))
         self._print(f"Extruded {self.selected} into the part {var_name}.")
+        self._refresh_preview()
+
+    def _revolve_selected(self) -> None:
+        self._print("")
+        axis_choice = self._menu(
+            "Revolve around which axis?",
+            [("Y axis", True), ("X axis", True), ("Z axis", True)],
+        )
+        if axis_choice == 0:
+            return
+        axis = {1: "y", 2: "x", 3: "z"}[axis_choice]
+        # Bare numbers are degrees to the core revolve(); emit a numeric
+        # literal (a quoted string would be read as radians).
+        angle_text = self._ask("Enter the revolve angle in degrees (default 360): ")
+        try:
+            angle = float(angle_text) if angle_text.strip() else 360.0
+        except ValueError:
+            self._print("Angle must be a number in degrees; using 360.")
+            angle = 360.0
+        default = f"{self.selected}_solid"
+        raw = self._ask(f"Enter a name for the new part (default {default}): ")
+        var_name = self._unique_var(_sanitize_identifier(raw or default))
+        self._append_line(
+            self.selected,
+            f"{var_name} = {self.selected}.revolve({angle!r}, axis={axis!r})",
+        )
+        self._append_line(self.selected, f"{var_name}.name = {var_name!r}")
+        self._register(var_name, "part", self._part_file(self.selected))
+        self._print(f"Revolved {self.selected} into the part {var_name}.")
         self._refresh_preview()
 
     # -- assemble menu --

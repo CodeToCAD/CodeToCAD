@@ -9,6 +9,7 @@ from codetocad import CommonFasteners, Location
 from codetocad_integrations.build123d import (
     Part3D,
     adapt,
+    make_circle,
     make_cube,
     make_cylinder,
     make_import,
@@ -102,6 +103,21 @@ def test_extrude_sketch():
     assert sheet.get_area() == pytest.approx(0.02 * 0.03)
     part = sheet.extrude("1cm")
     assert part.get_volume() == pytest.approx(0.02 * 0.03 * 0.01)
+
+
+def test_revolve_sketch_native_tube():
+    tube = make_rectangle("2cm", "3cm", Location(0.1, 0, 0)).revolve()
+    # Native OpenCascade volume of the annular cylinder.
+    assert tube.get_volume() == pytest.approx(
+        math.pi * (0.11**2 - 0.09**2) * 0.03, rel=1e-6
+    )
+
+
+def test_partial_revolve_native():
+    quarter = make_circle("1cm", Location(0.05, 0, 0)).revolve(90)
+    assert quarter.get_volume() == pytest.approx(
+        0.25 * 2 * math.pi**2 * 0.05 * 0.01**2, rel=1e-4
+    )
 
 
 def test_custom_build_native_with_operations():

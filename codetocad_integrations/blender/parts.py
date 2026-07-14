@@ -187,6 +187,49 @@ def _text_object(name: str, primitive: dict, height: float) -> bpy.types.Object:
     return obj
 
 
+def _revolution_object(name: str, primitive: dict) -> bpy.types.Object:
+    """Revolve a 2D profile into a solid using a bmesh spin.
+
+    The filled profile face is interior for a full turn (dropped, leaving a
+    closed swept surface) but doubles as the start cap for a partial sweep,
+    whose open end loop is filled to close the solid."""
+    profile = primitive["profile"]
+    if profile["kind"] == "rectangle":
+        bm = _rectangle_bmesh(profile["width"], profile["height"])
+    elif profile["kind"] == "circle":
+        bm = _circle_bmesh(profile["radius"])
+    else:
+        raise NotImplementedError(
+            f"Blender adapter cannot revolve a {profile['kind']!r} profile"
+        )
+    bmesh.ops.translate(bm, verts=bm.verts, vec=primitive["profile_origin"])
+
+    angle = primitive["angle"]
+    full_turn = abs(angle - 2 * math.pi) < 1e-9
+    steps = max(3, round(CIRCLE_SEGMENTS * angle / (2 * math.pi)))
+    boundary_edges = [edge for edge in bm.edges if edge.is_boundary]
+    if full_turn:
+        bmesh.ops.delete(bm, geom=list(bm.faces), context="FACES_ONLY")
+    spin = bmesh.ops.spin(
+        bm,
+        geom=boundary_edges,
+        cent=primitive["axis_point"],
+        axis=primitive["axis_direction"],
+        angle=angle,
+        steps=steps,
+        use_merge=full_turn,
+    )
+    if not full_turn:
+        end_edges = [
+            element
+            for element in spin["geom_last"]
+            if isinstance(element, bmesh.types.BMEdge)
+        ]
+        bmesh.ops.edgeloop_fill(bm, edges=end_edges)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _new_mesh_object(name, bm)
+
+
 def _base_object(name: str, primitive: dict) -> bpy.types.Object:
     kind = primitive["kind"]
     if kind == "cube":
@@ -215,6 +258,8 @@ def _base_object(name: str, primitive: dict) -> bpy.types.Object:
         raise NotImplementedError(
             f"Blender adapter cannot extrude a {profile['kind']!r} profile"
         )
+    if kind == "revolution":
+        return _revolution_object(name, primitive)
     if kind == "imported":
         return _import_object(primitive["file_path"])
     raise NotImplementedError(f"Blender adapter cannot build a {kind!r} primitive")
@@ -657,6 +702,9 @@ class Part2D(codetocad.Part2D):
 
     def extrude(self, height: LengthWithUnit) -> Part3D:
         return adapt(super().extrude(height))
+
+    def revolve(self, angle=360, axis="y") -> Part3D:
+        return adapt(super().revolve(angle, axis))
 
 
 class ElectricalComponent(Part3D, codetocad.ECADMixin):

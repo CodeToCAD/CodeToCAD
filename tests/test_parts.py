@@ -17,6 +17,7 @@ from codetocad import (
     resistor,
     sphere,
 )
+from codetocad.topology import Edge, Vertex
 
 
 def test_cube_analysis():
@@ -44,6 +45,55 @@ def test_extrude_rectangle_becomes_cube():
 def test_extrude_circle_becomes_cylinder():
     part3d = circle(1).extrude(2)
     assert part3d.get_volume() == pytest.approx(2 * math.pi)
+
+
+def test_revolve_rectangle_becomes_tube():
+    # A rectangle offset from the Y axis, revolved a full turn, is a tube
+    # (annular cylinder): V = pi * (r_out^2 - r_in^2) * height.
+    part3d = rectangle(2, 3, Location(5, 0, 0)).revolve()
+    assert isinstance(part3d, codetocad.Part3D)
+    assert part3d.get_volume() == pytest.approx(math.pi * (6**2 - 4**2) * 3)
+    assert part3d.get_volume() == pytest.approx(2 * math.pi * 5 * 2 * 3)  # Pappus
+
+
+def test_revolve_circle_becomes_torus():
+    part3d = circle(1, Location(5, 0, 0)).revolve()
+    assert part3d.get_volume() == pytest.approx(2 * math.pi**2 * 5 * 1**2)
+
+
+def test_partial_revolve_scales_with_angle():
+    quarter = rectangle(2, 3, Location(5, 0, 0)).revolve(90)
+    assert quarter.get_volume() == pytest.approx(0.25 * 2 * math.pi * 5 * 2 * 3)
+
+
+def test_revolve_around_edge_matches_axis():
+    y_axis = Edge(Vertex(Location(0, 0, 0)), Vertex(Location(0, 1, 0)))
+    around_edge = rectangle(2, 3, Location(5, 0, 0)).revolve(360, y_axis)
+    around_axis = rectangle(2, 3, Location(5, 0, 0)).revolve(360, "y")
+    assert around_edge.get_volume() == pytest.approx(around_axis.get_volume())
+
+
+def test_revolve_bounding_box_from_mesh():
+    part3d = rectangle(2, 3, Location(5, 0, 0)).revolve()
+    bbox_min, bbox_max = part3d.get_bounding_box()
+    assert bbox_min.to_tuple() == pytest.approx((-6, -1.5, -6))
+    assert bbox_max.to_tuple() == pytest.approx((6, 1.5, 6))
+
+
+def test_revolve_profile_crossing_axis_is_rejected():
+    with pytest.raises(ValueError, match="cross the axis"):
+        rectangle(2, 3).revolve().get_volume()
+
+
+def test_revolve_angle_out_of_range():
+    with pytest.raises(ValueError, match="within"):
+        rectangle(2, 3, Location(5, 0, 0)).revolve(0)
+
+
+def test_revolve_zero_length_edge():
+    degenerate = Edge(Vertex(Location(0, 0, 0)), Vertex(Location(0, 0, 0)))
+    with pytest.raises(ValueError, match="zero-length"):
+        rectangle(2, 3, Location(5, 0, 0)).revolve(360, degenerate)
 
 
 def test_boolean_ledger():

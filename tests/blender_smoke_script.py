@@ -14,9 +14,11 @@ from codetocad_integrations.blender import ensure_blender
 ensure_blender()  # resets the scene (we are already inside Blender)
 
 from codetocad_integrations.blender import (  # noqa: E402
+    make_circle,
     make_cube,
     make_cylinder,
     make_import,
+    make_rectangle,
     make_text,
 )
 
@@ -99,6 +101,15 @@ twin = row.duplicate("row_twin")
 twin.transform(relative=Location(y="10cm"))
 approx(twin.get_volume(), 3 * 0.02**3, 1e-3)
 approx(row.get_volume(), 3 * 0.02**3, 1e-3)
+
+# 9c. Revolve a profile into a solid (full-turn tube and a partial arc)
+tube = make_rectangle("2cm", "3cm", Location(x="10cm")).revolve()
+approx(tube.get_volume(), math.pi * (0.11**2 - 0.09**2) * 0.03, 5e-3)
+tmin, tmax = tube.get_bounding_box()
+approx(tmax.x, 0.11, 5e-3)
+
+wedge = make_circle("1cm", Location(x="5cm")).revolve(90)
+approx(wedge.get_volume(), 0.25 * 2 * math.pi**2 * 0.05 * 0.01**2, 5e-2)
 
 # 10. Material and mass
 block = make_cube("10cm", "10cm", "10cm")

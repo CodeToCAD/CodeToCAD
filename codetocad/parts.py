@@ -84,6 +84,44 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
         part._origin = Vec3(self._origin.x, self._origin.y, self._origin.z)
         return part
 
+    def revolve(
+        self,
+        angle: AngleWithUnit = 360,
+        axis: str | tuple[float, float, float] | Edge = "y",
+    ) -> "Part3D":
+        """Revolve this 2D profile about an axis to sweep a solid of
+        revolution.
+
+        ``angle`` is the sweep angle -- bare numbers are degrees, strings may
+        carry units ("0.5rad"), and the default is a full 360deg turn.
+        ``axis`` is the axis of revolution: a main axis ``"x"``, ``"y"`` or
+        ``"z"`` (or a direction 3-vector) through the world origin, or an
+        :class:`Edge` whose two vertices define the axis line. The profile
+        lies in the XY plane, so a non-degenerate solid needs an axis that
+        also lies in that plane (the main ``"x"``/``"y"`` axes and coplanar
+        edges).
+        """
+        angle_rad = _angle_to_radians(angle, floats_are_degrees=True)
+        if not 0 < angle_rad <= 2 * math.pi + 1e-9:
+            raise ValueError("Revolve angle must be within (0, 360] degrees")
+        angle_rad = min(angle_rad, 2 * math.pi)
+        axis_point, axis_direction = _revolve_axis(axis)
+        name = f"{self.name}_revolved" if self.name else None
+        part = Part3D(name=name, description=self.description)
+        if self._primitive is not None:
+            part._primitive = {
+                "kind": "revolution",
+                "profile": copy.deepcopy(self._primitive),
+                "profile_origin": self._origin.to_tuple(),
+                "axis_point": axis_point,
+                "axis_direction": axis_direction,
+                "angle": angle_rad,
+            }
+        # The revolution is defined in world space (the profile carries its own
+        # origin and the axis its own line), so the part sits at the world
+        # origin rather than inheriting the sketch's placement.
+        return part
+
 
 class Part3D(
     Assembly3D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixin,
@@ -108,13 +146,37 @@ class Part3D(
         return self
 
     def get_bounding_box(self) -> tuple[Vec3, Vec3]:
-        if any(op["operation"] in PATTERN_OPERATIONS for op in self.operations):
+        base_kind = (self._primitive or {}).get("kind")
+        needs_mesh = base_kind == "revolution" or any(
+            op["operation"] in PATTERN_OPERATIONS for op in self.operations
+        )
+        if needs_mesh:
             triangles = self._generate_mesh()
             if triangles is not None:
                 points = triangles.reshape(-1, 3)
                 return (Vec3(*points.min(axis=0)), Vec3(*points.max(axis=0)))
         half = _half_extents(self._primitive)
         return _bbox_around(self._origin, half)
+
+    def get_volume(self) -> float:
+        if (self._primitive or {}).get("kind") == "revolution":
+            area, _perimeter = _profile_area_perimeter(self._primitive["profile"])
+            return self._primitive["angle"] * _revolve_centroid_radius(
+                self._primitive
+            ) * area
+        return super().get_volume()
+
+    def get_area(self) -> float:
+        if (self._primitive or {}).get("kind") == "revolution":
+            area, perimeter = _profile_area_perimeter(self._primitive["profile"])
+            radius = _revolve_centroid_radius(self._primitive)
+            angle = self._primitive["angle"]
+            # Pappus lateral surface swept by the boundary, plus the two flat
+            # profile caps when the sweep does not close (angle < 360deg).
+            lateral = angle * radius * perimeter
+            caps = 0.0 if abs(angle - 2 * math.pi) < 1e-9 else 2 * area
+            return lateral + caps
+        return super().get_area()
 
     def duplicate(self, name: str | None = None) -> "Part3D":
         """An independent copy of this part: same primitive, recorded
@@ -292,6 +354,8 @@ class Part3D(
             )
         if kind == "sphere":
             return _sphere_mesh(self._primitive["radius"], origin)
+        if kind == "revolution":
+            return _revolution_mesh(self._primitive)
         return None
 
 
@@ -348,6 +412,78 @@ def _pattern_axis(axis) -> tuple[float, float, float]:
     return (float(vector[0]), float(vector[1]), float(vector[2]))
 
 
+def _revolve_axis(
+    axis: str | tuple[float, float, float] | Edge,
+) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    """Resolve a revolve axis into ``(point_on_axis, unit_direction)``.
+
+    Main axes ("x"/"y"/"z") and bare direction vectors pass through the world
+    origin; an :class:`Edge` defines the axis by the line through its two
+    vertices."""
+    if isinstance(axis, Edge):
+        start, end = axis.start.location, axis.end.location
+        vector = np.array(
+            [
+                end.x.value - start.x.value,
+                end.y.value - start.y.value,
+                end.z.value - start.z.value,
+            ]
+        )
+        magnitude = float(np.linalg.norm(vector))
+        if magnitude < 1e-12:
+            raise ValueError("Cannot revolve around a zero-length edge")
+        vector = vector / magnitude
+        point = (start.x.value, start.y.value, start.z.value)
+        return point, (float(vector[0]), float(vector[1]), float(vector[2]))
+    return (0.0, 0.0, 0.0), _pattern_axis(axis)
+
+
+def _profile_area_perimeter(profile: dict) -> tuple[float, float]:
+    """Planar area and boundary perimeter of a revolvable profile."""
+    kind = profile["kind"]
+    if kind == "rectangle":
+        width, height = profile["width"], profile["height"]
+        return width * height, 2 * (width + height)
+    if kind == "circle":
+        radius = profile["radius"]
+        return math.pi * radius**2, 2 * math.pi * radius
+    raise NotImplementedError(
+        f"Revolved analysis is not available for a {kind!r} profile"
+    )
+
+
+def _revolve_centroid_radius(primitive: dict) -> float:
+    """Distance from the profile centroid to the axis line. Raises if the
+    profile crosses the axis, where the simple Pappus relation breaks down.
+
+    Relies on rectangle/circle profiles being centered on their origin, so the
+    area centroid and boundary (curve) centroid coincide at ``profile_origin``.
+    """
+    centroid = np.array(primitive["profile_origin"], dtype=np.float64)
+    point = np.array(primitive["axis_point"], dtype=np.float64)
+    direction = np.array(primitive["axis_direction"], dtype=np.float64)
+    relative = centroid - point
+    radial = relative - np.dot(relative, direction) * direction
+    radius = float(np.linalg.norm(radial))
+    crosses = radius < 1e-9  # centroid on the axis => profile straddles it
+    boundary = _profile_boundary(primitive["profile"], primitive["profile_origin"])
+    if boundary is not None and not crosses:
+        radial_unit = radial / radius
+        # Signed position of each boundary point along the centroid's radial
+        # direction; a non-positive minimum means the axis runs through (or
+        # touches) the profile.
+        projections = (
+            boundary - point - np.outer((boundary - point) @ direction, direction)
+        ) @ radial_unit
+        crosses = projections.min() < 1e-9
+    if crosses:
+        raise ValueError(
+            "Revolved analysis needs a profile that does not cross the axis; "
+            "offset the sketch away from the axis of revolution"
+        )
+    return radius
+
+
 def _rotation_matrix(axis: tuple[float, float, float], angle: float) -> np.ndarray:
     """Rodrigues rotation matrix about the unit vector ``axis``."""
     x, y, z = axis
@@ -370,6 +506,100 @@ def _circular_pattern_mesh(triangles: np.ndarray, operation: dict) -> np.ndarray
         rotation = _rotation_matrix(operation["axis"], angle * i)
         instances.append((triangles - center) @ rotation.T + center)
     return np.concatenate(instances)
+
+
+def _profile_boundary(
+    profile: dict, origin: tuple[float, float, float], segments: int = 64
+) -> np.ndarray | None:
+    """Closed boundary loop of a 2D profile as (M, 3) points in the XY plane,
+    positioned at ``origin``. Returns ``None`` for profiles without a simple
+    analytic outline (e.g. text)."""
+    kind = profile["kind"]
+    if kind == "rectangle":
+        half_width, half_height = profile["width"] / 2, profile["height"] / 2
+        points = np.array(
+            [
+                (-half_width, -half_height),
+                (half_width, -half_height),
+                (half_width, half_height),
+                (-half_width, half_height),
+            ]
+        )
+    elif kind == "circle":
+        angles = np.linspace(0.0, 2 * math.pi, segments, endpoint=False)
+        radius = profile["radius"]
+        points = np.column_stack([radius * np.cos(angles), radius * np.sin(angles)])
+    else:
+        return None
+    return np.column_stack(
+        [
+            points[:, 0] + origin[0],
+            points[:, 1] + origin[1],
+            np.full(len(points), origin[2]),
+        ]
+    )
+
+
+def _revolution_mesh(primitive: dict, segments: int = 64) -> np.ndarray | None:
+    """Triangulated surface of revolution of the profile boundary about the
+    axis, with flat end caps when the sweep does not close a full turn."""
+    boundary = _profile_boundary(primitive["profile"], primitive["profile_origin"])
+    if boundary is None:
+        return None
+    point = np.array(primitive["axis_point"], dtype=np.float64)
+    direction = np.array(primitive["axis_direction"], dtype=np.float64)
+    angle = primitive["angle"]
+    full_turn = abs(angle - 2 * math.pi) < 1e-9
+    steps = max(2, int(round(segments * angle / (2 * math.pi))))
+    thetas = np.linspace(0.0, angle, steps + 1)
+
+    relative = boundary - point
+    axial = relative @ direction
+    radial = relative - np.outer(axial, direction)
+    radius = np.linalg.norm(radial, axis=1)
+    radial_unit = np.zeros_like(radial)
+    nonzero = radius > 1e-12
+    radial_unit[nonzero] = radial[nonzero] / radius[nonzero, None]
+    normal_unit = np.cross(np.broadcast_to(direction, radial.shape), radial_unit)
+    axis_base = point + np.outer(axial, direction)  # (M, 3), foot on the axis
+
+    cos = np.cos(thetas)[None, :, None]
+    sin = np.sin(thetas)[None, :, None]
+    # rings[i, j] is boundary point i swept to angle thetas[j].
+    rings = axis_base[:, None, :] + radius[:, None, None] * (
+        cos * radial_unit[:, None, :] + sin * normal_unit[:, None, :]
+    )
+
+    count = len(boundary)
+    next_index = (np.arange(count) + 1) % count
+    lower = rings[:, :-1]  # (M, steps, 3)
+    upper = rings[:, 1:]
+    a, b = lower, lower[next_index]
+    c, d = upper[next_index], upper
+    side = np.concatenate(
+        [
+            np.stack([a, b, c], axis=-2).reshape(-1, 3, 3),
+            np.stack([a, c, d], axis=-2).reshape(-1, 3, 3),
+        ]
+    )
+    if full_turn:
+        return side
+    return np.concatenate([side, _revolution_caps(rings, next_index)])
+
+
+def _revolution_caps(rings: np.ndarray, next_index: np.ndarray) -> np.ndarray:
+    """Fan-triangulated profile caps at the first and last sweep angle, wound
+    to face outward from the swept body."""
+    start_loop, end_loop = rings[:, 0], rings[:, -1]
+    start_center = start_loop.mean(axis=0)
+    end_center = end_loop.mean(axis=0)
+    start_hub = np.broadcast_to(start_center, start_loop.shape)
+    end_hub = np.broadcast_to(end_center, end_loop.shape)
+    start_cap = np.stack(
+        [start_hub, start_loop[next_index], start_loop], axis=1
+    )
+    end_cap = np.stack([end_hub, end_loop, end_loop[next_index]], axis=1)
+    return np.concatenate([start_cap, end_cap])
 
 
 def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> np.ndarray:

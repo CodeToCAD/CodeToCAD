@@ -51,6 +51,7 @@ def test_spec_flow_create_cylinder_and_shell(tmp_path):
         "1",  # Part
         "5",  # Shell selected part
         "5mm",  # thickness
+        "",  # shell opening location (blank = fully closed)
         "q",  # quit
     ]
     project_dir, output, session = run_session(tmp_path, inputs)
@@ -61,6 +62,28 @@ def test_spec_flow_create_cylinder_and_shell(tmp_path):
     assert any("You've started the project cup!" in line for line in output)
     project_file = (project_dir / "cup.py").read_text()
     assert "from cup_cylinder import cup_cylinder" in project_file
+
+
+def test_shell_with_opening_location(tmp_path):
+    inputs = [
+        "1",  # Part
+        "1",  # Create a part
+        "1",  # backend: no integration
+        "cup_cylinder",  # name
+        "4",  # Cylinder
+        "2cm, 5cm",  # radius, height
+        "1",  # Part
+        "5",  # Shell selected part
+        "5mm",  # thickness
+        "0, 0, 2.5cm",  # opening location (top face)
+        "q",  # quit
+    ]
+    project_dir, _, _ = run_session(tmp_path, inputs)
+    part_file = (project_dir / "cup_cylinder.py").read_text()
+    assert (
+        "cup_cylinder.shell(thickness='5mm', start_at_location="
+        "codetocad.Location(x='0', y='0', z='2.5cm'))"
+    ) in part_file
 
 
 def test_disabled_options_cannot_be_chosen(tmp_path):
@@ -107,6 +130,29 @@ def test_sketch_and_extrude_flow(tmp_path):
     assert "codetocad.circle(radius='2cm')" in part_file
     assert "profile_solid = profile.extrude('1cm')" in part_file
     assert session.parts["profile"]["kind"] == "sketch"
+    assert session.parts["profile_solid"]["kind"] == "part"
+    assert session.selected == "profile_solid"
+
+
+def test_sketch_and_revolve_flow(tmp_path):
+    inputs = [
+        "2",  # Sketch
+        "1",  # Create a sketch
+        "1",  # backend: no integration
+        "profile",
+        "2",  # Circle
+        "2cm",
+        "2",  # Sketch
+        "3",  # Revolve selected sketch
+        "1",  # axis: Y
+        "90",  # angle in degrees
+        "",  # default part name
+        "q",
+    ]
+    project_dir, _, session = run_session(tmp_path, inputs)
+    part_file = (project_dir / "profile.py").read_text()
+    # Angle is emitted as a numeric literal (degrees), not a string (radians).
+    assert "profile_solid = profile.revolve(90.0, axis='y')" in part_file
     assert session.parts["profile_solid"]["kind"] == "part"
     assert session.selected == "profile_solid"
 
@@ -294,7 +340,7 @@ def test_load_restores_state_and_continues(tmp_path):
     assert (project_dir / STATE_FILE_NAME).exists()
 
     # A brand-new session over the same folder picks up where we left off.
-    output, session = resume_session(project_dir, ["1", "5", "5mm", "q"])
+    output, session = resume_session(project_dir, ["1", "5", "5mm", "", "q"])
     assert session.parts["cup_cylinder"]["kind"] == "part"
     assert session.selected == "cup_cylinder"
     assert any("You've loaded the project cup" in line for line in output)

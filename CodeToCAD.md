@@ -363,6 +363,14 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin):
     def extrude(self, height: LengthWithUnit):
         return Part3D
 
+    # Revolve the profile into a solid of revolution. angle is the sweep
+    # (bare numbers are degrees; default a full 360 turn). axis is a main
+    # axis "x"/"y"/"z" (or a direction 3-vector) through the world origin,
+    # or an Edge whose vertices define the axis line. The profile is in the
+    # XY plane, so the axis should lie in that plane (x/y or a coplanar edge).
+    def revolve(self, angle: AngleWithUnit = 360, axis: str|tuple|Edge = "y"):
+        return Part3D
+
 class Part3D(Assembly3D, LocationMixin, GeometryQueryMixin, BooleanMixin, MaterialMixin): 
 
     def shell(self, thickness: LengthWithUnit, start_at_location: Location|None = None):

@@ -64,6 +64,13 @@ def _base_solid(primitive: dict, start_origin: Vec3) -> bd.Part:
         height = primitive["height"]
         sketch = _base_sketch(primitive["profile"])
         solid = bd.Pos(0, 0, -height / 2) * bd.extrude(sketch, amount=height)
+    elif kind == "revolution":
+        origin = primitive["profile_origin"]
+        sketch = bd.Pos(*origin) * _base_sketch(primitive["profile"])
+        axis = bd.Axis(primitive["axis_point"], primitive["axis_direction"])
+        solid = bd.revolve(
+            sketch, axis=axis, revolution_arc=math.degrees(primitive["angle"])
+        )
     elif kind == "imported":
         solid = _import_shape(primitive["file_path"])
     else:
@@ -435,6 +442,9 @@ class Part2D(codetocad.Part2D):
 
     def extrude(self, height: LengthWithUnit) -> Part3D:
         return adapt(super().extrude(height))
+
+    def revolve(self, angle=360, axis="y") -> Part3D:
+        return adapt(super().revolve(angle, axis))
 
 
 class ElectricalComponent(Part3D, codetocad.ECADMixin):
