@@ -58,6 +58,13 @@ from codetocad.mixins import (
     StepperMotorMixin,
 )
 from codetocad.assembly import Assembly2D, Assembly3D, AssemblyCommon
+from codetocad.drawings import (
+    DEFAULT_VIEWS,
+    STANDARD_VIEWS,
+    Drawing,
+    View,
+    drawing_from_meshes,
+)
 from codetocad.parts import PATTERN_OPERATIONS, Part2D, Part3D
 from codetocad.primitives import (
     circle,
@@ -210,6 +217,12 @@ __all__ = [
     "Assembly3D",
     "Part2D",
     "Part3D",
+    # drawings
+    "Drawing",
+    "View",
+    "drawing_from_meshes",
+    "STANDARD_VIEWS",
+    "DEFAULT_VIEWS",
     # primitives
     "rectangle",
     "circle",

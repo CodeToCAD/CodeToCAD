@@ -52,6 +52,10 @@ body.export("cup.stl")
   fixed, revolute, prismatic, ...) recorded in ledgers.
 - **Primitives**: `cube`, `cylinder`, `sphere`, `rectangle`, `circle`,
   `text`, `import_file` and material presets.
+- **Technical drawings**: `part.generate_drawing()` projects any `Part3D` — or
+  a whole assembly — into a standard third-angle sheet (front, top, right and
+  isometric views, dimensioned, with a title block), returned as an editable
+  `Part2D` you export with `drawing.export("part.svg")`.
 - **ECAD**: `led`, `diode`, `resistor`, `capacitor`, `inductor`,
   `voltage_source`, `current_source` components (each a `Part3D` with pins, a
   value and a `Footprint`) wired into a `Circuit` of `Net`s — capture

@@ -56,5 +56,13 @@ as custom user parts overriding `build_native()` with the Build123D API
 
   <img src="images/gallery_vase.png" width="400">
 
+Output:
+
+- `technical_drawing.py` — `generate_drawing()` projects the native solid
+  (so the hole shows up) into a third-angle SVG sheet; the returned drawing is
+  an editable `Part2D` you rename, transform and `export("...svg")`.
+
+  <img src="images/technical_drawing.png" width="400">
+
 Note: CodeToCAD's base unit is meters, so the original (millimeter) values
 appear as `"80mm"` strings or are scaled by `MM = 0.001` in custom parts.

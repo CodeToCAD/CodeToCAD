@@ -451,6 +451,26 @@ class Part3D(codetocad.Part3D):
     def get_area(self) -> float:
         return float(self.get_native().area)
 
+    def _projection_mesh(self) -> np.ndarray | None:
+        """Tessellate the native OpenCascade solid so drawings (and the core
+        STL export) reflect Build123D-only features -- holes, fillets, shells,
+        booleans -- not just the primitive shape."""
+        solid = self.get_native()
+        box = solid.bounding_box()
+        diagonal = float(
+            np.linalg.norm(
+                np.array([box.max.X, box.max.Y, box.max.Z])
+                - np.array([box.min.X, box.min.Y, box.min.Z])
+            )
+        )
+        tolerance = max(diagonal / 400.0, 1e-6)
+        vertices, triangles = solid.tessellate(tolerance)
+        if not triangles:
+            return None
+        points = np.array([(v.X, v.Y, v.Z) for v in vertices], dtype=np.float64)
+        faces = np.array(triangles, dtype=np.int64)
+        return points[faces]
+
     def export(self, location: str, include_assembly: bool = True) -> str:
         """Export this part; by default any parts joined to it by assembly
         constraints (fixed/revolute/prismatic) are included in their

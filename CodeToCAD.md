@@ -406,6 +406,18 @@ class Part3D(Assembly3D, LocationMixin, GeometryQueryMixin, BooleanMixin, Materi
     def circular_pattern(self, count:int, separation_angle:AngleWithUnit, center:Location|None = None, axis:str|tuple = "z") -> Part3D
         # separation_angle: bare numbers are degrees; strings may carry units
 
+    # A 2D technical (CAD) drawing of this part, returned as an editable Part2D
+    # (primitive kind "drawing"): standard third-angle views ("front", "top",
+    # "right") plus an isometric view, dimensioned and with a title block.
+    # Export the sheet with drawing.export("sheet.svg"), or pass location here
+    # as a shortcut to write it in one call. Works for any Part3D even if it is
+    # an assembly: like export(), it draws the whole assembly in assembled
+    # positions unless include_assembly=False. Federated backends (e.g.
+    # Build123D) draw their native solid, so holes/fillets/booleans show up.
+    # crease_angle (bare numbers are degrees) sets how sharp a dihedral must be
+    # to be drawn.
+    def generate_drawing(self, location:str|None = None, *, views=("front","top","right","iso"), include_assembly:bool = True, crease_angle:AngleWithUnit = 15) -> Part2D
+
 ```
 
 ## Primitives

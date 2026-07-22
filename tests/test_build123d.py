@@ -56,6 +56,32 @@ def test_export_includes_assembly(tmp_path):
     assert box.min.Z == pytest.approx(-0.5, abs=1e-6)
 
 
+def test_generate_drawing_reflects_native_hole(tmp_path):
+    # The Build123D adapter tessellates its native solid, so a drawing shows
+    # the hole (as a circle in the top view) that the core primitive lacks.
+    plate = make_cube("80mm", "60mm", "10mm")
+    plate.name = "Plate"
+    plate.hole(plate.top_center, radius_or_shape="11mm", amount="10mm")
+
+    drawing = plate.generate_drawing()
+    assert isinstance(drawing, codetocad.Part2D)
+    assert drawing._primitive["kind"] == "drawing"
+
+    solid_plate = make_cube("80mm", "60mm", "10mm")
+    top = next(v for v in drawing._primitive["drawing"].views if v.name == "top")
+    solid_top = next(
+        v
+        for v in solid_plate.generate_drawing()._primitive["drawing"].views
+        if v.name == "top"
+    )
+    # The bored plate's top view carries the extra hole circle.
+    assert len(top.segments) > len(solid_top.segments)
+
+    destination = tmp_path / "plate.svg"
+    assert drawing.export(str(destination)) == str(destination)
+    assert destination.read_text().startswith("<svg")
+
+
 def test_export_bakes_in_starting_angle(tmp_path):
     # A revolute joint's starting_angle should pose the exported assembly, not
     # just the simulation. The lid, modeled flat on top, swings up ~90deg.

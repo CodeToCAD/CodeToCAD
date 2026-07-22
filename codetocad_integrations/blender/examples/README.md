@@ -25,6 +25,12 @@ or `python <example>.py`) — `ensure_blender()` relaunches the script inside
 
   <img src="images/suzanne.png" width="400">
 
+- `technical_drawing.py` — an assembly (a plate with two standoffs fixed on
+  top) projected by `generate_drawing()` into a third-angle SVG sheet. The
+  returned drawing is an editable `Part2D` exported with `export("...svg")`.
+
+  <img src="images/technical_drawing.png" width="400">
+
 - `arm_6dof_keyframes.py` — a 6-DOF arm simulated with the Blender backend,
   its joints realized as empties driven by Blender's native keyframing.
   Command the joints to a pose, pin it with `sim.set_keyframe(t)` (real

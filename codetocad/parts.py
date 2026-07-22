@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from codetocad.assembly import Assembly2D, Assembly3D
+from codetocad.drawings import DEFAULT_VIEWS
 from codetocad.ledgers import AssemblyLedger, BooleanLedger
 from codetocad.simulation import extract_links
 from codetocad.location import Location, LocationMixin, _angle_to_radians
@@ -73,8 +74,32 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
         return self
 
     def get_bounding_box(self) -> tuple[Vec3, Vec3]:
+        primitive = self._primitive or {}
+        if primitive.get("kind") == "drawing":
+            segments = primitive["drawing"].layout_segments()
+            origin = self._origin
+            if len(segments) == 0:
+                return _bbox_around(origin, Vec3())
+            points = segments.reshape(-1, 2)
+            low, high = points.min(axis=0), points.max(axis=0)
+            return (
+                Vec3(origin.x + low[0], origin.y + low[1], origin.z),
+                Vec3(origin.x + high[0], origin.y + high[1], origin.z),
+            )
         half = _half_extents(self._primitive)
         return _bbox_around(self._origin, half)
+
+    def export(self, location: str) -> str:
+        """Export this sketch. A drawing (from :meth:`Part3D.generate_drawing`)
+        writes its SVG sheet; other sketches need a federated backend to build
+        and export their geometry."""
+        primitive = self._primitive or {}
+        if primitive.get("kind") == "drawing":
+            return primitive["drawing"].export_svg(location, name=self.name)
+        raise NotImplementedError(
+            "Override export() to export this shape from your target modeling "
+            "application"
+        )
 
     @property
     def width(self) -> LengthMeters:
@@ -503,15 +528,7 @@ class Part3D(
             if source.suffix.lower() == Path(location).suffix.lower():
                 shutil.copyfile(source, location)
                 return location
-        meshes = []
-        for part, shift in members:
-            triangles = part._generate_mesh()
-            if triangles is None:
-                raise NotImplementedError(
-                    "Override export() to export this shape from your target "
-                    "modeling application"
-                )
-            meshes.append(triangles + shift if np.any(shift) else triangles)
+        meshes = self._assembly_meshes(include_assembly)
         _write_ascii_stl(
             location, np.concatenate(meshes), self.name or "codetocad_part"
         )
@@ -521,6 +538,73 @@ class Part3D(
         """This part plus every part joined to it by assembly constraints
         (recursively), each with the translation that assembles it."""
         return [(link.part, link.shift) for link in extract_links(self)]
+
+    def _projection_mesh(self) -> np.ndarray | None:
+        """The triangle mesh used to export and to draw this part, in its
+        modeled pose. Defaults to the core primitive mesh; federated backends
+        override it to tessellate their native solid, so exports and drawings
+        reflect backend-only features (booleans, shells, holes, ...)."""
+        return self._generate_mesh()
+
+    def _assembly_meshes(self, include_assembly: bool) -> list[np.ndarray]:
+        """The triangle mesh of this part -- or of the whole assembly, in
+        assembled positions -- as a list of ``(N, 3, 3)`` arrays, one per
+        member. Raises ``NotImplementedError`` (like :meth:`export`) for a part
+        whose geometry needs a federated backend to mesh."""
+        members = (
+            self._assembly_members()
+            if include_assembly
+            else [(self, np.zeros(3))]
+        )
+        meshes = []
+        for part, shift in members:
+            triangles = part._projection_mesh()
+            if triangles is None:
+                raise NotImplementedError(
+                    "Override export() to export this shape from your target "
+                    "modeling application"
+                )
+            meshes.append(triangles + shift if np.any(shift) else triangles)
+        return meshes
+
+    def generate_drawing(
+        self,
+        location: str | None = None,
+        *,
+        views=DEFAULT_VIEWS,
+        include_assembly: bool = True,
+        crease_angle: AngleWithUnit = 15,
+    ) -> "Part2D":
+        """A 2D technical (CAD) drawing of this part, as an editable
+        :class:`Part2D` (primitive kind ``"drawing"``). Export it to an SVG
+        sheet with ``drawing.export("sheet.svg")``, or -- as a shortcut -- pass
+        ``location`` here to write it in one call. The solid is projected into
+        the named orthographic/pictorial views (front, top, right and isometric
+        by default).
+
+        Like :meth:`export`, this draws the whole assembly in assembled
+        positions when other parts are joined to this one; pass
+        ``include_assembly=False`` to draw just this part. ``views`` selects and
+        orders the views (any of :data:`~codetocad.drawings.STANDARD_VIEWS`).
+        ``crease_angle`` (bare numbers are degrees) is how sharp a dihedral must
+        be to count as a drawn feature edge -- lower it to reveal gentler
+        creases, raise it to keep smoothly tessellated surfaces clean.
+
+        Feature operations that need a federated backend (booleans, shell,
+        holes, ...) are reflected only when this part is federated to a backend
+        that meshes them (e.g. Build123D); the core projects the primitive mesh.
+        """
+        from codetocad.drawings import drawing_from_meshes
+
+        meshes = self._assembly_meshes(include_assembly)
+        crease = _angle_to_radians(crease_angle, floats_are_degrees=True)
+        drawing = drawing_from_meshes(
+            meshes, self.name or "codetocad_part", views, crease_angle=crease
+        )
+        part = drawing.to_part2d(name=self.name)
+        if location is not None:
+            part.export(location)
+        return part
 
     def _generate_mesh(self) -> np.ndarray | None:
         triangles = self._base_mesh()
