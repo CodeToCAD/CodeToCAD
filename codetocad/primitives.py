@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
-from codetocad.location import Location
+from codetocad.location import Location, _angle_to_radians
 from codetocad.parts import Part2D, Part3D
-from codetocad.units import LengthMeters, LengthWithUnit
+from codetocad.units import AngleWithUnit, LengthMeters, LengthWithUnit
 from codetocad.vectors import Vec3
+
+
+def _draft(draft_angle: AngleWithUnit) -> dict:
+    """A ``{"draft_angle": radians}`` fragment for a primitive dict, or an
+    empty dict when there is no draft. Bare numbers are degrees."""
+    radians = _angle_to_radians(draft_angle, floats_are_degrees=True)
+    return {"draft_angle": radians} if radians else {}
 
 
 def _apply_start_location(part, start_location: Location | None) -> None:
@@ -84,13 +91,19 @@ def cube(
     width: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle: AngleWithUnit = 0,
 ) -> Part3D:
+    """``draft_angle`` tapers the four side walls away from vertical (bare
+    numbers are degrees): a positive draft shrinks the top face, the base
+    keeps its full ``length`` x ``width`` — as needed to release a moulded
+    part from a die."""
     return _make_part3d(
         "cube",
         start_location,
         length=LengthMeters(length).value,
         width=LengthMeters(width).value,
         height=LengthMeters(height).value,
+        **_draft(draft_angle),
     )
 
 
@@ -98,12 +111,17 @@ def cylinder(
     radius: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle: AngleWithUnit = 0,
 ) -> Part3D:
+    """``draft_angle`` tapers the wall into a cone frustum (bare numbers are
+    degrees): a positive draft shrinks the top radius, the base keeps
+    ``radius``."""
     return _make_part3d(
         "cylinder",
         start_location,
         radius=LengthMeters(radius).value,
         height=LengthMeters(height).value,
+        **_draft(draft_angle),
     )
 
 

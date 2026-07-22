@@ -241,6 +241,11 @@ def make_simulation(chassis: Part3D, output_dir=None):
         cameras=[front_camera],
         terrain=make_terrain(),
         actuator_types={"left_axle": "velocity", "right_axle": "velocity"},
+        # The robot's own parts must not collide with each other: each wheel's
+        # hull overlaps the chassis at the axle, so self-collision would grind
+        # the wheels against the chassis and stall the drive. The wheels still
+        # collide with the floor/terrain (those aren't assembly parts).
+        self_collision=False,
         # XL430-W250 stall torque; keeps reaction torques on the 1 kg
         # chassis realistic so the robot cannot backflip off the line.
         actuator_forcerange={"left_axle": 1.4, "right_axle": 1.4},

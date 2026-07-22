@@ -12,7 +12,7 @@ Usage::
     if __name__ == "__main__":
         ensure_blender()
         cube = make_cube("10cm", "10cm", "5cm")
-        cube.hole(cube.top_center, radius="4cm", amount="5cm")
+        cube.hole(cube.top_center, radius_or_shape="4cm", amount="5cm")
         cube.export("my_cube.stl")
 
 Set the ``CODETOCAD_BLENDER`` environment variable to point at a specific
@@ -45,8 +45,12 @@ _ADAPTER_NAMES = {
     "make_fastener",
 }
 
+#: Names served from the ``simulation`` module rather than ``parts``.
+_SIMULATION_NAMES = {"simulate", "BlenderSimulation"}
+
 __all__ = sorted(
     _ADAPTER_NAMES
+    | _SIMULATION_NAMES
     | {"ensure_blender", "run_in_blender", "blender_command", "INSIDE_BLENDER"}
 )
 
@@ -71,5 +75,11 @@ def __getattr__(name: str):
             from codetocad_integrations.blender import parts
 
             return getattr(parts, name)
+        return _make_stub(name)
+    if name in _SIMULATION_NAMES:
+        if INSIDE_BLENDER:
+            from codetocad_integrations.blender import simulation
+
+            return getattr(simulation, name)
         return _make_stub(name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

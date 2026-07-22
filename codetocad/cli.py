@@ -320,7 +320,9 @@ class LivePreview:
         for part in parts:
             name = getattr(part, "name", None) or f"part_{id(part)}"
             try:
-                part.export(str(directory / f"{name}.stl"))
+                from codetocad.simulation import export_single_part
+
+                export_single_part(part, str(directory / f"{name}.stl"))
             except Exception as error:
                 self._print(f"Note: could not mesh {name}: {error}")
                 continue
@@ -1175,13 +1177,14 @@ class InteractiveSession:
             f"sys.path.insert(0, {str(self.project_dir)!r})\n"
             "from codetocad_integrations.blender import ensure_blender\n"
             "ensure_blender()\n"
+            "from codetocad.simulation import export_single_part\n"
             "import os\n"
             f"os.chdir({str(self.project_dir)!r})\n"
             f"for file, names in {files!r}.items():\n"
             "    namespace = runpy.run_path(file, run_name='__codetocad_cli__')\n"
             "    for name in names:\n"
             "        if name in namespace:\n"
-            f"            namespace[name].export(str(Path({str(directory)!r}) / (name + '.stl')))\n"
+            f"            export_single_part(namespace[name], str(Path({str(directory)!r}) / (name + '.stl')))\n"
         )
         return self._run_subprocess([sys.executable, str(script)], "the Blender preview export")
 
@@ -1452,7 +1455,7 @@ class InteractiveSession:
             self.selected,
             f"{self.selected}.hole(codetocad.Location("
             f"x={dims[0]!r}, y={dims[1]!r}, z={dims[2]!r}), "
-            f"radius={radius[0]!r}, amount={depth[0]!r})",
+            f"radius_or_shape={radius[0]!r}, amount={depth[0]!r})",
         )
         self._print(f"Added a hole to {self.selected}.")
         self._warn_core_operation()

@@ -3,7 +3,8 @@
 The adapter ``Part3D``/``Part2D`` subclasses replay the operations recorded
 by the CodeToCAD API onto Blender mesh objects: base primitive, booleans
 (boolean modifier), shell (solidify modifier), fillet/chamfer (bevel
-modifier), holes (boolean with a cylinder cutter) and transforms (object
+modifier), holes (boolean with a cylinder or extruded-profile cutter) and
+transforms (object
 transforms). Modifiers are baked through the dependency graph, so everything
 works headless (``blender --background``).
 
@@ -23,6 +24,7 @@ from pathlib import Path
 import bmesh
 import bpy
 import numpy as np
+from mathutils import Matrix as BMatrix
 from mathutils import Vector as BVector
 
 import codetocad
@@ -42,15 +44,16 @@ def _link(obj: bpy.types.Object) -> None:
     bpy.context.collection.objects.link(obj)
 
 
-def _select_only(obj: bpy.types.Object) -> None:
+def _select_only(*objects: bpy.types.Object) -> None:
     # Refresh first: the view layer can hold stale entries right after
     # objects (e.g. boolean cutters) are removed.
     bpy.context.view_layer.update()
     for other in list(bpy.context.view_layer.objects):
         if other is not None:
             other.select_set(False)
-    obj.select_set(True)
-    bpy.context.view_layer.objects.active = obj
+    for obj in objects:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objects[0]
 
 
 def _new_mesh_object(name: str, bm: bmesh.types.BMesh) -> bpy.types.Object:
@@ -103,17 +106,27 @@ def _bvector_to_location(vector: BVector) -> Location:
 # -- primitive meshes --
 
 
-def _cube_bmesh(length: float, width: float, height: float) -> bmesh.types.BMesh:
+def _cube_bmesh(
+    length: float, width: float, height: float, draft: float = 0.0
+) -> bmesh.types.BMesh:
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1.0)
+    inset = height * math.tan(draft)  # per-side inset of the top face
+    top_length, top_width = length - 2 * inset, width - 2 * inset
     for vertex in bm.verts:
-        vertex.co.x *= length
-        vertex.co.y *= width
+        # create_cube spans [-0.5, 0.5]; taper the top (z > 0) ring inward.
+        scale_x, scale_y = (
+            (top_length, top_width) if vertex.co.z > 0 else (length, width)
+        )
+        vertex.co.x *= scale_x
+        vertex.co.y *= scale_y
         vertex.co.z *= height
     return bm
 
 
-def _cylinder_bmesh(radius: float, height: float) -> bmesh.types.BMesh:
+def _cylinder_bmesh(
+    radius: float, height: float, draft: float = 0.0
+) -> bmesh.types.BMesh:
     bm = bmesh.new()
     bmesh.ops.create_cone(
         bm,
@@ -121,7 +134,7 @@ def _cylinder_bmesh(radius: float, height: float) -> bmesh.types.BMesh:
         cap_tris=False,
         segments=CIRCLE_SEGMENTS,
         radius1=radius,
-        radius2=radius,
+        radius2=radius - height * math.tan(draft),  # top radius (draft taper)
         depth=height,
     )
     return bm
@@ -230,16 +243,46 @@ def _revolution_object(name: str, primitive: dict) -> bpy.types.Object:
     return _new_mesh_object(name, bm)
 
 
+def _extrude_profile_object(
+    profile_obj: bpy.types.Object, depth: float
+) -> bmesh.types.BMesh:
+    """A closed solid bmesh: the flat profile mesh (in its world/sketch coords)
+    extruded ``depth`` along Z and centred on z=0, ready to be used as a hole
+    cutter."""
+    bm = _world_bmesh(profile_obj)
+    # Flatten to the z=0 plane, then extrude symmetrically about it so the
+    # cutter centres on the hole axis like the round-hole cylinder does.
+    for vert in bm.verts:
+        vert.co.z = -depth / 2.0
+    caps = list(bm.faces)
+    extruded = bmesh.ops.extrude_face_region(bm, geom=caps)
+    top_verts = [
+        element
+        for element in extruded["geom"]
+        if isinstance(element, bmesh.types.BMVert)
+    ]
+    bmesh.ops.translate(bm, verts=top_verts, vec=(0.0, 0.0, depth))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return bm
+
+
 def _base_object(name: str, primitive: dict) -> bpy.types.Object:
     kind = primitive["kind"]
+    draft = primitive.get("draft_angle", 0.0)
     if kind == "cube":
         return _new_mesh_object(
             name,
-            _cube_bmesh(primitive["length"], primitive["width"], primitive["height"]),
+            _cube_bmesh(
+                primitive["length"],
+                primitive["width"],
+                primitive["height"],
+                draft,
+            ),
         )
     if kind == "cylinder":
         return _new_mesh_object(
-            name, _cylinder_bmesh(primitive["radius"], primitive["height"])
+            name,
+            _cylinder_bmesh(primitive["radius"], primitive["height"], draft),
         )
     if kind == "sphere":
         return _new_mesh_object(name, _sphere_bmesh(primitive["radius"]))
@@ -362,24 +405,44 @@ class Part3D(codetocad.Part3D):
 
     def _apply_hole(self, obj: bpy.types.Object, operation: dict) -> None:
         start_location = self.resolve_location(operation["start_location"])
-        radius = operation["radius"].value
         start = start_location.to_numpy()
         if operation["end_location"] is not None:
             end = self.resolve_location(operation["end_location"]).to_numpy()
             depth = float(np.linalg.norm(end - start))
             direction = (end - start) / depth
+            center = (start + end) / 2
         else:
-            depth = operation["amount"].value
             direction = quat_rotate_vector(start_location.quat, (0.0, 0.0, -1.0))
             if start_location.inverted:
                 direction = -direction
-            end = start + direction * depth
+            if operation["through_all"]:
+                # Span the whole part in both directions along the axis so the
+                # cutter clears all geometry regardless of where it starts.
+                world = _world_matrix(obj)
+                corners = np.array(
+                    [(world @ BVector(corner))[:] for corner in obj.bound_box]
+                )
+                diagonal = float(
+                    np.linalg.norm(corners.max(axis=0) - corners.min(axis=0))
+                )
+                depth = 2 * diagonal
+                center = start
+            else:
+                depth = operation["amount"].value
+                center = start + direction * depth / 2
         # Extend the cutter a hair past both ends to avoid coplanar faces.
         epsilon = 1e-6
-        center = (start + end) / 2
-        cutter = _new_mesh_object(
-            "codetocad_hole_cutter", _cylinder_bmesh(radius, depth + 2 * epsilon)
-        )
+        if operation["profile"] is not None:
+            # Extrude the 2D profile into a solid and subtract it, so square
+            # and custom holes cut just like the round cylinder cutter.
+            profile_obj = adapt(operation["profile"]).get_native()
+            cutter_bmesh = _extrude_profile_object(profile_obj, depth + 2 * epsilon)
+            _remove_object(profile_obj)
+        else:
+            cutter_bmesh = _cylinder_bmesh(
+                operation["radius"].value, depth + 2 * epsilon
+            )
+        cutter = _new_mesh_object("codetocad_hole_cutter", cutter_bmesh)
         cutter.location = tuple(center)
         cutter.rotation_mode = "QUATERNION"
         cutter.rotation_quaternion = BVector((0, 0, 1)).rotation_difference(
@@ -633,26 +696,47 @@ class Part3D(codetocad.Part3D):
         bm.free()
         return float(area)
 
-    def export(self, location: str) -> str:
-        obj = self.get_native()
-        _select_only(obj)
+    def export(self, location: str, include_assembly: bool = True) -> str:
+        """Export this part; by default any parts joined to it by assembly
+        constraints (fixed/revolute/prismatic) are included in their
+        assembled positions."""
+        members = [(self, np.eye(4))]
+        if include_assembly:
+            members = [
+                (adapt(link.part), link.assembly_matrix)
+                for link in codetocad.extract_links(self)
+            ]
+        objects, moved = [], []
+        for member, matrix in members:
+            obj = member.get_native()
+            # Pose the part into its assembled position (translation plus any
+            # joint starting-angle rotation of it and its ancestors).
+            if not np.allclose(matrix, np.eye(4)):
+                moved.append((obj, obj.matrix_world.copy()))
+                obj.matrix_world = BMatrix(matrix.tolist()) @ obj.matrix_world
+            objects.append(obj)
+        _select_only(*objects)
         suffix = Path(location).suffix.lower()
         filepath = str(Path(location).resolve())
-        if suffix == ".stl":
-            bpy.ops.wm.stl_export(filepath=filepath, export_selected_objects=True)
-        elif suffix == ".obj":
-            bpy.ops.wm.obj_export(filepath=filepath, export_selected_objects=True)
-        elif suffix in (".glb", ".gltf"):
-            bpy.ops.export_scene.gltf(filepath=filepath, use_selection=True)
-        elif suffix == ".fbx":
-            bpy.ops.export_scene.fbx(filepath=filepath, use_selection=True)
-        elif suffix == ".blend":
-            bpy.ops.wm.save_as_mainfile(filepath=filepath)
-        else:
-            raise ValueError(
-                f"Unsupported export format {suffix!r}; use .stl, .obj, .glb, "
-                ".fbx or .blend"
-            )
+        try:
+            if suffix == ".stl":
+                bpy.ops.wm.stl_export(filepath=filepath, export_selected_objects=True)
+            elif suffix == ".obj":
+                bpy.ops.wm.obj_export(filepath=filepath, export_selected_objects=True)
+            elif suffix in (".glb", ".gltf"):
+                bpy.ops.export_scene.gltf(filepath=filepath, use_selection=True)
+            elif suffix == ".fbx":
+                bpy.ops.export_scene.fbx(filepath=filepath, use_selection=True)
+            elif suffix == ".blend":
+                bpy.ops.wm.save_as_mainfile(filepath=filepath)
+            else:
+                raise ValueError(
+                    f"Unsupported export format {suffix!r}; use .stl, .obj, .glb, "
+                    ".fbx or .blend"
+                )
+        finally:
+            for obj, original in moved:
+                obj.matrix_world = original
         return location
 
 
@@ -742,8 +826,12 @@ def make_cube(
     width: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle=0,
 ) -> Part3D:
-    return adapt(codetocad.cube(length, width, height, start_location))
+    """Builds a Blender box, or a tapered mesh when ``draft_angle`` is given."""
+    return adapt(
+        codetocad.cube(length, width, height, start_location, draft_angle=draft_angle)
+    )
 
 
 make_box = make_cube
@@ -753,8 +841,11 @@ def make_cylinder(
     radius: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle=0,
 ) -> Part3D:
-    return adapt(codetocad.cylinder(radius, height, start_location))
+    return adapt(
+        codetocad.cylinder(radius, height, start_location, draft_angle=draft_angle)
+    )
 
 
 def make_sphere(

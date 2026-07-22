@@ -13,7 +13,7 @@ into simulation right away::
     base.revolute(Location(z="4cm", name="shoulder"), arm, Location(z="4cm"))
 
     sim = simulate(base, gui=True)
-    sim.set_joint_target("shoulder", 1.0)
+    sim.get_joint("shoulder").move_to(1.0)
     sim.run(2.0, realtime=True)
 """
 

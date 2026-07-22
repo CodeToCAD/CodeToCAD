@@ -19,6 +19,7 @@ import numpy as np
 import codetocad
 from codetocad.fea import FEA, FEAResults
 from codetocad.parts import Part3D
+from codetocad.simulation import export_single_part
 
 
 def find_ccx() -> str:
@@ -70,11 +71,11 @@ class CalculixFEA(FEA):
         name = self.part.name or "part"
         try:
             path = self.output_dir / f"{name}.step"
-            self.part.export(str(path))
+            export_single_part(self.part, str(path))
             return path
         except (ValueError, NotImplementedError):
             path = self.output_dir / f"{name}.stl"
-            self.part.export(str(path))
+            export_single_part(self.part, str(path))
             return path
 
     def _build_gmsh_mesh(self, gmsh, geometry: Path) -> np.ndarray:

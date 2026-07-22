@@ -36,9 +36,16 @@ approx(cube.get_area(), 0.06, 1e-6)
 
 # 2. The README example: hole through a plate
 plate = make_cube("10cm", "10cm", "5cm")
-plate.hole(plate.top_center, radius="4cm", amount="5cm")
+plate.hole(plate.top_center, radius_or_shape="4cm", amount="5cm")
 approx(plate.get_volume(), 0.1 * 0.1 * 0.05 - math.pi * 0.04**2 * 0.05, 5e-3)
 plate.export("smoke_cube.stl")
+
+# 2b. Square hole from a Part2D profile, drilled through everything
+square_plate = make_cube("10cm", "10cm", "5cm")
+square_plate.hole(
+    square_plate.top_center, make_rectangle("4cm", "4cm"), throughAll=True
+)
+approx(square_plate.get_volume(), 0.1 * 0.1 * 0.05 - 0.04 * 0.04 * 0.05, 5e-3)
 
 # 3. Shelled cup (solidify with a top opening)
 cup = make_cylinder("2cm", "5cm")

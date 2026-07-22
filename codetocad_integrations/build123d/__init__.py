@@ -5,7 +5,7 @@ Usage::
     from codetocad_integrations.build123d import make_cube
 
     cube = make_cube("10cm", "10cm", "5cm")
-    cube.hole(cube.top_center, radius="4cm", amount="5cm")
+    cube.hole(cube.top_center, radius_or_shape="4cm", amount="5cm")
     cube.export("my_cube.stl")
 
 All CodeToCAD operations (booleans, shell, fillet, chamfer, hole, transform)

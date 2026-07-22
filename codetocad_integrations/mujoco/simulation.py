@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -17,6 +16,7 @@ from codetocad.simulation import (
     ensure_binary_stl,
     export_link_meshes,
     extract_links,
+    welded_link_pairs,
 )
 
 
@@ -85,6 +85,8 @@ def build_mjcf(
     joint_damping: float | dict[str, float] = 0.5,
     joint_armature: float | dict[str, float] = 0.0,
     ground_plane: bool = False,
+    self_collision: bool = True,
+    collision_exclusions: list[tuple[str, str]] | None = None,
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
     lighting: list[Lighting] | None = None,
     scene_links: list[LinkSpec] | None = None,
@@ -105,7 +107,11 @@ def build_mjcf(
     reflected rotor inertia to a joint — without it, light joints under
     strong gains oscillate at coarse time steps. ``ground_plane`` adds a
     static floor at z=0
-    (use with ``fixed_base=False`` so the robot can drive on it), and
+    (use with ``fixed_base=False`` so the robot can drive on it).
+    ``self_collision`` lets the assembly's parts collide with each other
+    (as their convex hulls — MuJoCo's native mesh collision), except
+    parts welded by ``fixed`` joints and the link-name pairs in
+    ``collision_exclusions``; ``False`` excludes every pair.
     ``geom_friction`` overrides contact friction (slide, spin, roll) per
     link name — e.g. a low-slide caster ball. ``scene_links`` are
     free-floating bodies (a ``freejoint`` each) that collide with the
@@ -131,12 +137,23 @@ def build_mjcf(
     mujoco_el = ET.Element("mujoco", model=name)
     mesh_dir = str(Path(links[0].mesh_path).parent)
     ET.SubElement(mujoco_el, "compiler", meshdir=mesh_dir, angle="radian")
-    ET.SubElement(
+    option = ET.SubElement(
         mujoco_el,
         "option",
         gravity=_fmt(gravity),
         timestep=f"{time_step:.9g}",
+        # Integrate velocity-dependent forces (actuator kv damping, joint
+        # damping) implicitly: the explicit Euler default diverges when a
+        # position servo has meaningful kv on a light joint. implicitfast is
+        # MuJoCo's recommended integrator for actuated models.
+        integrator="implicitfast",
     )
+    if self_collision:
+        # MuJoCo's built-in filter drops parent-child contacts, which
+        # would silence directly-jointed pairs (a hinged lid against its
+        # box); welded pairs stay off via explicit excludes and callers
+        # opt out overlapping pairs via ``collision_exclusions``.
+        ET.SubElement(option, "flag", filterparent="disable")
     asset = ET.SubElement(mujoco_el, "asset")
     for link in links + scene_links:
         ET.SubElement(
@@ -230,9 +247,10 @@ def build_mjcf(
         geom = ET.SubElement(
             body,
             "geom",
+            name=link.name,
             type="mesh",
             mesh=link.name,
-            pos=_fmt(-link.frame),
+            pos=_fmt(-link.mesh_frame),
             rgba=_fmt(link.color_rgba),
         )
         if geom_friction and link.name in geom_friction:
@@ -240,7 +258,7 @@ def build_mjcf(
         ET.SubElement(
             body,
             "inertial",
-            pos=_fmt(link.center_of_mass - link.frame),
+            pos=_fmt(link.center_of_mass - link.mesh_frame),
             mass=f"{link.mass:.9g}",
             diaginertia=_fmt(link.inertia_diagonal),
         )
@@ -270,6 +288,13 @@ def build_mjcf(
                     "range",
                     f"{joint_spec.lower or 0:.9g} {joint_spec.upper or 0:.9g}",
                 )
+                # MuJoCo limits are soft constraints; at the defaults a
+                # strong actuator (or the viewer's mouse) drags the joint
+                # far past its range. Stiffen them (shortest time
+                # constant stable at the default timestep, near-rigid
+                # impedance).
+                joint.set("solreflimit", "0.01 1")
+                joint.set("solimplimit", "0.97 0.9999 0.001")
             if actuated:
                 joint.set("damping", f"{damping_for(joint_spec.name):.9g}")
             armature = armature_for(joint_spec.name)
@@ -297,15 +322,27 @@ def build_mjcf(
         ET.SubElement(body, "freejoint", name=f"{link.name}_free")
         emit_geom_and_inertial(body, link)
 
-    # Parts touch at their joint anchors by construction; exclude all
-    # self-collisions within the assembly (matching PyBullet's loadURDF
-    # default) so joints move freely.
     contact = ET.SubElement(mujoco_el, "contact")
-    for i, first in enumerate(links):
-        for second in links[i + 1 :]:
-            ET.SubElement(
-                contact, "exclude", body1=first.name, body2=second.name
-            )
+    if self_collision:
+        # Parts welded by fixed joints move as one body and touch by
+        # construction — never collide them. ``collision_exclusions``
+        # opts out further pairs that overlap by construction (a rod
+        # modeled into its base at a joint).
+        excluded = list(welded_link_pairs(links))
+        excluded += [
+            pair for pair in collision_exclusions or []
+            if pair not in excluded and tuple(reversed(pair)) not in excluded
+        ]
+        for first, second in excluded:
+            ET.SubElement(contact, "exclude", body1=first, body2=second)
+    else:
+        # Exclude all self-collisions within the assembly so joints move
+        # freely no matter how the parts interlock.
+        for i, first in enumerate(links):
+            for second in links[i + 1 :]:
+                ET.SubElement(
+                    contact, "exclude", body1=first.name, body2=second.name
+                )
 
     if actuated:
         actuator = ET.SubElement(mujoco_el, "actuator")
@@ -328,6 +365,26 @@ def build_mjcf(
                         joint=link.joint.name,
                         kp=f"{actuator_kp:.9g}",
                     )
+                    # Velocity feedback (a PD servo): without it a position
+                    # servo has no damping but the joint's small passive
+                    # ``joint_damping``, so a multi-link arm holding a pose
+                    # against gravity oscillates. ``kv`` critically damps it.
+                    if actuator_kv:
+                        element.set("kv", f"{actuator_kv:.9g}")
+                    if (
+                        link.joint.lower is not None
+                        or link.joint.upper is not None
+                    ):
+                        # Clamp targets to the joint's range: the servo is
+                        # far stronger than the soft limit constraint (its
+                        # stiffness scales with the link's inertia), so an
+                        # out-of-range target would drag the joint well
+                        # past its limits.
+                        element.set(
+                            "ctrlrange",
+                            f"{link.joint.lower or 0:.9g} "
+                            f"{link.joint.upper or 0:.9g}",
+                        )
                 else:
                     raise ValueError(
                         f"Unknown actuator type {kind!r} for joint "
@@ -345,17 +402,19 @@ class MujocoSimulation(Simulation):
         self,
         root_part: Part3D,
         *,
-        output_dir: str | Path | None = None,
         actuator_types: dict[str, str] | None = None,
         actuator_forcerange: dict[str, float] | None = None,
+        actuator_kp: float = 100.0,
+        actuator_kv: float = 0.5,
         joint_damping: float | dict[str, float] = 0.5,
         joint_armature: float | dict[str, float] = 0.0,
-        ground_plane: bool = False,
         geom_friction: dict[str, tuple[float, float, float]] | None = None,
         cameras: list[CameraSpec] | None = None,
         terrain: TerrainSpec | None = None,
         **kwargs,
     ):
+        # Common params (ground_plane, output_dir, ...) flow to the base; the
+        # kwargs above are mujoco-specific.
         super().__init__(root_part, **kwargs)
         import mujoco
 
@@ -363,11 +422,6 @@ class MujocoSimulation(Simulation):
         self.cameras = {camera.name: camera for camera in cameras or []}
         self.terrain = terrain
         self._renderers: dict[tuple[int, int], object] = {}
-        self.output_dir = Path(
-            output_dir
-            if output_dir is not None
-            else tempfile.mkdtemp(prefix="codetocad_mujoco_")
-        ).resolve()
         export_link_meshes(self.links + self.scene_links, self.output_dir)
         for link in self.links + self.scene_links:
             ensure_binary_stl(link.mesh_path)  # MuJoCo needs binary STL
@@ -381,9 +435,13 @@ class MujocoSimulation(Simulation):
             actuated=self.actuated,
             actuator_types=actuator_types,
             actuator_forcerange=actuator_forcerange,
+            actuator_kp=actuator_kp,
+            actuator_kv=actuator_kv,
             joint_damping=joint_damping,
             joint_armature=joint_armature,
-            ground_plane=ground_plane,
+            ground_plane=self.ground_plane,
+            self_collision=self.self_collision,
+            collision_exclusions=self.collision_exclusions,
             geom_friction=geom_friction,
             lighting=self.lighting,
             cameras=cameras,
@@ -399,8 +457,11 @@ class MujocoSimulation(Simulation):
             self.model.hfield("terrain").data[:] = terrain.normalized
         self.data = mujoco.MjData(self.model)
         mujoco.mj_forward(self.model, self.data)
+        # Apply starting_angle / starting_pos now the state exists.
+        self._apply_initial_joint_values()
 
-    def _joint_id(self, name: str) -> int:
+    def _joint_id(self, joint) -> int:
+        name = self._resolve_joint_name(joint)
         joint_id = self._mujoco.mj_name2id(
             self.model, self._mujoco.mjtObj.mjOBJ_JOINT, name
         )
@@ -414,9 +475,11 @@ class MujocoSimulation(Simulation):
         for _ in range(count):
             self._mujoco.mj_step(self.model, self.data)
 
-    def set_joint_target(self, name: str, value: float) -> None:
+    def _set_joint_target(self, name, value: float, **_) -> None:
         """Drive the joint's actuator towards ``value``: an angle for
-        position actuators, an angular rate (rad/s) for velocity ones."""
+        position actuators, an angular rate (rad/s) for velocity ones.
+        (``force`` is accepted for API parity with PyBullet but unused —
+        cap torque with ``actuator_forcerange`` at build time instead.)"""
         if not self.actuated:
             raise RuntimeError(
                 "This simulation was created with actuated=False; recreate "
@@ -429,23 +492,33 @@ class MujocoSimulation(Simulation):
             raise KeyError(f"No actuator for joint {name!r}")
         self.data.ctrl[actuator_id] = value
 
-    def set_joint_velocity_target(self, name: str, value: float) -> None:
-        """Alias of ``set_joint_target`` for joints declared with
-        ``actuator_types={name: "velocity"}`` (target in rad/s)."""
-        self.set_joint_target(name, value)
+    def _set_joint_velocity(self, name, value: float) -> None:
+        """Set the joint's velocity directly (rad/s or m/s). For a velocity
+        *actuator* (``actuator_types={name: "velocity"}``) prefer
+        ``set_joint_target``, which the actuator sustains against damping;
+        this sets the state velocity in one shot."""
+        address = self.model.jnt_dofadr[self._joint_id(name)]
+        self.data.qvel[address] = value
+        self._mujoco.mj_forward(self.model, self.data)
 
-    def set_joint_value(self, name: str, value: float) -> None:
-        address = self.model.jnt_qposadr[self._joint_id(name)]
+    def set_joint_velocity_target(self, joint, value: float) -> None:
+        """Drive the actuator of a joint declared with
+        ``actuator_types={name: "velocity"}`` towards rate ``value`` (rad/s)."""
+        self._command_joint_target(joint, value)
+
+    def set_joint_value(self, joint, value: float) -> None:
+        address = self.model.jnt_qposadr[self._joint_id(joint)]
         self.data.qpos[address] = value
         self._mujoco.mj_forward(self.model, self.data)
 
-    def get_joint_value(self, name: str) -> float:
-        address = self.model.jnt_qposadr[self._joint_id(name)]
+    def get_joint_value(self, joint) -> float:
+        address = self.model.jnt_qposadr[self._joint_id(joint)]
         return float(self.data.qpos[address])
 
-    def get_joint_velocity(self, name: str) -> float:
-        """The joint's angular (rad/s) or linear (m/s) velocity."""
-        address = self.model.jnt_dofadr[self._joint_id(name)]
+    def get_joint_velocity(self, joint) -> float:
+        """The joint's angular (rad/s) or linear (m/s) velocity.
+        ``joint`` is a joint name or the child part that was joined."""
+        address = self.model.jnt_dofadr[self._joint_id(joint)]
         return float(self.data.qvel[address])
 
     def get_body_pose(self, name: str) -> tuple[tuple[float, ...], tuple[float, ...]]:
@@ -481,6 +554,21 @@ class MujocoSimulation(Simulation):
             renderer = self._mujoco.Renderer(self.model, height=height, width=width)
             self._renderers[(width, height)] = renderer
         renderer.update_scene(self.data, camera=camera)
+        return renderer.render()
+
+    def capture_image(
+        self, width: int = 640, height: int = 480, camera: str | None = None
+    ) -> np.ndarray:
+        """Render an overview of the scene to an (height, width, 3) uint8 RGB
+        array. With ``camera=None`` it uses MuJoCo's free camera, framed on
+        the whole model; pass a mounted camera name to render its view."""
+        if camera is not None:
+            return self.get_camera_image(camera, width=width, height=height)
+        renderer = self._renderers.get((width, height))
+        if renderer is None:
+            renderer = self._mujoco.Renderer(self.model, height=height, width=width)
+            self._renderers[(width, height)] = renderer
+        renderer.update_scene(self.data)
         return renderer.render()
 
     def close(self) -> None:
@@ -521,9 +609,13 @@ def simulate(
     actuated: bool = True,
     actuator_types: dict[str, str] | None = None,
     actuator_forcerange: dict[str, float] | None = None,
+    actuator_kp: float = 100.0,
+    actuator_kv: float = 0.5,
     joint_damping: float | dict[str, float] = 0.5,
     joint_armature: float | dict[str, float] = 0.0,
     ground_plane: bool = False,
+    self_collision: bool = True,
+    collision_exclusions: list[tuple[Part3D | str, Part3D | str]] | None = None,
     geom_friction: dict[str, tuple[float, float, float]] | None = None,
     scene_parts: list[Part3D] | None = None,
     cameras: list[CameraSpec] | None = None,
@@ -538,6 +630,20 @@ def simulate(
     ``actuator_forcerange``. ``scene_parts`` are loose, free-floating
     bodies the robot can collide with (e.g. an object to pick up) — pair
     them with ``ground_plane=True`` so they have a floor to rest on.
+    Position actuators are a PD servo: ``actuator_kp`` is the position
+    gain and ``actuator_kv`` the velocity gain (damping) — raise both for a
+    stiffer, non-oscillating hold, e.g. a top-heavy arm resisting gravity;
+    pair with ``joint_armature`` (reflected rotor inertia) for stability at
+    coarse timesteps. ``self_collision`` (True by default) collides the
+    assembly's own parts against each other, except parts welded together
+    by ``fixed`` joints; ``False`` turns assembly self-collision off.
+    ``collision_exclusions`` opts out specific pairs — parts (or their
+    names) that overlap by construction, like a rod modeled into its
+    base at a joint, which would otherwise bleed energy or jam. MuJoCo
+    collides each mesh as its convex hull, so cavities are filled in for
+    contact purposes (an open box collides as a solid block) and
+    interlocking joint geometry overlaps permanently — rely on joint
+    limits, not contact, to bound articulated motion precisely.
     ``cameras`` mounts fixed ``CameraSpec`` cameras on links, rendered
     with ``sim.get_camera_image()``; ``terrain`` adds a ``TerrainSpec``
     heightfield floor to drive on."""
@@ -553,9 +659,13 @@ def simulate(
         actuated=actuated,
         actuator_types=actuator_types,
         actuator_forcerange=actuator_forcerange,
+        actuator_kp=actuator_kp,
+        actuator_kv=actuator_kv,
         joint_damping=joint_damping,
         joint_armature=joint_armature,
         ground_plane=ground_plane,
+        self_collision=self_collision,
+        collision_exclusions=collision_exclusions,
         geom_friction=geom_friction,
         output_dir=output_dir,
     )

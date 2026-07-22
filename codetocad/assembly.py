@@ -10,7 +10,9 @@ from codetocad.location import Location
 from codetocad.vectors import Vec3
 
 if TYPE_CHECKING:
+    from codetocad.joints import FixedJoint, PrismaticJoint, RevoluteJoint
     from codetocad.parts import Part2D, Part3D
+    from codetocad.units import AngleWithUnit, LengthWithUnit
 
 
 class AssemblyCommon:
@@ -121,10 +123,18 @@ class Assembly2D(AssemblyCommon, _ConstraintRecorder):
 class Assembly3D(AssemblyCommon, _ConstraintRecorder):
     def fixed(
         self, location: Location, other_part: "Part3D", other_location: Location
-    ) -> "Part3D":
+    ) -> "FixedJoint":
+        """Weld ``other_part`` rigidly to this one, aligning ``other_location``
+        (on the child) onto ``location`` (on this part). Returns a
+        :class:`~codetocad.joints.FixedJoint`."""
+        from codetocad.joints import FixedJoint
+
         self.ledger.fixed_constraints += [other_part]
-        self._record_constraint("fixed", location, other_part, other_location)
-        return self
+        joint = FixedJoint(self, other_part, location, other_location)
+        self._record_constraint(
+            "fixed", location, other_part, other_location, joint_obj=joint
+        )
+        return joint
 
     def revolute(
         self,
@@ -133,10 +143,25 @@ class Assembly3D(AssemblyCommon, _ConstraintRecorder):
         other_location: Location,
         min_limits: float | Vec3 | None = None,
         max_limits: float | Vec3 | None = None,
-    ) -> "Part3D":
+        starting_angle: "AngleWithUnit | None" = None,
+    ) -> "RevoluteJoint":
         """Revolute (hinge) joint at ``location``; the joint axis is the
-        location's quaternion-rotated Z axis. Limits are in radians."""
+        location's quaternion-rotated Z axis. Limits are in radians.
+        ``starting_angle`` sets the joint's angle at simulation start (e.g.
+        ``"30deg"``). Returns a :class:`~codetocad.joints.RevoluteJoint`."""
+        from codetocad.joints import RevoluteJoint
+        from codetocad.units import AngleRadians
+
         self.ledger.revolute_constraints += [other_part]
+        joint = RevoluteJoint(
+            self,
+            other_part,
+            location,
+            other_location,
+            min_limits=min_limits,
+            max_limits=max_limits,
+        )
+        initial = None if starting_angle is None else AngleRadians(starting_angle).value
         self._record_constraint(
             "revolute",
             location,
@@ -144,8 +169,10 @@ class Assembly3D(AssemblyCommon, _ConstraintRecorder):
             other_location,
             min_limits=min_limits,
             max_limits=max_limits,
+            initial_value=initial,
+            joint_obj=joint,
         )
-        return self
+        return joint
 
     def prismatic(
         self,
@@ -154,10 +181,25 @@ class Assembly3D(AssemblyCommon, _ConstraintRecorder):
         other_location: Location,
         min_limits: float | Vec3 | None = None,
         max_limits: float | Vec3 | None = None,
-    ) -> "Part3D":
+        starting_pos: "LengthWithUnit | None" = None,
+    ) -> "PrismaticJoint":
         """Prismatic (sliding) joint at ``location`` along the location's
-        quaternion-rotated Z axis. Limits are in meters."""
+        quaternion-rotated Z axis. Limits are in meters. ``starting_pos``
+        sets the joint's position at simulation start (e.g. ``"2cm"``).
+        Returns a :class:`~codetocad.joints.PrismaticJoint`."""
+        from codetocad.joints import PrismaticJoint
+        from codetocad.units import LengthMeters
+
         self.ledger.prismatic_constraints += [other_part]
+        joint = PrismaticJoint(
+            self,
+            other_part,
+            location,
+            other_location,
+            min_limits=min_limits,
+            max_limits=max_limits,
+        )
+        initial = None if starting_pos is None else LengthMeters(starting_pos).value
         self._record_constraint(
             "prismatic",
             location,
@@ -165,5 +207,7 @@ class Assembly3D(AssemblyCommon, _ConstraintRecorder):
             other_location,
             min_limits=min_limits,
             max_limits=max_limits,
+            initial_value=initial,
+            joint_obj=joint,
         )
-        return self
+        return joint

@@ -32,7 +32,7 @@ sim = simulate(
 )
 targets = dict.fromkeys(sim.joint_names, 0.0)
 for name in targets:
-    sim.set_joint_target(name, 0.0)
+    sim.get_joint(name).move_to(0.0)
 
 # Unroll the pick sequence into (begin, end, start values, goals) phases
 # so joint targets can be interpolated from the recording clock.
@@ -52,7 +52,7 @@ def drive(t: float) -> None:
         for name, goal in goals.items():
             value = starts[name] + (goal - starts[name]) * fraction
             force = GRIP_FORCE if "finger" in name else 100.0
-            sim.set_joint_target(name, value, force=force)
+            sim.get_joint(name).move_to(value, force=force)
 
 
 record_gif(

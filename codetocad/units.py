@@ -183,6 +183,29 @@ WEIGHT_UNITS: dict[str, float] = {
     "ounces": 0.028349523125,
 }
 
+ANGULAR_SPEED_UNITS: dict[str, float] = {
+    "rad/s": 1.0,
+    "rad/sec": 1.0,
+    "deg/s": math.pi / 180.0,
+    "deg/sec": math.pi / 180.0,
+    "rpm": 2.0 * math.pi / 60.0,
+    "rps": 2.0 * math.pi,
+    "rev/s": 2.0 * math.pi,
+    "rev/min": 2.0 * math.pi / 60.0,
+}
+
+LINEAR_SPEED_UNITS: dict[str, float] = {
+    "m/s": 1.0,
+    "mps": 1.0,
+    "cm/s": 0.01,
+    "mm/s": 0.001,
+    "km/h": 1000.0 / 3600.0,
+    "kph": 1000.0 / 3600.0,
+    "mph": 1609.344 / 3600.0,
+    "ft/s": 0.3048,
+    "in/s": 0.0254,
+}
+
 DENSITY_UNITS: dict[str, float] = {
     "kg/m3": 1.0,
     "kg/m^3": 1.0,
@@ -274,7 +297,49 @@ class DensityKilogramsPerCubicMeter(SomeUnit):
         raise ValueError(f"Cannot interpret {value!r} as a density")
 
 
+class AngularSpeedRadiansPerSecond(SomeUnit):
+    SYMBOL = "rad/s"
+
+    def __init__(self, value: Union[str, float, "AngularSpeedRadiansPerSecond"]):
+        super().__init__(self.value_to_radians_per_second(value))
+
+    @staticmethod
+    def value_to_radians_per_second(value) -> float:
+        if isinstance(value, SomeUnit):
+            return value.value
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            return evaluate_expression(value, ANGULAR_SPEED_UNITS, "angular speed")
+        raise ValueError(f"Cannot interpret {value!r} as an angular speed")
+
+    def to_rpm(self) -> float:
+        return self.value * 60.0 / (2.0 * math.pi)
+
+
+class LinearSpeedMetersPerSecond(SomeUnit):
+    SYMBOL = "m/s"
+
+    def __init__(self, value: Union[str, float, "LinearSpeedMetersPerSecond"]):
+        super().__init__(self.value_to_meters_per_second(value))
+
+    @staticmethod
+    def value_to_meters_per_second(value) -> float:
+        if isinstance(value, SomeUnit):
+            return value.value
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            return evaluate_expression(value, LINEAR_SPEED_UNITS, "linear speed")
+        raise ValueError(f"Cannot interpret {value!r} as a linear speed")
+
+    def to_kilometers_per_hour(self) -> float:
+        return self.value * 3600.0 / 1000.0
+
+
 LengthWithUnit = Union[str, float, LengthMeters]
 AngleWithUnit = Union[str, float, AngleRadians]
 WeightWithUnit = Union[str, float, WeightKilograms]
 DensityWithUnit = Union[str, float, DensityKilogramsPerCubicMeter]
+AngularSpeedWithUnit = Union[str, float, AngularSpeedRadiansPerSecond]
+LinearSpeedWithUnit = Union[str, float, LinearSpeedMetersPerSecond]

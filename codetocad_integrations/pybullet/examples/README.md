@@ -15,6 +15,13 @@ and joint constraints to a URDF and loads it into PyBullet. Requires
 
   <img src="images/arm_6dof.png" width="400">
 
+- `arm_6dof_keyframes.py` — the same arm, driven the animator's way:
+  command the joints to a pose, pin it with `sim.set_keyframe(t)`, then
+  `sim.record_gif(keyframes=True)` interpolates between the poses and writes
+  `images/arm_6dof_keyframes.gif`. Headless (no GUI needed).
+
+  <img src="images/arm_6dof_keyframes.gif" width="400">
+
 - `pendulum.py` — a rod + bob hinged to a mount, swinging freely from 60°.
 
   <img src="images/pendulum.png" width="400">

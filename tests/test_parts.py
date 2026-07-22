@@ -47,6 +47,37 @@ def test_extrude_circle_becomes_cylinder():
     assert part3d.get_volume() == pytest.approx(2 * math.pi)
 
 
+def test_draft_cube_is_a_frustum():
+    # 2x2 base, 4 tall, 10deg draft: top face insets by 4*tan(10) per side.
+    part = cube(2, 2, 4, draft_angle=10)
+    inset = 4 * math.tan(math.radians(10))
+    top = 2 - 2 * inset
+    expected = 4 / 6 * (2 * 2 + 4 * (2 - inset) ** 2 + top**2)
+    assert part.get_volume() == pytest.approx(expected)
+    # Positive draft leaves the base (widest cross-section) bounding it.
+    bbox_min, bbox_max = part.get_bounding_box()
+    assert (bbox_max.x - bbox_min.x) == pytest.approx(2)
+
+
+def test_draft_cylinder_is_a_cone_frustum():
+    part = cylinder(1, 2, draft_angle=15)
+    top = 1 - 2 * math.tan(math.radians(15))
+    assert part.get_volume() == pytest.approx(
+        math.pi * 2 / 3 * (1 + top + top**2)
+    )
+
+
+def test_extrude_with_draft():
+    part = rectangle(2, 2).extrude(4, draft_angle=10)
+    assert part._primitive["kind"] == "cube"
+    assert part.get_volume() == cube(2, 2, 4, draft_angle=10).get_volume()
+
+
+def test_draft_too_steep_is_rejected():
+    with pytest.raises(ValueError, match="too steep"):
+        cube(2, 2, 10, draft_angle=45).get_volume()
+
+
 def test_revolve_rectangle_becomes_tube():
     # A rectangle offset from the Y axis, revolved a full turn, is a tube
     # (annular cylinder): V = pi * (r_out^2 - r_in^2) * height.
@@ -81,8 +112,24 @@ def test_revolve_bounding_box_from_mesh():
 
 
 def test_revolve_profile_crossing_axis_is_rejected():
-    with pytest.raises(ValueError, match="cross the axis"):
-        rectangle(2, 3).revolve().get_volume()
+    # Rejected by revolve() itself, so a CAD kernel never sees the bad sweep
+    # (OCCT reports it only as an opaque "BRep_API: command not done").
+    with pytest.raises(ValueError, match="passes through it"):
+        rectangle(2, 3).revolve()
+
+
+def test_revolve_offset_along_the_axis_still_crosses_it():
+    # Sliding a profile *along* the revolve axis never moves it away from the
+    # axis; the error should say which direction actually would.
+    with pytest.raises(ValueError, match="offset the sketch along y"):
+        circle(1, Location(5, 0, 0)).revolve(180, axis="x")
+
+
+def test_revolve_profile_touching_axis_sweeps_a_solid():
+    # A rectangle with one edge *on* the axis is the usual way to revolve a
+    # solid: touching the axis is allowed, only crossing it is not.
+    cylinder_ = rectangle(1, 2, Location(0.5, 0, 0)).revolve(360, axis="y")
+    assert cylinder_.get_volume() == pytest.approx(math.pi * 1**2 * 2)
 
 
 def test_revolve_angle_out_of_range():
@@ -120,7 +167,7 @@ def test_shell_fillet_chamfer_hole_recorded():
     part.shell(thickness="5mm")
     part.fillet(amount="1mm")
     part.chamfer(amount="1mm")
-    part.hole(Location(), radius="2mm", amount="1cm")
+    part.hole(Location(), radius_or_shape="2mm", amount="1cm")
     operations = [op["operation"] for op in part.operations]
     assert operations == ["shell", "fillet", "chamfer", "hole"]
     assert part.operations[0]["thickness"].value == pytest.approx(0.005)
@@ -129,9 +176,9 @@ def test_shell_fillet_chamfer_hole_recorded():
 def test_hole_requires_exactly_one_of_amount_or_end_location():
     part = cube(1, 1, 1)
     with pytest.raises(ValueError):
-        part.hole(Location(), radius="1mm")
+        part.hole(Location(), radius_or_shape="1mm")
     with pytest.raises(ValueError):
-        part.hole(Location(), radius="1mm", amount=1, end_location=Location())
+        part.hole(Location(), radius_or_shape="1mm", amount=1, end_location=Location())
 
 
 def test_geometry_queries_on_cube():
@@ -215,7 +262,7 @@ def test_duplicate_is_independent():
     assert copy.material is part.material
     # Changes to the copy do not leak back into the original.
     copy.transform(relative=Location(x=1))
-    copy.hole(Location(), radius="1mm", amount="1cm")
+    copy.hole(Location(), radius_or_shape="1mm", amount="1cm")
     assert [op["operation"] for op in part.operations] == ["shell"]
     assert len(part.ledger.transformations) == 0
     assert part._origin.x == pytest.approx(0)
@@ -261,3 +308,39 @@ def test_patterned_export_stl(tmp_path):
     destination = tmp_path / "row.stl"
     cube(1, 1, 1).linear_pattern(4, Location(y=3)).export(str(destination))
     assert destination.read_text().count("facet normal") == 4 * 12
+
+
+def test_export_includes_assembly(tmp_path):
+    holder = cube(1, 1, 1)
+    lid = cube(1, 1, 0.2, start_location=Location(z=0.6))
+    hinge = Location(0, -0.5, 0.5)
+    holder.revolute(hinge, lid, hinge)
+
+    destination = tmp_path / "assembly.stl"
+    holder.export(str(destination))
+    assert destination.read_text().count("facet normal") == 2 * 12
+
+    alone = tmp_path / "holder_only.stl"
+    holder.export(str(alone), include_assembly=False)
+    assert alone.read_text().count("facet normal") == 12
+
+    assert codetocad.export_single_part(
+        holder, str(tmp_path / "single.stl")
+    ) == str(tmp_path / "single.stl")
+    assert (tmp_path / "single.stl").read_text().count("facet normal") == 12
+
+
+def test_export_assembly_applies_snap_shift(tmp_path):
+    base = cube(1, 1, 1)
+    attachment = cube(1, 1, 1)  # modeled at the origin, snapped up a level
+    base.fixed(Location(z=1), attachment, Location())
+
+    destination = tmp_path / "snapped.stl"
+    base.export(str(destination))
+    heights = [
+        float(line.split()[3])
+        for line in destination.read_text().splitlines()
+        if line.strip().startswith("vertex")
+    ]
+    assert max(heights) == pytest.approx(1.5)
+    assert min(heights) == pytest.approx(-0.5)

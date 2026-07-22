@@ -28,6 +28,24 @@ def test_blender_smoke(tmp_path):
     assert (tmp_path / "smoke_scene.blend").exists()
 
 
+@pytest.mark.skipif(BLENDER is None, reason="blender is not on the PATH")
+def test_blender_simulation(tmp_path):
+    from codetocad_integrations.blender import blender_command
+
+    script = Path(__file__).parent / "blender_sim_smoke_script.py"
+    command, env = blender_command(script)
+    result = subprocess.run(
+        command,
+        env=env,
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=600,
+    )
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert "BLENDER_SIM_SMOKE_OK" in result.stdout
+
+
 def test_stubs_outside_blender():
     from codetocad_integrations import blender
 

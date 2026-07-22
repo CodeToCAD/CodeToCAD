@@ -255,7 +255,7 @@ def run_pick(sim, verbose: bool = True) -> float:
     servos track instead of overshooting; returns the cube's final height."""
     targets = dict.fromkeys(sim.joint_names, 0.0)
     for name, value in targets.items():
-        sim.set_joint_target(name, value)  # hold every joint, fingers included
+        sim.get_joint(name).move_to(value)  # hold every joint, fingers included
     for label, duration, goals in pick_sequence():
         if verbose:
             print(label)
@@ -266,7 +266,7 @@ def run_pick(sim, verbose: bool = True) -> float:
             for name, goal in goals.items():
                 targets[name] = start[name] + (goal - start[name]) * fraction
                 force = GRIP_FORCE if "finger" in name else 100.0
-                sim.set_joint_target(name, targets[name], force=force)
+                sim.get_joint(name).move_to(targets[name], force=force)
             sim.run(duration / steps)
         sim.run(0.3)  # settle
     return sim.get_body_pose("pick_cube")[0][2]
@@ -308,8 +308,8 @@ def main() -> None:
         travel = min(FINGER_TRAVEL, max(0.0, targets["left_finger"] + delta))
         targets["left_finger"] = travel
         targets["right_finger"] = -travel
-        sim.set_joint_target("left_finger", travel, force=GRIP_FORCE)
-        sim.set_joint_target("right_finger", -travel, force=GRIP_FORCE)
+        sim.get_joint("left_finger").move_to(travel, force=GRIP_FORCE)
+        sim.get_joint("right_finger").move_to(-travel, force=GRIP_FORCE)
 
     while sim.is_connected():
         events = sim.get_keyboard_events()
@@ -319,7 +319,7 @@ def main() -> None:
             if events.get(ord(key), 0) & p.KEY_IS_DOWN:
                 name = names[index]
                 targets[name] += direction * step_size
-                sim.set_joint_target(name, targets[name])
+                sim.get_joint(name).move_to(targets[name])
         if events.get(ord("j"), 0) & p.KEY_IS_DOWN:
             move_gripper(grip_step)
         if events.get(ord("k"), 0) & p.KEY_IS_DOWN:

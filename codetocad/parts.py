@@ -18,6 +18,7 @@ import numpy as np
 
 from codetocad.assembly import Assembly2D, Assembly3D
 from codetocad.ledgers import AssemblyLedger, BooleanLedger
+from codetocad.simulation import extract_links
 from codetocad.location import Location, LocationMixin, _angle_to_radians
 from codetocad.materials import MaterialMixin
 from codetocad.mixins import BooleanMixin, GeometryAnalysisMixin, GeometryQueryMixin
@@ -33,6 +34,25 @@ from codetocad.vectors import Vec3
 PATTERN_OPERATIONS = frozenset({"linear_pattern", "circular_pattern"})
 
 _PATTERN_AXES = {"x": (1.0, 0.0, 0.0), "y": (0.0, 1.0, 0.0), "z": (0.0, 0.0, 1.0)}
+
+#: How far (in meters) a profile may reach across the axis of revolution before
+#: it counts as crossing it rather than touching it.
+_AXIS_TOLERANCE = 1e-9
+
+
+def _bbox_extent(part, axis: int) -> LengthMeters:
+    """Size of ``part``'s axis-aligned bounding box along ``axis`` (0=x, 1=y,
+    2=z), as ``LengthMeters``. Returns a stored override if a subclass assigned
+    the dimension directly (e.g. a wheel setting its own width)."""
+    override = part.__dict__.get(f"_dim_{axis}")
+    if override is not None:
+        return override
+    bbox_min, bbox_max = part.get_bounding_box()
+    return LengthMeters(bbox_max.to_tuple()[axis] - bbox_min.to_tuple()[axis])
+
+
+def _set_bbox_extent(part, axis: int, value: LengthWithUnit) -> None:
+    part.__dict__[f"_dim_{axis}"] = LengthMeters(value)
 
 
 class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixin):
@@ -56,8 +76,34 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
         half = _half_extents(self._primitive)
         return _bbox_around(self._origin, half)
 
-    def extrude(self, height: LengthWithUnit) -> "Part3D":
+    @property
+    def width(self) -> LengthMeters:
+        """Extent along X (the sketch plane's horizontal axis)."""
+        return _bbox_extent(self, 0)
+
+    @width.setter
+    def width(self, value: LengthWithUnit) -> None:
+        _set_bbox_extent(self, 0, value)
+
+    @property
+    def length(self) -> LengthMeters:
+        """Extent along Y (the sketch plane's vertical axis)."""
+        return _bbox_extent(self, 1)
+
+    @length.setter
+    def length(self, value: LengthWithUnit) -> None:
+        _set_bbox_extent(self, 1, value)
+
+    def extrude(
+        self, height: LengthWithUnit, draft_angle: AngleWithUnit = 0
+    ) -> "Part3D":
+        """Extrude this profile ``height`` along Z. ``draft_angle`` tapers the
+        swept walls away from vertical (bare numbers are degrees): a positive
+        draft shrinks the top of the extrusion, the base keeps the profile's
+        full size."""
         height_m = LengthMeters(height).value
+        draft = _angle_to_radians(draft_angle, floats_are_degrees=True)
+        draft_field = {"draft_angle": draft} if draft else {}
         name = f"{self.name}_extruded" if self.name else None
         part = Part3D(name=name, description=self.description)
         if self._primitive is not None:
@@ -68,18 +114,21 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
                     "length": self._primitive["width"],
                     "width": self._primitive["height"],
                     "height": height_m,
+                    **draft_field,
                 }
             elif kind == "circle":
                 part._primitive = {
                     "kind": "cylinder",
                     "radius": self._primitive["radius"],
                     "height": height_m,
+                    **draft_field,
                 }
             else:
                 part._primitive = {
                     "kind": "extrusion",
                     "profile": self._primitive,
                     "height": height_m,
+                    **draft_field,
                 }
         part._origin = Vec3(self._origin.x, self._origin.y, self._origin.z)
         return part
@@ -117,6 +166,10 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
                 "axis_direction": axis_direction,
                 "angle": angle_rad,
             }
+            # Fail here rather than deep inside a CAD kernel: an axis running
+            # through the profile only surfaces as an opaque kernel error
+            # (OCCT: "BRep_API: command not done") at build/mesh time.
+            _revolve_centroid_radius(part._primitive)
         # The revolution is defined in world space (the profile carries its own
         # origin and the axis its own line), so the part sits at the world
         # origin rather than inheriting the sketch's placement.
@@ -146,9 +199,16 @@ class Part3D(
         return self
 
     def get_bounding_box(self) -> tuple[Vec3, Vec3]:
-        base_kind = (self._primitive or {}).get("kind")
-        needs_mesh = base_kind == "revolution" or any(
-            op["operation"] in PATTERN_OPERATIONS for op in self.operations
+        primitive = self._primitive or {}
+        base_kind = primitive.get("kind")
+        # A negative draft flares the top past the base, so the taper (like a
+        # revolution or pattern) needs the actual mesh to bound it.
+        needs_mesh = (
+            base_kind == "revolution"
+            or primitive.get("draft_angle")
+            or any(
+                op["operation"] in PATTERN_OPERATIONS for op in self.operations
+            )
         )
         if needs_mesh:
             triangles = self._generate_mesh()
@@ -158,16 +218,47 @@ class Part3D(
         half = _half_extents(self._primitive)
         return _bbox_around(self._origin, half)
 
+    @property
+    def length(self) -> LengthMeters:
+        """Extent along X."""
+        return _bbox_extent(self, 0)
+
+    @length.setter
+    def length(self, value: LengthWithUnit) -> None:
+        _set_bbox_extent(self, 0, value)
+
+    @property
+    def width(self) -> LengthMeters:
+        """Extent along Y."""
+        return _bbox_extent(self, 1)
+
+    @width.setter
+    def width(self, value: LengthWithUnit) -> None:
+        _set_bbox_extent(self, 1, value)
+
+    @property
+    def height(self) -> LengthMeters:
+        """Extent along Z."""
+        return _bbox_extent(self, 2)
+
+    @height.setter
+    def height(self, value: LengthWithUnit) -> None:
+        _set_bbox_extent(self, 2, value)
+
     def get_volume(self) -> float:
-        if (self._primitive or {}).get("kind") == "revolution":
+        primitive = self._primitive or {}
+        if primitive.get("kind") == "revolution":
             area, _perimeter = _profile_area_perimeter(self._primitive["profile"])
             return self._primitive["angle"] * _revolve_centroid_radius(
                 self._primitive
             ) * area
+        if primitive.get("draft_angle"):
+            return _drafted_volume(primitive)
         return super().get_volume()
 
     def get_area(self) -> float:
-        if (self._primitive or {}).get("kind") == "revolution":
+        primitive = self._primitive or {}
+        if primitive.get("kind") == "revolution":
             area, perimeter = _profile_area_perimeter(self._primitive["profile"])
             radius = _revolve_centroid_radius(self._primitive)
             angle = self._primitive["angle"]
@@ -176,6 +267,8 @@ class Part3D(
             lateral = angle * radius * perimeter
             caps = 0.0 if abs(angle - 2 * math.pi) < 1e-9 else 2 * area
             return lateral + caps
+        if primitive.get("draft_angle"):
+            return _drafted_area(primitive)
         return super().get_area()
 
     def duplicate(self, name: str | None = None) -> "Part3D":
@@ -292,42 +385,81 @@ class Part3D(
     def hole(
         self,
         start_location: Location,
-        radius: LengthWithUnit,
+        radius_or_shape: "LengthWithUnit | Part2D",
         *,
         amount: LengthWithUnit | None = None,
         end_location: Location | None = None,
+        throughAll: bool = False,
     ) -> "Part3D":
-        if (amount is None) == (end_location is None):
-            raise ValueError("Supply exactly one of amount= or end_location=")
+        """Drill a hole into this part starting at ``start_location``.
+
+        ``radius_or_shape`` is either a length (a plain round hole of that
+        radius) or a :class:`Part2D` sketch, which is swept as the hole's
+        cross-section -- pass a rectangle for a square hole or any custom
+        sketch for a custom profile. The sketch's own origin is treated as the
+        hole's axis.
+
+        The hole's depth is set by exactly one of: ``amount`` (drill this far
+        along the location's -Z normal), ``end_location`` (drill until this
+        point), or ``throughAll=True`` (cut through all of the part's geometry
+        along the drill axis)."""
+        profile = radius_or_shape if isinstance(radius_or_shape, Part2D) else None
+        depth_args = sum(
+            (amount is not None, end_location is not None, bool(throughAll))
+        )
+        if depth_args != 1:
+            raise ValueError(
+                "Supply exactly one of amount=, end_location= or throughAll=True"
+            )
         self.operations.append(
             {
                 "operation": "hole",
                 "start_location": start_location,
-                "radius": LengthMeters(radius),
+                "radius": None if profile is not None else LengthMeters(radius_or_shape),
+                "profile": profile,
                 "amount": LengthMeters(amount) if amount is not None else None,
                 "end_location": end_location,
+                "through_all": bool(throughAll),
             }
         )
         return self
 
-    def export(self, location: str) -> str:
-        """Export the base solid as an ASCII STL. Feature operations recorded
-        in ledgers (booleans, shell, holes, ...) require a federated backend
-        and are not reflected in this mesh."""
+    def export(self, location: str, include_assembly: bool = True) -> str:
+        """Export the base solid as an ASCII STL. When other parts are joined
+        to this one by assembly constraints (fixed/revolute/prismatic), the
+        whole assembly is exported in assembled positions; pass
+        ``include_assembly=False`` to export just this part. Feature
+        operations recorded in ledgers (booleans, shell, holes, ...) require
+        a federated backend and are not reflected in this mesh."""
+        members = (
+            self._assembly_members()
+            if include_assembly
+            else [(self, np.zeros(3))]
+        )
         primitive = self._primitive or {}
-        if primitive.get("kind") == "imported":
+        if len(members) == 1 and primitive.get("kind") == "imported":
             source = Path(primitive["file_path"])
             if source.suffix.lower() == Path(location).suffix.lower():
                 shutil.copyfile(source, location)
                 return location
-        triangles = self._generate_mesh()
-        if triangles is None:
-            raise NotImplementedError(
-                "Override export() to export this shape from your target "
-                "modeling application"
-            )
-        _write_ascii_stl(location, triangles, self.name or "codetocad_part")
+        meshes = []
+        for part, shift in members:
+            triangles = part._generate_mesh()
+            if triangles is None:
+                raise NotImplementedError(
+                    "Override export() to export this shape from your target "
+                    "modeling application"
+                )
+            meshes.append(triangles + shift if np.any(shift) else triangles)
+        _write_ascii_stl(
+            location, np.concatenate(meshes), self.name or "codetocad_part"
+        )
         return location
+
+    def _assembly_members(self) -> list[tuple["Part3D", np.ndarray]]:
+        """This part plus every part joined to it by assembly constraints
+        (recursively), each with the translation that assembles it."""
+        return [(link.part, link.shift) for link in extract_links(self)]
 
     def _generate_mesh(self) -> np.ndarray | None:
         triangles = self._base_mesh()
@@ -345,13 +477,16 @@ class Part3D(
             return None
         kind = self._primitive["kind"]
         origin = self._origin
+        draft = self._primitive.get("draft_angle", 0.0)
         if kind == "cube":
             half = _half_extents(self._primitive)
-            return _box_mesh(*_bbox_around(origin, half))
+            return _box_mesh(*_bbox_around(origin, half), draft=draft)
         if kind == "cylinder":
-            return _cylinder_mesh(
-                self._primitive["radius"], self._primitive["height"], origin
+            radius, height = self._primitive["radius"], self._primitive["height"]
+            top_radius = (
+                _drafted_top(radius, height, draft, "circle") if draft else radius
             )
+            return _cylinder_mesh(radius, height, origin, top_radius=top_radius)
         if kind == "sphere":
             return _sphere_mesh(self._primitive["radius"], origin)
         if kind == "revolution":
@@ -387,6 +522,63 @@ def _half_extents(primitive: dict | None) -> Vec3:
         profile_half = _half_extents(primitive["profile"])
         return Vec3(profile_half.x, profile_half.y, primitive["height"] / 2)
     raise NotImplementedError(f"Bounding box is not available for {kind!r} parts")
+
+
+def _draft_inset(height: float, draft: float) -> float:
+    """How far a drafted wall moves inward over ``height`` (per side).
+    Positive draft insets the top; negative flares it."""
+    return height * math.tan(draft)
+
+
+def _drafted_top(base: float, height: float, draft: float, what: str) -> float:
+    """The tapered top dimension (radius or half-extent), raising if the draft
+    is steep enough to collapse it."""
+    top = base - _draft_inset(height, draft)
+    if top <= 0:
+        raise ValueError(
+            f"Draft angle is too steep: it collapses the top {what} of this "
+            f"{height:g}m-tall part. Reduce the draft angle or the height."
+        )
+    return top
+
+
+def _drafted_volume(primitive: dict) -> float:
+    draft, height = primitive["draft_angle"], primitive["height"]
+    if primitive["kind"] == "cylinder":
+        radius = primitive["radius"]
+        top = _drafted_top(radius, height, draft, "circle")
+        return math.pi * height / 3 * (radius**2 + radius * top + top**2)
+    length, width = primitive["length"], primitive["width"]
+    inset = 2 * _draft_inset(height, draft)  # full-dimension reduction
+    top_length = _drafted_top(length / 2, height, draft, "face") * 2
+    top_width = _drafted_top(width / 2, height, draft, "face") * 2
+    mid_length, mid_width = length - inset / 2, width - inset / 2
+    # Prismatoid rule (exact for a linearly tapered cross section).
+    return (
+        height
+        / 6
+        * (
+            length * width
+            + 4 * mid_length * mid_width
+            + top_length * top_width
+        )
+    )
+
+
+def _drafted_area(primitive: dict) -> float:
+    draft, height = primitive["draft_angle"], primitive["height"]
+    slant = height / math.cos(draft)  # true wall length over the height
+    if primitive["kind"] == "cylinder":
+        radius = primitive["radius"]
+        top = _drafted_top(radius, height, draft, "circle")
+        caps = math.pi * (radius**2 + top**2)
+        return caps + math.pi * (radius + top) * slant
+    length, width = primitive["length"], primitive["width"]
+    top_length = _drafted_top(length / 2, height, draft, "face") * 2
+    top_width = _drafted_top(width / 2, height, draft, "face") * 2
+    caps = length * width + top_length * top_width
+    lateral = ((length + top_length) + (width + top_width)) * slant
+    return caps + lateral
 
 
 def _bbox_around(origin: Vec3, half: Vec3) -> tuple[Vec3, Vec3]:
@@ -452,9 +644,26 @@ def _profile_area_perimeter(profile: dict) -> tuple[float, float]:
     )
 
 
+def _revolve_offset_hint(direction: np.ndarray) -> str:
+    """Which sketch-plane direction moves a profile away from this axis."""
+    perpendicular = [
+        name
+        for name, unit in (("x", (1.0, 0.0, 0.0)), ("y", (0.0, 1.0, 0.0)))
+        if abs(float(np.dot(unit, direction))) < 1e-9
+    ]
+    if perpendicular:
+        return f"offset the sketch along {' or '.join(perpendicular)}"
+    return "offset the sketch perpendicular to the axis"
+
+
 def _revolve_centroid_radius(primitive: dict) -> float:
-    """Distance from the profile centroid to the axis line. Raises if the
-    profile crosses the axis, where the simple Pappus relation breaks down.
+    """Distance from the profile centroid to the axis line. Raises if the axis
+    runs through the profile, which sweeps a self-intersecting solid (and
+    breaks the simple Pappus relation).
+
+    A profile that merely *touches* the axis is fine -- that is the usual way
+    to revolve a solid, e.g. a rectangle with one edge on the axis sweeps a
+    cylinder.
 
     Relies on rectangle/circle profiles being centered on their origin, so the
     area centroid and boundary (curve) centroid coincide at ``profile_origin``.
@@ -470,16 +679,19 @@ def _revolve_centroid_radius(primitive: dict) -> float:
     if boundary is not None and not crosses:
         radial_unit = radial / radius
         # Signed position of each boundary point along the centroid's radial
-        # direction; a non-positive minimum means the axis runs through (or
-        # touches) the profile.
+        # direction. A strictly negative minimum puts boundary on both sides of
+        # the axis, i.e. the axis cuts through the profile's interior; a zero
+        # minimum just touches it, which is allowed.
         projections = (
             boundary - point - np.outer((boundary - point) @ direction, direction)
         ) @ radial_unit
-        crosses = projections.min() < 1e-9
+        crosses = bool(projections.min() < -_AXIS_TOLERANCE)
     if crosses:
         raise ValueError(
-            "Revolved analysis needs a profile that does not cross the axis; "
-            "offset the sketch away from the axis of revolution"
+            f"Cannot revolve this {primitive['profile']['kind']} profile: the "
+            "axis of revolution passes through it, so the sweep would be "
+            f"self-intersecting. {_revolve_offset_hint(direction)} so the whole "
+            "profile sits on one side of the axis (touching it is fine)."
         )
     return radius
 
@@ -602,13 +814,22 @@ def _revolution_caps(rings: np.ndarray, next_index: np.ndarray) -> np.ndarray:
     return np.concatenate([start_cap, end_cap])
 
 
-def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> np.ndarray:
+def _box_mesh(bbox_min: Vec3, bbox_max: Vec3, draft: float = 0.0) -> np.ndarray:
     x0, y0, z0 = bbox_min.to_tuple()
     x1, y1, z1 = bbox_max.to_tuple()
+    # With draft the top face insets by height*tan(draft) on every side; the
+    # bottom keeps its full extent. A negative draft flares the top instead.
+    inset = _draft_inset(z1 - z0, draft)
+    if draft and (x1 - inset <= x0 + inset or y1 - inset <= y0 + inset):
+        raise ValueError(
+            "Draft angle is too steep: it collapses the top face of this "
+            f"{z1 - z0:g}m-tall part. Reduce the draft angle or the height."
+        )
+    tx0, tx1, ty0, ty1 = x0 + inset, x1 - inset, y0 + inset, y1 - inset
     vertices = np.array(
         [
             (x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
-            (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1),
+            (tx0, ty0, z1), (tx1, ty0, z1), (tx1, ty1, z1), (tx0, ty1, z1),
         ],
         dtype=np.float64,
     )
@@ -629,14 +850,27 @@ def _box_mesh(bbox_min: Vec3, bbox_max: Vec3) -> np.ndarray:
 
 
 def _cylinder_mesh(
-    radius: float, height: float, origin: Vec3, segments: int = 48
+    radius: float,
+    height: float,
+    origin: Vec3,
+    segments: int = 48,
+    top_radius: float | None = None,
 ) -> np.ndarray:
+    if top_radius is None:
+        top_radius = radius
     z0, z1 = origin.z - height / 2, origin.z + height / 2
     angles = np.linspace(0.0, 2 * math.pi, segments, endpoint=False)
-    xs = origin.x + radius * np.cos(angles)
-    ys = origin.y + radius * np.sin(angles)
-    bottom = np.column_stack([xs, ys, np.full(segments, z0)])
-    top = np.column_stack([xs, ys, np.full(segments, z1)])
+    cos, sin = np.cos(angles), np.sin(angles)
+    bottom = np.column_stack(
+        [origin.x + radius * cos, origin.y + radius * sin, np.full(segments, z0)]
+    )
+    top = np.column_stack(
+        [
+            origin.x + top_radius * cos,
+            origin.y + top_radius * sin,
+            np.full(segments, z1),
+        ]
+    )
     bottom_next = np.roll(bottom, -1, axis=0)
     top_next = np.roll(top, -1, axis=0)
     bottom_center = np.tile((origin.x, origin.y, z0), (segments, 1))

@@ -162,6 +162,10 @@ class Location:
         self.z = self.z + LengthMeters(z)
         return self
 
+    #: ``offset`` reads more naturally than ``translate`` when nudging a
+    #: location away from a face/edge it was resolved from.
+    offset = translate
+
     def copy(self) -> "Location":
         return Location(
             self.x,
@@ -201,80 +205,146 @@ class _CubeLocationsMeta(EnumMeta):
             raise AttributeError(name) from None
 
 
-class CubeLocations(Enum, metaclass=_CubeLocationsMeta):
-    """The 23 topological locations and geometric centers of a cube.
+# Each face token maps to (axis index, sign); its outward normal is the signed
+# unit axis. -x is left, +y is back, +z is top.
+_CUBE_FACES: dict[str, tuple[int, int]] = {
+    "RIGHT": (0, 1), "LEFT": (0, -1),
+    "BACK": (1, 1), "FRONT": (1, -1),
+    "TOP": (2, 1), "BOTTOM": (2, -1),
+}
 
-    Member values are ``(x, y, z)`` half-extent multipliers relative to the
-    bounding-box center. -x is left, +y is back, +z is top.
-    """
 
-    CENTER = (0, 0, 0)
+def _face_normal(token: str) -> tuple[float, float, float]:
+    axis, sign = _CUBE_FACES[token]
+    normal = [0.0, 0.0, 0.0]
+    normal[axis] = float(sign)
+    return tuple(normal)
 
-    # 6 face centers
-    TOP_CENTER = (0, 0, 1)
-    BOTTOM_CENTER = (0, 0, -1)
-    FRONT_CENTER = (0, -1, 0)
-    BACK_CENTER = (0, 1, 0)
-    LEFT_CENTER = (-1, 0, 0)
-    RIGHT_CENTER = (1, 0, 0)
 
-    # 8 corners
-    TOP_FRONT_LEFT = (-1, -1, 1)
-    TOP_FRONT_RIGHT = (1, -1, 1)
-    TOP_BACK_LEFT = (-1, 1, 1)
-    TOP_BACK_RIGHT = (1, 1, 1)
-    BOTTOM_FRONT_LEFT = (-1, -1, -1)
-    BOTTOM_FRONT_RIGHT = (1, -1, -1)
-    BOTTOM_BACK_LEFT = (-1, 1, -1)
-    BOTTOM_BACK_RIGHT = (1, 1, -1)
+def _quat_aligning_z(
+    normal: tuple[float, float, float],
+) -> tuple[float, float, float, float]:
+    """Shortest-arc quaternion ``(x, y, z, w)`` rotating +Z onto ``normal``.
+    A zero normal (the geometric center) yields identity."""
+    vector = np.asarray(normal, dtype=np.float64)
+    magnitude = float(np.linalg.norm(vector))
+    if magnitude < 1e-12:
+        return (0.0, 0.0, 0.0, 1.0)
+    vector = vector / magnitude
+    dot = float(np.clip(vector[2], -1.0, 1.0))
+    if dot > 1.0 - 1e-12:
+        return (0.0, 0.0, 0.0, 1.0)
+    if dot < -1.0 + 1e-12:
+        return (1.0, 0.0, 0.0, 0.0)  # 180deg about X
+    axis = np.cross((0.0, 0.0, 1.0), vector)
+    axis = axis / np.linalg.norm(axis)
+    half = math.acos(dot) / 2.0
+    sin_half = math.sin(half)
+    return (
+        float(axis[0] * sin_half),
+        float(axis[1] * sin_half),
+        float(axis[2] * sin_half),
+        float(math.cos(half)),
+    )
 
-    # 8 edge midlines
-    TOP_FRONT = (0, -1, 1)
-    TOP_BACK = (0, 1, 1)
-    TOP_LEFT = (-1, 0, 1)
-    TOP_RIGHT = (1, 0, 1)
-    BOTTOM_FRONT = (0, -1, -1)
-    BOTTOM_BACK = (0, 1, -1)
-    BOTTOM_LEFT = (-1, 0, -1)
-    BOTTOM_RIGHT = (1, 0, -1)
 
-    def to_location(self, part) -> Location:
-        """Calculate the Location on ``part`` based on its bounding box."""
-        bbox_min, bbox_max = part.get_bounding_box()
-        fx, fy, fz = self.value
-        center = (
-            (bbox_min.x + bbox_max.x) / 2,
-            (bbox_min.y + bbox_max.y) / 2,
-            (bbox_min.z + bbox_max.z) / 2,
-        )
-        half = (
-            (bbox_max.x - bbox_min.x) / 2,
-            (bbox_max.y - bbox_min.y) / 2,
-            (bbox_max.z - bbox_min.z) / 2,
-        )
-        return Location(
-            center[0] + fx * half[0],
-            center[1] + fy * half[1],
-            center[2] + fz * half[2],
-            name=self.name.lower(),
-        )
+def _cube_location_members() -> dict[str, tuple[float, ...]]:
+    """All 27 topological locations of a cube (center, 6 faces, 12 edges,
+    8 corners), each named by its face tokens in every order. A member's value
+    is ``(px, py, pz, nx, ny, nz)``: the position multipliers plus the outward
+    normal of the *first-named* face (which becomes the location's +Z). Names
+    that share a position and first face collapse to one member (aliases)."""
+    from itertools import combinations, permutations, product
 
-    def translate(
-        self,
-        x: LengthWithUnit = 0,
-        y: LengthWithUnit = 0,
-        z: LengthWithUnit = 0,
-    ) -> "CubeLocationExpr":
-        return CubeLocationExpr(base=self).translate(x, y, z)
+    members: dict[str, tuple[float, ...]] = {"CENTER": (0, 0, 0, 0, 0, 0)}
+    faces_by_axis = {
+        axis: [tok for tok, (a, _) in _CUBE_FACES.items() if a == axis]
+        for axis in (2, 1, 0)  # z, y, x -> canonical token order
+    }
+    # canonical rank: TOP/BOTTOM (z) before FRONT/BACK (y) before LEFT/RIGHT (x)
+    rank = {tok: -_CUBE_FACES[tok][0] for tok in _CUBE_FACES}
+    for count in (1, 2, 3):
+        for axes in combinations((2, 1, 0), count):
+            for tokens in product(*(faces_by_axis[a] for a in axes)):
+                position = [0.0, 0.0, 0.0]
+                for tok in tokens:
+                    axis, sign = _CUBE_FACES[tok]
+                    position[axis] = float(sign)
+                if count == 1:  # face center
+                    (token,) = tokens
+                    members[f"{token}_CENTER"] = (*position, *_face_normal(token))
+                    continue
+                # Order permutations so the fully canonical name is first and,
+                # within each first token, the canonical remainder leads.
+                ordered = sorted(
+                    permutations(tokens),
+                    key=lambda perm: (rank[perm[0]], [rank[t] for t in perm[1:]]),
+                )
+                for perm in ordered:
+                    name = "_".join(perm)
+                    members.setdefault(name, (*position, *_face_normal(perm[0])))
+    return members
 
-    def rotate(
-        self,
-        x_deg: AngleWithUnit = 0,
-        y_deg: AngleWithUnit = 0,
-        z_deg: AngleWithUnit = 0,
-    ) -> "CubeLocationExpr":
-        return CubeLocationExpr(base=self).rotate(x_deg, y_deg, z_deg)
 
+def _cube_to_location(self, part) -> Location:
+    """Calculate the oriented Location on ``part`` from its bounding box. The
+    location sits at this cube position with +Z along the first face's
+    outward normal."""
+    bbox_min, bbox_max = part.get_bounding_box()
+    px, py, pz, nx, ny, nz = self.value
+    center = (
+        (bbox_min.x + bbox_max.x) / 2,
+        (bbox_min.y + bbox_max.y) / 2,
+        (bbox_min.z + bbox_max.z) / 2,
+    )
+    half = (
+        (bbox_max.x - bbox_min.x) / 2,
+        (bbox_max.y - bbox_min.y) / 2,
+        (bbox_max.z - bbox_min.z) / 2,
+    )
+    quat_x, quat_y, quat_z, quat_w = _quat_aligning_z((nx, ny, nz))
+    return Location(
+        center[0] + px * half[0],
+        center[1] + py * half[1],
+        center[2] + pz * half[2],
+        quat_x,
+        quat_y,
+        quat_z,
+        quat_w,
+        name=self.name.lower(),
+    )
+
+
+def _cube_translate(self, x=0, y=0, z=0) -> "CubeLocationExpr":
+    return CubeLocationExpr(base=self).translate(x, y, z)
+
+
+def _cube_rotate(self, x_deg=0, y_deg=0, z_deg=0) -> "CubeLocationExpr":
+    return CubeLocationExpr(base=self).rotate(x_deg, y_deg, z_deg)
+
+
+def _build_cube_locations() -> type:
+    namespace = _CubeLocationsMeta.__prepare__("CubeLocations", (Enum,))
+    namespace["__doc__"] = (
+        "The 27 topological locations of a cube: the geometric center, 6 face "
+        "centers, 12 edge midlines and 8 corners. A member's value is "
+        "``(px, py, pz, nx, ny, nz)`` -- position multipliers relative to the "
+        "bounding-box center plus the outward normal of the first-named face. "
+        "The first face's normal becomes the location's +Z axis, so "
+        "``BACK_BOTTOM`` points +Z out the back while ``BOTTOM_BACK`` points "
+        "+Z down; every token order is available as an alias. -x is left, +y "
+        "is back, +z is top."
+    )
+    for name, value in _cube_location_members().items():
+        namespace[name] = value
+    namespace["to_location"] = _cube_to_location
+    namespace["translate"] = _cube_translate
+    namespace["rotate"] = _cube_rotate
+    namespace["offset"] = _cube_translate
+    return _CubeLocationsMeta("CubeLocations", (Enum,), namespace)
+
+
+CubeLocations = _build_cube_locations()
 
 # Alias used in some docs/specs.
 BoxLocations = CubeLocations
@@ -306,6 +376,8 @@ class CubeLocationExpr:
         self._operations.append(lambda loc: loc.rotate(x_deg, y_deg, z_deg))
         return self
 
+    offset = translate
+
     def to_location(self, part) -> Location:
         resolved = self.base.to_location(part)
         for operation in self._operations:
@@ -327,7 +399,91 @@ class LocationMixin:
     loc = CubeLocations
     """Quick access to cube locations."""
 
-    def __getattr__(self, name: str):
+    # The cube locations are also exposed directly on every part, resolved
+    # against its bounding box by __getattr__ below. Declaring them here (as
+    # annotations, so there is no runtime cost) lets IDEs autocomplete e.g.
+    # ``part.BOTTOM_LEFT``. Mirrors codetocad.CubeLocations.
+    BACK_BOTTOM: Location
+    BACK_BOTTOM_LEFT: Location
+    BACK_BOTTOM_RIGHT: Location
+    BACK_CENTER: Location
+    BACK_LEFT: Location
+    BACK_LEFT_BOTTOM: Location
+    BACK_LEFT_TOP: Location
+    BACK_RIGHT: Location
+    BACK_RIGHT_BOTTOM: Location
+    BACK_RIGHT_TOP: Location
+    BACK_TOP: Location
+    BACK_TOP_LEFT: Location
+    BACK_TOP_RIGHT: Location
+    BOTTOM_BACK: Location
+    BOTTOM_BACK_LEFT: Location
+    BOTTOM_BACK_RIGHT: Location
+    BOTTOM_CENTER: Location
+    BOTTOM_FRONT: Location
+    BOTTOM_FRONT_LEFT: Location
+    BOTTOM_FRONT_RIGHT: Location
+    BOTTOM_LEFT: Location
+    BOTTOM_LEFT_BACK: Location
+    BOTTOM_LEFT_FRONT: Location
+    BOTTOM_RIGHT: Location
+    BOTTOM_RIGHT_BACK: Location
+    BOTTOM_RIGHT_FRONT: Location
+    CENTER: Location
+    FRONT_BOTTOM: Location
+    FRONT_BOTTOM_LEFT: Location
+    FRONT_BOTTOM_RIGHT: Location
+    FRONT_CENTER: Location
+    FRONT_LEFT: Location
+    FRONT_LEFT_BOTTOM: Location
+    FRONT_LEFT_TOP: Location
+    FRONT_RIGHT: Location
+    FRONT_RIGHT_BOTTOM: Location
+    FRONT_RIGHT_TOP: Location
+    FRONT_TOP: Location
+    FRONT_TOP_LEFT: Location
+    FRONT_TOP_RIGHT: Location
+    LEFT_BACK: Location
+    LEFT_BACK_BOTTOM: Location
+    LEFT_BACK_TOP: Location
+    LEFT_BOTTOM: Location
+    LEFT_BOTTOM_BACK: Location
+    LEFT_BOTTOM_FRONT: Location
+    LEFT_CENTER: Location
+    LEFT_FRONT: Location
+    LEFT_FRONT_BOTTOM: Location
+    LEFT_FRONT_TOP: Location
+    LEFT_TOP: Location
+    LEFT_TOP_BACK: Location
+    LEFT_TOP_FRONT: Location
+    RIGHT_BACK: Location
+    RIGHT_BACK_BOTTOM: Location
+    RIGHT_BACK_TOP: Location
+    RIGHT_BOTTOM: Location
+    RIGHT_BOTTOM_BACK: Location
+    RIGHT_BOTTOM_FRONT: Location
+    RIGHT_CENTER: Location
+    RIGHT_FRONT: Location
+    RIGHT_FRONT_BOTTOM: Location
+    RIGHT_FRONT_TOP: Location
+    RIGHT_TOP: Location
+    RIGHT_TOP_BACK: Location
+    RIGHT_TOP_FRONT: Location
+    TOP_BACK: Location
+    TOP_BACK_LEFT: Location
+    TOP_BACK_RIGHT: Location
+    TOP_CENTER: Location
+    TOP_FRONT: Location
+    TOP_FRONT_LEFT: Location
+    TOP_FRONT_RIGHT: Location
+    TOP_LEFT: Location
+    TOP_LEFT_BACK: Location
+    TOP_LEFT_FRONT: Location
+    TOP_RIGHT: Location
+    TOP_RIGHT_BACK: Location
+    TOP_RIGHT_FRONT: Location
+
+    def __getattr__(self, name: str) -> Location:
         """Expose cube locations as attributes resolved against this part's
         bounding box, e.g. ``part.top_center`` or ``part.bottom_front_left``."""
         if name.startswith("_"):

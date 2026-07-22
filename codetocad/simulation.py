@@ -13,8 +13,11 @@ offset by ``-frame`` inside their link.
 
 from __future__ import annotations
 
+import inspect
+import math
 import re
 import struct
+import tempfile
 import zlib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,7 +25,36 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from codetocad.location import quat_rotate_vector
+from codetocad.location import quat_multiply, quat_rotate_vector
+
+
+def _axis_angle_quat(axis, angle: float) -> tuple[float, float, float, float]:
+    """Quaternion ``(x, y, z, w)`` for a rotation of ``angle`` radians about
+    ``axis``."""
+    axis = np.asarray(axis, dtype=float)
+    norm = float(np.linalg.norm(axis))
+    if norm < 1e-12 or abs(angle) < 1e-12:
+        return (0.0, 0.0, 0.0, 1.0)
+    axis = axis / norm
+    sin_half = math.sin(angle / 2.0)
+    return (
+        float(axis[0] * sin_half),
+        float(axis[1] * sin_half),
+        float(axis[2] * sin_half),
+        float(math.cos(angle / 2.0)),
+    )
+
+
+def _quat_to_matrix(quat: tuple[float, float, float, float]) -> np.ndarray:
+    """3x3 rotation matrix from a quaternion ``(x, y, z, w)``."""
+    x, y, z, w = quat
+    return np.array(
+        [
+            [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+            [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+            [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)],
+        ]
+    )
 
 if TYPE_CHECKING:
     from codetocad.parts import Part3D
@@ -70,17 +102,58 @@ class JointSpec:
     axis: np.ndarray  # world coordinates, unit
     lower: float | None = None
     upper: float | None = None
+    #: Joint value (radians/meters) to apply at simulation start, from
+    #: ``starting_angle`` / ``starting_pos``. ``None`` leaves it at zero.
+    initial_value: float | None = None
+    #: The user-facing ``Joint`` returned by ``.revolute()``/etc, so a
+    #: simulation can bind it back for ``joint.move_to(...)`` control.
+    joint_obj: object | None = None
 
 
 @dataclass
 class LinkSpec:
     part: "Part3D"
     name: str
-    frame: np.ndarray  # world position of the link frame
+    frame: np.ndarray  # world position of the (kinematic) link frame
     parent: "LinkSpec | None" = None
     joint: JointSpec | None = None  # joint connecting this link to parent
     mesh_path: str | None = None
     children: list["LinkSpec"] = field(default_factory=list)
+    #: World point in the part's *modeled* pose that maps onto the link
+    #: origin. Equals ``frame`` for parts modeled in place; differs when a
+    #: constraint's ``other_location`` snaps the child into position. Backends
+    #: place geometry/inertia relative to this, not ``frame``.
+    mesh_frame: np.ndarray | None = None
+    #: Net translation applied to this link's modeled geometry to assemble it
+    #: (accumulated from ancestor snaps). Descendants inherit it so a snapped
+    #: sub-tree stays rigid.
+    shift: np.ndarray | None = None
+    #: Rigid pose that maps this link's *modeled* geometry to its *assembled
+    #: and initially-posed* placement — the translation ``shift`` plus the
+    #: rotation/slide of every ancestor joint's ``starting_angle`` /
+    #: ``starting_pos``. Geometry export/preview apply this so a design shows
+    #: its joints at their starting pose; simulation ignores it (it applies
+    #: the starting value as live joint state instead). With no starting
+    #: values anywhere, it reduces to ``shift`` (identity rotation).
+    pose_rotation: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 1.0)
+    pose_offset: np.ndarray | None = None
+
+    def __post_init__(self):
+        if self.mesh_frame is None:
+            self.mesh_frame = self.frame
+        if self.shift is None:
+            self.shift = np.zeros(3)
+        if self.pose_offset is None:
+            self.pose_offset = np.asarray(self.shift, dtype=float).copy()
+
+    @property
+    def assembly_matrix(self) -> np.ndarray:
+        """The 4x4 form of ``(pose_rotation, pose_offset)`` — for backends that
+        apply a homogeneous transform (open3d, Blender)."""
+        matrix = np.eye(4)
+        matrix[:3, :3] = _quat_to_matrix(self.pose_rotation)
+        matrix[:3, 3] = self.pose_offset
+        return matrix
 
     @property
     def mass(self) -> float:
@@ -169,7 +242,9 @@ def extract_links(root: "Part3D") -> list[LinkSpec]:
                 continue
             seen_parts.add(id(child_part))
             location = parent_link.part.resolve_location(operation["location"])
-            anchor = location.to_numpy()
+            # Joint anchor in assembled world: the parent's location, carried
+            # by whatever shift already assembled the parent.
+            anchor = location.to_numpy() + parent_link.shift
             axis = np.asarray(
                 quat_rotate_vector(location.quat, (0.0, 0.0, 1.0))
             )
@@ -177,6 +252,14 @@ def extract_links(root: "Part3D") -> list[LinkSpec]:
                 axis = -axis
             # Snap float residue from quaternion math (e.g. 6e-17) to zero.
             axis = np.where(np.abs(axis) < 1e-9, 0.0, axis)
+            # The child snaps so its ``other_location`` (in its modeled pose)
+            # lands on the joint anchor; with no other_location it is taken as
+            # already in place at the parent's location.
+            other_location = operation.get("other_location")
+            if other_location is not None:
+                mesh_frame = child_part.resolve_location(other_location).to_numpy()
+            else:
+                mesh_frame = location.to_numpy()
             child_name = unique_name(child_part.name or "link")
             joint = JointSpec(
                 name=location.name or f"{child_name}_joint",
@@ -185,6 +268,8 @@ def extract_links(root: "Part3D") -> list[LinkSpec]:
                 axis=axis / np.linalg.norm(axis),
                 lower=_limit_to_float(operation.get("min_limits")),
                 upper=_limit_to_float(operation.get("max_limits")),
+                initial_value=operation.get("initial_value"),
+                joint_obj=operation.get("joint_obj"),
             )
             child_link = LinkSpec(
                 part=child_part,
@@ -192,11 +277,78 @@ def extract_links(root: "Part3D") -> list[LinkSpec]:
                 frame=anchor.copy(),
                 parent=parent_link,
                 joint=joint,
+                mesh_frame=mesh_frame,
+                shift=anchor - mesh_frame,
             )
             parent_link.children.append(child_link)
             links.append(child_link)
             queue.append(child_link)
+    _assign_assembly_poses(links)
     return links
+
+
+def _assign_assembly_poses(links: list[LinkSpec]) -> None:
+    """Bake each joint's ``starting_angle``/``starting_pos`` into a rigid
+    ``(pose_rotation, pose_offset)`` per link, so geometry export/preview show
+    the assembly at its starting pose. A joint rotates (revolute) or slides
+    (prismatic) its whole sub-tree about its anchor; descendants inherit their
+    ancestors' motion. ``links`` are breadth-first (parents before children)."""
+    # (q, t): the rotation applied to already-assembled geometry and the
+    # translation it carries, excluding the link's own ``shift``.
+    outer: dict[str, tuple[tuple[float, float, float, float], np.ndarray]] = {}
+    for link in links:
+        if link.parent is None:
+            rotation, translation = (0.0, 0.0, 0.0, 1.0), np.zeros(3)
+        else:
+            joint = link.joint
+            value = joint.initial_value if joint is not None else None
+            if value and joint.joint_type == "revolute":
+                local_q = _axis_angle_quat(joint.axis, value)
+                anchor = np.asarray(link.frame, dtype=float)
+                local_t = anchor - quat_rotate_vector(local_q, anchor)
+            elif value and joint.joint_type == "prismatic":
+                local_q = (0.0, 0.0, 0.0, 1.0)
+                local_t = np.asarray(joint.axis, dtype=float) * value
+            else:
+                local_q, local_t = (0.0, 0.0, 0.0, 1.0), np.zeros(3)
+            parent_q, parent_t = outer[link.parent.name]
+            rotation = quat_multiply(parent_q, local_q)
+            translation = quat_rotate_vector(parent_q, local_t) + parent_t
+        outer[link.name] = (rotation, translation)
+        link.pose_rotation = rotation
+        link.pose_offset = quat_rotate_vector(rotation, link.shift) + translation
+
+
+def rigid_group_ids(links: list[LinkSpec]) -> dict[str, int]:
+    """Map each link name to a rigid-group id. Links welded together by
+    ``fixed`` joints share a group: they move as one body and touch by
+    construction, so collision between them is meaningless (and would
+    fight the weld constraint). A movable joint starts a new group."""
+    groups: dict[str, int] = {}
+    next_id = 0
+    for link in links:  # breadth-first, parents before children
+        if (
+            link.parent is not None
+            and link.joint is not None
+            and link.joint.joint_type == "fixed"
+        ):
+            groups[link.name] = groups[link.parent.name]
+        else:
+            groups[link.name] = next_id
+            next_id += 1
+    return groups
+
+
+def welded_link_pairs(links: list[LinkSpec]) -> list[tuple[str, str]]:
+    """Name pairs of links in the same rigid group — the pairs a
+    self-colliding simulation must still exclude from contact."""
+    groups = rigid_group_ids(links)
+    return [
+        (first.name, second.name)
+        for i, first in enumerate(links)
+        for second in links[i + 1 :]
+        if groups[first.name] == groups[second.name]
+    ]
 
 
 def extract_scene_links(
@@ -221,12 +373,25 @@ def extract_scene_links(
     return links
 
 
+def export_single_part(part: "Part3D", location: str) -> str:
+    """Export just ``part``'s own geometry, without the parts joined to it
+    (``export()`` includes the whole assembly by default). Tolerates
+    ``export()`` overrides that don't take ``include_assembly``."""
+    try:
+        parameters = inspect.signature(part.export).parameters
+    except (TypeError, ValueError):
+        parameters = {}
+    if "include_assembly" in parameters:
+        return part.export(location, include_assembly=False)
+    return part.export(location)
+
+
 def export_link_meshes(links: list[LinkSpec], directory: str | Path) -> None:
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     for link in links:
         path = directory / f"{link.name}.stl"
-        link.part.export(str(path))
+        export_single_part(link.part, str(path))
         link.mesh_path = str(path)
 
 
@@ -294,6 +459,125 @@ def encode_png(pixels: np.ndarray) -> bytes:
     )
 
 
+def _web_safe_palette() -> bytes:
+    """A 216-color 6x6x6 RGB cube, padded to 256 entries — the global color
+    table an animated GIF quantizes frames into."""
+    table = bytearray()
+    for red in range(6):
+        for green in range(6):
+            for blue in range(6):
+                table += bytes((red * 51, green * 51, blue * 51))
+    table += bytes(3 * (256 - 216))
+    return bytes(table)
+
+
+def _quantize_to_web_safe(frame: np.ndarray) -> np.ndarray:
+    """Map an (H, W, 3) uint8 RGB frame to indices into the 6x6x6 cube."""
+    frame = np.ascontiguousarray(frame, dtype=np.uint8)
+    if frame.ndim == 2:  # grayscale -> gray RGB
+        frame = np.repeat(frame[:, :, None], 3, axis=2)
+    levels = np.round(frame.astype(np.float64) / 255.0 * 5.0).astype(np.int64)
+    return (36 * levels[:, :, 0] + 6 * levels[:, :, 1] + levels[:, :, 2]).astype(
+        np.uint8
+    )
+
+
+def _lzw_encode(indices: np.ndarray, min_code_size: int) -> bytes:
+    """GIF variable-width LZW compression of a flat array of palette indices."""
+    clear_code = 1 << min_code_size
+    end_code = clear_code + 1
+    code_size = min_code_size + 1
+    dictionary: dict[tuple[int, ...], int] = {}
+
+    def reset() -> int:
+        dictionary.clear()
+        for value in range(clear_code):
+            dictionary[(value,)] = value
+        return clear_code + 2
+
+    out = bytearray()
+    bit_buffer = 0
+    bit_count = 0
+
+    def write(code: int, width: int) -> None:
+        nonlocal bit_buffer, bit_count
+        bit_buffer |= code << bit_count
+        bit_count += width
+        while bit_count >= 8:
+            out.append(bit_buffer & 0xFF)
+            bit_buffer >>= 8
+            bit_count -= 8
+
+    next_code = reset()
+    write(clear_code, code_size)
+    current: tuple[int, ...] = ()
+    for value in indices.tolist():
+        candidate = current + (value,)
+        if candidate in dictionary:
+            current = candidate
+            continue
+        write(dictionary[current], code_size)
+        dictionary[candidate] = next_code
+        next_code += 1
+        if next_code > (1 << code_size) and code_size < 12:
+            code_size += 1
+        if next_code >= 4096:
+            write(clear_code, code_size)
+            next_code = reset()
+            code_size = min_code_size + 1
+        current = (value,)
+    if current:
+        write(dictionary[current], code_size)
+    write(end_code, code_size)
+    if bit_count > 0:
+        out.append(bit_buffer & 0xFF)
+    return bytes(out)
+
+
+def _to_sub_blocks(data: bytes) -> bytes:
+    """Split LZW data into GIF sub-blocks (<=255 bytes, zero terminator)."""
+    out = bytearray()
+    for start in range(0, len(data), 255):
+        chunk = data[start : start + 255]
+        out.append(len(chunk))
+        out += chunk
+    out.append(0)
+    return bytes(out)
+
+
+def encode_gif(
+    frames: "list[np.ndarray]", *, fps: int = 20, loop: int = 0
+) -> bytes:
+    """Encode a list of (H, W, 3) uint8 RGB frames as an animated GIF89a
+    (stdlib + numpy only). ``fps`` is the playback rate; ``loop`` the repeat
+    count (0 = loop forever). Frames are quantized to a 216-color web-safe
+    palette — plenty for simulation renders."""
+    if not frames:
+        raise ValueError("encode_gif needs at least one frame")
+    height, width = np.asarray(frames[0]).shape[:2]
+    delay = max(1, round(100.0 / fps))  # hundredths of a second
+    palette = _web_safe_palette()
+
+    out = bytearray(b"GIF89a")
+    # Logical screen descriptor: global color table, 8-bit, 256 entries.
+    out += struct.pack("<HH", width, height)
+    out += bytes((0xF7, 0, 0))  # packed(GCT|res|size=7), background, aspect
+    out += palette
+    # NETSCAPE2.0 looping extension.
+    out += b"\x21\xff\x0bNETSCAPE2.0\x03\x01"
+    out += struct.pack("<H", loop)
+    out += b"\x00"
+    for frame in frames:
+        indices = _quantize_to_web_safe(np.asarray(frame))
+        out += b"\x21\xf9\x04\x00" + struct.pack("<H", delay) + b"\x00\x00"
+        out += b"\x2c" + struct.pack("<HHHH", 0, 0, width, height) + b"\x00"
+        min_code_size = 8
+        out += bytes((min_code_size,))
+        out += _to_sub_blocks(_lzw_encode(indices.reshape(-1), min_code_size))
+    out += b"\x3b"
+    return bytes(out)
+
+
 class Simulation:
     """Base class for physics simulations of a CodeToCAD assembly.
 
@@ -301,6 +585,10 @@ class Simulation:
     (``codetocad_integrations.pybullet`` or ``codetocad_integrations.mujoco``).
     """
 
+    # The parameters below are shared by every backend. Backends forward them
+    # to this base constructor (via ``**kwargs``) and declare only their own
+    # extras (e.g. pybullet's ``gui``, mujoco's ``actuator_types``), so this
+    # signature is the single source of truth for the common simulate() API.
     def __init__(
         self,
         root_part: "Part3D",
@@ -311,6 +599,11 @@ class Simulation:
         fixed_base: bool = True,
         actuated: bool = True,
         scene_parts: list["Part3D"] | None = None,
+        ground_plane: bool = False,
+        self_collision: bool = True,
+        collision_exclusions: list[tuple["Part3D | str", "Part3D | str"]]
+        | None = None,
+        output_dir: str | Path | None = None,
     ):
         self.root_part = root_part
         self.lighting = lighting if lighting is not None else [Lighting()]
@@ -318,9 +611,87 @@ class Simulation:
         self.time_step = time_step
         self.fixed_base = fixed_base
         self.actuated = actuated
+        self.ground_plane = ground_plane
+        #: Collide assembly parts against each other, except parts welded
+        #: together by fixed joints (they move as one body). Pairs that
+        #: overlap by construction — e.g. a rod modeled into its base at a
+        #: joint, which would bleed energy or jam — are opted out via
+        #: ``collision_exclusions``.
+        self.self_collision = self_collision
+        self.output_dir = Path(
+            output_dir
+            if output_dir is not None
+            else tempfile.mkdtemp(prefix="codetocad_sim_")
+        ).resolve()
         self.links = extract_links(root_part)
         self.scene_links = extract_scene_links(
             scene_parts or [], taken={link.name for link in self.links}
+        )
+        #: ``collision_exclusions`` resolved to pairs of link names.
+        self.collision_exclusions = [
+            (self._resolve_link_name(first), self._resolve_link_name(second))
+            for first, second in collision_exclusions or []
+        ]
+        # Map each movable child part to its joint's name, so callers can
+        # reference a joint by the part they joined instead of the joint name.
+        self._joint_name_by_part = {
+            id(link.part): link.joint.name
+            for link in self.links
+            if link.joint is not None and link.joint.joint_type != "fixed"
+        }
+        #: Most recent commanded position target per joint name — the state a
+        #: ``set_keyframe()`` snapshots.
+        self._joint_targets: dict[str, float] = {}
+        #: Recorded keyframes as ``(time_seconds, {joint_name: target})``.
+        self._keyframes: list[tuple[float, dict[str, float]]] = []
+        #: The user-facing ``Joint`` objects, bound to this simulation so
+        #: ``joint.move_to(...)`` drives the live model.
+        self.joints: list = []
+        self._joint_by_name: dict[str, object] = {}
+        for link in self.links:
+            if link.joint is not None and link.joint.joint_obj is not None:
+                link.joint.joint_obj._bind(self, link.joint.name)
+                self.joints.append(link.joint.joint_obj)
+                self._joint_by_name[link.joint.name] = link.joint.joint_obj
+
+    def get_joint(self, joint: "str | Part3D"):
+        """The :class:`~codetocad.joints.Joint` object for a joint name or the
+        child ``Part3D`` that was joined."""
+        name = self._resolve_joint_name(joint)
+        try:
+            return self._joint_by_name[name]
+        except KeyError:
+            raise KeyError(
+                f"No joint object for {name!r}; joints are "
+                f"{sorted(self._joint_by_name)}"
+            ) from None
+
+    def _apply_initial_joint_values(self) -> None:
+        """Set each joint to its ``starting_angle``/``starting_pos``. Backends
+        call this once their model and state are ready."""
+        for link in self.links:
+            joint = link.joint
+            if joint is not None and joint.initial_value is not None:
+                self.set_joint_value(joint.name, joint.initial_value)
+                self._joint_targets[joint.name] = joint.initial_value
+
+    def _resolve_link_name(self, part: "str | Part3D") -> str:
+        """Accept a link name or the ``Part3D`` behind it, returning the
+        link name (for ``collision_exclusions`` entries)."""
+        names = [link.name for link in self.links]
+        if isinstance(part, str):
+            if part not in names:
+                raise KeyError(
+                    f"Unknown part {part!r} in collision_exclusions; "
+                    f"assembly parts are {names}"
+                )
+            return part
+        for link in self.links:
+            if link.part is part:
+                return link.name
+        raise KeyError(
+            f"{part!r} in collision_exclusions is not part of this "
+            f"assembly; assembly parts are {names}"
         )
 
     @property
@@ -331,21 +702,65 @@ class Simulation:
             if link.joint is not None and link.joint.joint_type != "fixed"
         ]
 
+    def _resolve_joint_name(self, joint: "str | Part3D") -> str:
+        """Accept either a joint name or the child ``Part3D`` that was joined
+        (via ``.revolute()``/``.prismatic()``/...), returning the joint name."""
+        if isinstance(joint, str):
+            return joint
+        name = self._joint_name_by_part.get(id(joint))
+        if name is None:
+            raise KeyError(
+                f"{joint!r} is not joined to this assembly by a movable joint; "
+                f"movable joints are {self.joint_names}"
+            )
+        return name
+
     # -- interface implemented by integrations --
 
     def step(self, count: int = 1) -> None:
         raise NotImplementedError
 
-    def set_joint_target(self, name: str, value: float) -> None:
-        """Position-control a joint towards ``value`` (radians/meters)."""
+    def _command_joint_target(
+        self, joint: "str | Part3D", value: float, **kwargs
+    ) -> None:
+        """Position-control a joint towards ``value`` (radians/meters) and
+        remember the target so ``set_keyframe()`` can snapshot it. This is the
+        engine behind ``RevoluteJoint``/``PrismaticJoint``'s ``move_to`` /
+        ``move_by``; drive joints through those (``sim.get_joint(name)`` gets a
+        joint by name), or ``set_joint_value`` to teleport."""
+        name = self._resolve_joint_name(joint)
+        self._joint_targets[name] = value
+        self._set_joint_target(name, value, **kwargs)
+
+    def _set_joint_target(self, name: str, value: float, **kwargs) -> None:
+        """Backend hook: drive the actuator of the (already-resolved) joint."""
         raise NotImplementedError
 
-    def set_joint_value(self, name: str, value: float) -> None:
-        """Instantly set a joint's value (teleport; no dynamics)."""
+    def set_joint_velocity(self, joint: "str | Part3D", value: float) -> None:
+        """Velocity-control a joint at ``value`` (rad/s or m/s). ``joint`` is a
+        joint name or the child part that was joined."""
+        self._set_joint_velocity(self._resolve_joint_name(joint), value)
+
+    def _set_joint_velocity(self, name: str, value: float) -> None:
+        raise NotImplementedError(
+            "This backend does not support velocity control"
+        )
+
+    def set_joint_value(self, joint: "str | Part3D", value: float) -> None:
+        """Instantly set a joint's value (teleport; no dynamics). ``joint`` is
+        a joint name or the child part that was joined."""
         raise NotImplementedError
 
-    def get_joint_value(self, name: str) -> float:
+    def get_joint_value(self, joint: "str | Part3D") -> float:
         raise NotImplementedError
+
+    def capture_image(self, **kwargs) -> np.ndarray:
+        """Render the current scene to an ``(H, W, 3)`` uint8 RGB array (an
+        overview camera looking at the whole assembly). Backends implement
+        this; encode it with :func:`encode_png` for telemetry."""
+        raise NotImplementedError(
+            "This backend does not support capture_image()"
+        )
 
     def run(self, duration: float, realtime: bool = False) -> None:
         """Step the simulation for ``duration`` seconds."""
@@ -356,6 +771,118 @@ class Simulation:
             self.step()
             if realtime:
                 _time.sleep(self.time_step)
+
+    # -- keyframes --
+
+    def set_keyframe(self, time: float | None = None) -> float:
+        """Record the joints' currently commanded position targets as a
+        keyframe held at ``time`` seconds. With ``time=None`` the keyframe
+        lands one second after the previous one (or at t=0 for the first).
+        Command the joints first (``joint.move_to(...)``), then call this to
+        pin those positions.
+        Replay with :meth:`play_keyframes` or :meth:`record_gif`."""
+        if time is None:
+            time = self._keyframes[-1][0] + 1.0 if self._keyframes else 0.0
+        self._keyframes.append((float(time), dict(self._joint_targets)))
+        return time
+
+    def clear_keyframes(self) -> None:
+        self._keyframes = []
+
+    def play_keyframes(
+        self,
+        *,
+        fps: int = 30,
+        realtime: bool = False,
+        on_frame=None,
+    ) -> None:
+        """Step the simulation through the recorded keyframes, interpolating
+        each joint's target between them and driving the actuators there.
+        ``on_frame(self)`` is called once per rendered frame."""
+        import time as _time
+
+        for targets in self._keyframe_frames(fps):
+            for name, value in targets.items():
+                self._command_joint_target(name, value)
+            self.step(max(1, round(1.0 / fps / self.time_step)))
+            if on_frame is not None:
+                on_frame(self)
+            if realtime:
+                _time.sleep(1.0 / fps)
+
+    def _keyframe_frames(self, fps: int):
+        """Yield the interpolated ``{joint: target}`` map for each frame of the
+        keyframe timeline, at ``fps`` frames per second."""
+        keyframes = sorted(self._keyframes, key=lambda item: item[0])
+        if not keyframes:
+            return
+        names = sorted({name for _, targets in keyframes for name in targets})
+        start_time = keyframes[0][0]
+        end_time = keyframes[-1][0]
+        frame_count = max(1, int(round((end_time - start_time) * fps)))
+        last_seen = {name: keyframes[0][1].get(name, 0.0) for name in names}
+
+        def sample(name: str, at: float) -> float:
+            previous = None
+            for moment, targets in keyframes:
+                if name not in targets:
+                    continue
+                if moment <= at:
+                    previous = (moment, targets[name])
+                else:
+                    if previous is None:
+                        return targets[name]
+                    (t0, v0), (t1, v1) = previous, (moment, targets[name])
+                    ratio = (at - t0) / (t1 - t0) if t1 > t0 else 1.0
+                    return v0 + (v1 - v0) * ratio
+            return previous[1] if previous is not None else last_seen[name]
+
+        for frame in range(frame_count + 1):
+            at = start_time + (end_time - start_time) * frame / frame_count
+            yield {name: sample(name, at) for name in names}
+
+    # -- recording --
+
+    def record_gif(
+        self,
+        path: str | Path | None = None,
+        *,
+        duration: float | None = None,
+        fps: int = 20,
+        keyframes: bool = False,
+        realtime: bool = False,
+        loop: int = 0,
+        **capture_kwargs,
+    ) -> bytes:
+        """Render the simulation to an animated GIF and return its bytes
+        (also written to ``path`` if given). With ``keyframes=True`` it plays
+        the recorded keyframe timeline; otherwise it steps for ``duration``
+        seconds. ``fps`` sets the frame rate, ``loop`` the repeat count
+        (0 = forever). ``capture_kwargs`` pass through to
+        :meth:`capture_image` (e.g. ``width``/``height``)."""
+        frames: list[np.ndarray] = []
+        frames.append(self.capture_image(**capture_kwargs))
+        if keyframes:
+            self.play_keyframes(
+                fps=fps,
+                realtime=realtime,
+                on_frame=lambda sim: frames.append(sim.capture_image(**capture_kwargs)),
+            )
+        else:
+            if duration is None:
+                raise ValueError("record_gif needs duration=... (or keyframes=True)")
+            steps_per_frame = max(1, round(1.0 / fps / self.time_step))
+            import time as _time
+
+            for _ in range(int(round(duration * fps))):
+                self.step(steps_per_frame)
+                frames.append(self.capture_image(**capture_kwargs))
+                if realtime:
+                    _time.sleep(1.0 / fps)
+        data = encode_gif(frames, fps=fps, loop=loop)
+        if path is not None:
+            Path(path).write_bytes(data)
+        return data
 
     def close(self) -> None:
         pass

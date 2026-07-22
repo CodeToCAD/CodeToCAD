@@ -24,3 +24,12 @@ or `python <example>.py`) — `ensure_blender()` relaunches the script inside
   exported to glTF and STL
 
   <img src="images/suzanne.png" width="400">
+
+- `arm_6dof_keyframes.py` — a 6-DOF arm simulated with the Blender backend,
+  its joints realized as empties driven by Blender's native keyframing.
+  Command the joints to a pose, pin it with `sim.set_keyframe(t)` (real
+  Blender keyframes), then `sim.record_gif(keyframes=True)` writes
+  `images/arm_6dof_keyframes.gif`; `sim.launch_viewer()` opens a Blender GUI
+  playing the animation instead.
+
+  <img src="images/arm_6dof_keyframes.gif" width="400">

@@ -199,7 +199,7 @@ def test_material_and_hole(tmp_path):
     ) in part_file
     assert (
         "plate.hole(codetocad.Location(x='0', y='0', z='0'), "
-        "radius='2mm', amount='1cm')"
+        "radius_or_shape='2mm', amount='1cm')"
     ) in part_file
 
 

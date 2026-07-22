@@ -22,7 +22,7 @@ import numpy as np
 import codetocad
 from codetocad.location import Location, quat_rotate_vector, quat_to_axis_angle
 from codetocad.topology import Edge, Face, Vertex
-from codetocad.units import LengthMeters, LengthWithUnit
+from codetocad.units import AngleWithUnit, LengthMeters, LengthWithUnit
 from codetocad.vectors import Vec3
 
 
@@ -52,18 +52,41 @@ def _rotation_aligning_z(direction: np.ndarray) -> tuple[tuple[float, float, flo
     )
 
 
+def _tapered_extrude(sketch: bd.Sketch, height: float, draft: float) -> bd.Part:
+    """Extrude a profile centred on z=0 with a draft taper. A positive draft
+    shrinks the top face (build123d's taper narrows for a positive angle)."""
+    return bd.Pos(0, 0, -height / 2) * bd.extrude(
+        sketch, amount=height, taper=math.degrees(draft)
+    )
+
+
 def _base_solid(primitive: dict, start_origin: Vec3) -> bd.Part:
     kind = primitive["kind"]
+    draft = primitive.get("draft_angle", 0.0)
     if kind == "cube":
-        solid = bd.Box(primitive["length"], primitive["width"], primitive["height"])
+        if draft:
+            solid = _tapered_extrude(
+                bd.Rectangle(primitive["length"], primitive["width"]),
+                primitive["height"],
+                draft,
+            )
+        else:
+            solid = bd.Box(
+                primitive["length"], primitive["width"], primitive["height"]
+            )
     elif kind == "cylinder":
-        solid = bd.Cylinder(primitive["radius"], primitive["height"])
+        if draft:
+            solid = _tapered_extrude(
+                bd.Circle(primitive["radius"]), primitive["height"], draft
+            )
+        else:
+            solid = bd.Cylinder(primitive["radius"], primitive["height"])
     elif kind == "sphere":
         solid = bd.Sphere(primitive["radius"])
     elif kind == "extrusion":
         height = primitive["height"]
         sketch = _base_sketch(primitive["profile"])
-        solid = bd.Pos(0, 0, -height / 2) * bd.extrude(sketch, amount=height)
+        solid = _tapered_extrude(sketch, height, draft)
     elif kind == "revolution":
         origin = primitive["profile_origin"]
         sketch = bd.Pos(*origin) * _base_sketch(primitive["profile"])
@@ -171,22 +194,42 @@ class Part3D(codetocad.Part3D):
 
     def _apply_hole(self, solid, operation: dict):
         start_location = self.resolve_location(operation["start_location"])
-        radius = operation["radius"].value
         start = start_location.to_numpy()
         if operation["end_location"] is not None:
             end = self.resolve_location(operation["end_location"]).to_numpy()
             depth = float(np.linalg.norm(end - start))
             direction = (end - start) / depth
+            center = (start + end) / 2
         else:
-            depth = operation["amount"].value
             # Drill along the location's -Z normal (into the part by default).
             direction = quat_rotate_vector(start_location.quat, (0.0, 0.0, -1.0))
             if start_location.inverted:
                 direction = -direction
-            end = start + direction * depth
-        center = (start + end) / 2
+            if operation["through_all"]:
+                # Span the whole part in both directions along the axis so the
+                # cutter clears all geometry regardless of where it starts.
+                box = solid.bounding_box()
+                diagonal = float(
+                    np.linalg.norm(
+                        np.array([box.max.X, box.max.Y, box.max.Z])
+                        - np.array([box.min.X, box.min.Y, box.min.Z])
+                    )
+                )
+                depth = 2 * diagonal
+                center = start
+            else:
+                depth = operation["amount"].value
+                center = start + direction * depth / 2
+        profile = operation["profile"]
+        if profile is not None:
+            sketch = adapt(profile).get_native()
+            # Extrude the sketch symmetrically about z=0 so it centres on the
+            # hole axis, matching how bd.Cylinder is centred.
+            cross_section = bd.Pos(0, 0, -depth / 2) * bd.extrude(sketch, amount=depth)
+        else:
+            cross_section = bd.Cylinder(operation["radius"].value, depth)
         axis, angle = _rotation_aligning_z(direction)
-        cutter = bd.Location(tuple(center), axis, angle) * bd.Cylinder(radius, depth)
+        cutter = bd.Location(tuple(center), axis, angle) * cross_section
         return solid - cutter
 
     def _apply_shell(self, solid, operation: dict):
@@ -383,8 +426,25 @@ class Part3D(codetocad.Part3D):
     def get_area(self) -> float:
         return float(self.get_native().area)
 
-    def export(self, location: str) -> str:
+    def export(self, location: str, include_assembly: bool = True) -> str:
+        """Export this part; by default any parts joined to it by assembly
+        constraints (fixed/revolute/prismatic) are included in their
+        assembled positions, as separate solids in a compound."""
         solid = self.get_native()
+        if include_assembly:
+            others = []
+            for link in codetocad.extract_links(self)[1:]:
+                native = adapt(link.part).get_native()
+                # Assemble and pose the joined part: rotate it by any starting
+                # angle of its joint (and its ancestors'), then translate.
+                axis, degrees = quat_to_axis_angle(link.pose_rotation)
+                if abs(degrees) > 1e-9:
+                    native = native.rotate(bd.Axis((0, 0, 0), axis), degrees)
+                if np.any(link.pose_offset):
+                    native = bd.Pos(*link.pose_offset) * native
+                others.append(native)
+            if others:
+                solid = bd.Compound([solid, *others])
         suffix = Path(location).suffix.lower()
         if suffix == ".stl":
             bd.export_stl(solid, location)
@@ -481,9 +541,13 @@ def make_cube(
     width: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle:AngleWithUnit=0,
 ) -> Part3D:
-    """Calls Build123D's ``Box(length, width, height)`` in ``build()``."""
-    return adapt(codetocad.cube(length, width, height, start_location))
+    """Calls Build123D's ``Box(length, width, height)`` in ``build()``, or a
+    tapered extrusion when ``draft_angle`` is given."""
+    return adapt(
+        codetocad.cube(length, width, height, start_location, draft_angle=draft_angle)
+    )
 
 
 make_box = make_cube
@@ -493,8 +557,11 @@ def make_cylinder(
     radius: LengthWithUnit,
     height: LengthWithUnit,
     start_location: Location | None = None,
+    draft_angle=0,
 ) -> Part3D:
-    return adapt(codetocad.cylinder(radius, height, start_location))
+    return adapt(
+        codetocad.cylinder(radius, height, start_location, draft_angle=draft_angle)
+    )
 
 
 def make_sphere(

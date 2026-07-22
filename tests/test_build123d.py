@@ -27,7 +27,7 @@ def test_make_cube_native_volume():
 
 def test_example_flow_hole_and_export(tmp_path):
     cube = make_cube("10cm", "10cm", "5cm")
-    cube.hole(cube.top_center, radius="4cm", amount="5cm")
+    cube.hole(cube.top_center, radius_or_shape="4cm", amount="5cm")
     expected = 0.1 * 0.1 * 0.05 - math.pi * 0.04**2 * 0.05
     assert cube.get_volume() == pytest.approx(expected, rel=1e-6)
 
@@ -36,9 +36,52 @@ def test_example_flow_hole_and_export(tmp_path):
     assert destination.exists() and destination.stat().st_size > 0
 
 
+def test_export_includes_assembly(tmp_path):
+    holder = make_cube(1, 1, 1)
+    lid = make_cube(1, 1, 0.2, start_location=Location(z=0.6))
+    hinge = Location(0, -0.5, 0.5)
+    holder.revolute(hinge, lid, hinge)
+
+    assembled = tmp_path / "assembly.stl"
+    holder.export(str(assembled))
+    alone = tmp_path / "holder_only.stl"
+    holder.export(str(alone), include_assembly=False)
+    assert assembled.stat().st_size > alone.stat().st_size
+
+    step = tmp_path / "assembly.step"
+    holder.export(str(step))
+    reimported = bd.import_step(str(step))
+    box = reimported.bounding_box()
+    assert box.max.Z == pytest.approx(0.7, abs=1e-6)  # lid top included
+    assert box.min.Z == pytest.approx(-0.5, abs=1e-6)
+
+
+def test_export_bakes_in_starting_angle(tmp_path):
+    # A revolute joint's starting_angle should pose the exported assembly, not
+    # just the simulation. The lid, modeled flat on top, swings up ~90deg.
+    holder = make_cube("20cm", "20cm", "20cm", start_location=Location(z=0.1))
+    holder.name = "holder"
+    lid = make_cube("20cm", "20cm", "2cm", start_location=Location(z=0.21))
+    lid.name = "lid"
+    hinge = Location.from_euler(0, -0.1, 0.2, x_deg=-90, name="hinge")  # axis +x? -> Y
+    holder.revolute(hinge, lid, hinge, starting_angle="90deg")
+
+    flat = tmp_path / "flat.stl"
+    make_cube("20cm", "20cm", "20cm", start_location=Location(z=0.1)).export(
+        str(flat), include_assembly=False
+    )
+    posed = tmp_path / "posed.stl"
+    holder.export(str(posed))
+
+    box = bd.import_stl(str(posed)).bounding_box()
+    # With the lid swung up, the assembly is taller than the holder alone.
+    holder_box = bd.import_stl(str(flat)).bounding_box()
+    assert box.max.Z > holder_box.max.Z + 0.1
+
+
 def test_hole_between_locations():
     cube = make_cube(1, 1, 1)
-    cube.hole(cube.top_center, radius=0.1, end_location=cube.bottom_center)
+    cube.hole(cube.top_center, radius_or_shape=0.1, end_location=cube.bottom_center)
     expected = 1 - math.pi * 0.1**2 * 1
     assert cube.get_volume() == pytest.approx(expected, rel=1e-6)
 
@@ -126,7 +169,7 @@ def test_custom_build_native_with_operations():
             return bd.Box(0.08, 0.06, 0.01)
 
     bracket = Bracket(name="bracket")
-    bracket.hole(Location(z=0.005), radius=0.002, amount=0.01)
+    bracket.hole(Location(z=0.005), radius_or_shape=0.002, amount=0.01)
     expected = 0.08 * 0.06 * 0.01 - math.pi * 0.002**2 * 0.01
     assert bracket.get_volume() == pytest.approx(expected, rel=1e-6)
 
@@ -172,7 +215,7 @@ def test_circular_pattern_after_transform():
 
 def test_duplicate_adapted_part_is_independent():
     box = make_cube(1, 1, 1)
-    box.hole(box.top_center, radius=0.1, amount=1)
+    box.hole(box.top_center, radius_or_shape=0.1, amount=1)
     expected = 1 - math.pi * 0.1**2
     copy = box.duplicate("box2")
     assert isinstance(copy, Part3D)

@@ -16,6 +16,6 @@ center_hole_diameter = "22mm"
 
 if __name__ == "__main__":
     plate = make_cube(length, width, thickness)
-    plate.hole(plate.top_center, radius="22mm / 2", amount=thickness)
+    plate.hole(plate.top_center, radius_or_shape="22mm / 2", amount=thickness)
     plate.export("intro_02_plate_with_hole.stl")
     print(f"volume: {plate.get_volume() * 1e9:.0f} mm^3")

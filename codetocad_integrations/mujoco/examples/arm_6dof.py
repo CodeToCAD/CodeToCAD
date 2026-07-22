@@ -255,7 +255,7 @@ def run_pick(sim, verbose: bool = True) -> float:
     servos track instead of overshooting; returns the cube's final height."""
     targets = dict.fromkeys(sim.joint_names, 0.0)
     for name, value in targets.items():
-        sim.set_joint_target(name, value)  # hold every joint, fingers included
+        sim.get_joint(name).move_to(value)  # hold every joint, fingers included
     for label, duration, goals in pick_sequence():
         if verbose:
             print(label)
@@ -265,7 +265,7 @@ def run_pick(sim, verbose: bool = True) -> float:
             fraction = step / steps
             for name, goal in goals.items():
                 targets[name] = start[name] + (goal - start[name]) * fraction
-                sim.set_joint_target(name, targets[name])
+                sim.get_joint(name).move_to(targets[name])
             sim.run(duration / steps)
         sim.run(0.3)  # settle
     return sim.get_body_pose("pick_cube")[0][2]
@@ -306,8 +306,8 @@ def main() -> None:
         )
         targets["left_finger"] = travel
         targets["right_finger"] = -travel
-        sim.set_joint_target("left_finger", travel)
-        sim.set_joint_target("right_finger", -travel)
+        sim.get_joint("left_finger").move_to(travel)
+        sim.get_joint("right_finger").move_to(-travel)
 
     def on_key(keycode: int) -> None:
         if keycode in SHIFT_KEYCODES:
@@ -326,7 +326,7 @@ def main() -> None:
             return
         name = names[index]
         targets[name] += state["direction"] * step_size
-        sim.set_joint_target(name, targets[name])
+        sim.get_joint(name).move_to(targets[name])
 
     try:
         sim.launch_viewer(key_callback=on_key)

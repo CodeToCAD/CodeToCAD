@@ -378,7 +378,7 @@ class Part3D(Assembly3D, LocationMixin, GeometryQueryMixin, BooleanMixin, Materi
 
     def fillet(self, edges:list[Edge]|None = None, faces:list[Face]|None = None, amount: LengthWithUnit)
     def chamfer(self, edges:list[Edge]|None = None, faces:list[Face]|None = None, amount: LengthWithUnit)
-    def hole(self, start_location:Location, radius: LengthWithUnit, *, amount: LengthWithUnit|None = None, end_location: Location|None=None)
+    def hole(self, start_location:Location, radius_or_shape: LengthWithUnit|Part2D, *, amount: LengthWithUnit|None = None, end_location: Location|None=None, throughAll: bool = False)
 
     def duplicate(self, name:str|None = None) -> Part3D
         # An independent copy of the part: same primitive, recorded

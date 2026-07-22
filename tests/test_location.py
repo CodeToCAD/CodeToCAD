@@ -45,6 +45,40 @@ def test_cube_locations_lowercase_access():
     assert CubeLocations.top_center is CubeLocations.TOP_CENTER
 
 
+def _plus_z(location):
+    from codetocad.location import quat_rotate_vector
+
+    return tuple(round(v, 6) for v in quat_rotate_vector(location.quat, (0, 0, 1)))
+
+
+def test_cube_location_first_face_is_plus_z():
+    part = cube(2, 4, 6)
+    # The first-named face's outward normal becomes +Z.
+    assert _plus_z(CubeLocations.TOP_CENTER.to_location(part)) == (0, 0, 1)
+    assert _plus_z(CubeLocations.BOTTOM_CENTER.to_location(part)) == (0, 0, -1)
+    assert _plus_z(CubeLocations.BACK_CENTER.to_location(part)) == (0, 1, 0)
+
+
+def test_cube_location_reordered_permutation_differs_in_orientation():
+    part = cube(2, 4, 6)
+    back_bottom = CubeLocations.BACK_BOTTOM.to_location(part)
+    bottom_back = CubeLocations.BOTTOM_BACK.to_location(part)
+    # Same edge midline position...
+    assert back_bottom.to_tuple() == bottom_back.to_tuple() == pytest.approx((0, 2, -3))
+    # ...but oriented normal to the first-named face.
+    assert _plus_z(back_bottom) == (0, 1, 0)  # out the back
+    assert _plus_z(bottom_back) == (0, 0, -1)  # down
+
+
+def test_cube_location_vertical_edges_and_corner_aliases():
+    part = cube(2, 2, 2)
+    # Vertical edges (all 12 present now) and every token order resolvable.
+    assert CubeLocations.FRONT_LEFT.to_location(part).to_tuple() == pytest.approx(
+        (-1, -1, 0)
+    )
+    assert CubeLocations.TOP_LEFT_FRONT is CubeLocations.TOP_FRONT_LEFT
+
+
 def test_cube_location_expr_translate():
     part = cube(2, 2, 2)
     loc = CubeLocations.top_center.translate(x="2cm", y="2mm").to_location(part)

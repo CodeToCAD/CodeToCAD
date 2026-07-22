@@ -7,10 +7,14 @@ script is federated to the modeling or design application automatically.
 from codetocad.units import (
     AngleRadians,
     AngleWithUnit,
+    AngularSpeedRadiansPerSecond,
+    AngularSpeedWithUnit,
     DensityKilogramsPerCubicMeter,
     DensityWithUnit,
     LengthMeters,
     LengthWithUnit,
+    LinearSpeedMetersPerSecond,
+    LinearSpeedWithUnit,
     SomeUnit,
     WeightKilograms,
     WeightWithUnit,
@@ -90,8 +94,16 @@ from codetocad.simulation import (
     Lighting,
     LinkSpec,
     Simulation,
+    encode_gif,
     encode_png,
+    export_single_part,
     extract_links,
+)
+from codetocad.joints import (
+    FixedJoint,
+    Joint,
+    PrismaticJoint,
+    RevoluteJoint,
 )
 from codetocad.fea import FEA, FEAResults
 from codetocad.communication import (
@@ -141,10 +153,14 @@ __all__ = [
     "AngleRadians",
     "WeightKilograms",
     "DensityKilogramsPerCubicMeter",
+    "AngularSpeedRadiansPerSecond",
+    "LinearSpeedMetersPerSecond",
     "LengthWithUnit",
     "AngleWithUnit",
     "WeightWithUnit",
     "DensityWithUnit",
+    "AngularSpeedWithUnit",
+    "LinearSpeedWithUnit",
     # vectors
     "Vec3",
     "Vec4",
@@ -227,9 +243,15 @@ __all__ = [
     "Lighting",
     "LinkSpec",
     "JointSpec",
+    "Joint",
+    "FixedJoint",
+    "RevoluteJoint",
+    "PrismaticJoint",
     "extract_links",
     "encode_png",
+    "encode_gif",
     "CONSTRAINT_OPERATIONS",
+    "export_single_part",
     "PATTERN_OPERATIONS",
     # fea
     "FEA",
