@@ -29,6 +29,7 @@ from mathutils import Vector as BVector
 
 import codetocad
 from codetocad.location import Location, quat_rotate_vector
+from codetocad.parts import _loft_mesh, _sweep_mesh
 from codetocad.topology import Edge, Face, Vertex
 from codetocad.units import LengthWithUnit
 from codetocad.vectors import Vec3
@@ -266,6 +267,21 @@ def _extrude_profile_object(
     return bm
 
 
+def _object_from_triangles(name: str, triangles: np.ndarray) -> bpy.types.Object:
+    """Build a welded, outward-facing mesh object from an (N, 3, 3) triangle
+    array (N triangles x 3 vertices x xyz)."""
+    bm = bmesh.new()
+    for triangle in triangles:
+        verts = [bm.verts.new(tuple(float(c) for c in vertex)) for vertex in triangle]
+        try:
+            bm.faces.new(verts)
+        except ValueError:
+            pass  # duplicate/degenerate face; skip
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-6)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _new_mesh_object(name, bm)
+
+
 def _base_object(name: str, primitive: dict) -> bpy.types.Object:
     kind = primitive["kind"]
     draft = primitive.get("draft_angle", 0.0)
@@ -303,6 +319,21 @@ def _base_object(name: str, primitive: dict) -> bpy.types.Object:
         )
     if kind == "revolution":
         return _revolution_object(name, primitive)
+    if kind == "loft":
+        triangles = _loft_mesh(primitive)
+        if triangles is None:
+            raise NotImplementedError(
+                "Blender adapter cannot loft these profiles"
+            )
+        return _object_from_triangles(name, triangles)
+    if kind == "sweep":
+        triangles = _sweep_mesh(primitive)
+        if triangles is None:
+            raise NotImplementedError(
+                f"Blender adapter cannot sweep a "
+                f"{primitive['profile']['kind']!r} profile"
+            )
+        return _object_from_triangles(name, triangles)
     if kind == "imported":
         return _import_object(primitive["file_path"])
     raise NotImplementedError(f"Blender adapter cannot build a {kind!r} primitive")
@@ -789,6 +820,12 @@ class Part2D(codetocad.Part2D):
 
     def revolve(self, angle=360, axis="y") -> Part3D:
         return adapt(super().revolve(angle, axis))
+
+    def loft(self, *profiles) -> Part3D:
+        return adapt(super().loft(*profiles))
+
+    def sweep(self, path) -> Part3D:
+        return adapt(super().sweep(path))
 
 
 class ElectricalComponent(Part3D, codetocad.ECADMixin):

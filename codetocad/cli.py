@@ -786,7 +786,7 @@ class InteractiveSession:
             )
             self.parts[match.group(1)] = {"file": path, "kind": kind}
         for match in re.finditer(
-            r"^(\w+) = \w+\.(extrude|revolve|duplicate)\(", text, re.M
+            r"^(\w+) = \w+\.(extrude|revolve|loft|sweep|duplicate)\(", text, re.M
         ):
             self.parts[match.group(1)] = {"file": path, "kind": "part"}
         if "codetocad.Part3D" in text:  # blank part: var = ClassName(name=...)

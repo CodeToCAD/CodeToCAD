@@ -94,6 +94,16 @@ def _base_solid(primitive: dict, start_origin: Vec3) -> bd.Part:
         solid = bd.revolve(
             sketch, axis=axis, revolution_arc=math.degrees(primitive["angle"])
         )
+    elif kind == "loft":
+        sketches = [
+            bd.Pos(*section["origin"]) * _base_sketch(section["profile"])
+            for section in primitive["sections"]
+        ]
+        # ``ruled`` skins straight (section-to-section) bands, matching the
+        # core's piecewise-linear loft mesh rather than a smooth spline.
+        solid = bd.loft(sketches, ruled=True)
+    elif kind == "sweep":
+        solid = _swept_solid(primitive)
     elif kind == "imported":
         solid = _import_shape(primitive["file_path"])
     else:
@@ -101,6 +111,21 @@ def _base_solid(primitive: dict, start_origin: Vec3) -> bd.Part:
             f"Build123D adapter cannot build a {kind!r} primitive"
         )
     return bd.Pos(start_origin.x, start_origin.y, start_origin.z) * solid
+
+
+def _swept_solid(primitive: dict) -> bd.Part:
+    """Sweep a profile along its polyline path, the profile placed on a plane
+    normal to the path's first segment (its own origin riding the path)."""
+    points = primitive["path"]
+    path = (
+        bd.Line(points[0], points[1])
+        if len(points) == 2
+        else bd.Polyline(*[tuple(point) for point in points])
+    )
+    start_direction = np.subtract(points[1], points[0])
+    plane = bd.Plane(origin=tuple(points[0]), z_dir=tuple(start_direction))
+    section = plane * _base_sketch(primitive["profile"])
+    return bd.sweep(section, path=path)
 
 
 def _base_sketch(primitive: dict) -> bd.Sketch:
@@ -505,6 +530,12 @@ class Part2D(codetocad.Part2D):
 
     def revolve(self, angle=360, axis="y") -> Part3D:
         return adapt(super().revolve(angle, axis))
+
+    def loft(self, *profiles) -> Part3D:
+        return adapt(super().loft(*profiles))
+
+    def sweep(self, path) -> Part3D:
+        return adapt(super().sweep(path))
 
 
 class ElectricalComponent(Part3D, codetocad.ECADMixin):

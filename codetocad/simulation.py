@@ -27,6 +27,9 @@ import numpy as np
 
 from codetocad.location import quat_multiply, quat_rotate_vector
 
+if TYPE_CHECKING:
+    from codetocad import Joint
+
 
 def _axis_angle_quat(axis, angle: float) -> tuple[float, float, float, float]:
     """Quaternion ``(x, y, z, w)`` for a rotation of ``angle`` radians about
@@ -107,7 +110,7 @@ class JointSpec:
     initial_value: float | None = None
     #: The user-facing ``Joint`` returned by ``.revolute()``/etc, so a
     #: simulation can bind it back for ``joint.move_to(...)`` control.
-    joint_obj: object | None = None
+    joint_obj: Joint | None = None
 
 
 @dataclass
@@ -302,11 +305,11 @@ def _assign_assembly_poses(links: list[LinkSpec]) -> None:
         else:
             joint = link.joint
             value = joint.initial_value if joint is not None else None
-            if value and joint.joint_type == "revolute":
+            if joint and value and joint.joint_type == "revolute":
                 local_q = _axis_angle_quat(joint.axis, value)
                 anchor = np.asarray(link.frame, dtype=float)
                 local_t = anchor - quat_rotate_vector(local_q, anchor)
-            elif value and joint.joint_type == "prismatic":
+            elif joint and value and joint.joint_type == "prismatic":
                 local_q = (0.0, 0.0, 0.0, 1.0)
                 local_t = np.asarray(joint.axis, dtype=float) * value
             else:
@@ -647,14 +650,14 @@ class Simulation:
         #: The user-facing ``Joint`` objects, bound to this simulation so
         #: ``joint.move_to(...)`` drives the live model.
         self.joints: list = []
-        self._joint_by_name: dict[str, object] = {}
+        self._joint_by_name: dict[str, Joint] = {}
         for link in self.links:
             if link.joint is not None and link.joint.joint_obj is not None:
                 link.joint.joint_obj._bind(self, link.joint.name)
                 self.joints.append(link.joint.joint_obj)
                 self._joint_by_name[link.joint.name] = link.joint.joint_obj
 
-    def get_joint(self, joint: "str | Part3D"):
+    def get_joint(self, joint: "str | Part3D") -> Joint:
         """The :class:`~codetocad.joints.Joint` object for a joint name or the
         child ``Part3D`` that was joined."""
         name = self._resolve_joint_name(joint)

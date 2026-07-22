@@ -175,6 +175,59 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixi
         # origin rather than inheriting the sketch's placement.
         return part
 
+    def loft(self, *profiles: "Part2D") -> "Part3D":
+        """Loft this profile through one or more further cross-sections to
+        build a solid that transitions smoothly between them.
+
+        ``self`` is the first cross-section; each :class:`Part2D` in
+        ``profiles`` is a subsequent one. Every section is placed at its own
+        ``start_location`` (including its Z), so stack them by giving each a
+        different height. Needs at least two sections in total.
+        """
+        sections = [self, *profiles]
+        if len(sections) < 2:
+            raise ValueError("Loft needs at least two cross-sections")
+        name = f"{self.name}_lofted" if self.name else None
+        part = Part3D(name=name, description=self.description)
+        if all(section._primitive is not None for section in sections):
+            part._primitive = {
+                "kind": "loft",
+                "sections": [
+                    {
+                        "profile": copy.deepcopy(section._primitive),
+                        "origin": section._origin.to_tuple(),
+                    }
+                    for section in sections
+                ],
+            }
+        # Each section carries its own world placement, so (like a revolution)
+        # the lofted solid sits at the world origin.
+        return part
+
+    def sweep(self, path: "Edge | list") -> "Part3D":
+        """Sweep this profile along ``path`` to build a solid, keeping the
+        profile perpendicular to the path's local direction.
+
+        ``path`` is either an :class:`Edge` (a straight segment between its two
+        vertices) or a sequence of at least two points -- :class:`Location`
+        objects or ``(x, y, z)`` tuples -- forming a polyline. The profile's
+        own origin rides along the path; a straight, axis-aligned path is
+        therefore equivalent to an :meth:`extrude`.
+        """
+        points = _sweep_path_points(path)
+        name = f"{self.name}_swept" if self.name else None
+        part = Part3D(name=name, description=self.description)
+        if self._primitive is not None:
+            part._primitive = {
+                "kind": "sweep",
+                "profile": copy.deepcopy(self._primitive),
+                "profile_origin": self._origin.to_tuple(),
+                "path": points,
+            }
+        # The path is given in world space, so the swept solid sits at the
+        # world origin rather than inheriting the sketch's placement.
+        return part
+
 
 class Part3D(
     Assembly3D, LocationMixin, GeometryQueryMixin, GeometryAnalysisMixin,
@@ -204,7 +257,7 @@ class Part3D(
         # A negative draft flares the top past the base, so the taper (like a
         # revolution or pattern) needs the actual mesh to bound it.
         needs_mesh = (
-            base_kind == "revolution"
+            base_kind in ("revolution", "loft", "sweep")
             or primitive.get("draft_angle")
             or any(
                 op["operation"] in PATTERN_OPERATIONS for op in self.operations
@@ -247,18 +300,24 @@ class Part3D(
 
     def get_volume(self) -> float:
         primitive = self._primitive or {}
-        if primitive.get("kind") == "revolution":
+        kind = primitive.get("kind")
+        if kind == "revolution":
             area, _perimeter = _profile_area_perimeter(self._primitive["profile"])
             return self._primitive["angle"] * _revolve_centroid_radius(
                 self._primitive
             ) * area
+        if kind in ("loft", "sweep"):
+            # No simple analytic form for an arbitrary swept/lofted solid; read
+            # the enclosed volume straight off the triangulated surface.
+            return _mesh_volume(self._base_mesh())
         if primitive.get("draft_angle"):
             return _drafted_volume(primitive)
         return super().get_volume()
 
     def get_area(self) -> float:
         primitive = self._primitive or {}
-        if primitive.get("kind") == "revolution":
+        kind = primitive.get("kind")
+        if kind == "revolution":
             area, perimeter = _profile_area_perimeter(self._primitive["profile"])
             radius = _revolve_centroid_radius(self._primitive)
             angle = self._primitive["angle"]
@@ -267,6 +326,8 @@ class Part3D(
             lateral = angle * radius * perimeter
             caps = 0.0 if abs(angle - 2 * math.pi) < 1e-9 else 2 * area
             return lateral + caps
+        if kind in ("loft", "sweep"):
+            return _mesh_area(self._base_mesh())
         if primitive.get("draft_angle"):
             return _drafted_area(primitive)
         return super().get_area()
@@ -491,6 +552,10 @@ class Part3D(
             return _sphere_mesh(self._primitive["radius"], origin)
         if kind == "revolution":
             return _revolution_mesh(self._primitive)
+        if kind == "loft":
+            return _loft_mesh(self._primitive)
+        if kind == "sweep":
+            return _sweep_mesh(self._primitive)
         return None
 
 
@@ -797,6 +862,171 @@ def _revolution_mesh(primitive: dict, segments: int = 64) -> np.ndarray | None:
     if full_turn:
         return side
     return np.concatenate([side, _revolution_caps(rings, next_index)])
+
+
+def _sweep_path_points(path) -> list[tuple[float, float, float]]:
+    """Normalise a sweep ``path`` into a list of at least two distinct 3D
+    points. Accepts an :class:`Edge` or a sequence of Locations / 3-tuples."""
+    if isinstance(path, Edge):
+        start, end = path.start.location, path.end.location
+        raw = [
+            (start.x.value, start.y.value, start.z.value),
+            (end.x.value, end.y.value, end.z.value),
+        ]
+    else:
+        raw = []
+        for point in path:
+            if isinstance(point, Location):
+                raw.append(point.to_tuple())
+            else:
+                coordinates = tuple(point)
+                if len(coordinates) != 3:
+                    raise ValueError("Each path point must have three coordinates")
+                # Route through Location so coordinates may carry units ("5cm").
+                raw.append(Location(*coordinates).to_tuple())
+    # Drop consecutive duplicates: a zero-length segment has no direction to
+    # orient the profile against.
+    points: list[tuple[float, float, float]] = []
+    for point in raw:
+        if not points or np.linalg.norm(np.subtract(point, points[-1])) > 1e-12:
+            points.append(point)
+    if len(points) < 2:
+        raise ValueError("A sweep path needs at least two distinct points")
+    return points
+
+
+def _align_z_rotation(direction: np.ndarray) -> np.ndarray:
+    """Rotation matrix taking +Z onto the unit vector ``direction``."""
+    magnitude = float(np.linalg.norm(direction))
+    if magnitude < 1e-12:
+        return np.eye(3)
+    unit = np.asarray(direction, dtype=np.float64) / magnitude
+    axis = np.cross((0.0, 0.0, 1.0), unit)
+    sin = float(np.linalg.norm(axis))
+    cos = float(unit[2])
+    if sin < 1e-12:
+        # Parallel (identity) or antiparallel (flip Z, keeping a right-handed
+        # frame by also flipping Y).
+        return np.eye(3) if cos > 0 else np.diag([1.0, -1.0, -1.0])
+    axis = axis / sin
+    return _rotation_matrix(
+        (float(axis[0]), float(axis[1]), float(axis[2])), math.atan2(sin, cos)
+    )
+
+
+def _path_tangents(path: np.ndarray) -> np.ndarray:
+    """Unit tangent at each path vertex: the segment direction at the ends, the
+    averaged direction of the two adjoining segments in between."""
+    segments = np.diff(path, axis=0)
+    segments = segments / np.linalg.norm(segments, axis=1, keepdims=True)
+    tangents = np.empty_like(path)
+    tangents[0] = segments[0]
+    tangents[-1] = segments[-1]
+    if len(path) > 2:
+        averaged = segments[:-1] + segments[1:]
+        norms = np.linalg.norm(averaged, axis=1, keepdims=True)
+        tangents[1:-1] = np.divide(
+            averaged, norms, out=segments[1:].copy(), where=norms > 1e-12
+        )
+    return tangents
+
+
+def _resample_loop(loop: np.ndarray, count: int) -> np.ndarray:
+    """Resample a closed loop of points to ``count`` points spaced evenly by
+    arc length, so loops with different vertex counts can be connected."""
+    if len(loop) == count:
+        return loop
+    closed = np.vstack([loop, loop[:1]])
+    distances = np.concatenate(
+        [[0.0], np.cumsum(np.linalg.norm(np.diff(closed, axis=0), axis=1))]
+    )
+    targets = np.linspace(0.0, distances[-1], count, endpoint=False)
+    return np.column_stack(
+        [np.interp(targets, distances, closed[:, axis]) for axis in range(3)]
+    )
+
+
+def _loop_strip(lower: np.ndarray, upper: np.ndarray) -> np.ndarray:
+    """Triangulate the band between two equal-length closed loops."""
+    count = len(lower)
+    next_index = (np.arange(count) + 1) % count
+    a, b = lower, lower[next_index]
+    c, d = upper[next_index], upper
+    return np.concatenate(
+        [np.stack([a, b, c], axis=1), np.stack([a, c, d], axis=1)]
+    )
+
+
+def _loop_cap(loop: np.ndarray, at_start: bool) -> np.ndarray:
+    """Fan-triangulate a loop into a flat cap, wound to face outward: away from
+    the body at the first loop, along the sweep at the last."""
+    count = len(loop)
+    next_index = (np.arange(count) + 1) % count
+    hub = np.broadcast_to(loop.mean(axis=0), loop.shape)
+    if at_start:
+        return np.stack([hub, loop[next_index], loop], axis=1)
+    return np.stack([hub, loop, loop[next_index]], axis=1)
+
+
+def _tube_from_loops(loops: list[np.ndarray]) -> np.ndarray:
+    """Skin a sequence of closed loops into a capped solid surface, connecting
+    each loop to the next and closing the two ends."""
+    resampled = [_resample_loop(loop, max(len(loop) for loop in loops)) for loop in loops]
+    triangles = [
+        _loop_strip(resampled[i], resampled[i + 1])
+        for i in range(len(resampled) - 1)
+    ]
+    triangles.append(_loop_cap(resampled[0], at_start=True))
+    triangles.append(_loop_cap(resampled[-1], at_start=False))
+    return np.concatenate(triangles)
+
+
+def _loft_mesh(primitive: dict, segments: int = 64) -> np.ndarray | None:
+    """Triangulated surface lofted through the section boundary loops, capped
+    at the first and last section."""
+    loops = []
+    for section in primitive["sections"]:
+        boundary = _profile_boundary(section["profile"], section["origin"], segments)
+        if boundary is None:
+            return None
+        loops.append(boundary)
+    return _tube_from_loops(loops)
+
+
+def _sweep_mesh(primitive: dict, segments: int = 64) -> np.ndarray | None:
+    """Triangulated surface swept by the profile boundary along the path, the
+    profile kept perpendicular to the local path tangent."""
+    boundary = _profile_boundary(primitive["profile"], (0.0, 0.0, 0.0), segments)
+    if boundary is None:
+        return None
+    path = np.array(primitive["path"], dtype=np.float64)
+    tangents = _path_tangents(path)
+    loops = [
+        point + boundary @ _align_z_rotation(tangent).T
+        for point, tangent in zip(path, tangents)
+    ]
+    return _tube_from_loops(loops)
+
+
+def _mesh_volume(triangles: np.ndarray | None) -> float:
+    """Volume enclosed by a closed, consistently wound triangle mesh, via the
+    signed-tetrahedron (divergence) sum."""
+    if triangles is None:
+        raise NotImplementedError(
+            "This part has no analytic geometry; override get_volume()"
+        )
+    v0, v1, v2 = triangles[:, 0], triangles[:, 1], triangles[:, 2]
+    return abs(float(np.einsum("ij,ij->i", v0, np.cross(v1, v2)).sum())) / 6.0
+
+
+def _mesh_area(triangles: np.ndarray | None) -> float:
+    """Total surface area of a triangle mesh."""
+    if triangles is None:
+        raise NotImplementedError(
+            "This part has no analytic geometry; override get_area()"
+        )
+    cross = np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0])
+    return float(np.linalg.norm(cross, axis=1).sum()) / 2.0
 
 
 def _revolution_caps(rings: np.ndarray, next_index: np.ndarray) -> np.ndarray:

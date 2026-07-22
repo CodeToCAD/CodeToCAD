@@ -163,6 +163,40 @@ def test_partial_revolve_native():
     )
 
 
+def test_loft_sketch_native():
+    frustum = make_circle("2cm", Location(0, 0, 0)).loft(
+        make_circle("1cm", Location(0, 0, "3cm"))
+    )
+    # Native cone frustum V = pi*h/3 * (R^2 + R*r + r^2).
+    assert frustum.get_volume() == pytest.approx(
+        math.pi * 0.03 / 3 * (0.02**2 + 0.02 * 0.01 + 0.01**2), rel=1e-6
+    )
+    assert isinstance(frustum.get_native(), bd.Part)
+
+
+def test_loft_between_multiple_sections():
+    tower = make_rectangle("2cm", "2cm", Location(0, 0, 0)).loft(
+        make_rectangle("2cm", "2cm", Location(0, 0, "2cm")),
+        make_rectangle("1cm", "1cm", Location(0, 0, "4cm")),
+    )
+    box = 0.02 * 0.02 * 0.02
+    frustum = 0.02 / 6 * (0.02**2 + 4 * 0.015**2 + 0.01**2)
+    assert tower.get_volume() == pytest.approx(box + frustum, rel=1e-6)
+
+
+def test_sweep_sketch_native_matches_extrude():
+    swept = make_rectangle("2cm", "3cm").sweep([(0, 0, 0), (0, 0, "5cm")])
+    assert swept.get_volume() == pytest.approx(0.02 * 0.03 * 0.05, rel=1e-6)
+
+
+def test_sweep_along_edge_native():
+    from codetocad.topology import Edge, Vertex
+
+    x_axis = Edge(Vertex(Location(0, 0, 0)), Vertex(Location("4cm", 0, 0)))
+    swept = make_circle("1cm").sweep(x_axis)
+    assert swept.get_volume() == pytest.approx(math.pi * 0.01**2 * 0.04, rel=1e-6)
+
+
 def test_custom_build_native_with_operations():
     class Bracket(Part3D):
         def build_native(self):

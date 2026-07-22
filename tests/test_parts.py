@@ -143,6 +143,79 @@ def test_revolve_zero_length_edge():
         rectangle(2, 3, Location(5, 0, 0)).revolve(360, degenerate)
 
 
+def test_loft_two_equal_squares_is_a_box():
+    part3d = rectangle(2, 2, Location(0, 0, 0)).loft(
+        rectangle(2, 2, Location(0, 0, 4))
+    )
+    assert isinstance(part3d, codetocad.Part3D)
+    assert part3d.get_volume() == pytest.approx(16)  # 2 x 2 x 4 box
+    assert part3d.get_area() == pytest.approx(2 * 4 + 4 * (2 * 4))  # caps + walls
+
+
+def test_loft_tapered_sections_match_prismatoid():
+    # Prismatoid rule V = h/6 * (A_bottom + 4*A_mid + A_top), exact for a
+    # linearly interpolated cross section between the two squares.
+    part3d = rectangle(2, 2, Location(0, 0, 0)).loft(
+        rectangle(1, 1, Location(0, 0, 3))
+    )
+    assert part3d.get_volume() == pytest.approx(3 / 6 * (4 + 4 * 2.25 + 1))
+
+
+def test_loft_bounding_box_spans_all_sections():
+    part3d = rectangle(2, 2, Location(0, 0, 0)).loft(
+        rectangle(4, 4, Location(0, 0, 5))
+    )
+    bbox_min, bbox_max = part3d.get_bounding_box()
+    assert bbox_min.to_tuple() == pytest.approx((-2, -2, 0))
+    assert bbox_max.to_tuple() == pytest.approx((2, 2, 5))
+
+
+def test_loft_needs_at_least_two_sections():
+    with pytest.raises(ValueError, match="at least two"):
+        rectangle(2, 2).loft()
+
+
+def test_loft_between_circles_is_a_cone_frustum():
+    part3d = circle(2, Location(0, 0, 0)).loft(circle(1, Location(0, 0, 3)))
+    # Cone frustum V = pi*h/3 * (R^2 + R*r + r^2); tessellated, so approximate.
+    assert part3d.get_volume() == pytest.approx(
+        math.pi * 3 / 3 * (4 + 2 + 1), rel=1e-2
+    )
+
+
+def test_sweep_straight_up_matches_extrude():
+    swept = rectangle(2, 3).sweep([(0, 0, 0), (0, 0, 4)])
+    assert isinstance(swept, codetocad.Part3D)
+    assert swept.get_volume() == pytest.approx(rectangle(2, 3).extrude(4).get_volume())
+
+
+def test_sweep_along_edge_is_oriented_extrude():
+    x_axis = Edge(Vertex(Location(0, 0, 0)), Vertex(Location(4, 0, 0)))
+    swept = rectangle(2, 3).sweep(x_axis)
+    assert swept.get_volume() == pytest.approx(2 * 3 * 4)
+    bbox_min, bbox_max = swept.get_bounding_box()
+    # Sweeping along X carries the profile's width (2) onto Z and its height
+    # (3) onto Y, so the box is 4 (path) x 3 x 2.
+    assert bbox_min.to_tuple() == pytest.approx((0, -1.5, -1), abs=1e-9)
+    assert bbox_max.to_tuple() == pytest.approx((4, 1.5, 1), abs=1e-9)
+
+
+def test_sweep_circle_is_a_cylinder():
+    swept = circle(1).sweep([(0, 0, 0), (0, 0, 4)])
+    assert swept.get_volume() == pytest.approx(math.pi * 1**2 * 4, rel=1e-2)
+
+
+def test_sweep_needs_two_distinct_points():
+    with pytest.raises(ValueError, match="at least two distinct"):
+        rectangle(2, 2).sweep([(0, 0, 0), (0, 0, 0)])
+
+
+def test_sweep_polyline_builds_a_part3d():
+    swept = rectangle(1, 1).sweep([(0, 0, 0), (0, 0, 3), (3, 0, 3)])
+    assert isinstance(swept, codetocad.Part3D)
+    assert swept.get_volume() > 0
+
+
 def test_boolean_ledger():
     a, b, c = cube(1, 1, 1), cube(1, 1, 1), cube(1, 1, 1)
     a.subtract(Location(), b, Location())

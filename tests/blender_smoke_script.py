@@ -118,6 +118,17 @@ approx(tmax.x, 0.11, 5e-3)
 wedge = make_circle("1cm", Location(x="5cm")).revolve(90)
 approx(wedge.get_volume(), 0.25 * 2 * math.pi**2 * 0.05 * 0.01**2, 5e-2)
 
+# 9d. Loft between two sections and sweep a profile along a path
+cone = make_circle("2cm", Location(0, 0, 0)).loft(
+    make_circle("1cm", Location(0, 0, "3cm"))
+)
+approx(cone.get_volume(), math.pi * 0.03 / 3 * (0.02**2 + 0.02 * 0.01 + 0.01**2), 5e-2)
+lmin, lmax = cone.get_bounding_box()
+approx(lmax.z, 0.03, 5e-3)
+
+duct = make_rectangle("2cm", "2cm").sweep([(0, 0, 0), (0, 0, "5cm")])
+approx(duct.get_volume(), 0.02 * 0.02 * 0.05, 5e-3)
+
 # 10. Material and mass
 block = make_cube("10cm", "10cm", "10cm")
 block.set_material(aluminum_material())

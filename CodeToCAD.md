@@ -371,6 +371,21 @@ class Part2D(Assembly2D, LocationMixin, GeometryQueryMixin):
     def revolve(self, angle: AngleWithUnit = 360, axis: str|tuple|Edge = "y"):
         return Part3D
 
+    # Loft through this profile and one or more further cross-sections into a
+    # solid that transitions between them. Each section is placed at its own
+    # start_location (including Z), so stack them by giving each a different
+    # height. Needs at least two sections in total.
+    def loft(self, *profiles: Part2D):
+        return Part3D
+
+    # Sweep the profile along a path, keeping it perpendicular to the local
+    # path direction. path is an Edge (a straight segment) or a sequence of at
+    # least two points (Locations or (x, y, z) tuples) forming a polyline. The
+    # profile's origin rides the path, so a straight axis-aligned path equals
+    # an extrude.
+    def sweep(self, path: Edge|list):
+        return Part3D
+
 class Part3D(Assembly3D, LocationMixin, GeometryQueryMixin, BooleanMixin, MaterialMixin): 
 
     def shell(self, thickness: LengthWithUnit, start_at_location: Location|None = None):
