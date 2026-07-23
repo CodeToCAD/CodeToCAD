@@ -10,6 +10,7 @@ import numpy as np
 
 from codetocad.parts import Part3D
 from codetocad.simulation import (
+    Camera,
     Lighting,
     LinkSpec,
     Simulation,
@@ -237,7 +238,7 @@ def build_mjcf(
             worldbody,
             "light",
             name=light.name,
-            pos=_fmt(light.position),
+            pos=_fmt(light.position_meters),
             dir=_fmt(light.direction),
             diffuse=_fmt(light.diffuse),
             directional="true" if light.light_type == "directional" else "false",
@@ -560,16 +561,54 @@ class MujocoSimulation(Simulation):
         self, width: int = 640, height: int = 480, camera: str | None = None
     ) -> np.ndarray:
         """Render an overview of the scene to an (height, width, 3) uint8 RGB
-        array. With ``camera=None`` it uses MuJoCo's free camera, framed on
-        the whole model; pass a mounted camera name to render its view."""
+        array. With ``camera=None`` it renders from :attr:`camera` (MuJoCo's
+        free camera, framed on the whole model when no camera is set); pass a
+        mounted camera name to render its view instead."""
         if camera is not None:
             return self.get_camera_image(camera, width=width, height=height)
         renderer = self._renderers.get((width, height))
         if renderer is None:
             renderer = self._mujoco.Renderer(self.model, height=height, width=width)
             self._renderers[(width, height)] = renderer
-        renderer.update_scene(self.data)
+        if self.camera is not None:
+            renderer.update_scene(self.data, camera=self._make_free_camera())
+        else:
+            renderer.update_scene(self.data)
         return renderer.render()
+
+    def _make_free_camera(self):
+        """Build a MuJoCo free camera from :attr:`camera`. MuJoCo's free camera
+        orbits a look-at point, so the camera's ray is mapped to
+        azimuth/elevation/distance about a target one ``distance`` ahead."""
+        mj = self._mujoco
+        view = mj.MjvCamera()
+        mj.mjv_defaultFreeCamera(self.model, view)
+        center, extent = self._camera_framing()
+        distance = max(extent * 1.8, 1.0)
+        eye, look, _ = self.camera.resolve(center, distance)
+        forward = look - eye
+        norm = float(np.linalg.norm(forward)) or 1.0
+        forward = forward / norm
+        lookat = eye + forward * distance  # look-at point on the view ray
+        offset = -forward * distance  # eye relative to look-at
+        view.lookat[:] = lookat
+        view.distance = distance
+        view.azimuth = float(np.degrees(np.arctan2(offset[1], offset[0])))
+        view.elevation = float(np.degrees(np.arcsin(offset[2] / distance)))
+        return view
+
+    def _apply_lighting(self) -> None:
+        """Update the live model's named lights in place (lights are declared
+        at build time; this refreshes position/direction/color of matching
+        names — new light names are ignored until the next ``simulate``)."""
+        for light in self.lighting:
+            try:
+                model_light = self.model.light(light.name)
+            except KeyError:
+                continue
+            model_light.pos[:] = light.position_meters
+            model_light.dir[:] = light.direction
+            model_light.diffuse[:] = light.diffuse
 
     def close(self) -> None:
         for renderer in self._renderers.values():
@@ -588,6 +627,12 @@ class MujocoSimulation(Simulation):
         with mujoco.viewer.launch_passive(
             self.model, self.data, key_callback=key_callback
         ) as viewer:
+            if self.camera is not None:
+                source = self._make_free_camera()
+                viewer.cam.lookat[:] = source.lookat
+                viewer.cam.distance = source.distance
+                viewer.cam.azimuth = source.azimuth
+                viewer.cam.elevation = source.elevation
             while viewer.is_running():
                 start = time.time()
                 self.step()
@@ -603,6 +648,7 @@ def simulate(
     part: Part3D,
     *,
     lighting: list[Lighting] | None = None,
+    camera: Camera | None = None,
     gravity: tuple[float, float, float] = (0.0, 0.0, -9.81),
     time_step: float = 1.0 / 240.0,
     fixed_base: bool = True,
@@ -650,6 +696,7 @@ def simulate(
     return MujocoSimulation(
         part,
         lighting=lighting,
+        camera=camera,
         scene_parts=scene_parts,
         cameras=cameras,
         terrain=terrain,

@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip("pybullet")
 
-from codetocad import Location, cube, cylinder, sphere
+from codetocad import Camera, Location, cube, cylinder, sphere
 from codetocad_integrations.pybullet import simulate
 
 
@@ -103,6 +103,20 @@ def test_capture_image_and_record_gif(tmp_path):
         )
         assert gif[:6] == b"GIF89a"
         assert (tmp_path / "swing.gif").exists()
+
+
+def test_capture_image_honors_camera(tmp_path):
+    # A Location-based camera passed to simulate(), then re-aimed live.
+    with simulate(
+        build_pendulum(),
+        camera=Camera.look_at(eye=(1.5, -1.5, 1.0), target=(0, 0, 0.3)),
+        output_dir=tmp_path,
+    ) as sim:
+        assert sim.camera.location is not None
+        assert sim.capture_image(width=80, height=60).shape == (60, 80, 3)
+        sim.set_camera(Camera.look_at(eye=(0, -2, 1), target=(0, 0, 0.3), fov=35))
+        assert sim.camera.fov == 35
+        assert sim.capture_image(width=80, height=60).shape == (60, 80, 3)
 
 
 def test_keyframe_recording_and_playback(tmp_path):

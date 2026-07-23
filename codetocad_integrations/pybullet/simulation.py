@@ -9,6 +9,7 @@ import numpy as np
 
 from codetocad.parts import Part3D
 from codetocad.simulation import (
+    Camera,
     Lighting,
     LinkSpec,
     Simulation,
@@ -114,13 +115,12 @@ class PyBulletSimulation(Simulation):
         self.urdf_path.write_text(urdf)
 
         self.client = p.connect(p.GUI if gui else p.DIRECT)
+        self.gui = gui
         p.setGravity(*self.gravity, physicsClientId=self.client)
         p.setTimeStep(self.time_step, physicsClientId=self.client)
-        if gui and self.lighting:
-            light = self.lighting[0]
-            p.configureDebugVisualizer(
-                lightPosition=light.position, physicsClientId=self.client
-            )
+        if gui:
+            self._apply_lighting()
+            self._apply_camera()
         if self.ground_plane:
             import pybullet_data
 
@@ -269,38 +269,27 @@ class PyBulletSimulation(Simulation):
         )
         return tuple(map(float, position)), (w, x, y, z)
 
-    def capture_image(
-        self,
-        width: int = 640,
-        height: int = 480,
-        *,
-        distance: float | None = None,
-        yaw: float = 45.0,
-        pitch: float = -35.0,
-        target: tuple[float, float, float] | None = None,
-    ) -> np.ndarray:
+    def _auto_distance(self, extent: float) -> float:
+        """Default orbit radius that frames the whole assembly."""
+        return max(extent * 2.0, 1.0)
+
+    def capture_image(self, width: int = 640, height: int = 480) -> np.ndarray:
         """Render an overview of the scene to an (height, width, 3) uint8 RGB
-        array. The camera orbits ``target`` (the assembly's center by
-        default) at ``distance`` (auto-sized from the assembly), ``yaw`` and
-        ``pitch`` degrees."""
+        array from :attr:`camera`. With no camera set, an elevated
+        three-quarter view framing the whole assembly. Aim it with
+        ``sim.set_camera(Camera.look_at(...))`` or ``simulate(camera=...)``."""
         p = self._p
-        frames = np.array([link.frame for link in self.links])
-        if target is None:
-            target = tuple(frames.mean(axis=0))
-        if distance is None:
-            spread = float(np.linalg.norm(frames.max(axis=0) - frames.min(axis=0)))
-            distance = max(spread * 2.0, 1.0)
-        view = p.computeViewMatrixFromYawPitchRoll(
-            cameraTargetPosition=target,
-            distance=distance,
-            yaw=yaw,
-            pitch=pitch,
-            roll=0,
-            upAxisIndex=2,
+        center, extent = self._camera_framing()
+        cam = self.camera if self.camera is not None else Camera()
+        eye, look, up = cam.resolve(center, self._auto_distance(extent))
+        view = p.computeViewMatrix(
+            cameraEyePosition=list(map(float, eye)),
+            cameraTargetPosition=list(map(float, look)),
+            cameraUpVector=list(map(float, up)),
             physicsClientId=self.client,
         )
         projection = p.computeProjectionMatrixFOV(
-            fov=60.0,
+            fov=cam.fov,
             aspect=width / height,
             nearVal=0.01,
             farVal=100.0,
@@ -316,6 +305,40 @@ class PyBulletSimulation(Simulation):
         )
         pixels = np.reshape(np.array(rgba, dtype=np.uint8), (height, width, 4))
         return pixels[:, :, :3]
+
+    def _apply_camera(self) -> None:
+        """Point the live GUI debug camera at :attr:`camera` (no-op headless).
+        PyBullet's debug camera orbits a look-at point, so the camera's ray is
+        mapped to a yaw/pitch/distance about a target one ``distance`` ahead."""
+        if not getattr(self, "gui", False) or self.camera is None:
+            return
+        p = self._p
+        center, extent = self._camera_framing()
+        distance = self._auto_distance(extent)
+        eye, look, _ = self.camera.resolve(center, distance)
+        forward = look - eye
+        norm = float(np.linalg.norm(forward)) or 1.0
+        forward = forward / norm
+        target = eye + forward * distance  # look-at point on the view ray
+        offset = -forward * distance  # eye relative to target
+        yaw = float(np.degrees(np.arctan2(offset[0], -offset[1])))
+        pitch = float(np.degrees(np.arcsin(offset[2] / distance)))
+        p.resetDebugVisualizerCamera(
+            cameraDistance=distance,
+            cameraYaw=yaw,
+            cameraPitch=pitch,
+            cameraTargetPosition=list(map(float, target)),
+            physicsClientId=self.client,
+        )
+
+    def _apply_lighting(self) -> None:
+        """Push the first light's position to the live GUI (no-op headless)."""
+        if not getattr(self, "gui", False) or not self.lighting:
+            return
+        self._p.configureDebugVisualizer(
+            lightPosition=self.lighting[0].position_meters,
+            physicsClientId=self.client,
+        )
 
     def get_keyboard_events(self) -> dict:
         """PyBullet GUI keyboard events (key code -> state)."""
@@ -334,6 +357,7 @@ def simulate(
     *,
     gui: bool = False,
     lighting: list[Lighting] | None = None,
+    camera: Camera | None = None,
     gravity: tuple[float, float, float] = (0.0, 0.0, -9.81),
     time_step: float = 1.0 / 240.0,
     fixed_base: bool = True,
@@ -364,6 +388,7 @@ def simulate(
         part,
         gui=gui,
         lighting=lighting,
+        camera=camera,
         gravity=gravity,
         time_step=time_step,
         fixed_base=fixed_base,

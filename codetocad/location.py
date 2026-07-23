@@ -87,6 +87,7 @@ def quat_multiply(
 
 @dataclass
 class Location:
+    """Location is a 6-dof position and rotation"""
     x: LengthWithUnit = 0
     y: LengthWithUnit = 0
     z: LengthWithUnit = 0

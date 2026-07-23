@@ -85,46 +85,52 @@ backend (pybullet, mujoco, blender):
 from codetocad import Camera, Lighting
 
 # at construction:
-sim = simulate(part, camera=Camera(yaw=90, pitch=-20, distance=3.0),
+sim = simulate(part,
+               camera=Camera.look_at(eye=(2, -2, 1.5), target=(0, 0, 0.3)),
                lighting=[Lighting(position=(2, 2, 4))])
 
 # or live, any time:
-sim.set_camera(yaw=120, pitch=-15)          # merge fields onto current camera
-sim.set_camera(Camera(position=(2, -2, 1.5), target=(0, 0, 0.3)))  # explicit eye
+sim.set_camera(Camera.look_at(eye=(0, -3, 1), target=(0, 0, 0.3)))
+sim.set_camera(fov=35)                       # merge a field onto current camera
 sim.set_lighting([Lighting(position=(0, 0, 5), color=(1, 0.9, 0.8))])
 ```
 
 ### `Camera` (`codetocad.Camera`)
 
-An **orbit** camera by default — looks at `target` from `distance` away, swung
-`yaw`° around the up axis and tilted `pitch`° (negative looks down):
+The camera's pose is a **`Location`** — uniform with the rest of CodeToCAD.
+The camera sits at the location's position and looks along its local **+Z**
+axis with local **+Y** up (the same "+Z is the direction" convention as joint
+axes and face normals). Two fields only:
 
 | field | meaning | default |
 |-------|---------|---------|
-| `target` | look-at point | assembly center |
-| `distance` | orbit radius (m) | auto-fit to assembly |
-| `yaw` | azimuth degrees | 45 |
-| `pitch` | elevation degrees (negative = look down) | −35 |
-| `position` | explicit eye point (**overrides** distance/yaw/pitch) | None |
-| `up` | up vector | (0,0,1) |
+| `location` | camera pose (`Location`); `None` auto-frames the assembly | None |
 | `fov` | vertical field of view degrees | 60 |
 
-Any field left `None` is auto-derived, so `Camera(pitch=-10)` still frames the
-scene. `set_camera(**fields)` merges fields onto the current camera;
-`set_camera(Camera(...))` replaces it. Both return the active `Camera`.
+Build one three ways:
 
-- **pybullet** applies the camera to `capture_image` **and** the live GUI window
-  (via `resetDebugVisualizerCamera`). `capture_image` also still takes per-call
-  overrides: `sim.capture_image(yaw=200, distance=2)` and these flow through
-  `record_gif(...)` too.
-- **mujoco** applies it to the free camera in `capture_image` and to
-  `launch_viewer()`.
+- **`Camera.look_at(eye, target, up=(0,0,1), fov=60)`** — the ergonomic aim; it
+  computes the `Location` for you. *(preferred)*
+- **`Camera(location=some_location)`** — any `Location`, e.g. a part's face:
+  `Camera(location=part.front_center)` looks along that face's outward normal.
+- **`Camera(location=Location.from_euler(x, y, z, x_deg=..., ...))`** — hand-rolled.
+
+`set_camera(**fields)` merges fields onto the current camera (`set_camera(fov=35)`
+keeps the pose); `set_camera(Camera(...))` replaces it. Both return the active
+`Camera`. `capture_image(width, height)` renders from it on every backend.
+
+- **pybullet** applies it to `capture_image` **and** the live GUI window (via
+  `resetDebugVisualizerCamera`).
+- **mujoco** applies it to the free camera in `capture_image` and `launch_viewer()`.
 - **blender** builds/positions the render camera from it (else auto-frames).
 
 ### Lighting
 
 `set_lighting([...])` / the `lighting=` arg take `codetocad.Lighting` (`position`,
 `direction`, `color`, `intensity`, `light_type` = "directional"/"point"/"spot").
+`position` takes length units like everywhere else — floats are meters, strings
+like `"30cm"` are parsed (`Lighting(position=("30cm", 0, "1m"))`); read
+`light.position_meters` for plain floats.
 mujoco updates its live scene lights **by name** (lights are declared at build
 time — new *names* need a fresh `simulate`); blender realizes them as scene
 lights the Workbench render uses; pybullet applies the first light to the GUI.

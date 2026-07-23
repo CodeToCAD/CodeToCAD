@@ -3,8 +3,9 @@ import math
 import numpy as np
 import pytest
 
-from codetocad import Lighting, Location, cube, cylinder, extract_links, sphere
-from codetocad.simulation import ensure_binary_stl
+from codetocad import Camera, Lighting, Location, cube, cylinder, extract_links, sphere
+from codetocad.simulation import Simulation, ensure_binary_stl
+from codetocad.units import LengthMeters
 
 
 def build_pendulum():
@@ -171,6 +172,15 @@ def test_lighting_defaults():
     assert light.diffuse == pytest.approx((0.5, 0.25, 0.0))
 
 
+def test_lighting_position_parses_length_units():
+    # Position takes LengthWithUnit (like Location's x/y/z): strings are parsed
+    # and stored as LengthMeters, with position_meters exposing plain floats.
+    light = Lighting(position=("30cm", 0, "1m"))
+    assert all(isinstance(component, LengthMeters) for component in light.position)
+    assert light.position_meters == pytest.approx((0.3, 0.0, 1.0))
+    assert Lighting().position_meters == pytest.approx((0.0, 0.0, 3.0))
+
+
 def test_ensure_binary_stl(tmp_path):
     path = tmp_path / "box.stl"
     cube(0.1, 0.1, 0.1).export(str(path))
@@ -193,3 +203,58 @@ def test_geometry_backends_skip_constraints():
     base.revolute(Location(z="4cm", name="j1"), arm, Location(z="4cm"))
     # Building geometry must not choke on the constraint operation.
     assert base.get_volume() == pytest.approx(0.1 * 0.1 * 0.04)
+
+
+def test_camera_look_at_builds_location_pose():
+    cam = Camera.look_at(eye=(0, -5, 2), target=(0, 0, 0))
+    # The camera sits at the eye...
+    assert cam.location is not None
+    assert cam.location.to_tuple() == pytest.approx((0, -5, 2))
+    # ...and its local +Z axis points from eye toward target.
+    eye, target, up = cam.resolve(np.zeros(3), 5.0)
+    assert eye == pytest.approx((0, -5, 2))
+    forward = np.asarray(target) - np.asarray(eye)
+    expected = np.array([0, 5, -2], dtype=float)
+    expected /= np.linalg.norm(expected)
+    assert forward / np.linalg.norm(forward) == pytest.approx(expected)
+    # up stays roughly world-up (positive z component).
+    assert up[2] > 0
+
+
+def test_camera_resolve_default_view_frames_center():
+    center = np.array([2.0, 0.0, 1.0])
+    eye, target, up = Camera().resolve(center, 7.0)
+    assert target == pytest.approx(center)  # looks at the assembly center
+    assert np.linalg.norm(eye - center) == pytest.approx(7.0)  # at the distance
+    assert eye[2] > center[2]  # elevated (looking down)
+    assert up == pytest.approx((0, 0, 1))
+
+
+def test_camera_location_can_be_a_part_face():
+    # A face location's +Z is its outward normal, so it aims the camera.
+    box = cube(0.2, 0.2, 0.2)
+    cam = Camera(location=box.front_center)
+    eye, target, _ = cam.resolve(np.zeros(3), 5.0)
+    forward = np.asarray(target) - np.asarray(eye)
+    # front_center normal points along -Y.
+    assert forward / np.linalg.norm(forward) == pytest.approx((0, -1, 0), abs=1e-6)
+
+
+def test_set_camera_and_lighting_update_state():
+    sim = Simulation(build_pendulum())
+    assert sim.camera is None
+    cam = sim.set_camera(Camera.look_at(eye=(0, -5, 2), target=(0, 0, 0)))
+    assert sim.camera is cam
+    # Fields merge onto the existing camera.
+    sim.set_camera(fov=35.0)
+    assert sim.camera.fov == 35.0
+    assert sim.camera.location is cam.location  # location preserved
+    lights = [Lighting(name="key", position=(1, 1, 2))]
+    sim.set_lighting(lights)
+    assert sim.lighting == lights
+
+
+def test_simulate_accepts_camera_argument():
+    cam = Camera.look_at(eye=(1, 1, 1), target=(0, 0, 0))
+    sim = Simulation(build_pendulum(), camera=cam)
+    assert sim.camera is cam

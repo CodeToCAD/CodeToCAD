@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip("mujoco")
 
-from codetocad import Location, cube, cylinder, sphere
+from codetocad import Camera, Lighting, Location, cube, cylinder, sphere
 from codetocad_integrations.mujoco import simulate
 
 
@@ -125,4 +125,21 @@ def test_capture_image_and_record_gif(tmp_path):
     )
     assert gif[:6] == b"GIF89a"
     assert (tmp_path / "swing.gif").exists()
+    sim.close()
+
+
+def test_capture_image_honors_camera_and_lighting(tmp_path):
+    sim = simulate(
+        build_pendulum(),
+        camera=Camera.look_at(eye=(1.2, -1.2, 0.8), target=(0, 0, 0.3)),
+        output_dir=tmp_path,
+    )
+    image = sim.capture_image(width=80, height=60)
+    assert image.shape == (60, 80, 3)
+    # Re-aim the camera live.
+    sim.set_camera(Camera.look_at(eye=(0.6, 0.6, 0.6), target=(0, 0, 0.3)))
+    assert sim.capture_image(width=80, height=60).shape == (60, 80, 3)
+    # Re-lighting the live model keeps rendering.
+    sim.set_lighting([Lighting(name="light", position=(2, 2, 3))])
+    assert sim.capture_image(width=80, height=60).shape == (60, 80, 3)
     sim.close()

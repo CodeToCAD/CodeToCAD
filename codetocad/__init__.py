@@ -97,6 +97,7 @@ from codetocad.ecad import (
 from codetocad.fasteners import CommonFasteners
 from codetocad.simulation import (
     CONSTRAINT_OPERATIONS,
+    Camera,
     JointSpec,
     Lighting,
     LinkSpec,
@@ -202,6 +203,7 @@ __all__ = [
     "ECADMixin",
     "SensorMixin",
     "ActuatorMixin",
+    "Camera",
     "CameraMixin",
     "IMUMixin",
     "MicrophoneMixin",

@@ -140,7 +140,11 @@ sim.run(10.0, realtime=True)
 
 Joint axes come from the constraint Location's orientation, limits from
 `min_limits`/`max_limits`, masses/inertias from part materials and geometry,
-and `codetocad.Lighting` describes scene lights. Free-floating `scene_parts`
+and `codetocad.Lighting`/`codetocad.Camera` describe scene lights and the
+overview camera. The camera's pose is a `Location` like everything else
+(`simulate(..., camera=Camera.look_at(eye=(2, -2, 1.5), target=(0, 0, 0.3)))`,
+or set them live with `sim.set_camera(...)` / `sim.set_lighting(...)`) — the
+same across PyBullet, MuJoCo and Blender. Free-floating `scene_parts`
 (objects the robot can interact with) and a `ground_plane` complete the
 scene. See the examples in
 [codetocad_integrations/pybullet/examples/](codetocad_integrations/pybullet/examples/)

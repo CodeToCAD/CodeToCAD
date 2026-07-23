@@ -19,16 +19,19 @@ import re
 import struct
 import tempfile
 import zlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
 
 from codetocad.location import quat_multiply, quat_rotate_vector
+from codetocad.units import LengthMeters
 
 if TYPE_CHECKING:
     from codetocad import Joint
+    from codetocad.location import Location
+    from codetocad.units import LengthWithUnit
 
 
 def _axis_angle_quat(axis, angle: float) -> tuple[float, float, float, float]:
@@ -59,6 +62,37 @@ def _quat_to_matrix(quat: tuple[float, float, float, float]) -> np.ndarray:
         ]
     )
 
+
+def _matrix_to_quat(m: np.ndarray) -> tuple[float, float, float, float]:
+    """Quaternion ``(x, y, z, w)`` from a 3x3 rotation matrix."""
+    m = np.asarray(m, dtype=float)
+    trace = m[0, 0] + m[1, 1] + m[2, 2]
+    if trace > 0.0:
+        s = math.sqrt(trace + 1.0) * 2.0
+        w = 0.25 * s
+        x = (m[2, 1] - m[1, 2]) / s
+        y = (m[0, 2] - m[2, 0]) / s
+        z = (m[1, 0] - m[0, 1]) / s
+    elif m[0, 0] > m[1, 1] and m[0, 0] > m[2, 2]:
+        s = math.sqrt(1.0 + m[0, 0] - m[1, 1] - m[2, 2]) * 2.0
+        w = (m[2, 1] - m[1, 2]) / s
+        x = 0.25 * s
+        y = (m[0, 1] + m[1, 0]) / s
+        z = (m[0, 2] + m[2, 0]) / s
+    elif m[1, 1] > m[2, 2]:
+        s = math.sqrt(1.0 + m[1, 1] - m[0, 0] - m[2, 2]) * 2.0
+        w = (m[0, 2] - m[2, 0]) / s
+        x = (m[0, 1] + m[1, 0]) / s
+        y = 0.25 * s
+        z = (m[1, 2] + m[2, 1]) / s
+    else:
+        s = math.sqrt(1.0 + m[2, 2] - m[0, 0] - m[1, 1]) * 2.0
+        w = (m[1, 0] - m[0, 1]) / s
+        x = (m[0, 2] + m[2, 0]) / s
+        y = (m[1, 2] + m[2, 1]) / s
+        z = 0.25 * s
+    return (float(x), float(y), float(z), float(w))
+
 if TYPE_CHECKING:
     from codetocad.parts import Part3D
 
@@ -87,14 +121,118 @@ class Lighting:
     name: str = "light"
     light_type: str = "directional"
     """One of "directional", "point" or "spot"."""
-    position: tuple[float, float, float] = (0.0, 0.0, 3.0)
+    position: tuple[LengthWithUnit, LengthWithUnit, LengthWithUnit] = (
+        0.0,
+        0.0,
+        3.0,
+    )
+    """World position, in the usual CodeToCAD length units — floats are meters,
+    strings such as ``"30cm"`` are parsed. Stored as :class:`LengthMeters`; read
+    :attr:`position_meters` for plain floats."""
     direction: tuple[float, float, float] = (0.0, 0.0, -1.0)
     color: tuple[float, float, float] = (1.0, 1.0, 1.0)
     intensity: float = 1.0
 
+    def __post_init__(self) -> None:
+        x, y, z = self.position
+        self.position = (LengthMeters(x), LengthMeters(y), LengthMeters(z))
+
+    @property
+    def position_meters(self) -> tuple[float, float, float]:
+        """The light's position as plain meters, for engine bindings."""
+        x, y, z = self.position
+        return (float(x), float(y), float(z))
+
     @property
     def diffuse(self) -> tuple[float, float, float]:
         return tuple(min(1.0, c * self.intensity) for c in self.color)
+
+
+@dataclass
+class Camera:
+    """The overview camera every simulation renders from — the viewpoint
+    ``capture_image()`` / ``record_gif()`` and the live GUI/viewer use.
+
+    The camera's pose is a :class:`~codetocad.Location`, uniform with the rest
+    of CodeToCAD: it sits at the location's position and looks along the
+    location's local **+Z** axis, with local **+Y** up — the same
+    "+Z is the direction" convention as joint axes and face normals. Leave
+    ``location`` ``None`` to auto-frame the whole assembly.
+
+    Aim it without doing quaternion math with :meth:`look_at`::
+
+        Camera.look_at(eye=(2, -2, 1.5), target=(0, 0, 0.3))
+
+    or place it on a part's face — ``Camera(location=part.front_center)`` —
+    since a face location's +Z already points along its outward normal. Pass a
+    camera to ``simulate(camera=...)`` or set it live with ``sim.set_camera``.
+    """
+
+    location: "Location | None" = None
+    fov: float = 60.0
+    """Vertical field of view in degrees."""
+
+    @classmethod
+    def look_at(
+        cls,
+        eye: tuple[float, float, float],
+        target: tuple[float, float, float],
+        up: tuple[float, float, float] = (0.0, 0.0, 1.0),
+        *,
+        fov: float = 60.0,
+        name: str | None = None,
+    ) -> "Camera":
+        """A camera at ``eye`` looking toward ``target``, ``up`` roughly up —
+        the ergonomic way to aim the overview camera. Builds the ``Location``
+        (local +Z toward ``target``, local +Y up) for you."""
+        from codetocad.location import Location
+
+        eye_arr = np.asarray(eye, dtype=float)
+        forward = np.asarray(target, dtype=float) - eye_arr
+        norm = float(np.linalg.norm(forward))
+        if norm < 1e-12:
+            raise ValueError("Camera.look_at: eye and target coincide")
+        forward = forward / norm
+        up_vec = np.asarray(up, dtype=float)
+        right = np.cross(up_vec, forward)
+        if float(np.linalg.norm(right)) < 1e-9:  # up parallel to the view ray
+            fallback = (0.0, 0.0, 1.0) if abs(forward[2]) < 0.9 else (0.0, 1.0, 0.0)
+            right = np.cross(np.asarray(fallback), forward)
+        right = right / np.linalg.norm(right)
+        true_up = np.cross(forward, right)
+        # Columns = world directions of the camera's local +X/+Y/+Z axes.
+        rotation = np.column_stack((right, true_up, forward))
+        quat = _matrix_to_quat(rotation)
+        return cls(
+            location=Location(
+                float(eye_arr[0]), float(eye_arr[1]), float(eye_arr[2]),
+                *quat, name=name,
+            ),
+            fov=fov,
+        )
+
+    def resolve(
+        self, center, default_distance: float
+    ) -> "tuple[np.ndarray, np.ndarray, np.ndarray]":
+        """Return ``(eye, target, up)`` in world coordinates — ``target`` a
+        point one unit along the view ray. With no ``location`` set, an
+        elevated three-quarter view of ``center`` at ``default_distance``."""
+        if self.location is not None:
+            eye = self.location.to_numpy()
+            forward = np.asarray(
+                quat_rotate_vector(self.location.quat, (0.0, 0.0, 1.0)), dtype=float
+            )
+            up = np.asarray(
+                quat_rotate_vector(self.location.quat, (0.0, 1.0, 0.0)), dtype=float
+            )
+            return eye, eye + forward, up
+        center = np.asarray(center, dtype=float)
+        # Default view direction: yaw 45deg, pitch -35deg (looking down).
+        direction = np.array([0.5792279, -0.5792279, -0.5735764])
+        direction = direction / np.linalg.norm(direction)
+        return center - direction * default_distance, center, np.array(
+            [0.0, 0.0, 1.0]
+        )
 
 
 @dataclass
@@ -597,6 +735,7 @@ class Simulation:
         root_part: "Part3D",
         *,
         lighting: list[Lighting] | None = None,
+        camera: Camera | None = None,
         gravity: tuple[float, float, float] = (0.0, 0.0, -9.81),
         time_step: float = 1.0 / 240.0,
         fixed_base: bool = True,
@@ -610,6 +749,10 @@ class Simulation:
     ):
         self.root_part = root_part
         self.lighting = lighting if lighting is not None else [Lighting()]
+        #: Overview camera for capture_image()/record_gif() and the live
+        #: GUI/viewer. ``None`` means each backend frames the scene itself;
+        #: set one with ``set_camera(...)``.
+        self.camera = camera
         self.gravity = gravity
         self.time_step = time_step
         self.fixed_base = fixed_base
@@ -758,12 +901,50 @@ class Simulation:
         raise NotImplementedError
 
     def capture_image(self, **kwargs) -> np.ndarray:
-        """Render the current scene to an ``(H, W, 3)`` uint8 RGB array (an
-        overview camera looking at the whole assembly). Backends implement
-        this; encode it with :func:`encode_png` for telemetry."""
+        """Render the current scene to an ``(H, W, 3)`` uint8 RGB array from
+        the overview :attr:`camera`. Backends implement this; encode it with
+        :func:`encode_png` for telemetry."""
         raise NotImplementedError(
             "This backend does not support capture_image()"
         )
+
+    # -- camera & lighting --
+
+    def set_camera(self, camera: Camera | None = None, **fields) -> Camera:
+        """Set the overview :class:`Camera` used by ``capture_image()`` /
+        ``record_gif()`` and the live GUI/viewer. Pass a ``Camera`` (build one
+        with ``Camera.look_at(eye=..., target=...)``), or just the fields to
+        change (``sim.set_camera(fov=35)`` keeps the current pose). Returns the
+        active camera."""
+        if camera is None:
+            camera = self.camera or Camera()
+        if fields:
+            camera = replace(camera, **fields)
+        self.camera = camera
+        self._apply_camera()
+        return camera
+
+    def set_lighting(self, lighting: list[Lighting]) -> None:
+        """Replace the scene lights and push them to the live view (where the
+        backend supports it)."""
+        self.lighting = list(lighting)
+        self._apply_lighting()
+
+    def _apply_camera(self) -> None:
+        """Backend hook: push :attr:`camera` to a live GUI/viewer. Offscreen
+        backends read :attr:`camera` in ``capture_image`` and need no-op here."""
+
+    def _apply_lighting(self) -> None:
+        """Backend hook: push :attr:`lighting` to the live scene."""
+
+    def _camera_framing(self) -> "tuple[np.ndarray, float]":
+        """``(center, extent)`` of the assembly's link frames — the point to
+        look at and the diagonal spread a backend sizes the orbit distance
+        from."""
+        frames = np.array([link.frame for link in self.links])
+        center = frames.mean(axis=0)
+        extent = float(np.linalg.norm(frames.max(axis=0) - frames.min(axis=0)))
+        return center, extent
 
     def run(self, duration: float, realtime: bool = False) -> None:
         """Step the simulation for ``duration`` seconds."""

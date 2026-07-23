@@ -16,13 +16,14 @@ opens a Blender GUI on the assembly and plays the keyframed animation.
 
 from __future__ import annotations
 
+import math
 import subprocess
 from pathlib import Path
 
 import numpy as np
 
 from codetocad.parts import Part3D
-from codetocad.simulation import LinkSpec, Simulation
+from codetocad.simulation import Camera, LinkSpec, Simulation
 
 try:
     import bpy
@@ -101,6 +102,7 @@ class BlenderSimulation(Simulation):
             self._joint_values[link.joint.name] = link.joint.initial_value or 0.0
         bpy.context.view_layer.update()
         self._apply_initial_joint_values()
+        self._apply_lighting()
 
     def _make_joint_empty(self, link: LinkSpec, parent_control) -> object:
         joint = link.joint
@@ -225,10 +227,8 @@ class BlenderSimulation(Simulation):
 
     # -- rendering --
 
-    def _ensure_camera(self):
-        scene = bpy.context.scene
-        if scene.camera is not None:
-            return scene.camera
+    def _scene_bounds(self) -> "tuple[Vector, float]":
+        """World-space (center, radius) of the assembled parts' bounding boxes."""
         corners = []
         for link in self.links:
             obj = self._control_object(link)
@@ -236,15 +236,73 @@ class BlenderSimulation(Simulation):
         points = np.array([tuple(c) for c in corners]) if corners else np.zeros((1, 3))
         center = Vector(tuple(points.mean(axis=0)))
         radius = float(np.linalg.norm(points.max(axis=0) - points.min(axis=0))) or 1.0
-        camera_data = bpy.data.cameras.new("sim_camera")
-        camera = bpy.data.objects.new("sim_camera", camera_data)
-        bpy.context.collection.objects.link(camera)
-        offset = Vector((1.0, -1.0, 0.8)).normalized() * (radius * 1.6 + 0.5)
-        camera.location = center + offset
-        direction = (center - camera.location).normalized()
-        camera.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
-        scene.camera = camera
+        return center, radius
+
+    def _ensure_camera(self):
+        scene = bpy.context.scene
+        # A caller-set camera spec wins; otherwise reuse an existing scene
+        # camera, else auto-frame the assembly.
+        if self.camera is None and scene.camera is not None:
+            return scene.camera
+        center, radius = self._scene_bounds()
+        default_distance = radius * 1.6 + 0.5
+        cam = self.camera if self.camera is not None else Camera()
+        eye_np, target_np, up_np = cam.resolve(np.array(tuple(center)), default_distance)
+        eye = Vector(tuple(map(float, eye_np)))
+        forward = (Vector(tuple(map(float, target_np))) - eye).normalized()
+        up = Vector(tuple(map(float, up_np)))
+        # Blender cameras look down local -Z with +Y up. Build the world matrix
+        # so the camera's -Z is the view direction and +Y is our up (honoring
+        # any roll the Location encodes).
+        right = forward.cross(up).normalized()
+        true_up = right.cross(forward).normalized()
+        matrix = Matrix(
+            (
+                (right.x, true_up.x, -forward.x, eye.x),
+                (right.y, true_up.y, -forward.y, eye.y),
+                (right.z, true_up.z, -forward.z, eye.z),
+                (0.0, 0.0, 0.0, 1.0),
+            )
+        )
+        camera = scene.camera
+        if camera is None or camera.name != "sim_camera":
+            camera_data = bpy.data.cameras.new("sim_camera")
+            camera = bpy.data.objects.new("sim_camera", camera_data)
+            bpy.context.collection.objects.link(camera)
+            scene.camera = camera
+        camera.data.lens_unit = "FOV"
+        camera.data.angle = math.radians(cam.fov)
+        camera.matrix_world = matrix
         return camera
+
+    def _apply_camera(self) -> None:
+        """Rebuild the sim camera from :attr:`camera` (called by set_camera)."""
+        if INSIDE_BLENDER:
+            self._ensure_camera()
+
+    def _apply_lighting(self) -> None:
+        """Realize :attr:`lighting` as Blender light objects and let the
+        Workbench render use them. Lights created here are prefixed
+        ``sim_light__`` so a re-apply can replace them."""
+        if not INSIDE_BLENDER:
+            return
+        for obj in list(bpy.data.objects):
+            if obj.type == "LIGHT" and obj.name.startswith("sim_light__"):
+                bpy.data.objects.remove(obj, do_unlink=True)
+        type_map = {"directional": "SUN", "point": "POINT", "spot": "SPOT"}
+        for light in self.lighting:
+            name = f"sim_light__{light.name}"
+            data = bpy.data.lights.new(name, type_map.get(light.light_type, "SUN"))
+            data.color = light.color
+            # SUN energy is irradiance (W/m^2); point/spot are watts.
+            data.energy = light.intensity * (1.0 if data.type == "SUN" else 100.0)
+            obj = bpy.data.objects.new(name, data)
+            bpy.context.collection.objects.link(obj)
+            obj.location = light.position_meters
+            if light.light_type in ("directional", "spot"):
+                obj.rotation_euler = (
+                    Vector(tuple(light.direction)).to_track_quat("-Z", "Y").to_euler()
+                )
 
     def _control_object(self, link: LinkSpec):
         from codetocad_integrations.blender.parts import adapt
@@ -253,10 +311,19 @@ class BlenderSimulation(Simulation):
 
     def capture_image(self, width: int = 640, height: int = 480) -> np.ndarray:
         """Render an overview of the current pose to an (height, width, 3)
-        uint8 RGB array (Workbench engine, an auto-framed camera)."""
+        uint8 RGB array (Workbench engine), from :attr:`camera` (auto-framed
+        when unset) and lit by :attr:`lighting`."""
         scene = bpy.context.scene
         self._ensure_camera()
         scene.render.engine = "BLENDER_WORKBENCH"
+        # Light the Workbench render with the scene's own lights (our
+        # ``lighting``) rather than the default studio light.
+        shading = scene.display.shading
+        if hasattr(shading, "light"):
+            shading.light = "STUDIO"
+        for attr in ("use_scene_lights_render", "use_scene_lights"):
+            if hasattr(shading, attr):
+                setattr(shading, attr, True)
         scene.render.resolution_x = width
         scene.render.resolution_y = height
         scene.render.image_settings.file_format = "PNG"

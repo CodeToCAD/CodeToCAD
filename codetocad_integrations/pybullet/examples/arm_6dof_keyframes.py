@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from arm_6dof import FINGER_TRAVEL, arm_pose, build_arm
 
-from codetocad import Lighting
+from codetocad import Camera, Lighting
 from codetocad_integrations.pybullet import simulate
 
 GIF_PATH = Path(__file__).resolve().parent / "images" / "arm_6dof_keyframes.gif"
@@ -66,6 +66,7 @@ def main() -> None:
         build_arm(),
         gui=False,
         lighting=[Lighting(light_type="point", position=(1.0, 1.0, 2.0))],
+        camera=Camera.look_at(eye=(-0.73, 0.73, 0.63), target=(0.0, 0.0, 0.25)),
     )
     set_keyframes(sim)
     GIF_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -75,10 +76,6 @@ def main() -> None:
         fps=20,
         width=480,
         height=480,
-        target=(0.0, 0.0, 0.25),
-        distance=1.1,
-        yaw=45,
-        pitch=-20,
     )
     sim.close()
     print(f"wrote {GIF_PATH}")
