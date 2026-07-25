@@ -97,12 +97,16 @@ class GeometryQueryMixin:
                 edges.append(Edge(vertex, corners[(i, j, 1)]))
         faces = []
         for axis in range(3):
+            other = [a for a in range(3) if a != axis]
             for side in (0, 1):
-                face_vertices = [
-                    vertex
-                    for key, vertex in corners.items()
-                    if key[axis] == side
-                ]
+                # Walk the four corners in perimeter order so a face is a
+                # proper loop (its outline draws as a rectangle, not a bowtie).
+                face_vertices = []
+                for u, v in ((0, 0), (1, 0), (1, 1), (0, 1)):
+                    key = [0, 0, 0]
+                    key[axis] = side
+                    key[other[0]], key[other[1]] = u, v
+                    face_vertices.append(corners[tuple(key)])
                 faces.append(Face(face_vertices))
         return list(corners.values()), edges, faces
 

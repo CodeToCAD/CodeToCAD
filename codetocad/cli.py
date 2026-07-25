@@ -1249,6 +1249,7 @@ class InteractiveSession:
                 ("Duplicate selected part", has_part),
                 ("Pattern selected part (linear or circular instances)", has_part),
                 ("Define a location on selected part", has_part),
+                ("Highlight a face/edge/vertex of selected part (save a PNG)", has_part),
                 ("Set modeling backend (bakes booleans into exports)", True),
             ],
             hint="select a 3D part first (main menu > Select geometry)",
@@ -1265,6 +1266,7 @@ class InteractiveSession:
             self._duplicate_selected,
             self._pattern_selected,
             self._define_location,
+            self._highlight_geometry,
             self._set_backend,
         )[choice - 1]()
 
@@ -1572,6 +1574,68 @@ class InteractiveSession:
             )
         self._append_line(var_name, line)
         self._print(f"Defined location {var_name}_{location_name}.")
+
+    def _highlight_geometry(self) -> None:
+        """Snap a face, edge or vertex from a cube location (or coordinates)
+        on the selected part and save a PNG with it highlighted, so you can
+        confirm which one a location resolves to."""
+        if self._selected_kind() != "part":
+            self._print("Select a 3D part first.")
+            return
+        if self.backend == "blender":
+            self._print(
+                "Highlighting is not supported with the Blender backend yet - "
+                "use Preview > Open/refresh the preview window instead."
+            )
+            return
+        kind_choice = self._menu(
+            "Highlight which topology?",
+            [("Face", True), ("Edge", True), ("Vertex", True)],
+        )
+        if kind_choice == 0:
+            return
+        kind = ("face", "edge", "vertex")[kind_choice - 1]
+        answer = self._ask_valid(
+            "Enter a cube location (e.g. TOP_CENTER) or x, y, z coordinates: ",
+            _parse_cube_location_or_coordinates,
+        )
+        if answer is None:
+            return
+        parts = self._load_solid_parts()
+        part = parts.get(self.selected)
+        if part is None:
+            self._print(
+                "Could not rebuild the selected part - fix the notes above and "
+                "try again."
+            )
+            return
+        from codetocad.location import CubeLocations, Location
+
+        if isinstance(answer, list):
+            location = Location(x=answer[0], y=answer[1], z=answer[2])
+        else:
+            location = CubeLocations[answer].to_location(part)
+        getter = getattr(part, f"get_{kind}")
+        try:
+            feature = getter(location)
+        except Exception as error:
+            self._print(f"Note: could not find a {kind} there: {error}")
+            return
+        try:
+            from codetocad_integrations.open3d.viewer import render
+        except ImportError:
+            self.preview.warn_unavailable()
+            return
+        default = self.project_dir / f"{self.selected}_{kind}.png"
+        destination = (
+            self._ask(f"Enter a PNG path (default {default}): ") or str(default)
+        )
+        try:
+            render(*parts.values(), path=destination, highlight=[feature])
+        except Exception as error:
+            self._print(f"Note: could not render the highlight: {error}")
+            return
+        self._print(f"Saved {destination} with the {kind} highlighted.")
 
     # -- sketch menu --
 

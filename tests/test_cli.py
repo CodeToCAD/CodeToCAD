@@ -449,7 +449,7 @@ def test_backend_switch_retrofits_existing_files(tmp_path):
     inputs = [
         "1", "1", "1", "body", "3", "6in, 0.5in, 2in",  # no integration
         "1",  # Part
-        "10",  # Set modeling backend
+        "11",  # Set modeling backend
         "2",  # Build123D
         "y",  # rewrite existing files
         "q",
@@ -491,6 +491,23 @@ def test_preview_exports_meshes_for_viewer(tmp_path, monkeypatch):
     assert (directory / "version.txt").exists()
     assert (directory / "colors.json").exists()
     assert launched  # the viewer process would have been (re)started
+
+
+def test_highlight_geometry_renders_png(tmp_path):
+    pytest.importorskip("open3d")
+    destination = tmp_path / "face.png"
+    inputs = [
+        "1", "1", "1", "block", "3", "6cm, 4cm, 3cm",  # create a cube
+        "1",  # Part
+        "10",  # Highlight a face/edge/vertex
+        "1",  # Face
+        "TOP_CENTER",  # cube location
+        str(destination),  # PNG path
+        "q",
+    ]
+    _, output, _ = run_session(tmp_path, inputs)
+    assert destination.exists()
+    assert any("with the face highlighted" in line for line in output)
 
 
 def test_backend_unavailable_falls_back_after_warning(tmp_path, monkeypatch):
