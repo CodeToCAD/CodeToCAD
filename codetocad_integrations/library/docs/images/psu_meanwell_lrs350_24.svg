@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M666.64 133.23L976.14 311.92M976.14 311.92L397.50 646.00M666.64 40.00L88.00 374.08M88.00 374.08L397.50 552.77M666.64 133.23L88.00 467.31M88.00 467.31L88.00 374.08M976.14 311.92L976.14 218.69M666.64 133.23L666.64 40.00M666.64 40.00L976.14 218.69M88.00 467.31L397.50 646.00M397.50 646.00L397.50 552.77M976.14 218.69L397.50 552.77" fill="none" stroke="black" stroke-width="1"/>
+<text x="532.07" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">psu_meanwell_lrs350_24</text><text x="845" y="751" font-size="12" fill="black">SIZE  215 mm × 115 mm × 30 mm</text></g>
+</svg>

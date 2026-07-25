@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M677.36 195.55L868.20 305.73M868.20 305.73L278.84 646.00M677.36 40.00L88.00 380.27M88.00 380.27L278.84 490.45M677.36 195.55L88.00 535.82M88.00 535.82L88.00 380.27M868.20 305.73L868.20 150.18M677.36 195.55L677.36 40.00M677.36 40.00L868.20 150.18M88.00 535.82L278.84 646.00M278.84 646.00L278.84 490.45M868.20 150.18L278.84 490.45" fill="none" stroke="black" stroke-width="1"/>
+<text x="478.10" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">lipo_3s_2200</text><text x="845" y="751" font-size="12" fill="black">SIZE  105 mm × 34 mm × 24 mm</text></g>
+</svg>

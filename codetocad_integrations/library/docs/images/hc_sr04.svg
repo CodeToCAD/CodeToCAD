@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M585.19 231.37L806.16 358.95M806.16 358.95L308.97 646.00M585.19 40.00L88.00 327.05M88.00 327.05L308.97 454.63M585.19 231.37L88.00 518.42M88.00 518.42L88.00 327.05M806.16 358.95L806.16 167.58M585.19 231.37L585.19 40.00M585.19 40.00L806.16 167.58M88.00 518.42L308.97 646.00M308.97 646.00L308.97 454.63M806.16 167.58L308.97 454.63" fill="none" stroke="black" stroke-width="1"/>
+<text x="447.08" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">hc_sr04</text><text x="845" y="751" font-size="12" fill="black">SIZE  45 mm × 20 mm × 15 mm</text></g>
+</svg>

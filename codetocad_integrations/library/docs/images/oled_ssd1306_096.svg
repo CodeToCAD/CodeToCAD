@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M545.09 118.19L1002.19 382.10M1002.19 382.10L545.09 646.00M545.09 40.00L88.00 303.90M88.00 303.90L545.09 567.81M545.09 118.19L88.00 382.10M88.00 382.10L88.00 303.90M1002.19 382.10L1002.19 303.90M545.09 118.19L545.09 40.00M545.09 40.00L1002.19 303.90M88.00 382.10L545.09 646.00M545.09 646.00L545.09 567.81M1002.19 303.90L545.09 567.81" fill="none" stroke="black" stroke-width="1"/>
+<text x="545.09" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">oled_ssd1306_096</text><text x="845" y="751" font-size="12" fill="black">SIZE  27 mm × 27 mm × 4 mm</text></g>
+</svg>

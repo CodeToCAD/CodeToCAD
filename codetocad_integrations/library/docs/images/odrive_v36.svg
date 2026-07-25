@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M612.81 146.94L952.40 343.00M952.40 343.00L427.58 646.00M612.81 40.00L88.00 343.00M88.00 343.00L427.58 539.06M612.81 146.94L88.00 449.94M88.00 449.94L88.00 343.00M952.40 343.00L952.40 236.06M612.81 146.94L612.81 40.00M612.81 40.00L952.40 236.06M88.00 449.94L427.58 646.00M427.58 646.00L427.58 539.06M952.40 236.06L427.58 539.06" fill="none" stroke="black" stroke-width="1"/>
+<text x="520.20" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">odrive_v36</text><text x="845" y="751" font-size="12" fill="black">SIZE  85 mm × 55 mm × 15 mm</text></g>
+</svg>

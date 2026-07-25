@@ -58,6 +58,7 @@ have no kernel behind them.
 | [integrations/fea.md](integrations/fea.md) | calculix — fixtures, loads, stress/displacement |
 | [integrations/ecad.md](integrations/ecad.md) | skidl (schematics/netlists), spice (circuit simulation) |
 | [integrations/controls.md](integrations/controls.md) | apps (nicegui/rerun/python), microcontroller + emulation, pyserial/mqtt/vesc/micropython transports |
+| [integrations/library.md](integrations/library.md) | **hardware catalog** — ~230 ready-made actuators, sensors, gears, couplings & bearings as `Part3D`s (`get_nema_23()`, generators) |
 | [integrations/robotics.md](integrations/robotics.md) | putting MCAD + ECAD + MCU + WebApp + physics together |
 
 ## Ground rules for agents

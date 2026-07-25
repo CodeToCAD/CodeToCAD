@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M578.58 224.43L818.17 362.76M818.17 362.76L327.59 646.00M578.58 40.00L88.00 323.24M88.00 323.24L327.59 461.57M578.58 224.43L88.00 507.67M88.00 507.67L88.00 323.24M818.17 362.76L818.17 178.33M578.58 224.43L578.58 40.00M578.58 40.00L818.17 178.33M88.00 507.67L327.59 646.00M327.59 646.00L327.59 461.57M818.17 178.33L327.59 461.57" fill="none" stroke="black" stroke-width="1"/>
+<text x="453.09" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">buck_lm2596</text><text x="845" y="751" font-size="12" fill="black">SIZE  43 mm × 21 mm × 14 mm</text></g>
+</svg>

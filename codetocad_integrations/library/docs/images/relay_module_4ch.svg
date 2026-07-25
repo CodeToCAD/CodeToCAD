@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M556.58 177.07L900.21 375.46M900.21 375.46L431.63 646.00M556.58 40.00L88.00 310.54M88.00 310.54L431.63 508.93M556.58 177.07L88.00 447.61M88.00 447.61L88.00 310.54M900.21 375.46L900.21 238.39M556.58 177.07L556.58 40.00M556.58 40.00L900.21 238.39M88.00 447.61L431.63 646.00M431.63 646.00L431.63 508.93M900.21 238.39L431.63 508.93" fill="none" stroke="black" stroke-width="1"/>
+<text x="494.10" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">relay_module_4ch</text><text x="845" y="751" font-size="12" fill="black">SIZE  75 mm × 55 mm × 19 mm</text></g>
+</svg>

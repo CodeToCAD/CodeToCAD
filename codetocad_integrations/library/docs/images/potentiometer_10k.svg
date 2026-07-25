@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M292.80 409.51L497.61 527.76M497.61 527.76L292.80 646.00M292.80 40.00L88.00 158.24M88.00 158.24L292.80 276.49M292.80 409.51L88.00 527.76M88.00 527.76L88.00 158.24M497.61 527.76L497.61 158.24M292.80 409.51L292.80 40.00M292.80 40.00L497.61 158.24M88.00 527.76L292.80 646.00M292.80 646.00L292.80 276.49M497.61 158.24L292.80 276.49" fill="none" stroke="black" stroke-width="1"/>
+<text x="292.80" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">potentiometer_10k</text><text x="845" y="751" font-size="12" fill="black">SIZE  16 mm × 16 mm × 25 mm</text></g>
+</svg>

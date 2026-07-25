@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M964.61 79.96L1068.42 139.89M1068.42 139.89L191.81 646.00M964.61 40.00L88.00 546.11M88.00 546.11L191.81 606.04M964.61 79.96L88.00 586.07M88.00 586.07L88.00 546.11M1068.42 139.89L1068.42 99.93M964.61 79.96L964.61 40.00M964.61 40.00L1068.42 99.93M88.00 586.07L191.81 646.00M191.81 646.00L191.81 606.04M1068.42 99.93L191.81 606.04" fill="none" stroke="black" stroke-width="1"/>
+<text x="578.21" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">qtr_8rc</text><text x="845" y="751" font-size="12" fill="black">SIZE  76 mm × 9 mm × 3 mm</text></g>
+</svg>

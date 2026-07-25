@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794" font-family="sans-serif">
+<rect x="0" y="0" width="1123" height="794" fill="white"/>
+<rect x="28" y="28" width="1067" height="738" fill="none" stroke="black" stroke-width="1.5"/>
+<path d="M660.52 223.64L819.56 315.45M819.56 315.45L247.03 646.00M660.52 40.00L88.00 370.55M88.00 370.55L247.03 462.36M660.52 223.64L88.00 554.18M88.00 554.18L88.00 370.55M819.56 315.45L819.56 131.82M660.52 223.64L660.52 40.00M660.52 40.00L819.56 131.82M88.00 554.18L247.03 646.00M247.03 646.00L247.03 462.36M819.56 131.82L247.03 462.36" fill="none" stroke="black" stroke-width="1"/>
+<text x="453.78" y="664.00" text-anchor="middle" font-size="13" fill="black">ISO</text>
+<g font-family="sans-serif"><rect x="835" y="706" width="260" height="60" fill="none" stroke="black" stroke-width="1"/><line x1="835" y1="736.0" x2="1095" y2="736.0" stroke="black" stroke-width="0.75"/><text x="845" y="726" font-size="14" font-weight="bold" fill="black">realsense_d435</text><text x="845" y="751" font-size="12" fill="black">SIZE  90 mm × 25 mm × 25 mm</text></g>
+</svg>
