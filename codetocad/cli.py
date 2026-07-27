@@ -36,8 +36,12 @@ Usage:
   codetocad load <path/to/project>
                                   Load an existing project folder and
                                   continue designing.
-  codetocad <path/to/script.py>   Run a CodeToCAD script.
-  codetocad run <path/to/script>  Same as above.
+  codetocad <path/to/script.py>   Run a CodeToCAD script. If its folder has no
+                                  .codetocad.json yet, the project is first set
+                                  up (traversed into a manifest) so it can be
+                                  edited later with `codetocad load`.
+  codetocad run <path/to/script>  Always run the script, without setting up a
+                                  project.
 """
 
 #: Session state manifest kept next to the generated files, so a project
@@ -381,6 +385,10 @@ class InteractiveSession:
         # Modeling backend for generated parts: "none" (pure CodeToCAD),
         # "build123d" or "blender". Asked on first part creation.
         self.backend: str | None = None
+        # Set for execution-discovered projects (a hand-written entry point
+        # whose parts are built inside functions): the file to run to rebuild
+        # the live geometry, since the parts are not top-level module vars.
+        self.entry: Path | None = None
         self.preview = LivePreview(self._print)
         self._shown_welcome = False
         self._welcome: str | None = None
@@ -653,6 +661,7 @@ class InteractiveSession:
         data = {
             "project": self.project_name,
             "backend": self.backend,
+            "entry": self.entry.name if self.entry else None,
             "selected": self.selected,
             "reference_images": self.preview.references,
             "joints": self.joints,
@@ -685,6 +694,12 @@ class InteractiveSession:
         if data:
             self.project_name = data.get("project") or self.project_name
             self.backend = data.get("backend")
+            entry_name = data.get("entry")
+            self.entry = (
+                self.project_dir / entry_name
+                if entry_name and (self.project_dir / entry_name).exists()
+                else None
+            )
             self.preview.references = [
                 reference
                 for reference in data.get("reference_images", [])
@@ -769,6 +784,119 @@ class InteractiveSession:
             self.backend = "none"
         geometry = self._geometry_vars()
         self.selected = geometry[-1] if geometry else None
+
+    def discover_from_entry(self, entry_file: Path) -> bool:
+        """Populate parts and joints by executing the entry script and
+        inspecting the live geometry it builds.
+
+        Used when the static scan finds nothing - e.g. a hand-written project
+        whose parts are created inside functions (and returned) rather than as
+        top-level ``var = codetocad.cube(...)`` assignments the scanner can
+        read. The script's ``if __name__ == "__main__"`` block is skipped, so
+        its exports, simulation and viewer do not run; if it defines a
+        no-argument ``build()``, the parts it returns are collected too. Only
+        named geometry is registered, so transient helper shapes (unnamed
+        boolean cutters, hinge knuckles, ...) are ignored.
+
+        Returns whether any geometry was recovered."""
+        import codetocad
+
+        self.entry = entry_file
+        parts = self._entry_parts()
+        var_by_id: dict[int, str] = {}
+        for part in parts:
+            if not getattr(part, "name", None) or id(part) in var_by_id:
+                continue  # skip transient/unnamed helper geometry
+            var_name = self._unique_var(_sanitize_identifier(part.name))
+            kind = "sketch" if isinstance(part, codetocad.Part2D) else "part"
+            # ``source_name`` maps the manifest var back to the live object when
+            # the project is rebuilt (see _load_discovered_parts), since these
+            # parts have no top-level variable to read.
+            self.parts[var_name] = {
+                "file": entry_file,
+                "kind": kind,
+                "source_name": part.name,
+            }
+            var_by_id[id(part)] = var_name
+        # Joints recorded on any discovered part, between two discovered parts.
+        # In a kinematic tree each child hangs off exactly one parent joint, so
+        # keep the first joint seen per child (a duplicated assembly root, e.g.
+        # ``full_assembly = holder.duplicate()``, otherwise re-reports the
+        # child's joint from both the original and the copy).
+        jointed_children: set[str] = set()
+        for part in parts:
+            parent_var = var_by_id.get(id(part))
+            if parent_var is None:
+                continue
+            for operation in getattr(part, "operations", []):
+                joint_type = operation.get("operation")
+                if joint_type not in ("fixed", "revolute", "prismatic"):
+                    continue
+                child_var = var_by_id.get(id(operation.get("other_part")))
+                if child_var is None or child_var in jointed_children:
+                    continue
+                jointed_children.add(child_var)
+                # Revolute/prismatic joints are placed at a purpose-named
+                # Location (e.g. ``lid_hinge``); fixed welds reuse a generic
+                # anchor (``center``), so name those after the child instead.
+                base = f"{child_var}_fixed"
+                if joint_type != "fixed":
+                    location_name = getattr(operation.get("location"), "name", None)
+                    joint_name = getattr(operation.get("joint_obj"), "name", None)
+                    base = location_name or joint_name or f"{child_var}_{joint_type}"
+                name = base
+                suffix = 2
+                while name in self.joints:
+                    name = f"{base}_{suffix}"
+                    suffix += 1
+                self.joints[name] = {
+                    "parent": parent_var,
+                    "child": child_var,
+                    "type": joint_type,
+                }
+        geometry = self._geometry_vars()
+        self.selected = geometry[-1] if geometry else None
+        return bool(self.parts)
+
+    def _entry_parts(self) -> list:
+        """Execute the entry point (with its ``__main__`` block skipped) and
+        return the CodeToCAD parts it builds, following joins and booleans to
+        reach children. If it defines a no-argument ``build()``, the parts it
+        returns are included. Empty on failure or when there is no entry."""
+        if self.entry is None:
+            return []
+        try:
+            with self._project_env():
+                namespace = runpy.run_path(
+                    str(self.entry), run_name="__codetocad_bootstrap__"
+                )
+                seeds = _iter_parts(list(namespace.values()))
+                builder = namespace.get("build")
+                if callable(builder) and not _has_required_parameters(builder):
+                    seeds += _iter_parts(builder())
+        except Exception as error:  # keep discovery and preview resilient
+            self._print(f"Note: could not analyze {self.entry.name}: {error}")
+            self._print_missing_module_hint(error)
+            return []
+        return _connected_parts(seeds)
+
+    def _load_discovered_parts(self) -> dict[str, object]:
+        """Rebuild an execution-discovered project: run the entry point, then
+        map its live 3D parts back to their manifest variables by name (they
+        have no top-level variable to read the way generated part files do)."""
+        import codetocad
+
+        by_name: dict[str, object] = {}
+        for part in self._entry_parts():
+            name = getattr(part, "name", None)
+            if name and isinstance(part, codetocad.Part3D):
+                by_name.setdefault(name, part)
+        results: dict[str, object] = {}
+        for var_name in self._vars_of_kind("part"):
+            part = by_name.get(self.parts[var_name].get("source_name"))
+            if part is not None:
+                results[var_name] = part
+        return results
 
     def _scan_file(self, path: Path, text: str) -> None:
         # Factories may be wrapped in the backend's adapt(), e.g.
@@ -1116,7 +1244,11 @@ class InteractiveSession:
         return True
 
     def _load_solid_parts(self) -> dict[str, object]:
-        """Rebuild the 3D part files and return their live part objects."""
+        """Rebuild the 3D parts and return their live part objects."""
+        if self.entry is not None:
+            # A hand-written project: its parts are built inside the entry
+            # point, not readable as top-level variables of a part file.
+            return self._load_discovered_parts()
         files: dict[Path, list[str]] = {}
         for var_name in self._vars_of_kind("part"):
             files.setdefault(self._part_file(var_name), []).append(var_name)
@@ -2396,7 +2528,8 @@ class InteractiveSession:
             )
             block = (
                 "if __name__ == '__main__':\n"
-                "    # macOS needs mjpython for the MuJoCo viewer window.\n"
+                "    # `codetocad this_file.py` opens the viewer; on macOS it\n"
+                "    # relaunches under mjpython automatically for the window.\n"
                 f"{step}"
             )
         else:
@@ -2412,7 +2545,7 @@ class InteractiveSession:
         self._print(
             f"Run it with: codetocad {self.project_dir.name}/{path.name}"
             + (
-                " (use mjpython on macOS for the viewer window)"
+                " (on macOS the viewer is relaunched under mjpython for you)"
                 if self.parts[sim]["engine"] == "mujoco"
                 else ""
             )
@@ -2813,6 +2946,74 @@ def init_project(name: str, parent_dir: Path | None = None) -> Path:
     return project_dir
 
 
+#: Substrings that mark a script as opening the MuJoCo interactive viewer.
+#: ``launch_passive`` (and CodeToCAD's ``launch_viewer`` wrapper around it)
+#: must run on the process main thread on macOS, which only ``mjpython``
+#: provides.
+_MJPYTHON_MARKERS = ("launch_viewer", "launch_passive", "mujoco.viewer")
+
+
+def _find_mjpython() -> Path | None:
+    """Locate the ``mjpython`` shipped with MuJoCo, preferring the one in this
+    interpreter's environment so it shares our installed packages."""
+    import shutil
+
+    candidates = [
+        Path(sys.prefix) / "bin" / "mjpython",
+        Path(sys.executable).with_name("mjpython"),
+    ]
+    on_path = shutil.which("mjpython")
+    if on_path:
+        candidates.append(Path(on_path))
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _reexec_under_mjpython_if_needed(script: Path) -> None:
+    """On macOS, re-exec ``script`` under ``mjpython`` when it opens the MuJoCo
+    viewer.
+
+    MuJoCo's ``launch_passive`` viewer needs the process main thread (Cocoa),
+    which plain ``python`` does not give it - so ``codetocad <sim>.py`` would
+    otherwise fail with "requires that the Python script be run under
+    ``mjpython``". This transparently relaunches the script under ``mjpython``
+    so the viewer window opens.
+
+    A no-op off macOS, when already running under ``mjpython``, when the script
+    does not open a viewer, or when ``mjpython`` is not installed (the script
+    still runs, just without the viewer window)."""
+    import os
+
+    if sys.platform != "darwin":
+        return
+    # mjpython exports MJPYTHON_BIN; our own guard covers the fallback path.
+    if os.environ.get("MJPYTHON_BIN") or os.environ.get("CODETOCAD_MJPYTHON"):
+        return
+    try:
+        text = script.read_text()
+    except OSError:
+        return
+    if not any(marker in text for marker in _MJPYTHON_MARKERS):
+        return
+    mjpython = _find_mjpython()
+    if mjpython is None:
+        print(
+            "codetocad: this script opens the MuJoCo viewer, which needs "
+            "mjpython on macOS, but none was found. Running without the viewer "
+            "window - install mujoco to get mjpython."
+        )
+        return
+    # execve does not flush Python's stdio buffers, so print eagerly.
+    print(
+        f"codetocad: opening the MuJoCo viewer via {mjpython.name} (macOS).",
+        flush=True,
+    )
+    environment = {**os.environ, "CODETOCAD_MJPYTHON": "1"}
+    os.execve(str(mjpython), [str(mjpython), str(script)], environment)
+
+
 def run_script(path: str) -> None:
     script = Path(path)
     if script.is_dir():
@@ -2822,11 +3023,114 @@ def run_script(path: str) -> None:
         script = candidate
     if not script.exists():
         raise SystemExit(f"No such script: {path}")
+    _reexec_under_mjpython_if_needed(script)
     sys.path.insert(0, str(script.parent))
     try:
         runpy.run_path(str(script), run_name="__main__")
     finally:
         sys.path.remove(str(script.parent))
+
+
+def _has_required_parameters(func) -> bool:
+    """Whether ``func`` needs an argument (so we should not call it blindly).
+    A no-argument ``build()`` is safe to invoke during discovery; a
+    ``build(part)`` is not."""
+    import inspect
+
+    try:
+        signature = inspect.signature(func)
+    except (TypeError, ValueError):
+        return True
+    return any(
+        parameter.default is inspect.Parameter.empty
+        and parameter.kind
+        in (
+            inspect.Parameter.POSITIONAL_ONLY,
+            inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            inspect.Parameter.KEYWORD_ONLY,
+        )
+        for parameter in signature.parameters.values()
+    )
+
+
+def _iter_parts(value) -> list:
+    """Flatten ``value`` (a part, or a list/tuple/set/dict of them, possibly
+    nested) into the CodeToCAD parts it contains."""
+    import codetocad
+
+    if isinstance(value, (codetocad.Part3D, codetocad.Part2D)):
+        return [value]
+    if isinstance(value, dict):
+        value = value.values()
+    if isinstance(value, (list, tuple, set, frozenset)) or hasattr(value, "__iter__"):
+        parts = []
+        try:
+            for item in value:
+                if isinstance(item, (codetocad.Part3D, codetocad.Part2D)):
+                    parts.append(item)
+        except TypeError:
+            return []
+        return parts
+    return []
+
+
+def _connected_parts(seeds: list, limit: int = 2000) -> list:
+    """All parts reachable from ``seeds`` by following the ``other_part`` of
+    their recorded operations (booleans and joints), so children referenced
+    only through a join or boolean are discovered too."""
+    import codetocad
+
+    seen: dict[int, object] = {}
+    stack = list(seeds)
+    while stack and len(seen) < limit:
+        part = stack.pop()
+        if not isinstance(part, (codetocad.Part3D, codetocad.Part2D)):
+            continue
+        if id(part) in seen:
+            continue
+        seen[id(part)] = part
+        for operation in getattr(part, "operations", []):
+            if isinstance(operation, dict) and operation.get("other_part") is not None:
+                stack.append(operation["other_part"])
+    return list(seen.values())
+
+
+def bootstrap_project(entry: Path | str, output_fn=print) -> tuple[Path, str]:
+    """Turn an existing entry point (or project folder) into a CLI-editable
+    project by traversing its generated files and writing the state manifest.
+
+    This is the "project init" for a folder that was hand-assembled or created
+    outside the interactive designer: it scans the ``.py`` files to recover the
+    parts, joints, electronics and simulation (the same recovery ``load`` does)
+    and persists a ``.codetocad.json`` so the project can be edited from the
+    CLI or Studio. Idempotent: a folder that already has a manifest keeps it.
+
+    ``entry`` may be a project folder or a ``.py`` entry point inside one; the
+    entry file's name becomes the project name (and is treated as the project
+    file, not scanned as a part), so ``medel_charger/charger_holder.py`` yields
+    the project ``charger_holder``. ``load`` later reads the name back from the
+    manifest, so the entry file need not match its folder name.
+
+    Returns the project directory and its name."""
+    entry = Path(entry).expanduser().resolve()
+    if entry.is_file():
+        project_dir = entry.parent
+        entry_file: Path | None = entry
+        name = _sanitize_identifier(entry.stem)
+    else:
+        project_dir = entry
+        name = _sanitize_identifier(project_dir.name)
+        candidate = project_dir / f"{name}.py"
+        entry_file = candidate if candidate.exists() else None
+    session = InteractiveSession(project_dir, name, output_fn=output_fn)
+    session.restore()  # loads the manifest, or scans the files when it is absent
+    # When the static scan recovers nothing (a hand-written project whose parts
+    # are built inside functions), fall back to running the entry point and
+    # inspecting the live geometry it produces.
+    if not session.parts and entry_file is not None:
+        session.discover_from_entry(entry_file)
+    session._save_state()  # persist .codetocad.json so the project is editable
+    return project_dir, name
 
 
 def _single_argument(args: list[str], usage: str, prompt: str, validate) -> object:
@@ -2931,6 +3235,17 @@ def main(argv: list[str] | None = None) -> int:
             # Also the "unknown command" case: it is neither a subcommand nor
             # a script we can run.
             raise SystemExit(f"{invalid}\n\n{USAGE}")
+        # An entry point in a folder that is not yet a managed project: build
+        # the manifest (project init) so it becomes editable, then run it as
+        # usual. `codetocad run` skips this and just runs the script.
+        if not (target.parent / STATE_FILE_NAME).exists():
+            project_dir, name = bootstrap_project(target)
+            print(
+                f"Initialized a CodeToCAD project in {project_dir} "
+                f"(wrote {STATE_FILE_NAME}); edit it later with: "
+                f"codetocad load {project_dir}",
+                flush=True,
+            )
     run_script(str(target))
     return 0
 

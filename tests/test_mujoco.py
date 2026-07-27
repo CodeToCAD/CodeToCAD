@@ -128,6 +128,7 @@ def test_capture_image_and_record_gif(tmp_path):
     sim.close()
 
 
+@requires_gl
 def test_capture_image_honors_camera_and_lighting(tmp_path):
     sim = simulate(
         build_pendulum(),

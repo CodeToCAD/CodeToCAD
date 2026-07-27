@@ -1,3 +1,4 @@
+import importlib.util
 import io
 from pathlib import Path
 
@@ -493,8 +494,25 @@ def test_preview_exports_meshes_for_viewer(tmp_path, monkeypatch):
     assert launched  # the viewer process would have been (re)started
 
 
+def _offscreen_gl_available() -> bool:
+    if importlib.util.find_spec("open3d") is None:
+        return False
+    import open3d as o3d
+
+    try:
+        vis = o3d.visualization.Visualizer()
+        created = vis.create_window(width=1, height=1, visible=False)
+        vis.destroy_window()
+    except Exception:
+        return False
+    return bool(created)
+
+
+@pytest.mark.skipif(
+    not _offscreen_gl_available(),
+    reason="offscreen OpenGL context unavailable (headless CI)",
+)
 def test_highlight_geometry_renders_png(tmp_path):
-    pytest.importorskip("open3d")
     destination = tmp_path / "face.png"
     inputs = [
         "1", "1", "1", "block", "3", "6cm, 4cm, 3cm",  # create a cube
@@ -577,6 +595,239 @@ def test_main_usage_and_run(tmp_path, capsys):
 
     with pytest.raises(SystemExit):
         main([str(tmp_path / "missing.py")])
+
+
+def test_bootstrap_project_builds_manifest_from_files(tmp_path):
+    """A hand-assembled project (an entry point plus part files, no manifest)
+    is traversed into an editable project with a .codetocad.json."""
+    from codetocad.cli import bootstrap_project
+
+    project_dir = tmp_path / "gadget"
+    project_dir.mkdir()
+    (project_dir / "gadget.py").write_text(
+        '"""CodeToCAD project gadget."""\n'
+        "from widget import widget\n\n"
+        'if __name__ == "__main__":\n'
+        "    for _part in [widget]:\n"
+        "        _part.build()\n"
+    )
+    (project_dir / "widget.py").write_text(
+        "import codetocad\n"
+        "widget = codetocad.cube(length='1cm', width='1cm', height='1cm')\n"
+        "widget.name = 'widget'\n"
+    )
+    assert not (project_dir / STATE_FILE_NAME).exists()
+
+    returned_dir, name = bootstrap_project(project_dir / "gadget.py")
+    assert returned_dir == project_dir.resolve()
+    assert name == "gadget"
+
+    import json
+
+    data = json.loads((project_dir / STATE_FILE_NAME).read_text())
+    assert data["project"] == "gadget"
+    assert "widget" in data["parts"]
+    assert data["parts"]["widget"]["kind"] == "part"
+
+    # Idempotent: re-running keeps the recovered manifest.
+    bootstrap_project(project_dir)
+    data = json.loads((project_dir / STATE_FILE_NAME).read_text())
+    assert "widget" in data["parts"]
+
+
+def test_discovery_executes_entry_for_function_built_parts(tmp_path):
+    """A hand-written project builds its parts inside build() and returns them
+    (no top-level assignments to scan). bootstrap_project falls back to running
+    the entry point and recovers the parts and joints from the live objects."""
+    import json
+
+    from codetocad.cli import bootstrap_project
+
+    project_dir = tmp_path / "arm"
+    project_dir.mkdir()
+    (project_dir / "arm.py").write_text(
+        "import codetocad\n"
+        "from codetocad.location import Location\n"
+        "\n"
+        "def build():\n"
+        "    base = codetocad.cube(length='2cm', width='2cm', height='1cm')\n"
+        "    base.name = 'base'\n"
+        "    link = codetocad.cube(length='1cm', width='1cm', height='3cm')\n"
+        "    link.name = 'link'\n"
+        "    base.revolute(Location.from_euler(name='elbow'), link, Location(),\n"
+        "                  min_limits=0, max_limits=1)\n"
+        "    return base, link\n"
+        "\n"
+        "if __name__ == '__main__':\n"
+        "    raise SystemExit('the __main__ block must not run during discovery')\n"
+    )
+    bootstrap_project(project_dir / "arm.py")
+
+    data = json.loads((project_dir / STATE_FILE_NAME).read_text())
+    assert set(data["parts"]) == {"base", "link"}
+    assert data["parts"]["base"]["kind"] == "part"
+    assert data["parts"]["base"]["file"] == "arm.py"
+    assert data["parts"]["base"]["source_name"] == "base"
+    assert data["entry"] == "arm.py"
+    assert data["joints"]["elbow"] == {
+        "parent": "base",
+        "child": "link",
+        "type": "revolute",
+    }
+
+
+def test_discovered_project_rebuilds_live_parts_after_reload(tmp_path):
+    """A reloaded execution-discovered project rebuilds its live 3D objects by
+    re-running the entry point (they are not top-level part-file variables), so
+    the preview has geometry to mesh."""
+    project_dir = tmp_path / "arm"
+    project_dir.mkdir()
+    (project_dir / "arm.py").write_text(
+        "import codetocad\n"
+        "\n"
+        "def build():\n"
+        "    base = codetocad.cube(length='2cm', width='2cm', height='1cm')\n"
+        "    base.name = 'base'\n"
+        "    tip = codetocad.cube(length='1cm', width='1cm', height='3cm')\n"
+        "    tip.name = 'tip'\n"
+        "    return base, tip\n"
+    )
+    from codetocad.cli import bootstrap_project
+
+    bootstrap_project(project_dir / "arm.py")
+
+    # A fresh session, like `codetocad load` / the studio reopening the project.
+    session = InteractiveSession(
+        project_dir, "arm", input_fn=lambda p="": "q", output_fn=lambda *a: None
+    )
+    session.restore()
+    assert session.entry is not None and session.entry.name == "arm.py"
+
+    live = session._load_solid_parts()
+    assert set(live) == {"base", "tip"}
+    assert all(getattr(part, "name", None) for part in live.values())
+
+
+def test_main_entry_point_without_manifest_inits_then_runs(tmp_path):
+    """codetocad <entry.py> with no manifest sets the folder up as a project
+    (writes .codetocad.json) and then runs the script."""
+    project_dir = tmp_path / "gadget"
+    project_dir.mkdir()
+    (project_dir / "gadget.py").write_text(
+        '"""CodeToCAD project gadget."""\nfrom widget import widget\n'
+    )
+    (project_dir / "widget.py").write_text(
+        "import codetocad\nwidget = codetocad.cube(length='1cm', width='1cm', height='1cm')\n"
+        "widget.name = 'widget'\n"
+    )
+    assert main([str(project_dir / "gadget.py")]) == 0
+    assert (project_dir / STATE_FILE_NAME).exists()
+
+
+def test_main_inits_when_entry_name_differs_from_folder(tmp_path):
+    """The entry file need not match its folder name: pointing at
+    medel_charger/charger_holder.py still initializes the project, naming it
+    after the entry file (charger_holder)."""
+    import json
+
+    project_dir = tmp_path / "medel_charger"
+    project_dir.mkdir()
+    (project_dir / "charger_holder.py").write_text(
+        "import codetocad\nfrom holder import holder\n"
+    )
+    (project_dir / "holder.py").write_text(
+        "import codetocad\nholder = codetocad.cube(length='2cm', width='2cm', height='1cm')\n"
+        "holder.name = 'holder'\n"
+    )
+    assert not (project_dir / STATE_FILE_NAME).exists()
+    assert main([str(project_dir / "charger_holder.py")]) == 0
+
+    data = json.loads((project_dir / STATE_FILE_NAME).read_text())
+    assert data["project"] == "charger_holder"
+    # The entry file is treated as the project file, not scanned as a part;
+    # the sibling part is recovered.
+    assert "holder" in data["parts"]
+    assert "charger_holder" not in data["parts"]
+
+
+def test_mujoco_script_reexecs_under_mjpython_on_macos(tmp_path, monkeypatch):
+    """A script that opens the MuJoCo viewer is relaunched under mjpython on
+    macOS (plain python cannot host the Cocoa main-thread viewer)."""
+    import os
+
+    from codetocad.cli import _reexec_under_mjpython_if_needed
+
+    script = tmp_path / "robot_sim.py"
+    script.write_text("import codetocad\nsim.launch_viewer()\n")
+    fake_mjpython = tmp_path / "mjpython"
+    fake_mjpython.write_text("#!/bin/sh\n")
+
+    monkeypatch.setattr("sys.platform", "darwin")
+    monkeypatch.delenv("MJPYTHON_BIN", raising=False)
+    monkeypatch.delenv("CODETOCAD_MJPYTHON", raising=False)
+    monkeypatch.setattr("codetocad.cli._find_mjpython", lambda: fake_mjpython)
+
+    execs: list[tuple] = []
+
+    def fake_execve(program, argv, env):
+        execs.append((program, argv, env))
+
+    monkeypatch.setattr(os, "execve", fake_execve)
+    _reexec_under_mjpython_if_needed(script)
+
+    assert len(execs) == 1
+    program, argv, env = execs[0]
+    assert program == str(fake_mjpython)
+    assert argv == [str(fake_mjpython), str(script)]
+    assert env["CODETOCAD_MJPYTHON"] == "1"
+
+
+def test_mjpython_reexec_skipped_when_not_needed(tmp_path, monkeypatch):
+    """Off macOS, when already under mjpython, or for a non-viewer script, the
+    process is not re-exec'd."""
+    import os
+
+    from codetocad.cli import _reexec_under_mjpython_if_needed
+
+    execs: list = []
+    monkeypatch.setattr(os, "execve", lambda *a: execs.append(a))
+    monkeypatch.setattr("codetocad.cli._find_mjpython", lambda: tmp_path / "mjpython")
+
+    viewer = tmp_path / "sim.py"
+    viewer.write_text("sim.launch_viewer()\n")
+    plain = tmp_path / "cube.py"
+    plain.write_text("import codetocad\npart = codetocad.cube(1, 1, 1)\n")
+
+    # Not macOS: never re-exec.
+    monkeypatch.setattr("sys.platform", "linux")
+    _reexec_under_mjpython_if_needed(viewer)
+    assert not execs
+
+    # macOS but no viewer marker: never re-exec.
+    monkeypatch.setattr("sys.platform", "darwin")
+    monkeypatch.delenv("MJPYTHON_BIN", raising=False)
+    monkeypatch.delenv("CODETOCAD_MJPYTHON", raising=False)
+    _reexec_under_mjpython_if_needed(plain)
+    assert not execs
+
+    # Already running under mjpython: never re-exec.
+    monkeypatch.setenv("MJPYTHON_BIN", "/some/mjpython")
+    _reexec_under_mjpython_if_needed(viewer)
+    assert not execs
+
+
+def test_run_subcommand_runs_without_bootstrap(tmp_path):
+    """`codetocad run <script>` is a pure run: it does not write a manifest,
+    unlike the bare `codetocad <script>` which initializes the project."""
+    script = tmp_path / "notes.py"
+    script.write_text("import codetocad\npart = codetocad.cube(1, 1, 1)\n")
+
+    assert main(["run", str(script)]) == 0
+    assert not (tmp_path / STATE_FILE_NAME).exists()
+
+    # The bare form initializes the project (writes the manifest) then runs.
+    assert main([str(script)]) == 0
+    assert (tmp_path / STATE_FILE_NAME).exists()
 
 
 def test_duplicate_part_flow(tmp_path):
